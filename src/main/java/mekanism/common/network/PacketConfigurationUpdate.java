@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -56,7 +57,7 @@ public class PacketConfigurationUpdate {
         PacketHandler.handlePacket(() -> {
             TileEntity tile = message.coord4D.getTileEntity(player.world);
             if (tile instanceof ISideConfiguration) {
-                ITileNetwork network = CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
+                LazyOptionalHelper<ITileNetwork> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
                 ISideConfiguration config = (ISideConfiguration) tile;
 
                 if (message.packetType == ConfigurationPacket.EJECT) {
@@ -71,7 +72,9 @@ public class PacketConfigurationUpdate {
                     }
 
                     tile.markDirty();
-                    Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(message.coord4D, network.getNetworkedData()), message.coord4D);
+                    capabilityHelper.ifPresent(
+                          network -> Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(message.coord4D, network.getNetworkedData()), message.coord4D)
+                    );
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), message.configIndex, tile.getPos());
                 } else if (message.packetType == ConfigurationPacket.EJECT_COLOR) {
@@ -96,9 +99,11 @@ public class PacketConfigurationUpdate {
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
-                for (PlayerEntity p : ((TileEntityMekanism) config).playersUsing) {
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(message.coord4D, network.getNetworkedData()), (ServerPlayerEntity) p);
-                }
+                capabilityHelper.ifPresent(network -> {
+                    for (PlayerEntity p : ((TileEntityMekanism) config).playersUsing) {
+                        Mekanism.packetHandler.sendTo(new PacketTileEntity(message.coord4D, network.getNetworkedData()), (ServerPlayerEntity) p);
+                    }
+                });
             }
         }, player);
     }

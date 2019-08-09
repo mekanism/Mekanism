@@ -285,11 +285,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
 
     @Override
     public IGasHandler getCachedAcceptor(Direction side) {
-        TileEntity tile = getCachedTile(side);
-        if (CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite())) {
-            return CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
-        }
-        return null;
+        return CapabilityUtils.getCapabilityHelper(getCachedTile(side), Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).getValue();
     }
 
     @Override

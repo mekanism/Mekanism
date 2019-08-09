@@ -11,7 +11,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -140,14 +139,11 @@ public class TileComponentEjector implements ITileComponent {
                 //If the spot is not loaded just skip trying to eject to it
                 continue;
             }
-            ILogisticalTransporter capability = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite());
-            TransitResponse response;
-            if (capability == null) {
-                response = InventoryUtils.putStackInInventory(tile, ejectMap, side, false);
-            } else {
-                response = TransporterUtils.insert(tileEntity, capability, ejectMap, outputColor, true, 0);
-            }
-
+            TransitRequest finalEjectMap = ejectMap;
+            TransitResponse response = CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()).getIfPresentElseDo(
+                  transporter -> TransporterUtils.insert(tileEntity, transporter, finalEjectMap, outputColor, true, 0),
+                  () -> InventoryUtils.putStackInInventory(tile, finalEjectMap, side, false)
+            );
             if (!response.isEmpty()) {
                 response.getInvStack(tileEntity, side).use();
                 //Set map to null so next loop recalculates the eject map so that all sides get a chance to be ejected to

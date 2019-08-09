@@ -4,6 +4,7 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
@@ -16,29 +17,37 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
-    private static final Logger LOGGER = LogManager.getLogger("Mekanism EnergyAcceptorWrapper");
+    private static final Supplier<EnergyAcceptorWrapper> IC2_WRAPPER = () -> {
+        if (MekanismUtils.useIC2()) {
+            IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
+            if (tile instanceof IEnergySink) {
+                return new IC2Acceptor((IEnergySink) tile);
+            }
+        }
+        return null;
+    };
+
     public Coord4D coord;
 
     public static EnergyAcceptorWrapper get(TileEntity tileEntity, Direction side) {
         if (tileEntity == null || tileEntity.getWorld() == null) {
             return null;
         }
-        EnergyAcceptorWrapper wrapper = null;
-        if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side)) {
-            wrapper = fromCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side, MekanismAcceptor::new);
-        } else if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
-            wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
-        } else if (MekanismUtils.useIC2()) {
-            IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-            if (tile instanceof IEnergySink) {
-                wrapper = new IC2Acceptor((IEnergySink) tile);
-            }
-        }
+        EnergyAcceptorWrapper wrapper = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side).getIfPresentElseDo(
+              MekanismAcceptor::new,
+              () -> {
+                  if (MekanismUtils.useForge()) {
+                      return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, side).getIfPresentElseDo(
+                            ForgeAcceptor::new,
+                            IC2_WRAPPER
+                      );
+                  }
+                  return IC2_WRAPPER.get();
+              }
+        );
         if (wrapper != null) {
             wrapper.coord = Coord4D.get(tileEntity);
         }
@@ -49,13 +58,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
      * Note: It is assumed that a check for hasCapability was already ran.
      */
     private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability, Direction side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
-        T acceptor = CapabilityUtils.getCapability(tileEntity, capability, side);
-        if (acceptor != null) {
-            return makeAcceptor.apply(acceptor);
-        } else {
-            LOGGER.error("Tile {} @ {} told us it had {} cap but returned null", tileEntity, tileEntity.getPos(), capability.getName());
-        }
-        return null;
+        return CapabilityUtils.getCapabilityHelper(tileEntity, capability, side).getIfPresent(makeAcceptor);
     }
 
     public abstract boolean needsEnergy(Direction side);

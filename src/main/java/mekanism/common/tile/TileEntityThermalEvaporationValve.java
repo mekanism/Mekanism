@@ -126,11 +126,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         return getController() != null;
     }
 
-    @Override
-    public IHeatTransfer getAdjacent(Direction side) {
-        return null;
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {

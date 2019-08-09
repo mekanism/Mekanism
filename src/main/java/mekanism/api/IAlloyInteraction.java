@@ -19,5 +19,6 @@ public interface IAlloyInteraction {
      * @param stack       - the stack of alloy being right-clicked
      * @param tierOrdinal - the ordinal tier of the alloy (1 = advanced, 2 = elite, 3 = ultimate)
      */
+    //TODO: Pass BaseTier here instead of tier ordinal, will have to move BaseTier to API
     void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, int tierOrdinal);
 }

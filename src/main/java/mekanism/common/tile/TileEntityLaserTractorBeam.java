@@ -14,6 +14,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
@@ -66,7 +67,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                     BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.getFace()) && !LaserManager.getReceptor(tileHit, mop.getFace()).canLasersDig()))) {
+                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).matches(ILaserReceptor::canLasersDig)) {
                         diggingProgress += lastFired;
                         if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
@@ -96,7 +97,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                 TileEntity tileHit = hitCoord.getTileEntity(world);
                 float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
-                if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.getFace()) && !LaserManager.getReceptor(tileHit, info.movingPos.getFace()).canLasersDig()))) {
+                if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()).matches(ILaserReceptor::canLasersDig)) {
                     diggingProgress += firing;
                     if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                         List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world, pos);

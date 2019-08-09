@@ -11,10 +11,12 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.IBlockableConnection;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
@@ -124,9 +126,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         for (Direction side : Direction.values()) {
             if (canConnectMutual(side)) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
-                if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-                    && TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
-                      getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)) {
+                if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(transmitter ->
+                      TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))) {
                     connections |= 1 << side.ordinal();
                 }
             }
@@ -161,9 +162,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         }
         if (canConnectMutual(side)) {
             TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
-            return CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-                   && TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
-                  getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity);
+            return CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(
+                  transmitter -> TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)
+            );
         }
         return false;
     }
@@ -250,12 +251,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (!canConnect(side)) {
             return false;
         }
-        final BlockPos testPos = getPos().offset(side);
-        final TileEntity tile = MekanismUtils.getTileEntity(world, testPos);
-        if (!CapabilityUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())) {
-            return true;
-        }
-        return CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).canConnect(side.getOpposite());
+        BlockPos testPos = getPos().offset(side);
+        return CapabilityUtils.getCapabilityHelper(MekanismUtils.getTileEntity(world, testPos), Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).matches(
+              blockableConnection -> blockableConnection.canConnect(side.getOpposite())
+        );
     }
 
     @Override

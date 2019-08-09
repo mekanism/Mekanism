@@ -5,10 +5,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -39,62 +37,59 @@ public class ItemNetworkReader extends ItemEnergized {
             TileEntity tileEntity = world.getTileEntity(pos);
             boolean drain = !player.isCreative();
             if (getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null) {
-                if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
-                    if (drain) {
-                        setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
-                    }
-                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
+                //TODO: Some of this stuff can maybe be extracted
+                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).getIfPresentElseDo(transmitter -> {
+                          if (drain) {
+                              setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
+                          }
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkAcceptorSize()));
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkNeeded()));
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkBuffer()));
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow()));
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkCapacity()));
 
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkAcceptorSize()));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkNeeded()));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkBuffer()));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow()));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkCapacity()));
-
-                    if (CapabilityUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-                        IHeatTransfer transfer = CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-                        player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
-                    }
-
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-                    return ActionResultType.SUCCESS;
-                } else if (CapabilityUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-                    if (drain) {
-                        setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
-                    }
-
-                    IHeatTransfer transfer = CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
-                    player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-                    return ActionResultType.SUCCESS;
-                } else {
-                    if (drain) {
-                        setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
-                    }
-                    Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
-
-                    for (Direction iterSide : Direction.values()) {
-                        Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
-                        TileEntity tile = coord.getTileEntity(world);
-                        if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite())) {
-                            IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
-
-                            if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSide.getOpposite())) &&
-                                !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
-                                player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" +
-                                                                           transmitter.getTransmissionType().getName() + "]" + EnumColor.GREY + " -------------"));
-                                player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY +
-                                                                           transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSide.getOpposite()))));
+                          CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).ifPresent(
+                                transfer -> player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"))
+                          );
+                          player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+                          return ActionResultType.SUCCESS;
+                      },
+                      () -> CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getIfPresentElseDo(transfer -> {
+                                if (drain) {
+                                    setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
+                                }
+                                player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
+                                player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
                                 player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-                                iteratedNetworks.add(transmitter.getTransmitterNetwork());
+                                return ActionResultType.SUCCESS;
+                            },
+                            () -> {
+                                if (drain) {
+                                    setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
+                                }
+                                Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
+
+                                for (Direction iterSide : Direction.values()) {
+                                    Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
+                                    TileEntity tile = coord.getTileEntity(world);
+                                    CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()).ifPresent(transmitter -> {
+                                        if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSide.getOpposite())) &&
+                                            !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
+                                            player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" +
+                                                                                       transmitter.getTransmissionType().getName() + "]" + EnumColor.GREY + " -------------"));
+                                            player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY +
+                                                                                       transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSide.getOpposite()))));
+                                            player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+                                            iteratedNetworks.add(transmitter.getTransmitterNetwork());
+                                        }
+                                    });
+                                }
+                                return ActionResultType.SUCCESS;
                             }
-                        }
-                    }
-                    return ActionResultType.SUCCESS;
-                }
+                      )
+                );
             }
 
             if (player.isSneaking() && MekanismAPI.debug) {

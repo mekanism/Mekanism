@@ -83,11 +83,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        if (CapabilityUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-            IHeatTransfer transfer = CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-            return transfer.canConnectHeat(side.getOpposite());
-        }
-        return false;
+        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).matches(transfer -> transfer.canConnectHeat(side.getOpposite()));
     }
 
     @Override
@@ -119,11 +115,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
 
     @Override
     public IHeatTransfer getCachedAcceptor(Direction side) {
-        TileEntity tile = getCachedTile(side);
-        if (CapabilityUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-            return CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-        }
-        return null;
+        return CapabilityUtils.getCapabilityHelper(getCachedTile(side), Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
     }
 
     @Override
@@ -186,11 +178,12 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
         return true;
     }
 
+    @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
-            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;
     }

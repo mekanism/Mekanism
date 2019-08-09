@@ -23,7 +23,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration, IComparatorSupport {
 
@@ -46,13 +45,14 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
                 if (structure.steamStored != null && structure.steamStored.amount > 0) {
                     EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                         if (!(tile instanceof TileEntityBoilerValve)) {
-                            IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                            if (handler != null && PipeUtils.canFill(handler, structure.steamStored)) {
-                                structure.steamStored.amount -= handler.fill(structure.steamStored, true);
-                                if (structure.steamStored.amount <= 0) {
-                                    structure.steamStored = null;
+                            CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                                if (PipeUtils.canFill(handler, structure.steamStored)) {
+                                    structure.steamStored.amount -= handler.fill(structure.steamStored, true);
+                                    if (structure.steamStored.amount <= 0) {
+                                        structure.steamStored = null;
+                                    }
                                 }
-                            }
+                            });
                         }
                     });
                 }

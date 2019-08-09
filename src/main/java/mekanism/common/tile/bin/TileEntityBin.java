@@ -1,5 +1,7 @@
 package mekanism.common.tile.bin;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -11,6 +13,7 @@ import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -200,13 +203,10 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
             if (delayTicks == 0) {
                 if (!bottomStack.isEmpty() && getActive()) {
                     TileEntity tile = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
-                    ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP);
-                    TransitResponse response;
-                    if (transporter == null) {
-                        response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false);
-                    } else {
-                        response = TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
-                    }
+                    TransitResponse response = CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP).getIfPresentElseDo(
+                          transporter -> TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0),
+                          () -> InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false)
+                    );
                     if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                         bottomStack.shrink(response.getSendingAmount());
                         setInventorySlotContents(0, bottomStack);

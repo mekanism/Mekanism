@@ -929,7 +929,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public double injectEnergy(Direction pushDirection, double amount, double voltage) {
         // nb: the facing param contains the side relative to the pushing block
         TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(pushDirection.getOpposite()));
-        if (MekanismConfig.current().general.blacklistIC2.val() || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)) {
+        if (MekanismConfig.current().general.blacklistIC2.val() || CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection).isPresent()) {
             return amount;
         }
         return amount - IC2Integration.toEU(acceptEnergy(pushDirection.getOpposite(), IC2Integration.fromEU(amount), false));

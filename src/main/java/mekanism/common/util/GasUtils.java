@@ -29,7 +29,7 @@ public final class GasUtils {
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<Direction> sides) {
         final IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
         EmitUtils.forEachSide(world, pos, sides, (tile, side) ->
-              acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()));
+              acceptors[side.ordinal()] = CapabilityUtils.getCapabilityHelper(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).getValue());
         return acceptors;
     }
 
@@ -43,10 +43,10 @@ public final class GasUtils {
     }
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
+        if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
             return false;
         }
-        return CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
+        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     public static void clearIfInvalid(GasTank tank, Predicate<Gas> isValid) {
@@ -116,12 +116,11 @@ public final class GasUtils {
             final Direction accessSide = side.getOpposite();
 
             //Collect cap
-            CapabilityUtils.runIfCap(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide,
-                  (handler) -> {
-                      if (handler.canReceiveGas(accessSide, stack.getGas())) {
-                          target.addHandler(accessSide, handler);
-                      }
-                  });
+            CapabilityUtils.getCapabilityHelper(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
+                if (handler.canReceiveGas(accessSide, stack.getGas())) {
+                    target.addHandler(accessSide, handler);
+                }
+            });
         });
 
         int curHandlers = target.getHandlers().size();

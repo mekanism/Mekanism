@@ -47,15 +47,14 @@ public class ItemConfigurationCard extends ItemMekanism {
     public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (CapabilityUtils.hasCapability(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side)) {
+            if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tileEntity)) {
                     ItemStack stack = player.getHeldItem(hand);
                     if (player.isSneaking()) {
-                        CompoundNBT data = getBaseData(tileEntity);
-                        if (CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
-                            ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
-                            data = special.getConfigurationData(data);
-                        }
+                        CompoundNBT data = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElseDo(
+                              special -> special.getConfigurationData(getBaseData(tileEntity)),
+                              () -> getBaseData(tileEntity)
+                        );
 
                         if (data != null) {
                             data.putString("dataType", getNameFromTile(tileEntity, side));
@@ -68,10 +67,9 @@ public class ItemConfigurationCard extends ItemMekanism {
                     } else if (getData(stack) != null) {
                         if (getNameFromTile(tileEntity, side).equals(getDataType(stack))) {
                             setBaseData(getData(stack), tileEntity);
-                            if (CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
-                                ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
-                                special.setConfigurationData(getData(stack));
-                            }
+                            CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(
+                                  special -> special.setConfigurationData(getData(stack))
+                            );
 
                             player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN +
                                                                        LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s",
@@ -117,11 +115,10 @@ public class ItemConfigurationCard extends ItemMekanism {
         if (tile instanceof TileEntityMekanism) {
             ret = tile.getBlockType().getTranslationKey() + ".name";
         }
-        if (CapabilityUtils.hasCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
-            ISpecialConfigData special = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
-            ret = special.getDataType();
-        }
-        return ret;
+        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElse(
+              ISpecialConfigData::getDataType,
+              ret
+        );
     }
 
     public void setData(ItemStack itemstack, CompoundNBT data) {

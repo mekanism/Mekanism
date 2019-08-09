@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -385,9 +386,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean addSolarPanel(TileEntity tile, int i) {
-        if (tile != null && !tile.isInvalid() && CapabilityUtils.hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN)) {
-            solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN);
-            return true;
+        if (tile != null && !tile.isInvalid()) {
+            LazyOptionalHelper<IEvaporationSolar> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN);
+            capabilityHelper.ifPresent(solar -> solars[i] = solar);
+            return capabilityHelper.isPresent();
         }
         return false;
     }

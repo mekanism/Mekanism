@@ -20,25 +20,20 @@ public final class PipeUtils {
     public static final FluidTankInfo[] EMPTY = new FluidTankInfo[]{};
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) ||
-            !CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
+        if (tile == null || CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
             return false;
         }
-
-        IFluidHandler container = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-        if (container == null) {
-            return false;
-        }
-
-        IFluidTankProperties[] infoArray = container.getTankProperties();
-        if (infoArray != null && infoArray.length > 0) {
-            for (IFluidTankProperties info : infoArray) {
-                if (info != null) {
-                    return true;
+        return CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).matches(container -> {
+            IFluidTankProperties[] infoArray = container.getTankProperties();
+            if (infoArray != null && infoArray.length > 0) {
+                for (IFluidTankProperties info : infoArray) {
+                    if (info != null) {
+                        return true;
+                    }
                 }
             }
-        }
-        return false;
+            return false;
+        });
     }
 
     /**
@@ -49,7 +44,7 @@ public final class PipeUtils {
     public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world) {
         final IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
         EmitUtils.forEachSide(world, pos, EnumSet.allOf(Direction.class), (tile, side) ->
-              acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()));
+              acceptors[side.ordinal()] = CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).getValue());
         return acceptors;
     }
 
@@ -75,12 +70,11 @@ public final class PipeUtils {
             final Direction accessSide = side.getOpposite();
 
             //Collect cap
-            CapabilityUtils.runIfCap(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide,
-                  (handler) -> {
-                      if (canFill(handler, stack)) {
-                          target.addHandler(accessSide, handler);
-                      }
-                  });
+            CapabilityUtils.getCapabilityHelper(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
+                if (canFill(handler, stack)) {
+                    target.addHandler(accessSide, handler);
+                }
+            });
         });
 
         int curHandlers = target.getHandlers().size();

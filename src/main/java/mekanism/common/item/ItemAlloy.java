@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IAlloyInteraction;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.AlloyTier;
@@ -29,13 +28,16 @@ public class ItemAlloy extends ItemMekanism {
     @Override
     public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
-        if (MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val() && CapabilityUtils.hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side)) {
-            if (!world.isRemote) {
-                IAlloyInteraction interaction = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side);
-                ItemStack stack = player.getHeldItem(hand);
-                interaction.onAlloyInteraction(player, hand, stack, tier.getBaseTier().ordinal());
-            }
-            return ActionResultType.SUCCESS;
+        if (MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val()) {
+            return CapabilityUtils.getCapabilityHelper(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side).getIfPresentElse(
+                  interaction -> {
+                      if (!world.isRemote) {
+                          interaction.onAlloyInteraction(player, hand, player.getHeldItem(hand), tier.getBaseTier().ordinal());
+                      }
+                      return ActionResultType.SUCCESS;
+                  },
+                  ActionResultType.PASS
+            );
         }
         return ActionResultType.PASS;
     }

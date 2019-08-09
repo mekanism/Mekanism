@@ -85,10 +85,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
                 IFluidTank tank = getReactor().getSteamTank();
                 EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                     if (!(tile instanceof TileEntityReactorPort)) {
-                        IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                        if (handler != null && PipeUtils.canFill(handler, tank.getFluid())) {
-                            tank.drain(handler.fill(tank.getFluid(), true), true);
-                        }
+                        CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                            if (PipeUtils.canFill(handler, tank.getFluid())) {
+                                tank.drain(handler.fill(tank.getFluid(), true), true);
+                            }
+                        });
                     }
                 });
             }
@@ -269,13 +270,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         return getReactor() != null;
     }
 
+    @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-        if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-            if (!(adj instanceof TileEntityReactorBlock)) {
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-            }
+        if (!(adj instanceof TileEntityReactorBlock)) {
+            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;
     }

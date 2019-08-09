@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import javax.annotation.Nullable;
 import net.minecraft.util.Direction;
 
 public interface IHeatTransfer {
@@ -28,5 +29,8 @@ public interface IHeatTransfer {
 
     boolean canConnectHeat(Direction side);
 
-    IHeatTransfer getAdjacent(Direction side);
+    @Nullable
+    default IHeatTransfer getAdjacent(Direction side) {
+        return null;
+    }
 }

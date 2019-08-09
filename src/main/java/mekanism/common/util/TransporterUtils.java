@@ -22,7 +22,7 @@ public final class TransporterUtils {
           EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK, EnumColor.YELLOW, EnumColor.BLACK);
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
+        if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
             return false;
         }
         return InventoryUtils.isItemHandler(tile, side.getOpposite());

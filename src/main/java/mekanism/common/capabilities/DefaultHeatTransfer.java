@@ -44,9 +44,4 @@ public class DefaultHeatTransfer implements IHeatTransfer {
     public boolean canConnectHeat(Direction side) {
         return false;
     }
-
-    @Override
-    public IHeatTransfer getAdjacent(Direction side) {
-        return null;
-    }
 }

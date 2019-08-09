@@ -32,10 +32,11 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
         if (!world.isRemote && structure != null && structure.flowRemaining > 0) {
             FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, structure.flowRemaining);
             EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
-                IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                if (handler != null && PipeUtils.canFill(handler, fluidStack)) {
-                    structure.flowRemaining -= handler.fill(fluidStack, true);
-                }
+                CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                    if (PipeUtils.canFill(handler, fluidStack)) {
+                        structure.flowRemaining -= handler.fill(fluidStack, true);
+                    }
+                });
             });
         }
     }

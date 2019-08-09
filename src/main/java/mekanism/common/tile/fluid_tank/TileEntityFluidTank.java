@@ -43,7 +43,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
@@ -139,11 +138,10 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     private void activeEmit() {
         if (fluidTank.getFluid() != null) {
             TileEntity tileEntity = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
-            if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP)) {
-                IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP);
+            CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, true), tier != FluidTankTier.CREATIVE);
-            }
+            });
         }
     }
 
@@ -174,10 +172,10 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
         Coord4D up = Coord4D.get(this).offset(Direction.UP);
         TileEntity tileEntity = up.getTileEntity(world);
         if (tileEntity instanceof TileEntityFluidTank) {
-            IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN);
-            if (PipeUtils.canFill(handler, fluid)) {
-                return handler.fill(fluid, doFill);
-            }
+            return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).getIfPresentElse(
+                  handler -> PipeUtils.canFill(handler, fluid) ? handler.fill(fluid, doFill) : 0,
+                  0
+            );
         }
         return 0;
     }

@@ -2,12 +2,15 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -39,7 +42,7 @@ public class TileEntityLaser extends TileEntityMekanism {
                     BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.getFace()) && !LaserManager.getReceptor(tileHit, mop.getFace()).canLasersDig()))) {
+                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).matches(ILaserReceptor::canLasersDig)) {
                         diggingProgress += MekanismConfig.current().usage.laser.val();
                         if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
@@ -61,7 +64,7 @@ public class TileEntityLaser extends TileEntityMekanism {
                     BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.getFace()) && !LaserManager.getReceptor(tileHit, info.movingPos.getFace()).canLasersDig()))) {
+                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()).matches(ILaserReceptor::canLasersDig)) {
                         diggingProgress += MekanismConfig.current().usage.laser.val();
                         if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             LaserManager.breakBlock(hitCoord, true, world, pos);

@@ -127,9 +127,4 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public boolean canConnectHeat(Direction side) {
         return false;
     }
-
-    @Override
-    public IHeatTransfer getAdjacent(Direction side) {
-        return null;
-    }
 }

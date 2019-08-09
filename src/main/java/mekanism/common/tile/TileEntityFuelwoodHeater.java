@@ -162,13 +162,11 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
         return true;
     }
 
+    @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-        if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-        }
-        return null;
+        return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
     }
 
     @Nonnull

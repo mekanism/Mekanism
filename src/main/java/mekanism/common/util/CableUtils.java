@@ -3,9 +3,6 @@ package mekanism.common.util;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.energy.IStrictEnergyOutputter;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
@@ -23,11 +20,9 @@ import net.minecraftforge.energy.IEnergyStorage;
 public final class CableUtils {
 
     public static boolean isCable(TileEntity tileEntity) {
-        IGridTransmitter gridTransmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-        if (gridTransmitter != null) {
-            return TransmissionType.checkTransmissionType(gridTransmitter, TransmissionType.ENERGY);
-        }
-        return false;
+        return CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).matches(
+              gridTransmitter -> TransmissionType.checkTransmissionType(gridTransmitter, TransmissionType.ENERGY)
+        );
     }
 
     /**
@@ -43,7 +38,7 @@ public final class CableUtils {
             return false;
         }
         return isAcceptor(cableEntity, tile, side) || isOutputter(cableEntity, tile, side) ||
-               (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
+               (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tile, CapabilityEnergy.ENERGY, side.getOpposite()).isPresent());
     }
 
     /**
@@ -79,29 +74,26 @@ public final class CableUtils {
 
         Direction opposite = side.getOpposite();
 
-        IStrictEnergyOutputter outputter = CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, opposite);
-        if (outputter != null && outputter.canOutputEnergy(opposite)) {
+        if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, opposite).matches(outputter -> outputter.canOutputEnergy(opposite))) {
             return true;
         }
-        IEnergyStorage forgeStorage;
-        if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, opposite)) != null) {
-            return forgeStorage.canExtract();
+        if (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canExtract)) {
+            return true;
         }
         return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);
 
     }
 
     public static boolean isAcceptor(TileEntity source, TileEntity tileEntity, Direction side) {
-        if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
+        Direction opposite = side.getOpposite();
+        if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite).isPresent()) {
             return false;
         }
-        IStrictEnergyAcceptor strictEnergyAcceptor;
-        if ((strictEnergyAcceptor = CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite())) != null) {
-            return strictEnergyAcceptor.canReceiveEnergy(side.getOpposite());
+        if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, opposite).matches(acceptor -> acceptor.canReceiveEnergy(opposite))) {
+            return true;
         }
-        IEnergyStorage energyStorage;
-        if (MekanismUtils.useForge() && (energyStorage = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) != null) {
-            return energyStorage.canReceive();
+        if (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canReceive)) {
+            return true;
         }
         return MekanismUtils.useIC2() && IC2Integration.isAcceptor(tileEntity, side);
     }

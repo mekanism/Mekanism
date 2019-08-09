@@ -323,13 +323,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return side == Direction.DOWN;
     }
 
+    @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         if (canConnectHeat(side)) {
             TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-            if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-            }
+            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;
     }

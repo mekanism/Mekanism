@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -42,8 +43,8 @@ public final class TransporterPathfinder {
     private static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack) {
         for (int i = path.size() - 1; i > 0; i--) {
             TileEntity tile = path.get(i).getTileEntity(world);
-            ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-            if (transporter == null || (transporter.getColor() != null && transporter.getColor() != stack.color)) {
+            if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).matches(transporter ->
+                  transporter == null || (transporter.getColor() != null && transporter.getColor() != stack.color))) {
                 return false;
             }
         }
@@ -164,9 +165,9 @@ public final class TransporterPathfinder {
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
             TransitRequest request = TransitRequest.getFromTransport(transportStack);
-            Destination newPath = TransporterPathfinder.getNewBasePath(CapabilityUtils.getCapability(start.getTileEntity(world),
-                  Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null), transportStack, request, 0);
-
+            Destination newPath = CapabilityUtils.getCapabilityHelper(start.getTileEntity(world), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).getIfPresent(
+                  transporter -> TransporterPathfinder.getNewBasePath(transporter, transportStack, request, 0)
+            );
             if (newPath != null && newPath.getResponse() != null) {
                 transportStack.idleDir = null;
                 newPath.setPathType(Path.DEST);
@@ -242,10 +243,9 @@ public final class TransporterPathfinder {
         public Destination calculateScore(World world) {
             score = 0;
             for (Coord4D location : path) {
-                ILogisticalTransporter capability = CapabilityUtils.getCapability(location.getTileEntity(world), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-                if (capability != null) {
-                    score += capability.getCost();
-                }
+                CapabilityUtils.getCapabilityHelper(location.getTileEntity(world), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).ifPresent(
+                      transporter -> score += transporter.getCost()
+                );
             }
             return this;
         }
@@ -361,15 +361,16 @@ public final class TransporterPathfinder {
                 closedSet.add(currentNode);
 
                 TileEntity currentNodeTile = currentNode.getTileEntity(world);
-                ILogisticalTransporter currentNodeTransporter = CapabilityUtils.getCapability(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+                LazyOptionalHelper<ILogisticalTransporter> capabilityHelper = CapabilityUtils.getCapabilityHelper(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
                 directionsToCheck.clear();
                 for (Direction direction : Direction.values()) {
                     Coord4D neighbor = currentNode.offset(direction);
                     neighbors[direction.ordinal()] = neighbor;
                     TileEntity neighborEntity = neighbor.getTileEntity(world);
                     neighborEntities[direction.ordinal()] = neighborEntity;
-                    if (currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction) ||
-                        (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntities[direction.ordinal()]))) {
+                    if (capabilityHelper.matches(transporter ->
+                          transporter.canEmitTo(neighborEntity, direction) ||
+                          (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntities[direction.ordinal()])))) {
                         directionsToCheck.add(direction);
                     }
                 }
@@ -379,7 +380,8 @@ public final class TransporterPathfinder {
                     Coord4D neighbor = neighbors[direction.ordinal()];
                     TileEntity neighborEntity = neighborEntities[direction.ordinal()];
                     if (transportStack.canInsertToTransporter(neighborEntity, direction)) {
-                        double tentativeG = currentScore + CapabilityUtils.getCapability(neighborEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()).getCost();
+                        double tentativeG = currentScore + CapabilityUtils.getCapabilityHelper(neighborEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
+                              direction.getOpposite()).getIfPresentElse(ILogisticalTransporter::getCost, 0D);
                         if (closedSet.contains(neighbor) && tentativeG >= gScore.get(neighbor)) {
                             continue;
                         }

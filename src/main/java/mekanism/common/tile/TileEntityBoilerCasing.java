@@ -319,11 +319,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return structure != null;
     }
 
-    @Override
-    public IHeatTransfer getAdjacent(Direction side) {
-        return null;
-    }
-
     //TODO: Decide if heat capability should be moved to valve only
     @Nonnull
     @Override

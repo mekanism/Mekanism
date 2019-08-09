@@ -248,13 +248,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                 TileEntity ejectInv = getEjectInv();
                 TileEntity ejectTile = getEjectTile();
                 if (ejectInv != null && ejectTile != null) {
-                    ILogisticalTransporter capability = CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection());
-                    TransitResponse response;
-                    if (capability == null) {
-                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
-                    } else {
-                        response = TransporterUtils.insert(ejectTile, capability, ejectMap, null, true, 0);
-                    }
+                    TransitResponse response = CapabilityUtils.getCapabilityHelper(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()).getIfPresentElseDo(
+                          transporter -> TransporterUtils.insert(ejectTile, transporter, ejectMap, null, true, 0),
+                          () -> InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false)
+                    );
                     if (!response.isEmpty()) {
                         response.getInvStack(ejectTile, getOppositeDirection()).use();
                     }

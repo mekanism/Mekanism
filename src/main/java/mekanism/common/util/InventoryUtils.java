@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
@@ -151,11 +152,13 @@ public final class InventoryUtils {
     }
 
     public static boolean isItemHandler(TileEntity tile, Direction side) {
-        return CapabilityUtils.hasCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+        //TODO: Remove this?? given sometimes it may make more sense to just get and keep value
+        return CapabilityUtils.getCapabilityHelper(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
     }
 
     public static IItemHandler getItemHandler(TileEntity tile, Direction side) {
-        return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+        //TODO: Do this better
+        return CapabilityUtils.getCapabilityHelper(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).getValue();
     }
 
     //TODO: Check what the difference between this method and areItemsStackable is

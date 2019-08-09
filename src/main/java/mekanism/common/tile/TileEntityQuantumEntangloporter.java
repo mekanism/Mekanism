@@ -479,13 +479,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState != IOState.OFF;
     }
 
+    @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
         if (hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState == IOState.INPUT) {
-            if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-            }
+            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;
     }

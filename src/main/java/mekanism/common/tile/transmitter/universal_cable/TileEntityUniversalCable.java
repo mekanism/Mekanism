@@ -15,6 +15,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.capabilities.Capabilities;
@@ -80,22 +81,31 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
                 for (Direction side : sides) {
                     TileEntity outputter = connectedOutputters[side.ordinal()];
                     if (outputter != null) {
-                        //pre declare some variables for inline assignment & checks
-                        IStrictEnergyStorage strictStorage;
-                        IEnergyStorage forgeStorage;
-                        if ((strictStorage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) != null) {
-                            double received = draw(Math.min(strictStorage.getEnergy(), maxDraw));
-                            strictStorage.setEnergy(strictStorage.getEnergy() - received);
-                        } else if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) != null) {
-                            double received = draw(ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(maxDraw), true)));
-                            forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(received), false);
-                        } else if (MekanismUtils.useIC2()) {
-                            IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
-                            if (tile instanceof IEnergySource) {
-                                double received = draw(Math.min(IC2Integration.fromEU(((IEnergySource) tile).getOfferedEnergy()), maxDraw));
-                                ((IEnergySource) tile).drawEnergy(IC2Integration.toEU(received));
-                            }
-                        }
+                        CapabilityUtils.getCapabilityHelper(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()).ifPresentElse(
+                              //Strict Energy
+                              strictStorage -> {
+                                  double received = draw(Math.min(strictStorage.getEnergy(), maxDraw));
+                                  strictStorage.setEnergy(strictStorage.getEnergy() - received);
+                              },
+                              //Else
+                              CapabilityUtils.getCapabilityHelper(outputter, CapabilityEnergy.ENERGY, side.getOpposite()).ifPresentElse(
+                                    //Forge Energy
+                                    forgeStorage -> {
+                                        double received = draw(ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(maxDraw), true)));
+                                        forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(received), false);
+                                    },
+                                    //Else IC2
+                                    () -> {
+                                        if (MekanismUtils.useIC2()) {
+                                            IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
+                                            if (tile instanceof IEnergySource) {
+                                                double received = draw(Math.min(IC2Integration.fromEU(((IEnergySource) tile).getOfferedEnergy()), maxDraw));
+                                                ((IEnergySource) tile).drawEnergy(IC2Integration.toEU(received));
+                                            }
+                                        }
+                                    }
+                              )
+                        );
                     }
                 }
             }

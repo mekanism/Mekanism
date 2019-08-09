@@ -12,7 +12,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -99,11 +98,9 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
 
     @Override
     public boolean isValidTransmitter(TileEntity tileEntity) {
-        ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-        if (getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor()) {
-            return super.isValidTransmitter(tileEntity);
-        }
-        return false;
+        return CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).matches(
+              transporter -> super.isValidTransmitter(tileEntity) && (getTransmitter().getColor() == null || transporter.getColor() == null ||
+                                                                      getTransmitter().getColor() == transporter.getColor()));
     }
 
     @Override

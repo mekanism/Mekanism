@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
 import mekanism.api.IMekWrench;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -110,18 +109,19 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                         }
                     }
                     return ActionResultType.SUCCESS;
-                } else if (CapabilityUtils.hasCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side)) {
-                    IConfigurable config = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side);
-                    if (SecurityUtils.canAccess(player, tile)) {
-                        if (player.isSneaking()) {
-                            return config.onSneakRightClick(player, side);
-                        } else {
-                            return config.onRightClick(player, side);
-                        }
-                    } else {
-                        SecurityUtils.displayNoAccess(player);
-                        return ActionResultType.SUCCESS;
-                    }
+                }
+                if (SecurityUtils.canAccess(player, tile)) {
+                    return CapabilityUtils.getCapabilityHelper(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).getIfPresentElse(config -> {
+                              if (player.isSneaking()) {
+                                  return config.onSneakRightClick(player, side);
+                              }
+                              return config.onRightClick(player, side);
+                          },
+                          ActionResultType.PASS
+                    );
+                } else {
+                    SecurityUtils.displayNoAccess(player);
+                    return ActionResultType.SUCCESS;
                 }
             } else if (getState(stack) == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof TileEntityMekanism) {

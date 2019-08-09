@@ -1,6 +1,5 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
@@ -20,7 +19,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class PacketTileEntity {
 
     private TileNetworkList parameters;
-    private ByteBuf storedBuffer;
+    private PacketBuffer storedBuffer;
     private Coord4D coord4D;
 
     public <TILE extends TileEntity & ITileNetwork> PacketTileEntity(TILE tile) {
@@ -47,15 +46,14 @@ public class PacketTileEntity {
         }
         PacketHandler.handlePacket(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-            if (CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null)) {
-                ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+            CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
                 try {
                     network.handlePacketData(message.storedBuffer);
                 } catch (Exception e) {
                     Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
-                message.storedBuffer.release();
-            }
+            });
+            message.storedBuffer.release();
         }, player);
     }
 
@@ -71,7 +69,7 @@ public class PacketTileEntity {
 
     public static PacketTileEntity decode(PacketBuffer buf) {
         PacketTileEntity packet = new PacketTileEntity(Coord4D.read(buf));
-        packet.storedBuffer = buf.copy();
+        packet.storedBuffer = new PacketBuffer(buf.copy());
         return packet;
     }
 }

@@ -34,17 +34,15 @@ public class PacketDataRequest {
                 if (tileEntity instanceof TileEntityMultiblock) {
                     ((TileEntityMultiblock<?>) tileEntity).sendStructure = true;
                 }
-                if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
-                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
                     transmitter.setRequestsUpdate();
                     if (transmitter.hasTransmitterNetwork()) {
                         transmitter.getTransmitterNetwork().addUpdate(player);
                     }
-                }
-                if (CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null)) {
-                    ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player);
-                }
+                });
+                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
+                      network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player)
+                );
             }
         }, player);
     }

@@ -127,8 +127,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                             if (next != null) {
                                 TileEntity tile = next.getTileEntity(world());
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this))) {
-                                    ILogisticalTransporter nextTile = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-                                    nextTile.entityEntering(stack, stack.progress % 100);
+                                    CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).ifPresent(nextTile ->
+                                          nextTile.entityEntering(stack, stack.progress % 100));
                                     deletes.add(stackId);
                                     continue;
                                 }

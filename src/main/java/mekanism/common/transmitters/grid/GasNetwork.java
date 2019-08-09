@@ -134,12 +134,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             }
             GasHandlerTarget target = new GasHandlerTarget(stack);
             for (Direction side : sides) {
-                if (CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side)) {
-                    IGasHandler acceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
-                    if (acceptor != null && acceptor.canReceiveGas(side, type)) {
+                CapabilityUtils.getCapabilityHelper(tile, Capabilities.GAS_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
+                    if (acceptor.canReceiveGas(side, type)) {
                         target.addHandler(side, acceptor);
                     }
-                }
+                });
             }
             int curHandlers = target.getHandlers().size();
             if (curHandlers > 0) {

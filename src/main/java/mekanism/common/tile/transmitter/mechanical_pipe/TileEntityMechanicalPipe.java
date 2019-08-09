@@ -234,11 +234,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
 
     @Override
     public IFluidHandler getCachedAcceptor(Direction side) {
-        TileEntity tile = getCachedTile(side);
-        if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
-            return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-        }
-        return null;
+        return CapabilityUtils.getCapabilityHelper(getCachedTile(side), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).getValue();
     }
 
     public int getAvailablePull() {

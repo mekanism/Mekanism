@@ -12,7 +12,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -143,14 +142,15 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min) {
-        if (CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection())) {
-            ILogisticalTransporter transporter = CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection());
-            if (roundRobin) {
-                return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
-            }
-            return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
-        }
-        return InventoryUtils.putStackInInventory(front, request, getDirection(), false);
+        return CapabilityUtils.getCapabilityHelper(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()).getIfPresentElseDo(
+              transporter -> {
+                  if (roundRobin) {
+                      return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
+                  }
+                  return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
+              },
+              () -> InventoryUtils.putStackInInventory(front, request, getDirection(), false)
+        );
     }
 
     @Nonnull

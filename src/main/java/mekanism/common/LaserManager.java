@@ -38,12 +38,11 @@ public class LaserManager {
             to = new Pos3D(mop.hitVec);
             Coord4D toCoord = new Coord4D(mop.getPos(), world);
             TileEntity tile = toCoord.getTileEntity(world);
-            if (isReceptor(tile, mop.getFace())) {
-                ILaserReceptor receptor = getReceptor(tile, mop.getFace());
+            CapabilityUtils.getCapabilityHelper(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).ifPresent(receptor -> {
                 if (!receptor.canLasersDig()) {
                     receptor.receiveLaserEnergy(energy, mop.getFace());
                 }
-            }
+            });
         }
         from.translateExcludingSide(direction, -0.1);
         to.translateExcludingSide(direction, 0.1);
@@ -102,12 +101,9 @@ public class LaserManager {
         return mop;
     }
 
+    //TODO: Should this be removed?
     public static boolean isReceptor(TileEntity tile, Direction side) {
-        return CapabilityUtils.hasCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
-    }
-
-    public static ILaserReceptor getReceptor(TileEntity tile, Direction side) {
-        return CapabilityUtils.getCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
+        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side).isPresent();
     }
 
     public static class LaserInfo {
