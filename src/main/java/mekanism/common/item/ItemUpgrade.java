@@ -13,12 +13,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,18 +30,17 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
 
     public ItemUpgrade(Upgrade type) {
         //Upgrade names are upgrade_type for purposes of tab complete
-        super("upgrade_" + type.getRawName());
+        super("upgrade_" + type.getRawName(), new Item.Properties().maxStackSize(type.getMax()));
         upgrade = type;
-        setMaxStackSize(type.getMax());
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (!InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
+            tooltip.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
         } else {
-            list.addAll(MekanismUtils.splitTooltip(getUpgradeType(itemstack).getDescription(), itemstack));
+            tooltip.addAll(MekanismUtils.splitTooltip(getUpgradeType(itemstack).getDescription(), itemstack));
         }
     }
 
@@ -52,10 +51,12 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
 
     @Nonnull
     @Override
-    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
-        if (player.isSneaking()) {
-            TileEntity tile = world.getTileEntity(pos);
-            ItemStack stack = player.getHeldItem(hand);
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        if (player != null && player.isSneaking()) {
+            World world = context.getWorld();
+            TileEntity tile = world.getTileEntity(context.getPos());
+            ItemStack stack = player.getHeldItem(context.getHand());
             Upgrade type = getUpgradeType(stack);
             if (tile instanceof IUpgradeTile) {
                 TileComponentUpgrade component = ((IUpgradeTile) tile).getComponent();

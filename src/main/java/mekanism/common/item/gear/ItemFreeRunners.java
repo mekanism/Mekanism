@@ -3,6 +3,8 @@ package mekanism.common.item.gear;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ModelCustomArmor;
@@ -18,11 +20,14 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -30,11 +35,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class ItemFreeRunners extends ItemArmorMekanism implements IItemEnergized {
+public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEnergized {
+
+    public static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
     /**
      * The maximum amount of energy this item can hold.
@@ -42,13 +48,7 @@ public class ItemFreeRunners extends ItemArmorMekanism implements IItemEnergized
     public double MAX_ELECTRICITY = 64000;
 
     public ItemFreeRunners() {
-        super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", "frictionboots", 0, new int[]{0, 0, 0, 0}, 0,
-              SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), EquipmentSlotType.FEET, "free_runners");
-    }
-
-    @Override
-    public boolean isValidArmor(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
-        return armorType == EquipmentSlotType.FEET;
+        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, "free_runners");
     }
 
     @Override
@@ -71,20 +71,15 @@ public class ItemFreeRunners extends ItemArmorMekanism implements IItemEnergized
         tooltip.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(stack).getName());
     }
 
-    public ItemStack getUnchargedItem() {
-        return new ItemStack(this);
-    }
-
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        ItemStack discharged = new ItemStack(this);
-        list.add(discharged);
         ItemStack charged = new ItemStack(this);
         setEnergy(charged, ((IEnergizedItem) charged.getItem()).getMaxEnergy(charged));
-        list.add(charged);
+        items.add(charged);
     }
 
     @Override
@@ -171,6 +166,46 @@ public class ItemFreeRunners extends ItemArmorMekanism implements IItemEnergized
 
         public String getName() {
             return color + LangUtils.localize(unlocalized);
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    protected static class FreeRunnerMaterial implements IArmorMaterial {
+
+        @Override
+        public int getDurability(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return 0;
+        }
+
+        @Override
+        public SoundEvent getSoundEvent() {
+            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return Ingredient.EMPTY;
+        }
+
+        @Override
+        public String getName() {
+            return "free_runners";
+        }
+
+        @Override
+        public float getToughness() {
+            return 0;
         }
     }
 }

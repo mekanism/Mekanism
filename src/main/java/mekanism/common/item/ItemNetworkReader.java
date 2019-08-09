@@ -13,11 +13,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
@@ -31,17 +30,19 @@ public class ItemNetworkReader extends ItemEnergized {
 
     @Nonnull
     @Override
-    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        if (!world.isRemote && player != null) {
+            ItemStack stack = player.getHeldItem(context.getHand());
+            TileEntity tileEntity = world.getTileEntity(context.getPos());
             boolean drain = !player.isCreative();
             if (getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null) {
-                //TODO: Some of this stuff can maybe be extracted
-                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).getIfPresentElseDo(transmitter -> {
-                          if (drain) {
-                              setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
-                          }
+                if (drain) {
+                    setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
+                }
+                Direction opposite = context.getFace().getOpposite();
+                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite).ifPresentElse(transmitter -> {
                           player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
                           player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
                           player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkAcceptorSize()));
@@ -50,46 +51,39 @@ public class ItemNetworkReader extends ItemEnergized {
                           player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow()));
                           player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkCapacity()));
 
-                          CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).ifPresent(
+                          CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, opposite).ifPresent(
                                 transfer -> player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"))
                           );
                           player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-                          return ActionResultType.SUCCESS;
                       },
-                      () -> CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getIfPresentElseDo(transfer -> {
-                                if (drain) {
-                                    setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
-                                }
+                      () -> CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, opposite).ifPresentElse(transfer -> {
                                 player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
                                 player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
                                 player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-                                return ActionResultType.SUCCESS;
                             },
                             () -> {
-                                if (drain) {
-                                    setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
-                                }
                                 Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
 
                                 for (Direction iterSide : Direction.values()) {
                                     Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
                                     TileEntity tile = coord.getTileEntity(world);
-                                    CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()).ifPresent(transmitter -> {
-                                        if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSide.getOpposite())) &&
+                                    Direction iterSideOpposite = iterSide.getOpposite();
+                                    CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSideOpposite).ifPresent(transmitter -> {
+                                        if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSideOpposite)) &&
                                             !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
                                             player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" +
                                                                                        transmitter.getTransmissionType().getName() + "]" + EnumColor.GREY + " -------------"));
                                             player.sendMessage(new StringTextComponent(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY +
-                                                                                       transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSide.getOpposite()))));
+                                                                                       transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSideOpposite))));
                                             player.sendMessage(new StringTextComponent(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
                                             iteratedNetworks.add(transmitter.getTransmitterNetwork());
                                         }
                                     });
                                 }
-                                return ActionResultType.SUCCESS;
                             }
                       )
                 );
+                return ActionResultType.SUCCESS;
             }
 
             if (player.isSneaking() && MekanismAPI.debug) {

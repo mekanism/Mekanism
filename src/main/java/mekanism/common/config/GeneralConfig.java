@@ -142,11 +142,24 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption prefilledGasTanks = new BooleanOption(this, "general", "PrefilledGasTanks", true,
           "Add filled creative gas tanks to creative/JEI.");
 
+    //TODO: Remove
+    @Deprecated
     public final DoubleOption armoredJetpackDamageRatio = new DoubleOption(this, "general", "ArmoredJetpackDamageRatio", 0.8,
           "Damage absorb ratio of the Armored Jetpack.");
 
+    //TODO: Remove
+    @Deprecated
     public final IntOption armoredJetpackDamageMax = new IntOption(this, "general", "ArmoredJepackDamageMax", 115,
           "Max damage the Armored Jetpack can absorb.");
+
+    public final IntOption armoredJetpackDamageMax = new IntOption(this, "general", "ArmoredJepackDamageMax", 115,
+          "Max damage the Armored Jetpack can absorb.");
+
+    public final IntOption armoredJetpackArmor = new IntOption(this, "general", "ArmoredJetpackArmor", 12,
+          "Armor value of the Armored Jetpack.");
+
+    public final IntOption armoredJetpackToughness = new IntOption(this, "general", "ArmoredJetpackToughness", 2,
+          "Toughness value of the Armored Jetpack.");
 
     public final BooleanOption aestheticWorldDamage = new BooleanOption(this, "general", "AestheticWorldDamage", true,
           "If enabled, lasers can break blocks and the flamethrower starts fires.");

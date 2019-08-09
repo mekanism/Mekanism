@@ -28,6 +28,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -53,7 +54,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class ItemAtomicDisassembler extends ItemEnergized {
 
     public ItemAtomicDisassembler() {
-        super("atomic_disassembler", MekanismConfig.current().general.disassemblerBatteryCapacity.val());
+        super("atomic_disassembler", MekanismConfig.current().general.disassemblerBatteryCapacity.val(), new Item.Properties().setNoRepair());
     }
 
     @Override

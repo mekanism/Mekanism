@@ -1,30 +1,30 @@
 package mekanism.common.item.gear;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class ItemGasMask extends ItemArmorMekanism {
+public class ItemGasMask extends ItemCustomArmorMekanism {
+
+    public static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
 
     public ItemGasMask() {
-        super(EnumHelper.addArmorMaterial("GASMASK", "gasmask", 0, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
-              0), EquipmentSlotType.HEAD, "gas_mask");
-    }
-
-    @Override
-    public boolean isValidArmor(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
-        return armorType == EquipmentSlotType.HEAD;
+        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, "gas_mask");
     }
 
     @Override
@@ -46,7 +46,6 @@ public class ItemGasMask extends ItemArmorMekanism {
         ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
         ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
         if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
-            ItemGasMask mask = (ItemGasMask) headStack.getItem();
             if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank) {
                 ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
                 if (tank.getFlowing(chestStack) && tank.getGas(chestStack) != null) {
@@ -55,6 +54,46 @@ public class ItemGasMask extends ItemArmorMekanism {
                     }
                 }
             }
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    protected static class GasMaskMaterial implements IArmorMaterial {
+
+        @Override
+        public int getDurability(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return 0;
+        }
+
+        @Override
+        public SoundEvent getSoundEvent() {
+            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return Ingredient.EMPTY;
+        }
+
+        @Override
+        public String getName() {
+            return "gas_mask";
+        }
+
+        @Override
+        public float getToughness() {
+            return 0;
         }
     }
 }

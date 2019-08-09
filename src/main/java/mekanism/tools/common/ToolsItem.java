@@ -146,7 +146,6 @@ public enum ToolsItem implements IItemProvider {
         for (ToolsItem toolsItem : values()) {
             Item item = toolsItem.getItem();
             item.setCreativeTab(Mekanism.tabMekanism);
-            item.setTranslationKey("mekanism." + toolsItem.getName());
             registry.register(item);
             if (item instanceof IItemMekanism) {
                 ((IItemMekanism) item).registerOreDict();

@@ -13,6 +13,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,8 +30,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     public static final int TRANSFER_RATE = 1;
 
     public ItemHohlraum() {
-        super(MekanismGenerators.MODID, "hohlraum");
-        setMaxStackSize(1);
+        super(MekanismGenerators.MODID, "hohlraum", new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -123,22 +123,14 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
         }
     }
 
-    public ItemStack getEmptyItem() {
-        ItemStack stack = new ItemStack(this);
-        setGas(stack, null);
-        return stack;
-    }
-
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        list.add(empty);
         ItemStack filled = new ItemStack(this);
         setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem) filled.getItem()).getMaxGas(filled)));
-        list.add(filled);
+        items.add(filled);
     }
 }

@@ -84,7 +84,6 @@ public enum GeneratorsBlock implements IBlockProvider {
         for (GeneratorsBlock generatorsBlock : values()) {
             Block block = generatorsBlock.getBlock();
             block.setCreativeTab(Mekanism.tabMekanism);
-            block.setTranslationKey("mekanism." + generatorsBlock.getName());
             registry.register(block);
         }
     }

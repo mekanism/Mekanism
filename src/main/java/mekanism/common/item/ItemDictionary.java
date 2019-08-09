@@ -10,10 +10,11 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -22,18 +23,20 @@ import net.minecraft.world.World;
 public class ItemDictionary extends ItemMekanism {
 
     public ItemDictionary() {
-        super("dictionary");
-        setMaxStackSize(1);
+        super("dictionary", new Item.Properties().maxStackSize(1));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
-        if (!player.isSneaking()) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        if (player != null && !player.isSneaking()) {
+            BlockPos pos = context.getPos();
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             if (world.isRemote) {
-                ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
+                ItemStack testStack = new ItemStack(block);
                 List<String> names = OreDictCache.getOreDictName(testStack);
                 if (!names.isEmpty()) {
                     player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));

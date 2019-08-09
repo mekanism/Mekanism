@@ -29,7 +29,7 @@ public class ItemBalloon extends ItemMekanism {
     public ItemBalloon(EnumColor color) {
         super(color.registry_prefix + "_balloon");
         this.color = color;
-        DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
+        DispenserBlock.registerDispenseBehavior(this, new DispenserBehavior());
     }
 
     @Override

@@ -16,13 +16,15 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,25 +33,27 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemConfigurationCard extends ItemMekanism {
 
     public ItemConfigurationCard() {
-        super("configuration_card");
-        setMaxStackSize(1);
+        super("configuration_card", new Item.Properties().maxStackSize(1));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        super.addInformation(itemstack, world, list, flag);
-        list.add(EnumColor.GREY + LangUtils.localize("gui.data") + ": " + EnumColor.INDIGO + LangUtils.localize(getDataType(itemstack)));
+    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(EnumColor.GREY + LangUtils.localize("gui.data") + ": " + EnumColor.INDIGO + LangUtils.localize(getDataType(itemstack)));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
-        if (!world.isRemote) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        if (!world.isRemote && player != null) {
+            BlockPos pos = context.getPos();
+            Direction side = context.getFace();
             TileEntity tileEntity = world.getTileEntity(pos);
             if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tileEntity)) {
-                    ItemStack stack = player.getHeldItem(hand);
+                    ItemStack stack = player.getHeldItem(context.getHand());
                     if (player.isSneaking()) {
                         CompoundNBT data = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElseDo(
                               special -> special.getConfigurationData(getBaseData(tileEntity)),

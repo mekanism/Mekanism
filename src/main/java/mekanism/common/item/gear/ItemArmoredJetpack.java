@@ -1,6 +1,8 @@
 package mekanism.common.item.gear;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
@@ -9,19 +11,19 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemArmoredJetpack extends ItemJetpack {
 
+    public static final ArmoredJetpackMaterial ARMORED_JETPACK_MATERIAL = new ArmoredJetpackMaterial();
+
     public ItemArmoredJetpack() {
-        super("jetpack_armored");
+        super(ARMORED_JETPACK_MATERIAL, "jetpack_armored");
     }
 
     @Override
@@ -33,26 +35,33 @@ public class ItemArmoredJetpack extends ItemJetpack {
     }
 
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        list.add(empty);
-
         ItemStack filled = new ItemStack(this);
         setGas(filled, new GasStack(MekanismFluids.Hydrogen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
-        list.add(filled);
+        items.add(filled);
     }
 
-    @Override
-    public ArmorProperties getProperties(LivingEntity player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
-        return new ArmorProperties(1, MekanismConfig.current().general.armoredJetpackDamageRatio.val(), MekanismConfig.current().general.armoredJetpackDamageMax.val());
-    }
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    private static class ArmoredJetpackMaterial extends JetpackMaterial {
 
-    @Override
-    public int getArmorDisplay(PlayerEntity player, @Nonnull ItemStack armor, int slot) {
-        return 12;
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+            return slotType == EquipmentSlotType.CHEST ? MekanismConfig.current().general.armoredJetpackArmor.val() : 0;
+        }
+
+        @Override
+        public String getName() {
+            return "jetpack_armored";
+        }
+
+        @Override
+        public float getToughness() {
+            return MekanismConfig.current().general.armoredJetpackToughness.val();
+        }
     }
 }

@@ -7,9 +7,9 @@ import mekanism.common.tier.AlloyTier;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,12 +26,16 @@ public class ItemAlloy extends ItemMekanism {
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val()) {
-            return CapabilityUtils.getCapabilityHelper(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side).getIfPresentElse(
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        if (player != null && MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val()) {
+            World world = context.getWorld();
+            BlockPos pos = context.getPos();
+            TileEntity tile = world.getTileEntity(pos);
+            return CapabilityUtils.getCapabilityHelper(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getFace()).getIfPresentElse(
                   interaction -> {
                       if (!world.isRemote) {
+                          Hand hand = context.getHand();
                           interaction.onAlloyInteraction(player, hand, player.getHeldItem(hand), tier.getBaseTier().ordinal());
                       }
                       return ActionResultType.SUCCESS;

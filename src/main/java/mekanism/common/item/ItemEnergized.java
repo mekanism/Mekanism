@@ -9,15 +9,17 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemEnergized extends ItemMekanism implements IItemEnergized {
@@ -28,9 +30,12 @@ public class ItemEnergized extends ItemMekanism implements IItemEnergized {
     public double MAX_ELECTRICITY;
 
     public ItemEnergized(String name, double maxElectricity) {
-        super(name);
+        this(name, maxElectricity, new Item.Properties());
+    }
+
+    public ItemEnergized(String name, double maxElectricity, Item.Properties properties) {
+        super(name, properties.maxStackSize(1));
         MAX_ELECTRICITY = maxElectricity;
-        setMaxStackSize(1);
     }
 
     @Override
@@ -55,8 +60,8 @@ public class ItemEnergized extends ItemMekanism implements IItemEnergized {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
+    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
     }
 
     public ItemStack getUnchargedItem() {
@@ -64,15 +69,14 @@ public class ItemEnergized extends ItemMekanism implements IItemEnergized {
     }
 
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        ItemStack discharged = new ItemStack(this);
-        list.add(discharged);
         ItemStack charged = new ItemStack(this);
         setEnergy(charged, ((IEnergizedItem) charged.getItem()).getMaxEnergy(charged));
-        list.add(charged);
+        items.add(charged);
     }
 
     @Override

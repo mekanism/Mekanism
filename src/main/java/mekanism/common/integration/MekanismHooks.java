@@ -213,14 +213,14 @@ public final class MekanismHooks {
         registerCyclicCombinerOreRecipe("dustIron", 8, netherrack, "nether_iron_ore");
         registerCyclicCombinerOreRecipe("dustGold", 8, netherrack, "nether_gold_ore");
         registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), netherrack, "nether_coal_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.DYE, 5, 4), netherrack, "nether_lapis_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.LAPIS_LAZULI, 5), netherrack, "nether_lapis_ore");
         registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), netherrack, "nether_emerald_ore");
         registerCyclicCombinerOreRecipe("dustDiamond", 3, netherrack, "nether_diamond_ore");
 
         ItemStack end_stone = new ItemStack(Item.getItemFromBlock(Blocks.END_STONE));
         registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), end_stone, "end_redstone_ore");
         registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), end_stone, "end_coal_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.DYE, 5, 4), end_stone, "end_lapis_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.LAPIS_LAZULI, 5), end_stone, "end_lapis_ore");
         registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), end_stone, "end_emerald_ore");
         registerCyclicCombinerOreRecipe("dustDiamond", 3, end_stone, "end_diamond_ore");
         registerCyclicCombinerOreRecipe("dustGold", 8, end_stone, "end_gold_ore");
@@ -312,7 +312,7 @@ public final class MekanismHooks {
             if (crystalSeed.isPresent()) {
                 NonNullList<ItemStack> seeds = NonNullList.create();
                 //there appears to be no way to get this via api, so fall back to unloc names
-                crystalSeed.get().getSubItems(ItemGroup.SEARCH, seeds);
+                crystalSeed.get().fillItemGroup(ItemGroup.SEARCH, seeds);
                 //Crystal seeds use a meta AND NBT to determine growth state, so we need to ignore the NBT, and use the meta which should be fixed on what stage it's at
                 MachineInput.addCustomItemMatcher(crystalSeed.get().getClass(), (def, test) -> def.getItem() == test.getItem() && def.getMetadata() == test.getMetadata());
                 for (ItemStack stack : seeds) {

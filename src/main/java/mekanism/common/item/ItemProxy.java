@@ -14,11 +14,8 @@ import net.minecraft.world.World;
 public class ItemProxy extends Item implements IItemMekanism {
 
     public ItemProxy() {
-        super();
-        setMaxDamage(1);
-        String name = "item_proxy";
-        setTranslationKey(Mekanism.MODID + "." + name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
+        super(new Item.Properties().maxDamage(1));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "item_proxy"));
     }
 
     @Nonnull
@@ -50,7 +47,7 @@ public class ItemProxy extends Item implements IItemMekanism {
     }
 
     @Override
-    public void onUpdate(ItemStack stacks, World world, Entity entity, int j, boolean flag) {
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             for (int i = 0; i < player.inventory.mainInventory.size(); i++) {

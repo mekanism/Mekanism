@@ -35,6 +35,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -68,16 +69,21 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        super.addInformation(itemstack, world, list, flag);
-        list.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
+    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        super.addInformation(itemstack, world, tooltip, flag);
+        tooltip.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!world.isRemote) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        if (!world.isRemote && player != null) {
+            BlockPos pos = context.getPos();
+            Direction side = context.getFace();
+            Hand hand = context.getHand();
+            ItemStack stack = player.getHeldItem(hand);
             Block block = world.getBlockState(pos).getBlock();
             TileEntity tile = world.getTileEntity(pos);
 

@@ -13,12 +13,14 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,8 +33,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
     public ItemWalkieTalkie() {
-        super("walkie_talkie");
-        setMaxStackSize(1);
+        super("walkie_talkie", new Item.Properties().maxStackSize(1));
     }
 
     public static ModelResourceLocation getModel(int channel) {
@@ -42,12 +43,11 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        super.addInformation(itemstack, world, list, flag);
-        list.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.localize("gui." + (getOn(itemstack) ? "on" : "off")));
-        list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
+    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.localize("gui." + (getOn(itemstack) ? "on" : "off")));
+        tooltip.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
         if (!MekanismConfig.current().general.voiceServerEnabled.val()) {
-            list.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.walkie_disabled"));
+            tooltip.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.walkie_disabled"));
         }
     }
 
@@ -91,8 +91,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     @Override
     public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            int channel = dataStream.readInt();
-            setChannel(stack, channel);
+            setChannel(stack, dataStream.readInt());
         }
     }
 }

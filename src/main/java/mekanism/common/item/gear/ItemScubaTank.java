@@ -3,6 +3,8 @@ package mekanism.common.item.gear;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -18,10 +20,13 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -30,13 +35,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.EnumHelper;
 
-public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
+public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
+
+    public static final ScubaTankMaterial SCUBA_TANK_MATERIAL = new ScubaTankMaterial();
 
     public int TRANSFER_RATE = 16;
 
     public ItemScubaTank() {
-        super(EnumHelper.addArmorMaterial("SCUBATANK", "scubatank", 0, new int[]{0, 0, 0, 0}, 0,
-              SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), EquipmentSlotType.CHEST, "scuba_tank");
+        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, "scuba_tank");
     }
 
     @Override
@@ -64,11 +70,6 @@ public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
     @Override
     public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
-    }
-
-    @Override
-    public boolean isValidArmor(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
-        return armorType == EquipmentSlotType.CHEST;
     }
 
     @Override
@@ -177,22 +178,54 @@ public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
         }
     }
 
-    public ItemStack getEmptyItem() {
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        return empty;
-    }
-
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        list.add(empty);
         ItemStack filled = new ItemStack(this);
         setGas(filled, new GasStack(MekanismFluids.Oxygen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
-        list.add(filled);
+        items.add(filled);
+    }
+
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    protected static class ScubaTankMaterial implements IArmorMaterial {
+
+        @Override
+        public int getDurability(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return 0;
+        }
+
+        @Override
+        public SoundEvent getSoundEvent() {
+            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return Ingredient.EMPTY;
+        }
+
+        @Override
+        public String getName() {
+            return "scuba_tank";
+        }
+
+        @Override
+        public float getToughness() {
+            return 0;
+        }
     }
 }

@@ -83,34 +83,28 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IIte
         }
     }
 
-    public ItemStack getEmptyItem() {
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        return empty;
-    }
-
     private GasTankTier getTier(ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockGasTank) {
-            BlockGasTank gasTank = (BlockGasTank) (((ItemBlockGasTank) item).block);
+            BlockGasTank gasTank = (BlockGasTank) (((ItemBlockGasTank) item).getBlock());
             return gasTank.getTier();
         }
         return GasTankTier.BASIC;
     }
 
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        list.add(getEmptyItem());
-        BlockGasTank gasTank = (BlockGasTank) this.block;
+        BlockGasTank gasTank = (BlockGasTank) this.getBlock();
         if (gasTank.getTier() == GasTankTier.CREATIVE && MekanismConfig.current().general.prefilledGasTanks.val()) {
             for (Gas type : GasRegistry.getRegisteredGasses()) {
                 if (type.isVisible()) {
                     ItemStack filled = new ItemStack(this);
                     setGas(filled, new GasStack(type, ((IGasItem) filled.getItem()).getMaxGas(filled)));
-                    list.add(filled);
+                    items.add(filled);
                 }
             }
         }

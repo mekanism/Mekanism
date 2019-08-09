@@ -3,6 +3,8 @@ package mekanism.common.item.gear;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -17,29 +19,33 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ISpecialArmor;
-import net.minecraftforge.common.util.EnumHelper;
 
-public class ItemJetpack extends ItemArmorMekanism implements IGasItem, ISpecialArmor {
+public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
+
+    public static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
     public final int TRANSFER_RATE = 16;
 
-    public ItemJetpack(String name) {
-        super(EnumHelper.addArmorMaterial("JETPACK", "jetpack", 0, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
-              0), EquipmentSlotType.CHEST, name);
+    public ItemJetpack() {
+        this(JETPACK_MATERIAL, "jetpack");
+    }
+
+    public ItemJetpack(IArmorMaterial material, String name) {
+        super(material, EquipmentSlotType.CHEST, name);
     }
 
     @Override
@@ -68,11 +74,6 @@ public class ItemJetpack extends ItemArmorMekanism implements IGasItem, ISpecial
             tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
         }
         tooltip.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(stack).getName());
-    }
-
-    @Override
-    public boolean isValidArmor(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
-        return armorType == EquipmentSlotType.CHEST;
     }
 
     @Override
@@ -165,38 +166,15 @@ public class ItemJetpack extends ItemArmorMekanism implements IGasItem, ISpecial
         }
     }
 
-    public ItemStack getEmptyItem() {
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        return empty;
-    }
-
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        list.add(empty);
-
         ItemStack filled = new ItemStack(this);
         setGas(filled, new GasStack(MekanismFluids.Hydrogen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
-        list.add(filled);
-    }
-
-    @Override
-    public ArmorProperties getProperties(LivingEntity player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
-        return new ArmorProperties(0, 0, 0);
-    }
-
-    @Override
-    public int getArmorDisplay(PlayerEntity player, @Nonnull ItemStack armor, int slot) {
-        return 0;
-    }
-
-    @Override
-    public void damageArmor(LivingEntity entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {
+        items.add(filled);
     }
 
     public enum JetpackMode {
@@ -218,6 +196,46 @@ public class ItemJetpack extends ItemArmorMekanism implements IGasItem, ISpecial
 
         public String getName() {
             return color + LangUtils.localize(unlocalized);
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    protected static class JetpackMaterial implements IArmorMaterial {
+
+        @Override
+        public int getDurability(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return 0;
+        }
+
+        @Override
+        public SoundEvent getSoundEvent() {
+            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return Ingredient.EMPTY;
+        }
+
+        @Override
+        public String getName() {
+            return "jetpack";
+        }
+
+        @Override
+        public float getToughness() {
+            return 0;
         }
     }
 }

@@ -6,7 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
-import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.gear.ItemElectricBow;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.item.gear.ItemFlamethrower;

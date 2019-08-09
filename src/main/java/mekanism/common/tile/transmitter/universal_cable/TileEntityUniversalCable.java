@@ -307,7 +307,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
             return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side));
+            return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
         }
         return super.getCapability(capability, side);
     }

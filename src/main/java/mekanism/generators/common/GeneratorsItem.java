@@ -41,7 +41,6 @@ public enum GeneratorsItem implements IItemProvider {
         for (GeneratorsItem generatorsItem : values()) {
             Item item = generatorsItem.getItem();
             item.setCreativeTab(Mekanism.tabMekanism);
-            item.setTranslationKey("mekanism." + generatorsItem.getName());
             registry.register(item);
             if (item instanceof IItemMekanism) {
                 ((IItemMekanism) item).registerOreDict();

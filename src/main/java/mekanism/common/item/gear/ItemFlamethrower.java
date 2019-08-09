@@ -13,6 +13,7 @@ import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,8 +30,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     public int TRANSFER_RATE = 16;
 
     public ItemFlamethrower() {
-        super("flamethrower");
-        setMaxStackSize(1);
+        super("flamethrower", new Item.Properties().maxStackSize(1).setNoRepair());
     }
 
     @Override
@@ -125,24 +125,15 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         }
     }
 
-    public ItemStack getEmptyItem() {
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        return empty;
-    }
-
     @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (!isInGroup(group)) {
             return;
         }
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        list.add(empty);
-
         ItemStack filled = new ItemStack(this);
         setGas(filled, new GasStack(MekanismFluids.Hydrogen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
-        list.add(filled);
+        items.add(filled);
     }
 
     public void incrementMode(ItemStack stack) {

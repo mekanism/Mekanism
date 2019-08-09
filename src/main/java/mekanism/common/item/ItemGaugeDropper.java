@@ -5,26 +5,28 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
@@ -32,21 +34,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     public static int CAPACITY = Fluid.BUCKET_VOLUME;
 
     public ItemGaugeDropper() {
-        super("gauge_dropper");
-        setMaxStackSize(1);
-    }
-
-    public ItemStack getEmptyItem() {
-        ItemStack empty = new ItemStack(this);
-        setGas(empty, null);
-        return empty;
-    }
-
-    @Override
-    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (isInCreativeTab(tabs)) {
-            list.add(getEmptyItem());
-        }
+        super("gauge_dropper", new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -57,7 +45,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         double gasRatio = (getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY;
-        double fluidRatio = (FluidUtil.getFluidContained(stack) != null ? (double) FluidUtil.getFluidContained(stack).amount : 0D) / (double) CAPACITY;
+        LazyOptionalHelper<FluidStack> fluidContained = new LazyOptionalHelper<>(FluidUtil.getFluidContained(stack));
+        double fluidRatio = fluidContained.getIfPresentElse(fluid -> (double) fluid.amount, 0D) / (double) CAPACITY;
         return 1D - Math.max(gasRatio, fluidRatio);
     }
 
@@ -67,7 +56,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking() && !world.isRemote) {
             setGas(stack, null);
-            FluidUtil.getFluidHandler(stack).drain(CAPACITY, true);
+            FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(CAPACITY, true));
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
@@ -76,15 +65,15 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
-        FluidStack fluidStack = FluidUtil.getFluidContained(itemstack);
-        if (gasStack == null && fluidStack == null) {
-            list.add(LangUtils.localize("gui.empty") + ".");
+        LazyOptional<FluidStack> fluidStack = FluidUtil.getFluidContained(itemstack);
+        if (gasStack == null && !fluidStack.isPresent()) {
+            tooltip.add(LangUtils.localize("gui.empty") + ".");
         } else if (gasStack != null) {
-            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+            tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
         } else {
-            list.add(LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": " + fluidStack.amount);
+            fluidStack.ifPresent(fluid -> tooltip.add(LangUtils.localize("tooltip.stored") + " " + fluid.getFluid().getLocalizedName(fluid) + ": " + fluid.amount));
         }
     }
 

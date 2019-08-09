@@ -12,7 +12,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemControlCircuit;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
-import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.gear.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.item.ItemMekanism;
@@ -91,7 +91,7 @@ public enum MekanismItem implements IItemProvider {
     ELITE_CONTROL_CIRCUIT(new ItemControlCircuit(BaseTier.ELITE)),
     ULTIMATE_CONTROL_CIRCUIT(new ItemControlCircuit(BaseTier.ULTIMATE)),
 
-    JETPACK(new ItemJetpack("jetpack")),
+    JETPACK(new ItemJetpack()),
     ARMORED_JETPACK(new ItemArmoredJetpack()),
 
     BLACK_BALLOON(new ItemBalloon(EnumColor.BLACK)),
@@ -205,8 +205,8 @@ public enum MekanismItem implements IItemProvider {
         for (MekanismItem mekanismItem : values()) {
             Item item = mekanismItem.getItem();
             registry.register(item);
+            //TODO: Should it be a consumer for registration that takes a ItemProperties?
             item.setCreativeTab(Mekanism.tabMekanism);
-            item.setTranslationKey("mekanism." + mekanismItem.getName());
             if (item instanceof IItemMekanism) {
                 ((IItemMekanism) item).registerOreDict();
             }

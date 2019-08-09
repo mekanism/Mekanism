@@ -20,6 +20,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,32 +37,28 @@ public class ItemCraftingFormula extends ItemMekanism {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         NonNullList<ItemStack> inv = getInventory(itemstack);
         if (inv != null) {
-            addIngredientDetails(inv, list);
-        }
-    }
-
-    private void addIngredientDetails(NonNullList<ItemStack> inv, List<String> list) {
-        List<ItemStack> stacks = new ArrayList<>();
-        for (ItemStack stack : inv) {
-            if (!stack.isEmpty()) {
-                boolean found = false;
-                for (ItemStack iterStack : stacks) {
-                    if (InventoryUtils.canStack(stack, iterStack)) {
-                        iterStack.grow(stack.getCount());
-                        found = true;
+            List<ItemStack> stacks = new ArrayList<>();
+            for (ItemStack stack : inv) {
+                if (!stack.isEmpty()) {
+                    boolean found = false;
+                    for (ItemStack iterStack : stacks) {
+                        if (InventoryUtils.canStack(stack, iterStack)) {
+                            iterStack.grow(stack.getCount());
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        stacks.add(stack);
                     }
                 }
-                if (!found) {
-                    stacks.add(stack);
-                }
             }
-        }
-        list.add(EnumColor.GREY + LangUtils.localize("tooltip.ingredients") + ":");
-        for (ItemStack stack : stacks) {
-            list.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.getCount() + ")");
+            tooltip.add(EnumColor.GREY + LangUtils.localize("tooltip.ingredients") + ":");
+            for (ItemStack stack : stacks) {
+                tooltip.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.getCount() + ")");
+            }
         }
     }
 
@@ -87,11 +84,11 @@ public class ItemCraftingFormula extends ItemMekanism {
 
     @Nonnull
     @Override
-    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         if (getInventory(stack) == null) {
-            return super.getItemStackDisplayName(stack);
+            return super.getDisplayName(stack);
         }
-        return super.getItemStackDisplayName(stack) + " " + (isInvalid(stack) ? EnumColor.DARK_RED + "(" + LangUtils.localize("tooltip.invalid")
+        return super.getDisplayName(stack) + " " + (isInvalid(stack) ? EnumColor.DARK_RED + "(" + LangUtils.localize("tooltip.invalid")
                                                                               : EnumColor.DARK_GREEN + "(" + LangUtils.localize("tooltip.encoded")) + ")";
     }
 
