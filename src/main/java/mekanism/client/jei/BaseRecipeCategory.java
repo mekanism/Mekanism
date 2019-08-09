@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
@@ -11,24 +12,26 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.gui.IGuiIngredientGroup;
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> implements IRecipeCategory<WRAPPER>, IGuiWrapper {
+public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
     private static final GuiDummy gui = new GuiDummy();
 
@@ -42,7 +45,7 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
     protected IDrawable fluidOverlayLarge;
     protected IDrawable fluidOverlaySmall;
     protected Set<GuiElement> guiElements = new HashSet<>();
-    private String recipeName;
+    private ResourceLocation recipeUID;
     private String unlocalizedName;
 
     private final IDrawable background;
@@ -51,13 +54,13 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
         this(helper, guiTexture, mekanismBlock.getJEICategory(), mekanismBlock.getTranslationKey(), progress, xOffset, yOffset, width, height);
     }
 
-    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
+    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, ResourceLocation name, String unlocalized, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;
         guiLocation = new ResourceLocation(guiTexture);
 
         progressBar = progress;
 
-        recipeName = name;
+        recipeUID = name;
         unlocalizedName = unlocalized;
 
         timer = helper.createTickTimer(20, 20, false);
@@ -74,8 +77,8 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
     }
 
     @Override
-    public String getUid() {
-        return recipeName;
+    public ResourceLocation getUid() {
+        return recipeUID;
     }
 
     @Override
@@ -84,13 +87,8 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
     }
 
     @Override
-    public String getModName() {
-        return Mekanism.MOD_NAME;
-    }
-
-    @Override
-    public void drawExtras(Minecraft minecraft) {
-        minecraft.textureManager.bindTexture(guiLocation);
+    public void draw(RECIPE recipe, double mouseX, double mouseY) {
+        MekanismRenderer.bindTexture(guiLocation);
         guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }
 
@@ -114,7 +112,7 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
 
     @Override
     public FontRenderer getFont() {
-        return null;
+        return Minecraft.getInstance().fontRenderer;
     }
 
     protected void addGuiElements() {
@@ -125,13 +123,15 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
         return background;
     }
 
+    @Nonnull
     @Override
     public IDrawable getIcon() {
+        //TODO
         return null;
     }
 
     @Override
-    public List<String> getTooltipStrings(int mouseX, int mouseY) {
+    public List<String> getTooltipStrings(RECIPE recipe, double mouseX, double mouseY) {
         return Collections.emptyList();
     }
 

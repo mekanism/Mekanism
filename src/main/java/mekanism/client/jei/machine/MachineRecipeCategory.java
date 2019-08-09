@@ -10,12 +10,14 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.MekanismBlock;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 
-public class MachineRecipeCategory<WRAPPER extends MachineRecipeWrapper> extends BaseRecipeCategory<WRAPPER> {
+public class MachineRecipeCategory<RECIPE extends BasicMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public MachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiBasicMachine.png", mekanismBlock, progress, 28, 16, 144, 54);
@@ -41,7 +43,13 @@ public class MachineRecipeCategory<WRAPPER extends MachineRecipeWrapper> extends
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
+    public void setIngredients(RECIPE recipe, IIngredients ingredients) {
+        ingredients.setInput(VanillaTypes.ITEM, recipe.getInput().ingredient);
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getOutput().output);
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, RECIPE recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);

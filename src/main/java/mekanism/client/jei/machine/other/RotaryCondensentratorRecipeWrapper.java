@@ -6,7 +6,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.ingredients.VanillaTypes;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fluids.Fluid;

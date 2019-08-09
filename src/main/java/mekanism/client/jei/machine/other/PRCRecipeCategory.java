@@ -16,14 +16,15 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.PressurizedRecipe;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiFluidStackGroup;
-import mezz.jei.api.gui.IGuiIngredientGroup;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 
-public class PRCRecipeCategory<WRAPPER extends PRCRecipeWrapper<PressurizedRecipe>> extends BaseRecipeCategory<WRAPPER> {
+public class PRCRecipeCategory extends BaseRecipeCategory<PressurizedRecipe> {
 
     public PRCRecipeCategory(IGuiHelper helper) {
         //TODO: Had a lang key for shorter name
@@ -53,18 +54,31 @@ public class PRCRecipeCategory<WRAPPER extends PRCRecipeWrapper<PressurizedRecip
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        PressurizedRecipe tempRecipe = recipeWrapper.getRecipe();
+    public Class<? extends PressurizedRecipe> getRecipeClass() {
+        return PressurizedRecipe.class;
+    }
+
+    @Override
+    public void setIngredients(PressurizedRecipe recipe, IIngredients ingredients) {
+        ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.getSolid());
+        ingredients.setInput(VanillaTypes.FLUID, recipe.recipeInput.getFluid());
+        ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.getGas());
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.getItemOutput());
+        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.getGasOutput());
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, PressurizedRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 53 - xOffset, 34 - yOffset);
         itemStacks.init(1, false, 115 - xOffset, 34 - yOffset);
-        itemStacks.set(0, tempRecipe.recipeInput.getSolid());
-        itemStacks.set(1, tempRecipe.recipeOutput.getItemOutput());
+        itemStacks.set(0, recipe.recipeInput.getSolid());
+        itemStacks.set(1, recipe.recipeOutput.getItemOutput());
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlayLarge);
-        fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
+        fluidStacks.init(0, true, 3, 0, 16, 58, recipe.getInput().getFluid().amount, false, fluidOverlayLarge);
+        fluidStacks.set(0, recipe.recipeInput.getFluid());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
-        initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);
+        initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.recipeInput.getGas(), true);
+        initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, recipe.recipeOutput.getGasOutput(), true);
     }
 }

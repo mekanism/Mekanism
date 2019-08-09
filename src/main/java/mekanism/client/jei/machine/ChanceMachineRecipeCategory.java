@@ -1,5 +1,6 @@
 package mekanism.client.jei.machine;
 
+import java.util.Arrays;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -12,12 +13,13 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 
-public class ChanceMachineRecipeCategory<RECIPE extends ChanceMachineRecipe<RECIPE>, WRAPPER extends ChanceMachineRecipeWrapper<RECIPE>> extends BaseRecipeCategory<WRAPPER> {
+public class ChanceMachineRecipeCategory<RECIPE extends ChanceMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public ChanceMachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiBasicMachine.png", mekanismBlock, progress, 28, 16, 144, 54);
@@ -43,19 +45,34 @@ public class ChanceMachineRecipeCategory<RECIPE extends ChanceMachineRecipe<RECI
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        ChanceMachineRecipe<?> tempRecipe = recipeWrapper.getRecipe();
+    public void setIngredients(RECIPE recipe, IIngredients ingredients) {
+        ChanceOutput output = recipe.getOutput();
+        ingredients.setInput(VanillaTypes.ITEM, recipe.getInput().ingredient);
+        ingredients.setOutputs(VanillaTypes.ITEM, Arrays.asList(output.primaryOutput, output.secondaryOutput));
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, RECIPE recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);
         itemStacks.init(2, false, 103, 18);
-        itemStacks.set(0, tempRecipe.recipeInput.ingredient);
-        ChanceOutput output = tempRecipe.getOutput();
+        itemStacks.set(0, recipe.recipeInput.ingredient);
+        ChanceOutput output = recipe.getOutput();
         if (output.hasPrimary()) {
             itemStacks.set(1, output.primaryOutput);
         }
         if (output.hasSecondary()) {
             itemStacks.set(2, output.secondaryOutput);
+        }
+    }
+
+    @Override
+    public void draw(RECIPE recipe, double mouseX, double mouseY) {
+        super.draw(recipe, mouseX, mouseY);
+        ChanceOutput output = recipe.getOutput();
+        if (output.hasSecondary()) {
+            getFont().drawString(Math.round(output.secondaryChance * 100) + "%", 104, 41, 0x404040);
         }
     }
 }

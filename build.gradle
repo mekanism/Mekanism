@@ -115,9 +115,10 @@ dependencies {
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
+    compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
+    runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
+
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
-    compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
-    runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
     compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
     // Not updated yet

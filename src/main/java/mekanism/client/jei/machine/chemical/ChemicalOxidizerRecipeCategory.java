@@ -12,13 +12,14 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.OxidationRecipe;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiIngredientGroup;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 
-public class ChemicalOxidizerRecipeCategory<WRAPPER extends ChemicalOxidizerRecipeWrapper<OxidationRecipe>> extends BaseRecipeCategory<WRAPPER> {
+public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory<OxidationRecipe> {
 
     public ChemicalOxidizerRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiChemicalOxidizer.png", MekanismBlock.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
@@ -37,12 +38,22 @@ public class ChemicalOxidizerRecipeCategory<WRAPPER extends ChemicalOxidizerReci
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        OxidationRecipe tempRecipe = recipeWrapper.getRecipe();
+    public Class<? extends OxidationRecipe> getRecipeClass() {
+        return OxidationRecipe.class;
+    }
+
+    @Override
+    public void setIngredients(OxidationRecipe recipe, IIngredients ingredients) {
+        ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.ingredient);
+        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, OxidationRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
-        itemStacks.set(0, tempRecipe.getInput().ingredient);
+        itemStacks.set(0, recipe.getInput().ingredient);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.recipeOutput.output, true);
+        initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.recipeOutput.output, true);
     }
 }

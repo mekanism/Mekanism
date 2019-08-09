@@ -3,13 +3,14 @@ package mekanism.client.jei.machine.other;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiFluidStackGroup;
-import mezz.jei.api.gui.IGuiIngredientGroup;
+import mekanism.common.Mekanism;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.ingredients.VanillaTypes;
-import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<RotaryCondensentratorRecipeWrapper> {
 
@@ -17,14 +18,14 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         super(helper, "mekanism:gui/nei/GuiRotaryCondensentrator.png",
-              condensentrating ? "mekanism.rotary_condensentrator_condensentrating" : "mekanism.rotary_condensentrator_decondensentrating",
+              new ResourceLocation(Mekanism.MODID, condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating"),
               condensentrating ? "gui.condensentrating" : "gui.decondensentrating", null, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
     }
 
     @Override
-    public void drawExtras(Minecraft minecraft) {
-        super.drawExtras(minecraft);
+    public void draw(RotaryCondensentratorRecipeWrapper recipe, double mouseX, double mouseY) {
+        super.draw(recipe, mouseX, mouseY);
         drawTexturedRect(64 - xOffset, 39 - yOffset, 176, condensentrating ? 123 : 115, 48, 8);
     }
 

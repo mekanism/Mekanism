@@ -1,5 +1,7 @@
 package mekanism.client.jei.machine.other;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -14,15 +16,19 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.InfuseStorage;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemStack;
 
-public class MetallurgicInfuserRecipeCategory<WRAPPER extends MetallurgicInfuserRecipeWrapper<MetallurgicInfuserRecipe>> extends BaseRecipeCategory<WRAPPER> {
+public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiMetallurgicInfuser.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
@@ -53,14 +59,43 @@ public class MetallurgicInfuserRecipeCategory<WRAPPER extends MetallurgicInfuser
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        MetallurgicInfuserRecipe tempRecipe = recipeWrapper.getRecipe();
+    public Class<? extends MetallurgicInfuserRecipe> getRecipeClass() {
+        return MetallurgicInfuserRecipe.class;
+    }
+
+    @Override
+    public void setIngredients(MetallurgicInfuserRecipe recipe, IIngredients ingredients) {
+        List<ItemStack> inputStacks = Collections.singletonList(recipe.recipeInput.inputStack);
+        List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.getType());
+        ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.inputStack);
+        ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(inputStacks, infuseStacks));
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.output);
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, MetallurgicInfuserRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 45, 26);
         itemStacks.init(1, false, 103, 26);
         itemStacks.init(2, true, 11, 18);
-        itemStacks.set(0, tempRecipe.getInput().inputStack);
-        itemStacks.set(1, tempRecipe.getOutput().output);
-        itemStacks.set(2, getInfuseStacks(tempRecipe.getInput().infuse.getType()));
+        itemStacks.set(0, recipe.getInput().inputStack);
+        itemStacks.set(1, recipe.getOutput().output);
+        itemStacks.set(2, getInfuseStacks(recipe.getInput().infuse.getType()));
+    }
+
+    @Override
+    public List<String> getTooltipStrings(MetallurgicInfuserRecipe recipe, double mouseX, double mouseY) {
+        if (mouseX >= 2 && mouseX < 6 && mouseY >= 2 && mouseY < 54) {
+            InfuseStorage infuse = recipe.getInput().infuse;
+            return Collections.singletonList(infuse.getType().getLocalizedName() + ": " + infuse.getAmount());
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void draw(MetallurgicInfuserRecipe recipe, double mouseX, double mouseY) {
+        super.draw(recipe, mouseX, mouseY);
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        drawTexturedRectFromIcon(2, 2, recipe.getInput().infuse.getType().sprite, 4, 52);
     }
 }

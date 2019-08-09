@@ -1,5 +1,7 @@
 package mekanism.client.jei.machine;
 
+import java.util.List;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
@@ -12,15 +14,18 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismBlock;
+import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiIngredientGroup;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.item.ItemStack;
 
-public class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<RECIPE>, WRAPPER extends AdvancedMachineRecipeWrapper<RECIPE>> extends BaseRecipeCategory<WRAPPER> {
+public class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public AdvancedMachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiAdvancedMachine.png", mekanismBlock, progress, 28, 16, 144, 54);
@@ -47,17 +52,28 @@ public class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        AdvancedMachineRecipe<?> tempRecipe = recipeWrapper.getRecipe();
+    public void setIngredients(RECIPE recipe, IIngredients ingredients) {
+        ingredients.setInput(VanillaTypes.ITEM, recipe.getInput().itemStack);
+        ingredients.setInput(MekanismJEI.TYPE_GAS, new GasStack(recipe.getInput().gasType,
+              TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK));
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getOutput().output);
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, RECIPE recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);
         itemStacks.init(2, false, 27, 36);
-        itemStacks.set(0, tempRecipe.recipeInput.itemStack);
-        itemStacks.set(1, tempRecipe.recipeOutput.output);
-        itemStacks.set(2, recipeWrapper.getFuelStacks(tempRecipe.recipeInput.gasType));
+        itemStacks.set(0, recipe.recipeInput.itemStack);
+        itemStacks.set(1, recipe.recipeOutput.output);
+        itemStacks.set(2, getFuelStacks(recipe.recipeInput.gasType));
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(tempRecipe.recipeInput.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
+        initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(recipe.recipeInput.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
                                                                                                 * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK), false);
+    }
+
+    public List<ItemStack> getFuelStacks(Gas gasType) {
+        return GasConversionHandler.getStacksForGas(gasType);
     }
 }

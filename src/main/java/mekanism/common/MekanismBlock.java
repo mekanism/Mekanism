@@ -161,7 +161,7 @@ import mekanism.common.tier.TubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.BlockItem;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Ensure all IBlockMekanism's set the required information
@@ -479,8 +479,8 @@ public enum MekanismBlock implements IBlockProvider {
         return item;
     }
 
-    public String getJEICategory() {
-        return Mekanism.MODID + "." + getName();
+    public ResourceLocation getJEICategory() {
+        return new ResourceLocation(Mekanism.MODID, getName());
     }
 
     @Nullable

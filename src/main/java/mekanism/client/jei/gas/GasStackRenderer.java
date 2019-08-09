@@ -1,5 +1,6 @@
 package mekanism.client.jei.gas;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -7,12 +8,11 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
-import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -52,15 +52,15 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         this.overlay = overlay;
     }
 
-    private static TextureAtlasSprite getStillGasSprite(Minecraft minecraft, Gas gas) {
-        AtlasTexture textureMapBlocks = minecraft.getTextureMap();
+    private static TextureAtlasSprite getStillGasSprite(Gas gas) {
+        AtlasTexture textureMapBlocks = Minecraft.getInstance().getTextureMap();
         ResourceLocation gasStill = gas.getIcon();
         TextureAtlasSprite gasStillSprite = null;
         if (gasStill != null) {
-            gasStillSprite = textureMapBlocks.getTextureExtry(gasStill.toString());
+            gasStillSprite = textureMapBlocks.getSprite(gasStill);
         }
         if (gasStillSprite == null) {
-            gasStillSprite = textureMapBlocks.getMissingSprite();
+            gasStillSprite = MekanismRenderer.missingIcon;
         }
         return gasStillSprite;
     }
@@ -84,21 +84,21 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     @Override
-    public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
+    public void render(int xPosition, int yPosition, @Nullable GasStack gasStack) {
         GlStateManager.enableBlend();
         GlStateManager.enableAlphaTest();
-        drawGas(minecraft, xPosition, yPosition, gasStack);
+        drawGas(xPosition, yPosition, gasStack);
         if (overlay != null) {
             GlStateManager.pushMatrix();
             GlStateManager.translatef(0, 0, 200);
-            overlay.draw(minecraft, xPosition, yPosition);
+            overlay.draw(xPosition, yPosition);
             GlStateManager.popMatrix();
         }
         GlStateManager.disableAlphaTest();
         GlStateManager.disableBlend();
     }
 
-    private void drawGas(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
+    private void drawGas(int xPosition, int yPosition, @Nullable GasStack gasStack) {
         Gas gas = gasStack == null ? null : gasStack.getGas();
         if (gas == null) {
             return;
@@ -110,12 +110,11 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         if (scaledAmount > height) {
             scaledAmount = height;
         }
-        drawTiledSprite(minecraft, xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(minecraft, gas));
+        drawTiledSprite(xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(gas));
     }
 
-    private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, Gas gas, int scaledAmount,
-          TextureAtlasSprite sprite) {
-        minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+    private void drawTiledSprite(int xPosition, int yPosition, int tiledWidth, int tiledHeight, Gas gas, int scaledAmount, TextureAtlasSprite sprite) {
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         MekanismRenderer.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;
@@ -143,7 +142,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     @Override
-    public List<String> getTooltip(Minecraft minecraft, GasStack gasStack, ITooltipFlag tooltipFlag) {
+    public List<String> getTooltip(GasStack gasStack, ITooltipFlag tooltipFlag) {
         List<String> tooltip = new ArrayList<>();
         Gas gasType = gasStack.getGas();
         if (gasType == null) {

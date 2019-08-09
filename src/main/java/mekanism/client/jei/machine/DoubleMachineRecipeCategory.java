@@ -1,5 +1,6 @@
 package mekanism.client.jei.machine;
 
+import java.util.Arrays;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -10,13 +11,15 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.MekanismBlock;
+import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 
-public class DoubleMachineRecipeCategory<RECIPE extends DoubleMachineRecipe<RECIPE>, WRAPPER extends DoubleMachineRecipeWrapper<RECIPE>> extends BaseRecipeCategory<WRAPPER> {
+public class DoubleMachineRecipeCategory<RECIPE extends DoubleMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public DoubleMachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
         super(helper, "mekanism:gui/guibasicmachine.png", mekanismBlock, progress, 28, 16, 144, 54);
@@ -43,14 +46,20 @@ public class DoubleMachineRecipeCategory<RECIPE extends DoubleMachineRecipe<RECI
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        DoubleMachineRecipe<?> tempRecipe = recipeWrapper.getRecipe();
+    public void setIngredients(RECIPE recipe, IIngredients ingredients) {
+        DoubleMachineInput input = recipe.getInput();
+        ingredients.setInputs(VanillaTypes.ITEM, Arrays.asList(input.itemStack, input.extraStack));
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getOutput().output);
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, RECIPE recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);
         itemStacks.init(2, false, 27, 36);
-        itemStacks.set(0, tempRecipe.recipeInput.itemStack);
-        itemStacks.set(1, tempRecipe.recipeOutput.output);
-        itemStacks.set(2, tempRecipe.recipeInput.extraStack);
+        itemStacks.set(0, recipe.recipeInput.itemStack);
+        itemStacks.set(1, recipe.recipeOutput.output);
+        itemStacks.set(2, recipe.recipeInput.extraStack);
     }
 }
