@@ -93,7 +93,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityThermalEvaporationController();
     }
 

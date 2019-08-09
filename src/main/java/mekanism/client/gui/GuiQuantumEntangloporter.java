@@ -134,9 +134,9 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     }
 
     @Override
-    public void keyTyped(char c, int i) throws IOException {
+    public void charTyped(char c, int i) {
         if (!frequencyField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         }
         if (i == GLFW.GLFW_KEY_ENTER) {
             if (frequencyField.isFocused()) {
@@ -145,7 +145,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             }
         }
         if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
-            frequencyField.textboxKeyTyped(c, i);
+            frequencyField.charTyped(c, i);
         }
         updateButtons();
     }

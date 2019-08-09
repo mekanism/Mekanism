@@ -62,8 +62,8 @@ public class GuiDictionary extends GuiMekanism {
         if (button == 0) {
             if (InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 Slot hovering = null;
-                for (int i = 0; i < inventorySlots.inventorySlots.size(); i++) {
-                    Slot slot = inventorySlots.inventorySlots.get(i);
+                for (int i = 0; i < container.inventorySlots.size(); i++) {
+                    Slot slot = container.inventorySlots.get(i);
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
                         hovering = slot;
                         break;

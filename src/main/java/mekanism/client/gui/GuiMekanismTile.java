@@ -33,8 +33,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism> extends G
         int yAxis = mouseY - guiTop;
         if (tileEntity instanceof ISideConfiguration) {
             Slot hovering = null;
-            for (int i = 0; i < inventorySlots.inventorySlots.size(); i++) {
-                Slot slot = inventorySlots.inventorySlots.get(i);
+            for (int i = 0; i < container.inventorySlots.size(); i++) {
+                Slot slot = container.inventorySlots.get(i);
                 if (isMouseOverSlot(slot, mouseX, mouseY)) {
                     hovering = slot;
                     break;

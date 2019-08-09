@@ -147,7 +147,7 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityCrusher();
     }
 

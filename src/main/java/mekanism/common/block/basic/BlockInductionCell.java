@@ -58,7 +58,7 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         switch (tier) {
             case BASIC:
                 return new TileEntityBasicInductionCell();

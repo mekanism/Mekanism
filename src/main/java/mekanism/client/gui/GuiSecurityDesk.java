@@ -116,9 +116,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    public void keyTyped(char c, int i) throws IOException {
+    public void charTyped(char c, int i) {
         if (!trustedField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         }
         if (i == GLFW.GLFW_KEY_ENTER) {
             if (trustedField.isFocused()) {
@@ -127,7 +127,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
             }
         }
         if (SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i)) {
-            trustedField.textboxKeyTyped(c, i);
+            trustedField.charTyped(c, i);
         }
         updateButtons();
     }

@@ -60,7 +60,7 @@ public class BlockReactorLogicAdapter extends Block implements IHasGui, IHasTile
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityReactorLogicAdapter();
     }
 

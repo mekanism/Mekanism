@@ -217,12 +217,7 @@ public class Gas {
     }
 
     public Gas updateIcon(AtlasTexture map) {
-        TextureAtlasSprite tex = map.getTextureExtry(iconLocation.toString());
-
-        if (tex != null) {
-            sprite = tex;
-        }
-
+        sprite = map.getSprite(iconLocation);
         return this;
     }
 

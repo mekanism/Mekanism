@@ -19,18 +19,17 @@ public class GuiReactorLogicButton extends Button {
     private final ResourceLocation resourceLocation;
     private final ReactorLogic type;
 
-    public GuiReactorLogicButton(int id, int x, int y, ReactorLogic type, @Nonnull TileEntityReactorLogicAdapter tile, ResourceLocation resource) {
-        super(id, x, y, 128, 22, "");
+    public GuiReactorLogicButton(int x, int y, ReactorLogic type, @Nonnull TileEntityReactorLogicAdapter tile, ResourceLocation resource, IPressable onPress) {
+        super(x, y, 128, 22, "", onPress);
         this.tile = tile;
         this.type = type;
         this.resourceLocation = resource;
     }
 
     @Override
-    public void drawButton(@Nonnull Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            minecraft.getTextureManager().bindTexture(this.resourceLocation);
+            MekanismRenderer.bindTexture(this.resourceLocation);
             MekanismRenderer.color(EnumColor.RED);
             drawTexturedModalRect(this.x, this.y, 0, 166 + (type == tile.logicType ? 22 : 0), this.width, this.height);
             MekanismRenderer.resetColor();

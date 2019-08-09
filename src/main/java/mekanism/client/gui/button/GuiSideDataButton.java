@@ -20,8 +20,8 @@ public class GuiSideDataButton extends Button {
     private final ResourceLocation resourceLocation;
     private final int slotPosMapIndex;
 
-    public GuiSideDataButton(int x, int y, ResourceLocation resource, int slotPosMapIndex, Supplier<SideData> sideDataSupplier, Supplier<EnumColor> colorSupplier, IPressable pressable) {
-        super(x, y, 14, 14, "", pressable);
+    public GuiSideDataButton(int x, int y, ResourceLocation resource, int slotPosMapIndex, Supplier<SideData> sideDataSupplier, Supplier<EnumColor> colorSupplier, IPressable onPress) {
+        super(x, y, 14, 14, "", onPress);
         this.resourceLocation = resource;
         this.slotPosMapIndex = slotPosMapIndex;
         this.sideDataSupplier = sideDataSupplier;

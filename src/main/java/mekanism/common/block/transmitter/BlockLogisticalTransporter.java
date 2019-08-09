@@ -32,7 +32,7 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         switch (tier) {
             case BASIC:
                 return new TileEntityBasicLogisticalTransporter();

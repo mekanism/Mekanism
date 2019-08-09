@@ -86,15 +86,15 @@ public class GuiReactorFuel extends GuiReactorInfo {
     }
 
     @Override
-    public void keyTyped(char c, int i) throws IOException {
+    public void charTyped(char c, int i) {
         if (!injectionRateField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         }
         if (i == GLFW.GLFW_KEY_ENTER && injectionRateField.isFocused()) {
             setInjection();
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
-            injectionRateField.textboxKeyTyped(c, i);
+            injectionRateField.charTyped(c, i);
         }
     }
 

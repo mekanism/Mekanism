@@ -49,16 +49,16 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
     }
 
     @Override
-    public void keyTyped(char c, int i) throws IOException {
+    public void charTyped(char c, int i) {
         if (!text.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         }
         if (text.isFocused() && i == GLFW.GLFW_KEY_ENTER) {
             setText();
             return;
         }
         if (wasTextboxKey(c, i)) {
-            text.textboxKeyTyped(c, i);
+            text.charTyped(c, i);
         }
     }
 }

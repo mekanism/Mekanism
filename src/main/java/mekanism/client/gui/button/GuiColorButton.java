@@ -14,8 +14,8 @@ public class GuiColorButton extends Button {
 
     private final Supplier<EnumColor> colorSupplier;
 
-    public GuiColorButton(int x, int y, int width, int height, Supplier<EnumColor> colorSupplier, IPressable pressable) {
-        super(x, y, width, height, "", pressable);
+    public GuiColorButton(int x, int y, int width, int height, Supplier<EnumColor> colorSupplier, IPressable onPress) {
+        super(x, y, width, height, "", onPress);
         this.colorSupplier = colorSupplier;
     }
 

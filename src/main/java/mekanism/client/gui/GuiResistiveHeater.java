@@ -121,16 +121,16 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
-    public void keyTyped(char c, int i) throws IOException {
+    public void charTyped(char c, int i) {
         if (!energyUsageField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         }
         if (energyUsageField.isFocused() && i == GLFW.GLFW_KEY_ENTER) {
             setEnergyUsage();
             return;
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
-            energyUsageField.textboxKeyTyped(c, i);
+            energyUsageField.charTyped(c, i);
         }
     }
 }

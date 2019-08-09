@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +30,8 @@ public class GasRegistry {
             return null;
         }
 
-        if (FMLCommonHandler.instance().getEffectiveSide() == Dist.CLIENT) {
+        //TODO: Is this the proper way to check this
+        if (EffectiveSide.get() == LogicalSide.CLIENT) {
             if (hasAlreadyStitched()) {
                 gas.updateIcon(Minecraft.getInstance().getTextureMap());
                 if (gas.getSpriteRaw() == null) {

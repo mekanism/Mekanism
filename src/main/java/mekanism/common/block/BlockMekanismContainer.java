@@ -174,13 +174,13 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     }
 
     @Override
-    public abstract TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state);
+    public abstract TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world);
 
     /**
-     * Unused, Use {@link #createTileEntity(World, BlockState)} instead.
+     * Unused, Use {@link #createTileEntity(BlockState, IBlockReader)} instead.
      */
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
+    public TileEntity createNewTileEntity(@Nonnull IBlockReader world) {
         return null;
     }
 

@@ -102,9 +102,9 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     }
 
     @Override
-    public void keyTyped(char c, int i) throws IOException {
+    public void charTyped(char c, int i) {
         if (!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         }
 
         if (i == GLFW.GLFW_KEY_ENTER) {
@@ -120,10 +120,10 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
         }
 
         if (Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i)) {
-            minField.textboxKeyTyped(c, i);
-            maxField.textboxKeyTyped(c, i);
+            minField.charTyped(c, i);
+            maxField.charTyped(c, i);
             if (c != '.' && c != 'E') {
-                timerField.textboxKeyTyped(c, i);
+                timerField.charTyped(c, i);
             }
         }
     }

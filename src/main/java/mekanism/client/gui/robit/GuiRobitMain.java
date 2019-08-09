@@ -107,16 +107,16 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    public void keyTyped(char c, int i) throws IOException {
+    public void charTyped(char c, int i) {
         if (!displayNameChange) {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         } else {
             if (i == GLFW.GLFW_KEY_ENTER) {
                 changeName();
             } else if (i == GLFW.GLFW_KEY_ESCAPE) {
                 minecraft.player.closeScreen();
             }
-            nameChangeField.textboxKeyTyped(c, i);
+            nameChangeField.charTyped(c, i);
         }
     }
 

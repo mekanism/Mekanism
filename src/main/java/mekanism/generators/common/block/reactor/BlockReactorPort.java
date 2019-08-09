@@ -82,7 +82,7 @@ public class BlockReactorPort extends Block implements IStateActive, IBlockElect
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityReactorPort();
     }
 

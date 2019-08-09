@@ -143,7 +143,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
             for (int i = 0; i < 9; i++) {
                 ItemStack stack = tileEntity.formula.input.get(i);
                 if (!stack.isEmpty()) {
-                    Slot slot = inventorySlots.inventorySlots.get(i + 20);
+                    Slot slot = container.inventorySlots.get(i + 20);
                     int guiX = guiLeft + slot.xPos;
                     int guiY = guiTop + slot.yPos;
                     if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {

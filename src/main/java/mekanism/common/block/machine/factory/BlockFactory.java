@@ -214,7 +214,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         //TODO
         switch (type) {
             case SMELTING:

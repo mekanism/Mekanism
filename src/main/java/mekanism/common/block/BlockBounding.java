@@ -207,7 +207,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         if (state.get(BlockStateBounding.advancedProperty)) {
             return new TileEntityAdvancedBoundingBlock();
         }

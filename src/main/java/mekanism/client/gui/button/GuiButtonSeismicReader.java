@@ -16,8 +16,8 @@ public class GuiButtonSeismicReader extends Button {
     private final int offsetX;
     private final int offsetY;
 
-    public GuiButtonSeismicReader(int x, int y, int width, int height, int offsetX, int offsetY, ResourceLocation resource, IPressable pressable) {
-        super(x, y, width, height, "", pressable);
+    public GuiButtonSeismicReader(int x, int y, int width, int height, int offsetX, int offsetY, ResourceLocation resource, IPressable onPress) {
+        super(x, y, width, height, "", onPress);
         this.resourceLocation = resource;
         this.offsetX = offsetX;
         this.offsetY = offsetY;

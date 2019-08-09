@@ -97,12 +97,12 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected void keyTyped(char c, int i) throws IOException {
-        if (itemNameField.textboxKeyTyped(c, i)) {
+    protected void charTyped(char c, int i) {
+        if (itemNameField.charTyped(c, i)) {
             repairContainer.updateItemName(itemNameField.getText());
             minecraft.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
         } else {
-            super.keyTyped(c, i);
+            super.charTyped(c, i);
         }
     }
 

@@ -22,13 +22,12 @@ public class GuiButtonDisableableImage extends Button {
     private final int hoverOffset;
     private final int disabledOffset;
 
-    public GuiButtonDisableableImage(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, ResourceLocation resource, IPressable pressable) {
-        this(x, y, width, height, offsetX, offsetY, hoverOffset, 0, resource, pressable);
+    public GuiButtonDisableableImage(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, ResourceLocation resource, IPressable onPress) {
+        this(x, y, width, height, offsetX, offsetY, hoverOffset, 0, resource, onPress);
     }
 
-    //public Button(int x, int y, int width, int height, String p_i51141_5_, Button.IPressable p_i51141_6_) {
-    public GuiButtonDisableableImage(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, int disabledOffset, ResourceLocation resource, IPressable pressable) {
-        super(x, y, width, height, "", pressable);
+    public GuiButtonDisableableImage(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, int disabledOffset, ResourceLocation resource, IPressable onPress) {
+        super(x, y, width, height, "", onPress);
         this.xTexStart = offsetX;
         this.yTexStart = offsetY;
         this.hoverOffset = hoverOffset;

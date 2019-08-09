@@ -138,7 +138,7 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityLaserTractorBeam();
     }
 
