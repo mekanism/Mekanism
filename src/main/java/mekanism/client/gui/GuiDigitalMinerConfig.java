@@ -222,24 +222,29 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     }
 
     @Override
-    public void charTyped(char c, int i) throws IOException {
+    public boolean charTyped(char c, int i) {
         if ((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.charTyped(c, i);
+            return super.charTyped(c, i);
         }
         if (i == GLFW.GLFW_KEY_ENTER) {
             if (radiusField.isFocused()) {
                 setRadius();
+                return true;
             } else if (minField.isFocused()) {
                 setMinY();
+                return true;
             } else if (maxField.isFocused()) {
                 setMaxY();
+                return true;
             }
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
             radiusField.charTyped(c, i);
             minField.charTyped(c, i);
             maxField.charTyped(c, i);
+            return true;
         }
+        return false;
     }
 
     private void setRadius() {

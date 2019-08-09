@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -39,7 +38,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
         super.init();
         text = createTextField();
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
-        text.setFocused(true);
+        text.setFocused2(true);
     }
 
     @Override
@@ -49,16 +48,17 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
     }
 
     @Override
-    public void charTyped(char c, int i) {
+    public boolean charTyped(char c, int i) {
         if (!text.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.charTyped(c, i);
+            return super.charTyped(c, i);
         }
         if (text.isFocused() && i == GLFW.GLFW_KEY_ENTER) {
             setText();
-            return;
+            return true;
         }
         if (wasTextboxKey(c, i)) {
-            text.charTyped(c, i);
+            return text.charTyped(c, i);
         }
+        return false;
     }
 }

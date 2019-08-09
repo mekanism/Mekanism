@@ -97,13 +97,13 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected void charTyped(char c, int i) {
+    public boolean charTyped(char c, int i) {
         if (itemNameField.charTyped(c, i)) {
             repairContainer.updateItemName(itemNameField.getText());
             minecraft.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
-        } else {
-            super.charTyped(c, i);
+            return true;
         }
+        return super.charTyped(c, i);
     }
 
     @Override

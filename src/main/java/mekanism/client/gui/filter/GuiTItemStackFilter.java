@@ -111,14 +111,14 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     }
 
     @Override
-    public void charTyped(char c, int i) {
+    public boolean charTyped(char c, int i) {
         if ((!minField.isFocused() && !maxField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.charTyped(c, i);
+            return super.charTyped(c, i);
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
-            minField.charTyped(c, i);
-            maxField.charTyped(c, i);
+            return minField.charTyped(c, i) || maxField.charTyped(c, i);
         }
+        return false;
     }
 
     @Override

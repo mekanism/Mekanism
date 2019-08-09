@@ -102,20 +102,21 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     }
 
     @Override
-    public void charTyped(char c, int i) {
+    public boolean charTyped(char c, int i) {
         if (!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.charTyped(c, i);
+            return super.charTyped(c, i);
         }
 
         if (i == GLFW.GLFW_KEY_ENTER) {
             if (minField.isFocused()) {
                 setMinThreshold();
-            }
-            if (maxField.isFocused()) {
+                return true;
+            } else if (maxField.isFocused()) {
                 setMaxThreshold();
-            }
-            if (timerField.isFocused()) {
+                return true;
+            } else if (timerField.isFocused()) {
                 setTime();
+                return true;
             }
         }
 

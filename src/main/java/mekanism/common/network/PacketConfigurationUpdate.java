@@ -8,7 +8,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.CapabilityUtils;
@@ -102,7 +101,6 @@ public class PacketConfigurationUpdate {
                 }
             }
         }, player);
-        return null;
     }
 
     public static void encode(PacketConfigurationUpdate pkt, PacketBuffer buf) {

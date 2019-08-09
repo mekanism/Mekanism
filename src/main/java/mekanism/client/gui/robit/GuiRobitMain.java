@@ -47,7 +47,7 @@ public class GuiRobitMain extends GuiMekanism {
     private void toggleNameChange() {
         displayNameChange = !displayNameChange;
         confirmName.visible = displayNameChange;
-        nameChangeField.setFocused(displayNameChange);
+        nameChangeField.setFocused2(displayNameChange);
     }
 
     private void changeName() {
@@ -68,7 +68,7 @@ public class GuiRobitMain extends GuiMekanism {
 
         nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, "");
         nameChangeField.setMaxStringLength(12);
-        nameChangeField.setFocused(true);
+        nameChangeField.setFocused2(true);
 
         buttons.add(teleportHomeButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation(),
               onPress -> {
@@ -96,17 +96,18 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    public void charTyped(char c, int i) {
+    public boolean charTyped(char c, int i) {
         if (!displayNameChange) {
-            super.charTyped(c, i);
-        } else {
-            if (i == GLFW.GLFW_KEY_ENTER) {
-                changeName();
-            } else if (i == GLFW.GLFW_KEY_ESCAPE) {
-                minecraft.player.closeScreen();
-            }
-            nameChangeField.charTyped(c, i);
+            return super.charTyped(c, i);
         }
+        if (i == GLFW.GLFW_KEY_ENTER) {
+            changeName();
+            return true;
+        } else if (i == GLFW.GLFW_KEY_ESCAPE) {
+            minecraft.player.closeScreen();
+            return true;
+        }
+        return nameChangeField.charTyped(c, i);
     }
 
     @Override

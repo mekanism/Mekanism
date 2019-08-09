@@ -146,20 +146,19 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    public void charTyped(char c, int i) {
+    public boolean charTyped(char c, int i) {
+        boolean returnValue = false;
         if (!trustedField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.charTyped(c, i);
-        }
-        if (i == GLFW.GLFW_KEY_ENTER) {
-            if (trustedField.isFocused()) {
-                addTrusted(trustedField.getText());
-                trustedField.setText("");
-            }
-        }
-        if (SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i)) {
-            trustedField.charTyped(c, i);
+            returnValue = super.charTyped(c, i);
+        } else if (i == GLFW.GLFW_KEY_ENTER && trustedField.isFocused()) {
+            addTrusted(trustedField.getText());
+            trustedField.setText("");
+            returnValue = true;
+        } else if (SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i)) {
+            returnValue = trustedField.charTyped(c, i);
         }
         updateButtons();
+        return returnValue;
     }
 
     @Override

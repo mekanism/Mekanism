@@ -264,20 +264,19 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     }
 
     @Override
-    public void charTyped(char c, int i) {
+    public boolean charTyped(char c, int i) {
+        boolean returnValue = false;
         if (!frequencyField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            super.charTyped(c, i);
-        }
-        if (i == GLFW.GLFW_KEY_ENTER) {
-            if (frequencyField.isFocused()) {
-                setFrequency(frequencyField.getText());
-                frequencyField.setText("");
-            }
-        }
-        if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
-            frequencyField.charTyped(c, i);
+            returnValue = super.charTyped(c, i);
+        } else if (i == GLFW.GLFW_KEY_ENTER && frequencyField.isFocused()) {
+            setFrequency(frequencyField.getText());
+            frequencyField.setText("");
+            returnValue = true;
+        } else if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
+            returnValue = frequencyField.charTyped(c, i);
         }
         updateButtons();
+        return returnValue;
     }
 
     @Override
