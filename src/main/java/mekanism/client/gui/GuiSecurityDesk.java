@@ -49,15 +49,45 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(removeButton = new Button(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove")));
-        trustedField = new TextFieldWidget(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
+        buttons.add(removeButton = new Button(guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove"),
+              onPress -> {
+                  int selection = scrollList.getSelection();
+                  if (tileEntity.frequency != null && selection != -1) {
+                      TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
+                      Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                      scrollList.clearSelection();
+                  }
+                  updateButtons();
+              }));
+        trustedField = new TextFieldWidget(font, guiLeft + 35, guiTop + 69, 86, 11, "");
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
-        buttons.add(publicButton = new GuiButtonDisableableImage(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
-        buttons.add(privateButton = new GuiButtonDisableableImage(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation()));
-        buttons.add(trustedButton = new GuiButtonDisableableImage(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation()));
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation()));
-        buttons.add(overrideButton = new GuiButtonDisableableImage(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation()));
+        buttons.add(publicButton = new GuiButtonDisableableImage(guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation(),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 0)));
+                  updateButtons();
+              }));
+        buttons.add(privateButton = new GuiButtonDisableableImage(guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation(),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 1)));
+                  updateButtons();
+              }));
+        buttons.add(trustedButton = new GuiButtonDisableableImage(guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation(),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 2)));
+                  updateButtons();
+              }));
+        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation(),
+              onPress -> {
+                  addTrusted(trustedField.getText());
+                  trustedField.setText("");
+                  updateButtons();
+              }));
+        buttons.add(overrideButton = new GuiButtonDisableableImage(guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation(),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
+                  updateButtons();
+              }));
         updateButtons();
     }
 
@@ -133,31 +163,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == removeButton.id) {
-            int selection = scrollList.getSelection();
-            if (tileEntity.frequency != null && selection != -1) {
-                TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-                scrollList.clearSelection();
-            }
-        } else if (guibutton.id == publicButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 0)));
-        } else if (guibutton.id == privateButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 1)));
-        } else if (guibutton.id == trustedButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 2)));
-        } else if (guibutton.id == checkboxButton.id) {
-            addTrusted(trustedField.getText());
-            trustedField.setText("");
-        } else if (guibutton.id == overrideButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
-        }
-        updateButtons();
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String ownerText = tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : EnumColor.RED + LangUtils.localize("gui.noOwner");
         font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
@@ -173,13 +178,13 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (tileEntity.frequency != null && overrideButton.isMouseOver()) {
+        if (tileEntity.frequency != null && overrideButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.securityOverride") + ": " + LangUtils.transOnOff(tileEntity.frequency.override), xAxis, yAxis);
-        } else if (publicButton.isMouseOver()) {
+        } else if (publicButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.publicMode"), xAxis, yAxis);
-        } else if (privateButton.isMouseOver()) {
+        } else if (privateButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.privateMode"), xAxis, yAxis);
-        } else if (trustedButton.isMouseOver()) {
+        } else if (trustedButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.trustedMode"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

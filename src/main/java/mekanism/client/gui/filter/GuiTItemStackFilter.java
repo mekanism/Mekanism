@@ -16,6 +16,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
@@ -48,60 +49,65 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        buttons.add(saveButton = new Button(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttons.add(deleteButton = new Button(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
-        buttons.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttons.add(defaultButton = new GuiButtonDisableableImage(3, guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation()));
-        buttons.add(colorButton = new GuiColorButton(4, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color));
-        buttons.add(sizeButton = new GuiButtonDisableableImage(5, guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttons.add(saveButton = new Button(guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save"),
+              onPress -> {
+                  if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
+                      int min = Integer.parseInt(minField.getText());
+                      int max = Integer.parseInt(maxField.getText());
+                      if (max >= min && max <= 64) {
+                          filter.min = Integer.parseInt(minField.getText());
+                          filter.max = Integer.parseInt(maxField.getText());
+                          if (isNew) {
+                              Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                          } else {
+                              Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                          }
+                          sendPacketToServer(0);
+                      } else if (min > max) {
+                          status = EnumColor.DARK_RED + "Max<min";
+                          ticker = 20;
+                      } else { //if(max > 64 || min > 64)
+                          status = EnumColor.DARK_RED + "Max>64";
+                          ticker = 20;
+                      }
+                  } else if (filter.getItemStack().isEmpty()) {
+                      status = EnumColor.DARK_RED + "No item";
+                      ticker = 20;
+                  } else if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
+                      status = EnumColor.DARK_RED + "Max/min";
+                      ticker = 20;
+                  }
+              }));
+        buttons.add(deleteButton = new Button(guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete"),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+                  sendPacketToServer(0);
+              }));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+              onPress -> sendPacketToServer(isNew ? 5 : 0)));
+        buttons.add(defaultButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation(),
+              onPress -> filter.allowDefault = !filter.allowDefault));
+        buttons.add(colorButton = new GuiColorButton(guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color,
+              onPress -> {
+                  if (InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                      filter.color = null;
+                  } else {
+                      filter.color = TransporterUtils.increment(filter.color);
+                  }
+              }));
+        buttons.add(sizeButton = new GuiButtonDisableableImage(guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation(),
+              onPress -> filter.sizeMode = !filter.sizeMode));
     }
 
     @Override
     public void init() {
         super.init();
-        minField = new TextFieldWidget(2, fontRenderer, guiLeft + 149, guiTop + 19, 20, 11);
+        minField = new TextFieldWidget(font, guiLeft + 149, guiTop + 19, 20, 11, "");
         minField.setMaxStringLength(2);
         minField.setText("" + filter.min);
-        maxField = new TextFieldWidget(3, fontRenderer, guiLeft + 149, guiTop + 31, 20, 11);
+        maxField = new TextFieldWidget(font, guiLeft + 149, guiTop + 31, 20, 11, "");
         maxField.setMaxStringLength(2);
         maxField.setText("" + filter.max);
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == saveButton.id) {
-            if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
-                int min = Integer.parseInt(minField.getText());
-                int max = Integer.parseInt(maxField.getText());
-                if (max >= min && max <= 64) {
-                    filter.min = Integer.parseInt(minField.getText());
-                    filter.max = Integer.parseInt(maxField.getText());
-                    if (isNew) {
-                        Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
-                    } else {
-                        Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
-                    }
-                    sendPacketToServer(0);
-                } else if (min > max) {
-                    status = EnumColor.DARK_RED + "Max<min";
-                    ticker = 20;
-                } else { //if(max > 64 || min > 64)
-                    status = EnumColor.DARK_RED + "Max>64";
-                    ticker = 20;
-                }
-            } else if (filter.getItemStack().isEmpty()) {
-                status = EnumColor.DARK_RED + "No item";
-                ticker = 20;
-            } else if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
-                status = EnumColor.DARK_RED + "Max/min";
-                ticker = 20;
-            }
-        } else if (guibutton.id == sizeButton.id) {
-            filter.sizeMode = !filter.sizeMode;
-        } else {
-            actionPerformedTransporter(guibutton, filter);
-        }
     }
 
     @Override
@@ -132,7 +138,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (sizeButton.isMouseOver()) {
+        if (sizeButton.isMouseOver(mouseX, mouseY)) {
             String sizeModeTooltip = LangUtils.localize("gui.sizeMode");
             if (tileEntity.singleItem && filter.sizeMode) {
                 sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");

@@ -1,12 +1,15 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
+import mekanism.common.network.PacketEditFilter;
+import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -35,11 +38,34 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
 
     @Override
     protected void addButtons() {
-        buttons.add(saveButton = new Button(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttons.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
-        buttons.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttons.add(replaceButton = new GuiButtonDisableableImage(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(4, guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation()));
+        buttons.add(saveButton = new Button(guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save"),
+              onPress -> {
+                  if (!text.getText().isEmpty()) {
+                      setText();
+                  }
+                  if (filter.getOreDictName() != null && !filter.getOreDictName().isEmpty()) {
+                      if (isNew) {
+                          Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                      } else {
+                          Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                      }
+                      sendPacketToServer(0);
+                  } else {
+                      status = EnumColor.DARK_RED + LangUtils.localize("gui.oredictFilter.noKey");
+                      ticker = 20;
+                  }
+              }));
+        buttons.add(deleteButton = new Button(guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete"),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+                  sendPacketToServer(0);
+              }));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+              onPress -> sendPacketToServer(isNew ? 4 : 0)));
+        buttons.add(replaceButton = new GuiButtonDisableableImage(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
+              onPress -> filter.requireStack = !filter.requireStack));
+        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation(),
+              onPress -> setText()));
     }
 
     @Override

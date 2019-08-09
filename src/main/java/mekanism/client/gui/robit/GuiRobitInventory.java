@@ -27,7 +27,7 @@ public class GuiRobitInventory extends GuiRobit {
     }
 
     @Override
-    protected boolean shouldOpenGui(int id) {
-        return id != 2;
+    protected boolean shouldOpenGui(RobitGuiType guiType) {
+        return guiType != RobitGuiType.INVENTORY;
     }
 }

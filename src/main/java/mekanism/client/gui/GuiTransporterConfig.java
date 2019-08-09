@@ -63,39 +63,20 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
-        buttons.add(strictInputButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
-        buttons.add(colorButton = new GuiColorButton(buttonID++, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor()));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get((TileEntity) configurable), 0, Mekanism.proxy.getGuiId(((TileEntity) configurable).getBlockType())))));
+        buttons.add(strictInputButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get((TileEntity) configurable), 0, 0, null))));
+        buttons.add(colorButton = new GuiColorButton(guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get((TileEntity) configurable),
+                    InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null))));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
-            GuiSideDataButton button = new GuiSideDataButton(buttonID++, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
-                  () -> configurable.getConfig().getOutput(TransmissionType.ITEM, facing), () -> configurable.getEjector().getInputColor(facing));
+            GuiSideDataButton button = new GuiSideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+                  () -> configurable.getConfig().getOutput(TransmissionType.ITEM, facing), () -> configurable.getEjector().getInputColor(facing), () -> (TileEntity) configurable);
             buttons.add(button);
             sideDataButtons.add(button);
-        }
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        TileEntity tile = (TileEntity) configurable;
-        if (guibutton.id == backButton.id) {
-            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType());
-            Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tile), 0, guiId));
-        } else if (guibutton.id == strictInputButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
-        } else if (guibutton.id == colorButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile),
-                  InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null));
-        } else {
-            for (GuiSideDataButton button : sideDataButtons) {
-                if (guibutton.id == button.id) {
-                    Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile),
-                          InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, button.getSlotPosMapIndex(), null));
-                    break;
-                }
-            }
         }
     }
 
@@ -110,7 +91,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiSideDataButton button : sideDataButtons) {
-            if (button.isMouseOver()) {
+            if (button.isMouseOver(mouseX, mouseY)) {
                 SideData data = button.getSideData();
                 if (data != TileComponentConfig.EMPTY) {
                     EnumColor color = button.getColor();
@@ -119,9 +100,9 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
                 break;
             }
         }
-        if (strictInputButton.isMouseOver()) {
+        if (strictInputButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
-        } else if (colorButton.isMouseOver()) {
+        } else if (colorButton.isMouseOver(mouseX, mouseY)) {
             if (configurable.getEjector().getOutputColor() != null) {
                 displayTooltip(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
             } else {
@@ -136,14 +117,14 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 1) {
             TileEntity tile = (TileEntity) configurable;
-            if (colorButton.isMouseOver()) {
+            if (colorButton.isMouseOver(mouseX, mouseY)) {
                 //Allow going backwards
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), 1, 0, null));
             } else {
                 //Handle right clicking the side data buttons
                 for (GuiSideDataButton sideDataButton : sideDataButtons) {
-                    if (sideDataButton.isMouseOver()) {
+                    if (sideDataButton.isMouseOver(mouseX, mouseY)) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), 1, sideDataButton.getSlotPosMapIndex(), null));
                         break;

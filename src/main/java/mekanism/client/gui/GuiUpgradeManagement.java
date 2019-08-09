@@ -46,23 +46,16 @@ public class GuiUpgradeManagement extends GuiMekanism {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
-        buttons.add(removeButton = new GuiButtonDisableableImage(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation()));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
+              onPress -> {
+                  Block block = ((TileEntity) tileEntity).getBlockType();
+                  if (block instanceof IHasGui) {
+                      Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get((TileEntity) tileEntity), 0, ((IHasGui) block).getGuiID()));
+                  }
+              }));
+        buttons.add(removeButton = new GuiButtonDisableableImage(guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get((TileEntity) tileEntity), selectedType))));
         updateEnabledButtons();
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        TileEntity tile = (TileEntity) tileEntity;
-        if (guibutton.id == backButton.id) {
-            Block block = tile.getBlockType();
-            if (block instanceof IHasGui) {
-                Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tile), 0, ((IHasGui) block).getGuiID()));
-            }
-        } else if (guibutton.id == removeButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tile), selectedType));
-        }
     }
 
     private boolean overUpgradeType(int xAxis, int yAxis, int xPos, int yPos) {

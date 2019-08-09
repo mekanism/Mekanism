@@ -1,14 +1,9 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.network.PacketEditFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,15 +22,6 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE e
             ticker--;
         } else {
             status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
-        }
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == deleteButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(0);
         }
     }
 

@@ -81,15 +81,8 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(toggleButton = new GuiButtonDisableableImage(0, guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation()));
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == toggleButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)));
-        }
+        buttons.add(toggleButton = new GuiButtonDisableableImage(guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
     }
 
     @Override
@@ -99,7 +92,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
                                                      : LangUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (toggleButton.isMouseOver()) {
+        if (toggleButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
         } else if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
             displayTooltip(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);

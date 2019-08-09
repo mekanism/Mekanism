@@ -24,30 +24,6 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
     protected abstract void updateStackList(String modName);
 
     @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
-            if (!text.getText().isEmpty()) {
-                setText();
-            }
-            if (filter.getModID() != null && !filter.getModID().isEmpty()) {
-                if (isNew) {
-                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
-                } else {
-                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
-                }
-                sendPacketToServer(0);
-            } else {
-                status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.noID");
-                ticker = 20;
-            }
-        } else if (guibutton.id == 1) {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(0);
-        }
-    }
-
-    @Override
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {

@@ -171,18 +171,15 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     public void init() {
         super.init();
         String prevTime = timerField != null ? timerField.getText() : "";
-        timerField = new TextFieldWidget(0, fontRenderer, guiLeft + 96, guiTop + 28, 36, 11);
+        timerField = new TextFieldWidget(font, guiLeft + 96, guiTop + 28, 36, 11, prevTime);
         timerField.setMaxStringLength(4);
-        timerField.setText(prevTime);
 
         String prevMin = minField != null ? minField.getText() : "";
-        minField = new TextFieldWidget(1, fontRenderer, guiLeft + 96, guiTop + 43, 72, 11);
+        minField = new TextFieldWidget(font, guiLeft + 96, guiTop + 43, 72, 11, prevMin);
         minField.setMaxStringLength(10);
-        minField.setText(prevMin);
 
         String prevMax = maxField != null ? maxField.getText() : "";
-        maxField = new TextFieldWidget(2, fontRenderer, guiLeft + 96, guiTop + 58, 72, 11);
+        maxField = new TextFieldWidget(font, guiLeft + 96, guiTop + 58, 72, 11, prevMax);
         maxField.setMaxStringLength(10);
-        maxField.setText(prevMax);
     }
 }

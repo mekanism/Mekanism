@@ -112,7 +112,7 @@ public class GuiReactorFuel extends GuiReactorInfo {
     public void init() {
         super.init();
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
-        injectionRateField = new TextFieldWidget(0, fontRenderer, guiLeft + 98, guiTop + 115, 26, 11);
+        injectionRateField = new TextFieldWidget(font, guiLeft + 98, guiTop + 115, 26, 11, "");
         injectionRateField.setMaxStringLength(2);
         injectionRateField.setText(prevRad);
     }

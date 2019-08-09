@@ -1,11 +1,11 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,30 +25,23 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism> extends G
 
     @Override
     protected void addButtons() {
-        buttons.add(itemStackButton = new Button(0, guiLeft + 24, guiTop + 32, 128, 20, LangUtils.localize("gui.itemstack")));
-        buttons.add(oredictButton = new Button(1, guiLeft + 24, guiTop + 52, 128, 20, LangUtils.localize("gui.oredict")));
-        buttons.add(materialButton = new Button(2, guiLeft + 24, guiTop + 72, 128, 20, LangUtils.localize("gui.material")));
-        buttons.add(modIDButton = new Button(3, guiLeft + 24, guiTop + 92, 128, 20, LangUtils.localize("gui.modID")));
-        buttons.add(backButton = new GuiButtonDisableableImage(4, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttons.add(itemStackButton = new Button(guiLeft + 24, guiTop + 32, 128, 20, LangUtils.localize("gui.itemstack"),
+              onPress -> sendPacketToServer(1)));
+        buttons.add(oredictButton = new Button(guiLeft + 24, guiTop + 52, 128, 20, LangUtils.localize("gui.oredict"),
+              onPress -> sendPacketToServer(2)));
+        buttons.add(materialButton = new Button(guiLeft + 24, guiTop + 72, 128, 20, LangUtils.localize("gui.material"),
+              onPress -> sendPacketToServer(3)));
+        buttons.add(modIDButton = new Button(guiLeft + 24, guiTop + 92, 128, 20, LangUtils.localize("gui.modID"),
+              onPress -> onModIDButton()));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+              onPress -> sendPacketToServer(0)));
     }
+
+    protected abstract IPressable onModIDButton();
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         font.drawString(LangUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == itemStackButton.id) {
-            sendPacketToServer(1);
-        } else if (guibutton.id == oredictButton.id) {
-            sendPacketToServer(2);
-        } else if (guibutton.id == materialButton.id) {
-            sendPacketToServer(3);
-        } else if (guibutton.id == backButton.id) {
-            sendPacketToServer(0);
-        }
     }
 }

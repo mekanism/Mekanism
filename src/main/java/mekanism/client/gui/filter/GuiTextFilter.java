@@ -37,7 +37,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
 
     @Override
     protected TextFieldWidget createTextField() {
-        return new TextFieldWidget(2, fontRenderer, guiLeft + 35, guiTop + 47, 95, 12);
+        return new TextFieldWidget(font, guiLeft + 35, guiTop + 47, 95, 12, "");
     }
 
     @Override
@@ -85,18 +85,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
             drawTransporterForegroundLayer(mouseX, mouseY, renderStack);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == checkboxButton.id) {
-            setText();
-        } else if (tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
-            actionPerformedMinerCommon(guibutton, (MinerFilter) filter);
-        } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
-            actionPerformedTransporter(guibutton, (TransporterFilter) filter);
-        }
     }
 
     @Override

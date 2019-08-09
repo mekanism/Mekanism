@@ -1,12 +1,10 @@
 package mekanism.client.gui.robit;
 
-import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit;
-import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.button.Button;
@@ -35,31 +33,32 @@ public abstract class GuiRobit extends GuiMekanism {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(mainButton = new GuiButtonDisableableImage(0, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
-        buttons.add(craftingButton = new GuiButtonDisableableImage(1, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
-        buttons.add(inventoryButton = new GuiButtonDisableableImage(2, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
-        buttons.add(smeltingButton = new GuiButtonDisableableImage(3, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
-        buttons.add(repairButton = new GuiButtonDisableableImage(4, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (!shouldOpenGui(guibutton.id)) {
-            //Don't do anything when the button is the same one as the one we are on
-            return;
-        }
-        if (guibutton.id == mainButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 21));
-        } else if (guibutton.id == craftingButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 22));
-        } else if (guibutton.id == inventoryButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 23));
-        } else if (guibutton.id == smeltingButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 24));
-        } else if (guibutton.id == repairButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 25));
-        }
+        buttons.add(mainButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 21))));
+        buttons.add(craftingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation(),
+              onPress -> {
+                  if (shouldOpenGui(RobitGuiType.CRAFTING)) {
+                      Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 22));
+                  }
+              }));
+        buttons.add(inventoryButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation(),
+              onPress -> {
+                  if (shouldOpenGui(RobitGuiType.INVENTORY)) {
+                      Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 23));
+                  }
+              }));
+        buttons.add(smeltingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation(),
+              onPress -> {
+                  if (shouldOpenGui(RobitGuiType.SMELTING)) {
+                      Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 24));
+                  }
+              }));
+        buttons.add(repairButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation(),
+              onPress -> {
+                  if (shouldOpenGui(RobitGuiType.REPAIR)) {
+                      Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 25));
+                  }
+              }));
     }
 
     @Override
@@ -69,5 +68,12 @@ public abstract class GuiRobit extends GuiMekanism {
 
     protected abstract String getBackgroundImage();
 
-    protected abstract boolean shouldOpenGui(int id);
+    protected abstract boolean shouldOpenGui(RobitGuiType guiType);
+
+    public enum RobitGuiType {
+        CRAFTING,
+        INVENTORY,
+        SMELTING,
+        REPAIR
+    }
 }

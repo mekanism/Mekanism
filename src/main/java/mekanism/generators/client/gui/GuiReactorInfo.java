@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
@@ -28,15 +27,8 @@ public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorCo
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == backButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 1, 10));
-        }
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 1, 10))));
     }
 
     @Override

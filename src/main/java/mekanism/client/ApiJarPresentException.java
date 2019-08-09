@@ -26,14 +26,14 @@ public class ApiJarPresentException extends CustomModLoadingErrorDisplayExceptio
     }
 
     @Override
-    public void drawScreen(@Nullable ErrorScreen errorScreen, @Nullable FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime) {
-        if (errorScreen == null || fontRenderer == null) {
+    public void render(@Nullable ErrorScreen errorScreen, @Nullable FontRenderer font, int mouseRelX, int mouseRelY, float tickTime) {
+        if (errorScreen == null || font == null) {
             return;
         }
         int y = errorScreen.height / 2 - msgs.length * 5;
         for (String msg : msgs) {
             if (msg != null) {
-                errorScreen.drawCenteredString(fontRenderer, msg, errorScreen.width / 2, y, 0xFFFFFF);
+                errorScreen.drawCenteredString(font, msg, errorScreen.width / 2, y, 0xFFFFFF);
                 y += 10;
             } else {
                 y += 5;

@@ -55,8 +55,10 @@ public class GuiSeismicReader extends Screen {
         super.init();
         int guiLeft = (width - xSize) / 2;
         int guiTop = (height - ySize) / 2;
-        buttons.add(upButton = new GuiButtonSeismicReader(0, guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation()));
-        buttons.add(downButton = new GuiButtonSeismicReader(1, guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation()));
+        buttons.add(upButton = new GuiButtonSeismicReader(guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation(),
+              onPress -> currentLayer++));
+        buttons.add(downButton = new GuiButtonSeismicReader(guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
+              onPress -> currentLayer--));
         tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
         updateEnabledButtons();
     }
@@ -73,7 +75,7 @@ public class GuiSeismicReader extends Screen {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTick) {
+    public void render(int mouseX, int mouseY, float partialTick) {
         int guiLeft = (width - xSize) / 2;
         int guiTop = (height - ySize) / 2;
         minecraft.textureManager.bindTexture(getGuiLocation());
@@ -154,12 +156,12 @@ public class GuiSeismicReader extends Screen {
         font.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
         GlStateManager.popMatrix();
         MekanismRenderer.resetColor();
-        super.drawScreen(mouseX, mouseY, partialTick);
+        super.render(mouseX, mouseY, partialTick);
     }
 
     @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
+    public void onClose() {
+        super.onClose();
         blockList.clear();
     }
 
@@ -169,16 +171,6 @@ public class GuiSeismicReader extends Screen {
             Block block = state.getBlock();
             int metadata = block.getMetaFromState(state);
             blockList.add(Pair.of(metadata, block));
-        }
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == upButton.id) {
-            currentLayer++;
-        } else if (guibutton.id == downButton.id) {
-            currentLayer--;
         }
     }
 

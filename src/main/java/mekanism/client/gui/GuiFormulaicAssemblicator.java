@@ -64,31 +64,19 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(encodeFormulaButton = new GuiButtonDisableableImage(0, guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation()));
-        buttons.add(stockControlButton = new GuiButtonDisableableImage(1, guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation()));
-        buttons.add(fillEmptyButton = new GuiButtonDisableableImage(2, guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation()));
-        buttons.add(craftSingleButton = new GuiButtonDisableableImage(3, guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation()));
-        buttons.add(craftAvailableButton = new GuiButtonDisableableImage(4, guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation()));
-        buttons.add(autoModeButton = new GuiButtonDisableableImage(5, guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation()));
+        buttons.add(encodeFormulaButton = new GuiButtonDisableableImage(guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)))));
+        buttons.add(stockControlButton = new GuiButtonDisableableImage(guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
+        buttons.add(fillEmptyButton = new GuiButtonDisableableImage(guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
+        buttons.add(craftSingleButton = new GuiButtonDisableableImage(guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)))));
+        buttons.add(craftAvailableButton = new GuiButtonDisableableImage(guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
+        buttons.add(autoModeButton = new GuiButtonDisableableImage(guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
         updateEnabledButtons();
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == encodeFormulaButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)));
-        } else if (guibutton.id == stockControlButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)));
-        } else if (guibutton.id == fillEmptyButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)));
-        } else if (guibutton.id == craftSingleButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
-        } else if (guibutton.id == craftAvailableButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)));
-        } else if (guibutton.id == autoModeButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)));
-        }
     }
 
     @Override
@@ -112,17 +100,17 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (fillEmptyButton.isMouseOver()) {
+        if (fillEmptyButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
-        } else if (encodeFormulaButton.isMouseOver()) {
+        } else if (encodeFormulaButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
-        } else if (craftSingleButton.isMouseOver()) {
+        } else if (craftSingleButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
-        } else if (craftAvailableButton.isMouseOver()) {
+        } else if (craftAvailableButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
-        } else if (autoModeButton.isMouseOver()) {
+        } else if (autoModeButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
-        } else if (stockControlButton.isMouseOver()) {
+        } else if (stockControlButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

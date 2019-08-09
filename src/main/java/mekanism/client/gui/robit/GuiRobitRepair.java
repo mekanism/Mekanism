@@ -41,7 +41,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     public void init() {
         super.init();
         Keyboard.enableRepeatEvents(true);
-        itemNameField = new TextFieldWidget(0, fontRenderer, guiLeft + 62, guiTop + 24, 103, 12);
+        itemNameField = new TextFieldWidget(font, guiLeft + 62, guiTop + 24, 103, 12, "");
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
@@ -51,8 +51,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
+    public void onClose() {
+        super.onClose();
         Keyboard.enableRepeatEvents(false);
         inventorySlots.removeListener(this);
     }
@@ -113,13 +113,13 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected boolean shouldOpenGui(int id) {
-        return id != 4;
+    protected boolean shouldOpenGui(RobitGuiType guiType) {
+        return guiType != RobitGuiType.REPAIR;
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTick) {
-        super.drawScreen(mouseX, mouseY, partialTick);
+    public void render(int mouseX, int mouseY, float partialTick) {
+        super.render(mouseX, mouseY, partialTick);
         GlStateManager.disableLighting();
         itemNameField.drawTextBox();
         GlStateManager.enableLighting();

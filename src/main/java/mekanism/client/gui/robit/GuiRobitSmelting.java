@@ -39,8 +39,8 @@ public class GuiRobitSmelting extends GuiRobit {
     }
 
     @Override
-    protected boolean shouldOpenGui(int id) {
-        return id != 3;
+    protected boolean shouldOpenGui(RobitGuiType guiType) {
+        return guiType != RobitGuiType.SMELTING;
     }
 
     private int getCookProgressScaled(int i) {

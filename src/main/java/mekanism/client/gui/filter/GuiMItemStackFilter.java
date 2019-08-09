@@ -47,38 +47,36 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        buttons.add(saveButton = new Button(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttons.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
-        buttons.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttons.add(replaceButton = new GuiButtonDisableableImage(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
-        buttons.add(fuzzyButton = new GuiButtonDisableableImage(4, guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation()));
+        buttons.add(saveButton = new Button(guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save"),
+              onPress -> {
+                  if (!filter.getItemStack().isEmpty()) {
+                      if (isNew) {
+                          Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                      } else {
+                          Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                      }
+                      sendPacketToServer(0);
+                  } else {
+                      status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
+                      ticker = 20;
+                  }
+              }));
+        buttons.add(deleteButton = new Button(guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete"),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+                  sendPacketToServer(0);
+              }));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+              onPress -> sendPacketToServer(isNew ? 5 : 0)));
+        buttons.add(replaceButton = new GuiButtonDisableableImage(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
+              onPress -> filter.requireStack = !filter.requireStack));
+        buttons.add(fuzzyButton = new GuiButtonDisableableImage(guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation(),
+              onPress -> filter.fuzzy = !filter.fuzzy));
     }
 
     @Override
     protected void sendPacketToServer(int guiID) {
         Mekanism.packetHandler.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == saveButton.id) {
-            if (!filter.getItemStack().isEmpty()) {
-                if (isNew) {
-                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
-                } else {
-                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
-                }
-                sendPacketToServer(0);
-            } else {
-                status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
-                ticker = 20;
-            }
-        } else if (guibutton.id == fuzzyButton.id) {
-            filter.fuzzy = !filter.fuzzy;
-        } else {
-            actionPerformedMinerCommon(guibutton, filter);
-        }
     }
 
     @Override
@@ -90,9 +88,9 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         renderItem(filter.replaceStack, 149, 19);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (replaceButton.isMouseOver()) {
+        if (replaceButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
-        } else if (fuzzyButton.isMouseOver()) {
+        } else if (fuzzyButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
         }
     }

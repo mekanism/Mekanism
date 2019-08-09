@@ -47,12 +47,53 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        buttons.add(saveButton = new Button(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
-        buttons.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
-        buttons.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation()));
-        buttons.add(prevButton = new GuiButtonDisableableImage(3, guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation()));
-        buttons.add(nextButton = new GuiButtonDisableableImage(4, guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation()));
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation()));
+        buttons.add(saveButton = new Button(guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save"),
+              onPress -> {
+                  if (!text.getText().isEmpty()) {
+                      setText();
+                  }
+                  if (filter.filter != null && !filter.filter.isEmpty()) {
+                      if (isNew) {
+                          Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                      } else {
+                          Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                      }
+                      sendPacketToServer(52);
+                  }
+              }));
+        buttons.add(deleteButton = new Button(guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete"),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+                  sendPacketToServer(52);
+              }));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
+              onPress -> sendPacketToServer(52)));
+        buttons.add(prevButton = new GuiButtonDisableableImage(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(),
+              onPress -> {
+                  if (filter.filter != null) {
+                      List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
+                      if (filter.index > 0) {
+                          filter.index--;
+                      } else {
+                          filter.index = ores.size() - 1;
+                      }
+                      updateRenderStack();
+                  }
+              }));
+        buttons.add(nextButton = new GuiButtonDisableableImage(guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation(),
+              onPress -> {
+                  if (filter.filter != null) {
+                      List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
+                      if (filter.index < ores.size() - 1) {
+                          filter.index++;
+                      } else {
+                          filter.index = 0;
+                      }
+                      updateRenderStack();
+                  }
+              }));
+        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation(),
+              onPress -> setText()));
     }
 
     @Override
@@ -79,7 +120,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected TextFieldWidget createTextField() {
-        return new TextFieldWidget(2, fontRenderer, guiLeft + 33, guiTop + 48, 96, 12);
+        return new TextFieldWidget(font, guiLeft + 33, guiTop + 48, 96, 12, "");
     }
 
     @Override
@@ -120,51 +161,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         text.drawTextBox();
         MekanismRenderer.resetColor();
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == saveButton.id) {
-            if (!text.getText().isEmpty()) {
-                setText();
-            }
-            if (filter.filter != null && !filter.filter.isEmpty()) {
-                if (isNew) {
-                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
-                } else {
-                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
-                }
-                sendPacketToServer(52);
-            }
-        } else if (guibutton.id == deleteButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(52);
-        } else if (guibutton.id == backButton.id) {
-            sendPacketToServer(52);
-        } else if (guibutton.id == prevButton.id) {
-            if (filter.filter != null) {
-                List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
-                if (filter.index > 0) {
-                    filter.index--;
-                } else {
-                    filter.index = ores.size() - 1;
-                }
-                updateRenderStack();
-            }
-        } else if (guibutton.id == nextButton.id) {
-            if (filter.filter != null) {
-                List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
-                if (filter.index < ores.size() - 1) {
-                    filter.index++;
-                } else {
-                    filter.index = 0;
-                }
-                updateRenderStack();
-            }
-        } else if (guibutton.id == checkboxButton.id) {
-            setText();
-        }
     }
 
     @Override

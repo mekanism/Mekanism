@@ -125,17 +125,60 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(publicButton = new Button(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
-        buttons.add(privateButton = new Button(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
-        buttons.add(setButton = new Button(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
-        buttons.add(deleteButton = new Button(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
+        buttons.add(publicButton = new Button(guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public"),
+              onPress -> {
+                  privateMode = false;
+                  updateButtons();
+              }));
+        buttons.add(privateButton = new Button(guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private"),
+              onPress -> {
+                  privateMode = true;
+                  updateButtons();
+              }));
+        buttons.add(setButton = new Button(guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set"),
+              onPress -> {
+                  int selection = scrollList.getSelection();
+                  if (selection != -1) {
+                      Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
+                      setFrequency(freq.name);
+                  }
+                  updateButtons();
+              }));
+        buttons.add(deleteButton = new Button(guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete"),
+              onPress -> {
+                  int selection = scrollList.getSelection();
+                  if (selection != -1) {
+                      Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
+                      if (tileEntity != null) {
+                          TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
+                          Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                      } else {
+                          Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
+                          Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
+                      }
+                      scrollList.clearSelection();
+                  }
+                  updateButtons();
+              }));
         if (!itemStack.isEmpty()) {
-            buttons.add(teleportButton = new Button(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport")));
+            buttons.add(teleportButton = new Button(guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport"),
+                  onPress -> {
+                      if (clientFreq != null && clientStatus == 1) {
+                          minecraft.mainWindow.setIngameFocus();
+                          ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
+                      }
+                      updateButtons();
+                  }));
         }
-        frequencyField = new TextFieldWidget(5, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
+        frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(),
+              onPress -> {
+                  setFrequency(frequencyField.getText());
+                  frequencyField.setText("");
+                  updateButtons();
+              }));
         updateButtons();
         if (!itemStack.isEmpty()) {
             if (!isInit) {
@@ -233,44 +276,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         }
         if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
             frequencyField.charTyped(c, i);
-        }
-        updateButtons();
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == publicButton.id) {
-            privateMode = false;
-        } else if (guibutton.id == privateButton.id) {
-            privateMode = true;
-        } else if (guibutton.id == setButton.id) {
-            int selection = scrollList.getSelection();
-            if (selection != -1) {
-                Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
-                setFrequency(freq.name);
-            }
-        } else if (guibutton.id == deleteButton.id) {
-            int selection = scrollList.getSelection();
-            if (selection != -1) {
-                Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
-                if (tileEntity != null) {
-                    TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                    Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-                } else {
-                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
-                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
-                }
-                scrollList.clearSelection();
-            }
-        } else if (guibutton.id == 4) {
-            if (clientFreq != null && clientStatus == 1) {
-                minecraft.mainWindow.setIngameFocus();
-                ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
-            }
-        } else if (guibutton.id == checkboxButton.id) {
-            setFrequency(frequencyField.getText());
-            frequencyField.setText("");
         }
         updateButtons();
     }

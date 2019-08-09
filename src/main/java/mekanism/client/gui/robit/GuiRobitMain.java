@@ -59,51 +59,40 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    protected void actionPerformed(Button guibutton) {
-        if (guibutton.id == confirmName.id) {
-            changeName();
-        } else if (guibutton.id == teleportHomeButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
-            minecraft.displayGuiScreen(null);
-        } else if (guibutton.id == pickupButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId()));
-        } else if (guibutton.id == renameButton.id) {
-            toggleNameChange();
-        } else if (guibutton.id == followButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId()));
-        } else if (guibutton.id == mainButton.id) {
-            //Clicking main button doesn't do anything while already on the main GUI
-        } else if (guibutton.id == craftingButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 22));
-        } else if (guibutton.id == inventoryButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 23));
-        } else if (guibutton.id == smeltingButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 24));
-        } else if (guibutton.id == repairButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 25));
-        }
-    }
-
-    @Override
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(confirmName = new Button(0, guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm")));
+        buttons.add(confirmName = new Button(guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm"),
+              onPress -> changeName()));
         confirmName.visible = displayNameChange;
 
-        nameChangeField = new TextFieldWidget(1, fontRenderer, guiLeft + 48, guiTop + 21, 80, 12);
+        nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, "");
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused(true);
 
-        buttons.add(teleportHomeButton = new GuiButtonDisableableImage(2, guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation()));
-        buttons.add(pickupButton = new GuiButtonDisableableImage(3, guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation()));
-        buttons.add(renameButton = new GuiButtonDisableableImage(4, guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation()));
-        buttons.add(followButton = new GuiButtonDisableableImage(5, guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation()));
-        buttons.add(mainButton = new GuiButtonDisableableImage(6, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
-        buttons.add(craftingButton = new GuiButtonDisableableImage(7, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
-        buttons.add(inventoryButton = new GuiButtonDisableableImage(8, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
-        buttons.add(smeltingButton = new GuiButtonDisableableImage(9, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
-        buttons.add(repairButton = new GuiButtonDisableableImage(10, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
+        buttons.add(teleportHomeButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation(),
+              onPress -> {
+                  Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
+                  minecraft.displayGuiScreen(null);
+              }));
+        buttons.add(pickupButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId()))));
+        buttons.add(renameButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation(),
+              onPress -> toggleNameChange()));
+        buttons.add(followButton = new GuiButtonDisableableImage(guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId()))));
+        buttons.add(mainButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation(),
+              onPress -> {
+                  //Clicking main button doesn't do anything while already on the main GUI
+              }));
+        buttons.add(craftingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 22))));
+        buttons.add(inventoryButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 23))));
+        buttons.add(smeltingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 24))));
+        buttons.add(repairButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 25))));
     }
 
     @Override
@@ -138,13 +127,13 @@ public class GuiRobitMain extends GuiMekanism {
         int yAxis = mouseY - guiTop;
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
             displayTooltip(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
-        } else if (followButton.isMouseOver()) {
+        } else if (followButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
-        } else if (renameButton.isMouseOver()) {
+        } else if (renameButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.robit.rename"), xAxis, yAxis);
-        } else if (teleportHomeButton.isMouseOver()) {
+        } else if (teleportHomeButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.robit.teleport"), xAxis, yAxis);
-        } else if (pickupButton.isMouseOver()) {
+        } else if (pickupButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(LangUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

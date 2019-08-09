@@ -121,7 +121,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         }
 
         // Check for default colour button
-        if (colorButton.isMouseOver() && mouseBtn == 1) {
+        if (colorButton.isMouseOver(mouseX, mouseY) && mouseBtn == 1) {
             sendDataFromClick(TileNetworkList.withContents(0, 1));
         }
     }
@@ -143,28 +143,17 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         super.init();
         // Add buttons to gui
         buttons.clear();
-        buttons.add(new Button(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
-        buttons.add(singleItemButton = new GuiButtonDisableableImage(1, guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation()));
-        buttons.add(roundRobinButton = new GuiButtonDisableableImage(2, guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation()));
-        buttons.add(autoEjectButton = new GuiButtonDisableableImage(3, guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation()));
-        buttons.add(colorButton = new GuiColorButton(4, guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color));
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == BUTTON_NEW) {
-            sendPacket(SorterGuiPacket.SERVER, 4, 0, null);
-        } else if (guibutton.id == singleItemButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)));
-        } else if (guibutton.id == roundRobinButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
-        } else if (guibutton.id == autoEjectButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)));
-        } else if (guibutton.id == colorButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
-                  GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0)));
-        }
+        buttons.add(new Button(guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter"),
+              onPress -> sendPacket(SorterGuiPacket.SERVER, 4, 0, null)));
+        buttons.add(singleItemButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
+        buttons.add(roundRobinButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)))));
+        buttons.add(autoEjectButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)))));
+        buttons.add(colorButton = new GuiColorButton(guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color,
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
+                    GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0)))));
     }
 
     @Override
@@ -231,17 +220,17 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         }
 
         // Draw tooltips for buttons
-        if (colorButton.isMouseOver()) {
+        if (colorButton.isMouseOver(mouseX, mouseY)) {
             if (tileEntity.color != null) {
                 displayTooltip(tileEntity.color.getColoredName(), xAxis, yAxis);
             } else {
                 displayTooltip(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
-        } else if (autoEjectButton.isMouseOver()) {
+        } else if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
             displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        } else if (roundRobinButton.isMouseOver()) {
+        } else if (roundRobinButton.isMouseOver(mouseX, mouseY)) {
             displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        } else if (singleItemButton.isMouseOver()) {
+        } else if (singleItemButton.isMouseOver(mouseX, mouseY)) {
             displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

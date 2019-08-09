@@ -74,15 +74,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(new Button(0, guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter")));
-    }
-
-    @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
-            Mekanism.packetHandler.sendToServer(new PacketOredictionificatorGui(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0));
-        }
+        buttons.add(new Button(guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter"),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketOredictionificatorGui(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0))));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketLogisticalSorterGui;
@@ -8,7 +7,7 @@ import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,11 +26,8 @@ public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter
     }
 
     @Override
-    protected void actionPerformed(Button guibutton) throws IOException {
-        super.actionPerformed(guibutton);
-        if (guibutton.id == modIDButton.id) {
-            sendPacketToServer(5);
-        }
+    protected IPressable onModIDButton() {
+        return onPress -> sendPacketToServer(5);
     }
 
     @Override

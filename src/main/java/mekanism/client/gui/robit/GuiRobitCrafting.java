@@ -27,7 +27,7 @@ public class GuiRobitCrafting extends GuiRobit {
     }
 
     @Override
-    protected boolean shouldOpenGui(int id) {
-        return id != 1;
+    protected boolean shouldOpenGui(RobitGuiType guiType) {
+        return guiType != RobitGuiType.CRAFTING;
     }
 }

@@ -66,7 +66,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             MinerFilter mFilter = (MinerFilter) filter;
             renderItem(stack, 12, 19);
             renderItem(mFilter.replaceStack, 149, 19);
-            if (replaceButton.isMouseOver()) {
+            if (replaceButton.isMouseOver(mouseX, mouseY)) {
                 displayTooltip(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(mFilter.requireStack), mouseX - guiLeft, mouseY - guiTop);
             }
         }
@@ -77,40 +77,16 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             TransporterFilter tFilter = (TransporterFilter) filter;
             font.drawString(LangUtils.transOnOff(tFilter.allowDefault), 24, 66, 0x404040);
             renderItem(stack, 12, 19);
-            drawTransporterForegroundText(mouseX - guiLeft, mouseY - guiTop, tFilter);
-        }
-    }
-
-    protected void drawTransporterForegroundText(int xAxis, int yAxis, TransporterFilter filter) {
-        if (defaultButton.isMouseOver()) {
-            displayTooltip(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
-        } else if (colorButton.isMouseOver()) {
-            if (filter.color != null) {
-                displayTooltip(filter.color.getColoredName(), xAxis, yAxis);
-            } else {
-                displayTooltip(LangUtils.localize("gui.none"), xAxis, yAxis);
-            }
-        }
-    }
-
-    protected void actionPerformedMinerCommon(Button guibutton, MinerFilter filter) {
-        if (guibutton.id == backButton.id) {
-            sendPacketToServer(isNew ? 5 : 0);
-        } else if (guibutton.id == replaceButton.id) {
-            filter.requireStack = !filter.requireStack;
-        }
-    }
-
-    protected void actionPerformedTransporter(Button guibutton, TransporterFilter filter) {
-        if (guibutton.id == backButton.id) {
-            sendPacketToServer(isNew ? 4 : 0);
-        } else if (guibutton.id == defaultButton.id) {
-            filter.allowDefault = !filter.allowDefault;
-        } else if (guibutton.id == colorButton.id) {
-            if (InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                filter.color = null;
-            } else {
-                filter.color = TransporterUtils.increment(filter.color);
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
+            if (defaultButton.isMouseOver(mouseX, mouseY)) {
+                displayTooltip(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
+            } else if (colorButton.isMouseOver(mouseX, mouseY)) {
+                if (tFilter.color != null) {
+                    displayTooltip(tFilter.color.getColoredName(), xAxis, yAxis);
+                } else {
+                    displayTooltip(LangUtils.localize("gui.none"), xAxis, yAxis);
+                }
             }
         }
     }
