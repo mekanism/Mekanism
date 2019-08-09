@@ -108,7 +108,9 @@ public class SoundHandler {
     }
 
     public static void playSound(SoundEvent sound) {
-        playSound(SimpleSound.getRecord(sound, 1.0F, (float) MekanismConfig.current().client.baseSoundVolume.val()));
+        //TODO: this previously was called getRecord, but it seems to match up closer param wise to master than record
+        // this should be double checked this works properly
+        playSound(SimpleSound.master(sound, 1.0F, (float) MekanismConfig.current().client.baseSoundVolume.val()));
     }
 
     public static void playSound(ISound sound) {
@@ -215,7 +217,7 @@ public class SoundHandler {
         @Override
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
-            if (minecraft.world.getTotalWorldTime() % checkInterval == 0) {
+            if (minecraft.world.getWorldInfo().getDayTime() % checkInterval == 0) {
 
                 // Run the event bus with the original sound. Note that we must making sure to set the GLOBAL/STATIC
                 // flag that ensures we don't wrap already muffled sounds. This is...NOT ideal and makes some
@@ -288,6 +290,11 @@ public class SoundHandler {
         }
 
         @Override
+        public boolean isGlobal() {
+            return false;
+        }
+
+        @Override
         public int getRepeatDelay() {
             return original.getRepeatDelay();
         }
@@ -316,6 +323,13 @@ public class SoundHandler {
         @Override
         public AttenuationType getAttenuationType() {
             return original.getAttenuationType();
+        }
+
+        @Override
+        public boolean canBeSilent() {
+            //TODO: This method defaults to false so doesn't have to be implemented but I believe the tile sounds can be silent
+            // so it makes sense to override this, check if this causes errors
+            return true;
         }
     }
 }

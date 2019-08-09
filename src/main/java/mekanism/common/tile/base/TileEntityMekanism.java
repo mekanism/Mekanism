@@ -45,7 +45,6 @@ import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.interfaces.ITileActive;
@@ -369,7 +368,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isActivatable()) {
             //Update the block if the specified amount of time has passed
             if (!getActive() && lastActive > 0) {
-                long updateDiff = world.getTotalWorldTime() - lastActive;
+                long updateDiff = world.getWorldInfo().getDayTime() - lastActive;
                 if (updateDiff > RECENT_THRESHOLD) {
                     MekanismUtils.updateBlock(world, getPos());
                     lastActive = -1;
@@ -380,7 +379,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         onUpdate();
         if (!world.isRemote) {
             if (doAutoSync && playersUsing.size() > 0) {
-                TileEntityMessage updateMessage = new PacketTileEntity(this);
+                PacketTileEntity updateMessage = new PacketTileEntity(this);
                 for (PlayerEntity player : playersUsing) {
                     Mekanism.packetHandler.sendTo(updateMessage, (ServerPlayerEntity) player);
                 }
@@ -434,7 +433,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
                 if (stateChange && !getActive()) {
                     // Switched off; note the time
-                    lastActive = world.getTotalWorldTime();
+                    lastActive = world.getWorldInfo().getDayTime();
                 } else if (stateChange) { //&& getActive()
                     // Switching on; if lastActive is not currently set, trigger a lighting update
                     // and make sure lastActive is clear
@@ -971,7 +970,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public boolean wasActiveRecently() {
         // If the machine is currently active or it flipped off within our threshold,
         // we'll consider it recently active.
-        return isActivatable() && (getActive() || (lastActive > 0 && (world.getTotalWorldTime() - lastActive) < RECENT_THRESHOLD));
+        return isActivatable() && (getActive() || (lastActive > 0 && (world.getWorldInfo().getDayTime() - lastActive) < RECENT_THRESHOLD));
     }
     //End methods ITileActive
 
@@ -1010,7 +1009,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             // just sound like they are continuously on.
             // Some machines call the constructor where they can change rapidChangeThreshold,
             // because their sound is intended to be turned on/off rapidly, eg. the clicking of LogisticalSorter.
-            long downtime = world.getTotalWorldTime() - lastActive;
+            long downtime = world.getWorldInfo().getDayTime() - lastActive;
             if (activeSound != null && downtime > rapidChangeThreshold) {
                 SoundHandler.stopTileSound(getPos());
                 activeSound = null;

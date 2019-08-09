@@ -20,7 +20,6 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.tile.transmitter.logistical_transporter.TileEntityLogisticalTransporter;
@@ -176,7 +175,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             }
 
             if (deletes.size() > 0 || needsSync.size() > 0) {
-                TileEntityMessage msg = new PacketTileEntity(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
+                PacketTileEntity msg = new PacketTileEntity(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
                 // Now remove any entries from transit that have been deleted
                 deletes.forEach(id -> transit.remove(id));
 

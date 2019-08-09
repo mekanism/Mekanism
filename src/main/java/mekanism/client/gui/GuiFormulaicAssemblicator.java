@@ -19,7 +19,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;

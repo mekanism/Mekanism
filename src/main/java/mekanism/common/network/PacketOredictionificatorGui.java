@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerOredictionificator;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.screen.Screen;
