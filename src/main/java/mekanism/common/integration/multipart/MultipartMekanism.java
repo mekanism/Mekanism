@@ -1,5 +1,8 @@
 package mekanism.common.integration.multipart;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -32,9 +35,6 @@ import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -46,14 +46,16 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 @MCMPAddon
 public class MultipartMekanism implements IMCMPAddon {
@@ -155,21 +157,16 @@ public class MultipartMekanism implements IMCMPAddon {
         e.addCapability(new ResourceLocation(Mekanism.MODID, id), new ICapabilityProvider() {
             private MultipartTile tile;
 
+            @Nonnull
             @Override
-            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable Direction facing) {
-                return capability == MCMPCapabilities.MULTIPART_TILE;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
                 if (capability == MCMPCapabilities.MULTIPART_TILE) {
                     if (tile == null) {
                         tile = new MultipartTile(e.getObject(), id);
                     }
-                    return MCMPCapabilities.MULTIPART_TILE.cast(tile);
+                    return MCMPCapabilities.MULTIPART_TILE.orEmpty(capability, LazyOptional.of(() -> tile));
                 }
-                return null;
+                return LazyOptional.empty();
             }
         });
     }

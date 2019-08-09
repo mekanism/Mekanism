@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
@@ -21,6 +22,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration {
@@ -177,17 +179,13 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         }
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, net.minecraft.util.Direction facing) {
-        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, net.minecraft.util.Direction facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
-            return Capabilities.ENERGY_STORAGE_CAPABILITY.cast(this);
+            return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, facing);
+        return super.getCapability(capability, side);
     }
 
     @Nonnull

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -42,6 +43,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable {
@@ -593,19 +595,19 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         return false;
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
-        return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY
-               || capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if (capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY
-            || capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY) {
-            return (T) this;
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
+            return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, facing);
+        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
+            return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        if (capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY) {
+            return Capabilities.BLOCKABLE_CONNECTION_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        return super.getCapability(capability, side);
     }
 
     public enum ConnectionType implements IStringSerializable {

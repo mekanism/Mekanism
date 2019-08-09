@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.lasers.ILaserReceptor;
@@ -24,6 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityLaserTractorBeam extends TileEntityMekanism implements ILaserReceptor, IComparatorSupport {
 
@@ -173,15 +175,11 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
         }
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
-        return capability == Capabilities.LASER_RECEPTOR_CAPABILITY || super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
-            return Capabilities.LASER_RECEPTOR_CAPABILITY.cast(this);
+            return Capabilities.LASER_RECEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }

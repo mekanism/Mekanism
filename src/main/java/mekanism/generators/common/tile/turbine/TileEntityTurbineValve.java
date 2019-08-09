@@ -5,6 +5,7 @@ import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
@@ -27,6 +28,7 @@ import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -242,26 +244,21 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         throw new NoSuchMethodException();
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-                || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
-                return true;
+            if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
+                return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
             }
-        }
-        return super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
-        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
-                return (T) this;
-            } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
-            } else if (capability == CapabilityEnergy.ENERGY) {
-                return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, getDirection()));
+            if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+                return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+            }
+            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
+            }
+            if (capability == CapabilityEnergy.ENERGY) {
+                return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, getDirection())));
             }
         }
         return super.getCapability(capability, side);

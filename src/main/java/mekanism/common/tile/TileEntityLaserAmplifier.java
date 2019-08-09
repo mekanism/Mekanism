@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyOutputter;
@@ -24,6 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration {
@@ -284,24 +286,19 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         }
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
-        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
-               || capability == Capabilities.LASER_RECEPTOR_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
-            return Capabilities.ENERGY_STORAGE_CAPABILITY.cast(this);
+            return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
-            return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.cast(this);
+            return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
-            return Capabilities.LASER_RECEPTOR_CAPABILITY.cast(this);
+            return Capabilities.LASER_RECEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, facing);
+        return super.getCapability(capability, side);
     }
 
     @Nonnull

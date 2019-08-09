@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.Mekanism;
@@ -20,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -338,27 +340,16 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         return inv.getDataType();
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return super.hasCapability(capability, facing);
+            return super.getCapability(capability, side);
         }
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
-            return super.hasCapability(capability, facing);
+            return super.getCapability(capability, side);
         }
-        return inv.hasOffsetCapability(capability, facing, pos.subtract(getMainPos()));
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return super.getCapability(capability, facing);
-        }
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return super.getCapability(capability, facing);
-        }
-        return inv.getOffsetCapability(capability, facing, pos.subtract(getMainPos()));
+        return inv.getOffsetCapability(capability, side, pos.subtract(getMainPos()));
     }
 }

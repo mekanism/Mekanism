@@ -1,6 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IBlockProvider;
@@ -16,6 +17,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
       TileEntityOperationalMachine implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IConfigCardAccess {
@@ -63,21 +65,14 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
         return ejectorComponent;
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
-            return false;
-        }
-        return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return null;
+            return LazyOptional.empty();
         }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
+            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }

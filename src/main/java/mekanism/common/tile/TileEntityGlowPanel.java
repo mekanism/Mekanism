@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
@@ -14,6 +15,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
 
@@ -66,16 +68,12 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
         side = Direction.byIndex(nbt.getInt("side"));
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
-        return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
+            return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, facing);
+        return super.getCapability(capability, side);
     }
 }

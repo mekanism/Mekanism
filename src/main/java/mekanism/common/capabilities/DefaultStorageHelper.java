@@ -1,7 +1,7 @@
 package mekanism.common.capabilities;
 
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
@@ -15,7 +15,7 @@ public class DefaultStorageHelper {
     public static class DefaultStorage<T> implements IStorage<T> {
 
         @Override
-        public NBTBase writeNBT(Capability<T> capability, T instance, Direction side) {
+        public INBT writeNBT(Capability<T> capability, T instance, Direction side) {
             if (instance instanceof INBTSerializable) {
                 return ((INBTSerializable<?>) instance).serializeNBT();
             }
@@ -23,9 +23,9 @@ public class DefaultStorageHelper {
         }
 
         @Override
-        public void readNBT(Capability<T> capability, T instance, Direction side, NBTBase nbt) {
+        public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) {
             if (instance instanceof INBTSerializable) {
-                Class<? extends NBTBase> nbtClass = ((INBTSerializable<?>) instance).serializeNBT().getClass();
+                Class<? extends INBT> nbtClass = ((INBTSerializable<?>) instance).serializeNBT().getClass();
                 if (nbtClass.isInstance(nbt)) {
                     ((INBTSerializable) instance).deserializeNBT(nbtClass.cast(nbt));
                 }
@@ -36,12 +36,12 @@ public class DefaultStorageHelper {
     public static class NullStorage<T> implements IStorage<T> {
 
         @Override
-        public NBTBase writeNBT(Capability<T> capability, T instance, Direction side) {
+        public INBT writeNBT(Capability<T> capability, T instance, Direction side) {
             return new CompoundNBT();
         }
 
         @Override
-        public void readNBT(Capability<T> capability, T instance, Direction side, NBTBase nbt) {
+        public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) {
         }
     }
 }

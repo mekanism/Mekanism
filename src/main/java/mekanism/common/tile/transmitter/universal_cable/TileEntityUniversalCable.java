@@ -6,6 +6,7 @@ import ic2.api.energy.tile.IEnergyTile;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -13,6 +14,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IBlockProvider;
+import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.capabilities.Capabilities;
@@ -32,6 +34,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -44,7 +47,8 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     public double lastWrite = 0;
 
     public EnergyStack buffer = new EnergyStack(0);
-    private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(), ForgeEnergyCableIntegration.class);
+    private CapabilityWrapperManager<TileEntityUniversalCable, ForgeEnergyCableIntegration> forgeEnergyManager =
+          new CapabilityWrapperManager<>(TileEntityUniversalCable.class, ForgeEnergyCableIntegration.class);
 
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
         this.tier = ((BlockUniversalCable) blockProvider.getBlock()).getTier();
@@ -283,19 +287,18 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
         return data;
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
-        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-               || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
-            return (T) this;
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            return (T) forgeEnergyManager.getWrapper(this, facing);
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
+            return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, facing);
+        if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
+            return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side));
+        }
+        return super.getCapability(capability, side);
     }
 }

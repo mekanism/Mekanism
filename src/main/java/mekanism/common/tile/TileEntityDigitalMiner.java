@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -75,6 +76,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.Constants.WorldEvents;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -1060,43 +1062,38 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         return side == getLeftSide() || side == getRightSide() || side == Direction.DOWN;
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
-        return capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY || super.hasCapability(capability, side);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
-            return (T) this;
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
+            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+            return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }
 
+    @Nonnull
     @Override
-    public boolean hasOffsetCapability(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
+    public <T> LazyOptional<T> getOffsetCapability(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (isOffsetCapabilityDisabled(capability, side, offset)) {
-            return false;
+            return LazyOptional.empty();
         }
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
-            return true;
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getItemHandler(side)));
         }
-        return hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getOffsetCapability(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
-        if (isOffsetCapabilityDisabled(capability, side, offset)) {
-            return null;
-        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
-        } else if (isStrictEnergy(capability)) {
-            return (T) this;
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, side));
+        if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
+            return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
+            return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+            return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
         }
         return getCapability(capability, side);
     }

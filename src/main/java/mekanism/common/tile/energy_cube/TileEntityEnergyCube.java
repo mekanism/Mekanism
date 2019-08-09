@@ -1,6 +1,7 @@
 package mekanism.common.tile.energy_cube;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
@@ -29,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ITierUpgradeable, IConfigCardAccess,
       IComparatorSupport {
@@ -238,16 +240,12 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
         return getDirection();
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
-        return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         //Special isCapabilityDisabled override not needed here as it already gets handled in TileEntityElectricBlock
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
+            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }

@@ -25,6 +25,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
 
@@ -315,18 +316,11 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
         return data;
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            if (side == null) {
-                return Capabilities.GAS_HANDLER_CAPABILITY.cast(nullHandler);
-            }
-            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
+            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? nullHandler : this));
         }
         return super.getCapability(capability, side);
     }

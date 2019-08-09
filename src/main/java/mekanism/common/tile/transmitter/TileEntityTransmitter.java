@@ -21,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends TileEntitySidedPipe implements IAlloyInteraction {
 
@@ -281,17 +282,15 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     public abstract void updateShare();
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
-        return capability == Capabilities.GRID_TRANSMITTER_CAPABILITY || capability == Capabilities.ALLOY_INTERACTION_CAPABILITY || super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.GRID_TRANSMITTER_CAPABILITY) {
-            return Capabilities.GRID_TRANSMITTER_CAPABILITY.cast(getTransmitter());
-        } else if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {
-            return Capabilities.ALLOY_INTERACTION_CAPABILITY.cast(this);
+            //TODO: Check about this warning and see if getTransmitter can be annotated as Nonnull or handle the null case here
+            return Capabilities.GRID_TRANSMITTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
+        }
+        if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {
+            return Capabilities.ALLOY_INTERACTION_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }

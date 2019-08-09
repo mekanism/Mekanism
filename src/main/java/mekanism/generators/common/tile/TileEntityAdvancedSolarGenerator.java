@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.common.base.IBoundingBlock;
@@ -10,6 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
@@ -50,15 +52,11 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         world.removeBlock(getPos(), false);
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
-        return capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY || super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY) {
-            return Capabilities.EVAPORATION_SOLAR_CAPABILITY.cast(this);
+            return Capabilities.EVAPORATION_SOLAR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }

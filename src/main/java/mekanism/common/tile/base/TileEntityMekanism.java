@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -75,7 +74,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -83,6 +81,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -572,37 +571,38 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return nbtTags;
     }
 
-
+    @Nonnull
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
         if (isCapabilityDisabled(capability, side)) {
-            return false;
-        } else if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        } else if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
-            return true;
+            return LazyOptional.empty();
         }
-        return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return null;
-        } else if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
-        } else if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
-        } else if (isElectric() && isStrictEnergy(capability)) {
-            return (T) this;
-        } else if (isElectric() && capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, side));
+        if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getItemHandler(side)));
+        }
+        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
+            return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        if (isElectric()) {
+            if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
+                return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+            }
+            if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
+                return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+            }
+            if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+                return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+            }
+            if (capability == CapabilityEnergy.ENERGY) {
+                return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
+            }
         }
         return super.getCapability(capability, side);
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
         if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
         }
