@@ -133,7 +133,7 @@ public class MekanismTools implements IModule {
         LivingEntity entity = event.getEntityLiving();
         if (entity instanceof ZombieEntity || entity instanceof SkeletonEntity) {
             //Don't bother calculating random numbers unless the instanceof checks pass
-            Random random = event.getWorld().rand;
+            Random random = event.getWorld().getRandom();
             double chance = random.nextDouble();
             if (chance < MekanismConfig.current().tools.armorSpawnRate.val()) {
                 int armorType = random.nextInt(4);

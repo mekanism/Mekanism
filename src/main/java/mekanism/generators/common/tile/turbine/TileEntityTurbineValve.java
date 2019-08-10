@@ -120,11 +120,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnloaded() {
         if (MekanismUtils.useIC2()) {
             deregister();
         }
-        super.onChunkUnload();
+        super.onChunkUnloaded();
     }
 
     @Override

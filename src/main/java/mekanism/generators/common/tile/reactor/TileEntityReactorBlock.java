@@ -73,8 +73,8 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     }
 
     @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
         if (!(this instanceof TileEntityReactorController) && getReactor() != null) {
             getReactor().formMultiblock(true);
         }

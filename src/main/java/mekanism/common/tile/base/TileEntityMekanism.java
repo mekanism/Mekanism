@@ -338,11 +338,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnloaded() {
         if (isElectric() && MekanismUtils.useIC2()) {
             deregister();
         }
-        super.onChunkUnload();
+        super.onChunkUnloaded();
     }
 
     @Override
@@ -367,7 +367,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isActivatable()) {
             //Update the block if the specified amount of time has passed
             if (!getActive() && lastActive > 0) {
-                long updateDiff = world.getWorldInfo().getDayTime() - lastActive;
+                long updateDiff = world.getDayTime() - lastActive;
                 if (updateDiff > RECENT_THRESHOLD) {
                     MekanismUtils.updateBlock(world, getPos());
                     lastActive = -1;
@@ -432,7 +432,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
                 if (stateChange && !getActive()) {
                     // Switched off; note the time
-                    lastActive = world.getWorldInfo().getDayTime();
+                    lastActive = world.getDayTime();
                 } else if (stateChange) { //&& getActive()
                     // Switching on; if lastActive is not currently set, trigger a lighting update
                     // and make sure lastActive is clear
@@ -970,7 +970,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public boolean wasActiveRecently() {
         // If the machine is currently active or it flipped off within our threshold,
         // we'll consider it recently active.
-        return isActivatable() && (getActive() || (lastActive > 0 && (world.getWorldInfo().getDayTime() - lastActive) < RECENT_THRESHOLD));
+        return isActivatable() && (getActive() || (lastActive > 0 && (world.getDayTime() - lastActive) < RECENT_THRESHOLD));
     }
     //End methods ITileActive
 
@@ -1009,7 +1009,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             // just sound like they are continuously on.
             // Some machines call the constructor where they can change rapidChangeThreshold,
             // because their sound is intended to be turned on/off rapidly, eg. the clicking of LogisticalSorter.
-            long downtime = world.getWorldInfo().getDayTime() - lastActive;
+            long downtime = world.getDayTime() - lastActive;
             if (activeSound != null && downtime > rapidChangeThreshold) {
                 SoundHandler.stopTileSound(getPos());
                 activeSound = null;

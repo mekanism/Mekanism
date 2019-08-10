@@ -99,7 +99,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnloaded() {
         if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork()) {
             if (lastWrite != null && getTransmitter().getTransmitterNetwork().buffer != null) {
                 getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
@@ -108,7 +108,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
                 }
             }
         }
-        super.onChunkUnload();
+        super.onChunkUnloaded();
     }
 
     @Override

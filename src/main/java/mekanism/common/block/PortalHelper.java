@@ -33,17 +33,16 @@ public class PortalHelper {
 
         private int portalBlockCount;
 
-        public Size(World world, BlockPos pos, Axis axis) {
+        public Size(IWorld world, BlockPos pos, Axis axis) {
             super(world, pos, axis);
         }
 
         private boolean isFrame(BlockState state) {
             Block block = state.getBlock();
-            BlockResourceInfo resourceInfo = null;
             if (block instanceof BlockResource) {
-                resourceInfo = ((BlockResource) block).getResourceInfo();
+                return ((BlockResource) block).getResourceInfo() == BlockResourceInfo.REFINED_OBSIDIAN;
             }
-            return block == Blocks.OBSIDIAN || resourceInfo == BlockResourceInfo.REFINED_OBSIDIAN;
+            return block == Blocks.OBSIDIAN;
         }
 
         @Override
@@ -61,9 +60,9 @@ public class PortalHelper {
         @Override
         protected int calculatePortalHeight() {
             label56:
-            for (this.height = 0; this.height < 21; ++this.height) {
-                for (int i = 0; i < this.width; ++i) {
-                    BlockPos blockpos = this.bottomLeft.offset(this.rightDir, i).up(this.height);
+            for (this.height = 0; getHeight() < 21; ++this.height) {
+                for (int i = 0; i < getWidth(); ++i) {
+                    BlockPos blockpos = this.bottomLeft.offset(this.rightDir, i).up(getHeight());
                     Block block = this.world.getBlockState(blockpos).getBlock();
                     if (!this.isEmptyBlock(block)) {
                         break label56;
@@ -75,7 +74,7 @@ public class PortalHelper {
                         if (!isFrame(this.world.getBlockState(blockpos.offset(this.leftDir)))) {
                             break label56;
                         }
-                    } else if (i == this.width - 1) {
+                    } else if (i == getWidth() - 1) {
                         if (!isFrame(this.world.getBlockState(blockpos.offset(this.rightDir)))) {
                             break label56;
                         }
@@ -83,14 +82,14 @@ public class PortalHelper {
                 }
             }
 
-            for (int j = 0; j < this.width; ++j) {
-                if (!isFrame(this.world.getBlockState(this.bottomLeft.offset(this.rightDir, j).up(this.height)))) {
+            for (int j = 0; j < getWidth(); ++j) {
+                if (!isFrame(this.world.getBlockState(this.bottomLeft.offset(this.rightDir, j).up(getHeight())))) {
                     this.height = 0;
                     break;
                 }
             }
-            if (this.height <= 21 && this.height >= 3) {
-                return this.height;
+            if (getHeight() <= 21 && getHeight() >= 3) {
+                return getHeight();
             }
             this.bottomLeft = null;
             this.width = 0;
@@ -104,16 +103,13 @@ public class PortalHelper {
         public static final BlockPortalOverride instance = new BlockPortalOverride();
 
         public BlockPortalOverride() {
-            super();
+            super(Block.Properties.create(Material.PORTAL).doesNotBlockMovement().tickRandomly().hardnessAndResistance(-1.0F).sound(SoundType.GLASS).lightValue(11).noDrops());
             setRegistryName(new ResourceLocation("minecraft", "portal"));
-            setHardness(-1.0F);
-            setSoundType(SoundType.GLASS);
-            setLightLevel(0.75F);
         }
 
         @Nonnull
         @Override
-        public PatternHelper createPatternHelper(@Nonnull World world, BlockPos pos) {
+        public PatternHelper createPatternHelper(@Nonnull IWorld world, BlockPos pos) {
             Axis axis = Axis.Z;
             PortalHelper.Size size = new PortalHelper.Size(world, pos, Axis.X);
             if (!size.isValid()) {
@@ -156,8 +152,8 @@ public class PortalHelper {
             Axis axis = state.get(AXIS);
             if (axis == Axis.X || axis == Axis.Z) {
                 PortalHelper.Size size = new PortalHelper.Size(world, pos, axis);
-                if (!size.isValid() || size.portalBlockCount < size.width * size.height) {
-                    world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                if (!size.isValid() || size.portalBlockCount < size.getWidth() * size.getHeight()) {
+                    world.removeBlock(pos, isMoving);
                 }
             }
         }

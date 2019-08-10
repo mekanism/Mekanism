@@ -25,7 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -72,7 +72,7 @@ public class SoundHandler {
         flamethrowerSounds.remove(uuid);
     }
 
-    public static void startSound(@Nonnull World world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
+    public static void startSound(@Nonnull IWorld world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
         switch (soundType) {
             case JETPACK:
                 if (!jetpackSounds.contains(uuid)) {
@@ -217,7 +217,7 @@ public class SoundHandler {
         @Override
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
-            if (minecraft.world.getWorldInfo().getDayTime() % checkInterval == 0) {
+            if (minecraft.world.getDayTime() % checkInterval == 0) {
 
                 // Run the event bus with the original sound. Note that we must making sure to set the GLOBAL/STATIC
                 // flag that ensures we don't wrap already muffled sounds. This is...NOT ideal and makes some

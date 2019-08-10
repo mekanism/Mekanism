@@ -61,7 +61,6 @@ import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.network.PacketPortableTeleporter;
-import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
@@ -110,11 +109,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.oredict.OreDictionary;
@@ -179,7 +177,7 @@ public class CommonProxy implements IGuiProvider {
     /**
      * Adds block hit effects on the client side.
      */
-    public void addHitEffects(Coord4D coord, RayTraceResult mop) {
+    public void addHitEffects(Coord4D coord, BlockRayTraceResult mop) {
     }
 
     /**

@@ -118,8 +118,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             if (--playSoundCooldown > 0) {
                 return;
             }
-            if (activeSound == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(activeSound)) {
-                activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), 1.0f, getPos());
+            if (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound)) {
+                activeSound = SoundHandler.startTileSound(soundEvent.getName(), 1.0f, getPos());
                 playSoundCooldown = 20;
             }
         } else if (activeSound != null) {
@@ -138,8 +138,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
         formMultiblock(true);
     }
 

@@ -10,7 +10,7 @@ import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorld;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayerState {
@@ -19,7 +19,7 @@ public class PlayerState {
     private Set<UUID> activeGasmasks = new HashSet<>();
     private Set<UUID> activeFlamethrowers = new HashSet<>();
 
-    private World world;
+    private IWorld world;
 
     public void clear() {
         activeJetpacks.clear();
@@ -39,7 +39,7 @@ public class PlayerState {
         }
     }
 
-    public void init(World world) {
+    public void init(IWorld world) {
         this.world = world;
     }
 
@@ -61,7 +61,7 @@ public class PlayerState {
         }
 
         // If something changed and we're in a remote world, take appropriate action
-        if (changed && world.isRemote) {
+        if (changed && world.isRemote()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 Mekanism.packetHandler.sendToServer(PacketJetpackData.UPDATE(uuid, isActive));
@@ -104,7 +104,7 @@ public class PlayerState {
         }
 
         // If something changed and we're in a remote world, take appropriate action
-        if (changed && world.isRemote) {
+        if (changed && world.isRemote()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 Mekanism.packetHandler.sendToServer(PacketScubaTankData.UPDATE(uuid, isActive));
@@ -150,7 +150,7 @@ public class PlayerState {
             activeFlamethrowers.add(uuid); // Off -> on
         }
 
-        if (world.isRemote) {
+        if (world.isRemote()) {
             boolean startSound;
             // If something changed and we're in a remote world, take appropriate action
             if (changed) {

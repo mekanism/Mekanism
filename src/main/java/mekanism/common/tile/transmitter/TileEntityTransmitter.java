@@ -74,11 +74,11 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnloaded() {
         if (!getWorld().isRemote) {
             getTransmitter().takeShare();
         }
-        super.onChunkUnload();
+        super.onChunkUnloaded();
     }
 
     @Override

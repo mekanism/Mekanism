@@ -326,8 +326,8 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
         if (!getWorld().isRemote) {
             for (TransporterStack stack : getTransmitter().getTransit()) {
                 TransporterUtils.drop(getTransmitter(), stack);

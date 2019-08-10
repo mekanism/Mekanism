@@ -229,7 +229,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
         Particle fx = new RedstoneParticle.Factory().createParticle(0, world, pos.x, pos.y, pos.z, 0, 0, 0);
         fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
-        Minecraft.getInstance().effectRenderer.addEffect(fx);
+        Minecraft.getInstance().particles.addEffect(fx);
     }
 
     @Override
@@ -333,7 +333,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public boolean attackEntityFrom(@Nonnull DamageSource dmgSource, float damage) {
-        if (isEntityInvulnerable(dmgSource)) {
+        if (isInvulnerableTo(dmgSource)) {
             return false;
         } else {
             markVelocityChanged();

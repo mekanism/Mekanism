@@ -90,7 +90,6 @@ public abstract class RobitAIBase extends Goal {
 
     private boolean isEmptyBlock(BlockPos pos) {
         BlockState iblockstate = world.getBlockState(pos);
-        Block block = iblockstate.getBlock();
-        return block == Blocks.AIR || !iblockstate.isFullCube();
+        return world.isAirBlock(pos) || !iblockstate.isFullCube();
     }
 }

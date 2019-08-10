@@ -154,7 +154,7 @@ public class RenderTickHandler {
                 }
 
                 // Traverse a copy of gasmask state and do animations
-                if (world.getWorldTime() % 4 == 0) {
+                if (world.getDayTime() % 4 == 0) {
                     for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
                         PlayerEntity p = minecraft.world.getPlayerByUuid(uuid);
                         if (p == null || !p.isInWater()) {
@@ -175,7 +175,7 @@ public class RenderTickHandler {
                 }
 
                 // Traverse a copy of flamethrower state and do animations
-                if (world.getWorldTime() % 4 == 0) {
+                if (world.getDayTime() % 4 == 0) {
                     for (PlayerEntity p : world.getPlayers()) {
                         if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress) {
                             ItemStack currentItem = p.inventory.getCurrentItem();
@@ -224,7 +224,7 @@ public class RenderTickHandler {
         } else if (s.equals(ParticleTypes.BUBBLE)) {
             fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
         }
-        minecraft.effectRenderer.addEffect(fx);
+        minecraft.particles.addEffect(fx);
     }
 
     private void drawString(String s, boolean leftSide, int y, int color) {

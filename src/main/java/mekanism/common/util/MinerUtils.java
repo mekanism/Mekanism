@@ -30,7 +30,7 @@ public final class MinerUtils {
 
     public static final List<Block> specialSilkIDs = Arrays.asList(Blocks.ICE, Blocks.CHORUS_FLOWER);
 
-    private static Method getSilkTouchDrop = null;
+    private static Method getSilkTouchDrop;
 
     static {
         try {
@@ -83,7 +83,7 @@ public final class MinerUtils {
             } else {
                 //silk touch drop is empty or failed to call/find getSilkTouchDrop method
                 // Fallback to grabbing an itemblock
-                Item item = Item.getItemFromBlock(block);
+                Item item = block.asItem();
                 if (item != Items.AIR) {
                     ret.add(new ItemStack(item, 1, item.getHasSubtypes() ? block.getMetaFromState(state) : 0));
                 }

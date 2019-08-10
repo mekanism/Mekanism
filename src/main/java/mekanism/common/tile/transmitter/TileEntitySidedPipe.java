@@ -463,9 +463,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnloaded() {
         onWorldSeparate();
-        super.onChunkUnload();
+        super.onChunkUnloaded();
     }
 
     public void onAdded() {

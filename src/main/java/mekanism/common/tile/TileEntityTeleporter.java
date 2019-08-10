@@ -209,8 +209,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
         if (!world.isRemote && frequency != null) {
             FrequencyManager manager = getManager(frequency);
             if (manager != null) {

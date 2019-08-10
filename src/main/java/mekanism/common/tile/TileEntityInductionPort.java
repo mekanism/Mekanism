@@ -147,11 +147,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnloaded() {
         if (MekanismUtils.useIC2()) {
             deregister();
         }
-        super.onChunkUnload();
+        super.onChunkUnloaded();
     }
 
     @Override

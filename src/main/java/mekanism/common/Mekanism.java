@@ -115,6 +115,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -729,8 +730,8 @@ public class Mekanism {
 
         //Add baby skeleton spawner
         if (MekanismConfig.current().general.spawnBabySkeletons.val()) {
-            for (Biome biome : BiomeProvider.allowedBiomes) {
-                if (biome.getSpawnableList(EntityClassification.MONSTER) != null && biome.getSpawnableList(EntityClassification.MONSTER).size() > 0) {
+            for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
+                if (biome.getSpawns(EntityClassification.MONSTER).size() > 0) {
                     EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
                 }
             }
@@ -830,44 +831,44 @@ public class Mekanism {
 
     @SubscribeEvent
     public void onBlacklistUpdate(BoxBlacklistEvent event) {
-        event.blacklistWildcard(MekanismBlock.CARDBOARD_BOX.getBlock());
+        event.blacklist(MekanismBlock.CARDBOARD_BOX.getBlock());
 
         // Mekanism multiblock structures
-        event.blacklistWildcard(MekanismBlock.BOUNDING_BLOCK.getBlock());
-        event.blacklistWildcard(MekanismBlock.SECURITY_DESK.getBlock());
-        event.blacklistWildcard(MekanismBlock.DIGITAL_MINER.getBlock());
-        event.blacklistWildcard(MekanismBlock.SEISMIC_VIBRATOR.getBlock());
-        event.blacklistWildcard(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.getBlock());
+        event.blacklist(MekanismBlock.BOUNDING_BLOCK.getBlock());
+        event.blacklist(MekanismBlock.SECURITY_DESK.getBlock());
+        event.blacklist(MekanismBlock.DIGITAL_MINER.getBlock());
+        event.blacklist(MekanismBlock.SEISMIC_VIBRATOR.getBlock());
+        event.blacklist(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.getBlock());
 
         // Minecraft unobtainable
         event.blacklist(Blocks.BEDROCK);
-        event.blacklistWildcard(Blocks.NETHER_PORTAL);
-        event.blacklistWildcard(Blocks.END_PORTAL);
-        event.blacklistWildcard(Blocks.END_PORTAL_FRAME);
+        event.blacklist(Blocks.NETHER_PORTAL);
+        event.blacklist(Blocks.END_PORTAL);
+        event.blacklist(Blocks.END_PORTAL_FRAME);
 
         // Minecraft multiblock structures
-        event.blacklistWildcard(Blocks.BED);
-        event.blacklistWildcard(Blocks.OAK_DOOR);
-        event.blacklistWildcard(Blocks.SPRUCE_DOOR);
-        event.blacklistWildcard(Blocks.BIRCH_DOOR);
-        event.blacklistWildcard(Blocks.JUNGLE_DOOR);
-        event.blacklistWildcard(Blocks.ACACIA_DOOR);
-        event.blacklistWildcard(Blocks.DARK_OAK_DOOR);
-        event.blacklistWildcard(Blocks.IRON_DOOR);
+        event.blacklist(Blocks.BED);
+        event.blacklist(Blocks.OAK_DOOR);
+        event.blacklist(Blocks.SPRUCE_DOOR);
+        event.blacklist(Blocks.BIRCH_DOOR);
+        event.blacklist(Blocks.JUNGLE_DOOR);
+        event.blacklist(Blocks.ACACIA_DOOR);
+        event.blacklist(Blocks.DARK_OAK_DOOR);
+        event.blacklist(Blocks.IRON_DOOR);
 
         //Extra Utils 2
-        event.blacklistWildcard(new ResourceLocation("extrautils2", "machine"));
+        event.blacklist(new ResourceLocation("extrautils2", "machine"));
 
         //ImmEng multiblocks
-        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_device0"));
-        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_device1"));
-        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "wooden_device0"));
-        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "wooden_device1"));
-        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "connector"));
-        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_multiblock"));
+        event.blacklist(new ResourceLocation("immersiveengineering", "metal_device0"));
+        event.blacklist(new ResourceLocation("immersiveengineering", "metal_device1"));
+        event.blacklist(new ResourceLocation("immersiveengineering", "wooden_device0"));
+        event.blacklist(new ResourceLocation("immersiveengineering", "wooden_device1"));
+        event.blacklist(new ResourceLocation("immersiveengineering", "connector"));
+        event.blacklist(new ResourceLocation("immersiveengineering", "metal_multiblock"));
 
         //IC2
-        event.blacklistWildcard(new ResourceLocation("ic2", "te"));
+        event.blacklist(new ResourceLocation("ic2", "te"));
 
         event.blacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
         event.blacklistMod("colossalchests");
@@ -877,7 +878,7 @@ public class Mekanism {
 
     @SubscribeEvent
     public void chunkSave(ChunkDataEvent.Save event) {
-        if (!event.getWorld().isRemote) {
+        if (!event.getWorld().isRemote()) {
             CompoundNBT nbtTags = event.getData();
 
             nbtTags.putInt("MekanismWorldGen", baseWorldGenVersion);
@@ -887,7 +888,7 @@ public class Mekanism {
 
     @SubscribeEvent
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
-        if (!event.getWorld().isRemote) {
+        if (!event.getWorld().isRemote()) {
             if (MekanismConfig.current().general.enableWorldRegeneration.val()) {
                 CompoundNBT loadData = event.getData();
                 if (loadData.getInt("MekanismWorldGen") == baseWorldGenVersion &&

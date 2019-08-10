@@ -14,6 +14,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.CompoundNBT;
@@ -204,8 +205,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         if (!result.isEmpty()) {
             if (!world.isRemote) {
                 BlockState state = block.getBlockState(world);
-                Block newBlock = Block.getBlockFromItem(result.getItem());
-                if (newBlock != Blocks.AIR) {
+                if (result.getItem() instanceof BlockItem) {
                     world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getDamage()), 3);
                 } else {
                     world.removeBlock(block.getPos(), false);

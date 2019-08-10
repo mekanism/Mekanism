@@ -51,8 +51,8 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
     }
 
     @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
         if (master != null) {
             TileEntityThermalEvaporationController tile = getController();
             if (tile != null) {

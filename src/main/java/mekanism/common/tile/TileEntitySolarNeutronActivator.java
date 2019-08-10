@@ -97,7 +97,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
             TileUtils.emitGas(this, outputTank, gasOutput, getDirection());
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
-            if (world.getWorldInfo().getDayTime() % 20 == 0) {
+            if (world.getDayTime() % 20 == 0) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
@@ -281,7 +281,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public double getProgress() {
         if (getActive()) {
-            return .16 * (1 + (world.getWorldInfo().getDayTime() % 6));
+            return .16 * (1 + (world.getDayTime() % 6));
         }
         return 0;
     }

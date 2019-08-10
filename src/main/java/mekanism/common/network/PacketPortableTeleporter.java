@@ -46,6 +46,22 @@ public class PacketPortableTeleporter {
         }
     }
 
+    public Frequency getFrequency() {
+        return frequency;
+    }
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public List<Frequency> getPrivateCache() {
+        return privateCache;
+    }
+
+    public List<Frequency> getPublicCache() {
+        return publicCache;
+    }
+
     private PacketPortableTeleporter(Hand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs) {
         packetType = PortableTeleporterPacketType.DATA_RESPONSE;
 
@@ -81,7 +97,7 @@ public class PacketPortableTeleporter {
                             }
                         }
                         if (toUse == null) {
-                            toUse = new Frequency(message.frequency.name, player.getPersistentID()).setPublic(message.frequency.isPublic());
+                            toUse = new Frequency(message.frequency.name, player.getUniqueID()).setPublic(message.frequency.isPublic());
                             manager1.addFrequency(toUse);
                         }
                         item.setFrequency(itemstack, toUse);
@@ -110,7 +126,7 @@ public class PacketPortableTeleporter {
                             TileEntityTeleporter teleporter = (TileEntityTeleporter) coords.getTileEntity(teleWorld);
                             if (teleporter != null) {
                                 try {
-                                    teleporter.didTeleport.add(player.getPersistentID());
+                                    teleporter.didTeleport.add(player.getUniqueID());
                                     teleporter.teleDelay = 5;
                                     item.setEnergy(itemstack, item.getEnergy(itemstack) - ItemPortableTeleporter.calculateEnergyCost(player, coords));
                                     if (player instanceof ServerPlayerEntity) {
@@ -122,7 +138,7 @@ public class PacketPortableTeleporter {
                                         TileEntityTeleporter.teleportPlayerTo((ServerPlayerEntity) player, coords, teleporter);
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
                                     }
-                                    world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), coords);
                                 } catch (Exception ignored) {
                                 }

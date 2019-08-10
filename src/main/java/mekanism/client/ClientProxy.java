@@ -1,7 +1,9 @@
 package mekanism.client;
 
 import java.io.File;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
@@ -133,7 +135,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
-import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
+import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
@@ -221,11 +223,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -233,12 +234,12 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
@@ -755,23 +756,23 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void handleTeleporterUpdate(PortableTeleporterMessage message) {
+    public void handleTeleporterUpdate(PacketPortableTeleporter message) {
         Screen screen = Minecraft.getInstance().currentScreen;
 
         if (screen instanceof GuiTeleporter && !((GuiTeleporter) screen).isStackEmpty()) {
             GuiTeleporter teleporter = (GuiTeleporter) screen;
-            teleporter.setStatus(message.status);
-            teleporter.setFrequency(message.frequency);
-            teleporter.setPublicCache(message.publicCache);
-            teleporter.setPrivateCache(message.privateCache);
+            teleporter.setStatus(message.getStatus());
+            teleporter.setFrequency(message.getFrequency());
+            teleporter.setPublicCache(message.getPublicCache());
+            teleporter.setPrivateCache(message.getPrivateCache());
             teleporter.updateButtons();
         }
     }
 
     @Override
-    public void addHitEffects(Coord4D coord, RayTraceResult mop) {
+    public void addHitEffects(Coord4D coord, BlockRayTraceResult mop) {
         if (Minecraft.getInstance().world != null) {
-            Minecraft.getInstance().effectRenderer.addBlockHitEffects(coord.getPos(), mop);
+            Minecraft.getInstance().particles.addBlockHitEffects(coord.getPos(), mop);
         }
     }
 
@@ -903,7 +904,7 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
-        Registry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "jetpack", model -> RenderJetpack.model = model);
         registerItemStackModel(modelRegistry, "jetpack_armored", model -> RenderArmoredJetpack.model = model);
         registerItemStackModel(modelRegistry, "gas_mask", model -> RenderGasMask.model = model);
@@ -930,9 +931,9 @@ public class ClientProxy extends CommonProxy {
         return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, type), "inventory");
     }
 
-    private void registerItemStackModel(Registry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
+    private void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
         ModelResourceLocation resourceLocation = getInventoryMRL(type);
-        modelRegistry.putObject(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.getObject(resourceLocation))));
+        modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));
     }
 
     @Override
@@ -972,9 +973,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public PlayerEntity getPlayer(MessageContext context) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            return context.getServerHandler().player;
+    public PlayerEntity getPlayer(Supplier<Context> context) {
+        if (context.get().getDirection() == NetworkDirection.PLAY_TO_SERVER || context.get().getDirection() == NetworkDirection.LOGIN_TO_SERVER) {
+            return context.get().getSender();
         }
         return Minecraft.getInstance().player;
     }
@@ -1001,7 +1002,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {
-        Minecraft.getInstance().effectRenderer.addEffect(new ParticleLaser(world, from, to, direction, energy));
+        Minecraft.getInstance().particles.addEffect(new ParticleLaser(world, from, to, direction, energy));
     }
 
     @Override
