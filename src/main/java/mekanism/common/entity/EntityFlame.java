@@ -116,7 +116,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         for (Entity entity1 : list) {
             if ((entity1 instanceof ItemEntity || entity1.canBeCollidedWith()) && entity1 != owner) {
                 float boundsScale = 0.3F;
-                AxisAlignedBB newBounds = entity1.getEntityBoundingBox().expand(boundsScale, boundsScale, boundsScale);
+                AxisAlignedBB newBounds = entity1.getBoundingBox().expand(boundsScale, boundsScale, boundsScale);
                 RayTraceResult RayTraceResult1 = newBounds.calculateIntercept(localVec, motionVec);
 
                 if (RayTraceResult1 != null) {

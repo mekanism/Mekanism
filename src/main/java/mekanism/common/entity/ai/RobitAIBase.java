@@ -63,13 +63,13 @@ public abstract class RobitAIBase extends Goal {
     }
 
     protected void updateTask(Entity target) {
-        theRobit.getLookHelper().setLookPositionWithEntity(target, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
+        theRobit.getLookController().setLookPositionWithEntity(target, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
         if (--ticker <= 0) {
             ticker = 10;
             if (!thePathfinder.tryMoveToEntityLiving(target, moveSpeed)) {
                 if (theRobit.getDistanceSq(target) >= 144.0D) {
                     int x = MathHelper.floor(target.posX) - 2;
-                    int y = MathHelper.floor(target.getEntityBoundingBox().minY);
+                    int y = MathHelper.floor(target.getBoundingBox().minY);
                     int z = MathHelper.floor(target.posZ) - 2;
                     for (int l = 0; l <= 4; ++l) {
                         for (int i1 = 0; i1 <= 4; ++i1) {

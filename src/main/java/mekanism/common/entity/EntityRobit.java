@@ -213,7 +213,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     private void collectItems() {
-        List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, getEntityBoundingBox().grow(1.5, 1.5, 1.5));
+        List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, getBoundingBox().grow(1.5, 1.5, 1.5));
 
         if (!items.isEmpty()) {
             for (ItemEntity item : items) {

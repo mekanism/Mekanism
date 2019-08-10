@@ -33,7 +33,7 @@ public class CommonPlayerTickHandler {
         BlockPos pos = new BlockPos(x, y, z);
         BlockState s = player.world.getBlockState(pos);
         AxisAlignedBB box = s.getBoundingBox(player.world, pos).offset(pos);
-        AxisAlignedBB playerBox = player.getEntityBoundingBox();
+        AxisAlignedBB playerBox = player.getBoundingBox();
         return !s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(box);
 
     }
@@ -126,7 +126,7 @@ public class CommonPlayerTickHandler {
             if (player.getAir() == max) {
                 for (EffectInstance effect : player.getActivePotionEffects()) {
                     for (int i = 0; i < 9; i++) {
-                        effect.onUpdate(player);
+                        effect.tick(player);
                     }
                 }
             }

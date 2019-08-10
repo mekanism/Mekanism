@@ -9,7 +9,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.ServerChunkProvider;
+import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

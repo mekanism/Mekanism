@@ -60,6 +60,7 @@ import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
+import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
@@ -134,7 +135,7 @@ public class CommonProxy implements IGuiProvider {
     public void registerTESRs() {
     }
 
-    public void handleTeleporterUpdate(PortableTeleporterMessage message) {
+    public void handleTeleporterUpdate(PacketPortableTeleporter message) {
     }
 
     /**
@@ -413,9 +414,9 @@ public class CommonProxy implements IGuiProvider {
 
     public void onConfigSync(boolean fromPacket) {
         if (MekanismConfig.current().general.cardboardSpawners.val()) {
-            MekanismAPI.removeBoxBlacklist(Blocks.MOB_SPAWNER, OreDictionary.WILDCARD_VALUE);
+            MekanismAPI.removeBoxBlacklist(Blocks.SPAWNER, OreDictionary.WILDCARD_VALUE);
         } else {
-            MekanismAPI.addBoxBlacklist(Blocks.MOB_SPAWNER, OreDictionary.WILDCARD_VALUE);
+            MekanismAPI.addBoxBlacklist(Blocks.SPAWNER, OreDictionary.WILDCARD_VALUE);
         }
         if (MekanismConfig.current().general.voiceServerEnabled.val() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();

@@ -13,6 +13,7 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,19 +36,19 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
+    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InventoryBin inv = new InventoryBin(itemstack);
         if (inv.getItemCount() > 0) {
-            list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
+            tooltip.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
             String amountStr = inv.getItemCount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : "" + inv.getItemCount();
-            list.add(EnumColor.PURPLE + LangUtils.localize("tooltip.itemAmount") + ": " + EnumColor.GREY + amountStr);
+            tooltip.add(EnumColor.PURPLE + LangUtils.localize("tooltip.itemAmount") + ": " + EnumColor.GREY + amountStr);
         } else {
-            list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty"));
+            tooltip.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty"));
         }
         BinTier tier = getTier(itemstack);
         if (tier != null) {
             int cap = tier.getStorage();
-            list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
+            tooltip.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
                      (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils.localize("transmission.Items"));
         }
     }

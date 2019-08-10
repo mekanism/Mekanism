@@ -35,7 +35,7 @@ public class RobitAIFollow extends RobitAIBase {
             return false;
         } else if (!theRobit.getFollowing()) {
             //Still looks up at the player if on chargepad or not following
-            theRobit.getLookHelper().setLookPositionWithEntity(player, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
+            theRobit.getLookController().setLookPositionWithEntity(player, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
             return false;
         } else if (theRobit.getDistanceSq(player) < (minDist * minDist)) {
             return false;

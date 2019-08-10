@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
-import mekanism.common.MekanismBlock;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -23,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,15 +41,15 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        tooltip.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
         BlockData data = getBlockData(itemstack);
         if (data != null) {
             try {
-                list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta).getDisplayName());
-                list.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
+                tooltip.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta).getDisplayName());
+                tooltip.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
                 if (data.tileTag != null) {
-                    list.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
+                    tooltip.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
                 }
             } catch (Exception ignored) {
             }
