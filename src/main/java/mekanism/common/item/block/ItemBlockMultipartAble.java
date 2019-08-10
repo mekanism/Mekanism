@@ -10,10 +10,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -35,35 +36,43 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
      */
     @Nonnull
     @Override
-    public ActionResultType onItemUse(PlayerEntity player, World worldIn, @Nonnull BlockPos pos, @Nonnull Hand hand, @Nonnull Direction facing, float hitX, float hitY, float hitZ) {
-        BlockState iblockstate = worldIn.getBlockState(pos);
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        if (player == null) {
+            return ActionResultType.PASS;
+        }
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
+        BlockState iblockstate = world.getBlockState(pos);
         Block block = iblockstate.getBlock();
+        Hand hand = context.getHand();
         ItemStack itemstack = player.getHeldItem(hand);
         if (itemstack.isEmpty()) {
             return ActionResultType.FAIL;//WTF
         }
+        Direction side = context.getFace();
         if (Mekanism.hooks.MCMPLoaded) {
-            if (!block.isReplaceable(worldIn, pos) && !hasFreeMultiPartSpot(itemstack, worldIn, pos, iblockstate, facing)) {//free spot handles case of no container
-                pos = pos.offset(facing);
-                iblockstate = worldIn.getBlockState(pos);
+            if (!block.isReplaceable(world, pos) && !hasFreeMultiPartSpot(itemstack, world, pos, iblockstate, side)) {//free spot handles case of no container
+                pos = pos.offset(side);
+                iblockstate = world.getBlockState(pos);
             }
-        } else if (!block.isReplaceable(worldIn, pos)) {
-            pos = pos.offset(facing);
+        } else if (!block.isReplaceable(world, pos)) {
+            pos = pos.offset(side);
         }
 
-        if (player.canPlayerEdit(pos, facing, itemstack) && mayPlace(itemstack, worldIn, pos, iblockstate, hand, facing)) {
+        if (player.canPlayerEdit(pos, side, itemstack) && mayPlace(itemstack, world, pos, iblockstate, hand, side)) {
             int i = this.getMetadata(itemstack.getMetadata());
-            BlockState iblockstate1 = this.block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, i, player, hand);
+            BlockState iblockstate1 = this.getBlock().getStateForPlacement(world, pos, side, hitX, hitY, hitZ, i, player, hand);
             boolean flag;
             if (Mekanism.hooks.MCMPLoaded) {
-                flag = MultipartMekanism.placeMultipartBlock(this.block, itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, iblockstate1);
+                flag = MultipartMekanism.placeMultipartBlock(this.getBlock(), itemstack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1);
             } else {
-                flag = placeBlockAt(itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, iblockstate1);
+                flag = placeBlockAt(itemstack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1);
             }
             if (flag) {
-                iblockstate1 = worldIn.getBlockState(pos);
-                SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, worldIn, pos, player);
-                worldIn.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                iblockstate1 = world.getBlockState(pos);
+                SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, pos, player);
+                world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                 itemstack.shrink(1);
             }
             return ActionResultType.SUCCESS;

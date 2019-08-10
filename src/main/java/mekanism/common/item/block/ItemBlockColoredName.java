@@ -6,6 +6,7 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 public class ItemBlockColoredName extends ItemBlockMekanism {
 
@@ -15,13 +16,13 @@ public class ItemBlockColoredName extends ItemBlockMekanism {
 
     @Nonnull
     @Override
-    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         //TODO: Can this be removed? Or is this what is getting it to be colored
         EnumColor color = getColor(stack);
         if (color == EnumColor.BLACK) {
             color = EnumColor.DARK_GREY;
         }
-        return color + super.getItemStackDisplayName(stack);
+        return color + super.getDisplayName(stack);
     }
 
     private EnumColor getColor(ItemStack stack) {

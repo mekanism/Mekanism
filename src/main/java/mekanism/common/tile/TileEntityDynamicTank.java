@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
@@ -27,7 +28,6 @@ import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager {
@@ -238,72 +238,76 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         }
 
         ItemStack copyStack = StackUtils.size(itemStack, 1);
-        if (FluidContainerUtils.isFluidContainer(itemStack)) {
-            IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
-            if (FluidUtil.getFluidContained(copyStack) == null) {
-                if (structure.fluidStored != null) {
-                    int filled = handler.fill(structure.fluidStored, !player.isCreative());
-                    copyStack = handler.getContainer();
-                    if (filled > 0) {
-                        if (player.isCreative()) {
-                            structure.fluidStored.amount -= filled;
-                        } else if (itemStack.getCount() == 1) {
-                            structure.fluidStored.amount -= filled;
-                            player.setHeldItem(hand, copyStack);
-                        } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(copyStack)) {
-                            structure.fluidStored.amount -= filled;
-                            itemStack.shrink(1);
-                        }
-                        if (structure.fluidStored.amount == 0) {
-                            structure.fluidStored = null;
-                        }
-                        return true;
-                    }
-                }
-            } else {
-                FluidStack itemFluid = FluidUtil.getFluidContained(copyStack);
-                int stored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
-                int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - stored;
-                if (structure.fluidStored != null && !structure.fluidStored.isFluidEqual(itemFluid)) {
-                    return false;
-                }
-                boolean filled = false;
-                FluidStack drained = handler.drain(needed, !player.isCreative());
-                copyStack = handler.getContainer();
+        return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(copyStack)).getIfPresentElseDo(
+              handler -> {
+                  new LazyOptionalHelper<>(FluidUtil.getFluidContained(copyStack)).getIfPresentElseDo(
+                        itemFluid -> {
+                            int stored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
+                            int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - stored;
+                            if (structure.fluidStored != null && !structure.fluidStored.isFluidEqual(itemFluid)) {
+                                return false;
+                            }
+                            boolean filled = false;
+                            FluidStack drained = handler.drain(needed, !player.isCreative());
+                            ItemStack container = handler.getContainer();
 
-                if (copyStack.getCount() == 0) {
-                    copyStack = ItemStack.EMPTY;
-                }
-                if (drained != null) {
-                    if (player.isCreative()) {
-                        filled = true;
-                    } else if (!copyStack.isEmpty()) {
-                        if (itemStack.getCount() == 1) {
-                            player.setHeldItem(hand, copyStack);
-                            filled = true;
-                        } else if (player.inventory.addItemStackToInventory(copyStack)) {
-                            itemStack.shrink(1);
-                            filled = true;
-                        }
-                    } else {
-                        itemStack.shrink(1);
-                        if (itemStack.getCount() == 0) {
-                            player.setHeldItem(hand, ItemStack.EMPTY);
-                        }
-                        filled = true;
-                    }
+                            if (container.getCount() == 0) {
+                                container = ItemStack.EMPTY;
+                            }
+                            if (drained != null) {
+                                if (player.isCreative()) {
+                                    filled = true;
+                                } else if (!container.isEmpty()) {
+                                    if (itemStack.getCount() == 1) {
+                                        player.setHeldItem(hand, container);
+                                        filled = true;
+                                    } else if (player.inventory.addItemStackToInventory(container)) {
+                                        itemStack.shrink(1);
+                                        filled = true;
+                                    }
+                                } else {
+                                    itemStack.shrink(1);
+                                    if (itemStack.getCount() == 0) {
+                                        player.setHeldItem(hand, ItemStack.EMPTY);
+                                    }
+                                    filled = true;
+                                }
 
-                    if (filled) {
-                        if (structure.fluidStored == null) {
-                            structure.fluidStored = drained;
-                        } else {
-                            structure.fluidStored.amount += drained.amount;
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+                                if (filled) {
+                                    if (structure.fluidStored == null) {
+                                        structure.fluidStored = drained;
+                                    } else {
+                                        structure.fluidStored.amount += drained.amount;
+                                    }
+                                    return true;
+                                }
+                            }
+                            return false;
+                        },
+                        () -> {
+                            if (structure.fluidStored != null) {
+                                int filled = handler.fill(structure.fluidStored, !player.isCreative());
+                                ItemStack container = handler.getContainer();
+                                if (filled > 0) {
+                                    if (player.isCreative()) {
+                                        structure.fluidStored.amount -= filled;
+                                    } else if (itemStack.getCount() == 1) {
+                                        structure.fluidStored.amount -= filled;
+                                        player.setHeldItem(hand, container);
+                                    } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
+                                        structure.fluidStored.amount -= filled;
+                                        itemStack.shrink(1);
+                                    }
+                                    if (structure.fluidStored.amount == 0) {
+                                        structure.fluidStored = null;
+                                    }
+                                    return true;
+                                }
+                            }
+                            return false;
+                        });
+              },
+              false
+        );
     }
 }

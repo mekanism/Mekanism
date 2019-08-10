@@ -9,6 +9,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
@@ -113,8 +114,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             if (getFuel(itemstack) > 0) {
                 return true;
             }
-            FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
-            return fluidContained != null && fluidContained.getFluid() == FluidRegistry.LAVA;
+            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluid -> fluid.getFluid() == FluidRegistry.LAVA);
         } else if (slotID == 1) {
             return ChargeUtils.canBeCharged(itemstack);
         }
@@ -149,7 +149,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, true);
         } else if (slotID == 0) {
-            return FluidUtil.getFluidContained(itemstack) == null;
+            return !FluidUtil.getFluidContained(itemstack).isPresent();
         }
         return false;
     }

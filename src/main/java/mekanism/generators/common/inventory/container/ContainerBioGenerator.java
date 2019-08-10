@@ -1,5 +1,6 @@
 package mekanism.generators.common.inventory.container;
 
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,8 +28,7 @@ public class ContainerBioGenerator extends ContainerFuelGenerator<TileEntityBioG
             return true;
         }
         if (FluidRegistry.isFluidRegistered("bioethanol")) {
-            FluidStack fluidContained = FluidUtil.getFluidContained(slotStack);
-            return fluidContained != null && fluidContained.getFluid() == FluidRegistry.getFluid("bioethanol");
+            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(slotStack)).matches(fluidStack -> fluidStack.getFluid() == FluidRegistry.getFluid("bioethanol"));
         }
         return false;
     }

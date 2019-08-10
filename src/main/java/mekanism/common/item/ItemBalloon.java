@@ -13,12 +13,14 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -61,7 +63,7 @@ public class ItemBalloon extends ItemMekanism {
 
     @Nonnull
     @Override
-    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         //TODO: Remove this method??
         String dyeName = color.getDyedName();
         if (LangUtils.canLocalize(getTranslationKey(stack) + "." + color.dyeName)) {
@@ -75,14 +77,20 @@ public class ItemBalloon extends ItemMekanism {
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        if (player == null) {
+            return ActionResultType.PASS;
+        }
+        ItemStack stack = player.getHeldItem(context.getHand());
         if (player.isSneaking()) {
+            BlockPos pos = context.getPos();
             AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));
             List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
             if (balloonsNear.size() > 0) {
                 return ActionResultType.FAIL;
             }
+            World world = context.getWorld();
             if (world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
                 pos = pos.down();
             }

@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -47,12 +48,12 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemR
 
     @Nonnull
     @Override
-    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         EnumColor color = getColor(stack);
         if (color == EnumColor.BLACK) {
             color = EnumColor.DARK_GREY;
         }
-        return color + super.getItemStackDisplayName(stack);
+        return color + super.getDisplayName(stack);
     }
 
     public EnumColor getColor(ItemStack stack) {

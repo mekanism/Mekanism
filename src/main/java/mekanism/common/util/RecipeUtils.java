@@ -9,6 +9,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.block.ItemBlockBin;
@@ -112,9 +113,10 @@ public class RecipeUtils {
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
                 if (FluidContainerUtils.isFluidContainer(itemstack)) {
-                    FluidStack stored = FluidUtil.getFluidContained(itemstack);
-                    if (stored != null) {
-                        if (FluidUtil.getFluidHandler(itemstack).fill(stored, false) == 0) {
+                    LazyOptionalHelper<FluidStack> fluidStackHelper = new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack));
+                    if (fluidStackHelper.isPresent()) {
+                        FluidStack stored = fluidStackHelper.getValue();
+                        if (new LazyOptionalHelper<>(FluidUtil.getFluidHandler(itemstack)).matches(handler -> handler.fill(stored, false) == 0)) {
                             return ItemStack.EMPTY;
                         }
                         if (fluidFound == null) {
@@ -130,7 +132,8 @@ public class RecipeUtils {
             }
 
             if (fluidFound != null) {
-                FluidUtil.getFluidHandler(toReturn).fill(fluidFound, true);
+                FluidStack finalFluidFound = fluidFound;
+                FluidUtil.getFluidHandler(toReturn).ifPresent(handler -> handler.fill(finalFluidFound, true));
             }
         }
 

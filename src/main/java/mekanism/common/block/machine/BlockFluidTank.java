@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasGui;
@@ -53,7 +54,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui, IColoredBlock, IStateFacing, IStateActive, ITieredBlock<FluidTankTier>,
       IHasInventory, IHasTileEntity<TileEntityFluidTank> {
@@ -188,74 +188,77 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
 
     private boolean manageInventory(PlayerEntity player, TileEntityFluidTank tileEntity, Hand hand, ItemStack itemStack) {
         ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
-        if (FluidContainerUtils.isFluidContainer(itemStack)) {
-            IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
-            if (FluidUtil.getFluidContained(copyStack) == null) {
-                if (tileEntity.fluidTank.getFluid() != null) {
-                    int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.isCreative());
-                    copyStack = handler.getContainer();
-                    if (filled > 0) {
-                        if (itemStack.getCount() == 1) {
-                            player.setHeldItem(hand, copyStack);
-                        } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(copyStack)) {
-                            itemStack.shrink(1);
-                        } else {
-                            player.dropItem(copyStack, false, true);
-                            itemStack.shrink(1);
+        return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(copyStack)).getIfPresentElse(
+              handler -> new LazyOptionalHelper<>(FluidUtil.getFluidContained(copyStack)).getIfPresentElseDo(
+                    itemFluid -> {
+                        int needed = tileEntity.getCurrentNeeded();
+                        if (tileEntity.fluidTank.getFluid() != null && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid)) {
+                            return false;
                         }
-                        if (tileEntity.tier != FluidTankTier.CREATIVE) {
-                            tileEntity.fluidTank.drain(filled, true);
+                        boolean filled = false;
+                        FluidStack drained = handler.drain(needed, !player.isCreative());
+                        ItemStack container = handler.getContainer();
+                        if (container.getCount() == 0) {
+                            container = ItemStack.EMPTY;
                         }
-                        return true;
-                    }
-                }
-            } else {
-                FluidStack itemFluid = FluidUtil.getFluidContained(copyStack);
-                int needed = tileEntity.getCurrentNeeded();
-                if (tileEntity.fluidTank.getFluid() != null && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid)) {
-                    return false;
-                }
-                boolean filled = false;
-                FluidStack drained = handler.drain(needed, !player.isCreative());
-                copyStack = handler.getContainer();
-                if (copyStack.getCount() == 0) {
-                    copyStack = ItemStack.EMPTY;
-                }
-                if (drained != null) {
-                    if (player.isCreative()) {
-                        filled = true;
-                    } else if (!copyStack.isEmpty()) {
-                        if (itemStack.getCount() == 1) {
-                            player.setHeldItem(hand, copyStack);
-                            filled = true;
-                        } else if (player.inventory.addItemStackToInventory(copyStack)) {
-                            itemStack.shrink(1);
+                        if (drained != null) {
+                            if (player.isCreative()) {
+                                filled = true;
+                            } else if (!container.isEmpty()) {
+                                if (container.getCount() == 1) {
+                                    player.setHeldItem(hand, container);
+                                    filled = true;
+                                } else if (player.inventory.addItemStackToInventory(container)) {
+                                    itemStack.shrink(1);
 
-                            filled = true;
-                        }
-                    } else {
-                        itemStack.shrink(1);
-                        if (itemStack.getCount() == 0) {
-                            player.setHeldItem(hand, ItemStack.EMPTY);
-                        }
-                        filled = true;
-                    }
+                                    filled = true;
+                                }
+                            } else {
+                                itemStack.shrink(1);
+                                if (itemStack.getCount() == 0) {
+                                    player.setHeldItem(hand, ItemStack.EMPTY);
+                                }
+                                filled = true;
+                            }
 
-                    if (filled) {
-                        int toFill = tileEntity.fluidTank.getCapacity() - tileEntity.fluidTank.getFluidAmount();
-                        if (tileEntity.tier != FluidTankTier.CREATIVE) {
-                            toFill = Math.min(toFill, drained.amount);
+                            if (filled) {
+                                int toFill = tileEntity.fluidTank.getCapacity() - tileEntity.fluidTank.getFluidAmount();
+                                if (tileEntity.tier != FluidTankTier.CREATIVE) {
+                                    toFill = Math.min(toFill, drained.amount);
+                                }
+                                tileEntity.fluidTank.fill(PipeUtils.copy(drained, toFill), true);
+                                if (drained.amount - toFill > 0) {
+                                    tileEntity.pushUp(PipeUtils.copy(itemFluid, drained.amount - toFill), true);
+                                }
+                                return true;
+                            }
                         }
-                        tileEntity.fluidTank.fill(PipeUtils.copy(drained, toFill), true);
-                        if (drained.amount - toFill > 0) {
-                            tileEntity.pushUp(PipeUtils.copy(itemFluid, drained.amount - toFill), true);
+                        return false;
+                    },
+                    () -> {
+                        if (tileEntity.fluidTank.getFluid() != null) {
+                            int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.isCreative());
+                            ItemStack container = handler.getContainer();
+                            if (filled > 0) {
+                                if (itemStack.getCount() == 1) {
+                                    player.setHeldItem(hand, container);
+                                } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
+                                    itemStack.shrink(1);
+                                } else {
+                                    player.dropItem(container, false, true);
+                                    itemStack.shrink(1);
+                                }
+                                if (tileEntity.tier != FluidTankTier.CREATIVE) {
+                                    tileEntity.fluidTank.drain(filled, true);
+                                }
+                                return true;
+                            }
                         }
-                        return true;
+                        return false;
                     }
-                }
-            }
-        }
-        return false;
+              ),
+              false
+        );
     }
 
     @Override

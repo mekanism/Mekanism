@@ -547,9 +547,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         if (slot == 0) {
-            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack) != null;
+            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack).isPresent();
         } else if (slot == 2) {
-            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack) == null;
+            return FluidContainerUtils.isFluidContainer(stack) && !FluidUtil.getFluidContained(stack).isPresent();
         }
         return false;
     }

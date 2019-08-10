@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
@@ -9,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerFluidicPlenisher extends ContainerMekanism<TileEntityFluidicPlenisher> {
@@ -40,7 +42,7 @@ public class ContainerFluidicPlenisher extends ContainerMekanism<TileEntityFluid
                 } else if (!mergeItemStack(slotStack, 3, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (FluidUtil.getFluidContained(slotStack) != null && FluidUtil.getFluidContained(slotStack).getFluid().canBePlacedInWorld()) {
+            } else if (new LazyOptionalHelper<>(FluidUtil.getFluidContained(slotStack)).matches(fluidStack -> fluidStack.getFluid().canBePlacedInWorld())) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

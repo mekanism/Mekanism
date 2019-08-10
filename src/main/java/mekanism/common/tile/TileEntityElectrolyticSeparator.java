@@ -215,7 +215,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         } else if (slotID == 0) {
-            return FluidUtil.getFluidContained(itemstack) == null;
+            return !FluidUtil.getFluidContained(itemstack).isPresent();
         } else if (slotID == 1 || slotID == 2) {
             return itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null
                    && ((IGasItem) itemstack.getItem()).getGas(itemstack).amount == ((IGasItem) itemstack.getItem()).getMaxGas(itemstack);

@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
@@ -32,7 +33,7 @@ public class ContainerChemicalWasher extends ContainerMekanism<TileEntityChemica
                 if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (FluidUtil.getFluidContained(slotStack) != null && FluidUtil.getFluidContained(slotStack).getFluid() == FluidRegistry.WATER) {
+            } else if (new LazyOptionalHelper<>(FluidUtil.getFluidContained(slotStack)).matches(fluidStack -> fluidStack.getFluid() == FluidRegistry.WATER)) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

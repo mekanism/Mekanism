@@ -279,7 +279,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             //Only allow empty fluid containers
-            return FluidContainerUtils.isFluidContainer(itemstack) && FluidUtil.getFluidContained(itemstack) == null;
+            return FluidContainerUtils.isFluidContainer(itemstack) && !FluidUtil.getFluidContained(itemstack).isPresent();
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }

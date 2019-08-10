@@ -9,6 +9,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -50,14 +51,16 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
         if (!getInventory().get(0).isEmpty()) {
             ChargeUtils.charge(1, this);
-            FluidStack fluid = FluidUtil.getFluidContained(getInventory().get(0));
-            if (fluid != null && FluidRegistry.isFluidRegistered("bioethanol")) {
-                if (fluid.getFluid() == FluidRegistry.getFluid("bioethanol")) {
-                    IFluidHandler handler = FluidUtil.getFluidHandler(getInventory().get(0));
-                    FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, true);
-                    if (drained != null) {
-                        bioFuelSlot.fluidStored += drained.amount;
-                    }
+            LazyOptionalHelper<FluidStack> fluidHelper = new LazyOptionalHelper<>(FluidUtil.getFluidContained(getInventory().get(0)));
+            //TODO: Maybe do this differently
+            if (fluidHelper.isPresent() && FluidRegistry.isFluidRegistered("bioethanol")) {
+                if (fluidHelper.getValue().getFluid() == FluidRegistry.getFluid("bioethanol")) {
+                    FluidUtil.getFluidHandler(getInventory().get(0)).ifPresent(handler -> {
+                        FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, true);
+                        if (drained != null) {
+                            bioFuelSlot.fluidStored += drained.amount;
+                        }
+                    });
                 }
             } else {
                 int fuel = getFuel(getInventory().get(0));
@@ -98,10 +101,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             if (getFuel(itemstack) > 0) {
                 return true;
             } else if (FluidRegistry.isFluidRegistered("bioethanol")) {
-                FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
-                if (fluidContained != null) {
-                    return fluidContained.getFluid() == FluidRegistry.getFluid("bioethanol");
-                }
+                return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluid -> fluid.getFluid() == FluidRegistry.getFluid("bioethanol"));
             }
             return false;
         } else if (slotID == 1) {

@@ -30,12 +30,12 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -45,13 +45,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
@@ -105,12 +102,16 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(PlayerEntity player, World world, @Nonnull BlockPos pos, @Nonnull Hand hand, @Nonnull Direction side, float hitX, float hitY, float hitZ) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        if (player == null) {
+            return ActionResultType.PASS;
+        }
+        ItemStack stack = player.getHeldItem(context.getHand());
         if (getBucketMode(stack)) {
             return ActionResultType.PASS;
         }
-        return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
+        return super.onItemUse(context);
     }
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, BlockPos pos) {

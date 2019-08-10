@@ -18,6 +18,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -42,6 +43,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -255,8 +257,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (slotID == 1) {
             return false;
         } else if (slotID == 0) {
-            FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
-            return fluidContained != null && fluidContained.getFluid().canBePlacedInWorld();
+            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluidStack -> fluidStack.getFluid().canBePlacedInWorld());
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
