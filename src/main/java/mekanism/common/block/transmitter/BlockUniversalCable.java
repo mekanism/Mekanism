@@ -17,7 +17,7 @@ import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockUniversalCable extends BlockSmallTransmitter implements ITieredBlock<CableTier>, IBlockOreDict, IHasTileEntity<TileEntityUniversalCable> {
 

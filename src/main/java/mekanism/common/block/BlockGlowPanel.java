@@ -46,12 +46,8 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     private final EnumColor color;
 
     public BlockGlowPanel(EnumColor color) {
-        super(Material.PISTON);
+        super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F).lightValue(15));
         this.color = color;
-        setHardness(1F);
-        setResistance(10F);
-        //It gets multiplied by 15 when being set
-        setLightLevel(1);
         setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_glow_panel"));
     }
 
@@ -127,11 +123,11 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         if (tileEntity != null && !world.isRemote && !canStay(world, pos)) {
             dropBlockAsItem(world, pos, world.getBlockState(pos), 0);
-            world.removeBlock(pos, false);
+            world.removeBlock(pos, isMoving);
         }
     }
 

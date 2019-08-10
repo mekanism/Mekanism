@@ -47,9 +47,7 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.bio"));
 
     public BlockBioGenerator() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(8F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "bio_generator"));
     }
 
@@ -74,7 +72,7 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             final TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof TileEntityMekanism) {

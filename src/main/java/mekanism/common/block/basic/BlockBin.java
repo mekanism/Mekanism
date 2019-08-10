@@ -53,10 +53,8 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     private final BinTier tier;
 
     public BlockBin(BinTier tier) {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         this.tier = tier;
-        setHardness(5F);
-        setResistance(10F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_bin"));
     }
 
@@ -86,7 +84,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
             if (tileEntity instanceof TileEntityMekanism) {

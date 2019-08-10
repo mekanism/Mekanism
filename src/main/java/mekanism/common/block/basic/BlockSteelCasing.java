@@ -3,6 +3,7 @@ package mekanism.common.block.basic;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -13,9 +14,7 @@ import net.minecraft.world.World;
 public class BlockSteelCasing extends BlockTileDrops implements IHasModel {
 
     public BlockSteelCasing() {
-        super(Material.IRON);
-        setHardness(5F);
-        setResistance(10F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "steel_casing"));
     }
 

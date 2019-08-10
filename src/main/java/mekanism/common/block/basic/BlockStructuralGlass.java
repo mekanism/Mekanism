@@ -32,15 +32,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityStructuralGlass> {
 
     public BlockStructuralGlass() {
-        super(Material.IRON);
-        setHardness(5F);
-        setResistance(10F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "structural_glass"));
     }
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
             if (tileEntity instanceof TileEntityMekanism) {
@@ -63,12 +61,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
         //Not structural glass
         return world.getBlockState(pos.offset(side)).getBlock() != this;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
-        return false;
     }
 
     @Override

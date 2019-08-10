@@ -57,10 +57,8 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     private final EnergyCubeTier tier;
 
     public BlockEnergyCube(EnergyCubeTier tier) {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(2F, 4F));
         this.tier = tier;
-        setHardness(2F);
-        setResistance(4F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_energy_cube"));
     }
 
@@ -95,7 +93,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

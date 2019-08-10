@@ -30,10 +30,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntityReactorGlass> {
 
     public BlockReactorGlass() {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         //TODO: Should the material be glass? check other materials of various blocks as well
-        setHardness(3.5F);
-        setResistance(8F);
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "reactor_glass"));
     }
 
@@ -51,7 +49,7 @@ public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntit
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {
@@ -97,13 +95,6 @@ public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntit
             return false;
         }
         return super.shouldSideBeRendered(state, world, pos, side);
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
-        //TODO
-        return false;
     }
 
     @Nullable

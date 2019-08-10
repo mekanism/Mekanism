@@ -6,7 +6,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.transmitter.logistical_transporter.TileEntityRestrictiveTransporter;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockRestrictiveTransporter extends BlockLargeTransmitter implements IHasTileEntity<TileEntityRestrictiveTransporter> {
 

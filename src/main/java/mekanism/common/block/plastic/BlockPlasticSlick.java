@@ -15,11 +15,8 @@ public class BlockPlasticSlick extends Block implements IColoredBlock, IBlockOre
     private final EnumColor color;
 
     public BlockPlasticSlick(EnumColor color) {
-        super(Material.WOOD);
+        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(5F, 10F).slipperiness(0.98F));
         this.color = color;
-        setHardness(5F);
-        setResistance(10F);
-        slipperiness = 0.98F;
         setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_slick_plastic"));
     }
 

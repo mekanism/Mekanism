@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 public class BlockObsidianTNT extends Block {
 
     public BlockObsidianTNT() {
-        super(Material.TNT);
+        super(Block.Properties.create(Material.TNT));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "obsidian_tnt"));
     }
 
@@ -38,10 +38,10 @@ public class BlockObsidianTNT extends Block {
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (world.isBlockPowered(pos)) {
             explode(world, pos);
-            world.removeBlock(pos, false);
+            world.removeBlock(pos, isMoving);
         }
     }
 

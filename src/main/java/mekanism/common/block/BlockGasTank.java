@@ -50,10 +50,8 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     private final GasTankTier tier;
 
     public BlockGasTank(GasTankTier tier) {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         this.tier = tier;
-        setHardness(3.5F);
-        setResistance(8F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_gas_tank"));
     }
 
@@ -92,7 +90,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

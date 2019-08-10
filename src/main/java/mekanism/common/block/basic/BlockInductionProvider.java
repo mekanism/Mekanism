@@ -16,11 +16,12 @@ import mekanism.common.tile.induction_provider.TileEntityEliteInductionProvider;
 import mekanism.common.tile.induction_provider.TileEntityInductionProvider;
 import mekanism.common.tile.induction_provider.TileEntityUltimateInductionProvider;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockInductionProvider extends BlockTileDrops implements ITieredBlock<InductionProviderTier>, IHasTileEntity<TileEntityInductionProvider> {
@@ -28,10 +29,8 @@ public class BlockInductionProvider extends BlockTileDrops implements ITieredBlo
     private final InductionProviderTier tier;
 
     public BlockInductionProvider(InductionProviderTier tier) {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         this.tier = tier;
-        setHardness(5F);
-        setResistance(10F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_induction_provider"));
     }
 
@@ -42,7 +41,7 @@ public class BlockInductionProvider extends BlockTileDrops implements ITieredBlo
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
             if (tileEntity instanceof TileEntityMekanism) {

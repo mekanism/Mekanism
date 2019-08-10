@@ -15,12 +15,8 @@ public class BlockPlasticGlow extends Block implements IColoredBlock, IBlockOreD
     private final EnumColor color;
 
     public BlockPlasticGlow(EnumColor color) {
-        super(Material.WOOD);
+        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(5F, 10F).lightValue(10));
         this.color = color;
-        setHardness(5F);
-        setResistance(10F);
-        //It gets multiplied by 15 when being set
-        setLightLevel(10F / 15.0F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_plastic_glow"));
     }
 

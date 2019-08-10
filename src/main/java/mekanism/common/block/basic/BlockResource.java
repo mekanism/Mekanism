@@ -27,12 +27,8 @@ public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOr
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
     public BlockResource(@Nonnull BlockResourceInfo resource) {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(resource.getHardness(), resource.getResistance()).lightValue(resource.getLightValue()));
         this.resource = resource;
-        setHardness(this.resource.getHardness());
-        setResistance(this.resource.getResistance());
-        //It gets multiplied by 15 when being set
-        setLightLevel(this.resource.getLightValue() / 15.0F);
         //Ensure the name is lower case as with concatenating with values from enums it may not be
         setRegistryName(new ResourceLocation(Mekanism.MODID, "block_" + resource.getRegistrySuffix().toLowerCase(Locale.ROOT)));
     }
@@ -54,11 +50,11 @@ public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOr
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            Block newBlock = world.getBlockState(fromPos).getBlock();
+            Block newBlock = world.getBlockState(neighborPos).getBlock();
             if (resource == BlockResourceInfo.REFINED_OBSIDIAN && newBlock instanceof FireBlock) {
-                BlockPortalOverride.instance.trySpawnPortal(world, fromPos);
+                BlockPortalOverride.instance.trySpawnPortal(world, neighborPos);
             }
         }
     }

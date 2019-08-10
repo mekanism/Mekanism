@@ -27,16 +27,14 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class BlockBasicMultiblock extends BlockTileDrops {
 
     public BlockBasicMultiblock(String name) {
-        super(Material.IRON);
-        setHardness(5F);
-        setResistance(10F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         //Ensure the name is lower case as with concatenating with values from enums it may not be
         setRegistryName(new ResourceLocation(Mekanism.MODID, name.toLowerCase(Locale.ROOT)));
     }
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
             if (tileEntity instanceof IMultiblock) {

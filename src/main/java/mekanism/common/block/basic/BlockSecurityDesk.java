@@ -35,9 +35,7 @@ import net.minecraft.world.World;
 public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
 
     public BlockSecurityDesk() {
-        super(Material.IRON);
-        setHardness(5F);
-        setResistance(10F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "security_desk"));
     }
 
@@ -62,7 +60,7 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
             if (tileEntity instanceof TileEntityMekanism) {

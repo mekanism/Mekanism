@@ -15,7 +15,7 @@ import mekanism.common.tile.transmitter.logistical_transporter.TileEntityUltimat
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockLogisticalTransporter extends BlockLargeTransmitter implements IStateColor, ITieredBlock<TransporterTier>, IHasTileEntity<TileEntityLogisticalTransporter> {
 

@@ -10,6 +10,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.GlassBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,9 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockLaserFocusMatrix extends Block implements IHasTileEntity<TileEntityReactorLaserFocusMatrix> {
 
     public BlockLaserFocusMatrix() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(8F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "laser_focus_matrix"));
     }
 
@@ -50,7 +49,7 @@ public class BlockLaserFocusMatrix extends Block implements IHasTileEntity<TileE
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

@@ -15,10 +15,8 @@ public class BlockPlastic extends Block implements IColoredBlock, IBlockOreDict 
     private final EnumColor color;
 
     public BlockPlastic(EnumColor color) {
-        super(Material.WOOD);
+        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(5F, 10F));
         this.color = color;
-        setHardness(5F);
-        setResistance(10F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_plastic"));
     }
 

@@ -54,9 +54,7 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.combiner"));
 
     public BlockCombiner() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(16F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "combiner"));
     }
 
@@ -189,7 +187,7 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

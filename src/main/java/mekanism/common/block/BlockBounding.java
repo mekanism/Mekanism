@@ -51,17 +51,11 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
     }
 
-    private final String name;
-
     public BlockBounding() {
         //TODO: Replace meta with two blocks one normal and one advanced with a boolean param
         // Or maybe use blockstate
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(8F);
-        this.name = "bounding_block";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "bounding_block"));
     }
 
     @Nonnull
@@ -171,7 +165,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
         if (tileEntity != null) {
             tileEntity.onNeighborChange(state.getBlock());
@@ -179,7 +173,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             BlockState state1 = world.getBlockState(mainPos);
-            state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos);
+            state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos, isMoving);
         }
     }
 

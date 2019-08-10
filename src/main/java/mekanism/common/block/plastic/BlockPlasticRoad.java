@@ -2,19 +2,16 @@ package mekanism.common.block.plastic;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockPlasticRoad extends Block implements IColoredBlock, IBlockOreDict {
@@ -22,10 +19,8 @@ public class BlockPlasticRoad extends Block implements IColoredBlock, IBlockOreD
     private final EnumColor color;
 
     public BlockPlasticRoad(EnumColor color) {
-        super(Material.WOOD);
+        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(5F, 10F));
         this.color = color;
-        setHardness(5F);
-        setResistance(10F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_plastic_road"));
     }
 

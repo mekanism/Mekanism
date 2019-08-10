@@ -13,7 +13,7 @@ import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermo
 import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityUltimateThermodynamicConductor;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockThermodynamicConductor extends BlockSmallTransmitter implements ITieredBlock<ConductorTier>, IHasTileEntity<TileEntityThermodynamicConductor> {
 

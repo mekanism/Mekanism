@@ -13,7 +13,7 @@ import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityMechanicalPipe
 import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityUltimateMechanicalPipe;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITieredBlock<PipeTier>, IHasTileEntity<TileEntityMechanicalPipe> {
 

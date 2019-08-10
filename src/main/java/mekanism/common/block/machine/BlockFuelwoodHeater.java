@@ -44,9 +44,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFuelwoodHeater> {
 
     public BlockFuelwoodHeater() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(16F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "fuelwood_heater"));
     }
 
@@ -173,7 +171,7 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

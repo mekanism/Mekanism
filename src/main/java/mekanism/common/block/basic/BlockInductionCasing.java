@@ -6,7 +6,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityInductionCasing;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockInductionCasing extends BlockBasicMultiblock implements IHasTileEntity<TileEntityInductionCasing> {
 

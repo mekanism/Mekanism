@@ -13,7 +13,7 @@ import mekanism.common.tile.transmitter.pressurized_tube.TileEntityPressurizedTu
 import mekanism.common.tile.transmitter.pressurized_tube.TileEntityUltimatePressurizedTube;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockPressurizedTube extends BlockSmallTransmitter implements ITieredBlock<TubeTier>, IHasTileEntity<TileEntityPressurizedTube> {
 

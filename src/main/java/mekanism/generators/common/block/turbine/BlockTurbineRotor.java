@@ -36,15 +36,13 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
 
     public BlockTurbineRotor() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(8F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "turbine_rotor"));
     }
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             final TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof TileEntityMekanism) {
@@ -134,13 +132,6 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     @Deprecated
     public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader world, BlockPos pos) {
         return ROTOR_BOUNDS;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
-        //TODO
-        return false;
     }
 
     @Nullable

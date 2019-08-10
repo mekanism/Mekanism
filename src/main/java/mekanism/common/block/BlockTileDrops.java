@@ -44,8 +44,8 @@ import net.minecraftforge.fluids.FluidStack;
 public abstract class BlockTileDrops extends Block {
     //TODO: Block shape using VoxelShape
 
-    protected BlockTileDrops(Material materialIn) {
-        super(materialIn);
+    protected BlockTileDrops(Block.Properties properties) {
+        super(properties);
     }
 
     @Nonnull

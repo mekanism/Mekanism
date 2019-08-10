@@ -101,11 +101,9 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     private final FactoryType type;
 
     public BlockFactory(@Nonnull FactoryTier tier, @Nonnull FactoryType type) {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         this.tier = tier;
         this.type = type;
-        setHardness(3.5F);
-        setResistance(16F);
         String name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_" + type.getRegistryNameComponent() + "_factory";
         setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
@@ -340,7 +338,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

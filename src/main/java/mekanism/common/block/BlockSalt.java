@@ -17,9 +17,7 @@ import net.minecraft.util.ResourceLocation;
 public class BlockSalt extends Block implements IBlockOreDict {
 
     public BlockSalt() {
-        super(Material.SAND);
-        setHardness(0.5F);
-        setSoundType(SoundType.SAND);
+        super(Block.Properties.create(Material.SAND).hardnessAndResistance(0.5F, 0).sound(SoundType.SAND));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "salt_block"));
     }
 

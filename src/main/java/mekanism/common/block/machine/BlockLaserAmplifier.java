@@ -46,9 +46,7 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
       IHasTileEntity<TileEntityLaserAmplifier> {
 
     public BlockLaserAmplifier() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(16F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "laser_amplifier"));
     }
 
@@ -188,7 +186,7 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

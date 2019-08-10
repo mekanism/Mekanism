@@ -35,9 +35,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
     private static boolean testingPlace = false;
 
     public BlockCardboardBox() {
-        super(Material.CLOTH);
-        setHardness(0.5F);
-        setResistance(1F);
+        super(Block.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 1F));
         MinecraftForge.EVENT_BUS.register(this);
         setRegistryName(new ResourceLocation(Mekanism.MODID, "cardboard_box"));
     }

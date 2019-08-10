@@ -45,9 +45,7 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.gas"));
 
     public BlockGasBurningGenerator() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(8F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "gas_burning_generator"));
     }
 
@@ -72,7 +70,7 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             final TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof TileEntityMekanism) {

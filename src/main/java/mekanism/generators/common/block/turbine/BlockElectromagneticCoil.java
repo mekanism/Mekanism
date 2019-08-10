@@ -19,22 +19,19 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockElectromagneticCoil extends BlockMekanismContainer implements IHasTileEntity<TileEntityElectromagneticCoil> {
 
     public BlockElectromagneticCoil() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(8F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "electromagnetic_coil"));
     }
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof TileEntityMekanism) {

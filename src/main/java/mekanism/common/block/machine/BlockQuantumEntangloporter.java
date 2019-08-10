@@ -52,9 +52,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
       IHasTileEntity<TileEntityQuantumEntangloporter> {
 
     public BlockQuantumEntangloporter() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(16F);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "quantum_entangloporter"));
     }
 
@@ -198,7 +196,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

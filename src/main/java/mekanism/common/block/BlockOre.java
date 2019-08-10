@@ -19,10 +19,8 @@ public class BlockOre extends Block implements IBlockOreDict {
     private final INamedResource resource;
 
     public BlockOre(INamedResource resource) {
-        super(Material.ROCK);
+        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(3F, 5F));
         this.resource = resource;
-        setHardness(3F);
-        setResistance(5F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.resource.getRegistrySuffix() + "_ore"));
     }
 

@@ -36,9 +36,7 @@ import net.minecraft.world.World;
 public abstract class BlockTransmitter extends BlockTileDrops implements IStateConnection {
 
     protected BlockTransmitter(String name) {
-        super(Material.PISTON);
-        setHardness(1F);
-        setResistance(10F);
+        super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
@@ -116,10 +114,10 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
-            Direction side = Direction.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
+            Direction side = Direction.getFacingFromVector(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
         }
     }

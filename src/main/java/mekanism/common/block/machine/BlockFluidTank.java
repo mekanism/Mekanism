@@ -63,10 +63,8 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     private final FluidTankTier tier;
 
     public BlockFluidTank(FluidTankTier tier) {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         this.tier = tier;
-        setHardness(3.5F);
-        setResistance(16F);
         setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_fluid_tank"));
     }
 
@@ -263,7 +261,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {

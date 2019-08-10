@@ -45,8 +45,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public abstract class BlockMekanismContainer extends ContainerBlock {
 
-    protected BlockMekanismContainer(Material materialIn) {
-        super(materialIn);
+    protected BlockMekanismContainer(Block.Properties properties) {
+        super(properties);
     }
 
     @Nonnull

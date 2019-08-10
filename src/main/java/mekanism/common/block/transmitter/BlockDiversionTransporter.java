@@ -7,7 +7,7 @@ import mekanism.common.tile.transmitter.logistical_transporter.TileEntityDiversi
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 public class BlockDiversionTransporter extends BlockLargeTransmitter implements IHasTileEntity<TileEntityDiversionTransporter> {
 
