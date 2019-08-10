@@ -132,7 +132,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         // Draw scrollbar
-        drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
+        drawTexturedRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         HashList<FILTER> filters = getFilters();
         // Draw filter backgrounds
@@ -152,18 +152,18 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
                 int yStart = i * filterH + filterY;
                 // Flag for mouse over this filter
                 boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
-                drawTexturedModalRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
+                drawTexturedRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
                 MekanismRenderer.resetColor();
 
                 // Draw sort buttons
                 int arrowX = filterX + filterW - 12;
                 if (getFilterIndex() + i > 0) {
                     mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20;
-                    drawTexturedModalRect(guiLeft + arrowX, guiTop + yStart + 14, 190, mouseOver ? 143 : 115, 11, 7);
+                    drawTexturedRect(guiLeft + arrowX, guiTop + yStart + 14, 190, mouseOver ? 143 : 115, 11, 7);
                 }
                 if (getFilterIndex() + i < filters.size() - 1) {
                     mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27;
-                    drawTexturedModalRect(guiLeft + arrowX, guiTop + yStart + 21, 190, mouseOver ? 157 : 129, 11, 7);
+                    drawTexturedRect(guiLeft + arrowX, guiTop + yStart + 21, 190, mouseOver ? 157 : 129, 11, 7);
                 }
             }
         }

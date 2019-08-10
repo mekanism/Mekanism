@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
@@ -104,7 +103,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiLeft + 116, guiTop + 76, 176, 36, displayInt, 4);
+        drawTexturedRect(guiLeft + 116, guiTop + 76, 176, 36, displayInt, 4);
     }
 
     @Override

@@ -96,7 +96,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         // it in an unexpected state.
         MekanismRenderer.resetColor();
         minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        drawTexturedRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
@@ -114,7 +114,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
 
     @Override
     public void drawTexturedRect(int x, int y, int u, int v, int w, int h) {
-        drawTexturedModalRect(x, y, u, v, w, h);
+        blit(x, y, u, v, w, h);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<REC
         if (gas != null) {
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             MekanismRenderer.color(gas);
-            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, gas.getGas().getSprite(), sizeX, sizeY);
+            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, gas.getGas().getSprite(), sizeX, sizeY);
             MekanismRenderer.resetColor();
         }
     }

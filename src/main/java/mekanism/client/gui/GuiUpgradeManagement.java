@@ -81,7 +81,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedModalRect(84, 8 + getScroll(), 202, 0, 4, 4);
+        drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
         font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         font.drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
         if (selectedType == null) {
@@ -143,7 +143,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
-        drawTexturedModalRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
+        drawTexturedRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tileEntity.getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }
@@ -165,7 +165,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
                 yRender = 166 + 12;
             }
             MekanismRenderer.color(upgrade.getColor(), 1.0F, 2.5F);
-            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 0, yRender, 58, 12);
+            drawTexturedRect(guiLeft + xPos, guiTop + yPos, 0, yRender, 58, 12);
             MekanismRenderer.resetColor();
         }
     }

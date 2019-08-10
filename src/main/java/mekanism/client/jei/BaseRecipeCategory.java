@@ -94,7 +94,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void drawTexturedRect(int x, int y, int u, int v, int w, int h) {
-        gui.drawTexturedModalRect(x, y, u, v, w, h);
+        gui.blit(x, y, u, v, w, h);
     }
 
     @Override

@@ -143,9 +143,9 @@ public class GuiRobitMain extends GuiMekanism {
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedModalRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
+        drawTexturedRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
         if (displayNameChange) {
-            drawTexturedModalRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
+            drawTexturedRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
             nameChangeField.drawTextBox();
             MekanismRenderer.resetColor();
         }

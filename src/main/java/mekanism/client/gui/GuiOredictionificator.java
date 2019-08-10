@@ -100,7 +100,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232, 0, 12, 15);
+        drawTexturedRect(guiLeft + 154, guiTop + 18 + getScroll(), 232, 0, 12, 15);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
@@ -108,7 +108,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 if (mouseOver) {
                     MekanismRenderer.color(EnumColor.GREY);
                 }
-                drawTexturedModalRect(guiLeft + 10, guiTop + yStart, 0, 230, 142, 22);
+                drawTexturedRect(guiLeft + 10, guiTop + yStart, 0, 230, 142, 22);
                 if (mouseOver) {
                     MekanismRenderer.resetColor();
                 }

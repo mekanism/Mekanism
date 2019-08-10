@@ -1,16 +1,11 @@
 package mekanism.generators.client.gui.button;
 
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +30,7 @@ public class GuiReactorLogicButton extends Button {
         if (this.visible) {
             MekanismRenderer.bindTexture(this.resourceLocation);
             MekanismRenderer.color(EnumColor.RED);
-            drawTexturedModalRect(this.x, this.y, 0, 166 + (type == tile.logicType ? 22 : 0), this.width, this.height);
+            blit(this.x, this.y, 0, 166 + (type == tile.logicType ? 22 : 0), this.width, this.height);
             MekanismRenderer.resetColor();
         }
     }

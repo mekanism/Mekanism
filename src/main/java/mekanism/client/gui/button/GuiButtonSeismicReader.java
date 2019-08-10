@@ -1,10 +1,8 @@
 package mekanism.client.gui.button;
 
-import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
 import com.mojang.blaze3d.platform.GlStateManager;
+import mekanism.client.render.MekanismRenderer;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,7 +31,7 @@ public class GuiButtonSeismicReader extends Button {
             } else if (isMouseOver(mouseX, mouseY)) {
                 GlStateManager.color3f(0.5F, 0.5F, 1);
             }
-            drawTexturedModalRect(this.x, this.y, this.offsetX, this.offsetY, this.width, this.height);
+            blit(this.x, this.y, this.offsetX, this.offsetY, this.width, this.height);
             MekanismRenderer.resetColor();
         }
     }

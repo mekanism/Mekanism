@@ -1,11 +1,8 @@
 package mekanism.client.gui.button;
 
-import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.gui.widget.button.ImageButton;
+import mekanism.client.render.MekanismRenderer;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,7 +48,7 @@ public class GuiButtonDisableableImage extends Button {
                 j += this.hoverOffset;
             }
 
-            drawTexturedModalRect(this.x, this.y, this.xTexStart, j, this.width, this.height);
+            blit(this.x, this.y, this.xTexStart, j, this.width, this.height);
             GlStateManager.enableDepthTest();
         }
     }

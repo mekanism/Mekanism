@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
@@ -120,11 +119,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity.operatingTicks > 0) {
             int display = (int) ((double) tileEntity.operatingTicks * 22 / (double) tileEntity.ticksRequired);
-            drawTexturedModalRect(guiLeft + 86, guiTop + 43, 176, 48, display, 16);
+            drawTexturedRect(guiLeft + 86, guiTop + 43, 176, 48, display, 16);
         }
 
         minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
-        drawTexturedModalRect(guiLeft + 90, guiTop + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
+        drawTexturedRect(guiLeft + 90, guiTop + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
 
         if (tileEntity.formula != null) {
             for (int i = 0; i < 9; i++) {

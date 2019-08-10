@@ -308,7 +308,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int y = getFrequency() == null ? 94 : getStatus() == 2 ? 22 : getStatus() == 3 ? 40 : getStatus() == 4 ? 58 : 76;
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
+        drawTexturedRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
         frequencyField.drawTextBox();
         MekanismRenderer.resetColor();
     }

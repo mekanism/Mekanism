@@ -41,7 +41,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> exte
                 renderRemaining = scale;
                 scale = 0;
             }
-            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
+            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
             start += 16;
             if (renderRemaining == 0 || scale == 0) {
                 break;
@@ -49,6 +49,6 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> exte
         }
         MekanismRenderer.resetColor();
         minecraft.textureManager.bindTexture(getGaugeResource());
-        drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+        drawTexturedRect(guiLeft + xPos, guiTop + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }
 }

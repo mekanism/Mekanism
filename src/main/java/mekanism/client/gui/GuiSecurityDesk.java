@@ -193,9 +193,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(minecraft.player.getUniqueID())) {
-            drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
+            drawTexturedRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
         } else {
-            drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
+            drawTexturedRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
         }
         trustedField.drawTextBox();
         MekanismRenderer.resetColor();

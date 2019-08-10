@@ -42,14 +42,14 @@ public class GuiSideDataButton extends Button {
             MekanismRenderer.bindTexture(this.resourceLocation);
             SideData data = sideDataSupplier.get();
             if (data == TileComponentConfig.EMPTY) {
-                drawTexturedModalRect(this.x, this.y, 176, 28, this.width, this.height);
+                blit(this.x, this.y, 176, 28, this.width, this.height);
             } else {
                 EnumColor color = getColor();
                 boolean doColor = color != null && color != EnumColor.GREY;
                 if (doColor) {
                     MekanismRenderer.color(getColor());
                 }
-                drawTexturedModalRect(this.x, this.y, 176, isMouseOver(mouseX, mouseY) ? 0 : 14, this.width, this.height);
+                blit(this.x, this.y, 176, isMouseOver(mouseX, mouseY) ? 0 : 14, this.width, this.height);
                 if (doColor) {
                     MekanismRenderer.resetColor();
                 }

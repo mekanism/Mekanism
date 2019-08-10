@@ -79,7 +79,7 @@ public class GuiSeismicReader extends Screen {
         int guiLeft = (width - xSize) / 2;
         int guiTop = (height - ySize) / 2;
         minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Fix the overlapping if > 100
         GlStateManager.pushMatrix();
@@ -136,8 +136,8 @@ public class GuiSeismicReader extends Screen {
                 int fontLengthX = font.getStringWidth(capitalised) + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;
                 GlStateManager.pushMatrix();
-                drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
-                drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
+                blit(renderX, renderY, 0, 0, fontLengthX, 16);
+                blit(renderX + fontLengthX, renderY, 0, 16, 2, 16);
                 font.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
                 GlStateManager.popMatrix();
             }
