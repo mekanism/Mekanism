@@ -541,7 +541,7 @@ public final class MekanismUtils {
             return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
         } else if (block instanceof IFluidBlock) {
             IFluidBlock fluid = (IFluidBlock) block;
-            if (state.getProperties().containsKey(BlockFluidBase.LEVEL) && state.get(BlockFluidBase.LEVEL) == 0) {
+            if (state.getProperties().contains(BlockFluidBase.LEVEL) && state.get(BlockFluidBase.LEVEL) == 0) {
                 return fluid.drain(world, pos.getPos(), false);
             }
         }
@@ -875,8 +875,8 @@ public final class MekanismUtils {
         if (!dmgItems.get(1).isEmpty() && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) &&
             (dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem().isRepairable()) {
             Item theItem = dmgItems.get(0).getItem();
-            int dmgDiff0 = theItem.getMaxDamage() - dmgItems.get(0).getItemDamage();
-            int dmgDiff1 = theItem.getMaxDamage() - dmgItems.get(1).getItemDamage();
+            int dmgDiff0 = theItem.getMaxDamage() - dmgItems.get(0).getDamage();
+            int dmgDiff1 = theItem.getMaxDamage() - dmgItems.get(1).getDamage();
             int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
             int solve = Math.max(0, theItem.getMaxDamage() - value);
             return new ItemStack(dmgItems.get(0).getItem(), 1, solve);

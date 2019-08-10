@@ -18,7 +18,7 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
     private ItemStack materialItem = ItemStack.EMPTY;
 
     public Material getMaterial() {
-        return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getItemDamage()).getMaterial();
+        return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getDamage()).getMaterial();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
         super.write(data);
         data.add(MekanismUtils.getID(materialItem));
         data.add(materialItem.getCount());
-        data.add(materialItem.getItemDamage());
+        data.add(materialItem.getDamage());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
         int code = 1;
         code = 31 * code + MekanismUtils.getID(materialItem);
         code = 31 * code + materialItem.getCount();
-        code = 31 * code + materialItem.getItemDamage();
+        code = 31 * code + materialItem.getDamage();
         return code;
     }
 

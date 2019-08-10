@@ -64,7 +64,7 @@ public abstract class MinerFilter implements IFilter {
         if (!replaceStack.isEmpty()) {
             data.add(true);
             data.add(MekanismUtils.getID(replaceStack));
-            data.add(replaceStack.getItemDamage());
+            data.add(replaceStack.getDamage());
         } else {
             data.add(false);
         }

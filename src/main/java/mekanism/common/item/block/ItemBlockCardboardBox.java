@@ -65,7 +65,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
         ItemStack stack = player.getHeldItem(context.getHand());
-        if (!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0) {
+        if (!player.isSneaking() && !world.isAirBlock(pos) && stack.getDamage() == 0) {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             if (!world.isRemote && MekanismAPI.isBlockCompatible(block) && state.getBlockHardness(world, pos) != -1) {

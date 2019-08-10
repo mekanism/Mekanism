@@ -99,7 +99,7 @@ public interface IFactory {
             RecipeType type = null;
             for (RecipeType iterType : RecipeType.values()) {
                 ItemStack machineStack = iterType.getStack();
-                if (Block.getBlockFromItem(machineStack.getItem()) == block && machineStack.getItemDamage() == meta) {
+                if (Block.getBlockFromItem(machineStack.getItem()) == block && machineStack.getDamage() == meta) {
                     type = iterType;
                     break;
                 }

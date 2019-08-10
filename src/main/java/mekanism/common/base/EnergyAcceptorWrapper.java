@@ -54,13 +54,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         return wrapper;
     }
 
-    /**
-     * Note: It is assumed that a check for hasCapability was already ran.
-     */
-    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability, Direction side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
-        return CapabilityUtils.getCapabilityHelper(tileEntity, capability, side).getIfPresent(makeAcceptor);
-    }
-
     public abstract boolean needsEnergy(Direction side);
 
     public static class MekanismAcceptor extends EnergyAcceptorWrapper {

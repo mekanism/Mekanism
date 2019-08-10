@@ -36,7 +36,7 @@ public class MultipartGlowPanel implements IMultipart {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntityGlowPanel) {
             Direction facing = Direction.values()[((EnumFaceSlot) part.getSlot()).ordinal()];
-            //EnumColor col = EnumColor.DYES[stack.getItemDamage()];
+            //EnumColor col = EnumColor.DYES[stack.getDamage()];
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
             glowPanel.setOrientation(facing);
             //TODO: Is this needed or can it work fine due to block. Look at once multipart is reimplemented

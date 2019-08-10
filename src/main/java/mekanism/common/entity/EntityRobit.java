@@ -53,7 +53,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -101,10 +100,10 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
+    protected void registerAttributes() {
+        super.registerAttributes();
+        getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
     }
 
     @Override
@@ -164,12 +163,13 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
             if (!stack.isEmpty() && getEnergy() < MAX_ELECTRICITY) {
                 if (stack.getItem() instanceof IEnergizedItem) {
                     setEnergy(getEnergy() + EnergizedItemManager.discharge(stack, MAX_ELECTRICITY - getEnergy()));
-                } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                    IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
-                    if (storage.canExtract()) {
-                        int needed = ForgeEnergyIntegration.toForge(MAX_ELECTRICITY - getEnergy());
-                        setEnergy(getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
-                    }
+                } else if (MekanismUtils.useForge() && stack.getCapability(CapabilityEnergy.ENERGY).isPresent()) {
+                    stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(storage -> {
+                        if (storage.canExtract()) {
+                            int needed = ForgeEnergyIntegration.toForge(MAX_ELECTRICITY - getEnergy());
+                            setEnergy(getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
+                        }
+                    });
                 } else if (MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem) {
                     IElectricItem item = (IElectricItem) stack.getItem();
                     if (item.canProvideEnergy(stack)) {

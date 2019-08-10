@@ -117,6 +117,7 @@ dependencies {
 
     compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
     runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
+    compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
 
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
@@ -134,7 +135,6 @@ dependencies {
         exclude module: "asm-debug-all"
     }
     compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
-    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
     compileOnly("appeng:appliedenergistics2:${ae2_version}:api") {
         exclude module: "jei_1.12.2"
     }*/

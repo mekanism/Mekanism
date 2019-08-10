@@ -106,7 +106,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         localVec = new Vec3d(posX, posY, posZ);
         motionVec = new Vec3d(posX + motion.getX(), posY + motion.getY(), posZ + motion.getZ());
         if (mop != null) {
-            motionVec = new Vec3d(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z);
+            motionVec = mop.getHitVec();
         }
 
         Entity entity = null;
@@ -120,7 +120,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 RayTraceResult RayTraceResult1 = newBounds.calculateIntercept(localVec, motionVec);
 
                 if (RayTraceResult1 != null) {
-                    double dist = localVec.distanceTo(RayTraceResult1.hitVec);
+                    double dist = localVec.distanceTo(RayTraceResult1.getHitVec());
                     if (dist < entityDist || entityDist == 0) {
                         entity = entity1;
                         entityDist = dist;
@@ -206,7 +206,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 BlockState state = block.getBlockState(world);
                 Block newBlock = Block.getBlockFromItem(result.getItem());
                 if (newBlock != Blocks.AIR) {
-                    world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
+                    world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getDamage()), 3);
                 } else {
                     world.removeBlock(block.getPos(), false);
                     ItemEntity item = new ItemEntity(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());

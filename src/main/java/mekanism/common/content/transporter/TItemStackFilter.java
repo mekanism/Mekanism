@@ -71,7 +71,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
 
         data.add(MekanismUtils.getID(itemType));
         data.add(itemType.getCount());
-        data.add(itemType.getItemDamage());
+        data.add(itemType.getDamage());
     }
 
     @Override
@@ -89,7 +89,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
         code = 31 * code + super.hashCode();
         code = 31 * code + MekanismUtils.getID(itemType);
         code = 31 * code + itemType.getCount();
-        code = 31 * code + itemType.getItemDamage();
+        code = 31 * code + itemType.getDamage();
         code = 31 * code + (sizeMode ? 1 : 0);
         code = 31 * code + min;
         code = 31 * code + max;

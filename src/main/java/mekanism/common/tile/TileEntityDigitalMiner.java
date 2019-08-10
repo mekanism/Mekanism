@@ -670,7 +670,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         if (!missingStack.isEmpty()) {
             data.add(true);
             data.add(MekanismUtils.getID(missingStack));
-            data.add(missingStack.getItemDamage());
+            data.add(missingStack.getDamage());
         } else {
             data.add(false);
         }
@@ -703,7 +703,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         if (!missingStack.isEmpty()) {
             data.add(true);
             data.add(MekanismUtils.getID(missingStack));
-            data.add(missingStack.getItemDamage());
+            data.add(missingStack.getDamage());
         } else {
             data.add(false);
         }

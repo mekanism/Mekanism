@@ -24,6 +24,7 @@ import mcmultipart.api.world.IMultipartBlockAccess;
 import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.TransmitterType.Size;
@@ -33,6 +34,7 @@ import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -55,7 +57,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 @MCMPAddon
 public class MultipartMekanism implements IMCMPAddon {
@@ -64,20 +65,25 @@ public class MultipartMekanism implements IMCMPAddon {
     public static MultipartGlowPanel GLOWPANEL_MP;
 
     public static boolean hasConnectionWith(TileEntity tile, Direction side) {
-        if (tile != null && tile.hasCapability(MCMPCapabilities.MULTIPART_TILE, null)) {
-            IMultipartTile multipartTile = tile.getCapability(MCMPCapabilities.MULTIPART_TILE, null);
-            if (multipartTile instanceof MultipartTile && ((MultipartTile) multipartTile).getID().equals("transmitter")) {
-                IPartInfo partInfo = ((MultipartTile) multipartTile).getInfo();
-                if (partInfo != null) {
-                    for (IPartInfo info : partInfo.getContainer().getParts().values()) {
-                        IMultipart multipart = info.getPart();
-                        Collection<AxisAlignedBB> origBounds = getTransmitterSideBounds(multipartTile, side);
-                        if (MultipartOcclusionHelper.testBoxIntersection(origBounds, multipart.getOcclusionBoxes(info))) {
-                            return false;
-                        }
-                    }
-                }
-            }
+        if (tile != null) {
+            LazyOptionalHelper<IMultipartTile> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, MCMPCapabilities.MULTIPART_TILE, null);
+            capabilityHelper.getIfPresentElseDo(multipartTile -> {
+                      if (multipartTile instanceof MultipartTile && ((MultipartTile) multipartTile).getID().equals("transmitter")) {
+                          IPartInfo partInfo = ((MultipartTile) multipartTile).getInfo();
+                          if (partInfo != null) {
+                              for (IPartInfo info : partInfo.getContainer().getParts().values()) {
+                                  IMultipart multipart = info.getPart();
+                                  Collection<AxisAlignedBB> origBounds = getTransmitterSideBounds(multipartTile, side);
+                                  if (MultipartOcclusionHelper.testBoxIntersection(origBounds, multipart.getOcclusionBoxes(info))) {
+                                      return false;
+                                  }
+                              }
+                          }
+                      }
+                      return true;
+                  },
+                  true
+            );
         }
         return true;
     }

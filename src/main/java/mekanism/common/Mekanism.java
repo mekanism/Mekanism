@@ -118,7 +118,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Mekanism.MODID, useMetadata = true, guiFactory = "mekanism.client.gui.ConfigGuiFactory", acceptedMinecraftVersions = "[1.14.4,1.15)", version = "${version}")
+@Mod(Mekanism.MODID)
+//@Mod(modid = Mekanism.MODID, useMetadata = true, guiFactory = "mekanism.client.gui.ConfigGuiFactory", acceptedMinecraftVersions = "[1.14.4,1.15)", version = "${version}")
 @Mod.EventBusSubscriber()
 public class Mekanism {
 

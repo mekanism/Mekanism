@@ -164,7 +164,7 @@ public final class InventoryUtils {
     //TODO: Check what the difference between this method and areItemsStackable is
     public static boolean canStack(ItemStack stack1, ItemStack stack2) {
         return stack1.isEmpty() || stack2.isEmpty() ||
-               stack1.getItem() == stack2.getItem() && (!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage())
+               stack1.getItem() == stack2.getItem() && (!stack2.getHasSubtypes() || stack2.getDamage() == stack1.getDamage())
                && ItemStack.areItemStackTagsEqual(stack2, stack1) && stack1.isStackable();
     }
 }

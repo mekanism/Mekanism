@@ -52,7 +52,7 @@ public final class MultipartUtils {
         float f6 = f1 * f3;
         double d3 = 5.0D;
         if (player instanceof ServerPlayerEntity) {
-            d3 = player.getEntityAttribute(PlayerEntity.REACH_DISTANCE).getAttributeValue();
+            d3 = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
         }
         Vec3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
         return Pair.of(start, end);
@@ -82,7 +82,7 @@ public final class MultipartUtils {
         if (result == null) {
             return null;
         }
-        result = new BlockRayTraceResult(result.hitVec, result.getFace(), pos);
+        result = new BlockRayTraceResult(result.getHitVec(), result.getFace(), pos);
         result.subHit = subHit;
         result.hitInfo = hitInfo;
         return new AdvancedRayTraceResult(result, bounds);
@@ -103,7 +103,7 @@ public final class MultipartUtils {
         }
 
         public double squareDistanceTo(Vec3d vec) {
-            return hit.hitVec.squareDistanceTo(vec);
+            return hit.getHitVec().squareDistanceTo(vec);
         }
     }
 

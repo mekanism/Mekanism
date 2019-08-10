@@ -35,7 +35,7 @@ public class RecipeUtils {
         if (target.getItem() != input.getItem()) {
             return false;
         }
-        if (target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE) {
+        if (target.getDamage() != input.getDamage() && target.getDamage() != OreDictionary.WILDCARD_VALUE) {
             return false;
         }
 

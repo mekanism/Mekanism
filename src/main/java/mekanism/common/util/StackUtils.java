@@ -23,8 +23,8 @@ public final class StackUtils {
         if (wild.isEmpty() && check.isEmpty()) {
             return true;
         }
-        return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || check.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-                                                     wild.getItemDamage() == check.getItemDamage());
+        return wild.getItem() == check.getItem() && (wild.getDamage() == OreDictionary.WILDCARD_VALUE || check.getDamage() == OreDictionary.WILDCARD_VALUE ||
+                                                     wild.getDamage() == check.getDamage());
     }
 
     //ignores count

@@ -419,7 +419,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     Block block = coord.getBlock(world);
                     if (checkID(block)) {
                         ItemStack blockStack = block.getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
-                        if (ItemHandlerHelper.canItemStacksStack(stack, blockStack) || (block == startBlock && isWood && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4)) {
+                        if (ItemHandlerHelper.canItemStacksStack(stack, blockStack) || (block == startBlock && isWood && coord.getBlockMeta(world) % 4 == stack.getDamage() % 4)) {
                             loop(coord);
                         }
                     }

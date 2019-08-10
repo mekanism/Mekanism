@@ -35,7 +35,7 @@ public class LaserManager {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
         BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
-            to = new Pos3D(mop.hitVec);
+            to = new Pos3D(mop.getHitVec());
             Coord4D toCoord = new Coord4D(mop.getPos(), world);
             TileEntity tile = toCoord.getTileEntity(world);
             CapabilityUtils.getCapabilityHelper(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).ifPresent(receptor -> {
@@ -94,7 +94,7 @@ public class LaserManager {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
         BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
-            to = new Pos3D(mop.hitVec);
+            to = new Pos3D(mop.getHitVec());
         }
         from.translate(direction, -0.501);
         Mekanism.proxy.renderLaser(world, from, to, direction, energy);
