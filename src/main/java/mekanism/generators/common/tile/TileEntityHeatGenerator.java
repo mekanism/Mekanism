@@ -174,7 +174,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     public int getFuel(ItemStack itemstack) {
-        return FurnaceTileEntity.getItemBurnTime(itemstack) / 2;
+        return itemstack.getBurnTime() / 2;
     }
 
     @Nonnull

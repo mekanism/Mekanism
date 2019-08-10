@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble implements ITieredItem<TransporterTier> {
+public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble<BlockLogisticalTransporter> implements ITieredItem<TransporterTier> {
 
     public ItemBlockLogisticalTransporter(BlockLogisticalTransporter block) {
         super(block);
@@ -34,7 +34,7 @@ public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble imple
     public TransporterTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockLogisticalTransporter) {
-            return ((BlockLogisticalTransporter) ((ItemBlockLogisticalTransporter) item).block).getTier();
+            return ((ItemBlockLogisticalTransporter) item).getBlock().getTier();
         }
         return null;
     }

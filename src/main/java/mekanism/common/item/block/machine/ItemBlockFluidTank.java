@@ -51,12 +51,11 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
-      ITieredItem<FluidTankTier>, IItemRedirectedModel {
+public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem,
+      IItemNetwork, ITieredItem<FluidTankTier>, IItemRedirectedModel {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Nullable
@@ -64,7 +63,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
     public FluidTankTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockFluidTank) {
-            return ((BlockFluidTank) ((ItemBlockFluidTank) item).block).getTier();
+            return ((ItemBlockFluidTank) item).getBlock().getTier();
         }
         return null;
     }

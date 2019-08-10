@@ -29,11 +29,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<BlockQuantumEntangloporter> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockQuantumEntangloporter(BlockQuantumEntangloporter block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -70,7 +69,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip imp
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockQuantumEntangloporter) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockQuantumEntangloporter) (((ItemBlockQuantumEntangloporter) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockQuantumEntangloporter) item).getBlock().getStorage());
         }
         return 0;
     }

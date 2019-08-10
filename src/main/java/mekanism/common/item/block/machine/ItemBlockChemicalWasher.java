@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockChemicalWasher extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockChemicalWasher extends ItemBlockAdvancedTooltip<BlockChemicalWasher> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockChemicalWasher(BlockChemicalWasher block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockChemicalWasher extends ItemBlockAdvancedTooltip implements
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockChemicalWasher) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockChemicalWasher) (((ItemBlockChemicalWasher) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockChemicalWasher) item).getBlock().getStorage());
         }
         return 0;
     }

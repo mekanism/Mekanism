@@ -29,13 +29,11 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockEnergyCube extends ItemBlockTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier>,
+public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier>,
       IItemRedirectedModel {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block);
-        setMaxStackSize(1);
-        setNoRepair();
+        super(block, new Item.Properties().maxStackSize(1).setNoRepair());
     }
 
     @Nullable
@@ -43,7 +41,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements IItemEnergi
     public EnergyCubeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockEnergyCube) {
-            return ((BlockEnergyCube) ((ItemBlockEnergyCube) item).block).getTier();
+            return ((ItemBlockEnergyCube) item).getBlock().getTier();
         }
         return null;
     }

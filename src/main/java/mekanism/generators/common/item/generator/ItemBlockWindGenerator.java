@@ -18,22 +18,20 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockWindGenerator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockWindGenerator extends ItemBlockAdvancedTooltip<BlockWindGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockWindGenerator(BlockWindGenerator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -51,8 +49,9 @@ public class ItemBlockWindGenerator extends ItemBlockAdvancedTooltip implements 
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
-          float hitZ, @Nonnull BlockState state) {
+    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
         Block block = world.getBlockState(pos).getBlock();
         if (!block.isReplaceable(world, pos)) {
             return false;
@@ -64,14 +63,14 @@ public class ItemBlockWindGenerator extends ItemBlockAdvancedTooltip implements 
                 return false;
             }
         }
-        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
+        return super.placeBlock(context, state);
     }
 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockWindGenerator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockWindGenerator) (((ItemBlockWindGenerator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockWindGenerator) item).getBlock().getStorage());
         }
         return 0;
     }

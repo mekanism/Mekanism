@@ -188,7 +188,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
 
             if (!world.isRemote) {
                 if (furnaceBurnTime == 0 && canSmelt()) {
-                    currentItemBurnTime = furnaceBurnTime = FurnaceTileEntity.getItemBurnTime(inventory.get(29));
+                    currentItemBurnTime = furnaceBurnTime = inventory.get(29).getBurnTime();
                     if (furnaceBurnTime > 0) {
                         if (!inventory.get(29).isEmpty()) {
                             inventory.get(29).shrink(1);

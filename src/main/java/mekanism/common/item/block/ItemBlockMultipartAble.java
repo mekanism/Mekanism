@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
@@ -25,9 +26,9 @@ import net.minecraft.world.World;
 /**
  * Created by Thiakil on 19/11/2017.
  */
-public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
+public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> {
 
-    public ItemBlockMultipartAble(Block block) {
+    public ItemBlockMultipartAble(BLOCK block) {
         super(block);
     }
 
@@ -67,7 +68,7 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
             if (Mekanism.hooks.MCMPLoaded) {
                 flag = MultipartMekanism.placeMultipartBlock(this.getBlock(), itemstack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1);
             } else {
-                flag = placeBlockAt(itemstack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1);
+                flag = placeBlock(new BlockItemUseContext(context), iblockstate1);
             }
             if (flag) {
                 iblockstate1 = world.getBlockState(pos);
@@ -82,9 +83,9 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
 
     private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, BlockState state, Hand hand, Direction facing) {
         if (!Mekanism.hooks.MCMPLoaded) {
-            return worldIn.mayPlace(this.block, pos, false, facing, null);
+            return worldIn.mayPlace(getBlock(), pos, false, facing, null);
         }
-        return worldIn.mayPlace(this.block, pos, false, facing, null) || hasFreeMultiPartSpot(itemstack, worldIn, pos, state, facing);
+        return worldIn.mayPlace(getBlock(), pos, false, facing, null) || hasFreeMultiPartSpot(itemstack, worldIn, pos, state, facing);
     }
 
     private boolean hasFreeMultiPartSpot(ItemStack itemstack, World worldIn, BlockPos pos, BlockState state, Direction facing) {
@@ -107,11 +108,12 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
-          float hitZ, @Nonnull BlockState newState) {
+    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
         if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
             return false;
         }
-        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+        return super.placeBlock(context, state);
     }
 }

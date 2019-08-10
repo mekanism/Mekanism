@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPersonalChest> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockPersonalChest(BlockPersonalChest block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -70,7 +69,7 @@ public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip implements 
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockPersonalChest) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockPersonalChest) (((ItemBlockPersonalChest) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockPersonalChest) item).getBlock().getStorage());
         }
         return 0;
     }

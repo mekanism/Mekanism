@@ -17,11 +17,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockBin extends ItemBlockTooltip implements ITieredItem<BinTier> {
+public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredItem<BinTier> {
 
     public ItemBlockBin(BlockBin block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Nullable
@@ -29,7 +28,7 @@ public class ItemBlockBin extends ItemBlockTooltip implements ITieredItem<BinTie
     public BinTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockBin) {
-            return ((BlockBin) ((ItemBlockBin) item).block).getTier();
+            return ((ItemBlockBin) item).getBlock().getTier();
         }
         return null;
     }

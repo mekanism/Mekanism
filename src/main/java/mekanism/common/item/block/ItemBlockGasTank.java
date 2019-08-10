@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements IGasItem, IItemSustainedInventory, ISecurityItem {
 
     /**
      * The maximum amount of gas this tank can hold.
@@ -36,8 +36,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IIte
     public int MAX_GAS = 96000;
 
     public ItemBlockGasTank(BlockGasTank block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -86,7 +85,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IIte
     private GasTankTier getTier(ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockGasTank) {
-            BlockGasTank gasTank = (BlockGasTank) (((ItemBlockGasTank) item).getBlock());
+            BlockGasTank gasTank = ((ItemBlockGasTank) item).getBlock();
             return gasTank.getTier();
         }
         return GasTankTier.BASIC;
@@ -98,7 +97,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IIte
         if (!isInGroup(group)) {
             return;
         }
-        BlockGasTank gasTank = (BlockGasTank) this.getBlock();
+        BlockGasTank gasTank = getBlock();
         if (gasTank.getTier() == GasTankTier.CREATIVE && MekanismConfig.current().general.prefilledGasTanks.val()) {
             for (Gas type : GasRegistry.getRegisteredGasses()) {
                 if (type.isVisible()) {

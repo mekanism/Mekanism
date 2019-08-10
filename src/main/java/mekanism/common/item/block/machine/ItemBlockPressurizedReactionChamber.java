@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockPressurizedReactionChamber extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockPressurizedReactionChamber extends ItemBlockAdvancedTooltip<BlockPressurizedReactionChamber> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockPressurizedReactionChamber(BlockPressurizedReactionChamber block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockPressurizedReactionChamber extends ItemBlockAdvancedToolti
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockPressurizedReactionChamber) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockPressurizedReactionChamber) (((ItemBlockPressurizedReactionChamber) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockPressurizedReactionChamber) item).getBlock().getStorage());
         }
         return 0;
     }

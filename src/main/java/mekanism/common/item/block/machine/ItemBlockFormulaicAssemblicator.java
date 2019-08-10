@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockFormulaicAssemblicator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockFormulaicAssemblicator extends ItemBlockAdvancedTooltip<BlockFormulaicAssemblicator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockFormulaicAssemblicator(BlockFormulaicAssemblicator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockFormulaicAssemblicator extends ItemBlockAdvancedTooltip im
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockFormulaicAssemblicator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockFormulaicAssemblicator) (((ItemBlockFormulaicAssemblicator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockFormulaicAssemblicator) item).getBlock().getStorage());
         }
         return 0;
     }

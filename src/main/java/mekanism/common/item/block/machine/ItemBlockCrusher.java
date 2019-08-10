@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockCrusher extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockCrusher extends ItemBlockAdvancedTooltip<BlockCrusher> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockCrusher(BlockCrusher block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockCrusher extends ItemBlockAdvancedTooltip implements IItemE
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockCrusher) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockCrusher) (((ItemBlockCrusher) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockCrusher) item).getBlock().getStorage());
         }
         return 0;
     }

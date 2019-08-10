@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.common.MekanismBlock;
+import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
@@ -14,12 +15,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,13 +30,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class ItemBlockCardboardBox extends ItemBlockMekanism {
+public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
     private static boolean isMonitoring;
 
-    public ItemBlockCardboardBox(Block block) {
-        super(block);
-        setMaxStackSize(16);
+    public ItemBlockCardboardBox(BlockCardboardBox block) {
+        super(block, new Item.Properties().maxStackSize(16));
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -88,7 +89,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
                 // double updates, but if the block we are wrapping has multiple stacked blocks,
                 // we need to make sure it has a chance to update.
                 world.removeBlock(pos, false);
-                world.setBlockState(pos, MekanismBlock.CARDBOARD_BOX.getBlock().getStateFromMeta(1));
+                world.setBlockState(pos, getBlock().getStateFromMeta(1));
                 isMonitoring = false;
                 TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
                 if (tileEntity != null) {
@@ -101,15 +102,15 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
-          float hitZ, @Nonnull BlockState state) {
+    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+        World world = context.getWorld();
         if (world.isRemote) {
             return true;
         }
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
+        if (super.placeBlock(context, state)) {
+            TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(context.getPos());
             if (tileEntity != null) {
-                tileEntity.storedData = getBlockData(stack);
+                tileEntity.storedData = getBlockData(context.getItem());
             }
             return true;
         }

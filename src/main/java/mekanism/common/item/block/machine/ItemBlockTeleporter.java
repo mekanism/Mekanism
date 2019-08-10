@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockTeleporter extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockTeleporter extends ItemBlockAdvancedTooltip<BlockTeleporter> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockTeleporter(BlockTeleporter block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockTeleporter extends ItemBlockAdvancedTooltip implements IIt
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockTeleporter) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockTeleporter) (((ItemBlockTeleporter) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockTeleporter) item).getBlock().getStorage());
         }
         return 0;
     }

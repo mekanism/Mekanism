@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockChemicalCrystallizer extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockChemicalCrystallizer extends ItemBlockAdvancedTooltip<BlockChemicalCrystallizer> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockChemicalCrystallizer(BlockChemicalCrystallizer block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockChemicalCrystallizer extends ItemBlockAdvancedTooltip impl
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockChemicalCrystallizer) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockChemicalCrystallizer) (((ItemBlockChemicalCrystallizer) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockChemicalCrystallizer) item).getBlock().getStorage());
         }
         return 0;
     }

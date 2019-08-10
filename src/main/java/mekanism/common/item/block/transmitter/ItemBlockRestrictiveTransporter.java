@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockRestrictiveTransporter extends ItemBlockMultipartAble {
+public class ItemBlockRestrictiveTransporter extends ItemBlockMultipartAble<BlockRestrictiveTransporter> {
 
     public ItemBlockRestrictiveTransporter(BlockRestrictiveTransporter block) {
         super(block);

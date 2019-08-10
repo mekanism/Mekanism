@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockOsmiumCompressor extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockOsmiumCompressor extends ItemBlockAdvancedTooltip<BlockOsmiumCompressor> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockOsmiumCompressor(BlockOsmiumCompressor block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockOsmiumCompressor extends ItemBlockAdvancedTooltip implemen
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockOsmiumCompressor) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockOsmiumCompressor) (((ItemBlockOsmiumCompressor) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockOsmiumCompressor) item).getBlock().getStorage());
         }
         return 0;
     }

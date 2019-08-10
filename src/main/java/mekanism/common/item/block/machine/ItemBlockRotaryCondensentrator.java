@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockRotaryCondensentrator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockRotaryCondensentrator extends ItemBlockAdvancedTooltip<BlockRotaryCondensentrator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockRotaryCondensentrator(BlockRotaryCondensentrator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockRotaryCondensentrator extends ItemBlockAdvancedTooltip imp
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockRotaryCondensentrator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockRotaryCondensentrator) (((ItemBlockRotaryCondensentrator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockRotaryCondensentrator) item).getBlock().getStorage());
         }
         return 0;
     }

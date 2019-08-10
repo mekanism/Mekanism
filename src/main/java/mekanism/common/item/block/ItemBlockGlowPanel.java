@@ -11,7 +11,7 @@ import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -21,18 +21,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
 //TODO: Maybe somehow make this extend ItemBlockColoredName
-public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemRedirectedModel {
+public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> implements IItemRedirectedModel {
 
-    public ItemBlockGlowPanel(Block block) {
+    public ItemBlockGlowPanel(BlockGlowPanel block) {
         super(block);
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
-          float hitZ, @Nonnull BlockState state) {
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
+    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+        if (super.placeBlock(context, state)) {
+            World world = context.getWorld();
+            BlockPos pos = context.getPos();
             TileEntityGlowPanel tile = (TileEntityGlowPanel) world.getTileEntity(pos);
             if (tile != null) {
+                Direction side = context.getFace();
                 BlockPos pos1 = pos.offset(side.getOpposite());
                 if (world.isSideSolid(pos1, side)) {
                     tile.setOrientation(side.getOpposite());
@@ -59,7 +61,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemR
     public EnumColor getColor(ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockGlowPanel) {
-            return ((BlockGlowPanel) (((ItemBlockGlowPanel) item).block)).getColor();
+            return ((ItemBlockGlowPanel) item).getBlock().getColor();
         }
         return EnumColor.BLACK;
     }

@@ -20,11 +20,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockChargepad extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory {
+public class ItemBlockChargepad extends ItemBlockAdvancedTooltip<BlockChargepad> implements IItemEnergized, IItemSustainedInventory {
 
     public ItemBlockChargepad(BlockChargepad block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -38,7 +37,7 @@ public class ItemBlockChargepad extends ItemBlockAdvancedTooltip implements IIte
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockChargepad) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockChargepad) (((ItemBlockChargepad) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockChargepad) item).getBlock().getStorage());
         }
         return 0;
     }

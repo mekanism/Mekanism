@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble implements ITieredItem<PipeTier> {
+public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble<BlockMechanicalPipe> implements ITieredItem<PipeTier> {
 
     public ItemBlockMechanicalPipe(BlockMechanicalPipe block) {
         super(block);
@@ -34,7 +34,7 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble implements I
     public PipeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockMechanicalPipe) {
-            return ((BlockMechanicalPipe) ((ItemBlockMechanicalPipe) item).block).getTier();
+            return ((ItemBlockMechanicalPipe) item).getBlock().getTier();
         }
         return null;
     }

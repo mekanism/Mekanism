@@ -24,11 +24,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockResistiveHeater extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockResistiveHeater extends ItemBlockAdvancedTooltip<BlockResistiveHeater> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockResistiveHeater(BlockResistiveHeater block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -49,7 +48,7 @@ public class ItemBlockResistiveHeater extends ItemBlockAdvancedTooltip implement
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockResistiveHeater) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockResistiveHeater) (((ItemBlockResistiveHeater) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockResistiveHeater) item).getBlock().getStorage());
         }
         return 0;
     }

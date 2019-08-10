@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Should this implement IItemEnergized instead of IEnergizedItem
-public class ItemBlockInductionCell extends ItemBlockTooltip implements IEnergizedItem, ITieredItem<InductionCellTier> {
+public class ItemBlockInductionCell extends ItemBlockTooltip<BlockInductionCell> implements IEnergizedItem, ITieredItem<InductionCellTier> {
 
     public ItemBlockInductionCell(BlockInductionCell block) {
         super(block);
@@ -30,7 +30,7 @@ public class ItemBlockInductionCell extends ItemBlockTooltip implements IEnergiz
     public InductionCellTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockInductionCell) {
-            return ((BlockInductionCell) ((ItemBlockInductionCell) item).block).getTier();
+            return ((ItemBlockInductionCell) item).getBlock().getTier();
         }
         return null;
     }

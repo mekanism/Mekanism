@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockEnergizedSmelter extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockEnergizedSmelter extends ItemBlockAdvancedTooltip<BlockEnergizedSmelter> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockEnergizedSmelter(BlockEnergizedSmelter block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockEnergizedSmelter extends ItemBlockAdvancedTooltip implemen
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockEnergizedSmelter) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockEnergizedSmelter) (((ItemBlockEnergizedSmelter) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockEnergizedSmelter) item).getBlock().getStorage());
         }
         return 0;
     }

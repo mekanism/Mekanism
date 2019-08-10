@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockUniversalCable extends ItemBlockMultipartAble implements ITieredItem<CableTier> {
+public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUniversalCable> implements ITieredItem<CableTier> {
 
     public ItemBlockUniversalCable(BlockUniversalCable block) {
         super(block);
@@ -35,7 +35,7 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble implements I
     public CableTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockUniversalCable) {
-            return ((BlockUniversalCable) ((ItemBlockUniversalCable) item).block).getTier();
+            return ((ItemBlockUniversalCable) item).getBlock().getTier();
         }
         return null;
     }

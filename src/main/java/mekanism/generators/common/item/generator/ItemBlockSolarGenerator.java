@@ -24,11 +24,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockSolarGenerator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockSolarGenerator extends ItemBlockAdvancedTooltip<BlockSolarGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSolarGenerator(BlockSolarGenerator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -49,7 +48,7 @@ public class ItemBlockSolarGenerator extends ItemBlockAdvancedTooltip implements
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockSolarGenerator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockSolarGenerator) (((ItemBlockSolarGenerator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockSolarGenerator) item).getBlock().getStorage());
         }
         return 0;
     }

@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockChemicalInfuser extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockChemicalInfuser extends ItemBlockAdvancedTooltip<BlockChemicalInfuser> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockChemicalInfuser(BlockChemicalInfuser block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockChemicalInfuser extends ItemBlockAdvancedTooltip implement
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockChemicalInfuser) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockChemicalInfuser) (((ItemBlockChemicalInfuser) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockChemicalInfuser) item).getBlock().getStorage());
         }
         return 0;
     }

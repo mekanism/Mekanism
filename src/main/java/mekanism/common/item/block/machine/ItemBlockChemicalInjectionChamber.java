@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockChemicalInjectionChamber extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockChemicalInjectionChamber extends ItemBlockAdvancedTooltip<BlockChemicalInjectionChamber> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockChemicalInjectionChamber(BlockChemicalInjectionChamber block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockChemicalInjectionChamber extends ItemBlockAdvancedTooltip 
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockChemicalInjectionChamber) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockChemicalInjectionChamber) (((ItemBlockChemicalInjectionChamber) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockChemicalInjectionChamber) item).getBlock().getStorage());
         }
         return 0;
     }

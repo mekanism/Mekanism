@@ -12,16 +12,16 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockFuelwoodHeater extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockFuelwoodHeater extends ItemBlockAdvancedTooltip<BlockFuelwoodHeater> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockFuelwoodHeater(BlockFuelwoodHeater block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override

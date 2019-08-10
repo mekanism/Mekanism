@@ -22,22 +22,20 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip<BlockDigitalMiner> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockDigitalMiner(BlockDigitalMiner block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -61,23 +59,23 @@ public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip implements I
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
-          float hitZ, @Nonnull BlockState state) {
-        for (BlockPos testPos : BlockPos.getAllInBox(-1, 0, -1, 1, 1, 1)) {
+    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+        World world = context.getWorld();
+        BlockPos.getAllInBox(-1, 0, -1, 1, 1, 1).forEach(testPos -> {
             Block b = world.getBlockState(testPos).getBlock();
             if (!world.isValid(testPos) || !world.isBlockLoaded(testPos, false) || !b.isReplaceable(world, testPos)) {
                 //If it won't fit then fail
                 return false;
             }
-        }
-        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
+        });
+        return super.placeBlock(context, state);
     }
 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockDigitalMiner) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockDigitalMiner) (((ItemBlockDigitalMiner) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockDigitalMiner) item).getBlock().getStorage());
         }
         return 0;
     }

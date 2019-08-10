@@ -33,11 +33,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemEnergized, IFactory, IItemSustainedInventory, ISecurityItem, ITieredItem<FactoryTier> {
+public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> implements IItemEnergized, IFactory, IItemSustainedInventory, ISecurityItem, ITieredItem<FactoryTier> {
 
     public ItemBlockFactory(BlockFactory block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Nullable
@@ -45,7 +44,7 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemE
     public FactoryTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockFactory) {
-            return ((BlockFactory) ((ItemBlockFactory) item).block).getTier();
+            return ((ItemBlockFactory) item).getBlock().getTier();
         }
         return null;
     }
@@ -66,7 +65,7 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemE
                  + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                  LangUtils.transYesNo(getInventory(itemstack) != null && !getInventory(itemstack).isEmpty()));
-        if (block instanceof ISupportsUpgrades && ItemDataUtils.hasData(itemstack, "upgrades")) {
+        if (ItemDataUtils.hasData(itemstack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                 list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));

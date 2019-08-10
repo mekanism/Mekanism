@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockCombiner extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockCombiner extends ItemBlockAdvancedTooltip<BlockCombiner> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockCombiner(BlockCombiner block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockCombiner extends ItemBlockAdvancedTooltip implements IItem
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockCombiner) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockCombiner) (((ItemBlockCombiner) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockCombiner) item).getBlock().getStorage());
         }
         return 0;
     }

@@ -30,11 +30,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockFluidicPlenisher extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, IItemSustainedTank, ISecurityItem {
+public class ItemBlockFluidicPlenisher extends ItemBlockAdvancedTooltip<BlockFluidicPlenisher> implements IItemEnergized, IItemSustainedInventory, IItemSustainedTank, ISecurityItem {
 
     public ItemBlockFluidicPlenisher(BlockFluidicPlenisher block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -68,7 +67,7 @@ public class ItemBlockFluidicPlenisher extends ItemBlockAdvancedTooltip implemen
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockFluidicPlenisher) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockFluidicPlenisher) (((ItemBlockFluidicPlenisher) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockFluidicPlenisher) item).getBlock().getStorage());
         }
         return 0;
     }

@@ -10,15 +10,20 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockTooltip extends ItemBlockMekanism {
+public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> {
 
-    public ItemBlockTooltip(Block block) {
-        super(block);
+    public ItemBlockTooltip(BLOCK block) {
+        this(block, new Item.Properties());
+    }
+
+    public ItemBlockTooltip(BLOCK block, Item.Properties properties) {
+        super(block, properties);
     }
 
     @Override

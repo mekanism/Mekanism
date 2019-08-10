@@ -30,11 +30,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, IItemSustainedTank, ISecurityItem {
+public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip<BlockElectricPump> implements IItemEnergized, IItemSustainedInventory, IItemSustainedTank, ISecurityItem {
 
     public ItemBlockElectricPump(BlockElectricPump block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -68,7 +67,7 @@ public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip implements I
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockElectricPump) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockElectricPump) (((ItemBlockElectricPump) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockElectricPump) item).getBlock().getStorage());
         }
         return 0;
     }

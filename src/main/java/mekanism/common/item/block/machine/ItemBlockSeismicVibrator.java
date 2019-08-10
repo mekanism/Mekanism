@@ -17,22 +17,20 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeismicVibrator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSeismicVibrator(BlockSeismicVibrator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -50,21 +48,22 @@ public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip implement
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
-          float hitZ, @Nonnull BlockState state) {
+    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
         BlockPos abovePos = pos.up();
         if (!world.isValid(abovePos) || !world.getBlockState(abovePos).getBlock().isReplaceable(world, abovePos)) {
             //If there isn't room then fail
             return false;
         }
-        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
+        return super.placeBlock(context, state);
     }
 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockSeismicVibrator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockSeismicVibrator) (((ItemBlockSeismicVibrator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockSeismicVibrator) item).getBlock().getStorage());
         }
         return 0;
     }

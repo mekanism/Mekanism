@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockEnrichmentChamber extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockEnrichmentChamber extends ItemBlockAdvancedTooltip<BlockEnrichmentChamber> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockEnrichmentChamber(BlockEnrichmentChamber block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockEnrichmentChamber extends ItemBlockAdvancedTooltip impleme
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockEnrichmentChamber) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockEnrichmentChamber) (((ItemBlockEnrichmentChamber) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockEnrichmentChamber) item).getBlock().getStorage());
         }
         return 0;
     }

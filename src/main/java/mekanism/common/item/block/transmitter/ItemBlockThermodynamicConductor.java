@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble implements ITieredItem<ConductorTier> {
+public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<BlockThermodynamicConductor> implements ITieredItem<ConductorTier> {
 
     public ItemBlockThermodynamicConductor(BlockThermodynamicConductor block) {
         super(block);
@@ -34,7 +34,7 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble impl
     public ConductorTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockThermodynamicConductor) {
-            return ((BlockThermodynamicConductor) ((ItemBlockThermodynamicConductor) item).block).getTier();
+            return ((ItemBlockThermodynamicConductor) item).getBlock().getTier();
         }
         return null;
     }

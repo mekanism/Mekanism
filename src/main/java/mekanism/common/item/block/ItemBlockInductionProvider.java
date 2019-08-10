@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockInductionProvider extends ItemBlockTooltip implements ITieredItem<InductionProviderTier> {
+public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockInductionProvider> implements ITieredItem<InductionProviderTier> {
 
     public ItemBlockInductionProvider(BlockInductionProvider block) {
         super(block);
@@ -27,7 +27,7 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip implements ITie
     public InductionProviderTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockInductionProvider) {
-            return ((BlockInductionProvider) ((ItemBlockInductionProvider) item).block).getTier();
+            return ((ItemBlockInductionProvider) item).getBlock().getTier();
         }
         return null;
     }

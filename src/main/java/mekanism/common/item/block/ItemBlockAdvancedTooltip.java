@@ -9,16 +9,21 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Should this just be merged with ItemBlockTooltip somehow, or maybe not extend it at all
-public abstract class ItemBlockAdvancedTooltip extends ItemBlockTooltip {
+public abstract class ItemBlockAdvancedTooltip<BLOCK extends Block> extends ItemBlockTooltip<BLOCK> {
 
-    public ItemBlockAdvancedTooltip(Block block) {
-        super(block);
+    public ItemBlockAdvancedTooltip(BLOCK block) {
+        this(block, new Item.Properties());
+    }
+
+    public ItemBlockAdvancedTooltip(BLOCK block, Item.Properties properties) {
+        super(block, properties);
     }
 
     @Override

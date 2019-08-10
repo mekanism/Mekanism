@@ -5,7 +5,7 @@ import mekanism.common.block.plastic.BlockPlastic;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.block.ItemBlockColoredName;
 
-public class ItemBlockPlastic extends ItemBlockColoredName implements IItemRedirectedModel {
+public class ItemBlockPlastic extends ItemBlockColoredName<BlockPlastic> implements IItemRedirectedModel {
 
     public ItemBlockPlastic(BlockPlastic block) {
         super(block);

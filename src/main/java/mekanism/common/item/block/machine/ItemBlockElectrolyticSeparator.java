@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockElectrolyticSeparator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockElectrolyticSeparator extends ItemBlockAdvancedTooltip<BlockElectrolyticSeparator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockElectrolyticSeparator(BlockElectrolyticSeparator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockElectrolyticSeparator extends ItemBlockAdvancedTooltip imp
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockElectrolyticSeparator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockElectrolyticSeparator) (((ItemBlockElectrolyticSeparator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockElectrolyticSeparator) item).getBlock().getStorage());
         }
         return 0;
     }

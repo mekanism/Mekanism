@@ -20,11 +20,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockLaser extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory {
+public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockLaser> implements IItemEnergized, IItemSustainedInventory {
 
     public ItemBlockLaser(BlockLaser block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -40,7 +39,7 @@ public class ItemBlockLaser extends ItemBlockAdvancedTooltip implements IItemEne
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockLaser) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockLaser) (((ItemBlockLaser) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockLaser) item).getBlock().getStorage());
         }
         return 0;
     }

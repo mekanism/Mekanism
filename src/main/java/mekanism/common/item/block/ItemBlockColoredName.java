@@ -8,10 +8,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class ItemBlockColoredName extends ItemBlockMekanism {
+public class ItemBlockColoredName<BLOCK extends Block & IColoredBlock> extends ItemBlockMekanism<BLOCK> {
 
-    public ItemBlockColoredName(Block block) {
-        super(block);
+    public ItemBlockColoredName(BLOCK block) {
+        this(block, new Item.Properties());
+    }
+
+    public ItemBlockColoredName(BLOCK block, Item.Properties properties) {
+        super(block, properties);
     }
 
     @Nonnull
@@ -28,7 +32,7 @@ public class ItemBlockColoredName extends ItemBlockMekanism {
     private EnumColor getColor(ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockColoredName) {
-            return ((IColoredBlock) (((ItemBlockColoredName) item).block)).getColor();
+            return ((IColoredBlock) ((ItemBlockColoredName) item).getBlock()).getColor();
         }
         return EnumColor.BLACK;
     }

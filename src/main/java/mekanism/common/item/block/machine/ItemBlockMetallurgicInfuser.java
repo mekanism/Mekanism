@@ -28,11 +28,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockMetallurgicInfuser extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockMetallurgicInfuser extends ItemBlockAdvancedTooltip<BlockMetallurgicInfuser> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockMetallurgicInfuser(BlockMetallurgicInfuser block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ItemBlockMetallurgicInfuser extends ItemBlockAdvancedTooltip implem
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockMetallurgicInfuser) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockMetallurgicInfuser) (((ItemBlockMetallurgicInfuser) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockMetallurgicInfuser) item).getBlock().getStorage());
         }
         return 0;
     }

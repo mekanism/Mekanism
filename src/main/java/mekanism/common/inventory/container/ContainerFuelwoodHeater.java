@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.FurnaceTileEntity;
 
 public class ContainerFuelwoodHeater extends ContainerMekanism<TileEntityFuelwoodHeater> {
 
@@ -22,7 +21,7 @@ public class ContainerFuelwoodHeater extends ContainerMekanism<TileEntityFuelwoo
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (FurnaceTileEntity.getItemBurnTime(slotStack) > 0) {
+            if (slotStack.getBurnTime() > 0) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockPressurizedTube extends ItemBlockMultipartAble implements ITieredItem<TubeTier> {
+public class ItemBlockPressurizedTube extends ItemBlockMultipartAble<BlockPressurizedTube> implements ITieredItem<TubeTier> {
 
     public ItemBlockPressurizedTube(BlockPressurizedTube block) {
         super(block);
@@ -34,7 +34,7 @@ public class ItemBlockPressurizedTube extends ItemBlockMultipartAble implements 
     public TubeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockPressurizedTube) {
-            return ((BlockPressurizedTube) ((ItemBlockPressurizedTube) item).block).getTier();
+            return ((ItemBlockPressurizedTube) item).getBlock().getTier();
         }
         return null;
     }

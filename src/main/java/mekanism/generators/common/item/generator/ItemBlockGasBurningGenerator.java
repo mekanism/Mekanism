@@ -24,11 +24,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockGasBurningGenerator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockGasBurningGenerator extends ItemBlockAdvancedTooltip<BlockGasBurningGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockGasBurningGenerator(BlockGasBurningGenerator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -49,7 +48,7 @@ public class ItemBlockGasBurningGenerator extends ItemBlockAdvancedTooltip imple
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockGasBurningGenerator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockGasBurningGenerator) (((ItemBlockGasBurningGenerator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockGasBurningGenerator) item).getBlock().getStorage());
         }
         return 0;
     }

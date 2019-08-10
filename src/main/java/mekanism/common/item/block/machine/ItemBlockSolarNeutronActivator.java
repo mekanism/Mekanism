@@ -17,19 +17,18 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip<BlockSolarNeutronActivator> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSolarNeutronActivator(BlockSolarNeutronActivator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -51,13 +50,14 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip imp
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
-          float hitZ, @Nonnull BlockState state) {
+    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
         BlockPos abovePos = pos.up();
         if (!world.isValid(abovePos) || !world.getBlockState(abovePos).getBlock().isReplaceable(world, abovePos)) {
             //If there isn't room then fail
             return false;
         }
-        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
+        return super.placeBlock(context, state);
     }
 }

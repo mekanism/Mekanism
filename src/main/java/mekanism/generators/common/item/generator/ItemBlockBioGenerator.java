@@ -24,11 +24,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockBioGenerator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockBioGenerator extends ItemBlockAdvancedTooltip<BlockBioGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockBioGenerator(BlockBioGenerator block) {
-        super(block);
-        setMaxStackSize(1);
+        super(block, new Item.Properties().maxStackSize(1));
     }
 
     @Override
@@ -49,7 +48,7 @@ public class ItemBlockBioGenerator extends ItemBlockAdvancedTooltip implements I
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockBioGenerator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockBioGenerator) (((ItemBlockBioGenerator) item).block)).getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockBioGenerator) item).getBlock().getStorage());
         }
         return 0;
     }

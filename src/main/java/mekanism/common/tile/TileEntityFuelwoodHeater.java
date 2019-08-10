@@ -15,7 +15,6 @@ import mekanism.common.util.HeatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -44,7 +43,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
                 burning = true;
             } else {
                 if (!getInventory().get(0).isEmpty()) {
-                    maxBurnTime = burnTime = FurnaceTileEntity.getItemBurnTime(getInventory().get(0)) / 2;
+                    maxBurnTime = burnTime = getInventory().get(0).getBurnTime() / 2;
                     if (burnTime > 0) {
                         ItemStack preShrunk = getInventory().get(0).copy();
                         getInventory().get(0).shrink(1);
@@ -117,7 +116,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
 
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
-        return FurnaceTileEntity.getItemBurnTime(stack) > 0;
+        return stack.getBurnTime() > 0;
     }
 
     @Override
