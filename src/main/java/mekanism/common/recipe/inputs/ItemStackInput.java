@@ -22,7 +22,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput> implements IWil
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        ingredient = new ItemStack(nbtTags.getCompound("input"));
+        ingredient = ItemStack.read(nbtTags.getCompound("input"));
         ingredientHash = hashIngredients();
         wildVersion = null;
     }

@@ -71,9 +71,9 @@ public class ContainerChemicalInfuser extends ContainerMekanism<TileEntityChemic
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotStorageTank(tileEntity, 0, 5, 56));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 1, 155, 56));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 2, 80, 65));
-        addSlotToContainer(new SlotDischarge(tileEntity, 3, 155, 5));
+        addSlot(new SlotStorageTank(tileEntity, 0, 5, 56));
+        addSlot(new SlotStorageTank(tileEntity, 1, 155, 56));
+        addSlot(new SlotStorageTank(tileEntity, 2, 80, 65));
+        addSlot(new SlotDischarge(tileEntity, 3, 155, 5));
     }
 }

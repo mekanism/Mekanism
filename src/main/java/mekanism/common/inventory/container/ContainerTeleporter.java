@@ -57,7 +57,7 @@ public class ContainerTeleporter extends ContainerMekanism<TileEntityTeleporter>
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotDischarge(tileEntity, 0, 153, 7));
+        addSlot(new SlotDischarge(tileEntity, 0, 153, 7));
     }
 
     @Override

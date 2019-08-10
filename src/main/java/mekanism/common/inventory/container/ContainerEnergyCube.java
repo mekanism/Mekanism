@@ -13,7 +13,7 @@ public class ContainerEnergyCube extends ContainerEnergyStorage<TileEntityEnergy
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotCharge(tileEntity, 0, 143, 35));
-        addSlotToContainer(new SlotDischarge(tileEntity, 1, 17, 35));
+        addSlot(new SlotCharge(tileEntity, 0, 143, 35));
+        addSlot(new SlotDischarge(tileEntity, 1, 17, 35));
     }
 }

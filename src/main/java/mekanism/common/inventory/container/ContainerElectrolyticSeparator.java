@@ -83,9 +83,9 @@ public class ContainerElectrolyticSeparator extends ContainerMekanism<TileEntity
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 26, 35));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 1, 59, 52));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 2, 101, 52));
-        addSlotToContainer(new SlotDischarge(tileEntity, 3, 143, 35));
+        addSlot(new Slot(tileEntity, 0, 26, 35));
+        addSlot(new SlotStorageTank(tileEntity, 1, 59, 52));
+        addSlot(new SlotStorageTank(tileEntity, 2, 101, 52));
+        addSlot(new SlotDischarge(tileEntity, 3, 143, 35));
     }
 }

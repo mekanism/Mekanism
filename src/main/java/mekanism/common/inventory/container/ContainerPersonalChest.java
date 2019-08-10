@@ -48,7 +48,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     protected void addSlots() {
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new SlotPersonalChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
+                addSlot(new SlotPersonalChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
             }
         }
     }

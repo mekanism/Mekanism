@@ -45,7 +45,7 @@ public class ContainerRobitInventory extends ContainerRobit {
     protected void addSlots() {
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(robit, slotX + slotY * 9, 8 + slotX * 18, 18 + slotY * 18));
+                addSlot(new Slot(robit, slotX + slotY * 9, 8 + slotX * 18, 18 + slotY * 18));
             }
         }
     }

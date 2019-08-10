@@ -59,7 +59,7 @@ public class ContainerGasTank extends ContainerMekanism<TileEntityGasTank> {
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotStorageTank(tileEntity, 0, 8, 8));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 1, 8, 40));
+        addSlot(new SlotStorageTank(tileEntity, 0, 8, 8));
+        addSlot(new SlotStorageTank(tileEntity, 1, 8, 40));
     }
 }

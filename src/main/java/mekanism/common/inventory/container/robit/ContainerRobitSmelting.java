@@ -107,13 +107,13 @@ public class ContainerRobitSmelting extends ContainerRobit {
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(robit, 28, 56, 17));
-        addSlotToContainer(new Slot(robit, 29, 56, 53));
+        addSlot(new Slot(robit, 28, 56, 17));
+        addSlot(new Slot(robit, 29, 56, 53));
     }
 
     @Override
     protected void addInventorySlots(PlayerInventory inventory) {
-        addSlotToContainer(new FurnaceResultSlot(inventory.player, robit, 30, 116, 35));
+        addSlot(new FurnaceResultSlot(inventory.player, robit, 30, 116, 35));
         super.addInventorySlots(inventory);
     }
 }

@@ -52,7 +52,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: missing input or result compound tag.");
             return null;
         }
-        ItemStack result = new ItemStack(nbtTags.getCompound("result"));
+        ItemStack result = ItemStack.read(nbtTags.getCompound("result"));
         ListNBT list = nbtTags.getList("input", Constants.NBT.TAG_COMPOUND);
         if (result.isEmpty() || list.isEmpty()) {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid result stack or input data list.");
@@ -74,7 +74,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
                 }
                 ret[i] = compound.getString("character").toCharArray()[0];
             } else if (compound.contains("itemstack")) {
-                ret[i] = new ItemStack(compound.getCompound("itemstack"));
+                ret[i] = ItemStack.read(compound.getCompound("itemstack"));
             } else {
                 Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid input tag data key.");
                 return null;

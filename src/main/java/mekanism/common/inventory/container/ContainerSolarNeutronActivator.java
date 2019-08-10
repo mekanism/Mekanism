@@ -63,7 +63,7 @@ public class ContainerSolarNeutronActivator extends ContainerMekanism<TileEntity
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotStorageTank(tileEntity, 0, 5, 56));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 1, 155, 56));
+        addSlot(new SlotStorageTank(tileEntity, 0, 5, 56));
+        addSlot(new SlotStorageTank(tileEntity, 1, 155, 56));
     }
 }

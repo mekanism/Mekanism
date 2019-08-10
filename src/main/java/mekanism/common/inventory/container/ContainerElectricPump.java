@@ -80,8 +80,8 @@ public class ContainerElectricPump extends ContainerMekanism<TileEntityElectricP
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 28, 20));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 28, 51));
-        addSlotToContainer(new SlotDischarge(tileEntity, 2, 143, 35));
+        addSlot(new Slot(tileEntity, 0, 28, 20));
+        addSlot(new SlotOutput(tileEntity, 1, 28, 51));
+        addSlot(new SlotDischarge(tileEntity, 2, 143, 35));
     }
 }

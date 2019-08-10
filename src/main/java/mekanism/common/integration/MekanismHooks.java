@@ -208,7 +208,7 @@ public final class MekanismHooks {
     }
 
     private void registerCyclicRecipes() {
-        ItemStack netherrack = new ItemStack(Item.getItemFromBlock(Blocks.NETHERRACK));
+        ItemStack netherrack = new ItemStack(Blocks.NETHERRACK);
         registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), netherrack, "nether_redstone_ore");
         registerCyclicCombinerOreRecipe("dustIron", 8, netherrack, "nether_iron_ore");
         registerCyclicCombinerOreRecipe("dustGold", 8, netherrack, "nether_gold_ore");
@@ -217,7 +217,7 @@ public final class MekanismHooks {
         registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), netherrack, "nether_emerald_ore");
         registerCyclicCombinerOreRecipe("dustDiamond", 3, netherrack, "nether_diamond_ore");
 
-        ItemStack end_stone = new ItemStack(Item.getItemFromBlock(Blocks.END_STONE));
+        ItemStack end_stone = new ItemStack(Blocks.END_STONE);
         registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), end_stone, "end_redstone_ore");
         registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), end_stone, "end_coal_ore");
         registerCyclicCombinerRecipe(new ItemStack(Items.LAPIS_LAZULI, 5), end_stone, "end_lapis_ore");

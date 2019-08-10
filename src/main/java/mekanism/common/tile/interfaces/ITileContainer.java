@@ -80,20 +80,6 @@ public interface ITileContainer extends ISidedInventory, ISustainedInventory {
     }
 
     @Override
-    default int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    default void setField(int id, int value) {
-    }
-
-    @Override
-    default int getFieldCount() {
-        return 0;
-    }
-
-    @Override
     default void clear() {
     }
 }

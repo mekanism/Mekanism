@@ -60,8 +60,8 @@ public class ContainerOredictionificator extends ContainerMekanism<TileEntityOre
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 26, 115));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 134, 115));
+        addSlot(new Slot(tileEntity, 0, 26, 115));
+        addSlot(new SlotOutput(tileEntity, 1, 134, 115));
     }
 
     @Override

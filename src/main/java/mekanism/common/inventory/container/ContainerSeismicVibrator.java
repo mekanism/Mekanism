@@ -57,6 +57,6 @@ public class ContainerSeismicVibrator extends ContainerMekanism<TileEntitySeismi
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotDischarge(tileEntity, 0, 143, 35));
+        addSlot(new SlotDischarge(tileEntity, 0, 143, 35));
     }
 }

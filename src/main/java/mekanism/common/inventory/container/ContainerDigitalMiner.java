@@ -55,10 +55,10 @@ public class ContainerDigitalMiner extends ContainerMekanism<TileEntityDigitalMi
     protected void addSlots() {
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(tileEntity, slotX + slotY * 9, 8 + slotX * 18, 80 + slotY * 18));
+                addSlot(new Slot(tileEntity, slotX + slotY * 9, 8 + slotX * 18, 80 + slotY * 18));
             }
         }
-        addSlotToContainer(new SlotDischarge(tileEntity, 27, 152, 6));
+        addSlot(new SlotDischarge(tileEntity, 27, 152, 6));
     }
 
     @Override

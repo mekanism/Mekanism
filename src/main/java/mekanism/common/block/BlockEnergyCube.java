@@ -113,13 +113,12 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     }
 
     @Override
-    public void getSubBlocks(ItemGroup creativetabs, NonNullList<ItemStack> list) {
-        //Empty
-        list.add(new ItemStack(this));
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
         //Charged
         ItemStack charged = new ItemStack(this);
         ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.getMaxEnergy());
-        list.add(charged);
+        items.add(charged);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class ContainerDynamicTank extends ContainerFluidStorage<TileEntityDynami
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 146, 20));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 146, 51));
+        addSlot(new Slot(tileEntity, 0, 146, 20));
+        addSlot(new SlotOutput(tileEntity, 1, 146, 51));
     }
 }

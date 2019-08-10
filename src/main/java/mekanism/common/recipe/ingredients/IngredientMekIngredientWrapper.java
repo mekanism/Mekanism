@@ -22,7 +22,7 @@ public class IngredientMekIngredientWrapper implements IMekanismIngredient<ItemS
 
     @Override
     public boolean contains(@Nonnull ItemStack stack) {
-        return ingredient.apply(stack);
+        return ingredient.test(stack);
     }
 
     @Override

@@ -50,7 +50,7 @@ public final class MinerUtils {
 
         if (block instanceof ShulkerBoxBlock) {
             //special case Shulker Boxes because bad Mojang code / no forge patch
-            ItemStack shulkerBoxItem = new ItemStack(Item.getItemFromBlock(block));
+            ItemStack shulkerBoxItem = new ItemStack(block);
             TileEntity tileentity = world.getTileEntity(coord.getPos());
 
             //copied from BlockShulkerBox.breakBlock

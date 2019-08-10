@@ -83,10 +83,10 @@ public class ContainerRotaryCondensentrator extends ContainerMekanism<TileEntity
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotStorageTank(tileEntity, 0, 5, 25));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 1, 5, 56));
-        addSlotToContainer(new Slot(tileEntity, 2, 155, 25));
-        addSlotToContainer(new SlotOutput(tileEntity, 3, 155, 56));
-        addSlotToContainer(new SlotDischarge(tileEntity, 4, 155, 5));
+        addSlot(new SlotStorageTank(tileEntity, 0, 5, 25));
+        addSlot(new SlotStorageTank(tileEntity, 1, 5, 56));
+        addSlot(new Slot(tileEntity, 2, 155, 25));
+        addSlot(new SlotOutput(tileEntity, 3, 155, 56));
+        addSlot(new SlotDischarge(tileEntity, 4, 155, 5));
     }
 }

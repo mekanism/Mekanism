@@ -84,16 +84,16 @@ public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntit
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotDischarge(tileEntity, SLOT_ENERGY, 152, 76));
-        addSlotToContainer(new SlotSpecific(tileEntity, SLOT_FORMULA, 6, 26, ItemCraftingFormula.class));
+        addSlot(new SlotDischarge(tileEntity, SLOT_ENERGY, 152, 76));
+        addSlot(new SlotSpecific(tileEntity, SLOT_FORMULA, 6, 26, ItemCraftingFormula.class));
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(tileEntity, slotX + slotY * 9 + SLOT_INPUT_FIRST, 8 + slotX * 18, 98 + slotY * 18));
+                addSlot(new Slot(tileEntity, slotX + slotY * 9 + SLOT_INPUT_FIRST, 8 + slotX * 18, 98 + slotY * 18));
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
-                addSlotToContainer(new Slot(tileEntity, slotX + slotY * 3 + SLOT_CRAFT_MATRIX_FIRST, 26 + slotX * 18, 17 + slotY * 18) {
+                addSlot(new Slot(tileEntity, slotX + slotY * 3 + SLOT_CRAFT_MATRIX_FIRST, 26 + slotX * 18, 17 + slotY * 18) {
                     @Override
                     public boolean isItemValid(ItemStack stack) {
                         return !tileEntity.autoMode;
@@ -115,7 +115,7 @@ public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntit
 
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
-                addSlotToContainer(new SlotOutput(tileEntity, slotX + slotY * 2 + SLOT_OUTPUT_FIRST, 116 + slotX * 18, 17 + slotY * 18));
+                addSlot(new SlotOutput(tileEntity, slotX + slotY * 2 + SLOT_OUTPUT_FIRST, 116 + slotX * 18, 17 + slotY * 18));
             }
         }
     }

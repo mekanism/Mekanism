@@ -21,7 +21,7 @@ public class ContainerReactorController extends ContainerMekanism<TileEntityReac
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotReactor(tileEntity, 0, 80, 39));
+        addSlot(new SlotReactor(tileEntity, 0, 80, 39));
     }
 
     @Nonnull

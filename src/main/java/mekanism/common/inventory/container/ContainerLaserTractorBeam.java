@@ -45,7 +45,7 @@ public class ContainerLaserTractorBeam extends ContainerMekanism<TileEntityLaser
     protected void addSlots() {
         for (int slotX = 0; slotX < 9; slotX++) {
             for (int slotY = 0; slotY < 3; slotY++) {
-                addSlotToContainer(new Slot(tileEntity, slotX + slotY * 9, 8 + slotX * 18, 16 + slotY * 18));
+                addSlot(new Slot(tileEntity, slotX + slotY * 9, 8 + slotX * 18, 16 + slotY * 18));
             }
         }
     }

@@ -13,7 +13,7 @@ public class ContainerInductionMatrix extends ContainerEnergyStorage<TileEntityI
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotCharge(tileEntity, 0, 146, 20));
-        addSlotToContainer(new SlotDischarge(tileEntity, 1, 146, 51));
+        addSlot(new SlotCharge(tileEntity, 0, 146, 20));
+        addSlot(new SlotDischarge(tileEntity, 1, 146, 51));
     }
 }

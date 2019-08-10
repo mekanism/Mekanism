@@ -84,9 +84,9 @@ public class ContainerChemicalWasher extends ContainerMekanism<TileEntityChemica
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 180, 71));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 180, 102));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 2, 155, 56));
-        addSlotToContainer(new SlotDischarge(tileEntity, 3, 155, 5));
+        addSlot(new Slot(tileEntity, 0, 180, 71));
+        addSlot(new SlotOutput(tileEntity, 1, 180, 102));
+        addSlot(new SlotStorageTank(tileEntity, 2, 155, 56));
+        addSlot(new SlotDischarge(tileEntity, 3, 155, 5));
     }
 }

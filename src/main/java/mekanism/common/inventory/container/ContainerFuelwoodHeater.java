@@ -56,6 +56,6 @@ public class ContainerFuelwoodHeater extends ContainerMekanism<TileEntityFuelwoo
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 15, 29));
+        addSlot(new Slot(tileEntity, 0, 15, 29));
     }
 }

@@ -90,9 +90,9 @@ public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineReci
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 56, 17));
-        addSlotToContainer(new Slot(tileEntity, 1, 56, 53));
-        addSlotToContainer(new SlotOutput(tileEntity, 2, 116, 35));
-        addSlotToContainer(new SlotDischarge(tileEntity, 3, 31, 35));
+        addSlot(new Slot(tileEntity, 0, 56, 17));
+        addSlot(new Slot(tileEntity, 1, 56, 53));
+        addSlot(new SlotOutput(tileEntity, 2, 116, 35));
+        addSlot(new SlotDischarge(tileEntity, 3, 31, 35));
     }
 }

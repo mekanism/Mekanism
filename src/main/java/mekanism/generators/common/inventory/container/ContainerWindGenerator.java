@@ -12,6 +12,6 @@ public class ContainerWindGenerator extends ContainerPassiveGenerator<TileEntity
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotCharge(tileEntity, 0, 143, 35));
+        addSlot(new SlotCharge(tileEntity, 0, 143, 35));
     }
 }

@@ -30,7 +30,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> implements 
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        theSolid = new ItemStack(nbtTags.getCompound("itemInput"));
+        theSolid = ItemStack.read(nbtTags.getCompound("itemInput"));
         theFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("fluidInput"));
         theGas = GasStack.readFromNBT(nbtTags.getCompound("gasInput"));
     }

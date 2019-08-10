@@ -23,30 +23,30 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotDischarge(tileEntity, 1, 7, 13));
-        addSlotToContainer(new Slot(tileEntity, 2, 180, 75));
-        addSlotToContainer(new Slot(tileEntity, 3, 180, 112));
-        addSlotToContainer(new Slot(tileEntity, 4, 7, 57));
+        addSlot(new SlotDischarge(tileEntity, 1, 7, 13));
+        addSlot(new Slot(tileEntity, 2, 180, 75));
+        addSlot(new Slot(tileEntity, 3, 180, 112));
+        addSlot(new Slot(tileEntity, 4, 7, 57));
         if (tileEntity.tier == FactoryTier.BASIC) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 55 + (i * 38), 13, i));
+                addSlot(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 55 + (i * 38), 13, i));
             }
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 55 + (i * 38), 57));
+                addSlot(new SlotOutput(tileEntity, getOutputSlotIndex(i), 55 + (i * 38), 57));
             }
         } else if (tileEntity.tier == FactoryTier.ADVANCED) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 35 + (i * 26), 13, i));
+                addSlot(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 35 + (i * 26), 13, i));
             }
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 35 + (i * 26), 57));
+                addSlot(new SlotOutput(tileEntity, getOutputSlotIndex(i), 35 + (i * 26), 57));
             }
         } else if (tileEntity.tier == FactoryTier.ELITE) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 29 + (i * 19), 13, i));
+                addSlot(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 29 + (i * 19), 13, i));
             }
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 29 + (i * 19), 57));
+                addSlot(new SlotOutput(tileEntity, getOutputSlotIndex(i), 29 + (i * 19), 57));
             }
         }
     }

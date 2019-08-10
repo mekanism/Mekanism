@@ -81,9 +81,9 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 1, 17, 35));
-        addSlotToContainer(new Slot(tileEntity, 2, 51, 43));
-        addSlotToContainer(new SlotOutput(tileEntity, 3, 109, 43));
-        addSlotToContainer(new SlotEnergy.SlotDischarge(tileEntity, 4, 143, 35));
+        addSlot(new Slot(tileEntity, 1, 17, 35));
+        addSlot(new Slot(tileEntity, 2, 51, 43));
+        addSlot(new SlotOutput(tileEntity, 3, 109, 43));
+        addSlot(new SlotEnergy.SlotDischarge(tileEntity, 4, 143, 35));
     }
 }

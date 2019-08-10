@@ -13,7 +13,7 @@ public class ContainerFluidTank extends ContainerFluidStorage<TileEntityFluidTan
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 146, 19));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 146, 51));
+        addSlot(new Slot(tileEntity, 0, 146, 19));
+        addSlot(new SlotOutput(tileEntity, 1, 146, 51));
     }
 }

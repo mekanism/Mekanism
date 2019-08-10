@@ -22,7 +22,7 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        itemOutput = new ItemStack(nbtTags.getCompound("itemOutput"));
+        itemOutput = ItemStack.read(nbtTags.getCompound("itemOutput"));
         gasOutput = GasStack.readFromNBT(nbtTags.getCompound("gasOutput"));
     }
 

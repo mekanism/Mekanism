@@ -14,8 +14,8 @@ public class ContainerHeatGenerator extends ContainerFuelGenerator<TileEntityHea
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 17, 35));
-        addSlotToContainer(new SlotCharge(tileEntity, 1, 143, 35));
+        addSlot(new Slot(tileEntity, 0, 17, 35));
+        addSlot(new SlotCharge(tileEntity, 1, 143, 35));
     }
 
     @Override

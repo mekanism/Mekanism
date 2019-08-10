@@ -165,20 +165,6 @@ public class InventoryList implements IInventory {
     }
 
     @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
     public void clear() {
         this.inventoryContents.clear();
     }

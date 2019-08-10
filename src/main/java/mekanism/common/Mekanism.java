@@ -328,9 +328,22 @@ public class Mekanism {
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.FLINT), new ItemStack(Items.GUNPOWDER));
             RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND, 2));
 
-            for (int i = 0; i < 16; i++) {
-                RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.WOOL, 1, i), new ItemStack(Items.STRING, 4));
-            }
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.WHITE_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.ORANGE_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.MAGENTA_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.LIGHT_BLUE_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.YELLOW_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.LIME_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.PINK_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.GRAY_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.LIGHT_GRAY_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.CYAN_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.PURPLE_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.BLUE_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.BROWN_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.GREEN_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.RED_WOOL), new ItemStack(Items.STRING, 4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.BLACK_WOOL), new ItemStack(Items.STRING, 4));
 
             //BioFuel Crusher Recipes
             RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.GRASS), MekanismItem.BIO_FUEL.getItemStack(4));
@@ -361,7 +374,7 @@ public class Mekanism {
         //Chemical Injection Chamber Recipes
         if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_INJECTION_CHAMBER)) {
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.DIRT), MekanismFluids.Water, new ItemStack(Blocks.CLAY));
-            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.HARDENED_CLAY), MekanismFluids.Water, new ItemStack(Blocks.CLAY));
+            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.TERRACOTTA), MekanismFluids.Water, new ItemStack(Blocks.CLAY));
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.BRICK), MekanismFluids.Water, new ItemStack(Items.CLAY_BALL));
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.GUNPOWDER), MekanismFluids.HydrogenChloride, MekanismItem.SULFUR_DUST.getItemStack());
         }
@@ -371,33 +384,70 @@ public class Mekanism {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.LADDER, 3), new ItemStack(Items.STICK, 7));
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.TORCH, 4), new ItemStack(Items.STICK), new ItemStack(Items.COAL), 1);
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.CHEST), new ItemStack(Blocks.OAK_PLANKS, 8));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.TRAPDOOR), new ItemStack(Blocks.PLANKS, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BOAT), new ItemStack(Blocks.PLANKS, 5));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BED), new ItemStack(Blocks.PLANKS, 3), new ItemStack(Blocks.WOOL, 3), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.OAK_DOOR), new ItemStack(Blocks.PLANKS, 2, 0));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.SPRUCE_DOOR), new ItemStack(Blocks.PLANKS, 2, 1));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BIRCH_DOOR), new ItemStack(Blocks.PLANKS, 2, 2));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.JUNGLE_DOOR), new ItemStack(Blocks.PLANKS, 2, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.ACACIA_DOOR), new ItemStack(Blocks.PLANKS, 2, 4));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.DARK_OAK_DOOR), new ItemStack(Blocks.PLANKS, 2, 5));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUKEBOX), new ItemStack(Blocks.PLANKS, 8), new ItemStack(Items.DIAMOND), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BOOKSHELF), new ItemStack(Blocks.PLANKS, 6), new ItemStack(Items.BOOK, 3), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.WOODEN_PRESSURE_PLATE), new ItemStack(Blocks.PLANKS, 2));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.OAK_FENCE), new ItemStack(Items.STICK, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.SPRUCE_FENCE), new ItemStack(Items.STICK, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BIRCH_FENCE), new ItemStack(Items.STICK, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUNGLE_FENCE), new ItemStack(Items.STICK, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ACACIA_FENCE), new ItemStack(Items.STICK, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.DARK_OAK_FENCE), new ItemStack(Items.STICK, 3));
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.OAK_FENCE_GATE), new ItemStack(Blocks.PLANKS, 2, 0), new ItemStack(Items.STICK, 4), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.SPRUCE_FENCE_GATE), new ItemStack(Blocks.PLANKS, 2, 1), new ItemStack(Items.STICK, 4), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BIRCH_FENCE_GATE), new ItemStack(Blocks.PLANKS, 2, 2), new ItemStack(Items.STICK, 4), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUNGLE_FENCE_GATE), new ItemStack(Blocks.PLANKS, 2, 3), new ItemStack(Items.STICK, 4), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ACACIA_FENCE_GATE), new ItemStack(Blocks.PLANKS, 2, 4), new ItemStack(Items.STICK, 4), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.DARK_OAK_FENCE_GATE), new ItemStack(Blocks.PLANKS, 2, 5), new ItemStack(Items.STICK, 4), 1);
-            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.NOTE_BLOCK), new ItemStack(Blocks.PLANKS, 8), new ItemStack(Items.REDSTONE), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.NOTE_BLOCK), new ItemStack(Blocks.OAK_PLANKS, 8), new ItemStack(Items.REDSTONE), 1);
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.REDSTONE_TORCH), new ItemStack(Items.STICK), new ItemStack(Items.REDSTONE), 1);
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.CRAFTING_TABLE), new ItemStack(Blocks.OAK_PLANKS, 4));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUKEBOX), new ItemStack(Blocks.OAK_PLANKS, 8), new ItemStack(Items.DIAMOND), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BOOKSHELF), new ItemStack(Blocks.OAK_PLANKS, 6), new ItemStack(Items.BOOK, 3), 1);
+            //Trapdoos
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ACACIA_TRAPDOOR), new ItemStack(Blocks.ACACIA_PLANKS, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BIRCH_TRAPDOOR), new ItemStack(Blocks.BIRCH_PLANKS, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.DARK_OAK_TRAPDOOR), new ItemStack(Blocks.DARK_OAK_PLANKS, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUNGLE_TRAPDOOR), new ItemStack(Blocks.JUNGLE_PLANKS, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.OAK_TRAPDOOR), new ItemStack(Blocks.OAK_PLANKS, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.SPRUCE_TRAPDOOR), new ItemStack(Blocks.SPRUCE_PLANKS, 3));
+            //Boats
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.ACACIA_BOAT), new ItemStack(Blocks.ACACIA_PLANKS, 5));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BIRCH_BOAT), new ItemStack(Blocks.BIRCH_PLANKS, 5));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.DARK_OAK_BOAT), new ItemStack(Blocks.DARK_OAK_PLANKS, 5));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.JUNGLE_BOAT), new ItemStack(Blocks.JUNGLE_PLANKS, 5));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.OAK_BOAT), new ItemStack(Blocks.OAK_PLANKS, 5));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.SPRUCE_BOAT), new ItemStack(Blocks.SPRUCE_PLANKS, 5));
+            //Beds
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.WHITE_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.WHITE_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.ORANGE_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.ORANGE_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.MAGENTA_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.MAGENTA_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.LIGHT_BLUE_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.LIGHT_BLUE_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.YELLOW_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.YELLOW_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.LIME_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.LIME_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.PINK_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.PINK_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.GRAY_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.GRAY_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.LIGHT_GRAY_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.LIGHT_GRAY_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.CYAN_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.CYAN_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.PURPLE_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.PURPLE_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BLUE_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.BLUE_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BROWN_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.BROWN_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.GREEN_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.GREEN_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.RED_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.RED_WOOL, 3), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BLACK_BED), new ItemStack(Blocks.OAK_PLANKS, 3), new ItemStack(Blocks.BLACK_WOOL, 3), 1);
+            //Doors
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.ACACIA_DOOR), new ItemStack(Blocks.ACACIA_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.BIRCH_DOOR), new ItemStack(Blocks.BIRCH_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.DARK_OAK_DOOR), new ItemStack(Blocks.DARK_OAK_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.JUNGLE_DOOR), new ItemStack(Blocks.JUNGLE_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.OAK_DOOR), new ItemStack(Blocks.OAK_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.SPRUCE_DOOR), new ItemStack(Blocks.SPRUCE_PLANKS, 2));
+            //Pressure Plates
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ACACIA_PRESSURE_PLATE), new ItemStack(Blocks.ACACIA_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BIRCH_PRESSURE_PLATE), new ItemStack(Blocks.BIRCH_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.DARK_OAK_PRESSURE_PLATE), new ItemStack(Blocks.DARK_OAK_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUNGLE_PRESSURE_PLATE), new ItemStack(Blocks.JUNGLE_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.OAK_PRESSURE_PLATE), new ItemStack(Blocks.OAK_PLANKS, 2));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.SPRUCE_PRESSURE_PLATE), new ItemStack(Blocks.SPRUCE_PLANKS, 2));
+            //Fences
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ACACIA_FENCE), new ItemStack(Items.STICK, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BIRCH_FENCE), new ItemStack(Items.STICK, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.DARK_OAK_FENCE), new ItemStack(Items.STICK, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUNGLE_FENCE), new ItemStack(Items.STICK, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.OAK_FENCE), new ItemStack(Items.STICK, 3));
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.SPRUCE_FENCE), new ItemStack(Items.STICK, 3));
+            //Fence Gates
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ACACIA_FENCE_GATE), new ItemStack(Blocks.ACACIA_PLANKS, 2), new ItemStack(Items.STICK, 4), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BIRCH_FENCE_GATE), new ItemStack(Blocks.BIRCH_PLANKS, 2), new ItemStack(Items.STICK, 4), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.DARK_OAK_FENCE_GATE), new ItemStack(Blocks.DARK_OAK_PLANKS, 2), new ItemStack(Items.STICK, 4), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUNGLE_FENCE_GATE), new ItemStack(Blocks.JUNGLE_PLANKS, 2), new ItemStack(Items.STICK, 4), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.OAK_FENCE_GATE), new ItemStack(Blocks.OAK_PLANKS, 2), new ItemStack(Items.STICK, 4), 1);
+            RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.SPRUCE_FENCE_GATE), new ItemStack(Blocks.SPRUCE_PLANKS, 2), new ItemStack(Items.STICK, 4), 1);
         }
 
         if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.METALLURGIC_INFUSER)) {
@@ -431,7 +481,7 @@ public class Mekanism {
             RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.MOSSY_COBBLESTONE));
             RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.STONE_BRICKS), new ItemStack(Blocks.MOSSY_STONE_BRICKS));
             RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.SAND), new ItemStack(Blocks.DIRT));
-            RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.DIRT), new ItemStack(Blocks.DIRT, 1, 2));
+            RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.DIRT), new ItemStack(Blocks.PODZOL));
             RecipeHandler.addMetallurgicInfuserRecipe(diamond, 10, MekanismItem.ENRICHED_ALLOY.getItemStack(), MekanismItem.REINFORCED_ALLOY.getItemStack());
             RecipeHandler.addMetallurgicInfuserRecipe(obsidian, 10, MekanismItem.REINFORCED_ALLOY.getItemStack(), MekanismItem.ATOMIC_ALLOY.getItemStack());
         }
@@ -515,7 +565,9 @@ public class Mekanism {
                   new GasStack(MekanismFluids.Oxygen, 10), MekanismItem.HDPE_PELLET.getItemStack(), new GasStack(MekanismFluids.Oxygen, 5), 1000, 60);
             RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(FluidRegistry.WATER, 200), new GasStack(MekanismFluids.Ethene, 100),
                   MekanismItem.SUBSTRATE.getItemStack(8), new GasStack(MekanismFluids.Oxygen, 10), 200, 400);
-            RecipeHandler.addPRCRecipe(new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
+            RecipeHandler.addPRCRecipe(new ItemStack(Items.COAL), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
+                  MekanismItem.SULFUR_DUST.getItemStack(), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
+            RecipeHandler.addPRCRecipe(new ItemStack(Items.CHARCOAL), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
                   MekanismItem.SULFUR_DUST.getItemStack(), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
         }
 

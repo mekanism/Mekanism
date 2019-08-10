@@ -57,6 +57,6 @@ public class ContainerResistiveHeater extends ContainerMekanism<TileEntityResist
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotDischarge(tileEntity, 0, 15, 35));
+        addSlot(new SlotDischarge(tileEntity, 0, 15, 35));
     }
 }

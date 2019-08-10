@@ -56,8 +56,8 @@ public class ContainerSecurityDesk extends ContainerMekanism<TileEntitySecurityD
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 146, 18));
-        addSlotToContainer(new Slot(tileEntity, 1, 146, 97));
+        addSlot(new Slot(tileEntity, 0, 146, 18));
+        addSlot(new Slot(tileEntity, 1, 146, 97));
     }
 
     @Override

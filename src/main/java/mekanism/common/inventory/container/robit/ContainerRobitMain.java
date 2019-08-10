@@ -21,6 +21,6 @@ public class ContainerRobitMain extends ContainerRobit {
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotDischarge(robit, 27, 153, 17));
+        addSlot(new SlotDischarge(robit, 27, 153, 17));
     }
 }

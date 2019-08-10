@@ -15,7 +15,7 @@ public class InventoryPersonalChest extends Inventory {
     public Hand currentHand;
 
     public InventoryPersonalChest(ItemStack stack, Hand hand) {
-        super("PersonalChest", false, 55);
+        super(55);
         itemStack = stack;
         currentHand = hand;
         read();

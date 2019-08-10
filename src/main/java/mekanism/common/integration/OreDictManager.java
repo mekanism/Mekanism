@@ -322,10 +322,10 @@ public final class OreDictManager {
         oreDict = OreDictionary.getOres("dustCharcoal", false);
         if (oreDict.size() > 0) {
             ItemStack dustCharcoal = StackUtils.size(oreDict.get(0), 1);
-            RecipeHandler.addCrusherRecipe(new ItemStack(Items.COAL, 1, 1), dustCharcoal);
+            RecipeHandler.addCrusherRecipe(new ItemStack(Items.CHARCOAL), dustCharcoal);
             for (ItemStack dust : oreDict) {
                 dust = StackUtils.size(dust, 1);
-                RecipeHandler.addEnrichmentChamberRecipe(dust, new ItemStack(Items.COAL, 1, 1));
+                RecipeHandler.addEnrichmentChamberRecipe(dust, new ItemStack(Items.CHARCOAL));
                 RecipeHandler.addPRCRecipe(dust, new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
                       MekanismItem.SULFUR_DUST.getItemStack(), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
             }
@@ -389,7 +389,7 @@ public final class OreDictManager {
 
         for (ItemStack sawdust : OreDictionary.getOres("dustWood", false)) {
             //TODO: 1.14 evaluate adding a charcoal dust item to Mekanism, and if so use that instead of charcoal here
-            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(sawdust, 8), new ItemStack(Items.COAL, 1, 1));
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(sawdust, 8), new ItemStack(Items.CHARCOAL));
             RecipeHandler.addPRCRecipe(StackUtils.size(sawdust, 1), new FluidStack(FluidRegistry.WATER, 20), new GasStack(MekanismFluids.Oxygen, 20),
                   ItemStack.EMPTY, new GasStack(MekanismFluids.Hydrogen, 20), 0, 30);
         }

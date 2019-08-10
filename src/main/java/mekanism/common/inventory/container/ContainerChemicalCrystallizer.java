@@ -72,8 +72,8 @@ public class ContainerChemicalCrystallizer extends ContainerMekanism<TileEntityC
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new SlotStorageTank(tileEntity, 0, 6, 65));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 131, 57));
-        addSlotToContainer(new SlotDischarge(tileEntity, 2, 155, 5));
+        addSlot(new SlotStorageTank(tileEntity, 0, 6, 65));
+        addSlot(new SlotOutput(tileEntity, 1, 131, 57));
+        addSlot(new SlotDischarge(tileEntity, 2, 155, 5));
     }
 }

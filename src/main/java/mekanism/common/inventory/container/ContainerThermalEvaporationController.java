@@ -75,9 +75,9 @@ public class ContainerThermalEvaporationController extends ContainerMekanism<Til
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 28, 20));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 28, 51));
-        addSlotToContainer(new Slot(tileEntity, 2, 132, 20));
-        addSlotToContainer(new SlotOutput(tileEntity, 3, 132, 51));
+        addSlot(new Slot(tileEntity, 0, 28, 20));
+        addSlot(new SlotOutput(tileEntity, 1, 28, 51));
+        addSlot(new Slot(tileEntity, 2, 132, 20));
+        addSlot(new SlotOutput(tileEntity, 3, 132, 51));
     }
 }

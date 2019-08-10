@@ -77,8 +77,8 @@ public class ContainerChemicalOxidizer extends ContainerMekanism<TileEntityChemi
 
     @Override
     protected void addSlots() {
-        addSlotToContainer(new Slot(tileEntity, 0, 26, 36));
-        addSlotToContainer(new SlotDischarge(tileEntity, 1, 155, 5));
-        addSlotToContainer(new SlotStorageTank(tileEntity, 2, 155, 25));
+        addSlot(new Slot(tileEntity, 0, 26, 36));
+        addSlot(new SlotDischarge(tileEntity, 1, 155, 5));
+        addSlot(new SlotStorageTank(tileEntity, 2, 155, 25));
     }
 }

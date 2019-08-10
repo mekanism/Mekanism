@@ -38,7 +38,7 @@ public class InfusionInput extends MachineInput<InfusionInput> implements IWildI
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        inputStack = new ItemStack(nbtTags.getCompound("input"));
+        inputStack = ItemStack.read(nbtTags.getCompound("input"));
         InfuseType type = InfuseRegistry.get(nbtTags.getString("infuseType"));
         int amount = nbtTags.getInt("infuseAmount");
         infuse = new InfuseStorage(type, amount);
