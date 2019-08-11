@@ -198,8 +198,8 @@ import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityMechanicalPipe
 import mekanism.common.tile.transmitter.pressurized_tube.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;

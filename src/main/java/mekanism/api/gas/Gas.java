@@ -1,5 +1,6 @@
 package mekanism.api.gas;
 
+import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -14,7 +15,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  *
  * @author aidancbrady
  */
-public class Gas {
+public class Gas implements IHasTranslationKey {
 
     private final String name;
 
@@ -142,6 +143,7 @@ public class Gas {
      *
      * @return this Gas's unlocalized name
      */
+    @Override
     public String getTranslationKey() {
         return "gas." + unlocalizedName;
     }

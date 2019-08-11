@@ -1,8 +1,8 @@
 package mekanism.common.inventory;
 
 import javax.annotation.Nonnull;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -10,8 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 /*Copied & modified from net.minecraft.inventory.InventoryBasic */
 public class InventoryList implements IInventory {

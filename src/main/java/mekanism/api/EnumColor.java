@@ -93,6 +93,7 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
         return I18n.translateToLocal("color." + unlocalizedName);
     }
 
+    //Note: Do not implement IHasTranslationKey as we want the default behaviour of EnumColor to be formatting
     public String getTranslationKey() {
         return "color." + unlocalizedName;
     }

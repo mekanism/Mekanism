@@ -12,13 +12,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockDirt.DirtType;
@@ -68,7 +69,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         Mode mode = getMode(stack);
-        tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.INDIGO, mode.getModeName()));
+        tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.INDIGO, mode));
         tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.efficiency"), ": ", EnumColor.INDIGO, mode.getEfficiency()));
     }
 
@@ -177,7 +178,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 toggleMode(itemstack);
                 Mode mode = getMode(itemstack);
                 entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("mekanism.tooltip.modeToggle"),
-                      " ", EnumColor.INDIGO, mode.getModeName(), EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
+                      " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
@@ -310,7 +311,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return multiMap;
     }
 
-    public enum Mode {
+    public enum Mode implements IHasTranslationKey {
         NORMAL("normal", 20, 3, () -> true),
         SLOW("slow", 8, 1, () -> MekanismConfig.current().general.disassemblerSlowMode.val()),
         FAST("fast", 128, 5, () -> MekanismConfig.current().general.disassemblerFastMode.val()),
@@ -356,8 +357,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             return values[(ordinal() + 1) % values.length];
         }
 
-        public ITextComponent getModeName() {
-            return TextComponentUtil.getTranslationComponent("mekanism.tooltip.disassembler." + mode);
+        @Override
+        public String getTranslationKey() {
+            return "mekanism.tooltip.disassembler." + mode;
         }
 
         public int getEfficiency() {

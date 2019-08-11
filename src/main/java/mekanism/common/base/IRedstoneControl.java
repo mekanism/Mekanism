@@ -1,5 +1,7 @@
 package mekanism.common.base;
 
+import mekanism.api.text.IHasTranslationKey;
+
 public interface IRedstoneControl {
 
     /**
@@ -33,7 +35,7 @@ public interface IRedstoneControl {
      */
     boolean canPulse();
 
-    enum RedstoneControl {
+    enum RedstoneControl implements IHasTranslationKey {
         DISABLED("mekanism.control.disabled"),
         HIGH("mekanism.control.high"),
         LOW("mekanism.control.low"),
@@ -45,6 +47,7 @@ public interface IRedstoneControl {
             display = s;
         }
 
+        @Override
         public String getTranslationKey() {
             return display;
         }

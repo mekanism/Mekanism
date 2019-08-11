@@ -5,8 +5,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -45,6 +45,6 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
     @OnlyIn(Dist.CLIENT)
     public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         //TODO: Previously had a max width thing, is this needed or does vanilla handle it
-        tooltip.add(TextComponentUtil.getTranslationComponent("tooltip.mekanism." + getRegistryName().getPath()));
+        tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism." + getRegistryName().getPath())));
     }
 }

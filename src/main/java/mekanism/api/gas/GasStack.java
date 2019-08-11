@@ -1,6 +1,7 @@
 package mekanism.api.gas;
 
 import javax.annotation.Nullable;
+import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 
 /**
@@ -8,7 +9,7 @@ import net.minecraft.nbt.CompoundNBT;
  *
  * @author aidancbrady
  */
-public class GasStack {
+public class GasStack implements IHasTranslationKey {
 
     public int amount;
     private Gas type;
@@ -127,5 +128,11 @@ public class GasStack {
     @Override
     public int hashCode() {
         return type == null ? 0 : type.getID();
+    }
+
+    @Override
+    public String getTranslationKey() {
+        //Wrapper to get translation key of the gas type easier
+        return type.getTranslationKey();
     }
 }

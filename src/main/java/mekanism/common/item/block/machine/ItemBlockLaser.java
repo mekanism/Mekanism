@@ -10,10 +10,10 @@ import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.EnergyDisplay;
-import mekanism.common.util.TextComponentUtil.Translation;
-import mekanism.common.util.TextComponentUtil.YesNo;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,7 +38,7 @@ public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockLaser> impleme
               EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
-              YesNo.of(inventory != null && !inventory.isEmpty())));
+              BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
     @Override

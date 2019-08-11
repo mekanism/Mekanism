@@ -15,10 +15,10 @@ import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.OwnerDisplay;
-import mekanism.common.util.TextComponentUtil.Translation;
-import mekanism.common.util.TextComponentUtil.YesNo;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.OwnerDisplay;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -74,7 +74,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
         }
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
-                 YesNo.of(inventory != null && !inventory.isEmpty())));
+                 BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
     @Override

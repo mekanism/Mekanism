@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
@@ -170,7 +171,7 @@ public final class FluidContainerUtils {
         return stack;
     }
 
-    public enum ContainerEditMode {
+    public enum ContainerEditMode implements IHasTranslationKey {
         BOTH("mekanism.fluidedit.both"),
         FILL("mekanism.fluidedit.fill"),
         EMPTY("mekanism.fluidedit.empty");
@@ -181,6 +182,7 @@ public final class FluidContainerUtils {
             display = s;
         }
 
+        @Override
         public String getTranslationKey() {
             return display;
         }

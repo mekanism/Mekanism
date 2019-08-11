@@ -11,7 +11,7 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;

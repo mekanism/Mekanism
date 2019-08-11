@@ -10,7 +10,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;

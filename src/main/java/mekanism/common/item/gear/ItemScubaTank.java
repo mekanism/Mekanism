@@ -14,8 +14,9 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -145,8 +146,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
     }
 
     public ITextComponent getFlowingComponent(ItemStack stack) {
-        boolean flowing = getFlowing(stack);
-        return TextComponentUtil.getTranslationComponent("mekanism.tooltip." + (flowing ? "yes" : "no"));
+        return TextComponentUtil.build(YesNo.of(getFlowing(stack)));
     }
 
     public void setFlowing(ItemStack stack, boolean flowing) {

@@ -6,7 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;

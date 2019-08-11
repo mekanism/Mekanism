@@ -11,6 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.EnumColor;
 import mekanism.api.IMekWrench;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -26,8 +27,8 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -43,7 +44,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -244,7 +244,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     @FieldsAreNonnullByDefault
-    public enum ConfiguratorMode {
+    public enum ConfiguratorMode implements IHasTextComponent {
         CONFIGURATE_ITEMS("configurate", TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_FLUIDS("configurate", TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_GASES("configurate", TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
@@ -275,6 +275,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             return name;
         }
 
+        @Override
         public ITextComponent getTextComponent() {
             if (this.transmissionType != null) {
                 return TextComponentUtil.build(color, Translation.of("tooltip.configurator." + name), " (", transmissionType, ")");

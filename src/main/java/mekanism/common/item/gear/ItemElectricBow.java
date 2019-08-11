@@ -6,10 +6,9 @@ import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.OnOff;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -46,7 +45,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("mekanism.tooltip.fireMode"), OnOff.of(getFireState(itemstack))));
+        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("mekanism.tooltip.fireMode"), BooleanStateDisplay.OnOff.of(getFireState(itemstack))));
     }
 
     @Override

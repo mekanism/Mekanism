@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.command.CommandMek.Cmd;
-import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -59,7 +59,7 @@ public class CommandChunk extends CommandTreeBase {
             String msg = String.format("%s chunk %d, %d", direction, pos.x, pos.z);
             MinecraftServer server = event.getWorld().getMinecraftServer();
             if (server != null) {
-                server.getPlayerList().sendMessage(TextComponentUtil.getStringComponent(msg));
+                server.getPlayerList().sendMessage(TextComponentUtil.build(msg));
             }
         }
     }

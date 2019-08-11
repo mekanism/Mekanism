@@ -1,5 +1,9 @@
 package mekanism.common.util;
 
+import mekanism.api.text.IHasTextComponent;
+import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.util.text.ITextComponent;
+
 /**
  * Code taken from UE and modified to fit Mekanism.
  */
@@ -221,17 +225,27 @@ public class UnitDisplayUtils {
         }
     }
 
-    public enum EnergyType {
+    public enum EnergyType implements IHasTextComponent {
         J,
         FE,
-        EU
+        EU;
+
+        @Override
+        public ITextComponent getTextComponent() {
+            return TextComponentUtil.build(name());
+        }
     }
 
-    public enum TempType {
+    public enum TempType implements IHasTextComponent {
         K,
         C,
         R,
         F,
-        STP
+        STP;
+
+        @Override
+        public ITextComponent getTextComponent() {
+            return TextComponentUtil.build(name());
+        }
     }
 }

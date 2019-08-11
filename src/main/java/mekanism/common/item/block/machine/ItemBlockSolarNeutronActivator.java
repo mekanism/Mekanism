@@ -12,11 +12,11 @@ import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.OwnerDisplay;
-import mekanism.common.util.TextComponentUtil.Translation;
-import mekanism.common.util.TextComponentUtil.UpgradeDisplay;
-import mekanism.common.util.TextComponentUtil.YesNo;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.OwnerDisplay;
+import mekanism.common.util.text.Translation;
+import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -46,7 +46,7 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip<Blo
         }
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
-              YesNo.of(inventory != null && !inventory.isEmpty())));
+              BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
         if (ItemDataUtils.hasData(itemstack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {

@@ -19,14 +19,13 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.OwnerDisplay;
-import mekanism.common.util.TextComponentUtil.Translation;
-import mekanism.common.util.TextComponentUtil.YesNo;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.OwnerDisplay;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -107,10 +106,10 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")"));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.portableTank.bucketMode", YesNo.of(getBucketMode(itemstack)))));
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.portableTank.bucketMode", BooleanStateDisplay.YesNo.of(getBucketMode(itemstack)))));
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
-              YesNo.of(inventory != null && !inventory.isEmpty())));
+              BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
     @Nonnull

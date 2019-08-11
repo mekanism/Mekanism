@@ -3,7 +3,7 @@ package mekanism.common.item.block;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

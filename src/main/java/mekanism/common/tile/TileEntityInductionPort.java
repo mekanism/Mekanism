@@ -24,11 +24,10 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.OutputInput;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -223,7 +222,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         if (!world.isRemote) {
             mode = !mode;
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
-                  Translation.of("mekanism.tooltip.configurator.inductionPortMode"), " ", (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(mode), "."));
+                  Translation.of("mekanism.tooltip.configurator.inductionPortMode"), " ", (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), BooleanStateDisplay.OutputInput.of(mode), "."));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

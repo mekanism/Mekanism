@@ -16,6 +16,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
+//TODO: Think about moving upgrade to API so that other mods can access our upgrades if they want to
 public enum Upgrade {
     SPEED("speed", 8, EnumColor.RED),
     ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),

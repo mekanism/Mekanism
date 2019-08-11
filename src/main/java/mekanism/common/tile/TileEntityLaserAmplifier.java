@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -17,7 +18,6 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -316,7 +316,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         return super.isCapabilityDisabled(capability, side);
     }
 
-    public enum RedstoneOutput {
+    public enum RedstoneOutput implements IHasTranslationKey {
         OFF("off"),
         ENTITY_DETECTION("entityDetection"),
         ENERGY_CONTENTS("energyContents");
@@ -327,6 +327,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
             unlocalizedName = name;
         }
 
+        @Override
         public String getTranslationKey() {
             return "mekanism.gui." + unlocalizedName;
         }

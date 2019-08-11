@@ -9,6 +9,7 @@ import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
@@ -27,9 +28,9 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.OnOff;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -579,7 +580,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             refreshConnections();
             notifyTileChange();
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
-                  Translation.of("tooltip.configurator.redstoneSensitivity"), " ", EnumColor.INDIGO, OnOff.of(redstoneReactive), "."));
+                  Translation.of("tooltip.configurator.redstoneSensitivity"), " ", EnumColor.INDIGO, BooleanStateDisplay.OnOff.of(redstoneReactive), "."));
         }
         return ActionResultType.SUCCESS;
     }
@@ -608,7 +609,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         return super.getCapability(capability, side);
     }
 
-    public enum ConnectionType implements IStringSerializable {
+    public enum ConnectionType implements IStringSerializable, IHasTranslationKey {
         NORMAL,
         PUSH,
         PULL,
@@ -626,6 +627,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return name().toLowerCase(Locale.ROOT);
         }
 
+        @Override
         public String getTranslationKey() {
             return "mekanism.pipe.connectiontype." + getName();
         }

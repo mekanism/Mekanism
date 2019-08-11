@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -15,11 +14,10 @@ import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.EnergyDisplay;
-import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.Translation;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;

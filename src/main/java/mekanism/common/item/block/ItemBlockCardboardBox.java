@@ -8,9 +8,9 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
-import mekanism.common.util.TextComponentUtil.YesNo;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -44,7 +44,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.blockData"), ": ", YesNo.of(getBlockData(itemstack) != null)));
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.blockData"), ": ", BooleanStateDisplay.YesNo.of(getBlockData(itemstack) != null)));
         BlockData data = getBlockData(itemstack);
         if (data != null) {
             try {

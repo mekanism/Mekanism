@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.GasTank;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ITankManager;
 import mekanism.common.util.LangUtils;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
-public class SideData {
+public class SideData implements IHasTranslationKey {
 
     /**
      * The color of this SideData
@@ -44,9 +45,10 @@ public class SideData {
     }
 
     public String localize() {
-        return LangUtils.localize("sideData." + name);
+        return LangUtils.localize(getTranslationKey());
     }
 
+    @Override
     public String getTranslationKey() {
         return "mekanism.sideData." + name;
     }
