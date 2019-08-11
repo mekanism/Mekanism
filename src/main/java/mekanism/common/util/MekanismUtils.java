@@ -699,8 +699,19 @@ public final class MekanismUtils {
      */
     public static String getEnergyDisplay(double energy) {
         if (energy == Double.MAX_VALUE) {
-            return LangUtils.localize("gui.infinite");
+            return LangUtils.localize("mekanism.gui.infinite");
         }
+        return getEnergyDisplayShort(energy);
+    }
+
+    public static String getEnergyDisplay(double energy, double max) {
+        if (energy == Double.MAX_VALUE) {
+            return LangUtils.localize("mekanism.gui.infinite");
+        }
+        return getEnergyDisplayShort(energy) + "/" + getEnergyDisplay(max);
+    }
+
+    public static String getEnergyDisplayShort(double energy) {
         switch (MekanismConfig.current().general.energyUnit.val()) {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
@@ -709,16 +720,7 @@ public final class MekanismUtils {
             case EU:
                 return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
         }
-        return "error";
-    }
-
-    public static String getEnergyDisplay(double energy, double max) {
-        if (energy == Double.MAX_VALUE) {
-            return LangUtils.localize("gui.infinite");
-        }
-        String energyString = getEnergyDisplay(energy);
-        String maxString = getEnergyDisplay(max);
-        return energyString + "/" + maxString;
+        return "mekanism.error";
     }
 
     /**

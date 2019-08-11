@@ -13,8 +13,8 @@ import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.util.LangUtils;
-import net.minecraft.client.GameSettings;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -46,15 +46,17 @@ public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble<Block
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             TransporterTier tier = getTier(itemstack);
             if (tier != null) {
-                tooltip.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (tier.getSpeed() / (100 / 20)) + " m/s");
-                tooltip.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + tier.getPullAmount() * 2 + "/s");
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.speed"), ": ", EnumColor.GREY, (tier.getSpeed() / (100 / 20)) + " m/s"));
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.pumpRate"), ": ", EnumColor.GREY, tier.getPullAmount() * 2 + "/s"));
             }
-            tooltip.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
-                     EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
-            tooltip.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-            tooltip.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
-            tooltip.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GREY, Translation.of("mekanism.tooltip.capableTrans"), ":");
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("mekanism.tooltip.items"), " (",
+                  Translation.of("mekanism.tooltip.universal"), ")"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("mekanism.tooltip.blocks"), " (",
+                  Translation.of("mekanism.tooltip.universal"), ")"));
         }
     }
 

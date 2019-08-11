@@ -1,10 +1,14 @@
 package mekanism.common.util;
 
+import java.util.UUID;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.client.MekanismClient;
 import mekanism.common.Upgrade;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -13,7 +17,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
 
-    //TODO: Support String formatting replacements for TranslationTextComponent
     public static ITextComponent build(Object... components) {
         //TODO: Verify that just appending them to the first text component works properly.
         // My suspicion is we will need to chain downwards and append it that way so that the formatting matches
@@ -23,7 +26,7 @@ public class TextComponentUtil {
         for (Object component : components) {
             ITextComponent current = null;
             if (component instanceof Translation) {
-                current = getTranslationComponent((Translation) component);
+                current = ((Translation) component).getTextComponent();
             } else if (component instanceof String) {
                 current = getStringComponent((String) component);
             } else if (component instanceof EnumColor) {
@@ -38,8 +41,14 @@ public class TextComponentUtil {
                 current = getTranslationComponent(((InputMappings.Input) component).getTranslationKey());
             } else if (component instanceof EnergyDisplay) {
                 current = ((EnergyDisplay) component).getTextComponent();
-            } else if (component instanceof Upgrade) {
-                current = getStringComponent(((Upgrade) component).getName());
+            } else if (component instanceof OwnerDisplay) {
+                current = ((OwnerDisplay) component).getTextComponent();
+            } else if (component instanceof UpgradeDisplay) {
+                current = ((UpgradeDisplay) component).getTextComponent();
+            } else if (component instanceof SecurityMode) {
+                current = ((SecurityMode) component).getTextComponent();
+            } else if (component instanceof BooleanStateDisplay) {
+                current = ((BooleanStateDisplay) component).getTextComponent();
             } else if (component instanceof GasStack) {
                 current = getTranslationComponent(((GasStack) component).getGas());
             } else if (component instanceof Gas) {
@@ -76,28 +85,31 @@ public class TextComponentUtil {
         return new StringTextComponent(component);
     }
 
-    public static TranslationTextComponent getTranslationComponent(Translation component) {
-        return getTranslationComponent(component.key);
-    }
-
     public static TranslationTextComponent getTranslationComponent(String component) {
         return new TranslationTextComponent(component);
     }
 
     public static TranslationTextComponent getTranslationComponent(Gas gas) {
-        return new TranslationTextComponent(gas.getTranslationKey());
+        return getTranslationComponent(gas.getTranslationKey());
     }
+
 
     public static class Translation {
 
         private final String key;
+        private final Object[] args;
 
-        private Translation(String key) {
+        private Translation(String key, Object... args) {
             this.key = key;
+            this.args = args;
         }
 
-        public static Translation of(String key) {
-            return new Translation(key);
+        public static Translation of(String key, Object... args) {
+            return new Translation(key, args);
+        }
+
+        public ITextComponent getTextComponent() {
+            return new TranslationTextComponent(key, args);
         }
     }
 
@@ -116,11 +128,130 @@ public class TextComponentUtil {
             return new EnergyDisplay(energy, max);
         }
 
+        public static EnergyDisplay of(double energy) {
+            return of(energy, 0);
+        }
+
         public ITextComponent getTextComponent() {
             if (energy == Double.MAX_VALUE) {
                 return getTranslationComponent("mekanism.gui.infinite");
             }
-            return getStringComponent(MekanismUtils.getEnergyDisplay(energy)).appendText("/").appendSibling(getStringComponent(MekanismUtils.getEnergyDisplay(max)));
+            if (max == 0) {
+                return getStringComponent(MekanismUtils.getEnergyDisplayShort(energy));
+            }
+            //Pass max back as a new Energy Display so that if we have 0/infinite it shows that properly without us having to add extra handling
+            return build(MekanismUtils.getEnergyDisplayShort(energy), "/", of(max));
+        }
+    }
+
+    public static class OwnerDisplay {
+
+        private final PlayerEntity player;
+        private final UUID ownerUUID;
+
+        private OwnerDisplay(PlayerEntity player, UUID ownerUUID) {
+            this.player = player;
+            this.ownerUUID = ownerUUID;
+        }
+
+        public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID) {
+            return new OwnerDisplay(player, ownerUUID);
+        }
+
+        public ITextComponent getTextComponent() {
+            if (ownerUUID == null) {
+                return build(EnumColor.RED, Translation.of("mekanism.gui.no_owner"));
+            }
+            //TODO: If the name is supposed to be gotten differently server side, then do so
+            return build(EnumColor.GREY, Translation.of("mekanism.gui.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED,
+                  MekanismClient.clientUUIDMap.get(ownerUUID));
+        }
+    }
+
+    public static class UpgradeDisplay {
+
+        private final Upgrade upgrade;
+        private final int level;
+
+        private UpgradeDisplay(Upgrade upgrade, int level) {
+            this.upgrade = upgrade;
+            this.level = level;
+        }
+
+        public static UpgradeDisplay of(Upgrade upgrade) {
+            return of(upgrade, 0);
+        }
+
+        public static UpgradeDisplay of(Upgrade upgrade, int level) {
+            return new UpgradeDisplay(upgrade, level);
+        }
+
+        public ITextComponent getTextComponent() {
+            if (upgrade.canMultiply() && level > 0) {
+                return build(upgrade.getColor(), "- ", upgrade.getName(), ": ", EnumColor.GREY, "x" + level);
+            }
+            return build(upgrade.getColor(), "- ", upgrade.getName());
+        }
+    }
+
+    public static abstract class BooleanStateDisplay {
+
+        protected final boolean value;
+        protected final boolean colored;
+
+        protected BooleanStateDisplay(boolean value, boolean colored) {
+            this.value = value;
+            this.colored = colored;
+        }
+
+        protected abstract String getKey();
+
+        public ITextComponent getTextComponent() {
+            ITextComponent translation = getTranslationComponent(getKey());
+            if (colored) {
+                translation.getStyle().setColor(value ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
+            }
+            return translation;
+        }
+    }
+
+    public static class YesNo extends BooleanStateDisplay {
+
+        private YesNo(boolean value, boolean colored) {
+            super(value, colored);
+        }
+
+        public static YesNo of(boolean value) {
+            return of(value, false);
+        }
+
+        public static YesNo of(boolean value, boolean colored) {
+            return new YesNo(value, colored);
+        }
+
+        @Override
+        protected String getKey() {
+            return "mekanism.tooltip." + (value ? "yes" : "no");
+        }
+    }
+
+    public static class OnOff extends BooleanStateDisplay {
+
+        private OnOff(boolean value, boolean colored) {
+            super(value, colored);
+        }
+
+        public static OnOff of(boolean value) {
+            return of(value, false);
+        }
+
+        public static OnOff of(boolean value, boolean colored) {
+            return new OnOff(value, colored);
+        }
+
+        @Override
+        protected String getKey() {
+            return "mekanism.tooltip." + (value ? "on" : "off");
         }
     }
 }

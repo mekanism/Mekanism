@@ -88,7 +88,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             renderText(LangUtils.localize("gui.upgrades.noSelection") + ".", 92, 8, 0.8F, true);
         } else {
             int amount = tileEntity.getComponent().getUpgrades(selectedType);
-            renderText(selectedType.getName() + " " + LangUtils.localize("gui.upgrade"), 92, 8, 0.6F, true);
+            renderText(LangUtils.localize(selectedType.getName()) + " " + LangUtils.localize("gui.upgrade"), 92, 8, 0.6F, true);
             renderText(LangUtils.localize("gui.upgrades.amount") + ": " + amount + "/" + selectedType.getMax(), 92, 16, 0.6F, true);
             int text = 0;
             for (String s : selectedType.getInfo((TileEntity) tileEntity)) {
@@ -100,7 +100,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
                 renderUpgrade(supported[supportedIndex], 80, 57, 0.8F, true);
-                font.drawString(supported[supportedIndex].getName(), 96, 59, 0x404040);
+                font.drawString(LangUtils.localize(supported[supportedIndex].getName()), 96, 59, 0x404040);
             }
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
@@ -114,10 +114,10 @@ public class GuiUpgradeManagement extends GuiMekanism {
             Upgrade upgrade = upgrades[index];
             int xPos = 25;
             int yPos = 7 + (i * 12);
-            font.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
+            font.drawString(LangUtils.localize(upgrade.getName()), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
-                displayTooltips(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
+                displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize(upgrade.getDescription()), upgrade.getStack()), xAxis, yAxis);
             }
         }
 

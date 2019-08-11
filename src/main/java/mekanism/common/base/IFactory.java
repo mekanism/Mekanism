@@ -254,8 +254,12 @@ public interface IFactory {
             return name;
         }
 
+        public String getGuiTranslationKey() {
+            return "gui.factory." + name;
+        }
+
         public String getLocalizedName() {
-            return LangUtils.localize("gui.factory." + name);
+            return LangUtils.localize(getGuiTranslationKey());
         }
 
         public MachineFuelType getFuelType() {

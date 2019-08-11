@@ -18,6 +18,11 @@ public final class LangUtils {
     }
 
     public static String transYesNo(boolean b) {
+        return LangUtils.localize(transYesNoKey(b));
+    }
+
+    //TODO:
+    public static String transYesNoKey(boolean b) {
         return LangUtils.localize("mekanism.tooltip." + (b ? "yes" : "no"));
     }
 

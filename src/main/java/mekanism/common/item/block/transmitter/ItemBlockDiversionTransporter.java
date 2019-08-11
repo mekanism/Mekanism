@@ -10,8 +10,8 @@ import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.block.ItemBlockMultipartAble;
-import mekanism.common.util.LangUtils;
-import net.minecraft.client.GameSettings;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -30,13 +30,13 @@ public class ItemBlockDiversionTransporter extends ItemBlockMultipartAble<BlockD
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            tooltip.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
-                     EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
-            tooltip.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-            tooltip.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
-            tooltip.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
-            tooltip.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.diversionDesc"));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GREY, Translation.of("tooltip.capableTrans"), ":"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("tooltip.items"), " (", Translation.of("tooltip.universal"), ")"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("tooltip.blocks"), " (", Translation.of("tooltip.universal"), ")"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.DARK_RED, Translation.of("tooltip.diversionDesc")));
         }
     }
 

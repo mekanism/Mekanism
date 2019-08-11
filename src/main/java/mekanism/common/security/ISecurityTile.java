@@ -3,6 +3,8 @@ package mekanism.common.security;
 import mekanism.api.EnumColor;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.LangUtils;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public interface ISecurityTile {
 
@@ -13,9 +15,9 @@ public interface ISecurityTile {
     }
 
     enum SecurityMode {
-        PUBLIC("security.public", EnumColor.BRIGHT_GREEN),
-        PRIVATE("security.private", EnumColor.RED),
-        TRUSTED("security.trusted", EnumColor.ORANGE);
+        PUBLIC("mekanism.security.public", EnumColor.BRIGHT_GREEN),
+        PRIVATE("mekanism.security.private", EnumColor.RED),
+        TRUSTED("mekanism.security.trusted", EnumColor.ORANGE);
 
         private String display;
         private EnumColor color;
@@ -27,6 +29,10 @@ public interface ISecurityTile {
 
         public String getDisplay() {
             return color + LangUtils.localize(display);
+        }
+
+        public ITextComponent getTextComponent() {
+            return new TranslationTextComponent(display).applyTextStyle(color.textFormatting);
         }
     }
 }

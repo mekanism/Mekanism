@@ -8,7 +8,9 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.TextComponentUtil.YesNo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -42,14 +44,14 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.blockData"), ": ", YesNo.of(getBlockData(itemstack) != null)));
         BlockData data = getBlockData(itemstack);
         if (data != null) {
             try {
-                tooltip.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta).getDisplayName());
-                tooltip.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
+                tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.block"), ": " + new ItemStack(data.block).getDisplayName()));
+                tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.meta"), ": " + data.meta));
                 if (data.tileTag != null) {
-                    tooltip.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
+                    tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.tile"), ": " + data.tileTag.getString("id")));
                 }
             } catch (Exception ignored) {
             }

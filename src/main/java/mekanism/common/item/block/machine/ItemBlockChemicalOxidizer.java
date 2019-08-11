@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
-import mekanism.client.MekanismClient;
 import mekanism.common.Upgrade;
 import mekanism.common.block.machine.BlockChemicalOxidizer;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -15,14 +14,20 @@ import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.OwnerDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.TextComponentUtil.UpgradeDisplay;
+import mekanism.common.util.TextComponentUtil.YesNo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,19 +43,20 @@ public class ItemBlockChemicalOxidizer extends ItemBlockAdvancedTooltip<BlockChe
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-        tooltip.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Dist.CLIENT));
+        tooltip.add(TextComponentUtil.build(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack))));
+        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
-            tooltip.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
+            tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")"));
         }
-        tooltip.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
-                 + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
-        tooltip.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
-                 LangUtils.transYesNo(getInventory(itemstack) != null && !getInventory(itemstack).isEmpty()));
+        tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GREY,
+              EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
+        ListNBT inventory = getInventory(itemstack);
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
+              YesNo.of(inventory != null && !inventory.isEmpty())));
         if (ItemDataUtils.hasData(itemstack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-                tooltip.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
+                tooltip.add(TextComponentUtil.build(UpgradeDisplay.of(entry.getKey(), entry.getValue())));
             }
         }
     }

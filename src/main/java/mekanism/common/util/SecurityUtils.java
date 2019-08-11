@@ -115,7 +115,7 @@ public final class SecurityUtils {
         return security.getSecurity().getMode();
     }
 
-    public static String getSecurityDisplay(ItemStack stack, Dist side) {
+    public static SecurityMode getSecurity(ItemStack stack, Dist side) {
         ISecurityItem security = (ISecurityItem) stack.getItem();
         SecurityMode mode = security.getSecurity(stack);
         if (security.getOwnerUUID(stack) != null) {
@@ -131,7 +131,11 @@ public final class SecurityUtils {
                 }
             }
         }
-        return mode.getDisplay();
+        return mode;
+    }
+
+    public static String getSecurityDisplay(ItemStack stack, Dist side) {
+        return getSecurity(stack, side).getDisplay();
     }
 
     public static String getSecurityDisplay(TileEntity tile, Dist side) {

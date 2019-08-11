@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -18,6 +17,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OwnerDisplay;
 import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -56,7 +56,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+        tooltip.add(TextComponentUtil.build(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack))));
         if (getFrequency(itemstack) != null) {
             tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.frequency"), ": ", EnumColor.GREY, getFrequency(itemstack).name));
             tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.mode"), ": ", EnumColor.GREY,

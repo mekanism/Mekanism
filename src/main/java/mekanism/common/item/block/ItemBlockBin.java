@@ -10,6 +10,8 @@ import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,17 +41,22 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InventoryBin inv = new InventoryBin(itemstack);
         if (inv.getItemCount() > 0) {
-            tooltip.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
+            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, inv.getItemType().getDisplayName()));
             String amountStr = inv.getItemCount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : "" + inv.getItemCount();
-            tooltip.add(EnumColor.PURPLE + LangUtils.localize("tooltip.itemAmount") + ": " + EnumColor.GREY + amountStr);
+            tooltip.add(TextComponentUtil.build(EnumColor.PURPLE, Translation.of("mekanism.tooltip.itemAmount"), ": ", EnumColor.GREY, amountStr));
         } else {
-            tooltip.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty"));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.empty")));
         }
         BinTier tier = getTier(itemstack);
         if (tier != null) {
             int cap = tier.getStorage();
-            tooltip.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
-                     (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils.localize("transmission.Items"));
+            if (cap == Integer.MAX_VALUE) {
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY,
+                      Translation.of("mekanism.gui.infinite"), " ", Translation.of("mekanism.transmission.Items")));
+            } else {
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY,
+                      cap, " ", Translation.of("mekanism.transmission.Items")));
+            }
         }
     }
 

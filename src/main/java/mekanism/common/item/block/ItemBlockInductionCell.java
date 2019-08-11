@@ -9,8 +9,9 @@ import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,8 +42,10 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockInductionCell>
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InductionCellTier tier = getTier(itemstack);
         if (tier != null) {
-            tooltip.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
-            tooltip.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY,
+                  EnergyDisplay.of(tier.getMaxEnergy())));
+            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GREY,
+                  EnergyDisplay.of(getEnergy(itemstack))));
         }
     }
 

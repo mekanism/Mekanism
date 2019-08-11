@@ -5,15 +5,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
-import mekanism.client.MekanismClient;
 import mekanism.common.Upgrade;
 import mekanism.common.block.machine.BlockLogisticalSorter;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OwnerDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
+import mekanism.common.util.TextComponentUtil.UpgradeDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -32,15 +34,15 @@ public class ItemBlockLogisticalSorter extends ItemBlockAdvancedTooltip<BlockLog
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-        tooltip.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Dist.CLIENT));
+        tooltip.add(TextComponentUtil.build(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack))));
+        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
-            tooltip.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
+            tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")"));
         }
         if (ItemDataUtils.hasData(itemstack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-                tooltip.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
+                tooltip.add(TextComponentUtil.build(UpgradeDisplay.of(entry.getKey(), entry.getValue())));
             }
         }
     }

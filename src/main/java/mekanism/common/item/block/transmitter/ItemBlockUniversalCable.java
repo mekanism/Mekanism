@@ -13,9 +13,9 @@ import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.CableTier;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.GameSettings;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -47,15 +47,16 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUnivers
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             CableTier tier = getTier(itemstack);
             if (tier != null) {
-                tooltip.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getCableCapacity()) + "/t");
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY,
+                      EnergyDisplay.of(tier.getCableCapacity()), "/t"));
             }
-            tooltip.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
-                     EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
-            tooltip.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-            tooltip.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
-            tooltip.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY + "(IndustrialCraft)");
-            tooltip.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY + "(Mekanism)");
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GREY, Translation.of("mekanism.tooltip.capableTrans"), ":"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, "FE ", EnumColor.GREY, "(MinecraftForge)"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, "EU ", EnumColor.GREY, "(IndustrialCraft)"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, "Joules ", EnumColor.GREY, "(Mekanism)"));
         }
     }
 

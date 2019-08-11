@@ -7,8 +7,9 @@ import mekanism.api.EnumColor;
 import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.InductionProviderTier;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,7 +39,8 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockInductionP
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InductionProviderTier tier = getTier(itemstack);
         if (tier != null) {
-            tooltip.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getOutput()));
+            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("mekanism.tooltip.outputRate"), ": ", EnumColor.GREY,
+                  EnergyDisplay.of(tier.getOutput())));
         }
     }
 }

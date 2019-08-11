@@ -12,7 +12,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,6 +45,6 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
     @OnlyIn(Dist.CLIENT)
     public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         //TODO: Previously had a max width thing, is this needed or does vanilla handle it
-        tooltip.add(new TranslationTextComponent("tooltip.mekanism." + getRegistryName().getPath()));
+        tooltip.add(TextComponentUtil.getTranslationComponent("tooltip.mekanism." + getRegistryName().getPath()));
     }
 }
