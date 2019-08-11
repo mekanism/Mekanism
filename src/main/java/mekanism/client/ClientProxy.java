@@ -201,7 +201,7 @@ import mekanism.common.util.TextComponentGroup;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.PlayerEntitySP;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
@@ -777,7 +777,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void doSparkle(TileEntity tileEntity, SparkleAnimation anim) {
-        PlayerEntitySP player = Minecraft.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
         if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
             if (MekanismConfig.current().client.enableMultiblockFormationParticles.val()) {

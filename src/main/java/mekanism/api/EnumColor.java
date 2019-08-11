@@ -6,7 +6,6 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
@@ -94,11 +93,6 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
         return I18n.translateToLocal("color." + unlocalizedName);
     }
 
-    @Deprecated
-    public String getUnlocalizedName() {
-        return getTranslationKey();
-    }
-
     public String getTranslationKey() {
         return "color." + unlocalizedName;
     }
@@ -121,9 +115,7 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
     }
 
     public ITextComponent getTranslatedColoredComponent() {
-        ITextComponent t = new TranslationTextComponent(getTranslationKey());
-        t.getStyle().setColor(textFormatting);
-        return t;
+        return new TranslationTextComponent(getTranslationKey()).applyTextStyle(textFormatting);
     }
 
     public String getDyedName() {

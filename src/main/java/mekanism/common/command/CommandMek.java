@@ -7,7 +7,7 @@ import java.util.Stack;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
-import net.minecraft.client.entity.PlayerEntitySP;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandGameRule;
@@ -110,7 +110,7 @@ public class CommandMek extends CommandTreeBase {
             ServerPlayerEntity mp = (ServerPlayerEntity) player;
             mp.connection.setPlayerLocation(x, y, z, mp.rotationYaw, mp.rotationPitch);
         } else {
-            PlayerEntitySP sp = (PlayerEntitySP) player;
+            ClientPlayerEntity sp = (ClientPlayerEntity) player;
             sp.setLocationAndAngles(x, y, z, sp.rotationYaw, sp.rotationPitch);
         }
     }

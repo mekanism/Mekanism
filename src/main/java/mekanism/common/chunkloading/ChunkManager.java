@@ -6,9 +6,9 @@ import mekanism.common.tile.component.TileComponentChunkLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.PlayerOrderedLoadingCallback;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 public class ChunkManager implements LoadingCallback, PlayerOrderedLoadingCallback {
 

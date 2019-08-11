@@ -7,8 +7,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 
 public class WorldGenSalt extends Feature {
 
@@ -22,7 +25,7 @@ public class WorldGenSalt extends Feature {
     }
 
     @Override
-    public boolean generate(@Nonnull World world, @Nonnull Random random, @Nonnull BlockPos pos) {
+    public boolean place(@Nonnull IWorld world, @Nonnull ChunkGenerator generator, @Nonnull Random random, @Nonnull BlockPos pos, @Nonnull IFeatureConfig config) {
         if (world.getBlockState(pos).getMaterial() != Material.WATER) {
             return false;
         }
