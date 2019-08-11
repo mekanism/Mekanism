@@ -63,8 +63,8 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
         renderScaledText(LangUtils.localize("gui.temp") + ": " +
                          MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT), 43, 30, 0x00CD00, 90);
         renderScaledText(LangUtils.localize("gui.boilRate") + ": " + tileEntity.getLastBoilRate() + " mB/t", 43, 39, 0x00CD00, 90);

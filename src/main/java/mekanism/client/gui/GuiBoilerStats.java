@@ -47,13 +47,13 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String stats = LangUtils.localize("gui.boilerStats");
-        font.drawString(stats, (xSize / 2) - (font.getStringWidth(stats) / 2), 6, 0x404040);
-        font.drawString(LangUtils.localize("gui.maxWater") + ": " + tileEntity.clientWaterCapacity + " mB", 8, 26, 0x404040);
-        font.drawString(LangUtils.localize("gui.maxSteam") + ": " + tileEntity.clientSteamCapacity + " mB", 8, 35, 0x404040);
-        font.drawString(LangUtils.localize("gui.heatTransfer"), 8, 49, 0x797979);
-        font.drawString(LangUtils.localize("gui.superheaters") + ": " + tileEntity.getSuperheatingElements(), 14, 58, 0x404040);
+        drawString(stats, (xSize / 2) - (font.getStringWidth(stats) / 2), 6, 0x404040);
+        drawString(LangUtils.localize("gui.maxWater") + ": " + tileEntity.clientWaterCapacity + " mB", 8, 26, 0x404040);
+        drawString(LangUtils.localize("gui.maxSteam") + ": " + tileEntity.clientSteamCapacity + " mB", 8, 35, 0x404040);
+        drawString(LangUtils.localize("gui.heatTransfer"), 8, 49, 0x797979);
+        drawString(LangUtils.localize("gui.superheaters") + ": " + tileEntity.getSuperheatingElements(), 14, 58, 0x404040);
         int boilCapacity = (int) (tileEntity.getSuperheatingElements() * MekanismConfig.current().general.superheatingHeatTransfer.val() / SynchronizedBoilerData.getHeatEnthalpy());
-        font.drawString(LangUtils.localize("gui.boilCapacity") + ": " + boilCapacity + " mB/t", 8, 72, 0x404040);
+        drawString(LangUtils.localize("gui.boilCapacity") + ": " + boilCapacity + " mB/t", 8, 72, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

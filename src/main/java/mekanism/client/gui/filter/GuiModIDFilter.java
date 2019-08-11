@@ -1,15 +1,9 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IModIDFilter;
-import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,9 +34,9 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
+        drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
                                 LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
-        font.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+        drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
         renderScaledText(LangUtils.localize("gui.id") + ": " + filter.getModID(), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

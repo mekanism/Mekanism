@@ -125,14 +125,14 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
-        font.drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
+        drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
+        drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
         String sizeModeString = LangUtils.transOnOff(filter.sizeMode);
         if (tileEntity.singleItem && filter.sizeMode) {
             sizeModeString = EnumColor.RED + sizeModeString + "!";
         }
 
-        font.drawString(sizeModeString, 141, 46, 0x404040);
+        drawString(sizeModeString, 141, 46, 0x404040);
         drawTransporterForegroundLayer(mouseX, mouseY, filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
             renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 89);

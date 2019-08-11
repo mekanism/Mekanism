@@ -21,6 +21,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -54,20 +55,33 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         guiElements.add(element);
     }
 
+    public int drawString(ITextComponent component, int x, int y, int color) {
+        //TODO: Check if color actually does anything
+        return drawString(component.getFormattedText(), x, y, color);
+    }
+
+    public void renderScaledText(ITextComponent component, int x, int y, int color, int maxX) {
+        renderScaledText(component.getFormattedText(), x, y, color, maxX);
+    }
+
+    public int drawString(String text, int x, int y, int color) {
+        return font.drawString(text, x, y, color);
+    }
+
     /**
      * returns scale
      */
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
         int length = font.getStringWidth(text);
         if (length <= maxX) {
-            font.drawString(text, x, y, color);
+            drawString(text, x, y, color);
         } else {
             float scale = (float) maxX / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
             GlStateManager.pushMatrix();
             GlStateManager.translatef(scale, scale, scale);
-            font.drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
+            drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }
     }
@@ -181,7 +195,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     protected void renderCenteredText(int leftMargin, int areaWidth, int y, int color, String text) {
         int textWidth = font.getStringWidth(text);
         int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
-        font.drawString(text, centerX, y, color);
+        drawString(text, centerX, y, color);
     }
 
     protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {

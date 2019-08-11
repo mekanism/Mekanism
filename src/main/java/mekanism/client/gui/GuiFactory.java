@@ -60,8 +60,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69) {

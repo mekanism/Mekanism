@@ -60,7 +60,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         GlStateManager.disableLighting();
-        font.drawString(LangUtils.localize("container.repair"), 60, 6, 0x404040);
+        drawString(LangUtils.localize("container.repair"), 60, 6, 0x404040);
 
         if (repairContainer.maximumCost > 0) {
             int k = 8453920;
@@ -85,11 +85,11 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
                     drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
                     drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
                 } else {
-                    font.drawString(s, i1, b0 + 1, l);
-                    font.drawString(s, i1 + 1, b0, l);
-                    font.drawString(s, i1 + 1, b0 + 1, l);
+                    drawString(s, i1, b0 + 1, l);
+                    drawString(s, i1 + 1, b0, l);
+                    drawString(s, i1 + 1, b0 + 1, l);
                 }
-                font.drawString(s, i1, b0, k);
+                drawString(s, i1, b0, k);
             }
         }
         GlStateManager.enableLighting();

@@ -65,8 +65,8 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(tileEntity.getName(), 45, 6, 0x404040);
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(tileEntity.getName(), 45, 6, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69) {

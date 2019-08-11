@@ -58,7 +58,7 @@ public class GuiChemicalOxidizer extends GuiChemical<TileEntityChemicalOxidizer>
 
     @Override
     protected void drawForegroundText() {
-        font.drawString(tileEntity.getName(), 45, 6, 0x404040);
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(tileEntity.getName(), 45, 6, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
     }
 }

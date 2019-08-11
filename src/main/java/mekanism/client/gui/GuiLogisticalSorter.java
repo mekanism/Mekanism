@@ -164,16 +164,16 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         int yAxis = mouseY - guiTop;
 
         // Write to info display
-        font.drawString(tileEntity.getName(), 43, 6, 0x404040);
-        font.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-        font.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
-        font.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
-        font.drawString(LangUtils.transOnOff(tileEntity.singleItem), 27, 60, 0x00CD00);
-        font.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
-        font.drawString(LangUtils.transOnOff(tileEntity.roundRobin), 27, 86, 0x00CD00);
-        font.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
-        font.drawString(LangUtils.transOnOff(tileEntity.autoEject), 27, 112, 0x00CD00);
-        font.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
+        drawString(tileEntity.getName(), 43, 6, 0x404040);
+        drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+        drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
+        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
+        drawString(LangUtils.transOnOff(tileEntity.singleItem), 27, 60, 0x00CD00);
+        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
+        drawString(LangUtils.transOnOff(tileEntity.roundRobin), 27, 86, 0x00CD00);
+        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
+        drawString(LangUtils.transOnOff(tileEntity.autoEject), 27, 112, 0x00CD00);
+        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 
         // Draw filters
         for (int i = 0; i < 4; i++) {
@@ -183,29 +183,29 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                 if (filter instanceof IItemStackFilter) {
                     IItemStackFilter itemFilter = (IItemStackFilter) filter;
                     renderItem(itemFilter.getItemStack(), 59, yStart + 3);
-                    font.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-                    font.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof IOreDictFilter) {
                     IOreDictFilter oreFilter = (IOreDictFilter) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    font.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-                    font.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof IMaterialFilter) {
                     IMaterialFilter itemFilter = (IMaterialFilter) filter;
                     renderItem(itemFilter.getMaterialItem(), 59, yStart + 3);
-                    font.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-                    font.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof IModIDFilter) {
                     IModIDFilter modFilter = (IModIDFilter) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }
                     renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    font.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
-                    font.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 }
 
                 // Draw hover text for sorting buttons

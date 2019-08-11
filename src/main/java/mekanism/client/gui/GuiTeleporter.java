@@ -285,14 +285,14 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(getName(), (xSize / 2) - (font.getStringWidth(getName()) / 2), 4, 0x404040);
-        font.drawString(LangUtils.localize("gui.owner") + ": " + (getOwnerUsername() != null ? getOwnerUsername() : LangUtils.localize("gui.none")),
+        drawString(getName(), (xSize / 2) - (font.getStringWidth(getName()) / 2), 4, 0x404040);
+        drawString(LangUtils.localize("gui.owner") + ": " + (getOwnerUsername() != null ? getOwnerUsername() : LangUtils.localize("gui.none")),
               8, !itemStack.isEmpty() ? ySize - 12 : (ySize - 96) + 4, 0x404040);
-        font.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
-        font.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
-        font.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
+        drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
+        drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
+        drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
               32 + font.getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
-        font.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
+        drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
               32 + font.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
         String str = LangUtils.localize("gui.set") + ":";
         renderScaledText(str, 27, 104, 0x404040, 20);

@@ -85,11 +85,11 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String text = LangUtils.localize("gui.configuration.transporter");
-        font.drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 5, 0x404040);
+        drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 5, 0x404040);
         text = LangUtils.localize("gui.strictInput") + " (" + LangUtils.transOnOff(configurable.getEjector().hasStrictInput()) + ")";
         renderScaledText(text, 53, 17, 0x00CD00, 70);
-        font.drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
-        font.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
+        drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
+        drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiSideDataButton button : sideDataButtons) {

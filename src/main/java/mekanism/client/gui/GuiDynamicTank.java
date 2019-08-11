@@ -25,13 +25,13 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        font.drawString(LangUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
+        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
+        drawString(LangUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
         FluidStack fluidStored = tileEntity.structure != null ? tileEntity.structure.fluidStored : null;
         renderScaledText(fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + ":" : LangUtils.localize("gui.noFluid"), 53, 44, 0x00CD00, 74);
         if (fluidStored != null) {
-            font.drawString(fluidStored.amount + "mB", 53, 53, 0x00CD00);
+            drawString(fluidStored.amount + "mB", 53, 53, 0x00CD00);
         }
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;

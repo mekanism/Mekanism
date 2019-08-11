@@ -69,8 +69,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
         if (tileEntity.structure != null) {
             double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val() / TurbineUpdateProtocol.MAX_BLADES) *
                                       Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());

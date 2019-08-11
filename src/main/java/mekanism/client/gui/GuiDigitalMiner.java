@@ -105,8 +105,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(tileEntity.getName(), 69, 6, 0x404040);
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(tileEntity.getName(), 69, 6, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         String runningType;
         if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()) {
             runningType = LangUtils.localize("mekanism.gui.digitalMiner.lowPower");
@@ -115,14 +115,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         } else {
             runningType = LangUtils.localize("gui.idle");
         }
-        font.drawString(runningType, 9, 10, 0x00CD00);
-        font.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
+        drawString(runningType, 9, 10, 0x00CD00);
+        drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
 
-        font.drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
-        font.drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
-        font.drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
-        font.drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
-        font.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
+        drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
+        drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
+        drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
+        drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
+        drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
         if (!tileEntity.missingStack.isEmpty()) {
             drawColorIcon(144, 27, EnumColor.DARK_RED, 0.8F);

@@ -46,12 +46,12 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(tileEntity.getName(), 45, 6, 0x404040);
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        font.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26, 0x00CD00);
-        font.drawString(LangUtils.localize("gui.power") + ": " + powerFormat.format(MekanismUtils.convertToDisplay(
+        drawString(tileEntity.getName(), 45, 6, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26, 0x00CD00);
+        drawString(LangUtils.localize("gui.power") + ": " + powerFormat.format(MekanismUtils.convertToDisplay(
               MekanismConfig.current().generators.windGenerationMin.val() * tileEntity.getCurrentMultiplier())), 51, 35, 0x00CD00);
-        font.drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
+        drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
         int size = 44;
         if (!tileEntity.getActive()) {
             size += 9;
@@ -59,7 +59,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
             if (tileEntity.isBlacklistDimension()) {
                 reason = "gui.noWind";
             }
-            font.drawString(EnumColor.DARK_RED + LangUtils.localize(reason), 51, size, 0x00CD00);
+            drawString(EnumColor.DARK_RED + LangUtils.localize(reason), 51, size, 0x00CD00);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

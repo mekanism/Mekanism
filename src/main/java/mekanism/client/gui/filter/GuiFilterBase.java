@@ -79,7 +79,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected void drawTransporterForegroundLayer(int mouseX, int mouseY, @Nonnull ItemStack stack) {
         if (filter instanceof TransporterFilter) {
             TransporterFilter tFilter = (TransporterFilter) filter;
-            font.drawString(LangUtils.transOnOff(tFilter.allowDefault), 24, 66, 0x404040);
+            drawString(LangUtils.transOnOff(tFilter.allowDefault), 24, 66, 0x404040);
             renderItem(stack, 12, 19);
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;

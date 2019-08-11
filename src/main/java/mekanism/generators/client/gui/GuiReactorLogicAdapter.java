@@ -50,18 +50,18 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         renderScaledText(LangUtils.localize("gui.coolingMeasurements") + ": " + EnumColor.RED + LangUtils.transOnOff(tileEntity.activeCooled), 36, 20, 0x404040, 117);
         renderScaledText(LangUtils.localize("gui.redstoneOutputMode") + ": " + EnumColor.RED + tileEntity.logicType.getLocalizedName(), 23, 123, 0x404040, 130);
         String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
-        font.drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 136, 0x404040);
+        drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 136, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiReactorLogicButton button : typeButtons) {
             ReactorLogic type = button.getType();
             int typeOffset = 22 * type.ordinal();
             renderItem(type.getRenderStack(), 27, 35 + typeOffset);
-            font.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34 + typeOffset, 0x404040);
+            drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34 + typeOffset, 0x404040);
             if (button.isMouseOver(mouseX, mouseY)) {
                 displayTooltip(TextComponentUtil.build(Translation.of(type.getDescription())), xAxis, yAxis);
             }

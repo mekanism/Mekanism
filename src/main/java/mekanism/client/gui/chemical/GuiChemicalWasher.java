@@ -62,6 +62,6 @@ public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher> {
 
     @Override
     protected void drawForegroundText() {
-        font.drawString(tileEntity.getName(), 45, 4, 0x404040);
+        drawString(tileEntity.getName(), 45, 4, 0x404040);
     }
 }

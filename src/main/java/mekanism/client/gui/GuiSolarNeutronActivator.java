@@ -44,8 +44,8 @@ public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeu
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString(tileEntity.getName(), 26, 4, 0x404040);
-        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(tileEntity.getName(), 26, 4, 0x404040);
+        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -35,9 +35,9 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        font.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
-        font.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-        font.drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
+        drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
+        drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+        drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
         drawForegroundLayer(mouseX, mouseY);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

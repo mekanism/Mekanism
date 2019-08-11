@@ -60,8 +60,7 @@ public class RenderTickHandler {
                     Coord4D obj = new Coord4D(pos.getPos(), world);
                     Block block = obj.getBlock(world);
 
-                    if (block != null && MekanismAPI.debug && minecraft.currentScreen == null
-                        && !minecraft.gameSettings.showDebugInfo) {
+                    if (block != null && MekanismAPI.debug && minecraft.currentScreen == null && !minecraft.gameSettings.showDebugInfo) {
                         String tileDisplay = "";
 
                         if (obj.getTileEntity(world) != null) {
