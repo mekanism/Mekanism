@@ -61,7 +61,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String stats = LangUtils.localize("gui.matrixStats");
-        drawString(stats, (xSize / 2) - (font.getStringWidth(stats) / 2), 6, 0x404040);
+        drawString(stats, (xSize / 2) - (getStringWidth(stats) / 2), 6, 0x404040);
         drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x797979);
         drawString(MekanismUtils.getEnergyDisplay(tileEntity.getLastInput()) + "/" +
                         MekanismUtils.getEnergyDisplay(tileEntity.getTransferCap()), 59, 35, 0x404040);

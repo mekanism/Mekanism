@@ -13,6 +13,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -47,7 +48,8 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
                     IProgressStyle style = probeInfo.defaultProgressStyle().suffix("mB");
                     if (tank.getGas() != null) {
                         Gas gas = tank.getGas().getGas();
-                        probeInfo.text(TextStyleClass.NAME + "Gas: " + gas.getLocalizedName());
+                        //TODO: Lang key
+                        probeInfo.text(TextStyleClass.NAME + TextComponentUtil.build("Gas: ", gas).getFormattedText());
                         int tint = gas.getTint();
                         //TOP respects transparency so we need to filter out the transparent layer
                         // if the gas has one. (Currently they are all fully transparent)

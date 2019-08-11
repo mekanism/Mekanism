@@ -51,13 +51,13 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.coolingMeasurements"), ": ", EnumColor.RED, OnOff.of(tileEntity.activeCooled)),
               36, 20, 0x404040, 117);
         renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.redstoneOutputMode"), ": ", EnumColor.RED, tileEntity.logicType),
               23, 123, 0x404040, 130);
         String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
-        drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 136, 0x404040);
+        drawString(text, (xSize / 2) - (getStringWidth(text) / 2), 136, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiReactorLogicButton button : typeButtons) {

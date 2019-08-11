@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -106,8 +107,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String title = currentType.localize() + " " + LangUtils.localize("gui.config");
-        drawString(title, (xSize / 2) - (font.getStringWidth(title) / 2), 5, 0x404040);
+        ITextComponent title = TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config"));
+        drawString(title, (xSize / 2) - (getStringWidth(title) / 2), 5, 0x404040);
         if (configurable.getConfig().canEject(currentType)) {
             drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
         } else {

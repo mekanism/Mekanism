@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import mekanism.api.TileNetworkList;
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -18,6 +19,8 @@ import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -42,13 +45,17 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String stored = "" + (tileEntity.gasTank.getStored() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.gasTank.getStored());
         String capacityInfo = stored + " / " + (tileEntity.tier.getStorage() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.tier.getStorage());
-        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(capacityInfo, 45, 40, 0x404040);
-        renderScaledText(LangUtils.localize("gui.gas") + ": " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName()
-                                                                                                     : LangUtils.localize("gui.none")), 45, 49, 0x404040, 112);
+        GasStack gasStack = tileEntity.gasTank.getGas();
+        if (gasStack != null) {
+            renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.gas"), ": ", gasStack), 45, 49, 0x404040, 112);
+        } else {
+            renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.gas"), ": ", Translation.of("mekanism.gui.none")), 45, 49, 0x404040, 112);
+        }
         drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-        String name = LangUtils.localize(tileEntity.dumping.getLangKey());
-        drawString(name, 156 - font.getStringWidth(name), 73, 0x404040);
+        String name = LangUtils.localize(tileEntity.dumping.getTranslationKey());
+        drawString(name, 156 - getStringWidth(name), 73, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

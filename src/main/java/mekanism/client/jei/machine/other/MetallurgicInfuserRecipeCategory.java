@@ -20,6 +20,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.InfuseStorage;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -27,6 +28,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
@@ -84,10 +86,10 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     }
 
     @Override
-    public List<String> getTooltipStrings(MetallurgicInfuserRecipe recipe, double mouseX, double mouseY) {
+    public List<ITextComponent> getTooltipComponents(MetallurgicInfuserRecipe recipe, double mouseX, double mouseY) {
         if (mouseX >= 2 && mouseX < 6 && mouseY >= 2 && mouseY < 54) {
             InfuseStorage infuse = recipe.getInput().infuse;
-            return Collections.singletonList(infuse.getType().getLocalizedName() + ": " + infuse.getAmount());
+            return Collections.singletonList(TextComponentUtil.build(infuse.getType(), ": " + infuse.getAmount()));
         }
         return Collections.emptyList();
     }

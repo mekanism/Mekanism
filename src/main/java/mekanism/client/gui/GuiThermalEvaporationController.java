@@ -39,7 +39,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(getStruct(), 50, 21, 0x00CD00);
         drawString(LangUtils.localize("gui.height") + ": " + tileEntity.height, 50, 30, 0x00CD00);
         drawString(LangUtils.localize("gui.temp") + ": " + getTempString(), 50, 39, 0x00CD00);

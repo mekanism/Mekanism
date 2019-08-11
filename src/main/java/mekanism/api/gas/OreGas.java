@@ -1,7 +1,5 @@
 package mekanism.api.gas;
 
-import net.minecraft.util.text.translation.I18n;
-
 public class OreGas extends Gas {
 
     private String oreLangKey;
@@ -42,7 +40,7 @@ public class OreGas extends Gas {
         return this;
     }
 
-    public String getOreName() {
-        return I18n.translateToLocal(oreLangKey);
+    public String getOreTranslationKey() {
+        return oreLangKey;
     }
 }

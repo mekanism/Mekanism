@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.gas.OreGas;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -75,16 +76,17 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 37, 4, 0x404040);
-        if (tileEntity.inputTank.getGas() != null) {
-            drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
-            if (tileEntity.inputTank.getGas().getGas() instanceof OreGas) {
-                drawString("(" + ((OreGas) tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
+        GasStack gasStack = tileEntity.inputTank.getGas();
+        if (gasStack != null) {
+            drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
+            if (gasStack.getGas() instanceof OreGas) {
+                drawString(TextComponentUtil.build("(", Translation.of(((OreGas) gasStack.getGas()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
             } else {
                 CrystallizerRecipe recipe = tileEntity.getRecipe();
                 if (recipe == null) {
-                    drawString("(" + LangUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
+                    drawString(TextComponentUtil.build("(", Translation.of("mekanism.gui.noRecipe"), ")"), 29, 24, 0x00CD00);
                 } else {
-                    drawString("(" + recipe.recipeOutput.output.getDisplayName() + ")", 29, 24, 0x00CD00);
+                    drawString(TextComponentUtil.build("(", recipe.recipeOutput.output.getDisplayName(), ")"), 29, 24, 0x00CD00);
                 }
             }
         }

@@ -26,7 +26,8 @@ public class GasesCommand extends CraftTweakerCommand {
     public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) {
         CraftTweakerAPI.logCommand("Gases:");
         List<Gas> gases = GasRegistry.getRegisteredGasses();
-        gases.forEach(gas -> CraftTweakerAPI.logCommand(String.format("<gas:%s>, %s", gas.getName(), gas.getLocalizedName())));
+        //TODO: Should this be something other than translation key
+        gases.forEach(gas -> CraftTweakerAPI.logCommand(String.format("<gas:%s>, %s", gas.getName(), gas.getTranslationKey())));
         sender.sendMessage(SpecialMessagesChat.getLinkToCraftTweakerLog("List of " + gases.size() + " gases generated;", sender));
     }
 }

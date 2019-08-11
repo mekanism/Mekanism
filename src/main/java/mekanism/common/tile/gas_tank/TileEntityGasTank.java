@@ -10,6 +10,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -313,10 +314,10 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
         }
     }
 
-    public enum GasMode {
-        IDLE("gui.idle"),
-        DUMPING_EXCESS("gui.dumping_excess"),
-        DUMPING("gui.dumping");
+    public enum GasMode implements IHasTranslationKey {
+        IDLE("mekanism.gui.idle"),
+        DUMPING_EXCESS("mekanism.gui.dumping_excess"),
+        DUMPING("mekanism.gui.dumping");
 
         private final String langKey;
 
@@ -324,7 +325,8 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
             this.langKey = langKey;
         }
 
-        public String getLangKey() {
+        @Override
+        public String getTranslationKey() {
             return langKey;
         }
 

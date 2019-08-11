@@ -2,7 +2,6 @@ package mekanism.api.transmitters;
 
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.translation.I18n;
 
 public enum TransmissionType implements IHasTranslationKey {
     ENERGY("EnergyNetwork", "Energy"),
@@ -37,10 +36,6 @@ public enum TransmissionType implements IHasTranslationKey {
 
     public String getTransmission() {
         return transmission;
-    }
-
-    public String localize() {
-        return I18n.translateToLocal(getTranslationKey());
     }
 
     @Override

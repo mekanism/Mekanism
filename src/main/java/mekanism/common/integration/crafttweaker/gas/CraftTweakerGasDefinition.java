@@ -23,6 +23,7 @@ public class CraftTweakerGasDefinition implements IGasDefinition {
 
     @Override
     public String getDisplayName() {
-        return gas.getLocalizedName();
+        //TODO
+        return gas.getTranslationKey();
     }
 }

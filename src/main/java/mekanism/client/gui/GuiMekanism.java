@@ -47,12 +47,21 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     protected float getNeededScale(String text, int maxX) {
-        int length = font.getStringWidth(text);
+        int length = getStringWidth(text);
         return length <= maxX ? 1 : (float) maxX / length;
     }
 
     protected void addGuiElement(GuiElement element) {
         guiElements.add(element);
+    }
+
+    public int getStringWidth(ITextComponent component) {
+        //TODO: See if this should be calculated in a different way
+        return getStringWidth(component.getFormattedText());
+    }
+
+    public int getStringWidth(String text) {
+        return font.getStringWidth(text);
     }
 
     public int drawString(ITextComponent component, int x, int y, int color) {
@@ -72,7 +81,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
      * returns scale
      */
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
-        int length = font.getStringWidth(text);
+        int length = getStringWidth(text);
         if (length <= maxX) {
             drawString(text, x, y, color);
         } else {
@@ -193,7 +202,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     protected void renderCenteredText(int leftMargin, int areaWidth, int y, int color, String text) {
-        int textWidth = font.getStringWidth(text);
+        int textWidth = getStringWidth(text);
         int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
         drawString(text, centerX, y, color);
     }

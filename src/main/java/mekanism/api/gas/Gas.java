@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -117,28 +116,6 @@ public class Gas implements IHasTranslationKey {
     }
 
     /**
-     * DEPRECATED: Gets the unlocalized name of this Gas. Use getTranslationKey instead.
-     *
-     * @return this Gas's unlocalized name
-     */
-    @Deprecated
-    public String getUnlocalizedName() {
-        return getTranslationKey();
-    }
-
-    /**
-     * DEPRECATED: Sets the unlocalized name of this Gas. Use setTranslationKey instead.
-     *
-     * @param s - unlocalized name to set
-     *
-     * @return this Gas object
-     */
-    @Deprecated
-    public Gas setUnlocalizedName(String s) {
-        return setTranslationKey(s);
-    }
-
-    /**
      * Gets the unlocalized name of this Gas.
      *
      * @return this Gas's unlocalized name
@@ -158,15 +135,6 @@ public class Gas implements IHasTranslationKey {
     public Gas setTranslationKey(String s) {
         unlocalizedName = s;
         return this;
-    }
-
-    /**
-     * Translates this Gas's unlocalized name and returns it as localized.
-     *
-     * @return this Gas's localized name
-     */
-    public String getLocalizedName() {
-        return I18n.translateToLocal(getTranslationKey());
     }
 
     /**

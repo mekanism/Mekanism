@@ -3,7 +3,6 @@ package mekanism.api.infuse;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 
 /**
  * The types of infuse currently available in Mekanism.
@@ -41,18 +40,9 @@ public final class InfuseType implements IHasTranslationKey {
         sprite = tex;
     }
 
-    @Deprecated
-    public InfuseType setUnlocalizedName(String name) {
-        return setTranslationKey(name);
-    }
-
     public InfuseType setTranslationKey(String name) {
         unlocalizedName = "infuse." + name;
         return this;
-    }
-
-    public String getLocalizedName() {
-        return I18n.translateToLocal(unlocalizedName);
     }
 
     @Override

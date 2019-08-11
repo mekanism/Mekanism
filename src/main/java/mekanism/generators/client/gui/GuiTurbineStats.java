@@ -40,7 +40,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String stats = LangUtils.localize("gui.turbineStats");
         String limiting = EnumColor.DARK_RED + " (" + LangUtils.localize("gui.limiting") + ")";
-        drawString(stats, (xSize / 2) - (font.getStringWidth(stats) / 2), 6, 0x404040);
+        drawString(stats, (xSize / 2) - (getStringWidth(stats) / 2), 6, 0x404040);
         if (tileEntity.structure != null) {
             int lowerVolume = tileEntity.structure.lowerVolume;
             int clientDispersers = tileEntity.structure.clientDispersers;

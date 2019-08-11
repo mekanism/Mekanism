@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
@@ -128,9 +129,13 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return null;
     }
 
-    @Override
-    public List<String> getTooltipStrings(RECIPE recipe, double mouseX, double mouseY) {
+    public List<ITextComponent> getTooltipComponents(RECIPE recipe, double mouseX, double mouseY) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public final List<String> getTooltipStrings(RECIPE recipe, double mouseX, double mouseY) {
+        return getTooltipComponents(recipe, mouseX, mouseY).stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
     }
 
     protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nullable GasStack stack, boolean overlay) {

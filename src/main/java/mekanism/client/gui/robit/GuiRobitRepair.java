@@ -78,7 +78,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
 
             if (flag) {
                 int l = -16777216 | (k & 16579836) >> 2 | k & -16777216;
-                int i1 = xSize - 25 - 8 - font.getStringWidth(s);
+                int i1 = xSize - 25 - 8 - getStringWidth(s);
                 byte b0 = 67;
 
                 if (font.getUnicodeFlag()) {

@@ -182,7 +182,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
+        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.getSecurity().getClientOwner() != null
                                                                   ? tileEntity.getSecurity().getClientOwner()
                                                                   : LangUtils.localize("gui.none")), 8, (ySize - 96) + 4, 0x404040);
@@ -190,9 +190,9 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
         Frequency frequency = tileEntity.getFrequency(null);
         drawString(" " + (frequency != null ? frequency.name : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
-              32 + font.getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
+              32 + getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
         drawString(" " + (frequency != null ? getSecurity(frequency) : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
-              32 + font.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
+              32 + getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
         String str = LangUtils.localize("gui.set") + ":";
         renderScaledText(str, 27, 104, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

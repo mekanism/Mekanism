@@ -134,7 +134,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.filter");
-        drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 6, 0x404040);
+        drawString(text, (xSize / 2) - (getStringWidth(text) / 2), 6, 0x404040);
         drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
         if (filter.filter != null) {
             renderScaledText(filter.filter, 32, 38, 0x404040, 111);

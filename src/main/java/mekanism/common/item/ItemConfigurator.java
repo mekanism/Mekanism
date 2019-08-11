@@ -71,8 +71,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("mekanism.gui.state"), ": ", getColor(getState(itemstack)),
-              Translation.of(getStateDisplay(getState(itemstack)))));
+        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("mekanism.gui.state"), ": ", getState(itemstack)));
     }
 
     @Nonnull
@@ -171,10 +170,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
         return ActionResultType.PASS;
     }
 
-    public String getStateDisplay(ConfiguratorMode mode) {
-        return mode.getName();
-    }
-
     public EnumColor getColor(ConfiguratorMode mode) {
         return mode.getColor();
     }
@@ -265,14 +260,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             transmissionType = s1;
             color = c;
             configurating = b;
-        }
-
-        public String getName() {
-            String name = LangUtils.localize("tooltip.configurator." + this.name);
-            if (this.transmissionType != null) {
-                name += " (" + transmissionType.localize() + ")";
-            }
-            return name;
         }
 
         @Override

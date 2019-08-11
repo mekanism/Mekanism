@@ -84,9 +84,10 @@ public class RenderTickHandler {
 
                     int x = minecraft.mainWindow.getScaledWidth();
                     int y = minecraft.mainWindow.getScaledHeight();
-                    int stringWidth = font.getStringWidth(mode.getName());
+                    //TODO: Check this, though if we use vanilla status bar text it may be a lot simpler instead
+                    String text = mode.getTextComponent().getFormattedText();
                     int color = new ColourRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
-                    font.drawString(mode.getColor() + mode.getName(), x / 2 - stringWidth / 2, y - 60, color);
+                    font.drawString(text, x / 2 - font.getStringWidth(text) / 2, y - 60, color);
                 }
 
                 modeSwitchTimer = Math.max(modeSwitchTimer - 1, 0);

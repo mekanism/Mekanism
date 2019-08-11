@@ -88,10 +88,10 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 6, 0x404040);
-        String name = LangUtils.localize(tileEntity.dumpLeft.getLangKey());
+        String name = LangUtils.localize(tileEntity.dumpLeft.getTranslationKey());
         renderScaledText(name, 21, 73, 0x404040, 66);
-        name = LangUtils.localize(tileEntity.dumpRight.getLangKey());
-        renderScaledText(name, 156 - (int) (font.getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
+        name = LangUtils.localize(tileEntity.dumpRight.getTranslationKey());
+        renderScaledText(name, 156 - (int) (getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

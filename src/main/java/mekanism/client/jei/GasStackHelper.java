@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
 public class GasStackHelper implements IIngredientHelper<GasStack> {
@@ -22,7 +23,7 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
 
     @Override
     public String getDisplayName(GasStack ingredient) {
-        return ingredient.getGas().getLocalizedName();
+        return TextComponentUtil.build(ingredient).getFormattedText();
     }
 
     @Override
@@ -52,9 +53,10 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
 
     @Override
     public String getErrorInfo(@Nullable GasStack ingredient) {
+        //TODO: Do this without using toStringHelper
         ToStringHelper toStringHelper = MoreObjects.toStringHelper(GasStack.class);
         Gas gas = ingredient == null ? null : ingredient.getGas();
-        toStringHelper.add("Gas", gas != null ? gas.getLocalizedName() : "null");
+        toStringHelper.add("Gas", gas != null ? TextComponentUtil.build(gas).getFormattedText() : "null");
         if (ingredient != null) {
             toStringHelper.add("Amount", ingredient.amount);
         }

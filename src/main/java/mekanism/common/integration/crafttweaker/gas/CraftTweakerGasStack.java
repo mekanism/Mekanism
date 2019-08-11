@@ -30,7 +30,8 @@ public class CraftTweakerGasStack implements IGasStack {
 
     @Override
     public String getDisplayName() {
-        return stack.getGas().getLocalizedName();
+        //TODO
+        return stack.getGas().getTranslationKey();
     }
 
     @Override
