@@ -12,9 +12,11 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -162,18 +164,18 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     @Override
-    public String getNeededInfo() {
-        return MekanismUtils.getEnergyDisplay(getEnergyNeeded());
+    public ITextComponent getNeededInfo() {
+        return TextComponentUtil.build(EnergyDisplay.of(getEnergyNeeded()));
     }
 
     @Override
-    public String getStoredInfo() {
-        return MekanismUtils.getEnergyDisplay(buffer.amount);
+    public ITextComponent getStoredInfo() {
+        return TextComponentUtil.build(EnergyDisplay.of(buffer.amount));
     }
 
     @Override
-    public String getFlowInfo() {
-        return MekanismUtils.getEnergyDisplay(joulesTransmitted) + "/t";
+    public ITextComponent getFlowInfo() {
+        return TextComponentUtil.build(EnergyDisplay.of(joulesTransmitted), "/t");
     }
 
     public static class EnergyTransferEvent extends Event {

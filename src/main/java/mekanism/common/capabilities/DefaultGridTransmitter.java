@@ -7,6 +7,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -44,17 +45,17 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
     }
 
     @Override
-    public String getTransmitterNetworkNeeded() {
+    public ITextComponent getTransmitterNetworkNeeded() {
         return null;
     }
 
     @Override
-    public String getTransmitterNetworkFlow() {
+    public ITextComponent getTransmitterNetworkFlow() {
         return null;
     }
 
     @Override
-    public String getTransmitterNetworkBuffer() {
+    public ITextComponent getTransmitterNetworkBuffer() {
         return null;
     }
 

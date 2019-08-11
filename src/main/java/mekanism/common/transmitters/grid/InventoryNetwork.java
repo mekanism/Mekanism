@@ -14,6 +14,7 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 
 public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
 
@@ -88,17 +89,17 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
-    public String getNeededInfo() {
+    public ITextComponent getNeededInfo() {
         return null;
     }
 
     @Override
-    public String getStoredInfo() {
+    public ITextComponent getStoredInfo() {
         return null;
     }
 
     @Override
-    public String getFlowInfo() {
+    public ITextComponent getFlowInfo() {
         return null;
     }
 

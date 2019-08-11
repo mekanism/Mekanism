@@ -23,6 +23,10 @@ public class TextComponentUtil {
         ITextComponent result = null;
         TextFormatting cachedFormat = null;
         for (Object component : components) {
+            if (component == null) {
+                //If the component doesn't exist just skip it
+                continue;
+            }
             ITextComponent current = null;
             if (component instanceof IHasTextComponent) {
                 current = ((IHasTextComponent) component).getTextComponent();

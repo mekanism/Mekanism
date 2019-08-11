@@ -11,10 +11,12 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.Fluid;
@@ -208,18 +210,22 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    public String getNeededInfo() {
-        return (float) getFluidNeeded() / 1000F + " buckets";
+    public ITextComponent getNeededInfo() {
+        //TODO: Lang String
+        return TextComponentUtil.build(((float) getFluidNeeded() / 1000F) + " buckets");
     }
 
     @Override
-    public String getStoredInfo() {
-        return buffer != null ? LangUtils.localizeFluidStack(buffer) + " (" + buffer.amount + " mB)" : "None";
+    public ITextComponent getStoredInfo() {
+        if (buffer != null) {
+            return TextComponentUtil.build(buffer, " (" + buffer.amount + " mB)");
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.none"));
     }
 
     @Override
-    public String getFlowInfo() {
-        return prevTransferAmount + " mB/t";
+    public ITextComponent getFlowInfo() {
+        return TextComponentUtil.build(prevTransferAmount + " mB/t");
     }
 
     @Override

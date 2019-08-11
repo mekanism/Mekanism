@@ -2,6 +2,9 @@ package mekanism.common.transmitters;
 
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> {
 
@@ -46,18 +49,27 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     @Override
-    public String getTransmitterNetworkNeeded() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getNeededInfo() : "No Network";
+    public ITextComponent getTransmitterNetworkNeeded() {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getNeededInfo();
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.transmitter.no_network"));
     }
 
     @Override
-    public String getTransmitterNetworkFlow() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getFlowInfo() : "No Network";
+    public ITextComponent getTransmitterNetworkFlow() {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getFlowInfo();
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.transmitter.no_network"));
     }
 
     @Override
-    public String getTransmitterNetworkBuffer() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getStoredInfo() : "No Network";
+    public ITextComponent getTransmitterNetworkBuffer() {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getStoredInfo();
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.transmitter.no_network"));
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.Collection;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends ITransmitter {
@@ -30,11 +31,11 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     int getTransmitterNetworkAcceptorSize();
 
-    String getTransmitterNetworkNeeded();
+    ITextComponent getTransmitterNetworkNeeded();
 
-    String getTransmitterNetworkFlow();
+    ITextComponent getTransmitterNetworkFlow();
 
-    String getTransmitterNetworkBuffer();
+    ITextComponent getTransmitterNetworkBuffer();
 
     double getTransmitterNetworkCapacity();
 

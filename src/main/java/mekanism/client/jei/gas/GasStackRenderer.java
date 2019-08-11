@@ -4,10 +4,12 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
@@ -19,7 +21,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.opengl.GL11;
 
@@ -148,14 +150,15 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         if (gasType == null) {
             return tooltip;
         }
-        String gasName = gasType.getLocalizedName();
-        tooltip.add(gasName);
+        tooltip.add(TextComponentUtil.build(gasType).getFormattedText());
+        ITextComponent component = null;
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb);
-            tooltip.add(TextFormatting.GRAY + amount);
+            component = TextComponentUtil.build(EnumColor.GREY, Translation.of("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount", gasStack.amount);
-            tooltip.add(TextFormatting.GRAY + amount);
+            component = TextComponentUtil.build(EnumColor.GREY, Translation.of("jei.tooltip.liquid.amount", gasStack.amount));
+        }
+        if (component != null) {
+            tooltip.add(component.getFormattedText());
         }
         return tooltip;
     }

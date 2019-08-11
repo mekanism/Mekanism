@@ -15,8 +15,11 @@ import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -226,18 +229,21 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    public String getNeededInfo() {
-        return Integer.toString(getGasNeeded());
+    public ITextComponent getNeededInfo() {
+        return TextComponentUtil.build(getGasNeeded());
     }
 
     @Override
-    public String getStoredInfo() {
-        return buffer != null ? buffer.getGas().getLocalizedName() + " (" + buffer.amount + ")" : "None";
+    public ITextComponent getStoredInfo() {
+        if (buffer != null) {
+            return TextComponentUtil.build(buffer, " (" + buffer.amount + ")");
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.none"));
     }
 
     @Override
-    public String getFlowInfo() {
-        return prevTransferAmount + "/t";
+    public ITextComponent getFlowInfo() {
+        return TextComponentUtil.build(prevTransferAmount + "/t");
     }
 
     @Override
