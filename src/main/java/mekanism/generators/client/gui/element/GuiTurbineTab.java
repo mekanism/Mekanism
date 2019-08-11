@@ -6,13 +6,15 @@ import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,8 +26,8 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
     }
 
     public enum TurbineTab implements TabType {
-        MAIN("GuiGasesTab.png", 6, "gui.main"),
-        STAT("GuiStatsTab.png", 7, "gui.stats");
+        MAIN("GuiGasesTab.png", 6, "mekanism.gui.main"),
+        STAT("GuiStatsTab.png", 7, "mekanism.gui.stats");
 
         private final String description;
         private final String path;
@@ -48,8 +50,8 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
         }
 
         @Override
-        public String getDesc() {
-            return LangUtils.localize(description);
+        public ITextComponent getDescription() {
+            return TextComponentUtil.build(Translation.of(description));
         }
 
         @Override

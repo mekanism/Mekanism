@@ -4,12 +4,16 @@ import java.util.UUID;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.tile.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraft.block.Block;
@@ -24,6 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
 
+    //TODO: Replace a lot of the checks for enum types with an interface for IHasTranslationKey
     public static ITextComponent build(Object... components) {
         //TODO: Verify that just appending them to the first text component works properly.
         // My suspicion is we will need to chain downwards and append it that way so that the formatting matches
@@ -64,6 +69,14 @@ public class TextComponentUtil {
                 current = getTranslationComponent((Gas) component);
             } else if (component instanceof SideData) {
                 current = getTranslationComponent(((SideData) component).getTranslationKey());
+            } else if (component instanceof TransmissionType) {
+                current = getTranslationComponent(((TransmissionType) component).getTranslationKey());
+            } else if (component instanceof RedstoneControl) {
+                current = getTranslationComponent(((RedstoneControl) component).getTranslationKey());
+            } else if (component instanceof RedstoneOutput) {
+                current = getTranslationComponent(((RedstoneOutput) component).getTranslationKey());
+            } else if (component instanceof ContainerEditMode) {
+                current = getTranslationComponent(((ContainerEditMode) component).getTranslationKey());
             } else if (component instanceof ConnectionType) {
                 current = getTranslationComponent(((ConnectionType) component).getTranslationKey());
             } else if (component instanceof Block) {

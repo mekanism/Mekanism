@@ -12,7 +12,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.TextComponentUtil;
-import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -78,7 +77,7 @@ public class ItemNetworkReader extends ItemEnergized {
                                         if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSideOpposite)) &&
                                             !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
                                             player.sendMessage(TextComponentUtil.build(EnumColor.GREY, "------------- ", EnumColor.DARK_BLUE, "[",
-                                                  Translation.of(transmitter.getTransmissionType().getTranslationKey()), "]", EnumColor.GREY, " -------------"));
+                                                  transmitter.getTransmissionType(), "]", EnumColor.GREY, " -------------"));
                                             //TODO: Better way of handling the connected sides
                                             player.sendMessage(TextComponentUtil.build(EnumColor.GREY, " *Connected sides: " + EnumColor.DARK_GREY,
                                                   transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSideOpposite)).toString()));

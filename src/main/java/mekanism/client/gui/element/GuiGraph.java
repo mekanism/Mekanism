@@ -10,6 +10,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -129,6 +130,6 @@ public class GuiGraph extends GuiElement {
 
     public interface GraphDataHandler {
 
-        String getDataDisplay(int data);
+        ITextComponent getDataDisplay(int data);
     }
 }

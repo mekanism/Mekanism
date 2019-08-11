@@ -4,9 +4,10 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,7 +22,7 @@ public class GuiSideConfigurationTab extends GuiTabElement<TileEntity> {
 
     @Override
     public void displayForegroundTooltip(int xAxis, int yAxis) {
-        displayTooltip(LangUtils.localize("gui.configuration.side"), xAxis, yAxis);
+        displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.configuration.side")), xAxis, yAxis);
     }
 
     @Override

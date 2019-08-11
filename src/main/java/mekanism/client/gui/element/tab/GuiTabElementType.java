@@ -23,6 +23,6 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
 
     @Override
     public void displayForegroundTooltip(int xAxis, int yAxis) {
-        displayTooltip(tabType.getDesc(), xAxis, yAxis);
+        displayTooltip(tabType.getDescription(), xAxis, yAxis);
     }
 }

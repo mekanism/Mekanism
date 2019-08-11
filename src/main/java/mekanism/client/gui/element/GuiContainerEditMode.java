@@ -10,6 +10,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,7 +47,7 @@ public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityMekanis
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            displayTooltip(((IFluidContainerManager) tileEntity).getContainerEditMode().getDisplay(), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(((IFluidContainerManager) tileEntity).getContainerEditMode()), xAxis, yAxis);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }

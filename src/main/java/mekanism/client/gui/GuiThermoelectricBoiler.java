@@ -19,6 +19,7 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,8 +33,8 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
-            public String getTooltip() {
-                return LangUtils.localize("gui.boilRate") + ": " + tileEntity.getLastBoilRate() + " mB/t";
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t");
             }
 
             @Override
@@ -43,8 +44,8 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         }, resource, 24, 13));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
-            public String getTooltip() {
-                return LangUtils.localize("gui.maxBoil") + ": " + tileEntity.getLastMaxBoil() + " mB/t";
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t");
             }
 
             @Override

@@ -6,13 +6,15 @@ import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,9 +26,9 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
     }
 
     public enum ReactorTab implements TabType {
-        HEAT("GuiHeatTab.png", 11, "gui.heat", 6),
-        FUEL("GuiFuelTab.png", 12, "gui.fuel", 34),
-        STAT("GuiStatsTab.png", 13, "gui.stats", 62);
+        HEAT("GuiHeatTab.png", 11, "mekanism.gui.heat", 6),
+        FUEL("GuiFuelTab.png", 12, "mekanism.gui.fuel", 34),
+        STAT("GuiStatsTab.png", 13, "mekanism.gui.stats", 62);
 
         private final String description;
         private final String path;
@@ -51,8 +53,8 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
         }
 
         @Override
-        public String getDesc() {
-            return LangUtils.localize(description);
+        public ITextComponent getDescription() {
+            return TextComponentUtil.build(Translation.of(description));
         }
 
         @Override

@@ -6,9 +6,10 @@ import mekanism.client.gui.element.GuiTileEntityElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -44,7 +45,7 @@ public class GuiUpgradeTab extends GuiTileEntityElement<TileEntity> {
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            displayTooltip(LangUtils.localize("gui.upgrades"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades")), xAxis, yAxis);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }

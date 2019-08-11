@@ -33,10 +33,6 @@ public abstract class GuiElement {
         guiObj.displayTooltip(component, xAxis, yAxis);
     }
 
-    public void displayTooltip(String s, int xAxis, int yAxis) {
-        guiObj.displayTooltip(s, xAxis, yAxis);
-    }
-
     public void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis) {
         guiObj.displayComponentTooltips(list, xAxis, yAxis);
     }

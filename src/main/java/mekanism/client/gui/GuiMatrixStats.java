@@ -17,6 +17,7 @@ import mekanism.common.util.TextComponentUtil.EnergyDisplay;
 import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,8 +31,8 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
         addGuiElement(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.STANDARD, this, resource, 6, 13));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
-            public String getTooltip() {
-                return LangUtils.localize("gui.receiving") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getLastInput()) + "/t";
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(Translation.of("mekanism.gui.receiving"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t");
             }
 
             @Override
@@ -41,8 +42,8 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
         }, resource, 30, 13));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
-            public String getTooltip() {
-                return LangUtils.localize("gui.outputting") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getLastOutput()) + "/t";
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(Translation.of("mekanism.gui.outputting"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t");
             }
 
             @Override

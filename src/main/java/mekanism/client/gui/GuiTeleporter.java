@@ -33,6 +33,8 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,6 +42,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -75,8 +78,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
-            public String getTooltip() {
-                return MekanismUtils.getEnergyDisplay(getEnergy(), getMaxEnergy());
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(EnergyDisplay.of(getEnergy(), getMaxEnergy()));
             }
 
             @Override
@@ -101,8 +104,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
-            public String getTooltip() {
-                return MekanismUtils.getEnergyDisplay(getEnergy(), getMaxEnergy());
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(EnergyDisplay.of(getEnergy(), getMaxEnergy()));
             }
 
             @Override

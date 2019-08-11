@@ -327,8 +327,8 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
             unlocalizedName = name;
         }
 
-        public String getName() {
-            return LangUtils.localize("gui." + unlocalizedName);
+        public String getTranslationKey() {
+            return "mekanism.gui." + unlocalizedName;
         }
     }
 }

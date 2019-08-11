@@ -2,6 +2,7 @@ package mekanism.client.gui.element.tab;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -12,7 +13,7 @@ public interface TabType {
 
     void openGui(TileEntity tile);
 
-    String getDesc();
+    ITextComponent getDescription();
 
     int getYPos();
 }

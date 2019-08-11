@@ -7,9 +7,10 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLaserAmplifier;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +46,7 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            displayTooltip(LangUtils.localize("gui.redstoneOutput") + ": " + tileEntity.outputMode.getName(), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.redstoneOutput"), ": ", tileEntity.outputMode), xAxis, yAxis);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }

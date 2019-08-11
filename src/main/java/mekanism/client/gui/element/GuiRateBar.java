@@ -4,6 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -47,8 +48,11 @@ public class GuiRateBar extends GuiElement {
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        if (handler.getTooltip() != null && inBounds(xAxis, yAxis)) {
-            displayTooltip(handler.getTooltip(), xAxis, yAxis);
+        if (inBounds(xAxis, yAxis)) {
+            ITextComponent tooltip = handler.getTooltip();
+            if (tooltip != null) {
+                displayTooltip(tooltip, xAxis, yAxis);
+            }
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }
@@ -63,7 +67,7 @@ public class GuiRateBar extends GuiElement {
 
     public static abstract class IRateInfoHandler {
 
-        public String getTooltip() {
+        public ITextComponent getTooltip() {
             return null;
         }
 

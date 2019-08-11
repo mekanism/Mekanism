@@ -1,7 +1,5 @@
 package mekanism.common.base;
 
-import mekanism.common.util.LangUtils;
-
 public interface IRedstoneControl {
 
     /**
@@ -36,10 +34,10 @@ public interface IRedstoneControl {
     boolean canPulse();
 
     enum RedstoneControl {
-        DISABLED("control.disabled"),
-        HIGH("control.high"),
-        LOW("control.low"),
-        PULSE("control.pulse");
+        DISABLED("mekanism.control.disabled"),
+        HIGH("mekanism.control.high"),
+        LOW("mekanism.control.low"),
+        PULSE("mekanism.control.pulse");
 
         private String display;
 
@@ -47,8 +45,8 @@ public interface IRedstoneControl {
             display = s;
         }
 
-        public String getDisplay() {
-            return LangUtils.localize(display);
+        public String getTranslationKey() {
+            return display;
         }
     }
 }

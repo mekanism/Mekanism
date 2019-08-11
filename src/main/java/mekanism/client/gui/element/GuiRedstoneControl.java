@@ -9,6 +9,7 @@ import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -47,7 +48,7 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
         minecraft.textureManager.bindTexture(RESOURCE);
         IRedstoneControl control = (IRedstoneControl) tileEntity;
         if (inBounds(xAxis, yAxis)) {
-            displayTooltip(control.getControlType().getDisplay(), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(control.getControlType()), xAxis, yAxis);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }

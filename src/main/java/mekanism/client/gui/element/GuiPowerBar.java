@@ -4,7 +4,10 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,8 +27,8 @@ public class GuiPowerBar extends GuiElement {
 
         handler = new IPowerInfoHandler() {
             @Override
-            public String getTooltip() {
-                return MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy());
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()));
             }
 
             @Override
@@ -71,8 +74,11 @@ public class GuiPowerBar extends GuiElement {
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        if (handler.getTooltip() != null && inBounds(xAxis, yAxis)) {
-            displayTooltip(handler.getTooltip(), xAxis, yAxis);
+        if (inBounds(xAxis, yAxis)) {
+            ITextComponent tooltip = handler.getTooltip();
+            if (tooltip != null) {
+                displayTooltip(tooltip, xAxis, yAxis);
+            }
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }
@@ -87,7 +93,7 @@ public class GuiPowerBar extends GuiElement {
 
     public static abstract class IPowerInfoHandler {
 
-        public String getTooltip() {
+        public ITextComponent getTooltip() {
             return null;
         }
 

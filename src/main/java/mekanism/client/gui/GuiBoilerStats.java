@@ -36,8 +36,10 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
             return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
         }, this, resource));
-        addGuiElement(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, data -> LangUtils.localize("gui.boilRate") + ": " + data + " mB/t"));
-        addGuiElement(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, data -> LangUtils.localize("gui.maxBoil") + ": " + data + " mB/t"));
+        addGuiElement(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, data ->
+              TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + data + " mB/t")));
+        addGuiElement(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, data ->
+              TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + data + " mB/t")));
         maxGraph.enableFixedScale((int) ((tileEntity.getSuperheatingElements() * MekanismConfig.current().general.superheatingHeatTransfer.val()) /
                                          SynchronizedBoilerData.getHeatEnthalpy()));
     }

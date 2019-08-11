@@ -43,7 +43,7 @@ public enum TransmissionType {
     }
 
     public String getTranslationKey() {
-        return "transmission." + getTransmission();
+        return "mekanism.transmission." + getTransmission();
     }
 
     public boolean checkTransmissionType(ITransmitter transmitter) {

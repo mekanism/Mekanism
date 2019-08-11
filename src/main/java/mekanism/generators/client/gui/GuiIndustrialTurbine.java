@@ -27,6 +27,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -40,8 +41,9 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 16));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
-            public String getTooltip() {
-                return LangUtils.localize("gui.steamInput") + ": " + (tileEntity.structure == null ? 0 : tileEntity.structure.lastSteamInput) + " mB/t";
+            public ITextComponent getTooltip() {
+                return TextComponentUtil.build(Translation.of("mekanism.gui.steamInput"),
+                      ": " + (tileEntity.structure == null ? 0 : tileEntity.structure.lastSteamInput) + " mB/t");
             }
 
             @Override

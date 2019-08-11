@@ -171,9 +171,9 @@ public final class FluidContainerUtils {
     }
 
     public enum ContainerEditMode {
-        BOTH("fluidedit.both"),
-        FILL("fluidedit.fill"),
-        EMPTY("fluidedit.empty");
+        BOTH("mekanism.fluidedit.both"),
+        FILL("mekanism.fluidedit.fill"),
+        EMPTY("mekanism.fluidedit.empty");
 
         private String display;
 
@@ -181,8 +181,8 @@ public final class FluidContainerUtils {
             display = s;
         }
 
-        public String getDisplay() {
-            return LangUtils.localize(display);
+        public String getTranslationKey() {
+            return display;
         }
     }
 

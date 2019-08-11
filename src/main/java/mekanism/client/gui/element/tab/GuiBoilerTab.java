@@ -6,11 +6,13 @@ import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,8 +24,8 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
     }
 
     public enum BoilerTab implements TabType {
-        MAIN("GuiGasesTab.png", 54, "gui.main"),
-        STAT("GuiStatsTab.png", 55, "gui.stats");
+        MAIN("GuiGasesTab.png", 54, "mekanism.gui.main"),
+        STAT("GuiStatsTab.png", 55, "mekanism.gui.stats");
 
         private final String description;
         private final String path;
@@ -46,8 +48,8 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
         }
 
         @Override
-        public String getDesc() {
-            return LangUtils.localize(description);
+        public ITextComponent getDescription() {
+            return TextComponentUtil.build(Translation.of(description));
         }
 
         @Override
