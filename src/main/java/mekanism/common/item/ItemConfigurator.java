@@ -97,7 +97,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                         if (!player.isSneaking()) {
                             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
                                   Translation.of("tooltip.configurator.viewMode", TextComponentUtil.build(transmissionType)), ": ", initial.color, initial,
-                                  " (", initial.color.getTranslatedColoredComponent(), ")"));
+                                  " (", initial.color.getColoredName(), ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
@@ -106,7 +106,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                     SideData data = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
                                     player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
                                           Translation.of("tooltip.configurator.toggleMode", TextComponentUtil.build(transmissionType)), ": ", data.color, data,
-                                          " (", data.color.getTranslatedColoredComponent(), ")")));
+                                          " (", data.color.getColoredName(), ")"));
                                     if (config instanceof TileEntityMekanism) {
                                         Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                     }

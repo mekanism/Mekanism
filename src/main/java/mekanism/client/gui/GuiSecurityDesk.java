@@ -187,7 +187,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         } else if (privateButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.privateMode")), xAxis, yAxis);
         } else if (trustedButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.trustedMode"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.trustedMode")), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

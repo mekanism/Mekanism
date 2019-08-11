@@ -120,7 +120,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
             if (button.isMouseOver(mouseX, mouseY)) {
                 SideData data = button.getSideData();
                 if (data != TileComponentConfig.EMPTY) {
-                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getTranslatedColoredComponent(), ")"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getColoredName(), ")"), xAxis, yAxis);
                 }
                 break;
             }

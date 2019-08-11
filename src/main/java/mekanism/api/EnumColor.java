@@ -4,8 +4,8 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
@@ -84,22 +84,9 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
         return null;
     }
 
-    /**
-     * Gets the localized name of this color by translating the unlocalized name.
-     *
-     * @return localized name
-     */
-    public String getLocalizedName() {
-        return I18n.translateToLocal("color." + unlocalizedName);
-    }
-
     //Note: Do not implement IHasTranslationKey as we want the default behaviour of EnumColor to be formatting
     public String getTranslationKey() {
         return "color." + unlocalizedName;
-    }
-
-    public String getDyeName() {
-        return I18n.translateToLocal("dye." + unlocalizedName);
     }
 
     public String getOreDictName() {
@@ -111,17 +98,8 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
      *
      * @return the color's name and color prefix
      */
-    public String getColoredName() {
-        return code + getLocalizedName();
-    }
-
-    //TODO: Rename this to getColoredName
-    public ITextComponent getTranslatedColoredComponent() {
+    public ITextComponent getColoredName() {
         return new TranslationTextComponent(getTranslationKey()).applyTextStyle(textFormatting);
-    }
-
-    public String getDyedName() {
-        return code + getDyeName();
     }
 
     @Override

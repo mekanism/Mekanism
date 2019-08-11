@@ -99,7 +99,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
                 if (data != TileComponentConfig.EMPTY) {
                     EnumColor color = button.getColor();
                     if (color != null) {
-                        displayTooltip(color.getTranslatedColoredComponent(), xAxis, yAxis);
+                        displayTooltip(color.getColoredName(), xAxis, yAxis);
                     } else {
                         displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
                     }
@@ -111,7 +111,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
             displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.configuration.strictInput")), xAxis, yAxis);
         } else if (colorButton.isMouseOver(mouseX, mouseY)) {
             if (configurable.getEjector().getOutputColor() != null) {
-                displayTooltip(configurable.getEjector().getOutputColor().getTranslatedColoredComponent(), xAxis, yAxis);
+                displayTooltip(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
             } else {
                 displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
             }

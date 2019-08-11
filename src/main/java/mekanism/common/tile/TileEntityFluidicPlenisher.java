@@ -336,7 +336,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         usedNodes.clear();
         finishedCalc = false;
         player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
-              Translation.of("mekanism.tooltip.configurator.plenisherReset"))));
+              Translation.of("mekanism.tooltip.configurator.plenisherReset")));
         return ActionResultType.SUCCESS;
     }
 

@@ -120,9 +120,9 @@ public abstract class GuiGauge<T> extends GuiElement {
                             }
                         }
                         if (data == null) {
-                            guiObj.displayTooltip(TextComponentUtil.build(color, "(", color.getTranslatedColoredComponent(), ")"), xAxis, yAxis);
+                            guiObj.displayTooltip(TextComponentUtil.build(color, "(", color.getColoredName(), ")"), xAxis, yAxis);
                         } else {
-                            guiObj.displayTooltip(TextComponentUtil.build(color, data, " (", color.getTranslatedColoredComponent(), ")"), xAxis, yAxis);
+                            guiObj.displayTooltip(TextComponentUtil.build(color, data, " (", color.getColoredName(), ")"), xAxis, yAxis);
                         }
                     }
                 }

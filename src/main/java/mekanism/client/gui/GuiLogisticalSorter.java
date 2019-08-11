@@ -185,7 +185,11 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                     IItemStackFilter itemFilter = (IItemStackFilter) filter;
                     renderItem(itemFilter.getItemStack(), 59, yStart + 3);
                     drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    if (filter.color != null) {
+                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
+                    } else {
+                        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.none")), 78, yStart + 11, 0x404040);
+                    }
                 } else if (filter instanceof IOreDictFilter) {
                     IOreDictFilter oreFilter = (IOreDictFilter) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
@@ -193,12 +197,20 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
                     drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    if (filter.color != null) {
+                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
+                    } else {
+                        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.none")), 78, yStart + 11, 0x404040);
+                    }
                 } else if (filter instanceof IMaterialFilter) {
                     IMaterialFilter itemFilter = (IMaterialFilter) filter;
                     renderItem(itemFilter.getMaterialItem(), 59, yStart + 3);
                     drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    if (filter.color != null) {
+                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
+                    } else {
+                        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.none")), 78, yStart + 11, 0x404040);
+                    }
                 } else if (filter instanceof IModIDFilter) {
                     IModIDFilter modFilter = (IModIDFilter) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
@@ -206,7 +218,11 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                     }
                     renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
                     drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
-                    drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+                    if (filter.color != null) {
+                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
+                    } else {
+                        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.none")), 78, yStart + 11, 0x404040);
+                    }
                 }
 
                 // Draw hover text for sorting buttons
@@ -224,7 +240,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         // Draw tooltips for buttons
         if (colorButton.isMouseOver(mouseX, mouseY)) {
             if (tileEntity.color != null) {
-                displayTooltip(tileEntity.color.getTranslatedColoredComponent(), xAxis, yAxis);
+                displayTooltip(tileEntity.color.getColoredName(), xAxis, yAxis);
             } else {
                 displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
             }

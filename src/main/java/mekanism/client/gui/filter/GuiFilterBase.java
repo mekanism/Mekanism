@@ -88,7 +88,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
                 displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.allowDefault")), xAxis, yAxis);
             } else if (colorButton.isMouseOver(mouseX, mouseY)) {
                 if (tFilter.color != null) {
-                    displayTooltip(tFilter.color.getTranslatedColoredComponent(), xAxis, yAxis);
+                    displayTooltip(tFilter.color.getColoredName(), xAxis, yAxis);
                 } else {
                     displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
                 }
