@@ -7,7 +7,8 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,9 +56,9 @@ public class ItemCraftingFormula extends ItemMekanism {
                     }
                 }
             }
-            tooltip.add(EnumColor.GREY + LangUtils.localize("tooltip.ingredients") + ":");
+            tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.tooltip.ingredients"), ":"));
             for (ItemStack stack : stacks) {
-                tooltip.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.getCount() + ")");
+                tooltip.add(TextComponentUtil.build(EnumColor.GREY, " - " + stack.getDisplayName() + " (" + stack.getCount() + ")"));
             }
         }
     }
@@ -88,8 +89,10 @@ public class ItemCraftingFormula extends ItemMekanism {
         if (getInventory(stack) == null) {
             return super.getDisplayName(stack);
         }
-        return super.getDisplayName(stack) + " " + (isInvalid(stack) ? EnumColor.DARK_RED + "(" + LangUtils.localize("tooltip.invalid")
-                                                                              : EnumColor.DARK_GREEN + "(" + LangUtils.localize("tooltip.encoded")) + ")";
+        if (isInvalid(stack)) {
+            return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_RED, "(", Translation.of("mekanism.tooltip.invalid"), ")");
+        }
+        return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_GREEN, "(", Translation.of("mekanism.tooltip.encoded"), ")");
     }
 
     public boolean isInvalid(ItemStack stack) {

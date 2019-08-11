@@ -12,6 +12,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -38,11 +40,11 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack == null) {
-            tooltip.add(LangUtils.localize("tooltip.noGas") + ".");
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.noGas"), "."));
         } else {
-            tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
         }
-        tooltip.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(stack).getName());
+        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GREY, getMode(stack).getTextComponent()));
     }
 
     public void useGas(ItemStack stack) {
@@ -169,10 +171,8 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
             return color + LangUtils.localize(unlocalized);
         }
 
-        public TranslationTextComponent getTextComponent() {
-            TranslationTextComponent component = new TranslationTextComponent(unlocalized);
-            component.getStyle().setColor(color.textFormatting);
-            return component;
+        public ITextComponent getTextComponent() {
+            return new TranslationTextComponent(unlocalized).applyTextStyle(color.textFormatting);
         }
     }
 }

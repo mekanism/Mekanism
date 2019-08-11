@@ -28,6 +28,8 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.TextComponentGroup;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -71,7 +73,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
+        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("mekanism.gui.state"), ": ", getColor(getState(itemstack)),
+              Translation.of(getStateDisplay(getState(itemstack)))));
     }
 
     @Nonnull

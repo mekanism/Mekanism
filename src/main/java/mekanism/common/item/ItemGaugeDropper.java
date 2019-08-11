@@ -7,7 +7,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -69,11 +70,11 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         GasStack gasStack = getGas(itemstack);
         LazyOptional<FluidStack> fluidStack = FluidUtil.getFluidContained(itemstack);
         if (gasStack == null && !fluidStack.isPresent()) {
-            tooltip.add(LangUtils.localize("gui.empty") + ".");
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.gui.empty"), "."));
         } else if (gasStack != null) {
-            tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
         } else {
-            fluidStack.ifPresent(fluid -> tooltip.add(LangUtils.localize("tooltip.stored") + " " + fluid.getFluid().getLocalizedName(fluid) + ": " + fluid.amount));
+            fluidStack.ifPresent(fluid -> tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", fluid, ": " + fluid.amount)));
         }
     }
 

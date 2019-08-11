@@ -14,15 +14,15 @@ public final class LangUtils {
     }
 
     public static String transOnOffKey(boolean b) {
-        return "gui." + (b ? "on" : "off");
+        return "mekanism.gui." + (b ? "on" : "off");
     }
 
     public static String transYesNo(boolean b) {
-        return LangUtils.localize("tooltip." + (b ? "yes" : "no"));
+        return LangUtils.localize("mekanism.tooltip." + (b ? "yes" : "no"));
     }
 
     public static String transOutputInput(boolean b) {
-        return LangUtils.localize("gui." + (b ? "output" : "input"));
+        return LangUtils.localize("mekanism.gui." + (b ? "output" : "input"));
     }
 
     public static String localizeFluidStack(FluidStack fluidStack) {

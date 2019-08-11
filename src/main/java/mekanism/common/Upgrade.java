@@ -69,11 +69,11 @@ public enum Upgrade {
     }
 
     public String getName() {
-        return LangUtils.localize("upgrade." + name);
+        return "mekanism.upgrade." + name + ".name";
     }
 
     public String getDescription() {
-        return LangUtils.localize("upgrade." + name + ".desc");
+        return "mekanism.upgrade." + name + ".desc";
     }
 
     public int getMax() {

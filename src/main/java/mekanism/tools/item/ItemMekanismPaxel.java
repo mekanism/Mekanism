@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.Materials;
 import mekanism.tools.common.MekanismTools;
@@ -41,7 +42,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(LangUtils.localize("tooltip.hp") + ": " + (stack.getMaxDamage() - stack.getDamage()));
+        tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hp"), ": " + (stack.getMaxDamage() - stack.getDamage())));
     }
 
     @Override

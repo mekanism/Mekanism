@@ -10,7 +10,8 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -38,14 +39,14 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack == null) {
-            tooltip.add(LangUtils.localize("tooltip.noGas") + ".");
-            tooltip.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.insufficientFuel"));
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.noGas"), "."));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("tooltip.insufficientFuel")));
         } else {
-            tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
             if (gasStack.amount == getMaxGas(stack)) {
-                tooltip.add(EnumColor.DARK_GREEN + LangUtils.localize("tooltip.readyForReaction") + "!");
+                tooltip.add(TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("tooltip.readyForReaction"), "!"));
             } else {
-                tooltip.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.insufficientFuel"));
+                tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("tooltip.insufficientFuel")));
             }
         }
     }

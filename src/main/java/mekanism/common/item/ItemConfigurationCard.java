@@ -14,6 +14,8 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -39,7 +41,7 @@ public class ItemConfigurationCard extends ItemMekanism {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(EnumColor.GREY + LangUtils.localize("gui.data") + ": " + EnumColor.INDIGO + LangUtils.localize(getDataType(itemstack)));
+        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(itemstack))));
     }
 
     @Nonnull
@@ -146,6 +148,6 @@ public class ItemConfigurationCard extends ItemMekanism {
         if (data != null) {
             return data.getString("dataType");
         }
-        return "gui.none";
+        return "mekanism.gui.none";
     }
 }

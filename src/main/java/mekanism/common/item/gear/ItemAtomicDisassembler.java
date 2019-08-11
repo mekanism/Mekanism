@@ -17,7 +17,8 @@ import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockDirt.DirtType;
@@ -44,7 +45,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -68,8 +68,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         Mode mode = getMode(stack);
-        tooltip.add(LangUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + mode.getModeName());
-        tooltip.add(LangUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + mode.getEfficiency());
+        tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.INDIGO, mode.getModeName()));
+        tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.efficiency"), ": ", EnumColor.INDIGO, mode.getEfficiency()));
     }
 
     @Override
@@ -176,8 +176,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (!world.isRemote) {
                 toggleMode(itemstack);
                 Mode mode = getMode(itemstack);
-                entityplayer.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle")
-                                                                 + " " + EnumColor.INDIGO + mode.getModeName() + EnumColor.AQUA + " (" + mode.getEfficiency() + ")"));
+                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("mekanism.tooltip.modeToggle"),
+                      " ", EnumColor.INDIGO, mode.getModeName(), EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
@@ -356,8 +356,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             return values[(ordinal() + 1) % values.length];
         }
 
-        public String getModeName() {
-            return LangUtils.localize("mekanism.tooltip.disassembler." + mode);
+        public ITextComponent getModeName() {
+            return TextComponentUtil.getTranslationComponent("mekanism.tooltip.disassembler." + mode);
         }
 
         public int getEfficiency() {

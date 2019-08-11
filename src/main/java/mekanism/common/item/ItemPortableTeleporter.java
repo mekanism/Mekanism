@@ -17,6 +17,8 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -56,9 +58,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
         if (getFrequency(itemstack) != null) {
-            tooltip.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(itemstack).name);
-            tooltip.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY +
-                     LangUtils.localize("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public")));
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.frequency"), ": ", EnumColor.GREY, getFrequency(itemstack).name));
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.mode"), ": ", EnumColor.GREY,
+                  Translation.of("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public"))));
         }
         super.addInformation(itemstack, world, tooltip, flag);
     }

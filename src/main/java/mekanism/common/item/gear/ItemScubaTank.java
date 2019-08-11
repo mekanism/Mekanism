@@ -14,7 +14,8 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -33,7 +34,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.EnumHelper;
 
 public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
@@ -50,11 +50,12 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack == null) {
-            tooltip.add(LangUtils.localize("tooltip.noGas") + ".");
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.noGas"), "."));
         } else {
-            tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
         }
-        tooltip.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(stack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(stack));
+        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.tooltip.flowing"), ": ",
+              (getFlowing(stack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED), getFlowingComponent(stack)));
     }
 
     @Override
@@ -143,9 +144,9 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
         return ItemDataUtils.getBoolean(stack, "flowing");
     }
 
-    public String getFlowingStr(ItemStack stack) {
+    public ITextComponent getFlowingComponent(ItemStack stack) {
         boolean flowing = getFlowing(stack);
-        return LangUtils.localize("tooltip." + (flowing ? "yes" : "no"));
+        return TextComponentUtil.getTranslationComponent("mekanism.tooltip." + (flowing ? "yes" : "no"));
     }
 
     public void setFlowing(ItemStack stack, boolean flowing) {
