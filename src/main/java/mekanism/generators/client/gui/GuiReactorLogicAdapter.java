@@ -12,6 +12,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.button.GuiReactorLogicButton;
@@ -51,8 +52,10 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        renderScaledText(LangUtils.localize("gui.coolingMeasurements") + ": " + EnumColor.RED + LangUtils.transOnOff(tileEntity.activeCooled), 36, 20, 0x404040, 117);
-        renderScaledText(LangUtils.localize("gui.redstoneOutputMode") + ": " + EnumColor.RED + tileEntity.logicType.getLocalizedName(), 23, 123, 0x404040, 130);
+        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.coolingMeasurements"), ": ", EnumColor.RED, OnOff.of(tileEntity.activeCooled)),
+              36, 20, 0x404040, 117);
+        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.redstoneOutputMode"), ": ", EnumColor.RED, tileEntity.logicType),
+              23, 123, 0x404040, 130);
         String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
         drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 136, 0x404040);
         int xAxis = mouseX - guiLeft;
@@ -61,7 +64,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             ReactorLogic type = button.getType();
             int typeOffset = 22 * type.ordinal();
             renderItem(type.getRenderStack(), 27, 35 + typeOffset);
-            drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34 + typeOffset, 0x404040);
+            drawString(TextComponentUtil.build(EnumColor.WHITE, type), 46, 34 + typeOffset, 0x404040);
             if (button.isMouseOver(mouseX, mouseY)) {
                 displayTooltip(TextComponentUtil.build(Translation.of(type.getDescription())), xAxis, yAxis);
             }

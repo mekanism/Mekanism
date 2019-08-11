@@ -214,7 +214,6 @@ public class Gas implements IHasTranslationKey {
     public Gas registerIcon(AtlasTexture map) {
         map.registerSprite(iconLocation);
         from_fluid = false;
-
         return this;
     }
 

@@ -25,6 +25,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
@@ -86,10 +87,10 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String text = LangUtils.localize("gui.configuration.transporter");
         drawString(text, (xSize / 2) - (font.getStringWidth(text) / 2), 5, 0x404040);
-        text = LangUtils.localize("gui.strictInput") + " (" + LangUtils.transOnOff(configurable.getEjector().hasStrictInput()) + ")";
-        renderScaledText(text, 53, 17, 0x00CD00, 70);
-        drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
-        drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(configurable.getEjector().hasStrictInput()), ")"),
+              53, 17, 0x00CD00, 70);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.input")), 48, 81, 0x787878);
+        drawString(TextComponentUtil.build(Translation.of("gui.output")), 114, 68, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiSideDataButton button : sideDataButtons) {

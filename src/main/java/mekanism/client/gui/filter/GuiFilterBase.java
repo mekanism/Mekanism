@@ -9,6 +9,7 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -79,7 +80,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected void drawTransporterForegroundLayer(int mouseX, int mouseY, @Nonnull ItemStack stack) {
         if (filter instanceof TransporterFilter) {
             TransporterFilter tFilter = (TransporterFilter) filter;
-            drawString(LangUtils.transOnOff(tFilter.allowDefault), 24, 66, 0x404040);
+            drawString(TextComponentUtil.build(OnOff.of(tFilter.allowDefault)), 24, 66, 0x404040);
             renderItem(stack, 12, 19);
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;

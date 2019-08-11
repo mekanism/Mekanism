@@ -8,9 +8,9 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.util.ResourceLocation;
@@ -46,7 +46,7 @@ public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        getFontRenderer().drawString(LangUtils.transOnOff(tileEntity.sorting), -21, 86, 0x0404040);
+        drawString(TextComponentUtil.build(OnOff.of(tileEntity.sorting)), -21, 86, 0x0404040);
         if (inBounds(xAxis, yAxis)) {
             displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.factory.autoSort")), xAxis, yAxis);
         }

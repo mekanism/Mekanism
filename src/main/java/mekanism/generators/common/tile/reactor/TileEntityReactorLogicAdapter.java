@@ -2,6 +2,7 @@ package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
@@ -160,7 +161,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         }
     }
 
-    public enum ReactorLogic {
+    public enum ReactorLogic implements IHasTranslationKey {
         DISABLED("disabled", new ItemStack(Items.GUNPOWDER)),
         READY("ready", new ItemStack(Items.REDSTONE)),
         CAPACITY("capacity", new ItemStack(Items.REDSTONE)),
@@ -178,12 +179,13 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             return renderStack;
         }
 
-        public String getLocalizedName() {
-            return LangUtils.localize("reactor." + name);
+        @Override
+        public String getTranslationKey() {
+            return "mekanism.reactor." + name;
         }
 
         public String getDescription() {
-            return "reactor." + name + ".desc";
+            return "mekanism.reactor." + name + ".desc";
         }
     }
 }

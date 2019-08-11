@@ -16,6 +16,7 @@ import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.Translation;
@@ -50,9 +51,13 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26, 0x00CD00);
-        drawString(LangUtils.localize("gui.finished") + ": " + LangUtils.transYesNo(tileEntity.finishedCalc), 51, 35, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.finished"), ": ", YesNo.of(tileEntity.finishedCalc)), 51, 35, 0x00CD00);
         FluidStack fluid = tileEntity.fluidTank.getFluid();
-        drawString(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + fluid.amount : LangUtils.localize("gui.noFluid"), 51, 44, 0x00CD00);
+        if (fluid != null) {
+            drawString(TextComponentUtil.build(fluid, ": " + fluid.amount), 51, 44, 0x00CD00);
+        } else {
+            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.noFluid")), 51, 44, 0x00CD00);
+        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

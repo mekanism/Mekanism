@@ -26,6 +26,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
@@ -165,15 +166,15 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
 
         // Write to info display
         drawString(tileEntity.getName(), 43, 6, 0x404040);
-        drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.filters"), ":"), 11, 19, 0x00CD00);
         drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
-        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
-        drawString(LangUtils.transOnOff(tileEntity.singleItem), 27, 60, 0x00CD00);
-        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
-        drawString(LangUtils.transOnOff(tileEntity.roundRobin), 27, 86, 0x00CD00);
-        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
-        drawString(LangUtils.transOnOff(tileEntity.autoEject), 27, 112, 0x00CD00);
-        drawString(LangUtils.localize("mekanism.gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.singleItem"), ":"), 12, 48, 0x00CD00);
+        drawString(TextComponentUtil.build(OnOff.of(tileEntity.singleItem)), 27, 60, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.roundRobin"), ":"), 12, 74, 0x00CD00);
+        drawString(TextComponentUtil.build(OnOff.of(tileEntity.roundRobin)), 27, 86, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.autoEject"), ":"), 12, 100, 0x00CD00);
+        drawString(TextComponentUtil.build(OnOff.of(tileEntity.autoEject)), 27, 112, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.default"), ":"), 12, 126, 0x00CD00);
 
         // Draw filters
         for (int i = 0; i < 4; i++) {

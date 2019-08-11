@@ -60,11 +60,24 @@ public abstract class GuiElement {
         }
     }
 
+    public int drawString(ITextComponent component, int x, int y, int color) {
+        //TODO: Check if color actually does anything
+        return drawString(component.getFormattedText(), x, y, color);
+    }
+
+    public void renderScaledText(ITextComponent component, int x, int y, int color, int maxX) {
+        renderScaledText(component.getFormattedText(), x, y, color, maxX);
+    }
+
+    public int drawString(String text, int x, int y, int color) {
+        return getFontRenderer().drawString(text, x, y, color);
+    }
+
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
         int length = getFontRenderer().getStringWidth(text);
 
         if (length <= maxX) {
-            getFontRenderer().drawString(text, x, y, color);
+            drawString(text, x, y, color);
         } else {
             float scale = (float) maxX / length;
             float reverse = 1 / scale;
@@ -72,7 +85,7 @@ public abstract class GuiElement {
 
             GlStateManager.pushMatrix();
             GlStateManager.translatef(scale, scale, scale);
-            getFontRenderer().drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
+            drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }
         //Make sure the color does not leak from having drawn the string

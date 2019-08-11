@@ -17,6 +17,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -127,12 +128,11 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     protected void drawForegroundLayer(int mouseX, int mouseY) {
         drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
         drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
-        String sizeModeString = LangUtils.transOnOff(filter.sizeMode);
         if (tileEntity.singleItem && filter.sizeMode) {
-            sizeModeString = EnumColor.RED + sizeModeString + "!";
+            drawString(TextComponentUtil.build(EnumColor.RED, OnOff.of(filter.sizeMode), "!"), 141, 46, 0x404040);
+        } else {
+            drawString(TextComponentUtil.build(OnOff.of(filter.sizeMode)), 141, 46, 0x404040);
         }
-
-        drawString(sizeModeString, 141, 46, 0x404040);
         drawTransporterForegroundLayer(mouseX, mouseY, filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
             renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 89);

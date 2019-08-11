@@ -29,9 +29,12 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
         drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         drawString(LangUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
         FluidStack fluidStored = tileEntity.structure != null ? tileEntity.structure.fluidStored : null;
-        renderScaledText(fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + ":" : LangUtils.localize("gui.noFluid"), 53, 44, 0x00CD00, 74);
         if (fluidStored != null) {
+            //TODO: Can these two be combined
+            renderScaledText(TextComponentUtil.build(fluidStored, ":"), 53, 44, 0x00CD00, 74);
             drawString(fluidStored.amount + "mB", 53, 53, 0x00CD00);
+        } else {
+            renderScaledText(TextComponentUtil.build(Translation.of("mrekanism.gui.noFluid")), 53, 44, 0x00CD00, 74);
         }
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
