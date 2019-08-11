@@ -108,13 +108,13 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 69, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
-        String runningType;
+        ITextComponent runningType;
         if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()) {
-            runningType = LangUtils.localize("mekanism.gui.digitalMiner.lowPower");
+            runningType = TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.lowPower"));
         } else if (tileEntity.running) {
-            runningType = LangUtils.localize("gui.digitalMiner.running");
+            runningType = TextComponentUtil.build(Translation.of("gui.digitalMiner.running"));
         } else {
-            runningType = LangUtils.localize("gui.idle");
+            runningType = TextComponentUtil.build(Translation.of("gui.idle"));
         }
         drawString(runningType, 9, 10, 0x00CD00);
         drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);

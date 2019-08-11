@@ -23,15 +23,15 @@ import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -88,10 +88,9 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 6, 0x404040);
-        String name = LangUtils.localize(tileEntity.dumpLeft.getTranslationKey());
-        renderScaledText(name, 21, 73, 0x404040, 66);
-        name = LangUtils.localize(tileEntity.dumpRight.getTranslationKey());
-        renderScaledText(name, 156 - (int) (getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
+        renderScaledText(TextComponentUtil.build(tileEntity.dumpLeft), 21, 73, 0x404040, 66);
+        ITextComponent component = TextComponentUtil.build(tileEntity.dumpRight);
+        renderScaledText(component, 156 - (int) (getStringWidth(component) * getNeededScale(component, 66)), 73, 0x404040, 66);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

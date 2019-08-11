@@ -12,11 +12,10 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.common.inventory.container.ContainerWindGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
@@ -61,7 +60,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
             if (tileEntity.isBlacklistDimension()) {
                 reason = "gui.noWind";
             }
-            drawString(EnumColor.DARK_RED + LangUtils.localize(reason), 51, size, 0x00CD00);
+            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of(reason)), 51, size, 0x00CD00);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

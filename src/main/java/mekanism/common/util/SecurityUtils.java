@@ -86,14 +86,6 @@ public final class SecurityUtils {
         return null;
     }
 
-    public static String getOwnerDisplay(PlayerEntity player, String ownerName) {
-        if (ownerName == null) {
-            return EnumColor.RED + LangUtils.localize("gui.noOwner");
-        }
-        return EnumColor.GREY + LangUtils.localize("gui.owner") + ": " + (player.getName().equals(ownerName)
-                                                                          ? EnumColor.BRIGHT_GREEN : EnumColor.RED) + ownerName;
-    }
-
     public static void displayNoAccess(PlayerEntity player) {
         player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED, Translation.of("mekanism.gui.noAccessDesc")));
     }
@@ -133,32 +125,6 @@ public final class SecurityUtils {
             }
         }
         return mode;
-    }
-
-    public static String getSecurityDisplay(ItemStack stack, Dist side) {
-        return getSecurity(stack, side).getDisplay();
-    }
-
-    public static String getSecurityDisplay(TileEntity tile, Dist side) {
-        ISecurityTile security = (ISecurityTile) tile;
-        if (!security.hasSecurity()) {
-            return SecurityMode.PUBLIC.getDisplay();
-        }
-        SecurityMode mode = security.getSecurity().getMode();
-        if (security.getSecurity().getOwnerUUID() != null) {
-            if (side == Dist.DEDICATED_SERVER) {
-                SecurityFrequency freq = getFrequency(security.getSecurity().getOwnerUUID());
-                if (freq != null && freq.override) {
-                    mode = freq.securityMode;
-                }
-            } else if (side == Dist.CLIENT) {
-                SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
-                if (data != null && data.override) {
-                    mode = data.mode;
-                }
-            }
-        }
-        return mode.getDisplay();
     }
 
     public static boolean isOverridden(ItemStack stack, Dist side) {

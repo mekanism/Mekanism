@@ -13,9 +13,8 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
@@ -165,10 +164,6 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
 
         public FreeRunnerMode increment() {
             return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
-        }
-
-        public String getName() {
-            return color + LangUtils.localize(unlocalized);
         }
 
         public ITextComponent getTextComponent() {

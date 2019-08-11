@@ -19,7 +19,6 @@ import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
@@ -353,12 +352,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
         ItemStack ret = stack.copy();
         ret.setCount(1);
         itemType = ret;
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey());
     }
 
     @Override

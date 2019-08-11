@@ -211,8 +211,11 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         clientStatus = status;
     }
 
-    public String getSecurity(Frequency freq) {
-        return !freq.publicFreq ? EnumColor.DARK_RED + LangUtils.localize("gui.private") : LangUtils.localize("gui.public");
+    public ITextComponent getSecurity(Frequency freq) {
+        if (!freq.publicFreq) {
+            return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.private"));
+        }
+        return TextComponentUtil.build(Translation.of("gui.public"));
     }
 
     public void updateButtons() {
@@ -289,17 +292,23 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(getName(), (xSize / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
         drawString(TextComponentUtil.build(OwnerDisplay.of(getOwner(), getOwnerUsername())), 8, !itemStack.isEmpty() ? ySize - 12 : (ySize - 96) + 4, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.freq"), ":"), 32, 81, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.security"), ":"), 32, 91, 0x404040);
-        drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
-              32 + getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
-        drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
-              32 + getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
+        ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.freq"), ": ");
+        drawString(frequencyComponent, 32, 81, 0x404040);
+        ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.security"), ": ");
+        drawString(securityComponent, 32, 91, 0x404040);
+        Frequency frequency = getFrequency();
+        if (frequency != null) {
+            drawString(frequency.name, 32 + getStringWidth(frequencyComponent), 81, 0x797979);
+            drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
+        } else {
+            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(frequencyComponent), 81, 0x797979);
+            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(securityComponent), 91, 0x797979);
+        }
         renderScaledText(TextComponentUtil.build(Translation.of("gui.set"), ":"), 27, 104, 0x404040, 20);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24) {
-            if (getFrequency() == null) {
+            if (frequency == null) {
                 displayTooltip(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.teleporter.noFreq")), xAxis, yAxis);
             } else {
                 displayTooltip(getStatusDisplay(), xAxis, yAxis);

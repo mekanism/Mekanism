@@ -9,7 +9,6 @@ import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -56,8 +55,8 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
               36, 20, 0x404040, 117);
         renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.redstoneOutputMode"), ": ", EnumColor.RED, tileEntity.logicType),
               23, 123, 0x404040, 130);
-        String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
-        drawString(text, (xSize / 2) - (getStringWidth(text) / 2), 136, 0x404040);
+        drawCenteredText(TextComponentUtil.build(Translation.of("gui.status"), ": ", EnumColor.RED,
+              Translation.of("gui." + (tileEntity.checkMode() ? "outputting" : "idle"))), 0, xSize, 136, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiReactorLogicButton button : typeButtons) {

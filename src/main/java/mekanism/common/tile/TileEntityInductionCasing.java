@@ -101,12 +101,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         return Mekanism.matrixManager;
     }
 
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize("gui.inductionMatrix");
-    }
-
     @Override
     public double getEnergy() {
         //Uses post queue as that is the actual total we just haven't saved it yet

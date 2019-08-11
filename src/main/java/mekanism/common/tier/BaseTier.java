@@ -2,7 +2,6 @@ package mekanism.common.tier;
 
 import java.util.Locale;
 import mekanism.api.EnumColor;
-import mekanism.common.util.LangUtils;
 import net.minecraft.util.IStringSerializable;
 
 /**
@@ -27,10 +26,6 @@ public enum BaseTier implements IStringSerializable {
 
     public String getSimpleName() {
         return name;
-    }
-
-    public String getLocalizedName() {
-        return LangUtils.localize("tier." + getSimpleName());
     }
 
     public EnumColor getColor() {

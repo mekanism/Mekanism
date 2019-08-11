@@ -20,7 +20,6 @@ import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -256,10 +255,6 @@ public interface IFactory {
 
         public String getGuiTranslationKey() {
             return "gui.factory." + name;
-        }
-
-        public String getLocalizedName() {
-            return LangUtils.localize(getGuiTranslationKey());
         }
 
         public MachineFuelType getFuelType() {

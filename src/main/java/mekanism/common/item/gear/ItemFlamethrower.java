@@ -11,7 +11,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
@@ -164,10 +163,6 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
 
         public FlamethrowerMode increment() {
             return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
-        }
-
-        public String getName() {
-            return color + LangUtils.localize(unlocalized);
         }
 
         public ITextComponent getTextComponent() {

@@ -63,8 +63,9 @@ public class GuiReactorFuel extends GuiReactorInfo {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         drawString(tileEntity.getName(), 46, 6, 0x404040);
-        String str = LangUtils.localize("gui.reactor.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate());
-        drawString(str, (xSize / 2) - (getStringWidth(str) / 2), 35, 0x404040);
+        //TODO: Lang key for None
+        drawCenteredText(TextComponentUtil.build(Translation.of("gui.reactor.injectionRate"),
+              ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate())), 0, xSize, 35, 0x404040);
         drawString("Edit Rate" + ":", 50, 117, 0x404040);
     }
 

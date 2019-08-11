@@ -15,9 +15,9 @@ import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -82,7 +82,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public String getTitle() {
-        return LangUtils.localize(unlocalizedName);
+        return TextComponentUtil.build(unlocalizedName).getFormattedText();
     }
 
     @Override

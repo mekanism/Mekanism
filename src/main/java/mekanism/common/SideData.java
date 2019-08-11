@@ -6,7 +6,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.GasTank;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ITankManager;
-import mekanism.common.util.LangUtils;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -42,10 +41,6 @@ public class SideData implements IHasTranslationKey {
         name = n;
         color = colour;
         ioState = state;
-    }
-
-    public String localize() {
-        return LangUtils.localize(getTranslationKey());
     }
 
     @Override

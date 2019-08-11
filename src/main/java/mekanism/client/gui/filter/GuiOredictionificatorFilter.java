@@ -133,8 +133,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.filter");
-        drawString(text, (xSize / 2) - (getStringWidth(text) / 2), 6, 0x404040);
+        drawCenteredText(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.filter")), 0, xSize, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.index"), ": " + filter.index), 79, 23, 0x404040);
         if (filter.filter != null) {
             renderScaledText(filter.filter, 32, 38, 0x404040, 111);

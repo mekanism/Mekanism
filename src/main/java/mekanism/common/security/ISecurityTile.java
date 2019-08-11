@@ -3,7 +3,6 @@ package mekanism.common.security;
 import mekanism.api.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
 
@@ -26,10 +25,6 @@ public interface ISecurityTile {
         SecurityMode(String s, EnumColor c) {
             display = s;
             color = c;
-        }
-
-        public String getDisplay() {
-            return color + LangUtils.localize(display);
         }
 
         @Override

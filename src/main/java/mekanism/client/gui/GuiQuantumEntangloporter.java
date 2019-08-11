@@ -29,6 +29,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -113,8 +114,11 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
     }
 
-    public String getSecurity(Frequency freq) {
-        return !freq.publicFreq ? EnumColor.DARK_RED + LangUtils.localize("gui.private") : LangUtils.localize("gui.public");
+    public ITextComponent getSecurity(Frequency freq) {
+        if (!freq.publicFreq) {
+            return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.private"));
+        }
+        return TextComponentUtil.build(Translation.of("gui.public"));
     }
 
     public void updateButtons() {
@@ -189,13 +193,18 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(TextComponentUtil.build(OwnerDisplay.of(tileEntity.getSecurity().getOwnerUUID(), tileEntity.getSecurity().getClientOwner())),
               8, (ySize - 96) + 4, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.freq"), ":"), 32, 81, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.security"), ":"), 32, 91, 0x404040);
+        ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.freq"), ": ");
+        drawString(frequencyComponent, 32, 81, 0x404040);
+        ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.security"), ": ");
+        drawString(securityComponent, 32, 91, 0x404040);
         Frequency frequency = tileEntity.getFrequency(null);
-        drawString(" " + (frequency != null ? frequency.name : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
-              32 + getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
-        drawString(" " + (frequency != null ? getSecurity(frequency) : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
-              32 + getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
+        if (frequency != null) {
+            drawString(frequency.name, 32 + getStringWidth(frequencyComponent), 81, 0x797979);
+            drawString(TextComponentUtil.build(getSecurity(frequency)), 32 + getStringWidth(securityComponent), 91, 0x797979);
+        } else {
+            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(frequencyComponent), 81, 0x797979);
+            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(securityComponent), 91, 0x797979);
+        }
         renderScaledText(TextComponentUtil.build(Translation.of("gui.set"), ":"), 27, 104, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

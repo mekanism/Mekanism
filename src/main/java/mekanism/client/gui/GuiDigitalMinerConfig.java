@@ -24,6 +24,7 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -173,13 +174,14 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        //TODO: Lang Keys
         drawString(TextComponentUtil.build(Translation.of("gui.digitalMinerConfig")), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.filters"), ":"), 11, 19, 0x00CD00);
-        drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
-        drawString("I: " + (tileEntity.inverse ? LangUtils.localize("gui.on") : LangUtils.localize("gui.off")), 11, 131, 0x00CD00);
-        drawString("Radi: " + tileEntity.getRadius(), 11, 58, 0x00CD00);
-        drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
-        drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
+        drawString(TextComponentUtil.build("T: " + tileEntity.filters.size()), 11, 28, 0x00CD00);
+        drawString(TextComponentUtil.build("I: ", OnOff.of(tileEntity.inverse)), 11, 131, 0x00CD00);
+        drawString(TextComponentUtil.build("Radi: " + tileEntity.getRadius()), 11, 58, 0x00CD00);
+        drawString(TextComponentUtil.build("Min: " + tileEntity.minY), 11, 83, 0x00CD00);
+        drawString(TextComponentUtil.build("Max: " + tileEntity.maxY), 11, 108, 0x00CD00);
 
         for (int i = 0; i < 4; i++) {
             IFilter filter = tileEntity.filters.get(getFilterIndex() + i);

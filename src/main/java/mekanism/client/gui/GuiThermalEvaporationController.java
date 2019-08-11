@@ -7,7 +7,6 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
@@ -16,6 +15,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -43,7 +43,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.height"), ": " + tileEntity.height), 50, 30, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.temp"), ": ",
               MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
-        renderScaledText(LangUtils.localize("gui.production") + ": " + Math.round(tileEntity.lastGain * 100D) / 100D + " mB/t", 50, 48, 0x00CD00, 76);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.production"), ": " + Math.round(tileEntity.lastGain * 100D) / 100D + " mB/t"),
+              50, 48, 0x00CD00, 76);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
@@ -66,13 +67,13 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    private String getStruct() {
+    private ITextComponent getStruct() {
         if (tileEntity.structured) {
-            return LangUtils.localize("gui.formed");
+            return TextComponentUtil.build(Translation.of("gui.formed"));
         } else if (tileEntity.controllerConflict) {
-            return LangUtils.localize("gui.conflict");
+            return TextComponentUtil.build(Translation.of("gui.conflict"));
         }
-        return LangUtils.localize("gui.incomplete");
+        return TextComponentUtil.build(Translation.of("gui.incomplete"));
     }
 
     @Override

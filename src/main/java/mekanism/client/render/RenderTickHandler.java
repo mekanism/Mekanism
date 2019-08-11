@@ -19,6 +19,8 @@ import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -104,13 +106,15 @@ public class RenderTickHandler {
 
                     if (stack.getItem() instanceof ItemJetpack) {
                         ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-                        drawString("Mode: " + jetpack.getMode(stack).getName(), alignLeft, y - 20, 0xc8c8c8);
-                        drawString("Hydrogen: " + jetpack.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
+                        //TODO: Lang strings
+                        //TODO: Also fix components to not ned the getFormattedText here
+                        drawString(TextComponentUtil.build("Mode: ", jetpack.getMode(stack)).getFormattedText(), alignLeft, y - 20, 0xc8c8c8);
+                        drawString(TextComponentUtil.build("Hydrogen: ", jetpack.getStored(stack)).getFormattedText(), alignLeft, y - 11, 0xc8c8c8);
                     } else if (stack.getItem() instanceof ItemScubaTank) {
                         ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
-                        String state = scubaTank.getFlowing(stack) ? EnumColor.DARK_GREEN + "On" : EnumColor.DARK_RED + "Off";
-                        drawString("Mode: " + state, alignLeft, y - 20, 0xc8c8c8);
-                        drawString("Oxygen: " + scubaTank.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
+                        //TODO: Lang Strings
+                        drawString(TextComponentUtil.build("Mode: ", OnOff.of(scubaTank.getFlowing(stack), true)).getFormattedText(), alignLeft, y - 20, 0xc8c8c8);
+                        drawString(TextComponentUtil.build("Oxygen: ", scubaTank.getStored(stack)).getFormattedText(), alignLeft, y - 11, 0xc8c8c8);
                     }
                 }
 

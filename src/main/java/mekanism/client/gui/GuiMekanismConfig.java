@@ -5,15 +5,15 @@ import java.util.List;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
-import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.config.IConfigEntry;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiMekanismConfig extends GuiConfig {
@@ -24,16 +24,16 @@ public class GuiMekanismConfig extends GuiConfig {
 
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.general"), "mekanism.configgui.ctgy.general", GeneralEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.machines"), "mekanism.configgui.ctgy.machines", MachinesEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tier"), "mekanism.configgui.ctgy.tier", TierEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.usage"), "mekanism.configgui.ctgy.usage", UsageEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.storage"), "mekanism.configgui.ctgy.storage", StorageEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.client"), "mekanism.configgui.ctgy.client", ClientEntry.class));
+        list.add(new DummyCategoryElement("General Settings", "mekanism.configgui.ctgy.general", GeneralEntry.class));
+        list.add(new DummyCategoryElement("Machine Settings", "mekanism.configgui.ctgy.machines", MachinesEntry.class));
+        list.add(new DummyCategoryElement("Tier Settings", "mekanism.configgui.ctgy.tier", TierEntry.class));
+        list.add(new DummyCategoryElement("Usage Settings", "mekanism.configgui.ctgy.usage", UsageEntry.class));
+        list.add(new DummyCategoryElement("Client Settings", "mekanism.configgui.ctgy.storage", StorageEntry.class));
+        list.add(new DummyCategoryElement("Energy Storage Settings", "mekanism.configgui.ctgy.client", ClientEntry.class));
         return list;
     }
 
-    public static class GeneralEntry extends CategoryEntry {
+    public static class GeneralEntry extends IConfigEntry {
 
         public GeneralEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
             super(owningScreen, owningEntryList, prop);
@@ -46,7 +46,7 @@ public class GuiMekanismConfig extends GuiConfig {
         }
     }
 
-    public static class MachinesEntry extends CategoryEntry {
+    public static class MachinesEntry implements IConfigEntry {
 
         public MachinesEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
             super(owningScreen, owningEntryList, prop);
@@ -59,7 +59,7 @@ public class GuiMekanismConfig extends GuiConfig {
         }
     }
 
-    public static class TierEntry extends CategoryEntry {
+    public static class TierEntry implements IConfigEntry {
 
         public TierEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
             super(owningScreen, owningEntryList, prop);
@@ -72,7 +72,7 @@ public class GuiMekanismConfig extends GuiConfig {
         }
     }
 
-    public static class UsageEntry extends CategoryEntry {
+    public static class UsageEntry implements IConfigEntry {
 
         public UsageEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
             super(owningScreen, owningEntryList, prop);
@@ -85,7 +85,7 @@ public class GuiMekanismConfig extends GuiConfig {
         }
     }
 
-    public static class StorageEntry extends CategoryEntry {
+    public static class StorageEntry implements IConfigEntry {
 
         public StorageEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
             super(owningScreen, owningEntryList, prop);
@@ -98,7 +98,7 @@ public class GuiMekanismConfig extends GuiConfig {
         }
     }
 
-    public static class ClientEntry extends CategoryEntry {
+    public static class ClientEntry implements IConfigEntry {
 
         public ClientEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
             super(owningScreen, owningEntryList, prop);

@@ -13,11 +13,10 @@ import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.BooleanStateDisplay;
 import mekanism.common.util.text.OwnerDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -50,9 +49,10 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
         GasStack gasStack = getGas(itemstack);
         if (gasStack == null) {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.empty"), "."));
+        } else if (gasStack.amount == Integer.MAX_VALUE) {
+            tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GREY, Translation.of("mekanism.gui.infinite")));
         } else {
-            String amount = gasStack.amount == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : Integer.toString(gasStack.amount);
-            tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GREY, amount));
+            tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GREY, gasStack.amount));
         }
         int cap = getTier(itemstack).getStorage();
         if (cap == Integer.MAX_VALUE) {
@@ -74,7 +74,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
         }
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
-                 BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
+              BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
     @Override

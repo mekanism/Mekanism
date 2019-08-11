@@ -32,7 +32,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
@@ -198,12 +197,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
         nbtTags.put("inputGasTank", inputGasTank.write(new CompoundNBT()));
         nbtTags.put("outputGasTank", outputGasTank.write(new CompoundNBT()));
         return nbtTags;
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey() + ".short.name");
     }
 
     @Override

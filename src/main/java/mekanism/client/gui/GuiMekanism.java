@@ -45,7 +45,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         return guiElements;
     }
 
-    protected float getNeededScale(String text, int maxX) {
+    protected float getNeededScale(ITextComponent text, int maxX) {
         int length = getStringWidth(text);
         return length <= maxX ? 1 : (float) maxX / length;
     }
@@ -75,7 +75,8 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     protected void drawCenteredText(ITextComponent component, int y, int color) {
-        drawCenteredText(component, 0, 0, y, color);
+        //TODO: Go back and evaluate to make sure that the left margin is correct
+        drawCenteredText(component, 0, y, color);
     }
 
     protected void drawCenteredText(ITextComponent component, int leftMargin, int y, int color) {

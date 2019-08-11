@@ -104,12 +104,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         }
     }
 
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize("gui.industrialTurbine");
-    }
-
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {

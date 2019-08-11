@@ -6,7 +6,6 @@ import java.util.Collections;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
@@ -51,7 +50,7 @@ public class GuiReactorStats extends GuiReactorInfo {
                   MekanismUtils.getTemperatureDisplay(tileEntity.getReactor().getMaxCasingTemperature(false), TemperatureUnit.AMBIENT)), 16, 66, 0x404040);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.passiveGeneration"), ": ",
                   EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, false)), "/t"), 16, 76, 0x404040);
-            drawString(EnumColor.DARK_BLUE + LangUtils.localize("gui.active"), 6, 92, 0x404040);
+            drawString(TextComponentUtil.build(EnumColor.DARK_BLUE, Translation.of("gui.active")), 6, 92, 0x404040);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.minInject"), ": " + tileEntity.getReactor().getMinInjectionRate(true)),
                   16, 102, 0x404040);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.ignition"), ": ",

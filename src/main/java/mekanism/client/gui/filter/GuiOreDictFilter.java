@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import mekanism.api.EnumColor;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,10 +35,9 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE exten
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
-                                LangUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.oredictFilter")), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.status"), ": ", status), 35, 20, 0x00CD00);
-        renderScaledText(LangUtils.localize("gui.key") + ": " + filter.getOreDictName(), 35, 32, 0x00CD00, 107);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.key"), ": " + filter.getOreDictName()), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

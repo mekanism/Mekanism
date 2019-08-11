@@ -990,7 +990,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     @Override
     public String getDataType() {
-        return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getName();
+        return getName();
     }
 
     @Override

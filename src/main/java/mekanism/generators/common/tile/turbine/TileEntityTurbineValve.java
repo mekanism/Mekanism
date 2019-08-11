@@ -209,12 +209,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         return false;
     }
 
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize("gui.industrialTurbine");
-    }
-
     @Override
     public String[] getMethods() {
         return methods;

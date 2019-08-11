@@ -14,7 +14,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -78,11 +77,11 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             rate = Math.min(rate, tileEntity.structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
             renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.production"), ": ",
                   EnergyDisplay.of(tileEntity.structure.clientFlow * energyMultiplier)), 53, 26, 0x00CD00, 106);
-            renderScaledText(LangUtils.localize("gui.flowRate") + ": " + tileEntity.structure.clientFlow + " mB/t", 53, 35, 0x00CD00, 106);
-            renderScaledText(LangUtils.localize("gui.capacity") + ": " + tileEntity.structure.getFluidCapacity() + " mB", 53, 44, 0x00CD00, 106);
-            renderScaledText(LangUtils.localize("gui.maxFlow") + ": " + rate + " mB/t", 53, 53, 0x00CD00, 106);
-            String name = LangUtils.localize(tileEntity.structure.dumpMode.getTranslationKey());
-            renderScaledText(name, 156 - (int) (getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
+            renderScaledText(TextComponentUtil.build(Translation.of("gui.flowRate"), ": " + tileEntity.structure.clientFlow + " mB/t"), 53, 35, 0x00CD00, 106);
+            renderScaledText(TextComponentUtil.build(Translation.of("gui.capacity"), ": " + tileEntity.structure.getFluidCapacity() + " mB"), 53, 44, 0x00CD00, 106);
+            renderScaledText(TextComponentUtil.build(Translation.of("gui.maxFlow"), ": " + rate + " mB/t"), 53, 53, 0x00CD00, 106);
+            ITextComponent component = TextComponentUtil.build(tileEntity.structure.dumpMode);
+            renderScaledText(component, 156 - (int) (getStringWidth(component) * getNeededScale(component, 66)), 73, 0x404040, 66);
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {

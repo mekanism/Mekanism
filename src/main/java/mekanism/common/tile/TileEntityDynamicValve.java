@@ -76,12 +76,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Nonnull
     @Override
-    public String getName() {
-        return LangUtils.localize("gui.dynamicTank");
-    }
-
-    @Nonnull
-    @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {

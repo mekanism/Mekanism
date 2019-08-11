@@ -339,12 +339,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     @Nonnull
     @Override
-    public String getName() {
-        return LangUtils.localize("gui.thermoelectricBoiler");
-    }
-
-    @Nonnull
-    @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {
         return InventoryUtils.EMPTY;
     }

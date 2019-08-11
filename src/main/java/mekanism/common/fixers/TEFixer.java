@@ -32,7 +32,7 @@ public class TEFixer extends BaseMekanismFixer {
         if (teLoc.equals("mcmultipart:multipart.ticking") || teLoc.equals("mcmultipart:multipart.nonticking")) {
             if (compound.contains("parts")) {
                 CompoundNBT parts = compound.getCompound("parts");
-                for (String sID : parts.getKeySet()) {
+                for (String sID : parts.keySet()) {
                     CompoundNBT part = parts.getCompound(sID);
                     if (part.contains("tile")) {
                         fixTagCompound(part.getCompound("tile"));

@@ -18,12 +18,14 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -166,18 +168,17 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String ownerText = tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : EnumColor.RED + LangUtils.localize("gui.noOwner");
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        drawString(ownerText, xSize - 7 - getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
+        ITextComponent ownerComponent = TextComponentUtil.build(OwnerDisplay.of(tileEntity.ownerUUID, tileEntity.clientOwner);
+        drawString(ownerComponent, xSize - 7 - getStringWidth(ownerComponent), (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
-        String trusted = LangUtils.localize("gui.trustedPlayers");
-        drawString(trusted, 74 - (getStringWidth(trusted) / 2), 57, 0x787878);
-        String security = EnumColor.RED + LangUtils.localize("gui.securityOffline");
+        drawCenteredText(TextComponentUtil.build(Translation.of("gui.trustedPlayers")), 74, 57, 0x787878);
         if (tileEntity.frequency != null) {
-            security = LangUtils.localize("gui.security") + ": " + tileEntity.frequency.securityMode.getDisplay();
+            drawString(TextComponentUtil.build(Translation.of("gui.security") + ": ", tileEntity.frequency.securityMode), 13, 103, 0x404040);
+        } else {
+            drawString(TextComponentUtil.build(EnumColor.RED, Translation.of("gui.securityOffline")), 13, 103, 0x404040);
         }
-        drawString(security, 13, 103, 0x404040);
-        renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.add"), ":"), 13, 70, 0x404040, 20);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (tileEntity.frequency != null && overrideButton.isMouseOver(mouseX, mouseY)) {

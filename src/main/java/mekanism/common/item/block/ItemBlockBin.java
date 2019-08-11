@@ -9,7 +9,6 @@ import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
@@ -42,8 +41,11 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
         InventoryBin inv = new InventoryBin(itemstack);
         if (inv.getItemCount() > 0) {
             tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, inv.getItemType().getDisplayName()));
-            String amountStr = inv.getItemCount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : "" + inv.getItemCount();
-            tooltip.add(TextComponentUtil.build(EnumColor.PURPLE, Translation.of("mekanism.tooltip.itemAmount"), ": ", EnumColor.GREY, amountStr));
+            if (inv.getItemCount() == Integer.MAX_VALUE) {
+                tooltip.add(TextComponentUtil.build(EnumColor.PURPLE, Translation.of("mekanism.tooltip.itemAmount"), ": ", EnumColor.GREY, Translation.of("mekanism.gui.infinite")));
+            } else {
+                tooltip.add(TextComponentUtil.build(EnumColor.PURPLE, Translation.of("mekanism.tooltip.itemAmount"), ": ", EnumColor.GREY, inv.getItemCount()));
+            }
         } else {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.empty")));
         }
