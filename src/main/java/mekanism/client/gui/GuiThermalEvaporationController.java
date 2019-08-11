@@ -16,6 +16,7 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,16 +42,24 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         font.drawString(getStruct(), 50, 21, 0x00CD00);
         font.drawString(LangUtils.localize("gui.height") + ": " + tileEntity.height, 50, 30, 0x00CD00);
-        font.drawString(LangUtils.localize("gui.temp") + ": " + getTemp(), 50, 39, 0x00CD00);
+        font.drawString(LangUtils.localize("gui.temp") + ": " + getTempString(), 50, 39, 0x00CD00);
         renderScaledText(LangUtils.localize("gui.production") + ": " + Math.round(tileEntity.lastGain * 100D) / 100D + " mB/t", 50, 48, 0x00CD00, 76);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.inputTank.getFluid();
-            displayTooltip(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.inputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            if (fluid != null) {
+                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.inputTank.getFluidAmount() + "mB"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+            }
         } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.outputTank.getFluid();
-            displayTooltip(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.outputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            if (fluid != null) {
+                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.outputTank.getFluidAmount() + "mB"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+            }
         } else if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
             displayTooltip(getTemp(), xAxis, yAxis);
         }
@@ -66,8 +75,14 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         return LangUtils.localize("gui.incomplete");
     }
 
-    private String getTemp() {
+    @Deprecated
+    private String getTempString() {
+        //TODO: Remove
         return MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT);
+    }
+
+    private ITextComponent getTemp() {
+        return TextComponentUtil.build(MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT));
     }
 
     @Override

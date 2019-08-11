@@ -780,7 +780,7 @@ public final class MekanismUtils {
             case STP:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
         }
-        return "error";
+        return "mekanism.error";
     }
 
     /**
@@ -810,19 +810,6 @@ public final class MekanismUtils {
      */
     public static String getCoordDisplay(Coord4D obj) {
         return "[" + obj.x + ", " + obj.y + ", " + obj.z + "]";
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static List<String> splitTooltip(String s, ItemStack stack) {
-        s = s.trim();
-        FontRenderer renderer = (FontRenderer) Mekanism.proxy.getFontRenderer();
-        if (!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null) {
-            renderer = stack.getItem().getFontRenderer(stack);
-        }
-        if (renderer != null) {
-            return renderer.listFormattedStringToWidth(s, 200);
-        }
-        return Collections.emptyList();
     }
 
     /**

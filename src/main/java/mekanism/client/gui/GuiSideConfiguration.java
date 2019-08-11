@@ -23,8 +23,9 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -32,7 +33,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
@@ -120,13 +120,13 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
             if (button.isMouseOver(mouseX, mouseY)) {
                 SideData data = button.getSideData();
                 if (data != TileComponentConfig.EMPTY) {
-                    displayTooltip(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getTranslatedColoredComponent(), ")"), xAxis, yAxis);
                 }
                 break;
             }
         }
         if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.autoEject")), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

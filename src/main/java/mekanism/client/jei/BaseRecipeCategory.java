@@ -13,23 +13,21 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
@@ -103,11 +101,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    public void displayTooltip(String s, int xAxis, int yAxis) {
+    public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {
     }
 
     @Override
-    public void displayTooltips(List<String> list, int xAxis, int yAxis) {
+    public void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis) {
     }
 
     @Override

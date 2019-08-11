@@ -7,11 +7,13 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> {
@@ -34,7 +36,11 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-            displayTooltip(fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + ": " + fluidStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            if (fluidStored != null) {
+                displayTooltip(TextComponentUtil.build(fluidStored, ": " + fluidStored.amount + "mB"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+            }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -6,6 +6,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,7 +36,7 @@ public class GuiNumberGauge extends GuiGauge {
     }
 
     @Override
-    public String getTooltipText() {
+    public ITextComponent getTooltipText() {
         return infoHandler.getText(infoHandler.getLevel());
     }
 
@@ -48,6 +49,6 @@ public class GuiNumberGauge extends GuiGauge {
 
         double getMaxLevel();
 
-        String getText(double level);
+        ITextComponent getText(double level);
     }
 }

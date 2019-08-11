@@ -16,6 +16,8 @@ import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
@@ -141,16 +143,16 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.lastItem")), xAxis, yAxis);
         } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.nextItem")), xAxis, yAxis);
         } else if (xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60) {
-            displayTooltip(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.oreDictCompat")), xAxis, yAxis);
         } else if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35) {
             if (!renderStack.isEmpty()) {
                 String name = ItemRegistryUtils.getMod(renderStack);
                 String extra = name.equals("null") ? "" : " (" + name + ")";
-                displayTooltip(renderStack.getDisplayName() + extra, xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(renderStack.getDisplayName() + extra), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

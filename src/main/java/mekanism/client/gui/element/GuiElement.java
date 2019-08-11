@@ -3,7 +3,6 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.awt.Rectangle;
 import java.util.List;
-import java.util.stream.Collectors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
@@ -34,7 +33,7 @@ public abstract class GuiElement {
     }
 
     public void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis) {
-        guiObj.displayComponentTooltips(list, xAxis, yAxis);
+        guiObj.displayTooltips(list, xAxis, yAxis);
     }
 
     public void offsetX(int xSize) {

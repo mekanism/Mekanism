@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiElement;
@@ -19,6 +20,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -123,14 +125,15 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     @Override
-    public void displayTooltip(String s, int x, int y) {
-        displayTooltips(Collections.singletonList(s), x, y);
+    public void displayTooltip(ITextComponent component, int x, int y) {
+        this.displayTooltips(Collections.singletonList(component), x, y);
     }
 
     @Override
-    public void displayTooltips(List<String> list, int xAxis, int yAxis) {
+    public void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis) {
         //TODO: Evaluate if we want to use this for splitting the text
-        GuiUtils.drawHoveringText(list, xAxis, yAxis, width, height, -1, font);
+        List<String> toolTips = components.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
+        GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, width, height, -1, font);
         //Fix unwanted lighting changes made by drawHoveringText
         RenderHelper.disableStandardItemLighting();
     }

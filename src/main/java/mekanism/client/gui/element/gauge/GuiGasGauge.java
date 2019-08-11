@@ -1,13 +1,16 @@
 package mekanism.client.gui.element.gauge;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -50,12 +53,15 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
     }
 
     @Override
-    public String getTooltipText() {
+    public ITextComponent getTooltipText() {
         if (dummy) {
-            return dummyType.getLocalizedName();
+            return TextComponentUtil.build(dummyType);
         }
-        return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored()
-                                                        : LangUtils.localize("gui.empty");
+        GasStack gasStack = infoHandler.getTank().getGas();
+        if (gasStack != null) {
+            return TextComponentUtil.build(gasStack, ": " + infoHandler.getTank().getStored());
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.gui.empty"));
     }
 
     @Override

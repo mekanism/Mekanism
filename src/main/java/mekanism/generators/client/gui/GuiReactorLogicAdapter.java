@@ -12,12 +12,13 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.button.GuiReactorLogicButton;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -62,11 +63,11 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             renderItem(type.getRenderStack(), 27, 35 + typeOffset);
             font.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34 + typeOffset, 0x404040);
             if (button.isMouseOver(mouseX, mouseY)) {
-                displayTooltips(MekanismUtils.splitTooltip(type.getDescription(), ItemStack.EMPTY), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(Translation.of(type.getDescription())), xAxis, yAxis);
             }
         }
         if (coolingButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.toggleCooling")), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

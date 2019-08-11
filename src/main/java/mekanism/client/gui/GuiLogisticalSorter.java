@@ -26,10 +26,11 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -211,10 +212,10 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                 int arrowX = filterX + filterW - 12;
 
                 if (getFilterIndex() + i > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
-                    displayTooltip(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.moveUp")), xAxis, yAxis);
                 }
                 if (getFilterIndex() + i < tileEntity.filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
-                    displayTooltip(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.moveDown")), xAxis, yAxis);
                 }
             }
         }
@@ -222,16 +223,16 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         // Draw tooltips for buttons
         if (colorButton.isMouseOver(mouseX, mouseY)) {
             if (tileEntity.color != null) {
-                displayTooltip(tileEntity.color.getColoredName(), xAxis, yAxis);
+                displayTooltip(tileEntity.color.getTranslatedColoredComponent(), xAxis, yAxis);
             } else {
-                displayTooltip(LangUtils.localize("gui.none"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
             }
         } else if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.autoEject.tooltip")), xAxis, yAxis);
         } else if (roundRobinButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.roundRobin.tooltip")), xAxis, yAxis);
         } else if (singleItemButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.singleItem.tooltip")), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

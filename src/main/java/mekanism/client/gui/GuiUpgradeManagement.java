@@ -15,6 +15,8 @@ import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.button.Button;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -117,7 +119,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             font.drawString(LangUtils.localize(upgrade.getName()), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
-                displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize(upgrade.getDescription()), upgrade.getStack()), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(Translation.of(upgrade.getDescription()), upgrade.getStack()), xAxis, yAxis);
             }
         }
 

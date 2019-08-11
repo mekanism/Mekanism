@@ -1,5 +1,6 @@
 package mekanism.api.infuse;
 
+import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
@@ -9,7 +10,7 @@ import net.minecraft.util.text.translation.I18n;
  *
  * @author AidanBrady
  */
-public final class InfuseType {
+public final class InfuseType implements IHasTranslationKey {
 
     /**
      * The name of this infusion.
@@ -52,5 +53,10 @@ public final class InfuseType {
 
     public String getLocalizedName() {
         return I18n.translateToLocal(unlocalizedName);
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return unlocalizedName;
     }
 }

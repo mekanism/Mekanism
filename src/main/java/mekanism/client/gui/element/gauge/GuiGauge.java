@@ -11,11 +11,13 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,7 +55,7 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     public abstract TextureAtlasSprite getIcon();
 
-    public abstract String getTooltipText();
+    public abstract ITextComponent getTooltipText();
 
     protected void applyRenderColor() {
     }
@@ -117,8 +119,11 @@ public abstract class GuiGauge<T> extends GuiElement {
                                 break;
                             }
                         }
-                        String localized = data == null ? "" : data.localize();
-                        guiObj.displayTooltip(color + localized + " (" + color.getColoredName() + ")", xAxis, yAxis);
+                        if (data == null) {
+                            guiObj.displayTooltip(TextComponentUtil.build(color, "(", color.getTranslatedColoredComponent(), ")"), xAxis, yAxis);
+                        } else {
+                            guiObj.displayTooltip(TextComponentUtil.build(color, data, " (", color.getTranslatedColoredComponent(), ")"), xAxis, yAxis);
+                        }
                     }
                 }
             } else {

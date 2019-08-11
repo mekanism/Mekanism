@@ -1,7 +1,7 @@
 package mekanism.common.item.gear;
 
 import com.google.common.collect.Multimap;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +42,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
@@ -108,13 +109,12 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     private RayTraceResult doRayTrace(BlockState state, BlockPos pos, PlayerEntity player) {
-        Vec3d positionEyes = player.getPositionEyes(1.0F);
+        Vec3d positionEyes = player.getEyePosition(1.0F);
         Vec3d playerLook = player.getLook(1.0F);
-        double blockReachDistance = player.getAttributeMap().getAttributeInstance(PlayerEntity.REACH_DISTANCE).getAttributeValue();
+        double blockReachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
         Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
         RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
-        //noinspection ConstantConditions - idea thinks it's nonnull due to package level annotations, but it's not
-        return res != null ? res : new RayTraceResult(Type.MISS, Vec3d.ZERO, Direction.UP, pos);
+        return res != null ? res : new BlockRayTraceResult(Type.MISS, Vec3d.ZERO, Direction.UP, pos);
     }
 
     @Override
@@ -126,9 +126,6 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (extended || mode == Mode.VEIN) {
                 BlockState state = player.world.getBlockState(pos);
                 Block block = state.getBlock();
-                if (block == Blocks.LIT_REDSTONE_ORE) {
-                    block = Blocks.REDSTONE_ORE;
-                }
                 RayTraceResult raytrace = doRayTrace(state, pos, player);
                 ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
                 List<String> names = OreDictCache.getOreDictName(stack);
@@ -177,8 +174,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (!world.isRemote) {
                 toggleMode(itemstack);
                 Mode mode = getMode(itemstack);
-                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("mekanism.tooltip.modeToggle"),
-                      " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
+                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                      Translation.of("mekanism.tooltip.modeToggle"), " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
@@ -380,8 +377,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         public static Map<Block, List<Block>> ignoreBlocks = new HashMap<>();
 
         static {
-            ignoreBlocks.put(Blocks.REDSTONE_ORE, Arrays.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
-            ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, Arrays.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
+            ignoreBlocks.put(Blocks.REDSTONE_ORE, Collections.singletonList(Blocks.REDSTONE_ORE));
         }
 
         private final PlayerEntity player;
@@ -436,6 +432,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
         public boolean checkID(Block b) {
             Block origBlock = location.getBlock(world);
+            //TODO: Is there a point in ignored at all anyways
             List<Block> ignored = ignoreBlocks.get(origBlock);
             return ignored == null ? b == origBlock : ignored.contains(b);
         }

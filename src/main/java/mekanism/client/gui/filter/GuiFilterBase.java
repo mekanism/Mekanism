@@ -9,6 +9,9 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
@@ -67,7 +70,8 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             renderItem(stack, 12, 19);
             renderItem(mFilter.replaceStack, 149, 19);
             if (replaceButton.isMouseOver(mouseX, mouseY)) {
-                displayTooltip(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(mFilter.requireStack), mouseX - guiLeft, mouseY - guiTop);
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.requireReplace"), ": ",
+                      YesNo.of(mFilter.requireStack)), mouseX - guiLeft, mouseY - guiTop);
             }
         }
     }
@@ -80,12 +84,12 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             if (defaultButton.isMouseOver(mouseX, mouseY)) {
-                displayTooltip(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.allowDefault")), xAxis, yAxis);
             } else if (colorButton.isMouseOver(mouseX, mouseY)) {
                 if (tFilter.color != null) {
-                    displayTooltip(tFilter.color.getColoredName(), xAxis, yAxis);
+                    displayTooltip(tFilter.color.getTranslatedColoredComponent(), xAxis, yAxis);
                 } else {
-                    displayTooltip(LangUtils.localize("gui.none"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
                 }
             }
         }

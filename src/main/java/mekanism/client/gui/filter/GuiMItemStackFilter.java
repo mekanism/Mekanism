@@ -15,6 +15,9 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
@@ -89,9 +92,9 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (replaceButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.requireReplace"), ": ", YesNo.of(filter.requireStack)), xAxis, yAxis);
         } else if (fuzzyButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.fuzzyMode"), ": ", YesNo.of(filter.fuzzy)), xAxis, yAxis);
         }
     }
 

@@ -73,10 +73,18 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             FluidStack waterStored = tileEntity.structure != null ? tileEntity.structure.waterStored : null;
-            displayTooltip(waterStored != null ? LangUtils.localizeFluidStack(waterStored) + ": " + waterStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            if (waterStored != null) {
+                displayTooltip(TextComponentUtil.build(waterStored, ": " + waterStored.amount + "mB"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+            }
         } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack steamStored = tileEntity.structure != null ? tileEntity.structure.steamStored : null;
-            displayTooltip(steamStored != null ? LangUtils.localizeFluidStack(steamStored) + ": " + steamStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            if (steamStored != null) {
+                displayTooltip(TextComponentUtil.build(steamStored, ": " + steamStored.amount + "mB"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+            }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

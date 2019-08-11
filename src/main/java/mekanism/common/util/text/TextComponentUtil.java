@@ -10,6 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
@@ -45,6 +46,8 @@ public class TextComponentUtil {
                 current = getTranslationComponent(((Item) component).getTranslationKey());
             } else if (component instanceof FluidStack) {
                 current = getTranslationComponent(((FluidStack) component).getUnlocalizedName());
+            } else if (component instanceof Fluid) {
+                current = getTranslationComponent(((Fluid) component).getUnlocalizedName());
             } else if (component instanceof Boolean || component instanceof Number) {
                 //Put actual boolean or integer/double, etc value
                 current = getStringComponent(component.toString());
@@ -76,6 +79,7 @@ public class TextComponentUtil {
         return new StringTextComponent(component);
     }
 
+    //TODO: Use this, or maybe even rename it to `translate` and use it if all that is wanted is a translation component
     public static TranslationTextComponent getTranslationComponent(String component, Object... args) {
         return new TranslationTextComponent(component, args);
     }

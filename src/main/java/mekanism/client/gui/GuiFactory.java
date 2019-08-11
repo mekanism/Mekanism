@@ -24,9 +24,8 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -66,14 +65,22 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69) {
-            displayTooltip(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), xAxis, yAxis);
         } else if (xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83) {
             if (tileEntity.getRecipeType().getFuelType() == MachineFuelType.ADVANCED) {
                 GasStack gasStack = tileEntity.gasTank.getGas();
-                displayTooltip(gasStack != null ? gasStack.getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : LangUtils.localize("gui.none"), xAxis, yAxis);
+                if (gasStack != null) {
+                    displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
+                } else {
+                    displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
+                }
             } else if (tileEntity.getRecipeType() == RecipeType.INFUSING) {
                 InfuseType type = tileEntity.infuseStored.getType();
-                displayTooltip(type != null ? type.getLocalizedName() + ": " + tileEntity.infuseStored.getAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
+                if (type != null) {
+                    displayTooltip(TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
+                } else {
+                    displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+                }
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -112,7 +119,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, TextureAtlasSprite icon) {
         if (icon != null) {
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            drawTexturedRect(guiLeft + xPos, guiTop + yPos, icon, sizeX, sizeY);
+            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, icon, sizeX, sizeY);
         }
     }
 

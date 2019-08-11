@@ -17,6 +17,9 @@ import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
@@ -178,13 +181,13 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (tileEntity.frequency != null && overrideButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.securityOverride") + ": " + LangUtils.transOnOff(tileEntity.frequency.override), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.securityOverride"), ": ", OnOff.of(tileEntity.frequency.override)), xAxis, yAxis);
         } else if (publicButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.publicMode"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.publicMode")), xAxis, yAxis);
         } else if (privateButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.privateMode"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.privateMode")), xAxis, yAxis);
         } else if (trustedButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.trustedMode"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.trustedMode"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

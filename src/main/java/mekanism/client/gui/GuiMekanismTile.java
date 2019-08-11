@@ -6,6 +6,7 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -45,7 +46,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism> extends G
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null) {
                 SideData data = getFromSlot(hovering);
                 if (data != null) {
-                    displayTooltip(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getTranslatedColoredComponent(), ")"), xAxis, yAxis);
                 }
             }
         }

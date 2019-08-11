@@ -12,6 +12,9 @@ import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
@@ -127,15 +130,15 @@ public class GuiRobitMain extends GuiMekanism {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
-            displayTooltip(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY)), xAxis, yAxis);
         } else if (followButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.toggleFollow")), xAxis, yAxis);
         } else if (renameButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.robit.rename"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.rename")), xAxis, yAxis);
         } else if (teleportHomeButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.robit.teleport"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.teleport")), xAxis, yAxis);
         } else if (pickupButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.togglePickup")), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

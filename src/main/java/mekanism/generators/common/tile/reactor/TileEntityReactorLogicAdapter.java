@@ -183,7 +183,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         }
 
         public String getDescription() {
-            return LangUtils.localize("reactor." + name + ".desc");
+            return "reactor." + name + ".desc";
         }
     }
 }

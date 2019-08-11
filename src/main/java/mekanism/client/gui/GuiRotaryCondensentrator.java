@@ -94,9 +94,9 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (toggleButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.rotaryCondensentrator.toggleOperation")), xAxis, yAxis);
         } else if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
-            displayTooltip(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

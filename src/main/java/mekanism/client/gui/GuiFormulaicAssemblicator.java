@@ -22,6 +22,7 @@ import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.Translation;
@@ -101,17 +102,17 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (fillEmptyButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.fillEmpty")), xAxis, yAxis);
         } else if (encodeFormulaButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.encodeFormula")), xAxis, yAxis);
         } else if (craftSingleButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.craftSingle")), xAxis, yAxis);
         } else if (craftAvailableButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.craftAvailable")), xAxis, yAxis);
         } else if (autoModeButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.autoModeToggle"), ": ", OnOff.of(tileEntity.autoMode)), xAxis, yAxis);
         } else if (stockControlButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.stockControl"), ": ", OnOff.of(tileEntity.stockControl)), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

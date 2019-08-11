@@ -16,10 +16,14 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -51,8 +55,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
             }
 
             @Override
-            public String getText(double level) {
-                return LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level, tileEntity.getMaxEnergy());
+            public ITextComponent getText(double level) {
+                return TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(level, tileEntity.getMaxEnergy()));
             }
         }, Type.STANDARD, this, resource, 6, 10));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
@@ -121,12 +125,17 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
         }
 
         if (Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i)) {
-            minField.charTyped(c, i);
-            maxField.charTyped(c, i);
+            if (minField.charTyped(c, i)) {
+                return true;
+            }
+            if (maxField.charTyped(c, i)) {
+                return true;
+            }
             if (c != '.' && c != 'E') {
-                timerField.charTyped(c, i);
+                return timerField.charTyped(c, i);
             }
         }
+        return false;
     }
 
     private void setMinThreshold() {

@@ -24,6 +24,8 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
@@ -207,7 +209,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
             }
         }
         if (inverseButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(LangUtils.localize("gui.digitalMiner.inverse"), mouseX - guiLeft, mouseY - guiTop);
+            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.inverse")), mouseX - guiLeft, mouseY - guiTop);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -25,6 +25,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -56,8 +57,9 @@ public class GuiReactorHeat extends GuiReactorInfo {
             }
 
             @Override
-            public String getText(double level) {
-                return "Plasma: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN);
+            public ITextComponent getText(double level) {
+                //TODO: Lang String for Plasma
+                return TextComponentUtil.build("Plasma: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, Type.STANDARD, this, resource, 7, 50));
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
@@ -83,8 +85,9 @@ public class GuiReactorHeat extends GuiReactorInfo {
             }
 
             @Override
-            public String getText(double level) {
-                return "Case: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN);
+            public ITextComponent getText(double level) {
+                //TODO: Lang String for Case
+                return TextComponentUtil.build("Case: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, Type.STANDARD, this, resource, 61, 50));
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {

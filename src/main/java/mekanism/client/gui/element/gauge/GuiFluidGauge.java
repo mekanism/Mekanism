@@ -4,13 +4,15 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
@@ -54,13 +56,19 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
     }
 
     @Override
-    public String getTooltipText() {
+    public ITextComponent getTooltipText() {
         if (dummy) {
-            return dummyType.getLocalizedName();
+            return TextComponentUtil.build(dummyType);
         }
-        FluidTank tank = infoHandler.getTank();
-        String amountStr = tank.getFluidAmount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tank.getFluidAmount() + " mB";
-        return tank.getFluid() != null ? LangUtils.localizeFluidStack(tank.getFluid()) + ": " + amountStr : LangUtils.localize("gui.empty");
+        FluidStack fluidStack = infoHandler.getTank().getFluid();
+        if (fluidStack != null) {
+            int amount = infoHandler.getTank().getFluidAmount();
+            if (amount == Integer.MAX_VALUE) {
+                return TextComponentUtil.build(Translation.of("mekanism.gui.infinite"));
+            }
+            return TextComponentUtil.build(fluidStack, ": " + amount);
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.gui.empty"));
     }
 
     @Override

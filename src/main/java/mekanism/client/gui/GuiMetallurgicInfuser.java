@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
+import mekanism.api.infuse.InfuseType;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
@@ -69,8 +70,12 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69) {
-            displayTooltip(tileEntity.infuseStored.getType() != null ? tileEntity.infuseStored.getType().getLocalizedName() + ": " + tileEntity.infuseStored.getAmount()
-                                                                     : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            InfuseType type = tileEntity.infuseStored.getType();
+            if (type != null) {
+                displayTooltip(TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+            }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

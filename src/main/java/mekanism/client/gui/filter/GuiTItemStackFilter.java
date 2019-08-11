@@ -17,6 +17,8 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
@@ -139,11 +141,11 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (sizeButton.isMouseOver(mouseX, mouseY)) {
-            String sizeModeTooltip = LangUtils.localize("gui.sizeMode");
             if (tileEntity.singleItem && filter.sizeMode) {
-                sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.sizeMode"), " - ", Translation.of("mekanism.gui.sizeModeConflict")), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.sizeMode")), xAxis, yAxis);
             }
-            displayTooltips(MekanismUtils.splitTooltip(sizeModeTooltip, ItemStack.EMPTY), xAxis, yAxis);
         }
     }
 

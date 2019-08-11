@@ -86,9 +86,11 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-                displayTooltip(tileEntity.structure.fluidStored != null
-                               ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB"
-                               : LangUtils.localize("gui.empty"), xAxis, yAxis);
+                if (tileEntity.structure.fluidStored != null) {
+                    displayTooltip(TextComponentUtil.build(tileEntity.structure.fluidStored, ": " + tileEntity.structure.fluidStored.amount + "mB"), xAxis, yAxis);
+                } else {
+                    displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+                }
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -4,10 +4,12 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,9 +47,11 @@ public class GuiEnergyGauge extends GuiGauge {
     }
 
     @Override
-    public String getTooltipText() {
-        return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils.getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy(),
-              infoHandler.getEnergyStorage().getMaxEnergy()) : LangUtils.localize("gui.empty");
+    public ITextComponent getTooltipText() {
+        if (infoHandler.getEnergyStorage().getEnergy() > 0) {
+            return TextComponentUtil.build(EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()));
+        }
+        return TextComponentUtil.build(Translation.of("mekanism.gui.empty"));
     }
 
     public interface IEnergyInfoHandler {
