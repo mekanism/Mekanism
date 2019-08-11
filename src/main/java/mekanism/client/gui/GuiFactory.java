@@ -25,6 +25,9 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.InputMappings;
@@ -44,17 +47,16 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
         ySize += 11;
         ResourceLocation resource = tileEntity.tier.guiLocation;
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
+        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiRecipeType(this, tileEntity, resource));
         addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));
         addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
         addGuiElement(new GuiSortingTab(this, tileEntity, resource));
-        addGuiElement(new GuiEnergyInfo(() -> {
-            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.lastUsage);
-            return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
-                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getNeededEnergy()));
-        }, this, resource));
+        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.lastUsage), "/t"),
+              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+        ), this, resource));
     }
 
     @Override

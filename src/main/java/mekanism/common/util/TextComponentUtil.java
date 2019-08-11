@@ -10,6 +10,8 @@ import mekanism.common.Upgrade;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.util.UnitDisplayUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
@@ -70,6 +72,10 @@ public class TextComponentUtil {
                 current = getTranslationComponent(((Item) component).getTranslationKey());
             } else if (component instanceof FluidStack) {
                 current = getTranslationComponent(((FluidStack) component).getUnlocalizedName());
+            } else if (component instanceof EnergyType) {
+                current = getStringComponent(((EnergyType) component).name());
+            } else if (component instanceof TempType) {
+                current = getStringComponent(((TempType) component).name());
             } else if (component instanceof Boolean || component instanceof Number) {
                 //Put actual boolean or integer/double, etc value
                 current = getStringComponent(component.toString());
@@ -163,14 +169,20 @@ public class TextComponentUtil {
 
         private final PlayerEntity player;
         private final UUID ownerUUID;
+        private final String ownerName;
 
-        private OwnerDisplay(PlayerEntity player, UUID ownerUUID) {
+        private OwnerDisplay(PlayerEntity player, UUID ownerUUID, String ownerName) {
             this.player = player;
             this.ownerUUID = ownerUUID;
+            this.ownerName = ownerName;
         }
 
         public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID) {
-            return new OwnerDisplay(player, ownerUUID);
+            return of(player, ownerUUID, null);
+        }
+
+        public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID, String ownerName) {
+            return new OwnerDisplay(player, ownerUUID, ownerName);
         }
 
         public ITextComponent getTextComponent() {
@@ -178,8 +190,9 @@ public class TextComponentUtil {
                 return build(EnumColor.RED, Translation.of("mekanism.gui.no_owner"));
             }
             //TODO: If the name is supposed to be gotten differently server side, then do so
-            return build(EnumColor.GREY, Translation.of("mekanism.gui.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED,
-                  MekanismClient.clientUUIDMap.get(ownerUUID));
+            //Allows for the name to be overridden by a passed value
+            String name = ownerName == null ? MekanismClient.clientUUIDMap.get(ownerUUID) : ownerName;
+            return build(EnumColor.GREY, Translation.of("mekanism.gui.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
         }
     }
 

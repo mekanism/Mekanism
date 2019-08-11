@@ -32,10 +32,6 @@ public final class LangUtils {
         return I18n.translateToLocal(s);
     }
 
-    public static boolean canLocalize(String s) {
-        return I18n.canTranslate(s);
-    }
-
     public static String localizeWithFormat(String key, Object... format) {
         String s = localize(key);
         try {

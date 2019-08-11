@@ -46,7 +46,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         super(tile, new ContainerOredictionificator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
+        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {

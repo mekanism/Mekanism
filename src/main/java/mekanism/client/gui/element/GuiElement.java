@@ -1,14 +1,16 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.awt.Rectangle;
 import java.util.List;
+import java.util.stream.Collectors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,17 +29,21 @@ public abstract class GuiElement {
         defaultLocation = def;
     }
 
+    public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {
+        guiObj.displayTooltip(component, xAxis, yAxis);
+    }
+
     public void displayTooltip(String s, int xAxis, int yAxis) {
         guiObj.displayTooltip(s, xAxis, yAxis);
     }
 
-    public void displayTooltips(List<String> list, int xAxis, int yAxis) {
-        guiObj.displayTooltips(list, xAxis, yAxis);
+    public void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis) {
+        guiObj.displayComponentTooltips(list, xAxis, yAxis);
     }
 
     public void offsetX(int xSize) {
         if (guiObj instanceof ContainerScreen) {
-            ((ContainerScreen) guiObj).xSize += xSize;
+            ((ContainerScreen) guiObj).xSizse += xSize;
         }
     }
 
@@ -104,7 +110,7 @@ public abstract class GuiElement {
 
     public interface IInfoHandler {
 
-        List<String> getInfo();
+        List<ITextComponent> getInfo();
     }
 
     public static class Rectangle4i {

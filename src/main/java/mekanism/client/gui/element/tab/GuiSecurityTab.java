@@ -16,25 +16,28 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OwnerDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
+public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends GuiTileEntityElement<TILE> {
 
     private final Hand currentHand;
     private boolean isItem;
 
-    public GuiSecurityTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
+    public GuiSecurityTab(IGuiWrapper gui, TILE tile, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def, tile);
         this.currentHand = Hand.MAIN_HAND;
     }
@@ -77,20 +80,21 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Dist.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Dist.CLIENT);
-            String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-            String ownerText = SecurityUtils.getOwnerDisplay(minecraft.player, getOwnerUsername());
-            String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
-
+            ITextComponent securityComponent = TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.security"), ": ",
+                  isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT) : SecurityUtils.getSecurity(tileEntity, Dist.CLIENT));
+            ITextComponent ownerComponent = TextComponentUtil.build(OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()));
             if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tileEntity, Dist.CLIENT)) {
-                displayTooltips(Arrays.asList(securityText, ownerText, overrideText), xAxis, yAxis);
+                displayTooltips(Arrays.asList(securityComponent, ownerComponent,
+                      TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")")
+                ), xAxis, yAxis);
             } else {
-                displayTooltips(Arrays.asList(securityText, ownerText), xAxis, yAxis);
+                displayTooltips(Arrays.asList(securityComponent, ownerComponent), xAxis, yAxis);
             }
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
+    //TODO: Is this used by anything, or more accurately SecurityFrequency in general
     private SecurityFrequency getFrequency() {
         if (isItem) {
             if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
@@ -99,7 +103,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
             }
             return SecurityUtils.getFrequency(getOwner());
         }
-        return ((ISecurityTile) tileEntity).getSecurity().getFrequency();
+        return tileEntity.getSecurity().getFrequency();
     }
 
     private SecurityMode getSecurity() {
@@ -114,7 +118,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
             }
             return ((ISecurityItem) getItem().getItem()).getSecurity(getItem());
         }
-        return ((ISecurityTile) tileEntity).getSecurity().getMode();
+        return tileEntity.getSecurity().getMode();
     }
 
     private UUID getOwner() {
@@ -125,7 +129,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
             }
             return ((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem());
         }
-        return ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
+        return tileEntity.getSecurity().getOwnerUUID();
     }
 
     private String getOwnerUsername() {
@@ -136,7 +140,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
             }
             return MekanismClient.clientUUIDMap.get(((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem()));
         }
-        return ((ISecurityTile) tileEntity).getSecurity().getClientOwner();
+        return tileEntity.getSecurity().getClientOwner();
     }
 
     private ItemStack getItem() {

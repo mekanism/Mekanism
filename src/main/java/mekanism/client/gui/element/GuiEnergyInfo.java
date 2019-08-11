@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,8 +44,8 @@ public class GuiEnergyInfo extends GuiElement {
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         if (inBounds(xAxis, yAxis)) {
-            List<String> info = new ArrayList<>(infoHandler.getInfo());
-            info.add(LangUtils.localize("gui.unit") + ": " + MekanismConfig.current().general.energyUnit.val());
+            List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
+            info.add(TextComponentUtil.build(Translation.of("mekanism.gui.unit"), ": ", MekanismConfig.current().general.energyUnit.val()));
             displayTooltips(info, xAxis, yAxis);
         }
     }

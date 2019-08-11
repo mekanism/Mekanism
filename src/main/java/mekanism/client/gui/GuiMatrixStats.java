@@ -12,6 +12,9 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,9 +51,10 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
             }
         }, resource, 38, 13));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
-              LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getLastInput()) + "/t",
-              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getLastOutput()) + "/t"), this, resource));
+              TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("mekanism.gui.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
+              TextComponentUtil.build(Translation.of("mekanism.gui.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")),
+              this, resource));
     }
 
     @Override
@@ -59,10 +63,10 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
         font.drawString(stats, (xSize / 2) - (font.getStringWidth(stats) / 2), 6, 0x404040);
         font.drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x797979);
         font.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getLastInput()) + "/" +
-                                MekanismUtils.getEnergyDisplay(tileEntity.getTransferCap()), 59, 35, 0x404040);
+                        MekanismUtils.getEnergyDisplay(tileEntity.getTransferCap()), 59, 35, 0x404040);
         font.drawString(LangUtils.localize("gui.output") + ":", 53, 46, 0x797979);
         font.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getLastOutput()) + "/" +
-                                MekanismUtils.getEnergyDisplay(tileEntity.getTransferCap()), 59, 55, 0x404040);
+                        MekanismUtils.getEnergyDisplay(tileEntity.getTransferCap()), 59, 55, 0x404040);
         font.drawString(LangUtils.localize("gui.dimensions") + ":", 8, 82, 0x797979);
         if (tileEntity.structure != null) {
             font.drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x " + tileEntity.structure.volLength, 14, 91, 0x404040);

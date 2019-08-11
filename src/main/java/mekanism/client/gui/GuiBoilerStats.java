@@ -12,6 +12,8 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,7 +34,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
         addGuiElement(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
-            return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+            return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
         }, this, resource));
         addGuiElement(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, data -> LangUtils.localize("gui.boilRate") + ": " + data + " mB/t"));
         addGuiElement(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, data -> LangUtils.localize("gui.maxBoil") + ": " + data + " mB/t"));

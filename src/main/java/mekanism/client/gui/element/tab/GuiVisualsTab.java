@@ -1,13 +1,16 @@
 package mekanism.client.gui.element.tab;
 
 import java.util.Arrays;
+import mekanism.api.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OnOff;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,11 +23,11 @@ public class GuiVisualsTab extends GuiTabElement<TileEntityDigitalMiner> {
 
     @Override
     public void displayForegroundTooltip(int xAxis, int yAxis) {
+        ITextComponent visualsComponent = TextComponentUtil.build(Translation.of("mekanism.gui.visuals"), ": ", OnOff.of(tileEntity.clientRendering));
         if (tileEntity.getRadius() <= 64) {
-            displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
+            displayTooltip(visualsComponent, xAxis, yAxis);
         } else {
-            displayTooltips(Arrays.asList(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
-                  TextFormatting.RED.toString() + LangUtils.localize("mekanism.gui.visuals.toobig")), xAxis, yAxis);
+            displayComponentTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("mekanism.gui.visuals.toobig"))), xAxis, yAxis);
         }
     }
 

@@ -24,9 +24,13 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,20 +50,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         super(tile, new ContainerDigitalMiner(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
+        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 163, 23));
         addGuiElement(new GuiVisualsTab(this, tileEntity, resource));
         addGuiElement(new GuiEnergyInfo(() -> {
             double perTick = tileEntity.getPerTick();
-            String multiplier = MekanismUtils.getEnergyDisplay(perTick);
-            ArrayList<String> ret = new ArrayList<>(4);
-            ret.add(LangUtils.localize("mekanism.gui.digitalMiner.capacity") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()));
-            ret.add(LangUtils.localize("gui.needed") + ": " + multiplier + "/t");
+            ArrayList<ITextComponent> ret = new ArrayList<>(4);
+            ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.capacity"), ": ", EnergyDisplay.of(tileEntity.getMaxEnergy())));
+            ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(perTick), "/t"));
             if (perTick > tileEntity.getMaxEnergy()) {
-                ret.add(TextFormatting.RED + LangUtils.localize("mekanism.gui.insufficientbuffer"));
+                ret.add(TextComponentUtil.build(TextFormatting.RED, Translation.of("mekanism.gui.insufficientbuffer")));
             }
-            ret.add(LangUtils.localize("mekanism.gui.bufferfree") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getNeededEnergy()));
+            ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.bufferfree"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));
             return ret;
         }, this, resource));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));

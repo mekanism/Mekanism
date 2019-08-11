@@ -1,7 +1,7 @@
 package mekanism.generators.client.gui;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiSlot;
@@ -9,6 +9,9 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.EnergyDisplay;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
@@ -26,9 +29,9 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
         if (tileEntity.isFormed()) {
             ResourceLocation resource = getGuiLocation();
             addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-                  LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-                  LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t")
-                                                                        : new ArrayList<>(), this, resource));
+                  TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+                  TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
+                        EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
             addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 79, 38));
             addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
             addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));

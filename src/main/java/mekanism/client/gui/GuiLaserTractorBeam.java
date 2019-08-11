@@ -16,7 +16,7 @@ public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorB
 
     public GuiLaserTractorBeam(PlayerInventory inventory, TileEntityLaserTractorBeam tile) {
         super(tile, new ContainerLaserTractorBeam(inventory, tile));
-        addGuiElement(new GuiSecurityTab(this, tileEntity, getGuiLocation()));
+        addGuiElement(new GuiSecurityTab<>(this, tileEntity, getGuiLocation()));
     }
 
     @Override

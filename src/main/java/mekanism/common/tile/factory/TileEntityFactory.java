@@ -826,15 +826,6 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
         return 5 + tier.processes + operation;
     }
 
-    @Nonnull
-    @Override
-    public String getName() {
-        if (LangUtils.canLocalize("tile." + tier.getBaseTier().getName() + recipeType.getTranslationKey() + "Factory")) {
-            return LangUtils.localize("tile." + tier.getBaseTier().getName() + recipeType.getTranslationKey() + "Factory");
-        }
-        return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getName();
-    }
-
     @Override
     public String[] getMethods() {
         return methods;
