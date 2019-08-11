@@ -23,6 +23,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
@@ -107,14 +108,13 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        ITextComponent title = TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config"));
-        drawString(title, (xSize / 2) - (getStringWidth(title) / 2), 5, 0x404040);
+        drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config")),5, 0x404040);
         if (configurable.getConfig().canEject(currentType)) {
-            drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
+            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(configurable.getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
         } else {
-            drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
+            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.noEject")), 53, 17, 0x00CD00);
         }
-        drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.slots")), 77, 81, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiSideDataButton button : sideDataButtons) {

@@ -441,7 +441,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey() + ".name";
+        return getBlockType().getTranslationKey();
     }
 
     @Override

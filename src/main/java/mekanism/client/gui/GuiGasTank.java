@@ -53,7 +53,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
         } else {
             renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.gas"), ": ", Translation.of("mekanism.gui.none")), 45, 49, 0x404040, 112);
         }
-        drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, ySize - 96 + 2, 0x404040);
         String name = LangUtils.localize(tileEntity.dumping.getTranslationKey());
         drawString(name, 156 - getStringWidth(name), 73, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

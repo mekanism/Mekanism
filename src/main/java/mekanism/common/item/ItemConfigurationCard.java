@@ -117,7 +117,7 @@ public class ItemConfigurationCard extends ItemMekanism {
     private String getNameFromTile(TileEntity tile, Direction side) {
         String ret = Integer.toString(tile.hashCode());
         if (tile instanceof TileEntityMekanism) {
-            ret = tile.getBlockType().getTranslationKey() + ".name";
+            ret = tile.getBlockType().getTranslationKey();
         }
         return CapabilityUtils.getCapabilityHelper(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElse(
               ISpecialConfigData::getDataType,

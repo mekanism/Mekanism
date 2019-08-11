@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
@@ -17,7 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Think about moving upgrade to API so that other mods can access our upgrades if they want to
-public enum Upgrade {
+public enum Upgrade implements IHasTranslationKey {
     SPEED("speed", 8, EnumColor.RED),
     ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
     FILTER("filter", 1, EnumColor.DARK_AQUA),
@@ -69,7 +70,8 @@ public enum Upgrade {
         return name;
     }
 
-    public String getName() {
+    @Override
+    public String getTranslationKey() {
         return "mekanism.upgrade." + name + ".name";
     }
 

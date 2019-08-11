@@ -67,17 +67,18 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                           }
                           sendPacketToServer(0);
                       } else if (min > max) {
-                          status = EnumColor.DARK_RED + "Max<min";
+                          //TODO: Lang Keys
+                          status = TextComponentUtil.build(EnumColor.DARK_RED, "Max<min");
                           ticker = 20;
                       } else { //if(max > 64 || min > 64)
-                          status = EnumColor.DARK_RED + "Max>64";
+                          status = TextComponentUtil.build(EnumColor.DARK_RED, "Max>64");
                           ticker = 20;
                       }
                   } else if (filter.getItemStack().isEmpty()) {
-                      status = EnumColor.DARK_RED + "No item";
+                      status = TextComponentUtil.build(EnumColor.DARK_RED, "No item");
                       ticker = 20;
                   } else if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
-                      status = EnumColor.DARK_RED + "Max/min";
+                      status = TextComponentUtil.build(EnumColor.DARK_RED, "Max/min");
                       ticker = 20;
                   }
               }));
@@ -126,8 +127,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
-        drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
-        drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.itemFilter.min"), ":"), 128, 20, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.itemFilter.max"), ":"), 128, 32, 0x404040);
         if (tileEntity.singleItem && filter.sizeMode) {
             drawString(TextComponentUtil.build(EnumColor.RED, OnOff.of(filter.sizeMode), "!"), 141, 46, 0x404040);
         } else {

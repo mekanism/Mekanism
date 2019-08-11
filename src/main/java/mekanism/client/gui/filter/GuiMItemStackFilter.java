@@ -60,7 +60,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                       }
                       sendPacketToServer(0);
                   } else {
-                      status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
+                      status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.itemFilter.noItem"));
                       ticker = 20;
                   }
               }));

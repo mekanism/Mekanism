@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resources.I18n;
@@ -21,7 +23,6 @@ import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRobitRepair extends GuiRobit implements IContainerListener {
@@ -60,7 +61,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         GlStateManager.disableLighting();
-        drawString(LangUtils.localize("container.repair"), 60, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.repair")), 60, 6, 0x404040);
 
         if (repairContainer.maximumCost > 0) {
             int k = 8453920;

@@ -15,7 +15,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
 
-    //TODO: Replace a lot of the checks for enum types with an interface for IHasTranslationKey
+    //TODO: Evaluate the different uses of this and directly call String/Translation components where appropriate
+    // Also make some just have Translation using formatting rather than building up a layered ITextComponent
     public static ITextComponent build(Object... components) {
         //TODO: Verify that just appending them to the first text component works properly.
         // My suspicion is we will need to chain downwards and append it that way so that the formatting matches
@@ -78,12 +79,12 @@ public class TextComponentUtil {
         return result;
     }
 
+    //TODO: Rename this to getString
     public static StringTextComponent getStringComponent(String component) {
-        //TODO: Use build for classes outside of this one?
         return new StringTextComponent(component);
     }
 
-    //TODO: Use this, or maybe even rename it to `translate` and use it if all that is wanted is a translation component
+    //TODO: Rename this to getTranslation or translate
     public static TranslationTextComponent getTranslationComponent(String component, Object... args) {
         return new TranslationTextComponent(component, args);
     }

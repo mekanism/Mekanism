@@ -29,7 +29,7 @@ public class EnergyDisplay implements IHasTextComponent {
             return TextComponentUtil.build(Translation.of("mekanism.gui.infinite"));
         }
         if (max == 0) {
-            return TextComponentUtil.build(MekanismUtils.getEnergyDisplayShort(energy));
+            return MekanismUtils.getEnergyDisplayShort(energy);
         }
         //Pass max back as a new Energy Display so that if we have 0/infinite it shows that properly without us having to add extra handling
         return TextComponentUtil.build(MekanismUtils.getEnergyDisplayShort(energy), "/", of(max));

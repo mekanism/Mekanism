@@ -2,7 +2,8 @@ package mekanism.client.gui.robit;
 
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,8 +17,8 @@ public class GuiRobitSmelting extends GuiRobit {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(LangUtils.localize("gui.robit.smelting"), 8, 6, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, ySize - 93, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit.smelting")), 8, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, ySize - 93, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

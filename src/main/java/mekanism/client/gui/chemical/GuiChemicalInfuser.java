@@ -15,11 +15,10 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInfuser;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -67,7 +66,7 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser> {
 
     @Override
     protected void drawForegroundText() {
-        drawString(LangUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.chemicalInfuser.short")), 5, 5, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 4, 0x404040);
     }
 }

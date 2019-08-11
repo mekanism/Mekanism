@@ -22,6 +22,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -29,7 +30,7 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism> extends GuiFilter<TILE> {
 
-    protected String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
+    protected ITextComponent status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.allOK"));
     protected FILTER origFilter;
     protected FILTER filter;
     protected boolean isNew;

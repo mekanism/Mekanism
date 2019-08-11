@@ -4,7 +4,6 @@ import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -26,8 +25,8 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        drawString(LangUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 94) + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.volume"), ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK), 53, 26, 0x00CD00);
         FluidStack fluidStored = tileEntity.structure != null ? tileEntity.structure.fluidStored : null;
         if (fluidStored != null) {
             //TODO: Can these two be combined

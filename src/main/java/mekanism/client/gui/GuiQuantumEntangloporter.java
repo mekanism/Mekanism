@@ -18,9 +18,13 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.OwnerDisplay;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
@@ -183,18 +187,16 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.getSecurity().getClientOwner() != null
-                                                                  ? tileEntity.getSecurity().getClientOwner()
-                                                                  : LangUtils.localize("gui.none")), 8, (ySize - 96) + 4, 0x404040);
-        drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
-        drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
+        drawString(TextComponentUtil.build(OwnerDisplay.of(tileEntity.getSecurity().getOwnerUUID(), tileEntity.getSecurity().getClientOwner())),
+              8, (ySize - 96) + 4, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.freq"), ":"), 32, 81, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.security"), ":"), 32, 91, 0x404040);
         Frequency frequency = tileEntity.getFrequency(null);
         drawString(" " + (frequency != null ? frequency.name : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
               32 + getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
         drawString(" " + (frequency != null ? getSecurity(frequency) : EnumColor.DARK_RED + LangUtils.localize("gui.none")),
               32 + getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
-        String str = LangUtils.localize("gui.set") + ":";
-        renderScaledText(str, 27, 104, 0x404040, 20);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.set"), ":"), 27, 104, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

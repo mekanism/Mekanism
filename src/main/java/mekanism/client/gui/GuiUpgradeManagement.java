@@ -23,6 +23,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -84,14 +85,14 @@ public class GuiUpgradeManagement extends GuiMekanism {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
-        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.supported"), ":"), 26, 59, 0x404040);
         if (selectedType == null) {
-            renderText(LangUtils.localize("gui.upgrades.noSelection") + ".", 92, 8, 0.8F, true);
+            renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.noSelection"), "."), 92, 8, 0.8F, true);
         } else {
             int amount = tileEntity.getComponent().getUpgrades(selectedType);
-            renderText(LangUtils.localize(selectedType.getName()) + " " + LangUtils.localize("gui.upgrade"), 92, 8, 0.6F, true);
-            renderText(LangUtils.localize("gui.upgrades.amount") + ": " + amount + "/" + selectedType.getMax(), 92, 16, 0.6F, true);
+            renderText(TextComponentUtil.build(selectedType, " ", Translation.of("mekanism.gui.upgrade")), 92, 8, 0.6F, true);
+            renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
             int text = 0;
             for (String s : selectedType.getInfo((TileEntity) tileEntity)) {
                 renderText(s, 92, 22 + (6 * text++), 0.6F, true);
@@ -102,7 +103,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
                 renderUpgrade(supported[supportedIndex], 80, 57, 0.8F, true);
-                drawString(LangUtils.localize(supported[supportedIndex].getName()), 96, 59, 0x404040);
+                drawString(TextComponentUtil.build(supported[supportedIndex]), 96, 59, 0x404040);
             }
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
@@ -116,7 +117,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             Upgrade upgrade = upgrades[index];
             int xPos = 25;
             int yPos = 7 + (i * 12);
-            drawString(LangUtils.localize(upgrade.getName()), xPos + 12, yPos + 2, 0x404040);
+            drawString(TextComponentUtil.build(upgrade), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
                 displayTooltip(TextComponentUtil.build(Translation.of(upgrade.getDescription()), upgrade.getStack()), xAxis, yAxis);
@@ -124,6 +125,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
         }
 
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
+    private void renderText(ITextComponent component, int x, int y, float size, boolean scale) {
+        //TODO: Is this fine?
+        renderText(component.getFormattedText(), x, y, size, scale);
     }
 
     private void renderText(String text, int x, int y, float size, boolean scale) {

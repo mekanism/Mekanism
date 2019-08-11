@@ -45,7 +45,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
         String s = LangUtils.localize("gui.burnRate") + ": " + tileEntity.clientUsed;
         drawString(s, xSize - 8 - getStringWidth(s), (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

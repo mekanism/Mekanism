@@ -21,7 +21,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -61,6 +60,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     public int getStringWidth(String text) {
+        //TODO: Replace uses of this/the other getStringWidth with drawCenteredText where appropriate
         return font.getStringWidth(text);
     }
 
@@ -69,12 +69,27 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         return drawString(component.getFormattedText(), x, y, color);
     }
 
-    public void renderScaledText(ITextComponent component, int x, int y, int color, int maxX) {
-        renderScaledText(component.getFormattedText(), x, y, color, maxX);
+    public int drawString(String text, int x, int y, int color) {
+        //TODO: Eventually make drawString(ITextComponent) be what gets used in places
+        return font.drawString(text, x, y, color);
     }
 
-    public int drawString(String text, int x, int y, int color) {
-        return font.drawString(text, x, y, color);
+    protected void drawCenteredText(ITextComponent component, int y, int color) {
+        drawCenteredText(component, 0, 0, y, color);
+    }
+
+    protected void drawCenteredText(ITextComponent component, int leftMargin, int y, int color) {
+        drawCenteredText(component, leftMargin, 0, y, color);
+    }
+
+    protected void drawCenteredText(ITextComponent component, int leftMargin, int areaWidth, int y, int color) {
+        int textWidth = getStringWidth(component);
+        int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
+        drawString(component, centerX, y, color);
+    }
+
+    public void renderScaledText(ITextComponent component, int x, int y, int color, int maxX) {
+        renderScaledText(component.getFormattedText(), x, y, color, maxX);
     }
 
     /**
@@ -199,12 +214,6 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         this.drawDefaultBackground();
         super.renderd(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-    }
-
-    protected void renderCenteredText(int leftMargin, int areaWidth, int y, int color, String text) {
-        int textWidth = getStringWidth(text);
-        int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
-        drawString(text, centerX, y, color);
     }
 
     protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {

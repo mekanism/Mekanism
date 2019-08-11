@@ -3,7 +3,6 @@ package mekanism.common.util;
 import com.mojang.authlib.GameProfile;
 import ic2.api.energy.EnergyNet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +34,12 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.SideConfig;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -57,13 +57,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.LightType;
 import net.minecraft.world.Region;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
@@ -690,28 +690,7 @@ public final class MekanismUtils {
         return new Vec3d(posX, posY, posZ);
     }
 
-    /**
-     * Gets a rounded energy display of a defined amount of energy.
-     *
-     * @param energy - energy to display
-     *
-     * @return rounded energy display
-     */
-    public static String getEnergyDisplay(double energy) {
-        if (energy == Double.MAX_VALUE) {
-            return LangUtils.localize("mekanism.gui.infinite");
-        }
-        return getEnergyDisplayShort(energy);
-    }
-
-    public static String getEnergyDisplay(double energy, double max) {
-        if (energy == Double.MAX_VALUE) {
-            return LangUtils.localize("mekanism.gui.infinite");
-        }
-        return getEnergyDisplayShort(energy) + "/" + getEnergyDisplay(max);
-    }
-
-    public static String getEnergyDisplayShort(double energy) {
+    public static ITextComponent getEnergyDisplayShort(double energy) {
         switch (MekanismConfig.current().general.energyUnit.val()) {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
@@ -720,7 +699,7 @@ public final class MekanismUtils {
             case EU:
                 return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
         }
-        return "mekanism.error";
+        return TextComponentUtil.build(Translation.of("mekanism.error"));
     }
 
     /**
@@ -766,7 +745,7 @@ public final class MekanismUtils {
      *
      * @return rounded energy display
      */
-    public static String getTemperatureDisplay(double T, TemperatureUnit unit) {
+    public static ITextComponent getTemperatureDisplay(double T, TemperatureUnit unit) {
         double TK = unit.convertToK(T, true);
         switch (MekanismConfig.current().general.tempUnit.val()) {
             case K:
@@ -780,7 +759,7 @@ public final class MekanismUtils {
             case STP:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
         }
-        return "mekanism.error";
+        return TextComponentUtil.build(Translation.of("mekanism.error"));
     }
 
     /**

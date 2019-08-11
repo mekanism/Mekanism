@@ -40,15 +40,15 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     @Override
     public ITextComponent getStoredInfo() {
         //TODO: Lang String
-        return TextComponentUtil.build(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN) + " above ambient");
+        return TextComponentUtil.build(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN), " above ambient");
     }
 
     @Override
     public ITextComponent getFlowInfo() {
         //TODO: Lang Strings
-        return TextComponentUtil.build(MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN) + " transferred to acceptors, " +
-               MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN) + " lost to environment, " +
-               (heatTransferred + heatLost == 0 ? "" : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency"));
+        return TextComponentUtil.build(MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN), " transferred to acceptors, ",
+              MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN),
+              " lost to environment, " + (heatTransferred + heatLost == 0 ? "" : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency"));
     }
 
     @Override

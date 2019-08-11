@@ -24,6 +24,7 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.Translation;
@@ -106,7 +107,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 69, 6, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
         String runningType;
         if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()) {
             runningType = LangUtils.localize("mekanism.gui.digitalMiner.lowPower");
@@ -118,10 +119,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         drawString(runningType, 9, 10, 0x00CD00);
         drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
 
-        drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
-        drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
-        drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
-        drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(tileEntity.doEject)), 9, 30, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.pull"), ": ", OnOff.of(tileEntity.doPull)), 9, 39, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.silk"), ": ", OnOff.of(tileEntity.silkTouch)), 9, 48, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.toMine"), ":"), 9, 59, 0x00CD00);
+        //TODO: Can this be combined with the one above
         drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
         if (!tileEntity.missingStack.isEmpty()) {

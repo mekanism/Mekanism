@@ -169,7 +169,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         String ownerText = tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : EnumColor.RED + LangUtils.localize("gui.noOwner");
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(ownerText, xSize - 7 - getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
         String trusted = LangUtils.localize("gui.trustedPlayers");
         drawString(trusted, 74 - (getStringWidth(trusted) / 2), 57, 0x787878);
         String security = EnumColor.RED + LangUtils.localize("gui.securityOffline");

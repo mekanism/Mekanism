@@ -62,17 +62,15 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String stats = LangUtils.localize("gui.matrixStats");
         drawString(stats, (xSize / 2) - (getStringWidth(stats) / 2), 6, 0x404040);
-        drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x797979);
-        drawString(MekanismUtils.getEnergyDisplay(tileEntity.getLastInput()) + "/" +
-                        MekanismUtils.getEnergyDisplay(tileEntity.getTransferCap()), 59, 35, 0x404040);
-        drawString(LangUtils.localize("gui.output") + ":", 53, 46, 0x797979);
-        drawString(MekanismUtils.getEnergyDisplay(tileEntity.getLastOutput()) + "/" +
-                        MekanismUtils.getEnergyDisplay(tileEntity.getTransferCap()), 59, 55, 0x404040);
-        drawString(LangUtils.localize("gui.dimensions") + ":", 8, 82, 0x797979);
+        drawString(TextComponentUtil.build(Translation.of("gui.input"), ":"), 53, 26, 0x797979);
+        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastInput(), tileEntity.getTransferCap())), 59, 35, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.output"), ":"), 53, 46, 0x797979);
+        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastOutput(), tileEntity.getTransferCap())), 59, 55, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.dimensions"), ":"), 8, 82, 0x797979);
         if (tileEntity.structure != null) {
             drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x " + tileEntity.structure.volLength, 14, 91, 0x404040);
         }
-        drawString(LangUtils.localize("gui.constituents") + ":", 8, 102, 0x797979);
+        drawString(TextComponentUtil.build(Translation.of("gui.constituents"), ":"), 8, 102, 0x797979);
         drawString(tileEntity.getCellCount() + " " + LangUtils.localize("gui.cells"), 14, 111, 0x404040);
         drawString(tileEntity.getProviderCount() + " " + LangUtils.localize("gui.providers"), 14, 120, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

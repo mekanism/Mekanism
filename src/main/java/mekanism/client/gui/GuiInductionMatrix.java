@@ -7,11 +7,10 @@ import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,11 +35,11 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x00CD00);
-        drawString(MekanismUtils.getEnergyDisplay(tileEntity.getLastInput()) + "/t", 53, 35, 0x00CD00);
-        drawString(LangUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
-        drawString(MekanismUtils.getEnergyDisplay(tileEntity.getLastOutput()) + "/t", 53, 53, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 94) + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.input"), ":"), 53, 26, 0x00CD00);
+        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastInput()), "/t"), 53, 35, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.output"), ":"), 53, 44, 0x00CD00);
+        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastOutput()), "/t"), 53, 53, 0x00CD00);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {

@@ -982,7 +982,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey() + ".name";
+        return getBlockType().getTranslationKey();
     }
 
     @Override

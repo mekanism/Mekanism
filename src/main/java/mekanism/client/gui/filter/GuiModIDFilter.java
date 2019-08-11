@@ -4,6 +4,8 @@ import mekanism.api.EnumColor;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,10 +23,10 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.noID");
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.modIDFilter.noID"));
             return;
         } else if (name.equals(filter.getModID())) {
-            status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.sameID");
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.modIDFilter.sameID"));
             return;
         }
         updateStackList(name);
@@ -36,8 +38,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
                                 LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
-        drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-        renderScaledText(LangUtils.localize("gui.id") + ": " + filter.getModID(), 35, 32, 0x00CD00, 107);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.status"), ": ", status), 35, 20, 0x00CD00);
+        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.id"), ": " + filter.getModID()), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

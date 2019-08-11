@@ -4,6 +4,8 @@ import mekanism.api.EnumColor;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,10 +23,10 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE exten
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = EnumColor.DARK_RED + LangUtils.localize("gui.oredictFilter.noKey");
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.oredictFilter.noKey"));
             return;
         } else if (name.equals(filter.getOreDictName())) {
-            status = EnumColor.DARK_RED + LangUtils.localize("gui.oredictFilter.sameKey");
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.oredictFilter.sameKey"));
             return;
         }
         updateStackList(name);
@@ -36,7 +38,7 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE exten
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
                                 LangUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
-        drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.status"), ": ", status), 35, 20, 0x00CD00);
         renderScaledText(LangUtils.localize("gui.key") + ": " + filter.getOreDictName(), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

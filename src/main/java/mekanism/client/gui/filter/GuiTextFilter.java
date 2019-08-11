@@ -10,7 +10,8 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,7 +47,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         if (ticker > 0) {
             ticker--;
         } else {
-            status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
+            status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.allOK"));
         }
         if (stackSwitch > 0) {
             stackSwitch--;

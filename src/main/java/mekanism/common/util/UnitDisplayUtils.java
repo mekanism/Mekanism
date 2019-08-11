@@ -44,8 +44,8 @@ public class UnitDisplayUtils {
         return prefix + roundDecimals(value, decimalPlaces) + " " + unitName;
     }
 
-    public static String getDisplayShort(double value, ElectricUnit unit) {
-        return getDisplay(value, unit, 2, true);
+    public static ITextComponent getDisplayShort(double value, ElectricUnit unit) {
+        return TextComponentUtil.build(getDisplay(value, unit, 2, true));
     }
 
     public static String getDisplayShort(double value, ElectricUnit unit, int decimalPlaces) {
@@ -97,8 +97,8 @@ public class UnitDisplayUtils {
         return prefix + roundDecimals(value, decimalPlaces) + (isShort ? "" : " ") + unitName;
     }
 
-    public static String getDisplayShort(double value, TemperatureUnit unit) {
-        return getDisplayShort(value, true, unit);
+    public static ITextComponent getDisplayShort(double value, TemperatureUnit unit) {
+        return TextComponentUtil.build(getDisplayShort(value, true, unit));
     }
 
     public static String getDisplayShort(double value, boolean shift, TemperatureUnit unit) {

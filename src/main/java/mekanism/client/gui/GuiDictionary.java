@@ -9,6 +9,8 @@ import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -33,8 +35,8 @@ public class GuiDictionary extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
-        drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("mekanism.item.dictionary")), 64, 5, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, ySize - 96 + 2, 0x404040);
         renderItem(itemType, 6, 6);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

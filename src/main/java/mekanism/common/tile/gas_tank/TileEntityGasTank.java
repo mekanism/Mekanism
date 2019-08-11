@@ -29,7 +29,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -126,12 +125,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize("tile.GasTank" + tier.getBaseTier().getSimpleName() + ".name");
     }
 
     @Override

@@ -23,7 +23,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -94,12 +93,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getSimpleName() + ".name");
     }
 
     @Override

@@ -19,8 +19,16 @@ public class OwnerDisplay implements IHasTextComponent {
         this.ownerName = ownerName;
     }
 
+    public static OwnerDisplay of(UUID ownerUUID) {
+        return of(null, ownerUUID);
+    }
+
     public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID) {
         return of(player, ownerUUID, null);
+    }
+
+    public static OwnerDisplay of(UUID ownerUUID, String ownerName) {
+        return of(null, ownerUUID, ownerName);
     }
 
     public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID, String ownerName) {
@@ -35,6 +43,9 @@ public class OwnerDisplay implements IHasTextComponent {
         //TODO: If the name is supposed to be gotten differently server side, then do so
         //Allows for the name to be overridden by a passed value
         String name = ownerName == null ? MekanismClient.clientUUIDMap.get(ownerUUID) : ownerName;
+        if (player == null) {
+            return TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.owner"), name);
+        }
         return TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
     }
 }

@@ -24,7 +24,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
@@ -127,12 +126,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
             }
             needsPacket = false;
         }
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return LangUtils.localize("tile.FluidTank" + tier.getBaseTier().getSimpleName() + ".name");
     }
 
     private void activeEmit() {
