@@ -22,9 +22,11 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OutputInput;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +36,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -42,7 +43,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, IHeatTransfer, IConfigurable {
@@ -359,9 +359,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!world.isRemote) {
             fluidEject = !fluidEject;
-            String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
-            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
-                                                       LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                  Translation.of("tooltip.configurator.reactorPortEject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(fluidEject), "."));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

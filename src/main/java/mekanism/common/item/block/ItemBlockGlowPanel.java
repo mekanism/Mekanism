@@ -9,6 +9,7 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.util.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -55,7 +56,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> i
         if (color == EnumColor.BLACK) {
             color = EnumColor.DARK_GREY;
         }
-        return color + super.getDisplayName(stack);
+        return TextComponentUtil.build(color, super.getDisplayName(stack));
     }
 
     public EnumColor getColor(ItemStack stack) {

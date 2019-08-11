@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 
 /**
@@ -26,12 +27,12 @@ public class BuildCraftProxy implements MekWrenchProxy, IMekWrench {
     }
 
     @Override
-    public boolean canUseWrench(PlayerEntity player, Hand hand, ItemStack stack, RayTraceResult rayTrace) {
+    public boolean canUseWrench(PlayerEntity player, Hand hand, ItemStack stack, BlockRayTraceResult rayTrace) {
         return stack.getItem() instanceof IToolWrench && ((IToolWrench) stack.getItem()).canWrench(player, hand, stack, rayTrace);
     }
 
     @Override
-    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack stack, RayTraceResult rayTrace) {
+    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack stack, BlockRayTraceResult rayTrace) {
         if (stack.getItem() instanceof IToolWrench) {
             ((IToolWrench) stack.getItem()).wrenchUsed(player, hand, stack, rayTrace);
         }

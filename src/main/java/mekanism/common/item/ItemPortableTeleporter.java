@@ -73,7 +73,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             if (getOwnerUUID(itemstack) == null) {
                 setOwnerUUID(itemstack, entityplayer.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
-                entityplayer.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("mekanism.gui.nowOwn")));
             } else if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                 MekanismUtils.openItemGui(entityplayer, hand, 14);
             } else {

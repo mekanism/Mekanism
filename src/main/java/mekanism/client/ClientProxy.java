@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -197,7 +198,8 @@ import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityMechanicalPipe
 import mekanism.common.tile.transmitter.pressurized_tube.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
-import mekanism.common.util.TextComponentGroup;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -224,7 +226,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -783,7 +784,7 @@ public class ClientProxy extends CommonProxy {
             if (MekanismConfig.current().client.enableMultiblockFormationParticles.val()) {
                 anim.run();
             } else {
-                player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
+                player.sendStatusMessage(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("chat.mek.multiblockformed")), true);
             }
         }
     }

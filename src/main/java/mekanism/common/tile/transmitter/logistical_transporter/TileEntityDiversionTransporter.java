@@ -10,14 +10,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.StringTextComponent;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter {
 
@@ -90,23 +90,26 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     @Override
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         int newMode = (modes[side.ordinal()] + 1) % 3;
-        String description = "ERROR";
+        Translation description;
         modes[side.ordinal()] = newMode;
         switch (newMode) {
             case 0:
-                description = LangUtils.localize("control.disabled.desc");
+                description = Translation.of("mekanism.control.disabled.desc");
                 break;
             case 1:
-                description = LangUtils.localize("control.high.desc");
+                description = Translation.of("mekanism.control.high.desc");
                 break;
             case 2:
-                description = LangUtils.localize("control.low.desc");
+                description = Translation.of("mekanism.control.low.desc");
+                break;
+            default:
+                description = Translation.of("mekanism.none");
                 break;
         }
         refreshConnections();
         notifyTileChange();
-        player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " +
-                                                   LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+              Translation.of("tooltip.configurator.toggleDiverter"), ": ", EnumColor.RED, description));
         Mekanism.packetHandler.sendUpdatePacket(this);
         return ActionResultType.SUCCESS;
     }

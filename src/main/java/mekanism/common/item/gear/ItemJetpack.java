@@ -32,7 +32,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -201,7 +200,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
         }
 
         public ITextComponent getTextComponent() {
-            return new TranslationTextComponent(unlocalized).applyTextStyle(color.textFormatting);
+            return TextComponentUtil.build(color, unlocalized);
         }
     }
 

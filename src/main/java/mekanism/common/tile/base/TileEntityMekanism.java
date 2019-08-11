@@ -782,13 +782,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     @Override
     public String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey() + ".name");
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getName());
+        return LangUtils.localize(getBlockType().getTranslationKey());
     }
     //End methods ITileContainer
 

@@ -1,14 +1,15 @@
 package mekanism.client;
 
 import java.util.Collections;
+import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
-import mekanism.common.item.gear.ItemElectricBow;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
+import mekanism.common.item.gear.ItemElectricBow;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
@@ -19,8 +20,9 @@ import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.TextComponentGroup;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OnOff;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,13 +30,12 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.glfw.GLFW;
 
@@ -86,22 +87,22 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 configuratorMode = ConfiguratorMode.values()[toSet];
                 configurator.setState(toolStack, configuratorMode);
                 Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(toSet)));
-                player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                      .translation("mekanism.tooltip.configureState", LangUtils.withColor(configuratorMode.getNameComponent(), configuratorMode.getColor().textFormatting)));
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                      Translation.of("mekanism.tooltip.configureState"), configuratorMode));
             } else if (player.isSneaking() && item instanceof ItemElectricBow) {
                 ItemElectricBow bow = (ItemElectricBow) item;
                 boolean newBowState = !bow.getFireState(toolStack);
                 bow.setFireState(toolStack, newBowState);
                 Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newBowState)));
-                player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                      .translation("mekanism.tooltip.fireMode", LangUtils.onOffColoured(newBowState)));
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                      Translation.of("mekanism.tooltip.fireMode"), OnOff.of(newBowState, true)));
             } else if (player.isSneaking() && item instanceof ItemBlockFluidTank) {
                 ItemBlockFluidTank fluidTank = (ItemBlockFluidTank) item;
                 boolean newBucketMode = !fluidTank.getBucketMode(toolStack);
                 fluidTank.setBucketMode(toolStack, newBucketMode);
                 Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(fluidTank.getBucketMode(toolStack))));
-                player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                      .translation("mekanism.tooltip.portableTank.bucketMode", LangUtils.onOffColoured(newBucketMode)));
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                      Translation.of("mekanism.tooltip.portableTank.bucketMode"), OnOff.of(newBucketMode, true)));
             } else if (player.isSneaking() && item instanceof ItemWalkieTalkie) {
                 ItemWalkieTalkie wt = (ItemWalkieTalkie) item;
                 if (wt.getOn(toolStack)) {
@@ -116,8 +117,8 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 ItemFlamethrower flamethrower = (ItemFlamethrower) item;
                 flamethrower.incrementMode(toolStack);
                 Mekanism.packetHandler.sendToServer(PacketFlamethrowerData.MODE_CHANGE(Hand.MAIN_HAND));
-                player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                      .translation("mekanism.tooltip.flamethrower.modeBump", flamethrower.getMode(toolStack).getTextComponent()));
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                      Translation.of("mekanism.tooltip.flamethrower.modeBump"), flamethrower.getMode(toolStack).getTextComponent()));
             }
         } else if (kb == armorModeSwitchKey) {
             PlayerEntity player = FMLClientHandler.instance().getClient().player;

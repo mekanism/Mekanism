@@ -26,6 +26,8 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
@@ -364,18 +366,12 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Nonnull
     @Override
     public String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey() + ".Bin" + tier.getBaseTier().getSimpleName() + ".name");
+        return LangUtils.localize(getBlockType().getTranslationKey());
     }
 
     @Override
     public boolean hasCustomName() {
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getName());
     }
 
     @Override
@@ -384,7 +380,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     }
 
     @Override
-    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
+    public boolean isUsableByPlayer(@Nonnull PlayerEntity player) {
         return true;
     }
 

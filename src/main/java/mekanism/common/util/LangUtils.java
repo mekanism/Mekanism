@@ -10,24 +10,11 @@ import net.minecraftforge.fluids.FluidStack;
 public final class LangUtils {
 
     public static String transOnOff(boolean b) {
-        return LangUtils.localize(transOnOffKey(b));
-    }
-
-    public static String transOnOffKey(boolean b) {
-        return "mekanism.gui." + (b ? "on" : "off");
+        return LangUtils.localize("mekanism.gui." + (b ? "on" : "off"));
     }
 
     public static String transYesNo(boolean b) {
-        return LangUtils.localize(transYesNoKey(b));
-    }
-
-    //TODO:
-    public static String transYesNoKey(boolean b) {
         return LangUtils.localize("mekanism.tooltip." + (b ? "yes" : "no"));
-    }
-
-    public static String transOutputInput(boolean b) {
-        return LangUtils.localize("mekanism.gui." + (b ? "output" : "input"));
     }
 
     public static String localizeFluidStack(FluidStack fluidStack) {
@@ -56,22 +43,5 @@ public final class LangUtils {
         } catch (IllegalFormatException e) {
             return "Format error: " + s;
         }
-    }
-
-    public static TranslationTextComponent translationWithColour(String langKey, TextFormatting color) {
-        TranslationTextComponent translation = new TranslationTextComponent(langKey);
-        translation.getStyle().setColor(color);
-        return translation;
-    }
-
-    public static <T extends ITextComponent> T withColor(T component, TextFormatting color) {
-        component.getStyle().setColor(color);
-        return component;
-    }
-
-    public static TranslationTextComponent onOffColoured(boolean isOn) {
-        TranslationTextComponent translation = new TranslationTextComponent(transOnOffKey(isOn));
-        translation.getStyle().setColor(isOn ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
-        return translation;
     }
 }

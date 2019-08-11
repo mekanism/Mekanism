@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 
 /**
  * Translates to COFH's IToolHammer
@@ -26,9 +26,9 @@ public class CofhProxy implements MekWrenchProxy, IMekWrench {
     }
 
     @Override
-    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, RayTraceResult rayTrace) {
+    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, BlockRayTraceResult rayTrace) {
         if (wrench.getItem() instanceof IToolHammer) {
-            ((IToolHammer) wrench.getItem()).toolUsed(wrench, player, rayTrace.getBlockPos());
+            ((IToolHammer) wrench.getItem()).toolUsed(wrench, player, rayTrace.getPos());
         }
     }
 }

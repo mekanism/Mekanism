@@ -12,7 +12,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.TextComponentUtil;
 import mekanism.common.util.TextComponentUtil.Translation;
@@ -27,7 +26,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,9 +63,10 @@ public class ItemConfigurationCard extends ItemMekanism {
                         if (data != null) {
                             data.putString("dataType", getNameFromTile(tileEntity, side));
                             setData(stack, data);
-                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
-                                                                       LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s",
-                                                                             EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
+                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                                  Translation.of("tooltip.configurationCard.got",
+                                        TextComponentUtil.build(EnumColor.INDIGO, Translation.of(data.getString("dataType")))
+                                  )));
                         }
                         return ActionResultType.SUCCESS;
                     } else if (getData(stack) != null) {
@@ -76,13 +75,12 @@ public class ItemConfigurationCard extends ItemMekanism {
                             CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(
                                   special -> special.setConfigurationData(getData(stack))
                             );
-
-                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN +
-                                                                       LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s",
-                                                                             EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
+                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.DARK_GREEN,
+                                  Translation.of("tooltip.configurationCard.set", TextComponentUtil.build(EnumColor.INDIGO, Translation.of(getDataType(stack)))
+                                  )));
                         } else {
-                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
-                                                                       LangUtils.localize("tooltip.configurationCard.unequal") + "."));
+                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
+                                  Translation.of("tooltip.configurationCard.unequal"), "."));
                         }
                         return ActionResultType.SUCCESS;
                     }

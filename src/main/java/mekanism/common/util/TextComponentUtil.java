@@ -5,10 +5,15 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.MekanismClient;
+import mekanism.common.SideData;
 import mekanism.common.Upgrade;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import net.minecraft.block.Block;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -47,12 +52,22 @@ public class TextComponentUtil {
                 current = ((UpgradeDisplay) component).getTextComponent();
             } else if (component instanceof SecurityMode) {
                 current = ((SecurityMode) component).getTextComponent();
+            } else if (component instanceof ConfiguratorMode) {
+                current = ((ConfiguratorMode) component).getTextComponent();
             } else if (component instanceof BooleanStateDisplay) {
                 current = ((BooleanStateDisplay) component).getTextComponent();
             } else if (component instanceof GasStack) {
                 current = getTranslationComponent(((GasStack) component).getGas());
             } else if (component instanceof Gas) {
                 current = getTranslationComponent((Gas) component);
+            } else if (component instanceof SideData) {
+                current = getTranslationComponent(((SideData) component).getTranslationKey());
+            } else if (component instanceof ConnectionType) {
+                current = getTranslationComponent(((ConnectionType) component).getTranslationKey());
+            } else if (component instanceof Block) {
+                current = ((Block) component).getNameTextComponent();
+            } else if (component instanceof Item) {
+                current = getTranslationComponent(((Item) component).getTranslationKey());
             } else if (component instanceof FluidStack) {
                 current = getTranslationComponent(((FluidStack) component).getUnlocalizedName());
             } else if (component instanceof Boolean || component instanceof Number) {
@@ -85,8 +100,8 @@ public class TextComponentUtil {
         return new StringTextComponent(component);
     }
 
-    public static TranslationTextComponent getTranslationComponent(String component) {
-        return new TranslationTextComponent(component);
+    public static TranslationTextComponent getTranslationComponent(String component, Object... args) {
+        return new TranslationTextComponent(component, args);
     }
 
     public static TranslationTextComponent getTranslationComponent(Gas gas) {
@@ -109,7 +124,7 @@ public class TextComponentUtil {
         }
 
         public ITextComponent getTextComponent() {
-            return new TranslationTextComponent(key, args);
+            return getTranslationComponent(key, args);
         }
     }
 
@@ -252,6 +267,26 @@ public class TextComponentUtil {
         @Override
         protected String getKey() {
             return "mekanism.tooltip." + (value ? "on" : "off");
+        }
+    }
+
+    public static class OutputInput extends BooleanStateDisplay {
+
+        private OutputInput(boolean value, boolean colored) {
+            super(value, colored);
+        }
+
+        public static OutputInput of(boolean value) {
+            return of(value, false);
+        }
+
+        public static OutputInput of(boolean value, boolean colored) {
+            return new OutputInput(value, colored);
+        }
+
+        @Override
+        protected String getKey() {
+            return "mekanism.gui." + (value ? "output" : "input");
         }
     }
 }

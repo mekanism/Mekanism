@@ -11,12 +11,10 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
@@ -29,7 +27,9 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
-import mekanism.common.util.TextComponentGroup;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OnOff;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -42,7 +42,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -535,7 +534,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
                     refreshConnections();
                     notifyTileChange();
-                    player.sendMessage(new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ").translation(connectionTypes[hitSide.ordinal()].translationKey()));
+                    player.sendMessage(TextComponentUtil.build(Translation.of("tooltip.configurator.modeChange"), " ", connectionTypes[hitSide.ordinal()]));
                     return ActionResultType.SUCCESS;
                 } else {
                     return ActionResultType.PASS;
@@ -579,8 +578,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();
-            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO
-                                                       + (redstoneReactive ? "on." : "off.")));
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                  Translation.of("tooltip.configurator.redstoneSensitivity"), " ", EnumColor.INDIGO, OnOff.of(redstoneReactive), "."));
         }
         return ActionResultType.SUCCESS;
     }
@@ -627,7 +626,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return name().toLowerCase(Locale.ROOT);
         }
 
-        public String translationKey() {
+        public String getTranslationKey() {
             return "mekanism.pipe.connectiontype." + getName();
         }
     }

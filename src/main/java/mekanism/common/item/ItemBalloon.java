@@ -6,12 +6,13 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.common.entity.EntityBalloon;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
@@ -64,15 +65,11 @@ public class ItemBalloon extends ItemMekanism {
     @Nonnull
     @Override
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        //TODO: Remove this method??
-        String dyeName = color.getDyedName();
-        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + color.dyeName)) {
-            return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
+        Item item = stack.getItem();
+        if (item instanceof ItemBalloon) {
+            return TextComponentUtil.build(((ItemBalloon) item).getColor(), super.getDisplayName(stack));
         }
-        if (color == EnumColor.BLACK) {
-            dyeName = EnumColor.DARK_GREY + color.getDyeName();
-        }
-        return dyeName + " " + LangUtils.localize("tooltip.balloon");
+        return super.getDisplayName(stack);
     }
 
     @Nonnull

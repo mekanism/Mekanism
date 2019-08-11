@@ -26,6 +26,9 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.OutputInput;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,7 +36,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -220,9 +222,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!world.isRemote) {
             mode = !mode;
-            String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
-            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
-                                                       LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                  Translation.of("mekanism.tooltip.configurator.inductionPortMode"), " ", (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(mode), "."));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

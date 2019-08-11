@@ -735,6 +735,7 @@ tooltip.configurator.toggleColor=Color bumped to
 tooltip.configurator.viewColor=Current color
 tooltip.configurator.reactorPortEject=Toggled Reactor Port eject mode to
 tooltip.configurator.modeChange=Connection type changed to
+tooltip.configurator.redstoneSensitivity=Redstone sensitivity turned
 mekanism.pipe.connectiontype.normal=Normal
 mekanism.pipe.connectiontype.push=Push
 mekanism.pipe.connectiontype.pull=Pull

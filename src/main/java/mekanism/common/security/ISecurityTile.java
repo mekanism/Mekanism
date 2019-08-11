@@ -3,8 +3,8 @@ package mekanism.common.security;
 import mekanism.api.EnumColor;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public interface ISecurityTile {
 
@@ -32,7 +32,7 @@ public interface ISecurityTile {
         }
 
         public ITextComponent getTextComponent() {
-            return new TranslationTextComponent(display).applyTextStyle(color.textFormatting);
+            return TextComponentUtil.build(color, display);
         }
     }
 }

@@ -5,8 +5,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public class ItemDictionary extends ItemMekanism {
@@ -39,12 +39,14 @@ public class ItemDictionary extends ItemMekanism {
                 ItemStack testStack = new ItemStack(block);
                 List<String> names = OreDictCache.getOreDictName(testStack);
                 if (!names.isEmpty()) {
-                    player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
+                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                          Translation.of("mekanism.tooltip.keysFound"), ":"));
                     for (String name : names) {
-                        player.sendMessage(new StringTextComponent(EnumColor.DARK_GREEN + " - " + name));
+                        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GREEN, " - " + name));
                     }
                 } else {
-                    player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
+                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                          Translation.of("mekanism.tooltip.noKey"), "."));
                 }
             }
             return ActionResultType.SUCCESS;

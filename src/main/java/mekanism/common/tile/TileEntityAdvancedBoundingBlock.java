@@ -108,12 +108,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         return inv.hasCustomName();
     }
 
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getName());
-    }
-
     @Override
     public int getInventoryStackLimit() {
         IAdvancedBoundingBlock inv = getInv();

@@ -27,7 +27,8 @@ import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TextComponentGroup;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,7 +38,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -293,30 +293,18 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
         onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         Mekanism.packetHandler.sendUpdatePacket(this);
-        TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
-              .translation("tooltip.configurator.toggleColor").string(": ");
-
-        if (getTransmitter().getColor() != null) {
-            msg.appendSibling(getTransmitter().getColor().getTranslatedColoredComponent());
-        } else {
-            msg.translation("gui.none");
-        }
-        player.sendMessage(msg);
+        EnumColor color = getTransmitter().getColor();
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("tooltip.configurator.toggleColor"), ": ",
+              (color != null ? color.getTranslatedColoredComponent() : Translation.of("mekanism.gui.none"))));
         return ActionResultType.SUCCESS;
     }
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         super.onRightClick(player, side);
-        TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
-              .translation("tooltip.configurator.viewColor").string(": ");
-
-        if (getTransmitter().getColor() != null) {
-            msg.appendSibling(getTransmitter().getColor().getTranslatedColoredComponent());
-        } else {
-            msg.translation("gui.none");
-        }
-        player.sendMessage(msg);
+        EnumColor color = getTransmitter().getColor();
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("tooltip.configurator.viewColor"), ": ",
+              (color != null ? color.getTranslatedColoredComponent() : Translation.of("mekanism.gui.none"))));
         return ActionResultType.SUCCESS;
     }
 

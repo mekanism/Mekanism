@@ -4,7 +4,6 @@ import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +26,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.TextComponentGroup;
 import mekanism.common.util.TextComponentUtil;
 import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.block.Block;
@@ -44,9 +42,9 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -97,17 +95,18 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     SideData initial = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
-                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
-                                  transmissionType) + ": " + initial.color + initial.localize() + " (" + initial.color.getColoredName() + ")"));
+                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                                  Translation.of("tooltip.configurator.viewMode", Translation.of(transmissionType.getTranslationKey())),
+                                  ": ", initial.color, initial, " (", Translation.of(initial.color.getTranslationKey()), ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
                                     MekanismUtils.incrementOutput(config, transmissionType, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
                                     SideData data = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
-                                    player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
-                                                                               + getToggleModeText(transmissionType) + ": " + data.color + data.localize() + " (" +
-                                                                               data.color.getColoredName() + ")"));
+                                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                                          Translation.of("tooltip.configurator.toggleMode", Translation.of(transmissionType.getTranslationKey())),
+                                          ": ", data.color, data, " (", Translation.of(data.color.getTranslationKey(), ")")));
                                     if (config instanceof TileEntityMekanism) {
                                         Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                     }
@@ -172,16 +171,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
         return ActionResultType.PASS;
     }
 
-    public String getViewModeText(TransmissionType type) {
-        String base = LangUtils.localize("tooltip.configurator.viewMode");
-        return String.format(base, type.localize().toLowerCase(Locale.ROOT));
-    }
-
-    public String getToggleModeText(TransmissionType type) {
-        String base = LangUtils.localize("tooltip.configurator.toggleMode");
-        return String.format(base, type.localize());
-    }
-
     public String getStateDisplay(ConfiguratorMode mode) {
         return mode.getName();
     }
@@ -205,13 +194,13 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
-    public boolean canWrench(PlayerEntity player, Hand hand, ItemStack wrench, RayTraceResult rayTrace) {
-        return canUseWrench(wrench, player, rayTrace.getBlockPos());
+    public boolean canWrench(PlayerEntity player, Hand hand, ItemStack wrench, BlockRayTraceResult rayTrace) {
+        return canUseWrench(wrench, player, rayTrace.getPos());
     }
 
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
-    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, RayTraceResult rayTrace) {
+    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, BlockRayTraceResult rayTrace) {
     }
 
     @Override
@@ -286,12 +275,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             return name;
         }
 
-        public ITextComponent getNameComponent() {
-            TextComponentGroup translation = new TextComponentGroup().translation("tooltip.configurator." + name);
+        public ITextComponent getTextComponent() {
             if (this.transmissionType != null) {
-                translation.string(" (").translation(transmissionType.getTranslationKey()).string(")");
+                return TextComponentUtil.build(color, Translation.of("tooltip.configurator." + name), " (", Translation.of(transmissionType.getTranslationKey()), ")");
             }
-            return translation;
+            return TextComponentUtil.build(color, Translation.of("tooltip.configurator." + name));
         }
 
         public EnumColor getColor() {

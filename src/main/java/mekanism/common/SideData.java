@@ -47,6 +47,10 @@ public class SideData {
         return LangUtils.localize("sideData." + name);
     }
 
+    public String getTranslationKey() {
+        return "mekanism.sideData." + name;
+    }
+
     public boolean hasSlot(int... slots) {
         for (int i : availableSlots) {
             for (int slot : slots) {

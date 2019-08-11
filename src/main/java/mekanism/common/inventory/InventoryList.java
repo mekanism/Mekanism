@@ -1,6 +1,8 @@
 package mekanism.common.inventory;
 
 import javax.annotation.Nonnull;
+import mekanism.common.util.TextComponentUtil;
+import mekanism.common.util.TextComponentUtil.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -121,7 +123,7 @@ public class InventoryList implements IInventory {
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return this.hasCustomName() ? new StringTextComponent(this.getName()) : new TranslationTextComponent(this.getName());
+        return TextComponentUtil.build(hasCustomName() ? getName() : Translation.of(getName()));
     }
 
     /**

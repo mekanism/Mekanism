@@ -6,10 +6,10 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.TextComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 
 public final class HolidayManager {
 
@@ -64,6 +64,7 @@ public final class HolidayManager {
     }
 
     private static String getThemedLines(EnumColor[] colors, int amount) {
+        //TODO: Should this use text components?
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < amount; i++) {
             builder.append(colors[i % colors.length]).append("-");
@@ -122,14 +123,15 @@ public final class HolidayManager {
 
         @Override
         public void onEvent(PlayerEntity player) {
+            //TODO: Lang strings for this
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
-            player.sendMessage(new StringTextComponent(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
-            player.sendMessage(new StringTextComponent(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
-            player.sendMessage(new StringTextComponent(EnumColor.RED + "May you have plenty of Christmas cheer"));
-            player.sendMessage(new StringTextComponent(EnumColor.RED + "and have a relaxing holiday with your"));
-            player.sendMessage(new StringTextComponent(EnumColor.RED + "family :)"));
-            player.sendMessage(new StringTextComponent(EnumColor.DARK_GREY + "-aidancbrady"));
-            player.sendMessage(new StringTextComponent(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
+            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, Mekanism.LOG_TAG + themedLines));
+            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "Merry Christmas, ", EnumColor.DARK_BLUE, player.getName(), EnumColor.RED, "!"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "May you have plenty of Christmas cheer"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "and have a relaxing holiday with your"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "family :)"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GREY, "-aidancbrady"));
+            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, "[=======]" + themedLines));
         }
 
         @Override
@@ -159,13 +161,14 @@ public final class HolidayManager {
 
         @Override
         public void onEvent(PlayerEntity player) {
+            //TODO: Lang strings for this
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.WHITE, EnumColor.YELLOW}, 13);
-            player.sendMessage(new StringTextComponent(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
-            player.sendMessage(new StringTextComponent(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
-            player.sendMessage(new StringTextComponent(EnumColor.AQUA + "Best wishes to you as we enter this"));
-            player.sendMessage(new StringTextComponent(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
-            player.sendMessage(new StringTextComponent(EnumColor.DARK_GREY + "-aidancbrady"));
-            player.sendMessage(new StringTextComponent(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
+            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, Mekanism.LOG_TAG + themedLines));
+            player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "Happy New Year, ", EnumColor.DARK_BLUE, player.getName(), EnumColor.RED, "!"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "Best wishes to you as we enter this"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GREY, "-aidancbrady"));
+            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, "[=======]" + themedLines));
         }
     }
 

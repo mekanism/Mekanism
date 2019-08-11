@@ -3,6 +3,7 @@ package mekanism.common.item.block;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
+import mekanism.common.util.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,7 @@ public class ItemBlockColoredName<BLOCK extends Block & IColoredBlock> extends I
         if (color == EnumColor.BLACK) {
             color = EnumColor.DARK_GREY;
         }
-        return color + super.getDisplayName(stack);
+        return TextComponentUtil.build(color, super.getDisplayName(stack));
     }
 
     private EnumColor getColor(ItemStack stack) {
