@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.Mekanism;
-import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

@@ -10,11 +10,13 @@ import mekanism.api.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.LangUtils;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Think about moving upgrade to API so that other mods can access our upgrades if they want to
@@ -109,8 +111,8 @@ public enum Upgrade implements IHasTranslationKey {
         return ItemStack.EMPTY;
     }
 
-    public List<String> getInfo(TileEntity tile) {
-        List<String> ret = new ArrayList<>();
+    public List<ITextComponent> getInfo(TileEntity tile) {
+        List<ITextComponent> ret = new ArrayList<>();
         if (tile instanceof IUpgradeTile) {
             if (tile instanceof IUpgradeInfoHandler) {
                 return ((IUpgradeInfoHandler) tile).getInfo(this);
@@ -121,26 +123,26 @@ public enum Upgrade implements IHasTranslationKey {
         return ret;
     }
 
-    public List<String> getMultScaledInfo(IUpgradeTile tile) {
-        List<String> ret = new ArrayList<>();
+    public List<ITextComponent> getMultScaledInfo(IUpgradeTile tile) {
+        List<ITextComponent> ret = new ArrayList<>();
         if (canMultiply()) {
             double effect = Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), (float) tile.getComponent().getUpgrades(this) / (float) getMax());
-            ret.add(LangUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect * 100) / 100F) + "x");
+            ret.add(TextComponentUtil.build(Translation.of("gui.upgrades.effect"), ": " + (Math.round(effect * 100) / 100F) + "x"));
         }
         return ret;
     }
 
-    public List<String> getExpScaledInfo(IUpgradeTile tile) {
-        List<String> ret = new ArrayList<>();
+    public List<ITextComponent> getExpScaledInfo(IUpgradeTile tile) {
+        List<ITextComponent> ret = new ArrayList<>();
         if (canMultiply()) {
             double effect = Math.pow(2, (float) tile.getComponent().getUpgrades(this));
-            ret.add(LangUtils.localize("gui.upgrades.effect") + ": " + effect + "x");
+            ret.add(TextComponentUtil.build(Translation.of("gui.upgrades.effect"), ": " + effect + "x"));
         }
         return ret;
     }
 
     public interface IUpgradeInfoHandler {
 
-        List<String> getInfo(Upgrade upgrade);
+        List<ITextComponent> getInfo(Upgrade upgrade);
     }
 }

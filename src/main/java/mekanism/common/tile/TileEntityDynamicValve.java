@@ -9,7 +9,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;

@@ -20,7 +20,6 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -32,7 +31,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -108,7 +106,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config")), 0, xSize,5, 0x404040);
+        drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config")), 0, xSize, 5, 0x404040);
         if (configurable.getConfig().canEject(currentType)) {
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(configurable.getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
         } else {

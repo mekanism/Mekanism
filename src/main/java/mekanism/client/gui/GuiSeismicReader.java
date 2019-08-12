@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,18 +9,19 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonSeismicReader;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -153,7 +154,9 @@ public class GuiSeismicReader extends Screen {
         GlStateManager.pushMatrix();
         GlStateManager.translatef(guiLeft + 72, guiTop + 26, 0);
         GlStateManager.translatef(0.7F, 0.7F, 0.7F);
-        font.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
+        //TODO:
+        ITextComponent component = TextComponentUtil.build(Translation.of("gui.abundancy"), ": " + frequency);
+        font.drawString(component.getFormattedText(), 0, 0, 0x919191);
         GlStateManager.popMatrix();
         MekanismRenderer.resetColor();
         super.render(mouseX, mouseY, partialTick);

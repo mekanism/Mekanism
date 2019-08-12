@@ -13,7 +13,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLaserAmplifier;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;

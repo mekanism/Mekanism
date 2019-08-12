@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -12,14 +13,12 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.button.Button;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -94,8 +93,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
             renderText(TextComponentUtil.build(selectedType, " ", Translation.of("mekanism.gui.upgrade")), 92, 8, 0.6F, true);
             renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
             int text = 0;
-            for (String s : selectedType.getInfo((TileEntity) tileEntity)) {
-                renderText(s, 92, 22 + (6 * text++), 0.6F, true);
+            for (ITextComponent component : selectedType.getInfo((TileEntity) tileEntity)) {
+                renderText(component, 92, 22 + (6 * text++), 0.6F, true);
             }
         }
         Set<Upgrade> supportedTypes = tileEntity.getComponent().getSupportedTypes();

@@ -10,7 +10,6 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitMain;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;

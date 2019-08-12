@@ -15,7 +15,6 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;

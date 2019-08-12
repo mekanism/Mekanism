@@ -24,7 +24,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;

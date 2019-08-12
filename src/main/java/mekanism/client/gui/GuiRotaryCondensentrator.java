@@ -20,11 +20,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
@@ -89,7 +88,11 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        drawString(tileEntity.mode == 0 ? LangUtils.localize("gui.condensentrating") : LangUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
+        if (tileEntity.mode == 0) {
+            drawString(TextComponentUtil.build(Translation.of("gui.condensentrating")), 6, (ySize - 94) + 2, 0x404040);
+        } else {
+            drawString(TextComponentUtil.build(Translation.of("gui.decondensentrating")), 6, (ySize - 94) + 2, 0x404040);
+        }
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (toggleButton.isMouseOver(mouseX, mouseY)) {

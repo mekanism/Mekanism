@@ -6,12 +6,10 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
@@ -21,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -63,13 +62,14 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
         GlStateManager.disableLighting();
         drawString(TextComponentUtil.build(Translation.of("container.repair")), 60, 6, 0x404040);
 
-        if (repairContainer.maximumCost > 0) {
+        //func_216976_f = getMaximumCost
+        if (repairContainer.func_216976_f() > 0) {
             int k = 8453920;
             boolean flag = true;
-            String s = I18n.format("container.repair.cost", repairContainer.maximumCost);
+            ITextComponent component = TextComponentUtil.build(Translation.of("container.repair.cost", repairContainer.func_216976_f()));
 
-            if (repairContainer.maximumCost >= 40 && !minecraft.player.isCreative()) {
-                s = LangUtils.localize("container.repair.expensive");
+            if (repairContainer.func_216976_f() >= 40 && !minecraft.player.isCreative()) {
+                component = TextComponentUtil.build(Translation.of("container.repair.expensive"));
                 k = 16736352;
             } else if (!repairContainer.getSlot(2).getHasStack()) {
                 flag = false;
@@ -86,11 +86,11 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
                     drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
                     drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
                 } else {
-                    drawString(s, i1, b0 + 1, l);
-                    drawString(s, i1 + 1, b0, l);
-                    drawString(s, i1 + 1, b0 + 1, l);
+                    drawString(component, i1, b0 + 1, l);
+                    drawString(component, i1 + 1, b0, l);
+                    drawString(component, i1 + 1, b0 + 1, l);
                 }
-                drawString(s, i1, b0, k);
+                drawString(component, i1, b0, k);
             }
         }
         GlStateManager.enableLighting();

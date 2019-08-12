@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
