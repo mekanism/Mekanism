@@ -8,6 +8,7 @@ import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasFactoryType;
@@ -21,7 +22,6 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -49,11 +49,14 @@ import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockCrusher extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IHasFactoryType,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityCrusher>, IBlockSound, ISupportsRedstone {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityCrusher>, IBlockSound, ISupportsRedstone, IBlockDisableable {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.crusher"));
+
+    private BooleanValue enabledReference;
 
     public BlockCrusher() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -228,5 +231,15 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabledReference == null ? true : enabledReference.get();
+    }
+
+    @Override
+    public void setEnabledConfigReference(BooleanValue enabledReference) {
+        this.enabledReference = enabledReference;
     }
 }

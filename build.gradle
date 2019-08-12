@@ -13,7 +13,7 @@ buildscript {
 
 plugins {
     id 'org.ajoberstar.grgit' version '3.1.1'
-    id "com.matthewprenger.cursegradle" version "1.3.0"
+    id "com.matthewprenger.cursegradle" version '1.3.0'
     id 'java'
     id 'idea'
     id 'maven'

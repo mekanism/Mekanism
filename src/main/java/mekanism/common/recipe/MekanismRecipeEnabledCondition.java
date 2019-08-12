@@ -2,14 +2,10 @@ package mekanism.common.recipe;
 
 import com.google.gson.JsonObject;
 import java.util.function.BooleanSupplier;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.config_old.MekanismConfigOld;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.GeneratorType;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.fml.ModList;
 
 /**
  * Used as a condition in mekanism _factories.json
@@ -20,7 +16,8 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
 
     @Override
     public BooleanSupplier parse(JsonContext context, JsonObject json) {
-        if (JSONUtils.hasField(json, "machineType")) {
+        //TODO
+        /*if (JSONUtils.hasField(json, "machineType")) {
             String machineType = JSONUtils.getString(json, "machineType");
             final MachineType type = MekanismConfigOld.current().general.machinesManager.typeFromName(machineType);
             //TODO: Check config
@@ -38,7 +35,7 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
                     return true;//MekanismConfig.current().generators.generatorsManager.isEnabled(type);
                 }
             };
-        }
+        }*/
 
         if (JSONUtils.hasField(json, "circuitOredict")) {
             return () -> MekanismConfigOld.current().general.controlCircuitOreDict.get();

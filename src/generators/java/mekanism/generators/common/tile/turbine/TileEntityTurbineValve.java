@@ -17,6 +17,7 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -221,8 +222,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 case 2:
                     return new Object[]{structure.clientFlow};
                 case 3:
-                    double rate = structure.lowerVolume * (structure.clientDispersers * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get());
-                    rate = Math.min(rate, structure.vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get());
+                    double rate = structure.lowerVolume * (structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+                    rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
                     return new Object[]{rate};
                 case 4:
                     return new Object[]{structure.lastSteamInput};

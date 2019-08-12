@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
@@ -43,9 +44,12 @@ import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator> {
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, IBlockDisableable {
+
+    private BooleanValue enabledReference;
 
     public BlockSolarNeutronActivator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -191,5 +195,15 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
     @Override
     public Class<? extends TileEntitySolarNeutronActivator> getTileClass() {
         return TileEntitySolarNeutronActivator.class;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabledReference == null ? true : enabledReference.get();
+    }
+
+    @Override
+    public void setEnabledConfigReference(BooleanValue enabledReference) {
+        this.enabledReference = enabledReference;
     }
 }

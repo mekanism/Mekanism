@@ -2,6 +2,11 @@ package mekanism.common.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
+import mekanism.common.base.IBlockProvider;
+import mekanism.common.block.interfaces.IBlockDisableable;
+import net.minecraft.block.Block;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 
@@ -42,5 +47,19 @@ public class MekanismConfig {
               .sync().autosave().writingMode(WritingMode.REPLACE).build();
         configData.load();
         config.getConfigSpec().setConfig(configData);
+    }
+
+    public static void addEnabledBlocksCategory(ForgeConfigSpec.Builder builder, IBlockProvider[] blockProviders) {
+        for (IBlockProvider blockProvider : blockProviders) {
+            Block block = blockProvider.getBlock();
+            //Instead of using helper methods in IBlockProvider, just inline everything so that we don't have to keep checking the block's type
+            if (block instanceof IBlockDisableable) {
+                IBlockDisableable disableable = (IBlockDisableable) block;
+                String name = blockProvider.getName();
+                BooleanValue enabledReference = builder.comment("Allow " + name + " to be used/crafted. Requires game restart to fully take effect.")
+                      .worldRestart().define(name, disableable.isEnabled());
+                disableable.setEnabledConfigReference(enabledReference);
+            }
+        }
     }
 }

@@ -30,7 +30,6 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IModule;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.command.CommandMek;

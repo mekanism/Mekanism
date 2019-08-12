@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.common.InfuseStorage;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -69,24 +69,24 @@ public interface IFactory {
     }
 
     enum RecipeType implements IStringSerializable {
-        SMELTING("Smelting", MachineType.ENERGIZED_SMELTER, MachineFuelType.BASIC, false, Recipe.ENERGIZED_SMELTER),
-        ENRICHING("Enriching", MachineType.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false, Recipe.ENRICHMENT_CHAMBER),
-        CRUSHING("Crushing", MachineType.CRUSHER, MachineFuelType.BASIC, false, Recipe.CRUSHER),
-        COMPRESSING("Compressing", MachineType.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false, Recipe.OSMIUM_COMPRESSOR),
-        COMBINING("Combining", MachineType.COMBINER, MachineFuelType.DOUBLE, false, Recipe.COMBINER),
-        PURIFYING("Purifying", MachineType.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.PURIFICATION_CHAMBER),
-        INJECTING("Injecting", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
-        INFUSING("Infusing", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER),
-        SAWING("Sawing", MachineType.PRECISION_SAWMILL, MachineFuelType.CHANCE, false, Recipe.PRECISION_SAWMILL);
+        SMELTING("Smelting", MekanismBlock.ENERGIZED_SMELTER, MachineFuelType.BASIC, false, Recipe.ENERGIZED_SMELTER),
+        ENRICHING("Enriching", MekanismBlock.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false, Recipe.ENRICHMENT_CHAMBER),
+        CRUSHING("Crushing", MekanismBlock.CRUSHER, MachineFuelType.BASIC, false, Recipe.CRUSHER),
+        COMPRESSING("Compressing", MekanismBlock.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false, Recipe.OSMIUM_COMPRESSOR),
+        COMBINING("Combining", MekanismBlock.COMBINER, MachineFuelType.DOUBLE, false, Recipe.COMBINER),
+        PURIFYING("Purifying", MekanismBlock.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.PURIFICATION_CHAMBER),
+        INJECTING("Injecting", MekanismBlock.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
+        INFUSING("Infusing", MekanismBlock.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER),
+        SAWING("Sawing", MekanismBlock.PRECISION_SAWMILL, MachineFuelType.CHANCE, false, Recipe.PRECISION_SAWMILL);
 
         private String name;
-        private MachineType type;
+        private MekanismBlock type;
         private MachineFuelType fuelType;
         private boolean fuelSpeed;
         private Recipe recipe;
         private TileEntityAdvancedElectricMachine cacheTile;
 
-        RecipeType(String s, MachineType t, MachineFuelType ft, boolean speed, Recipe r) {
+        RecipeType(String s, MekanismBlock t, MachineFuelType ft, boolean speed, Recipe r) {
             name = s;
             type = t;
             fuelType = ft;
@@ -226,7 +226,7 @@ public interface IFactory {
 
         public TileEntityAdvancedElectricMachine getTile() {
             if (cacheTile == null) {
-                MachineType type = MachineType.get(getStack());
+                //TODO: Use getFactoryType??
                 //cacheTile = (TileEntityAdvancedElectricMachine) type.create();
                 //TODO: Move a bunch of factory stuff out
             }
@@ -234,7 +234,8 @@ public interface IFactory {
         }
 
         public double getEnergyUsage() {
-            return type.getUsage();
+            //TODO: Get from block
+            return 0;//type.getUsage();
         }
 
         public int getMaxSecondaryEnergy() {
@@ -242,11 +243,13 @@ public interface IFactory {
         }
 
         public double getEnergyStorage() {
-            return type.getStorage();
+            //TODO: Get from block
+            return 0;//type.getStorage();
         }
 
         public ItemStack getStack() {
-            return type.getStack();
+            //TODO: Get from block
+            return ItemStack.EMPTY;//type.getStack();
         }
 
         public String getTranslationKey() {
@@ -270,7 +273,8 @@ public interface IFactory {
             return name().toLowerCase(Locale.ROOT);
         }
 
-        public MachineType getType() {
+        public MekanismBlock getType() {
+            //TODO: Make this be part of the block's info
             return type;
         }
     }

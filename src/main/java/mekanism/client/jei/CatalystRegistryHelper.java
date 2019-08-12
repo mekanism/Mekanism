@@ -47,7 +47,12 @@ public class CatalystRegistryHelper {
         registry.addRecipeCatalyst(mekanismBlock.getItemStack(), category);
         FactoryType factoryType = mekanismBlock.getFactoryType();
         if (factoryType != null) {
-            FactoryTier.forEnabled(tier -> registry.addRecipeCatalyst(MekanismBlock.getFactory(tier, factoryType).getItemStack(), category));
+            for (FactoryTier tier : FactoryTier.values()) {
+                MekanismBlock factory = MekanismBlock.getFactory(tier, factoryType);
+                if (factory.isEnabled()) {
+                    registry.addRecipeCatalyst(factory.getItemStack(), category);
+                }
+            }
         }
     }
 }

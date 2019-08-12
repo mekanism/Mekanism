@@ -11,6 +11,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasFactoryType;
@@ -92,9 +93,12 @@ import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IBlockSound,
-      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone {
+      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone, IBlockDisableable {
+
+    private BooleanValue enabledReference;
 
     private final FactoryTier tier;
     private final FactoryType type;
@@ -479,5 +483,15 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
             default:
                 return BlockEnergizedSmelter.SOUND_EVENT;
         }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabledReference == null ? true : enabledReference.get();
+    }
+
+    @Override
+    public void setEnabledConfigReference(BooleanValue enabledReference) {
+        this.enabledReference = enabledReference;
     }
 }

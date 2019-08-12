@@ -2,7 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -11,12 +11,12 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.inventory.container.ContainerWindGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,7 +36,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
-                    EnergyDisplay.of(tileEntity.getActive() ? MekanismConfigOld.current().generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier() : 0), "/t"),
+                    EnergyDisplay.of(tileEntity.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier() : 0), "/t"),
               TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
@@ -50,7 +50,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
         drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), 51, 26, 0x00CD00);
         //TODO: Why is this different from how all the other ones do it
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.power"),
-              ": " + powerFormat.format(MekanismUtils.convertToDisplay(MekanismConfigOld.current().generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier()))),
+              ": " + powerFormat.format(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier()))),
               51, 35, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.out"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
         int size = 44;

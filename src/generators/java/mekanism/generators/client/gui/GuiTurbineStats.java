@@ -13,6 +13,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
@@ -30,7 +31,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, resource));
         addGuiElement(new GuiEnergyInfo(() -> {
             double producing = tileEntity.structure == null ? 0 : tileEntity.structure.clientFlow * (MekanismConfigOld.current().general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                                                  Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismConfigOld.current().generators.turbineBladesPerCoil.get());
+                                                                  Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             return Arrays.asList(TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
                   TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ", EnergyDisplay.of(producing), "/t"));
         }, this, resource));
@@ -45,10 +46,10 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
             int clientDispersers = tileEntity.structure.clientDispersers;
             int vents = tileEntity.structure.vents;
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.tankVolume"), ": " + lowerVolume), 8, 26, 0x404040);
-            boolean dispersersLimiting = lowerVolume * clientDispersers * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get()
-                                         < vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get();
-            boolean ventsLimiting = lowerVolume * clientDispersers * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get()
-                                    > vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get();
+            boolean dispersersLimiting = lowerVolume * clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get()
+                                         < vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
+            boolean ventsLimiting = lowerVolume * clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get()
+                                    > vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.steamFlow")), 8, 40, 0x797979);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.dispersers"),
                   ": " + clientDispersers, (dispersersLimiting ? limiting : "")), 14, 49, 0x404040);
@@ -59,12 +60,12 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.blades"), ": " + blades, (coils * 4 > blades ? limiting : "")), 14, 81, 0x404040);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.coils"), ": " + coils, (coils * 4 < blades ? limiting : "")), 14, 90, 0x404040);
             double energyMultiplier = (MekanismConfigOld.current().general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                      Math.min(blades, coils * MekanismConfigOld.current().generators.turbineBladesPerCoil.get());
-            double rate = lowerVolume * (clientDispersers * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get());
-            rate = Math.min(rate, vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get());
+                                      Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+            rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxProduction"), ": ", EnergyDisplay.of(rate * energyMultiplier)), 8, 104, 0x404040);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxWaterOutput"),
-                  ": " + tileEntity.structure.condensers * MekanismConfigOld.current().generators.condenserRate.get() + " mB/t"), 8, 113, 0x404040);
+                  ": " + tileEntity.structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get() + " mB/t"), 8, 113, 0x404040);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

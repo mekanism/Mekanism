@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -25,7 +25,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private boolean isBlacklistDimension = false;
 
     public TileEntityWindGenerator() {
-        super(GeneratorsBlock.WIND_GENERATOR, MekanismConfigOld.current().generators.windGenerationMax.get() * 2);
+        super(GeneratorsBlock.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get() * 2);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
         // an initial activity status and the client (in MP) will show the windmills turning while not
         // generating any power
-        isBlacklistDimension = MekanismConfigOld.current().generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getId());
+        isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
         if (isBlacklistDimension) {
             setActive(false);
         }
@@ -57,7 +57,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
                 setActive(currentMultiplier > 0);
             }
             if (getActive()) {
-                setEnergy(getEnergy() + (MekanismConfigOld.current().generators.windGenerationMin.get() * currentMultiplier));
+                setEnergy(getEnergy() + (MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier));
             }
         } else if (getActive()) {
             angle = (angle + (getPos().getY() + 4F) / SPEED_SCALED) % 360;
@@ -87,10 +87,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      **/
     public float getMultiplier() {
         if (world.canBlockSeeSky(getPos().add(0, 4, 0))) {
-            final float minY = (float) MekanismConfigOld.current().generators.windGenerationMinY.get();
-            final float maxY = (float) MekanismConfigOld.current().generators.windGenerationMaxY.get();
-            final float minG = (float) MekanismConfigOld.current().generators.windGenerationMin.get();
-            final float maxG = (float) MekanismConfigOld.current().generators.windGenerationMax.get();
+            final float minY = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMinY.get();
+            final float maxY = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
+            final float minG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMin.get();
+            final float maxG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMax.get();
             final float slope = (maxG - minG) / (maxY - minY);
             final float intercept = minG - slope * minY;
             final float clampedY = Math.min(maxY, Math.max(minY, (float) (getPos().getY() + 4)));
@@ -136,7 +136,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 3), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 4), current);
         // Check to see if the placement is happening in a blacklisted dimension
-        isBlacklistDimension = MekanismConfigOld.current().generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getId());
+        isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
     }
 
     @Override

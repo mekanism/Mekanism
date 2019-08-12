@@ -22,6 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -55,7 +56,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     private int currentRedstoneLevel;
 
     public TileEntityHeatGenerator() {
-        super(GeneratorsBlock.HEAT_GENERATOR, MekanismConfigOld.current().generators.heatGeneration.get() * 2);
+        super(GeneratorsBlock.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get() * 2);
     }
 
     @Override
@@ -88,7 +89,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             if (canOperate()) {
                 setActive(true);
                 lavaTank.drain(10, true);
-                transferHeatTo(MekanismConfigOld.current().generators.heatGeneration.get());
+                transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
             } else {
                 setActive(false);
             }
@@ -163,9 +164,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             }
         }
         if (world.getDimension().isNether()) {
-            netherBoost = MekanismConfigOld.current().generators.heatGenerationNether.get();
+            netherBoost = MekanismGeneratorsConfig.generators.heatGenerationNether.get();
         }
-        return (MekanismConfigOld.current().generators.heatGenerationLava.get() * lavaBoost) + netherBoost;
+        return (MekanismGeneratorsConfig.generators.heatGenerationLava.get() * lavaBoost) + netherBoost;
     }
 
     private boolean isLava(BlockPos pos) {

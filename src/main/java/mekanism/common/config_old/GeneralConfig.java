@@ -1,6 +1,5 @@
 package mekanism.common.config_old;
 
-import mekanism.common.block.states.MachineType;
 import mekanism.common.config_old.options.BooleanOption;
 import mekanism.common.config_old.options.DoubleOption;
 import mekanism.common.config_old.options.EnumOption;
@@ -219,7 +218,7 @@ public class GeneralConfig extends BaseConfig {
           "Disables IC2 power integration. Requires world restart (server-side option in SMP).");
 
     public final BooleanOption blacklistForge = new BooleanOption(this, "general", "BlacklistForgePower", false,
-          "Disables Forge Energy (FE,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).");
+          "Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).");
 
     public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType", EnergyType.FE,
           "Displayed energy type in Mekanism GUIs.");
@@ -248,7 +247,4 @@ public class GeneralConfig extends BaseConfig {
 
     public final DoubleOption sawdustChanceLog = new DoubleOption(this, "general", "SawdustChanceLog", 1D,
           "Chance of producing sawdust per operation in the precision sawmill when turning logs into planks.").setRequiresGameRestart(true);
-
-    public final TypeConfigManager<MachineType> machinesManager =
-          new TypeConfigManager<>(this, "machines", MachineType.class, MachineType::getValidMachines, MachineType::getBlockName);
 }

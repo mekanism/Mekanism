@@ -37,7 +37,5 @@ public class MekanismConfigOld {
 
     public GeneralConfig general = new GeneralConfig();
 
-    public GeneratorsConfig generators = ModList.get().isLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
-
     public ToolsConfig tools = ModList.get().isLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
 }

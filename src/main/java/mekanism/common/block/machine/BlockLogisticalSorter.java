@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
@@ -55,12 +56,15 @@ import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound, IHasInventory,
-      ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter> {
+      ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, IBlockDisableable {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
+
+    private BooleanValue enabledReference;
 
     public BlockLogisticalSorter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -301,5 +305,15 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public Class<? extends TileEntityLogisticalSorter> getTileClass() {
         return TileEntityLogisticalSorter.class;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabledReference == null ? true : enabledReference.get();
+    }
+
+    @Override
+    public void setEnabledConfigReference(BooleanValue enabledReference) {
+        this.enabledReference = enabledReference;
     }
 }

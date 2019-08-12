@@ -770,7 +770,8 @@ public final class MekanismUtils {
      * @return if IC2 power should be used
      */
     public static boolean useIC2() {
-        return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !MekanismConfigOld.current().general.blacklistIC2.get();
+        //TODO: IC2
+        return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfigOld.current().general.blacklistIC2.get();
     }
 
     /**

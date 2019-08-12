@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
@@ -42,9 +43,12 @@ import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityOredictionificator> {
+      IHasTileEntity<TileEntityOredictionificator>, IBlockDisableable {
+
+    private BooleanValue enabledReference;
 
     public BlockOredictionificator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -197,5 +201,15 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
     @Override
     public Class<? extends TileEntityOredictionificator> getTileClass() {
         return TileEntityOredictionificator.class;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabledReference == null ? true : enabledReference.get();
+    }
+
+    @Override
+    public void setEnabledConfigReference(BooleanValue enabledReference) {
+        this.enabledReference = enabledReference;
     }
 }

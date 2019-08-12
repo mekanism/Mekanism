@@ -16,6 +16,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,7 +42,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     private int currentRedstoneLevel;
 
     public TileEntityBioGenerator() {
-        super(GeneratorsBlock.BIO_GENERATOR, MekanismConfigOld.current().generators.bioGeneration.get() * 2);
+        super(GeneratorsBlock.BIO_GENERATOR, MekanismGeneratorsConfig.generators.bioGeneration.get() * 2);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                 setActive(true);
             }
             bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
-            setEnergy(getEnergy() + MekanismConfigOld.current().generators.bioGeneration.get());
+            setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
         } else if (!world.isRemote) {
             setActive(false);
         }

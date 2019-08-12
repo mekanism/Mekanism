@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
@@ -36,11 +37,14 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntityGasGenerator> {
+      IHasTileEntity<TileEntityGasGenerator>, IBlockDisableable {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.gas"));
+
+    private BooleanValue enabledReference;
 
     public BlockGasBurningGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -132,7 +136,7 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
 
     @Override
     public double getStorage() {
-        return 100 * MekanismConfig.local().general.FROM_H2.get();
+        return 100 * MekanismConfigOld.local().general.FROM_H2.get();
     }
 
     @Override
@@ -150,5 +154,15 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabledReference == null ? true : enabledReference.get();
+    }
+
+    @Override
+    public void setEnabledConfigReference(BooleanValue enabledReference) {
+        this.enabledReference = enabledReference;
     }
 }

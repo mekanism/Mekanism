@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
@@ -59,9 +60,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
                     if (stored > 0 && getEnergy() < structure.getEnergyCapacity()) {
                         double energyMultiplier = (MekanismConfigOld.current().general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                                  Math.min(structure.blades, structure.coils * MekanismConfigOld.current().generators.turbineBladesPerCoil.get());
-                        double rate = structure.lowerVolume * (structure.getDispersers() * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get());
-                        rate = Math.min(rate, structure.vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get());
+                                                  Math.min(structure.blades, structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+                        double rate = structure.lowerVolume * (structure.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+                        rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
 
                         double origRate = rate;
                         rate = Math.min(Math.min(stored, rate), (getMaxEnergy() - getEnergy()) / energyMultiplier) * proportion;
@@ -71,7 +72,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
                         structure.fluidStored.amount -= rate;
                         structure.clientFlow = (int) rate;
-                        structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismConfigOld.current().generators.condenserRate.get());
+                        structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
                         if (structure.fluidStored.amount == 0) {
                             structure.fluidStored = null;
                         }

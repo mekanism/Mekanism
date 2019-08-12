@@ -145,7 +145,7 @@ public class MekanismGenerators implements IModule {
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
         FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfigOld.current().general.ETHENE_BURN_TIME.get(),
-              MekanismConfigOld.current().general.FROM_H2.get() + MekanismConfigOld.current().generators.bioGeneration.get() * 2 * MekanismConfigOld.current().general.ETHENE_BURN_TIME.get());
+              MekanismConfigOld.current().general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfigOld.current().general.ETHENE_BURN_TIME.get());
 
         for (ItemStack ore : OreDictionary.getOres("dustGold", false)) {
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, StackUtils.size(ore, 4), GeneratorsItem.HOHLRAUM.getItemStack());

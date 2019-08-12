@@ -20,6 +20,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
@@ -49,8 +50,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
                 if (tileEntity.structure == null) {
                     return 0;
                 }
-                double rate = Math.min(tileEntity.structure.lowerVolume * tileEntity.structure.clientDispersers * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get(),
-                      tileEntity.structure.vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get());
+                double rate = Math.min(tileEntity.structure.lowerVolume * tileEntity.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get(),
+                      tileEntity.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
                 if (rate == 0) {
                     return 0;
                 }
@@ -59,7 +60,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         }, resource, 40, 13));
         addGuiElement(new GuiEnergyInfo(() -> {
             double producing = tileEntity.structure == null ? 0 : tileEntity.structure.clientFlow * (MekanismConfigOld.current().general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                                                  Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismConfigOld.current().generators.turbineBladesPerCoil.get());
+                                                                  Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             return Arrays.asList(TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
                   TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ", EnergyDisplay.of(producing), "/t"));
         }, this, resource));
@@ -71,9 +72,9 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
         if (tileEntity.structure != null) {
             double energyMultiplier = (MekanismConfigOld.current().general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                      Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismConfigOld.current().generators.turbineBladesPerCoil.get());
-            double rate = tileEntity.structure.lowerVolume * (tileEntity.structure.clientDispersers * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get());
-            rate = Math.min(rate, tileEntity.structure.vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get());
+                                      Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            double rate = tileEntity.structure.lowerVolume * (tileEntity.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+            rate = Math.min(rate, tileEntity.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
             renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.production"), ": ",
                   EnergyDisplay.of(tileEntity.structure.clientFlow * energyMultiplier)), 53, 26, 0x00CD00, 106);
             renderScaledText(TextComponentUtil.build(Translation.of("gui.flowRate"), ": " + tileEntity.structure.clientFlow + " mB/t"), 53, 35, 0x00CD00, 106);

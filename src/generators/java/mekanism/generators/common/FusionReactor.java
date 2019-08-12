@@ -13,6 +13,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorBlock;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -144,7 +145,7 @@ public class FusionReactor {
     public int burnFuel() {
         int fuelBurned = (int) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
         getFuelTank().draw(fuelBurned, true);
-        plasmaTemperature += MekanismConfigOld.current().generators.energyPerFusionFuel.get() * fuelBurned / plasmaHeatCapacity;
+        plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * fuelBurned / plasmaHeatCapacity;
         return fuelBurned;
     }
 
@@ -371,26 +372,26 @@ public class FusionReactor {
     public int getMinInjectionRate(boolean active) {
         double k = active ? caseWaterConductivity : 0;
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
-                      (MekanismConfigOld.current().generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
+                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
         return (int) (2 * Math.ceil(aMin / 2D));
     }
 
     public double getMaxPlasmaTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return injectionRate * MekanismConfigOld.current().generators.energyPerFusionFuel.get() / plasmaCaseConductivity *
+        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() / plasmaCaseConductivity *
                (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
     public double getMaxCasingTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return injectionRate * MekanismConfigOld.current().generators.energyPerFusionFuel.get() / (k + caseAirConductivity);
+        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() / (k + caseAirConductivity);
     }
 
     public double getIgnitionTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return burnTemperature * MekanismConfigOld.current().generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
-               (MekanismConfigOld.current().generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
+        return burnTemperature * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
+               (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                 plasmaCaseConductivity * (k + caseAirConductivity));
     }
 

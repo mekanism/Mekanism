@@ -7,6 +7,7 @@ import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -21,7 +22,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private float peakOutput;
 
     public TileEntitySolarGenerator() {
-        this(GeneratorsBlock.SOLAR_GENERATOR, MekanismConfigOld.current().generators.solarGeneration.get() * 2);
+        this(GeneratorsBlock.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get() * 2);
     }
 
     public TileEntitySolarGenerator(IBlockProvider blockProvider, double output) {
@@ -169,7 +170,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected float getConfiguredMax() {
-        return (float) MekanismConfigOld.current().generators.solarGeneration.get();
+        return (float) (double) MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
     @Override

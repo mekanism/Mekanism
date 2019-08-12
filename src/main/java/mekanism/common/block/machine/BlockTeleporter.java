@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
@@ -16,7 +17,6 @@ import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -41,9 +41,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockTeleporter extends BlockMekanismContainer implements IBlockElectric, IHasGui, ISupportsUpgrades, IHasInventory, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityTeleporter> {
+      IHasTileEntity<TileEntityTeleporter>, IBlockDisableable {
+
+    private BooleanValue enabledReference;
 
     public BlockTeleporter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -188,5 +191,15 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     @Override
     public Class<? extends TileEntityTeleporter> getTileClass() {
         return TileEntityTeleporter.class;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabledReference == null ? true : enabledReference.get();
+    }
+
+    @Override
+    public void setEnabledConfigReference(BooleanValue enabledReference) {
+        this.enabledReference = enabledReference;
     }
 }
