@@ -196,7 +196,7 @@ public class TransmitterModel extends OBJBakedModelBase {
             boolean sideIconOverride = getIconStatus(f, tempState) > 0;
 
             if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
-                int opaqueVal = MekanismConfig.current().client.opaqueTransmitters.val() ? 1 : 0;
+                int opaqueVal = MekanismConfig.client.opaqueTransmitters.get() ? 1 : 0;
                 if (color != null) {
                     return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center_color[opaqueVal] : transporter_side_color[opaqueVal];
                 }
@@ -206,11 +206,11 @@ public class TransmitterModel extends OBJBakedModelBase {
                     if (s.contains("Texture.Name")) {
                         continue;
                     }
-                    if (!s.contains("Center") && !s.contains("Centre") && (MekanismConfig.current().client.opaqueTransmitters.val() == s.contains("Opaque"))) {
+                    if (!s.contains("Center") && !s.contains("Centre") && (MekanismConfig.client.opaqueTransmitters.get() == s.contains("Opaque"))) {
                         return textureMap.get(s);
                     }
                 }
-            } else if (MekanismConfig.current().client.opaqueTransmitters.val()) {
+            } else if (MekanismConfig.client.opaqueTransmitters.get()) {
                 return textureMap.get(f.getMaterialName() + "_Opaque");
             }
         }

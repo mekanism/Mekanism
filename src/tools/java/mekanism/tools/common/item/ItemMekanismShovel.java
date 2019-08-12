@@ -1,4 +1,4 @@
-package mekanism.tools.item;
+package mekanism.tools.common.item;
 
 import java.util.List;
 import java.util.Locale;
@@ -10,18 +10,19 @@ import mekanism.tools.common.Materials;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismSword extends SwordItem implements IHasRepairType {
+public class ItemMekanismShovel extends ShovelItem implements IHasRepairType {
 
-    public ItemMekanismSword(Materials material) {
+    public ItemMekanismShovel(Materials material) {
         super(material.getMaterial());
-        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_sword"));
+        setHarvestLevel("shovel", material.getMaterial().getHarvestLevel());
+        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_shovel"));
     }
 
     @Override
@@ -32,6 +33,6 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType {
 
     @Override
     public ItemStack getRepairStack() {
-        return material.getRepairItemStack();
+        return toolMaterial.getRepairItemStack();
     }
 }

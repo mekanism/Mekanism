@@ -33,6 +33,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
@@ -342,7 +343,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void tick() {
-        if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
+        if (!world.isRemote && MekanismConfigOld.current().general.destroyDisabledBlocks.get()) {
             Block block = getBlockType();
             if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
                 //TODO: Better way of doing name?
@@ -975,7 +976,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @OnlyIn(Dist.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
-        if (!hasSound() || !MekanismConfig.current().client.enableMachineSounds.val() || soundEvent == null) {
+        if (!hasSound() || !MekanismConfig.client.enableMachineSounds.get() || soundEvent == null) {
             return;
         }
 

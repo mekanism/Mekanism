@@ -22,7 +22,7 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -182,7 +182,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : Direction.values()) {
                 Coord4D side = wrapper.offset(orientation);
-                if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.current().general.maxPumpRange.val()) {
+                if (Coord4D.get(this).distanceTo(side) <= MekanismConfigOld.current().general.maxPumpRange.get()) {
                     fluid = MekanismUtils.getFluid(world, side, hasFilter());
                     if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid))) {
                         if (take) {
@@ -209,7 +209,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     private boolean shouldTake(FluidStack fluid, Coord4D coord) {
         if (fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater) {
-            return MekanismConfig.current().general.pumpWaterSources.val();
+            return MekanismConfigOld.current().general.pumpWaterSources.get();
         }
         return true;
     }

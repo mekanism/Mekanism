@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
@@ -41,12 +42,12 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         if (coords == null) {
             return 0;
         }
-        int neededEnergy = MekanismConfig.current().usage.teleporterBase.val();
+        int neededEnergy = MekanismConfig.usage.teleporterBase.get();
         if (entity.world.getDimension().getType().equals(coords.dimension)) {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
-            neededEnergy += distance * MekanismConfig.current().usage.teleporterDistance.val();
+            neededEnergy += distance * MekanismConfig.usage.teleporterDistance.get();
         } else {
-            neededEnergy += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
+            neededEnergy += MekanismConfig.usage.teleporterDimensionPenalty.get();
         }
         return neededEnergy;
     }

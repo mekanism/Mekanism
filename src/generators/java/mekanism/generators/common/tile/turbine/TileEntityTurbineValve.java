@@ -9,7 +9,7 @@ import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
@@ -221,8 +221,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 case 2:
                     return new Object[]{structure.clientFlow};
                 case 3:
-                    double rate = structure.lowerVolume * (structure.clientDispersers * MekanismConfig.current().generators.turbineDisperserGasFlow.val());
-                    rate = Math.min(rate, structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
+                    double rate = structure.lowerVolume * (structure.clientDispersers * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get());
+                    rate = Math.min(rate, structure.vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get());
                     return new Object[]{rate};
                 case 4:
                     return new Object[]{structure.lastSteamInput};

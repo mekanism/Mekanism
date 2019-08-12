@@ -8,7 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockGasTank;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
@@ -109,7 +109,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
             return;
         }
         BlockGasTank gasTank = getBlock();
-        if (gasTank.getTier() == GasTankTier.CREATIVE && MekanismConfig.current().general.prefilledGasTanks.val()) {
+        if (gasTank.getTier() == GasTankTier.CREATIVE && MekanismConfigOld.current().general.prefilledGasTanks.get()) {
             for (Gas type : GasRegistry.getRegisteredGasses()) {
                 if (type.isVisible()) {
                     ItemStack filled = new ItemStack(this);

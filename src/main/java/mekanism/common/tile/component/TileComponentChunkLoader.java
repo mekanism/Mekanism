@@ -9,7 +9,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -89,7 +89,7 @@ public class TileComponentChunkLoader implements ITileComponent {
     }
 
     public boolean canOperate() {
-        return MekanismConfig.current().general.allowChunkloading.val() && ((IUpgradeTile) tileEntity).getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
+        return MekanismConfigOld.current().general.allowChunkloading.get() && ((IUpgradeTile) tileEntity).getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
     }
 
     @Override

@@ -68,7 +68,7 @@ public class PlayerState {
             }
 
             // Start a sound playing if the person is now flying
-            if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
+            if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
                 SoundHandler.startSound(world, uuid, SoundType.JETPACK);
             }
         }
@@ -111,7 +111,7 @@ public class PlayerState {
             }
 
             // Start a sound playing if the person is now using a gasmask
-            if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
+            if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
                 SoundHandler.startSound(world, uuid, SoundType.GAS_MASK);
             }
         }
@@ -172,7 +172,7 @@ public class PlayerState {
                 // attempt to start the sound. This is not a major deal as the uuid gets checked before attempting
                 // to retrieve the player or actually creating a new sound object.
             }
-            if (startSound && MekanismConfig.current().client.enablePlayerSounds.val()) {
+            if (startSound && MekanismConfig.client.enablePlayerSounds.get()) {
                 SoundHandler.startSound(world, uuid, SoundType.FLAMETHROWER);
             }
         }

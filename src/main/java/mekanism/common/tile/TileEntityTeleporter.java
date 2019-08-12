@@ -17,6 +17,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
@@ -336,12 +337,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     public int calculateEnergyCost(Entity entity, Coord4D coords) {
-        int energyCost = MekanismConfig.current().usage.teleporterBase.val();
+        int energyCost = MekanismConfig.usage.teleporterBase.get();
         if (entity.world.getDimension().getType().equals(coords.dimension)) {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
-            energyCost += distance * MekanismConfig.current().usage.teleporterDistance.val();
+            energyCost += distance * MekanismConfig.usage.teleporterDistance.get();
         } else {
-            energyCost += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
+            energyCost += MekanismConfig.usage.teleporterDimensionPenalty.get();
         }
         return energyCost;
     }

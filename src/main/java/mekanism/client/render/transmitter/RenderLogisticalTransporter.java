@@ -59,7 +59,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     @Override
     public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage) {
-        if (MekanismConfig.current().client.opaqueTransmitters.val()) {
+        if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;
         }
         //Keep track of if we had to push. Makes it so that we don't have to push and pop if we end up doing no rendering

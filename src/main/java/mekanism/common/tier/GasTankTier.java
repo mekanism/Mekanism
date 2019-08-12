@@ -1,8 +1,8 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
-import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.IStringSerializable;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum GasTankTier implements ITier, IStringSerializable {
     BASIC(64000, 256),
@@ -14,6 +14,8 @@ public enum GasTankTier implements ITier, IStringSerializable {
     private final int baseStorage;
     private final int baseOutput;
     private final BaseTier baseTier;
+    private IntValue storageReference;
+    private IntValue outputReference;
 
     GasTankTier(int s, int o) {
         baseStorage = s;
@@ -32,11 +34,11 @@ public enum GasTankTier implements ITier, IStringSerializable {
     }
 
     public int getStorage() {
-        return MekanismConfig.current().general.tiers.get(baseTier).GasTankStorage.val();
+        return storageReference == null ? getBaseStorage() : storageReference.get();
     }
 
     public int getOutput() {
-        return MekanismConfig.current().general.tiers.get(baseTier).GasTankOutput.val();
+        return outputReference == null ? getBaseOutput() : outputReference.get();
     }
 
     public int getBaseStorage() {
@@ -45,5 +47,13 @@ public enum GasTankTier implements ITier, IStringSerializable {
 
     public int getBaseOutput() {
         return baseOutput;
+    }
+
+    /**
+     * ONLY CALL THIS FROM TierConfig. It is used to give the GasTankTier a reference to the actual config value object
+     */
+    public void setConfigReference(IntValue storageReference, IntValue outputReference) {
+        this.storageReference = storageReference;
+        this.outputReference = outputReference;
     }
 }

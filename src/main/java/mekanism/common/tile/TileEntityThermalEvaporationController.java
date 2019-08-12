@@ -12,7 +12,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -106,7 +106,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
                 int inputStored = inputTank.getFluidAmount();
                 double outputRatio = (double) recipe.recipeOutput.output.amount / (double) recipe.recipeInput.ingredient.amount;
-                double tempMult = Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
+                double tempMult = Math.max(0, getTemperature()) * MekanismConfigOld.current().general.evaporationTempMultiplier.get();
                 double inputToUse = tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
                 inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
                 inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
@@ -216,7 +216,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             biomeTemp = world.getBiomeForCoordsBody(getPos()).getTemperature(getPos());
             temperatureSet = true;
         }
-        heatToAbsorb += getActiveSolars() * MekanismConfig.current().general.evaporationSolarMultiplier.val();
+        heatToAbsorb += getActiveSolars() * MekanismConfigOld.current().general.evaporationSolarMultiplier.get();
         temperature += heatToAbsorb / (float) height;
 
         float biome = biomeTemp - 0.5F;
@@ -225,14 +225,14 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (Math.abs(temperature - base) < 0.001) {
             temperature = base;
         }
-        float incr = (float) Math.sqrt(Math.abs(temperature - base)) * (float) MekanismConfig.current().general.evaporationHeatDissipation.val();
+        float incr = (float) Math.sqrt(Math.abs(temperature - base)) * (float) MekanismConfigOld.current().general.evaporationHeatDissipation.get();
 
         if (temperature > base) {
             incr = -incr;
         }
 
         float prev = temperature;
-        temperature = (float) Math.min(MekanismConfig.current().general.evaporationMaxTemp.val(), temperature + incr / (float) height);
+        temperature = (float) Math.min(MekanismConfigOld.current().general.evaporationMaxTemp.get(), temperature + incr / (float) height);
 
         if (incr < 0) {
             totalLoss = prev - temperature;
@@ -395,7 +395,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public int getScaledTempLevel(int i) {
-        return (int) (i * Math.min(1, getTemperature() / MekanismConfig.current().general.evaporationMaxTemp.val()));
+        return (int) (i * Math.min(1, getTemperature() / MekanismConfigOld.current().general.evaporationMaxTemp.get()));
     }
 
     public Coord4D getRenderLocation() {

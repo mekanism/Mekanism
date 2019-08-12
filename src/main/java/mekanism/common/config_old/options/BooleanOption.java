@@ -1,8 +1,8 @@
-package mekanism.common.config.options;
+package mekanism.common.config_old.options;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.common.config.BaseConfig;
+import mekanism.common.config_old.BaseConfig;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -30,7 +30,7 @@ public class BooleanOption extends Option<BooleanOption> {
         this(owner, category, key, false, null);
     }
 
-    public boolean val() {
+    public boolean get() {
         return value;
     }
 

@@ -1,55 +1,61 @@
 package mekanism.common.config;
 
-import mekanism.common.config.options.BooleanOption;
-import mekanism.common.config.options.DoubleOption;
-import mekanism.common.config.options.IntOption;
-import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.fml.config.ModConfig.Type;
 
-/**
- * Created by Thiakil on 15/03/2019.
- */
-public class ClientConfig extends BaseConfig {
+public class ClientConfig implements IMekanismConfig {
 
-    public final BooleanOption enablePlayerSounds = new BooleanOption(this, "client", "EnablePlayerSounds", true,
-          "Play sounds for Jetpack/Gas Mask/Flamethrower (all players).");
+    private final ForgeConfigSpec configSpec;
 
-    public final BooleanOption enableMachineSounds = new BooleanOption(this, "client", "EnableMachineSounds", true,
-          "If enabled machines play their sounds while running.");
+    public final BooleanValue enablePlayerSounds;
+    public final BooleanValue enableMachineSounds;
+    public final BooleanValue holidays;
+    public final ConfigValue<Double> baseSoundVolume;
+    public final BooleanValue machineEffects;
+    public final BooleanValue enableAmbientLighting;
+    public final IntValue ambientLightingLevel;
+    public final BooleanValue opaqueTransmitters;
+    public final BooleanValue allowConfiguratorModeScroll;
+    public final BooleanValue enableMultiblockFormationParticles;
+    public final BooleanValue alignHUDLeft;
 
-    public final BooleanOption holidays = new BooleanOption(this, "client", "Holidays", true,
-          "Christmas/New Years greetings in chat.");
+    ClientConfig() {
+        //TODO: Should this stuff be moved from constructor to an init method defined in IMekanismConfig
+        // Only really matters if they can't stay final
+        ForgeConfigSpec.Builder builder  = new ForgeConfigSpec.Builder();
+        builder.comment("Client Config");
 
-    public final DoubleOption baseSoundVolume = new DoubleOption(this, "client", "SoundVolume", 1D,
-          "Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.");
+        enablePlayerSounds = builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower (all players).").define("enablePlayerSounds", true);
+        enableMachineSounds = builder.comment("If enabled machines play their sounds while running.").define("enableMachineSounds", true);
+        holidays = builder.comment("Christmas/New Years greetings in chat.").define("holidays", true);
+        baseSoundVolume = builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.").define("baseSoundVolume", 1D);
+        machineEffects = builder.comment("Show particles when machines active.").define("machineEffects", true);
+        enableAmbientLighting = builder.comment("Should active machines produce block light.").define("enableAmbientLighting", true);
+        ambientLightingLevel = builder.comment("How much light to produce if ambient lighting is enabled.").defineInRange("ambientLightingLevel", 15, 1, 15);
+        opaqueTransmitters = builder.comment("If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.").define("opaqueTransmitters", false);
+        allowConfiguratorModeScroll = builder.comment("Allow sneak+scroll to change Configurator modes.").define("allowConfiguratorModeScroll", true);
+        enableMultiblockFormationParticles = builder.comment("Set to false to prevent particle spam when loading multiblocks (notification message will display instead).")
+              .define("enableMultiblockFormationParticles", true);
+        alignHUDLeft = builder.comment("Align HUD with left (if true) or right (if false)").define("alignHUDLeft", true);
 
-    public final BooleanOption machineEffects = new BooleanOption(this, "client", "MachineEffects", true,
-          "Show particles when machines active.");
-
-    public final BooleanOption enableAmbientLighting = new BooleanOption(this, "client", "EnableAmbientLighting", true,
-          "Should active machines produce block light.");
-
-    public final IntOption ambientLightingLevel = new IntOption(this, "client", "AmbientLightingLevel", 15,
-          "How much light to produce if ambient lighting is enabled.", 1, 15);
-
-    public final BooleanOption opaqueTransmitters = new BooleanOption(this, "client", "OpaqueTransmitterRender", false,
-          "If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.");
-
-    public final BooleanOption allowConfiguratorModeScroll = new BooleanOption(this, "client", "ConfiguratorModeScroll", true,
-          "Allow sneak+scroll to change Configurator modes.");
-
-    public final BooleanOption enableMultiblockFormationParticles = new BooleanOption(this, "client", "MultiblockFormParticles", true,
-          "Set to false to prevent particle spam when loading multiblocks (notification message will display instead).");
-
-    public final BooleanOption alignHUDLeft = new BooleanOption(this, "client", "AlignHUDLeft", true,
-          "Align HUD with left (if true) or right (if false)");
-
-    @Override
-    public void write(PacketBuffer config) {
-        throw new UnsupportedOperationException("Client config shouldn't be synced");
+        configSpec = builder.build();
     }
 
     @Override
-    public void read(PacketBuffer config) {
-        throw new UnsupportedOperationException("Client config shouldn't be synced");
+    public String getFileName() {
+        return "mekanism-client.toml";
+    }
+
+    @Override
+    public ForgeConfigSpec getConfigSpec() {
+        return configSpec;
+    }
+
+    @Override
+    public Type getConfigType() {
+        return Type.CLIENT;
     }
 }

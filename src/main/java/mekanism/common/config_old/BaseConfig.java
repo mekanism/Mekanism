@@ -1,8 +1,8 @@
-package mekanism.common.config;
+package mekanism.common.config_old;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.common.config.options.Option;
+import mekanism.common.config_old.options.Option;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 

@@ -1,8 +1,8 @@
-package mekanism.common.config;
+package mekanism.common.config_old;
 
-import mekanism.common.config.options.DoubleOption;
-import mekanism.common.config.options.FloatOption;
-import mekanism.common.config.options.IntOption;
+import mekanism.common.config_old.options.DoubleOption;
+import mekanism.common.config_old.options.FloatOption;
+import mekanism.common.config_old.options.IntOption;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 
 /**

@@ -1,7 +1,7 @@
 package mekanism.common.entity;
 
 import javax.annotation.Nonnull;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +35,7 @@ public class EntityObsidianTNT extends Entity {
 
         setMotion(-Math.sin(randPi) * 0.02F, 0.2, -Math.cos(randPi) * 0.02F);
 
-        fuse = MekanismConfig.current().general.obsidianTNTDelay.val();
+        fuse = MekanismConfigOld.current().general.obsidianTNTDelay.get();
 
         prevPosX = x;
         prevPosY = y;
@@ -95,7 +95,7 @@ public class EntityObsidianTNT extends Entity {
     }
 
     private void explode() {
-        world.createExplosion(null, posX, posY, posZ, MekanismConfig.current().general.obsidianTNTBlastRadius.val(), true);
+        world.createExplosion(null, posX, posY, posZ, MekanismConfigOld.current().general.obsidianTNTBlastRadius.get(), true);
         hasExploded = true;
     }
 

@@ -4,10 +4,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismItem;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.ToolsConfig;
-import mekanism.common.config.ToolsConfig.ArmorBalance;
-import mekanism.common.config.ToolsConfig.ToolBalance;
+import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config_old.ToolsConfig;
+import mekanism.common.config_old.ToolsConfig.ArmorBalance;
+import mekanism.common.config_old.ToolsConfig.ToolBalance;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
@@ -72,9 +72,9 @@ public enum Materials {
         if (initialized) {
             return;
         }
-        ToolBalance materialBalance = materialFunction.apply(MekanismConfig.current().tools);
-        ToolBalance paxelMaterialBalance = paxelMaterialFunction.apply(MekanismConfig.current().tools);
-        ArmorBalance armorBalance = armorMaterialFunction.apply(MekanismConfig.current().tools);
+        ToolBalance materialBalance = materialFunction.apply(MekanismConfigOld.current().tools);
+        ToolBalance paxelMaterialBalance = paxelMaterialFunction.apply(MekanismConfigOld.current().tools);
+        ArmorBalance armorBalance = armorMaterialFunction.apply(MekanismConfigOld.current().tools);
 
         this.material = getToolMaterial(materialName, materialBalance);
         this.paxelMaterial = getToolMaterial(materialName + "2", paxelMaterialBalance);

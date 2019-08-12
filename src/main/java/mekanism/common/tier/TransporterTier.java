@@ -1,6 +1,6 @@
 package mekanism.common.tier;
 
-import mekanism.common.config.MekanismConfig;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum TransporterTier implements ITier {
     BASIC(1, 5),
@@ -11,6 +11,8 @@ public enum TransporterTier implements ITier {
     private final int basePull;
     private final int baseSpeed;
     private final BaseTier baseTier;
+    private IntValue pullReference;
+    private IntValue speedReference;
 
     TransporterTier(int pull, int s) {
         basePull = pull;
@@ -33,11 +35,11 @@ public enum TransporterTier implements ITier {
     }
 
     public int getPullAmount() {
-        return MekanismConfig.current().general.tiers.get(baseTier).TransporterPullAmount.val();
+        return pullReference == null ? getBasePull() : pullReference.get();
     }
 
     public int getSpeed() {
-        return MekanismConfig.current().general.tiers.get(baseTier).TransporterSpeed.val();
+        return speedReference == null ? getBaseSpeed() : speedReference.get();
     }
 
     public int getBasePull() {
@@ -46,5 +48,13 @@ public enum TransporterTier implements ITier {
 
     public int getBaseSpeed() {
         return baseSpeed;
+    }
+
+    /**
+     * ONLY CALL THIS FROM TierConfig. It is used to give the TransporterTier a reference to the actual config value object
+     */
+    public void setConfigReference(IntValue pullReference, IntValue speedReference) {
+        this.pullReference = pullReference;
+        this.speedReference = speedReference;
     }
 }

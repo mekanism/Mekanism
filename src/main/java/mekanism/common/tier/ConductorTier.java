@@ -1,7 +1,7 @@
 package mekanism.common.tier;
 
 import mekanism.common.ColourRGBA;
-import mekanism.common.config.MekanismConfig;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum ConductorTier implements ITier {
     BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
@@ -14,6 +14,9 @@ public enum ConductorTier implements ITier {
     private final double baseHeatCapacity;
     private final double baseConductionInsulation;
     private final BaseTier baseTier;
+    private DoubleValue conductionReference;
+    private DoubleValue capacityReference;
+    private DoubleValue insulationReference;
 
     ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour) {
         baseConduction = inversek;
@@ -39,15 +42,15 @@ public enum ConductorTier implements ITier {
     }
 
     public double getInverseConduction() {
-        return MekanismConfig.current().general.tiers.get(baseTier).ConductorInverseConduction.val();
+        return conductionReference == null ? getBaseConduction() : conductionReference.get();
     }
 
     public double getInverseConductionInsulation() {
-        return MekanismConfig.current().general.tiers.get(baseTier).ConductorConductionInsulation.val();
+        return insulationReference == null ? getBaseConductionInsulation() : insulationReference.get();
     }
 
     public double getInverseHeatCapacity() {
-        return MekanismConfig.current().general.tiers.get(baseTier).ConductorHeatCapacity.val();
+        return capacityReference == null ? getBaseHeatCapacity() : capacityReference.get();
     }
 
     public ColourRGBA getBaseColour() {
@@ -64,5 +67,14 @@ public enum ConductorTier implements ITier {
 
     public double getBaseConductionInsulation() {
         return baseConductionInsulation;
+    }
+
+    /**
+     * ONLY CALL THIS FROM TierConfig. It is used to give the BinTier a reference to the actual config value object
+     */
+    public void setConfigReference(DoubleValue conductionReference, DoubleValue capacityReference, DoubleValue insulationReference) {
+        this.conductionReference = conductionReference;
+        this.capacityReference = capacityReference;
+        this.insulationReference = insulationReference;
     }
 }

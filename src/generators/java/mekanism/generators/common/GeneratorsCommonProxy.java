@@ -2,7 +2,7 @@ package mekanism.generators.common;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.base.TileEntityMekanism;

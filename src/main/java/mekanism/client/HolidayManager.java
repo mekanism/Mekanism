@@ -19,7 +19,7 @@ public final class HolidayManager {
     private static List<Holiday> holidaysNotified = new ArrayList<>();
 
     public static void init() {
-        if (MekanismConfig.current().client.holidays.val()) {
+        if (MekanismConfig.client.holidays.get()) {
             holidays.add(new Christmas());
             holidays.add(new NewYear());
         }
@@ -43,7 +43,7 @@ public final class HolidayManager {
     }
 
     public static ResourceLocation filterSound(ResourceLocation sound) {
-        if (!MekanismConfig.current().client.holidays.val()) {
+        if (!MekanismConfig.client.holidays.get()) {
             return sound;
         }
         try {

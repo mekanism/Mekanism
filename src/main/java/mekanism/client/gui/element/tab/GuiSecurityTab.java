@@ -9,7 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTileEntityElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -107,7 +107,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     private SecurityMode getSecurity() {
-        if (!MekanismConfig.current().general.allowProtection.val()) {
+        if (!MekanismConfigOld.current().general.allowProtection.get()) {
             return SecurityMode.PUBLIC;
         }
 
@@ -153,7 +153,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0 && MekanismConfig.current().general.allowProtection.val()) {
+        if (button == 0 && MekanismConfigOld.current().general.allowProtection.get()) {
             if (getOwner() != null && minecraft.player.getUniqueID().equals(getOwner())) {
                 if (inBounds(mouseX, mouseY)) {
                     SecurityMode current = getSecurity();

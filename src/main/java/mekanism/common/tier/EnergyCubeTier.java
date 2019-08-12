@@ -1,8 +1,8 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
-import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.IStringSerializable;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum EnergyCubeTier implements ITier, IStringSerializable {
     BASIC(2_000_000, 800),
@@ -14,6 +14,8 @@ public enum EnergyCubeTier implements ITier, IStringSerializable {
     private final double baseMaxEnergy;
     private final double baseOutput;
     private final BaseTier baseTier;
+    private DoubleValue storageReference;
+    private DoubleValue outputReference;
 
     EnergyCubeTier(double max, double out) {
         baseMaxEnergy = max;
@@ -32,11 +34,11 @@ public enum EnergyCubeTier implements ITier, IStringSerializable {
     }
 
     public double getMaxEnergy() {
-        return MekanismConfig.current().general.tiers.get(baseTier).EnergyCubeMaxEnergy.val();
+        return storageReference == null ? getBaseMaxEnergy() : storageReference.get();
     }
 
     public double getOutput() {
-        return MekanismConfig.current().general.tiers.get(baseTier).EnergyCubeOutput.val();
+        return outputReference == null ? getBaseOutput() : outputReference.get();
     }
 
     public double getBaseMaxEnergy() {
@@ -45,5 +47,13 @@ public enum EnergyCubeTier implements ITier, IStringSerializable {
 
     public double getBaseOutput() {
         return baseOutput;
+    }
+
+    /**
+     * ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object
+     */
+    public void setConfigReference(DoubleValue storageReference, DoubleValue outputReference) {
+        this.storageReference = storageReference;
+        this.outputReference = outputReference;
     }
 }

@@ -20,6 +20,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -43,6 +44,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -80,7 +82,7 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
     @OnlyIn(Dist.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
+        if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
             float zRandom = (float) pos.getZ() + 0.5F;
@@ -112,11 +114,11 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-        if (MekanismConfig.current().client.enableAmbientLighting.val()) {
+    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+        if (MekanismConfig.client.enableAmbientLighting.get()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
-                return MekanismConfig.current().client.ambientLightingLevel.val();
+                return MekanismConfig.client.ambientLightingLevel.get();
             }
         }
         return 0;
@@ -196,12 +198,12 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
 
     @Override
     public double getUsage() {
-        return MekanismConfig.current().usage.chemicalCrystallizer.val();
+        return MekanismConfig.usage.chemicalCrystallizer.get();
     }
 
     @Override
     public double getConfigStorage() {
-        return MekanismConfig.current().storage.chemicalCrystallizer.val();
+        return MekanismConfig.storage.chemicalCrystallizer.get();
     }
 
     @Override

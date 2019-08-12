@@ -1,88 +1,94 @@
 package mekanism.common.config;
 
-import mekanism.common.config.options.DoubleOption;
-import mekanism.common.config.options.IntOption;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.fml.config.ModConfig.Type;
 
-/**
- * Created by Thiakil on 15/03/2019.
- */
-public class UsageConfig extends BaseConfig {
+public class UsageConfig implements IMekanismConfig {
 
-    public final DoubleOption enrichmentChamber = new DoubleOption(this, "usage", "EnrichmentChamberUsage", 50D,
-          "Energy per operation tick (Joules).");
+    private static final String TELEPORTER_CATEGORY = "teleporter";
 
-    public final DoubleOption osmiumCompressor = new DoubleOption(this, "usage", "OsmiumCompressorUsage", 100D,
-          "Energy per operation tick (Joules).");
+    private final ForgeConfigSpec configSpec;
 
-    public final DoubleOption combiner = new DoubleOption(this, "usage", "CombinerUsage", 50D,
-          "Energy per operation tick (Joules).");
+    public final ConfigValue<Double> enrichmentChamber;
+    public final ConfigValue<Double> osmiumCompressor;
+    public final ConfigValue<Double> combiner;
+    public final ConfigValue<Double> crusher;
+    public final ConfigValue<Double> metallurgicInfuser;
+    public final ConfigValue<Double> purificationChamber;
+    public final ConfigValue<Double> energizedSmelter;
+    public final ConfigValue<Double> digitalMiner;
+    public final ConfigValue<Double> electricPump;
+    public final ConfigValue<Double> rotaryCondensentrator;
+    public final ConfigValue<Double> oxidationChamber;
+    public final ConfigValue<Double> chemicalInfuser;
+    public final ConfigValue<Double> chemicalInjectionChamber;
+    public final ConfigValue<Double> precisionSawmill;
+    public final ConfigValue<Double> chemicalDissolutionChamber;
+    public final ConfigValue<Double> chemicalWasher;
+    public final ConfigValue<Double> chemicalCrystallizer;
+    public final ConfigValue<Double> seismicVibrator;
+    public final ConfigValue<Double> pressurizedReactionBase;
+    public final ConfigValue<Double> fluidicPlenisher;
+    public final ConfigValue<Double> laser;
+    public final ConfigValue<Double> heavyWaterElectrolysis;
+    public final ConfigValue<Double> formulaicAssemblicator;
 
-    public final DoubleOption crusher = new DoubleOption(this, "usage", "CrusherUsage", 50D,
-          "Energy per operation tick (Joules).");
+    public final ConfigValue<Integer> teleporterBase;
+    public final ConfigValue<Integer> teleporterDistance;
+    public final ConfigValue<Integer> teleporterDimensionPenalty;
 
-    public final DoubleOption metallurgicInfuser = new DoubleOption(this, "usage", "MetallurgicInfuserUsage", 50D,
-          "Energy per operation tick (Joules).");
+    UsageConfig() {
+        ForgeConfigSpec.Builder builder  = new ForgeConfigSpec.Builder();
+        builder.comment("Machine Energy Usage Config");
 
-    public final DoubleOption purificationChamber = new DoubleOption(this, "usage", "PurificationChamberUsage", 200D,
-          "Energy per operation tick (Joules).");
+        enrichmentChamber = builder.comment("Energy per operation tick (Joules).").define("enrichmentChamber", 50D);
+        osmiumCompressor = builder.comment("Energy per operation tick (Joules).").define("osmiumCompressor", 100D);
+        combiner = builder.comment("Energy per operation tick (Joules).").define("combiner", 50D);
+        crusher = builder.comment("Energy per operation tick (Joules).").define("crusher", 50D);
+        metallurgicInfuser = builder.comment("Energy per operation tick (Joules).").define("metallurgicInfuser", 50D);
+        purificationChamber = builder.comment("Energy per operation tick (Joules).").define("purificationChamber", 200D);
+        energizedSmelter = builder.comment("Energy per operation tick (Joules).").define("energizedSmelter", 50D);
+        digitalMiner = builder.comment("Energy per operation tick (Joules).").define("digitalMiner", 100D);
+        electricPump = builder.comment("Energy per operation tick (Joules).").define("electricPump", 100D);
+        rotaryCondensentrator = builder.comment("Energy per operation tick (Joules).").define("rotaryCondensentrator", 50D);
+        oxidationChamber = builder.comment("Energy per operation tick (Joules).").define("oxidationChamber", 200D);
+        chemicalInfuser = builder.comment("Energy per operation tick (Joules).").define("chemicalInfuser", 200D);
+        chemicalInjectionChamber = builder.comment("Energy per operation tick (Joules).").define("chemicalInjectionChamber", 400D);
+        precisionSawmill = builder.comment("Energy per operation tick (Joules).").define("precisionSawmill", 50D);
+        chemicalDissolutionChamber = builder.comment("Energy per operation tick (Joules).").define("chemicalDissolutionChamber", 400D);
+        chemicalWasher = builder.comment("Energy per operation tick (Joules).").define("chemicalWasher", 200D);
+        chemicalCrystallizer = builder.comment("Energy per operation tick (Joules).").define("chemicalCrystallizer", 400D);
+        seismicVibrator = builder.comment("Energy per operation tick (Joules).").define("seismicVibrator", 50D);
+        pressurizedReactionBase = builder.comment("Energy per operation tick (Joules).").define("pressurizedReactionBase", 5D);
+        fluidicPlenisher = builder.comment("Energy per operation tick (Joules).").define("fluidicPlenisher", 100D);
+        laser = builder.comment("Energy per operation tick (Joules).").define("laser", 5_000D);
+        formulaicAssemblicator = builder.comment("Energy per operation tick (Joules).").define("formulaicAssemblicator", 100D);
+        heavyWaterElectrolysis = builder.comment("Energy needed for one [recipe unit] of heavy water production (Joules).").define("heavyWaterElectrolysis", 800D);
 
-    public final DoubleOption energizedSmelter = new DoubleOption(this, "usage", "EnergizedSmelterUsage", 50D,
-          "Energy per operation tick (Joules).");
+        builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
 
-    public final DoubleOption digitalMiner = new DoubleOption(this, "usage", "DigitalMinerUsage", 100D,
-          "Energy per operation tick (Joules).");
+        teleporterBase = builder.comment("Base Joules cost for a teleportation.").define("teleporterBase", 1_000);
+        teleporterDistance = builder.comment("Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2).")
+              .define("teleporterDistance", 10);
+        teleporterDimensionPenalty = builder.comment("Flat additional cost for interdimensional teleportation.").define("teleporterDimensionPenalty", 10_000);
 
-    public final DoubleOption electricPump = new DoubleOption(this, "usage", "ElectricPumpUsage", 100D,
-          "Energy per operation tick (Joules).");
+        builder.pop();
+        configSpec = builder.build();
+    }
 
-    public final DoubleOption rotaryCondensentrator = new DoubleOption(this, "usage", "RotaryCondensentratorUsage", 50D,
-          "Energy per operation tick (Joules).");
+    @Override
+    public String getFileName() {
+        return "mekanism-machine-usage.toml";
+    }
 
-    public final DoubleOption oxidationChamber = new DoubleOption(this, "usage", "OxidationChamberUsage", 200D,
-          "Energy per operation tick (Joules).");
+    @Override
+    public ForgeConfigSpec getConfigSpec() {
+        return configSpec;
+    }
 
-    public final DoubleOption chemicalInfuser = new DoubleOption(this, "usage", "ChemicalInfuserUsage", 200D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption chemicalInjectionChamber = new DoubleOption(this, "usage", "ChemicalInjectionChamberUsage", 400D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption precisionSawmill = new DoubleOption(this, "usage", "PrecisionSawmillUsage", 50D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption chemicalDissolutionChamber = new DoubleOption(this, "usage", "ChemicalDissolutionChamberUsage", 400D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption chemicalWasher = new DoubleOption(this, "usage", "ChemicalWasherUsage", 200D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption chemicalCrystallizer = new DoubleOption(this, "usage", "ChemicalCrystallizerUsage", 400D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption seismicVibrator = new DoubleOption(this, "usage", "SeismicVibratorUsage", 50D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption pressurizedReactionBase = new DoubleOption(this, "usage", "PressurizedReactionBaseUsage", 5D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption fluidicPlenisher = new DoubleOption(this, "usage", "FluidicPlenisherUsage", 100D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption laser = new DoubleOption(this, "usage", "LaserUsage", 5000D,
-          "Energy per operation tick (Joules).");
-
-    public final DoubleOption heavyWaterElectrolysis = new DoubleOption(this, "usage", "HeavyWaterElectrolysisUsage", 800D,
-          "Energy needed for one [recipe unit] of heavy water production (Joules).");
-
-    public final DoubleOption formulaicAssemblicator = new DoubleOption(this, "usage", "FormulaicAssemblicatorUsage", 100D,
-          "Energy per operation tick (Joules).");
-
-    public final IntOption teleporterBase = new IntOption(this, "usage", "TeleporterBaseUsage", 1000,
-          "Base Joules cost for a teleportation.");
-
-    public final IntOption teleporterDistance = new IntOption(this, "usage", "TeleporterDistanceUsage", 10,
-          "Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2).");
-
-    public final IntOption teleporterDimensionPenalty = new IntOption(this, "usage", "TeleporterDimensionPenalty", 10000,
-          "Flat additional cost for interdimensional teleportation.");
+    @Override
+    public Type getConfigType() {
+        return Type.COMMON;
+    }
 }

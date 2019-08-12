@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
@@ -25,8 +26,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -65,7 +66,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public int pulseOperations;
 
     public RecipeFormula formula;
-    private IRecipe cachedRecipe;
+    private Optional<ICraftingRecipe> cachedRecipe;
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
     public TileComponentUpgrade<TileEntityFormulaicAssemblicator> upgradeComponent;
@@ -202,12 +203,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
                 lastRemainingItems = EMPTY_LIST;
 
-                if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, world)) {
-                    cachedRecipe = CraftingManager.findMatchingRecipe(dummyInv, world);
+                if (!cachedRecipe.isPresent() || !cachedRecipe.get().matches(dummyInv, world)) {
+                    //TODO: Check other places CraftingManager was
+                    cachedRecipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, dummyInv, world);
                 }
-                if (cachedRecipe != null) {
-                    lastOutputStack = cachedRecipe.getCraftingResult(dummyInv);
-                    lastRemainingItems = cachedRecipe.getRemainingItems(dummyInv);
+                if (cachedRecipe.isPresent()) {
+                    lastOutputStack = cachedRecipe.get().getCraftingResult(dummyInv);
+                    lastRemainingItems = cachedRecipe.get().getRemainingItems(dummyInv);
                 } else {
                     lastOutputStack = MekanismUtils.findRepairRecipe(dummyInv, world);
                 }

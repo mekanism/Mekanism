@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketFlamethrowerData;
@@ -28,7 +28,7 @@ public class CommonPlayerTracker {
         MinecraftServer server = event.getPlayer().getServer();
         if (!event.getPlayer().world.isRemote) {
             if (server == null || !server.isSinglePlayer()) {
-                Mekanism.packetHandler.sendTo(new PacketConfigSync(MekanismConfig.local()), (ServerPlayerEntity) event.getPlayer());
+                Mekanism.packetHandler.sendTo(new PacketConfigSync(MekanismConfigOld.local()), (ServerPlayerEntity) event.getPlayer());
                 Mekanism.logger.info("Sent config to '" + event.getPlayer().getDisplayNameString() + ".'");
             }
             Mekanism.packetHandler.sendTo(new PacketBoxBlacklist(), (ServerPlayerEntity) event.getPlayer());

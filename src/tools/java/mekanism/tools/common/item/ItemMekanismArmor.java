@@ -1,4 +1,4 @@
-package mekanism.tools.item;
+package mekanism.tools.common.item;
 
 import java.util.List;
 import java.util.Locale;

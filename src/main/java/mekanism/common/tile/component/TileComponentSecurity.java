@@ -5,7 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -78,7 +78,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     public SecurityMode getMode() {
-        if (MekanismConfig.current().general.allowProtection.val()) {
+        if (MekanismConfigOld.current().general.allowProtection.get()) {
             return securityMode;
         }
         return SecurityMode.PUBLIC;

@@ -1,9 +1,5 @@
 package mekanism.common.config;
 
-import java.util.EnumMap;
-import mekanism.common.config.options.DoubleOption;
-import mekanism.common.config.options.IntOption;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -15,94 +11,194 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.fml.config.ModConfig.Type;
 
-/**
- * Created by Thiakil on 16/03/2019.
- */
-public class TierConfig {
+//TODO: Name things better
+public class TierConfig implements IMekanismConfig {
 
-    public static EnumMap<BaseTier, TierConfig> create(BaseConfig baseConfig) {
-        EnumMap<BaseTier, TierConfig> map = new EnumMap<>(BaseTier.class);
-        for (BaseTier baseTier : BaseTier.values()) {
-            map.put(baseTier, new TierConfig(baseConfig, baseTier));
-        }
-        return map;
+    private static final String ENERGY_CUBE_CATEGORY = "energy_cubes";
+    private static final String FLUID_TANK_CATEGORY = "fluid_tanks";
+    private static final String GAS_TANK_CATEGORY = "gas_tanks";
+    private static final String BIN_CATEGORY = "bins";
+    private static final String INDUCTION_CATEGORY = "induction";
+    private static final String TRANSMITTER_CATEGORY = "transmitters";
+    private static final String ENERGY_CATEGORY = "energy";
+    private static final String FLUID_CATEGORY = "fluid";
+    private static final String GAS_CATEGORY = "gas";
+    private static final String ITEMS_CATEGORY = "items";
+    private static final String HEAT_CATEGORY = "heat";
+
+    private final ForgeConfigSpec configSpec;
+
+    TierConfig() {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        builder.comment("Tier Config");
+        addEnergyCubeCategory(builder);
+        addFluidTankCategory(builder);
+        addGasTankCategory(builder);
+        addBinCategory(builder);
+        addInductionCategory(builder);
+        addTransmittersCategory(builder);
+        configSpec = builder.build();
     }
 
-    public final DoubleOption EnergyCubeMaxEnergy;
-    public final DoubleOption EnergyCubeOutput;
-    public final DoubleOption InductionCellMaxEnergy;
-    public final DoubleOption InductionProviderOutput;
-    public final IntOption CableCapacity;
-    public final IntOption PipeCapacity;
-    public final IntOption PipePullAmount;
-    public final IntOption TubeCapacity;
-    public final IntOption TubePullAmount;
-    public final IntOption TransporterPullAmount;
-    public final IntOption TransporterSpeed;
-    public final DoubleOption ConductorInverseConduction;
-    public final DoubleOption ConductorHeatCapacity;
-    public final DoubleOption ConductorConductionInsulation;
-    public final IntOption FluidTankStorage;
-    public final IntOption FluidTankOutput;
-    public final IntOption GasTankStorage;
-    public final IntOption GasTankOutput;
-    public final IntOption BinStorage;
-
-    private TierConfig(BaseConfig baseConfig, BaseTier tier) {
-        String name = tier.getSimpleName();
-        EnergyCubeMaxEnergy = new DoubleOption(baseConfig, "tier", name + "EnergyCubeMaxEnergy", EnergyCubeTier.values()[tier.ordinal()].getBaseMaxEnergy(),
-              "Maximum number of Joules a " + name + " energy cube can store.");
-        EnergyCubeOutput = new DoubleOption(baseConfig, "tier", name + "EnergyCubeOutput", EnergyCubeTier.values()[tier.ordinal()].getBaseOutput(),
-              "Output rate in Joules of a " + name + " energy cube.");
-        FluidTankStorage = new IntOption(baseConfig, "tier", name + "FluidTankStorage", FluidTankTier.values()[tier.ordinal()].getBaseStorage(),
-              "Storage size of " + name + " gas tank in mB.");
-        FluidTankOutput = new IntOption(baseConfig, "tier", name + "FluidTankOutput", FluidTankTier.values()[tier.ordinal()].getBaseOutput(),
-              "Output rate of " + name + " gas tank in mB.");
-        GasTankStorage = new IntOption(baseConfig, "tier", name + "GasTankStorage", GasTankTier.values()[tier.ordinal()].getBaseStorage(),
-              "Storage size of " + name + " gas tank in mB.");
-        GasTankOutput = new IntOption(baseConfig, "tier", name + "GasTankOutput", GasTankTier.values()[tier.ordinal()].getBaseOutput(),
-              "Output rate of " + name + " gas tank in mB.");
-        BinStorage = new IntOption(baseConfig, "tier", name + "BinStorage", BinTier.values()[tier.ordinal()].getBaseStorage(),
-              "The number of items a " + name + " bin can store.");
-        if (tier != BaseTier.CREATIVE) {
-            InductionCellMaxEnergy = new DoubleOption(baseConfig, "tier", name + "InductionCellMaxEnergy", InductionCellTier.values()[tier.ordinal()].getBaseMaxEnergy(),
-                  "Maximum number of Joules a " + name + " induction cell can store.");
-            InductionProviderOutput = new DoubleOption(baseConfig, "tier", name + "InductionProviderOutput", InductionProviderTier.values()[tier.ordinal()].getBaseOutput(),
-                  "Maximum number of Joules a " + name + " induction provider can output or accept.");
-            CableCapacity = new IntOption(baseConfig, "tier", name + "CableCapacity", CableTier.values()[tier.ordinal()].getBaseCapacity(),
-                  "Internal buffer in Joules of each " + name + " universal cable.");
-            PipeCapacity = new IntOption(baseConfig, "tier", name + "PipeCapacity", PipeTier.values()[tier.ordinal()].getBaseCapacity(),
-                  "Capacity of " + name + " mechanical pipe in mB.");
-            PipePullAmount = new IntOption(baseConfig, "tier", name + "PipePullAmount", PipeTier.values()[tier.ordinal()].getBasePull(),
-                  "Pump rate of " + name + " mechanical pipe in mB/t.");
-            TubeCapacity = new IntOption(baseConfig, "tier", name + "TubeCapacity", TubeTier.values()[tier.ordinal()].getBaseCapacity(),
-                  "Capacity of " + name + " pressurized tube in mB.");
-            TubePullAmount = new IntOption(baseConfig, "tier", name + "TubePullAmount", TubeTier.values()[tier.ordinal()].getBasePull(),
-                  "Pump rate of " + name + " pressurized tube in mB/t.");
-            TransporterPullAmount = new IntOption(baseConfig, "tier", name + "TransporterPullAmount", TransporterTier.values()[tier.ordinal()].getBasePull(),
-                  "Item throughput rate of " + name + " logistical transporter in items/s.");
-            TransporterSpeed = new IntOption(baseConfig, "tier", name + "TransporterSpeed", TransporterTier.values()[tier.ordinal()].getBaseSpeed(),
-                  "Five times travel speed of " + name + " logistical transporter.");
-            ConductorInverseConduction = new DoubleOption(baseConfig, "tier", name + "ConductorInverseConduction", ConductorTier.values()[tier.ordinal()].getBaseConduction(),
-                  "Conduction value of " + name + " thermodynamic conductor.");
-            ConductorHeatCapacity = new DoubleOption(baseConfig, "tier", name + "ConductorHeatCapacity", ConductorTier.values()[tier.ordinal()].getBaseHeatCapacity(),
-                  "Heat capacity of " + name + " thermodynamic conductor.");
-            ConductorConductionInsulation = new DoubleOption(baseConfig, "tier", name + "ConductorConductionInsulation", ConductorTier.values()[tier.ordinal()].getBaseConductionInsulation(),
-                  "Insulation value of " + name + " thermodynamic conductor.");
-        } else {
-            InductionCellMaxEnergy = null;
-            InductionProviderOutput = null;
-            CableCapacity = null;
-            PipeCapacity = null;
-            PipePullAmount = null;
-            TubeCapacity = null;
-            TubePullAmount = null;
-            TransporterPullAmount = null;
-            TransporterSpeed = null;
-            ConductorInverseConduction = null;
-            ConductorHeatCapacity = null;
-            ConductorConductionInsulation = null;
+    private void addEnergyCubeCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Energy Cubes").push(ENERGY_CUBE_CATEGORY);
+        for (EnergyCubeTier tier : EnergyCubeTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            DoubleValue storageReference = builder.comment("Maximum number of Joules " + tierName + " energy cubes can store.")
+                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseMaxEnergy(), 1, Double.MAX_VALUE);
+            DoubleValue outputReference = builder.comment("Output rate in Joules of " + tierName + " energy cubes.")
+                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Double.MAX_VALUE);
+            tier.setConfigReference(storageReference, outputReference);
         }
+        builder.pop();
+    }
+
+    private void addFluidTankCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Fluid Tanks").push(FLUID_TANK_CATEGORY);
+        for (FluidTankTier tier : FluidTankTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            IntValue storageReference = builder.comment("Storage size of " + tierName + " fluid tanks in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE);
+            IntValue outputReference = builder.comment("Output rate of " + tierName + " fluid tanks in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE);
+            tier.setConfigReference(storageReference, outputReference);
+        }
+        builder.pop();
+    }
+
+    private void addGasTankCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Gas Tanks").push(GAS_TANK_CATEGORY);
+        for (GasTankTier tier : GasTankTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            IntValue storageReference = builder.comment("Storage size of " + tierName + " gas tanks in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE);
+            IntValue outputReference = builder.comment("Output rate of " + tierName + " gas tanks in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE);
+            tier.setConfigReference(storageReference, outputReference);
+        }
+        builder.pop();
+    }
+
+    private void addBinCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Bins").push(BIN_CATEGORY);
+        for (BinTier tier : BinTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            IntValue storageReference = builder.comment("The number of items " + tierName + " bins can store.")
+                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE);
+            tier.setConfigReference(storageReference);
+        }
+        builder.pop();
+    }
+
+    private void addInductionCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Induction").push(INDUCTION_CATEGORY);
+        for (InductionCellTier tier : InductionCellTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            DoubleValue storageReference = builder.comment("Maximum number of Joules " + tierName + " induction cells can store.")
+                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseMaxEnergy(), 1, Double.MAX_VALUE);
+            tier.setConfigReference(storageReference);
+        }
+        for (InductionProviderTier tier : InductionProviderTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            DoubleValue outputReference = builder.comment("Maximum number of Joules " + tierName + " induction providers can output or accept.")
+                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Double.MAX_VALUE);
+            tier.setConfigReference(outputReference);
+        }
+        builder.pop();
+    }
+
+    private void addTransmittersCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Transmitters").push(TRANSMITTER_CATEGORY);
+        addUniversalCableCategory(builder);
+        addMechanicalPipeCategory(builder);
+        addPressurizedTubesCategory(builder);
+        addLogisticalTransportersCategory(builder);
+        addThermodynamicConductorsCategory(builder);
+        builder.pop();
+    }
+
+    private void addUniversalCableCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Universal Cables").push(ENERGY_CATEGORY);
+        for (CableTier tier : CableTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            IntValue capacityReference = builder.comment("Internal buffer in Joules of each " + tierName + " universal cable.")
+                  .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE);
+            tier.setConfigReference(capacityReference);
+        }
+        builder.pop();
+    }
+
+    private void addMechanicalPipeCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Mechanical Pipes").push(FLUID_CATEGORY);
+        for (PipeTier tier : PipeTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            IntValue capacityReference = builder.comment("Capacity of " + tierName + " mechanical pipes in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE);
+            IntValue pullReference = builder.comment("Pump rate of " + tierName + " mechanical pipes in mB/t.")
+                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE);
+            tier.setConfigReference(capacityReference, pullReference);
+        }
+        builder.pop();
+    }
+
+    private void addPressurizedTubesCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Pressurized Tubes").push(GAS_CATEGORY);
+        for (TubeTier tier : TubeTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            IntValue capacityReference = builder.comment("Capacity of " + tierName + " pressurized tubes in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE);
+            IntValue pullReference = builder.comment("Pump rate of " + tierName + " pressurized tubes in mB/t.")
+                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE);
+            tier.setConfigReference(capacityReference, pullReference);
+        }
+        builder.pop();
+    }
+
+    private void addLogisticalTransportersCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Logistical Transporters").push(ITEMS_CATEGORY);
+        for (TransporterTier tier : TransporterTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            IntValue pullReference = builder.comment("Item throughput rate of " + tierName + " logistical transporters in items/s.")
+                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE);
+            IntValue speedReference = builder.comment("Five times travel speed of " + tierName + " logistical transporter.")
+                  .defineInRange(tierName.toLowerCase() + "Speed", tier.getBaseSpeed(), 1, Integer.MAX_VALUE);
+            tier.setConfigReference(pullReference, speedReference);
+        }
+        builder.pop();
+    }
+
+    private void addThermodynamicConductorsCategory(ForgeConfigSpec.Builder builder) {
+        builder.comment("Thermodynamic Conductors").push(HEAT_CATEGORY);
+        for (ConductorTier tier : ConductorTier.values()) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            DoubleValue conductionReference = builder.comment("Conduction value of " + tierName + " thermodynamic conductors.")
+                  .defineInRange(tierName.toLowerCase() + "InverseConduction", tier.getBaseConduction(), 1, Double.MAX_VALUE);
+            DoubleValue capacityReference = builder.comment("Heat capacity of " + tierName + " thermodynamic conductors.")
+                  .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseHeatCapacity(), 1, Double.MAX_VALUE);
+            DoubleValue insulationReference = builder.comment("Insulation value of " + tierName + " thermodynamic conductor.")
+                  .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseConductionInsulation(), 1, Double.MAX_VALUE);
+            tier.setConfigReference(conductionReference, capacityReference, insulationReference);
+        }
+        builder.pop();
+    }
+
+    @Override
+    public String getFileName() {
+        return "mekanism-tiers.toml";
+    }
+
+    @Override
+    public ForgeConfigSpec getConfigSpec() {
+        return configSpec;
+    }
+
+    @Override
+    public Type getConfigType() {
+        return Type.COMMON;
     }
 }

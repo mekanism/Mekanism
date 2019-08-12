@@ -16,7 +16,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage) {
-        if (!MekanismConfig.current().client.opaqueTransmitters.val()) {
+        if (MekanismConfig.client.opaqueTransmitters.get()) {
             TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
             if (transmitter.hasTransmitterNetwork() && transmitter.getTransmitterNetwork().refGas != null && transmitter.getTransmitterNetwork().gasScale != 0) {
                 render(tube, x, y, z, 0);

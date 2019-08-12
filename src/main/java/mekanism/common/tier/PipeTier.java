@@ -1,6 +1,6 @@
 package mekanism.common.tier;
 
-import mekanism.common.config.MekanismConfig;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum PipeTier implements ITier {
     BASIC(1000, 100),
@@ -11,6 +11,8 @@ public enum PipeTier implements ITier {
     private final int baseCapacity;
     private final int basePull;
     private final BaseTier baseTier;
+    private IntValue capacityReference;
+    private IntValue pullReference;
 
     PipeTier(int capacity, int pullAmount) {
         baseCapacity = capacity;
@@ -33,11 +35,11 @@ public enum PipeTier implements ITier {
     }
 
     public int getPipeCapacity() {
-        return MekanismConfig.current().general.tiers.get(baseTier).PipeCapacity.val();
+        return capacityReference == null ? getBaseCapacity() : capacityReference.get();
     }
 
     public int getPipePullAmount() {
-        return MekanismConfig.current().general.tiers.get(baseTier).PipePullAmount.val();
+        return pullReference == null ? getBaseCapacity() : pullReference.get();
     }
 
     public int getBaseCapacity() {
@@ -46,5 +48,13 @@ public enum PipeTier implements ITier {
 
     public int getBasePull() {
         return basePull;
+    }
+
+    /**
+     * ONLY CALL THIS FROM TierConfig. It is used to give the PipeTier a reference to the actual config value object
+     */
+    public void setConfigReference(IntValue capacityReference, IntValue pullReference) {
+        this.capacityReference = capacityReference;
+        this.pullReference = pullReference;
     }
 }

@@ -10,7 +10,7 @@ import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
@@ -113,9 +113,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.relauncher.FMLInjectionData;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Common proxy for the Mekanism mod.
@@ -152,12 +151,13 @@ public class CommonProxy implements IGuiProvider {
      * Set and load the mod's common configuration properties.
      */
     public void loadConfiguration() {
-        MekanismConfig.local().general.load(Mekanism.configuration);
-        MekanismConfig.local().usage.load(Mekanism.configuration);
-        MekanismConfig.local().storage.load(Mekanism.configuration);
+        //TODO??
+        /*MekanismConfigOld.local().general.load(Mekanism.configuration);
+        MekanismConfigOld.local().usage.load(Mekanism.configuration);
+        MekanismConfigOld.local().storage.load(Mekanism.configuration);
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
-        }
+        }*/
     }
 
     /**
@@ -407,16 +407,17 @@ public class CommonProxy implements IGuiProvider {
      * @return base directory
      */
     public File getMinecraftDir() {
-        return (File) FMLInjectionData.data()[6];
+        //TODO: Check if this is correct, honestly cardboard box blacklist should be rewritten how the file works
+        return FMLPaths.GAMEDIR.get().toFile();
     }
 
     public void onConfigSync(boolean fromPacket) {
-        if (MekanismConfig.current().general.cardboardSpawners.val()) {
-            MekanismAPI.removeBoxBlacklist(Blocks.SPAWNER, OreDictionary.WILDCARD_VALUE);
+        if (MekanismConfigOld.current().general.cardboardSpawners.get()) {
+            MekanismAPI.removeBoxBlacklist(Blocks.SPAWNER);
         } else {
-            MekanismAPI.addBoxBlacklist(Blocks.SPAWNER, OreDictionary.WILDCARD_VALUE);
+            MekanismAPI.addBoxBlacklist(Blocks.SPAWNER);
         }
-        if (MekanismConfig.current().general.voiceServerEnabled.val() && Mekanism.voiceManager == null) {
+        if (MekanismConfigOld.current().general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();
         }
         if (fromPacket) {
@@ -442,6 +443,8 @@ public class CommonProxy implements IGuiProvider {
 
     public void handlePacket(Runnable runnable, PlayerEntity player) {
         if (player instanceof ServerPlayerEntity) {
+            //TODO
+            //player.world.getWorldInfo().getScheduledEvents().scheduleReplaceDuplicate();
             ((ServerWorld) player.world).addScheduledTask(runnable);
         }
     }

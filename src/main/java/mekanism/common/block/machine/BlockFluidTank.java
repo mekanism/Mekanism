@@ -49,6 +49,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -93,11 +94,11 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-        if (MekanismConfig.current().client.enableAmbientLighting.val()) {
+    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+        if (MekanismConfig.client.enableAmbientLighting.get()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
-                return MekanismConfig.current().client.ambientLightingLevel.val();
+                return MekanismConfig.client.ambientLightingLevel.get();
             }
         }
         return 0;

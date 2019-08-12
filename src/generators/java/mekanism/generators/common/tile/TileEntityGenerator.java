@@ -5,7 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.block.interfaces.IBlockDisableable;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
@@ -34,7 +34,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            if (MekanismConfig.current().general.destroyDisabledBlocks.val()) {
+            if (MekanismConfigOld.current().general.destroyDisabledBlocks.get()) {
                 Block block = getBlockType();
                 if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
                     //TODO: Better way of doing name?

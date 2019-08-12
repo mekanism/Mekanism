@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay;
 import mekanism.common.util.text.TextComponentUtil;
@@ -48,7 +48,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(BooleanStateDisplay.OnOff.of(getOn(itemstack), true)));
         tooltip.add(TextComponentUtil.build(EnumColor.DARK_AQUA, Translation.of("tooltip.channel"), ": ", EnumColor.GRAY, getChannel(itemstack)));
-        if (!MekanismConfig.current().general.voiceServerEnabled.val()) {
+        if (!MekanismConfigOld.current().general.voiceServerEnabled.get()) {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("tooltip.walkie_disabled")));
         }
     }

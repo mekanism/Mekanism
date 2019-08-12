@@ -10,7 +10,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.LazyOptionalHelper;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -41,7 +41,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     private int currentRedstoneLevel;
 
     public TileEntityBioGenerator() {
-        super(GeneratorsBlock.BIO_GENERATOR, MekanismConfig.current().generators.bioGeneration.val() * 2);
+        super(GeneratorsBlock.BIO_GENERATOR, MekanismConfigOld.current().generators.bioGeneration.get() * 2);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                 setActive(true);
             }
             bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
-            setEnergy(getEnergy() + MekanismConfig.current().generators.bioGeneration.val());
+            setEnergy(getEnergy() + MekanismConfigOld.current().generators.bioGeneration.get());
         } else if (!world.isRemote) {
             setActive(false);
         }

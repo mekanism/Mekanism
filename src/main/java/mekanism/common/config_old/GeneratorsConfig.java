@@ -1,8 +1,8 @@
-package mekanism.common.config;
+package mekanism.common.config_old;
 
-import mekanism.common.config.options.DoubleOption;
-import mekanism.common.config.options.IntOption;
-import mekanism.common.config.options.IntSetOption;
+import mekanism.common.config_old.options.DoubleOption;
+import mekanism.common.config_old.options.IntOption;
+import mekanism.common.config_old.options.IntSetOption;
 import mekanism.generators.common.block.states.GeneratorType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
@@ -77,6 +77,6 @@ public class GeneratorsConfig extends BaseConfig {
 
     private void validate() {
         //ensure windGenerationMaxY is > windGenerationMinY
-        windGenerationMaxY.set(Math.max(windGenerationMinY.val() + 1, windGenerationMaxY.val()));
+        windGenerationMaxY.set(Math.max(windGenerationMinY.get() + 1, windGenerationMaxY.get()));
     }
 }

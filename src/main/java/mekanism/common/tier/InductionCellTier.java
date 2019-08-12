@@ -1,6 +1,6 @@
 package mekanism.common.tier;
 
-import mekanism.common.config.MekanismConfig;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum InductionCellTier implements ITier {
     BASIC(1E9D),
@@ -10,6 +10,7 @@ public enum InductionCellTier implements ITier {
 
     private final double baseMaxEnergy;
     private final BaseTier baseTier;
+    private DoubleValue storageReference;
 
     InductionCellTier(double max) {
         baseMaxEnergy = max;
@@ -22,10 +23,17 @@ public enum InductionCellTier implements ITier {
     }
 
     public double getMaxEnergy() {
-        return MekanismConfig.current().general.tiers.get(baseTier).InductionCellMaxEnergy.val();
+        return storageReference == null ? getBaseMaxEnergy() : storageReference.get();
     }
 
     public double getBaseMaxEnergy() {
         return baseMaxEnergy;
+    }
+
+    /**
+     * ONLY CALL THIS FROM TierConfig. It is used to give the InductionCellTier a reference to the actual config value object
+     */
+    public void setConfigReference(DoubleValue storageReference) {
+        this.storageReference = storageReference;
     }
 }

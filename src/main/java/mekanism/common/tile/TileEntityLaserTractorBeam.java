@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -69,7 +69,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
                     if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).matches(ILaserReceptor::canLasersDig)) {
                         diggingProgress += lastFired;
-                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
+                        if (diggingProgress < hardness * MekanismConfigOld.current().general.laserEnergyNeededPerHardness.get()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
                     }
@@ -99,7 +99,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
 
                 if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()).matches(ILaserReceptor::canLasersDig)) {
                     diggingProgress += firing;
-                    if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
+                    if (diggingProgress >= hardness * MekanismConfigOld.current().general.laserEnergyNeededPerHardness.get()) {
                         List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world, pos);
                         if (drops != null) {
                             receiveDrops(drops);

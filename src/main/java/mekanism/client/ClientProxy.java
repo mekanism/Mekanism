@@ -120,6 +120,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -774,7 +775,7 @@ public class ClientProxy extends CommonProxy {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
         if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
-            if (MekanismConfig.current().client.enableMultiblockFormationParticles.val()) {
+            if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                 anim.run();
             } else {
                 player.sendStatusMessage(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("chat.mek.multiblockformed")), true);
@@ -891,7 +892,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void onConfigSync(boolean fromPacket) {
         super.onConfigSync(fromPacket);
-        if (fromPacket && MekanismConfig.current().general.voiceServerEnabled.val() && MekanismClient.voiceClient != null) {
+        if (fromPacket && MekanismConfigOld.current().general.voiceServerEnabled.get() && MekanismClient.voiceClient != null) {
             MekanismClient.voiceClient.start();
         }
     }

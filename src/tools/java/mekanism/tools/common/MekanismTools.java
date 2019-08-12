@@ -7,7 +7,9 @@ import mekanism.common.MekanismItem;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.tools.client.ToolsClientProxy;
+import mekanism.tools.common.config.MekanismToolsConfig;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
@@ -23,10 +25,10 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -41,13 +43,21 @@ public class MekanismTools implements IModule {
 
     public static ToolsCommonProxy proxy = DistExecutor.runForDist(() -> ToolsClientProxy::new, () -> ToolsCommonProxy::new);
 
-    @Instance(MekanismTools.MODID)
     public static MekanismTools instance;
 
     /**
      * MekanismTools version number
      */
     public static Version versionNumber = new Version(999, 999, 999);
+
+    public MekanismTools() {
+        instance = this;
+        MekanismToolsConfig.registerConfigs(ModLoadingContext.get());
+
+        //TODO: Register other listeners and various stuff that is needed
+
+        MekanismToolsConfig.loadFromFiles();
+    }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
@@ -135,7 +145,7 @@ public class MekanismTools implements IModule {
             //Don't bother calculating random numbers unless the instanceof checks pass
             Random random = event.getWorld().getRandom();
             double chance = random.nextDouble();
-            if (chance < MekanismConfig.current().tools.armorSpawnRate.val()) {
+            if (chance < MekanismConfigOld.current().tools.armorSpawnRate.val()) {
                 int armorType = random.nextInt(4);
                 if (armorType == 0) {
                     setEntityArmorWithChance(random, entity, ToolsItem.GLOWSTONE_SWORD, ToolsItem.GLOWSTONE_HELMET, ToolsItem.GLOWSTONE_CHESTPLATE,

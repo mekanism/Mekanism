@@ -32,30 +32,31 @@ idea {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-
 sourceSets {
     api {
         java {
             srcDir 'src/api/java'
         }
     }
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
     generators {
         java {
             srcDir 'src/generators/java'
         }
+        compileClasspath += sourceSets.api.output
+        compileClasspath += sourceSets.main.output
+        //TODO: Do the runtime paths need to be added
     }
     tools {
         java {
             srcDir 'src/tools/java'
         }
-    }
-    main {
         compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-    test {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
+        compileClasspath += sourceSets.main.output
+        //TODO: Do the runtime paths need to be added
     }
 }
 

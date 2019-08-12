@@ -1,4 +1,4 @@
-package mekanism.tools.item;
+package mekanism.tools.common.item;
 
 import java.util.List;
 import java.util.Locale;
@@ -9,7 +9,7 @@ import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.Materials;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.HoeItem;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -17,11 +17,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
+public class ItemMekanismAxe extends AxeItem implements IHasRepairType {
 
-    public ItemMekanismHoe(Materials material) {
-        super(material.getMaterial());
-        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_hoe"));
+    public ItemMekanismAxe(Materials material) {
+        super(material.getMaterial(), material.getAxeDamage(), material.getAxeSpeed());
+        setHarvestLevel("axe", material.getMaterial().getHarvestLevel());
+        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_axe"));
     }
 
     @Override

@@ -3,7 +3,7 @@ package mekanism.common.block.states;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.common.base.IBlockType;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import net.minecraft.item.ItemStack;
 
 public enum MachineType implements IBlockType {
@@ -62,7 +62,7 @@ public enum MachineType implements IBlockType {
     @Override
     public boolean isEnabled() {
         //TODO: Replace with IBlockDisableable
-        return MekanismConfig.current().general.machinesManager.isEnabled(this);
+        return MekanismConfigOld.current().general.machinesManager.isEnabled(this);
     }
 
     public double getUsage() {

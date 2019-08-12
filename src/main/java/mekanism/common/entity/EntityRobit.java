@@ -10,7 +10,7 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.MekanismItem;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
@@ -173,8 +173,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
                         setEnergy(getEnergy() + gain);
                     }
                 }*/
-                else if (stack.getItem() == Items.REDSTONE && getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= MAX_ELECTRICITY) {
-                    setEnergy(getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val());
+                else if (stack.getItem() == Items.REDSTONE && getEnergy() + MekanismConfigOld.current().general.ENERGY_PER_REDSTONE.get() <= MAX_ELECTRICITY) {
+                    setEnergy(getEnergy() + MekanismConfigOld.current().general.ENERGY_PER_REDSTONE.get());
                     stack.shrink(1);
                 }
             }

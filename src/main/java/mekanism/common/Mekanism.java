@@ -35,6 +35,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.command.CommandMek;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
@@ -65,6 +66,8 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
+import mekanism.common.tags.MekanismBlockTagsProvider;
+import mekanism.common.tags.MekanismItemTagsProvider;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
@@ -73,6 +76,7 @@ import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -100,10 +104,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -112,6 +116,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -143,7 +148,6 @@ public class Mekanism {
     /**
      * Mekanism mod instance
      */
-    @Instance(MODID)
     public static Mekanism instance;
     /**
      * Mekanism hooks instance
@@ -207,6 +211,15 @@ public class Mekanism {
         MekanismFluids.register();
     }
 
+    public Mekanism() {
+        instance = this;
+        MekanismConfig.registerConfigs(ModLoadingContext.get());
+
+        //TODO: Register other listeners and various stuff that is needed
+
+        MekanismConfig.loadFromFiles();
+    }
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         // Register blocks and tile entities
@@ -220,6 +233,16 @@ public class Mekanism {
         MekanismBlock.registerItemBlocks(event.getRegistry());
         //Ore dict entries that are for items not added by mekanism
         OreDictionary.registerOre("alloyBasic", new ItemStack(Items.REDSTONE));
+    }
+
+    public void gatherData(GatherDataEvent event) {
+        //TODO: Register listener for this event
+        DataGenerator gen = event.getGenerator();
+        if (event.includeServer()) {
+            gen.addProvider(new MekanismBlockTagsProvider(gen));
+            gen.addProvider(new MekanismItemTagsProvider(gen));
+            //gen.addProvider(new ForgeRecipeProvider(gen));
+        }
     }
 
     @SubscribeEvent
@@ -266,7 +289,7 @@ public class Mekanism {
         GameRegistry.addSmelting(MekanismItem.TIN_DUST.getItemStack(), MekanismItem.TIN_INGOT.getItemStack(), 0.0F);
 
         //Enrichment Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.ENRICHMENT_CHAMBER)) {
+        if (MekanismBlock.ENRICHMENT_CHAMBER.isEnabled()) {
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.OBSIDIAN), MekanismItem.OBSIDIAN_DUST.getItemStack(4));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.COAL), MekanismItem.COMPRESSED_CARBON.getItemStack());
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.CHARCOAL), MekanismItem.COMPRESSED_CARBON.getItemStack());
@@ -305,18 +328,18 @@ public class Mekanism {
         }
 
         //Combiner recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.COMBINER)) {
+        if (MekanismBlock.COMBINER.isEnabled()) {
             RecipeHandler.addCombinerRecipe(new ItemStack(Items.FLINT), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.GRAVEL));
             RecipeHandler.addCombinerRecipe(new ItemStack(Items.COAL, 3), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COAL_ORE));
         }
 
         //Osmium Compressor Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.OSMIUM_COMPRESSOR)) {
+        if (MekanismBlock.OSMIUM_COMPRESSOR.isEnabled()) {
             RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.GLOWSTONE_DUST), MekanismItem.REFINED_GLOWSTONE_INGOT.getItemStack());
         }
 
         //Crusher Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CRUSHER)) {
+        if (MekanismBlock.CRUSHER.isEnabled()) {
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.IRON_INGOT), MekanismItem.IRON_DUST.getItemStack());
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.GOLD_INGOT), MekanismItem.GOLD_DUST.getItemStack());
             RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Blocks.SAND));
@@ -367,12 +390,12 @@ public class Mekanism {
         }
 
         //Purification Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.PURIFICATION_CHAMBER)) {
+        if (MekanismBlock.PURIFICATION_CHAMBER.isEnabled()) {
             RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT));
         }
 
         //Chemical Injection Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_INJECTION_CHAMBER)) {
+        if (MekanismBlock.CHEMICAL_INJECTION_CHAMBER.isEnabled()) {
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.DIRT), MekanismFluids.Water, new ItemStack(Blocks.CLAY));
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.TERRACOTTA), MekanismFluids.Water, new ItemStack(Blocks.CLAY));
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.BRICK), MekanismFluids.Water, new ItemStack(Items.CLAY_BALL));
@@ -380,7 +403,7 @@ public class Mekanism {
         }
 
         //Precision Sawmill Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.PRECISION_SAWMILL)) {
+        if (MekanismBlock.PRECISION_SAWMILL.isEnabled()) {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.LADDER, 3), new ItemStack(Items.STICK, 7));
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.TORCH, 4), new ItemStack(Items.STICK), new ItemStack(Items.COAL), 1);
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.CHEST), new ItemStack(Blocks.OAK_PLANKS, 8));
@@ -450,7 +473,7 @@ public class Mekanism {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.SPRUCE_FENCE_GATE), new ItemStack(Blocks.SPRUCE_PLANKS, 2), new ItemStack(Items.STICK, 4), 1);
         }
 
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.METALLURGIC_INFUSER)) {
+        if (MekanismBlock.METALLURGIC_INFUSER.isEnabled()) {
             InfuseType carbon = InfuseRegistry.get("CARBON");
             InfuseType bio = InfuseRegistry.get("BIO");
             InfuseType redstone = InfuseRegistry.get("REDSTONE");
@@ -487,7 +510,7 @@ public class Mekanism {
         }
 
         //Chemical Infuser Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_INFUSER)) {
+        if (MekanismBlock.CHEMICAL_INFUSER.isEnabled()) {
             RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.Oxygen, 1), new GasStack(MekanismFluids.SulfurDioxide, 2), new GasStack(MekanismFluids.SulfurTrioxide, 2));
             RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.SulfurTrioxide, 1), new GasStack(MekanismFluids.Water, 1), new GasStack(MekanismFluids.SulfuricAcid, 1));
             RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.Hydrogen, 1), new GasStack(MekanismFluids.Chlorine, 1), new GasStack(MekanismFluids.HydrogenChloride, 1));
@@ -495,12 +518,12 @@ public class Mekanism {
         }
 
         //Electrolytic Separator Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.ELECTROLYTIC_SEPARATOR)) {
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * MekanismConfig.current().general.FROM_H2.val(),
+        if (MekanismBlock.ELECTROLYTIC_SEPARATOR.isEnabled()) {
+            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * MekanismConfigOld.current().general.FROM_H2.get(),
                   new GasStack(MekanismFluids.Hydrogen, 2), new GasStack(MekanismFluids.Oxygen, 1));
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * MekanismConfig.current().general.FROM_H2.val(),
+            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * MekanismConfigOld.current().general.FROM_H2.get(),
                   new GasStack(MekanismFluids.Sodium, 1), new GasStack(MekanismFluids.Chlorine, 1));
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2), MekanismConfig.current().usage.heavyWaterElectrolysis.val(),
+            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2), MekanismConfig.usage.heavyWaterElectrolysis.get(),
                   new GasStack(MekanismFluids.Deuterium, 2), new GasStack(MekanismFluids.Oxygen, 1));
         }
 
@@ -509,7 +532,7 @@ public class Mekanism {
         RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("brine", 10), FluidRegistry.getFluidStack("liquidlithium", 1));
 
         //Chemical Crystallizer Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_CRYSTALLIZER)) {
+        if (MekanismBlock.CHEMICAL_CRYSTALLIZER.isEnabled()) {
             RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.Lithium, 100), MekanismItem.SULFUR_DUST.getItemStack());
             RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.Brine, 15), MekanismItem.SALT.getItemStack());
         }
@@ -518,11 +541,11 @@ public class Mekanism {
         for (Gas gas : GasRegistry.getRegisteredGasses()) {
             if (gas instanceof OreGas && !((OreGas) gas).isClean()) {
                 OreGas oreGas = (OreGas) gas;
-                if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_WASHER)) {
+                if (MekanismBlock.CHEMICAL_WASHER.isEnabled()) {
                     RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
                 }
 
-                if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_CRYSTALLIZER)) {
+                if (MekanismBlock.CHEMICAL_CRYSTALLIZER.isEnabled()) {
                     //do the crystallizer only if it's one of our gases!
                     Resource gasResource = Resource.getFromName(oreGas.getName());
                     if (gasResource != null) {
@@ -558,7 +581,7 @@ public class Mekanism {
         }
 
         //Pressurized Reaction Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.PRESSURIZED_REACTION_CHAMBER)) {
+        if (MekanismBlock.PRESSURIZED_REACTION_CHAMBER.isEnabled()) {
             RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(2), new FluidStack(FluidRegistry.WATER, 10), new GasStack(MekanismFluids.Hydrogen, 100),
                   MekanismItem.SUBSTRATE.getItemStack(), new GasStack(MekanismFluids.Ethene, 100), 0, 100);
             RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(MekanismFluids.Ethene.getFluid(), 50),
@@ -572,12 +595,12 @@ public class Mekanism {
         }
 
         //Solar Neutron Activator Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.SOLAR_NEUTRON_ACTIVATOR)) {
+        if (MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.isEnabled()) {
             RecipeHandler.addSolarNeutronRecipe(new GasStack(MekanismFluids.Lithium, 1), new GasStack(MekanismFluids.Tritium, 1));
         }
 
         //Fuel Gases
-        FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.current().general.FROM_H2.val());
+        FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfigOld.current().general.FROM_H2.get());
     }
 
     public static void registerTileEntities(IBlockProvider[] blockProviders) {
@@ -617,7 +640,7 @@ public class Mekanism {
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
+        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
             voiceManager.start();
         }
         CommandMek.register(event);
@@ -625,7 +648,7 @@ public class Mekanism {
 
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
-        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
+        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
             voiceManager.stop();
         }
 
@@ -720,7 +743,7 @@ public class Mekanism {
         PacketSimpleGui.handlers.add(0, proxy);
 
         //Set up VoiceServerManager
-        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
+        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
             voiceManager = new VoiceServerManager();
         }
 
@@ -728,7 +751,7 @@ public class Mekanism {
         TransmitterNetworkRegistry.initiate();
 
         //Add baby skeleton spawner
-        if (MekanismConfig.current().general.spawnBabySkeletons.val()) {
+        if (MekanismConfigOld.current().general.spawnBabySkeletons.get()) {
             for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
                 if (biome.getSpawns(EntityClassification.MONSTER).size() > 0) {
                     EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
@@ -896,17 +919,17 @@ public class Mekanism {
             CompoundNBT nbtTags = event.getData();
 
             nbtTags.putInt("MekanismWorldGen", baseWorldGenVersion);
-            nbtTags.putInt("MekanismUserWorldGen", MekanismConfig.current().general.userWorldGenVersion.val());
+            nbtTags.putInt("MekanismUserWorldGen", MekanismConfigOld.current().general.userWorldGenVersion.get());
         }
     }
 
     @SubscribeEvent
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (!event.getWorld().isRemote()) {
-            if (MekanismConfig.current().general.enableWorldRegeneration.val()) {
+            if (MekanismConfigOld.current().general.enableWorldRegeneration.get()) {
                 CompoundNBT loadData = event.getData();
                 if (loadData.getInt("MekanismWorldGen") == baseWorldGenVersion &&
-                    loadData.getInt("MekanismUserWorldGen") == MekanismConfig.current().general.userWorldGenVersion.val()) {
+                    loadData.getInt("MekanismUserWorldGen") == MekanismConfigOld.current().general.userWorldGenVersion.get()) {
                     return;
                 }
                 ChunkPos coordPair = event.getChunk().getPos();

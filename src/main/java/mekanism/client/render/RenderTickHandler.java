@@ -101,7 +101,7 @@ public class RenderTickHandler {
                     ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
                     int y = minecraft.mainWindow.getScaledHeight();
-                    boolean alignLeft = MekanismConfig.current().client.alignHUDLeft.val();
+                    boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
 
                     if (stack.getItem() instanceof ItemJetpack) {
                         ItemJetpack jetpack = (ItemJetpack) stack.getItem();

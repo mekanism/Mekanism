@@ -1,8 +1,8 @@
-package mekanism.common.config.options;
+package mekanism.common.config_old.options;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.common.config.BaseConfig;
+import mekanism.common.config_old.BaseConfig;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;

@@ -6,7 +6,7 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.base.LazyOptionalHelper;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -48,8 +48,8 @@ public final class ChargeUtils {
             } else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
                 double gain = IC2Integration.fromEU(ElectricItem.manager.discharge(stack, IC2Integration.toEU(storer.getMaxEnergy() - storer.getEnergy()), 4, true, true, false));
                 storer.setEnergy(storer.getEnergy() + gain);
-            } else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= storer.getMaxEnergy()) {
-                storer.setEnergy(storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val());
+            } else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfigOld.current().general.ENERGY_PER_REDSTONE.get() <= storer.getMaxEnergy()) {
+                storer.setEnergy(storer.getEnergy() + MekanismConfigOld.current().general.ENERGY_PER_REDSTONE.get());
                 stack.shrink(1);
             }
         }

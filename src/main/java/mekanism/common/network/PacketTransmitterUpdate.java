@@ -101,7 +101,7 @@ public class PacketTransmitterUpdate {
                     network.updateCapacity();
                     return;
                 }
-                if (MekanismConfig.current().client.opaqueTransmitters.val() || !transmitter.hasTransmitterNetwork()) {
+                if (MekanismConfig.client.opaqueTransmitters.get() || !transmitter.hasTransmitterNetwork()) {
                     return;
                 }
                 TransmissionType transmissionType = transmitter.getTransmissionType();

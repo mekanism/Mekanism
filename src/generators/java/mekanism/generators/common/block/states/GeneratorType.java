@@ -3,7 +3,7 @@ package mekanism.generators.common.block.states;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.common.base.IBlockType;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 
 public enum GeneratorType implements IBlockType {
     HEAT_GENERATOR,
@@ -24,6 +24,6 @@ public enum GeneratorType implements IBlockType {
 
     @Override
     public boolean isEnabled() {
-        return MekanismConfig.current().generators.generatorsManager.isEnabled(this);
+        return MekanismConfigOld.current().generators.generatorsManager.isEnabled(this);
     }
 }

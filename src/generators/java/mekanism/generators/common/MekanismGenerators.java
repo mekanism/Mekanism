@@ -13,6 +13,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.multiblock.MultiblockManager;
@@ -20,6 +21,7 @@ import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.StackUtils;
 import mekanism.generators.client.GeneratorsClientProxy;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.fixers.GeneratorTEFixer;
 import net.minecraft.block.Block;
@@ -36,11 +38,11 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -56,7 +58,6 @@ public class MekanismGenerators implements IModule {
 
     public static GeneratorsCommonProxy proxy = DistExecutor.runForDist(() -> GeneratorsClientProxy::new, () -> GeneratorsCommonProxy::new);
 
-    @Instance(MekanismGenerators.MODID)
     public static MekanismGenerators instance;
 
     /**
@@ -66,6 +67,15 @@ public class MekanismGenerators implements IModule {
     public static final int DATA_VERSION = 1;
 
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
+
+    public MekanismGenerators() {
+        instance = this;
+        MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
+
+        //TODO: Register other listeners and various stuff that is needed
+
+        MekanismGeneratorsConfig.loadFromFiles();
+    }
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -134,8 +144,8 @@ public class MekanismGenerators implements IModule {
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.current().general.ETHENE_BURN_TIME.val(),
-              MekanismConfig.current().general.FROM_H2.val() + MekanismConfig.current().generators.bioGeneration.val() * 2 * MekanismConfig.current().general.ETHENE_BURN_TIME.val());
+        FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfigOld.current().general.ETHENE_BURN_TIME.get(),
+              MekanismConfigOld.current().general.FROM_H2.get() + MekanismConfigOld.current().generators.bioGeneration.get() * 2 * MekanismConfigOld.current().general.ETHENE_BURN_TIME.get());
 
         for (ItemStack ore : OreDictionary.getOres("dustGold", false)) {
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, StackUtils.size(ore, 4), GeneratorsItem.HOHLRAUM.getItemStack());

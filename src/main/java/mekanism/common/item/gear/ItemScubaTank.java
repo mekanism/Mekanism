@@ -12,7 +12,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.MekanismFluids;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
@@ -107,7 +107,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public int getMaxGas(ItemStack itemstack) {
-        return MekanismConfig.current().general.maxScubaGas.val();
+        return MekanismConfigOld.current().general.maxScubaGas.get();
     }
 
     @Override

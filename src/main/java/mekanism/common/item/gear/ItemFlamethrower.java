@@ -8,7 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismFluids;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -54,7 +54,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
 
     @Override
     public int getMaxGas(ItemStack itemstack) {
-        return MekanismConfig.current().general.maxFlamethrowerGas.val();
+        return MekanismConfigOld.current().general.maxFlamethrowerGas.get();
     }
 
     @Override

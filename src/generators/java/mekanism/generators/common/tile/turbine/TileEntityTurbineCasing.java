@@ -6,7 +6,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -58,10 +58,10 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                     double flowRate = 0;
 
                     if (stored > 0 && getEnergy() < structure.getEnergyCapacity()) {
-                        double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val() / TurbineUpdateProtocol.MAX_BLADES) *
-                                                  Math.min(structure.blades, structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());
-                        double rate = structure.lowerVolume * (structure.getDispersers() * MekanismConfig.current().generators.turbineDisperserGasFlow.val());
-                        rate = Math.min(rate, structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
+                        double energyMultiplier = (MekanismConfigOld.current().general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
+                                                  Math.min(structure.blades, structure.coils * MekanismConfigOld.current().generators.turbineBladesPerCoil.get());
+                        double rate = structure.lowerVolume * (structure.getDispersers() * MekanismConfigOld.current().generators.turbineDisperserGasFlow.get());
+                        rate = Math.min(rate, structure.vents * MekanismConfigOld.current().generators.turbineVentGasFlow.get());
 
                         double origRate = rate;
                         rate = Math.min(Math.min(stored, rate), (getMaxEnergy() - getEnergy()) / energyMultiplier) * proportion;
@@ -71,7 +71,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
                         structure.fluidStored.amount -= rate;
                         structure.clientFlow = (int) rate;
-                        structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismConfig.current().generators.condenserRate.val());
+                        structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismConfigOld.current().generators.condenserRate.get());
                         if (structure.fluidStored.amount == 0) {
                             structure.fluidStored = null;
                         }

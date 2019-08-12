@@ -1,4 +1,4 @@
-package mekanism.tools.item;
+package mekanism.tools.common.item;
 
 import java.util.List;
 import java.util.Locale;
@@ -10,19 +10,18 @@ import mekanism.tools.common.Materials;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.SwordItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType {
+public class ItemMekanismSword extends SwordItem implements IHasRepairType {
 
-    public ItemMekanismPickaxe(Materials material) {
+    public ItemMekanismSword(Materials material) {
         super(material.getMaterial());
-        setHarvestLevel("pickaxe", material.getMaterial().getHarvestLevel());
-        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_pickaxe"));
+        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_sword"));
     }
 
     @Override
@@ -33,6 +32,6 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType {
 
     @Override
     public ItemStack getRepairStack() {
-        return toolMaterial.getRepairItemStack();
+        return material.getRepairItemStack();
     }
 }

@@ -1,9 +1,9 @@
-package mekanism.common.config.options;
+package mekanism.common.config_old.options;
 
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.common.config.BaseConfig;
+import mekanism.common.config_old.BaseConfig;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -30,7 +30,7 @@ public class EnumOption<T extends Enum<T>> extends Option<EnumOption<T>> {
         this(owner, category, key, defaultValue, null);
     }
 
-    public T val() {
+    public T get() {
         return value;
     }
 

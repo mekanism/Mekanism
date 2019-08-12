@@ -1,4 +1,4 @@
-package mekanism.common.config;
+package mekanism.common.config_old;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.common.config.options.Option;
+import mekanism.common.config_old.options.Option;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;

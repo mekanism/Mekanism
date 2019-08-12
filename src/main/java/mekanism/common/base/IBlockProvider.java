@@ -37,4 +37,9 @@ public interface IBlockProvider extends IItemProvider {
         Block block = getBlock();
         return !(block instanceof IBlockDisableable) || ((IBlockDisableable) block).isEnabled();
     }
+
+    default boolean canBeDisabled() {
+        Block block = getBlock();
+        return block instanceof IBlockDisableable;
+    }
 }

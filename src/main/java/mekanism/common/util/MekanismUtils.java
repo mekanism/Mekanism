@@ -25,6 +25,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.item.block.ItemBlockGasTank;
@@ -285,7 +286,7 @@ public final class MekanismUtils {
      * @return required operating ticks
      */
     public static int getTicks(IUpgradeTile mgmt, int def) {
-        return (int) (def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
+        return (int) (def * Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
     }
 
     /**
@@ -297,7 +298,7 @@ public final class MekanismUtils {
      * @return required energy per tick
      */
     public static double getEnergyPerTick(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
+        return def * Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
     }
 
     /**
@@ -309,7 +310,7 @@ public final class MekanismUtils {
      * @return required energy per tick
      */
     public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.ENERGY));
+        return def * Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.ENERGY));
     }
 
     /**
@@ -322,9 +323,9 @@ public final class MekanismUtils {
      */
     public static double getSecondaryEnergyPerTickMean(IUpgradeTile mgmt, int def) {
         if (mgmt.getComponent().supports(Upgrade.GAS)) {
-            return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
+            return def * Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
         }
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.SPEED));
+        return def * Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.SPEED));
     }
 
     /**
@@ -336,7 +337,7 @@ public final class MekanismUtils {
      * @return max energy
      */
     public static double getMaxEnergy(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.ENERGY));
+        return def * Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.ENERGY));
     }
 
     /**
@@ -350,7 +351,7 @@ public final class MekanismUtils {
     public static double getMaxEnergy(ItemStack itemStack, double def) {
         Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
         float numUpgrades = upgrades.get(Upgrade.ENERGY) == null ? 0 : (float) upgrades.get(Upgrade.ENERGY);
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), numUpgrades / (float) Upgrade.ENERGY.getMax());
+        return def * Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), numUpgrades / (float) Upgrade.ENERGY.getMax());
     }
 
     /**
@@ -494,7 +495,7 @@ public final class MekanismUtils {
         // For example the laser, or charge pad.
         world.markBlockRangeForRenderUpdate(pos, pos);
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig.current().client.machineEffects.val()) {
+        if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             updateAllLightTypes(world, pos);
         }
     }
@@ -692,7 +693,7 @@ public final class MekanismUtils {
     }
 
     public static ITextComponent getEnergyDisplayShort(double energy) {
-        switch (MekanismConfig.current().general.energyUnit.val()) {
+        switch (MekanismConfigOld.current().general.energyUnit.get()) {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
             case FE:
@@ -711,7 +712,7 @@ public final class MekanismUtils {
      * @return energy converted to joules
      */
     public static double convertToJoules(double energy) {
-        switch (MekanismConfig.current().general.energyUnit.val()) {
+        switch (MekanismConfigOld.current().general.energyUnit.get()) {
             case FE:
                 return ForgeEnergyIntegration.fromForge(energy);
             case EU:
@@ -729,7 +730,7 @@ public final class MekanismUtils {
      * @return energy converted to configured unit
      */
     public static double convertToDisplay(double energy) {
-        switch (MekanismConfig.current().general.energyUnit.val()) {
+        switch (MekanismConfigOld.current().general.energyUnit.get()) {
             case FE:
                 return ForgeEnergyIntegration.toForgeAsDouble(energy);
             case EU:
@@ -748,7 +749,7 @@ public final class MekanismUtils {
      */
     public static ITextComponent getTemperatureDisplay(double T, TemperatureUnit unit) {
         double TK = unit.convertToK(T, true);
-        switch (MekanismConfig.current().general.tempUnit.val()) {
+        switch (MekanismConfigOld.current().general.tempUnit.get()) {
             case K:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN);
             case C:
@@ -769,7 +770,7 @@ public final class MekanismUtils {
      * @return if IC2 power should be used
      */
     public static boolean useIC2() {
-        return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !MekanismConfig.current().general.blacklistIC2.val();
+        return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !MekanismConfigOld.current().general.blacklistIC2.get();
     }
 
     /**
@@ -778,7 +779,7 @@ public final class MekanismUtils {
      * @return if Forge power should be used
      */
     public static boolean useForge() {
-        return !MekanismConfig.current().general.blacklistForge.val();
+        return !MekanismConfigOld.current().general.blacklistForge.get();
     }
 
     /**
@@ -881,7 +882,7 @@ public final class MekanismUtils {
             return false;
         }
         ServerPlayerEntity player = (ServerPlayerEntity) p;
-        return MekanismConfig.current().general.opsBypassRestrictions.val() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
+        return MekanismConfigOld.current().general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
     }
 
     /**

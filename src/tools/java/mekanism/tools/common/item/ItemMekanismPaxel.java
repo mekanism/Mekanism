@@ -1,5 +1,6 @@
-package mekanism.tools.item;
+package mekanism.tools.common.item;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
@@ -10,19 +11,32 @@ import mekanism.tools.common.Materials;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShovelItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismShovel extends ShovelItem implements IHasRepairType {
+public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
 
-    public ItemMekanismShovel(Materials material) {
-        super(material.getMaterial());
-        setHarvestLevel("shovel", material.getMaterial().getHarvestLevel());
-        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_shovel"));
+    public ItemMekanismPaxel(Materials material) {
+        this(material.getPaxelMaterial(), true);
+        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getMaterialName().toLowerCase(Locale.ROOT) + "_paxel"));
+    }
+
+    public ItemMekanismPaxel(ToolMaterial material) {
+        this(material, false);
+    }
+
+    public ItemMekanismPaxel(ToolMaterial material, boolean nameSet) {
+        super(4, -2.4F, material, new HashSet<>());
+        setHarvestLevel("pickaxe", material.getHarvestLevel());
+        setHarvestLevel("shovel", material.getHarvestLevel());
+        setHarvestLevel("axe", material.getHarvestLevel());
+        if (!nameSet) {
+            setRegistryName(new ResourceLocation(MekanismTools.MODID, material.name().toLowerCase(Locale.ROOT) + "_paxel"));
+        }
     }
 
     @Override

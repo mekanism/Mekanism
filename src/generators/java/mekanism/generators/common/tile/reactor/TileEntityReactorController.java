@@ -108,7 +108,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @OnlyIn(Dist.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
-        if (!MekanismConfig.current().client.enableMachineSounds.val()) {
+        if (!MekanismConfig.client.enableMachineSounds.get()) {
             return;
         }
         if (isBurning() && !isRemoved()) {

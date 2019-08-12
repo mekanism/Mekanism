@@ -1,12 +1,12 @@
 package mekanism.common.integration.ic2;
 
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.MekanismUtils;
 
 public class IC2Integration {
 
     public static double toEU(double joules) {
-        return joules * MekanismConfig.current().general.TO_IC2.val();
+        return joules * MekanismConfigOld.current().general.TO_IC2.get();
     }
 
     public static int toEUAsInt(double joules) {
@@ -14,7 +14,7 @@ public class IC2Integration {
     }
 
     public static double fromEU(double eu) {
-        return eu * MekanismConfig.current().general.FROM_IC2.val();
+        return eu * MekanismConfigOld.current().general.FROM_IC2.get();
     }
 
     //TODO: IC2

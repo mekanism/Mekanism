@@ -9,7 +9,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -159,7 +159,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         String prevMax = maxField != null ? maxField.getText() : "";
 
         radiusField = new TextFieldWidget(font, guiLeft + 12, guiTop + 67, 26, 11, "");
-        radiusField.setMaxStringLength(Integer.toString(MekanismConfig.current().general.digitalMinerMaxRadius.val()).length());
+        radiusField.setMaxStringLength(Integer.toString(MekanismConfigOld.current().general.digitalMinerMaxRadius.get()).length());
         radiusField.setText(prevRad);
 
         minField = new TextFieldWidget(font, guiLeft + 12, guiTop + 92, 26, 11, "");
@@ -252,7 +252,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
 
     private void setRadius() {
         if (!radiusField.getText().isEmpty()) {
-            int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
+            int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfigOld.current().general.digitalMinerMaxRadius.get()));
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(6, toUse)));
             radiusField.setText("");
         }

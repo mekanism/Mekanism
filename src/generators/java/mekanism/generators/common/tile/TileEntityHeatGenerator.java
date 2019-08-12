@@ -11,7 +11,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -55,7 +55,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     private int currentRedstoneLevel;
 
     public TileEntityHeatGenerator() {
-        super(GeneratorsBlock.HEAT_GENERATOR, MekanismConfig.current().generators.heatGeneration.val() * 2);
+        super(GeneratorsBlock.HEAT_GENERATOR, MekanismConfigOld.current().generators.heatGeneration.get() * 2);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             if (canOperate()) {
                 setActive(true);
                 lavaTank.drain(10, true);
-                transferHeatTo(MekanismConfig.current().generators.heatGeneration.val());
+                transferHeatTo(MekanismConfigOld.current().generators.heatGeneration.get());
             } else {
                 setActive(false);
             }
@@ -163,9 +163,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             }
         }
         if (world.getDimension().isNether()) {
-            netherBoost = MekanismConfig.current().generators.heatGenerationNether.val();
+            netherBoost = MekanismConfigOld.current().generators.heatGenerationNether.get();
         }
-        return (MekanismConfig.current().generators.heatGenerationLava.val() * lavaBoost) + netherBoost;
+        return (MekanismConfigOld.current().generators.heatGenerationLava.get() * lavaBoost) + netherBoost;
     }
 
     private boolean isLava(BlockPos pos) {

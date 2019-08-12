@@ -1,10 +1,10 @@
-package mekanism.common.config.options;
+package mekanism.common.config_old.options;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.common.config.BaseConfig;
+import mekanism.common.config_old.BaseConfig;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -45,7 +45,7 @@ public class IntSetOption extends Option<IntSetOption> {
         this.max = max;
     }
 
-    public IntSet val() {
+    public IntSet get() {
         return value;
     }
 

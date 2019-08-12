@@ -3,7 +3,7 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.IBlockProvider;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
@@ -21,7 +21,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private float peakOutput;
 
     public TileEntitySolarGenerator() {
-        this(GeneratorsBlock.SOLAR_GENERATOR, MekanismConfig.current().generators.solarGeneration.val() * 2);
+        this(GeneratorsBlock.SOLAR_GENERATOR, MekanismConfigOld.current().generators.solarGeneration.get() * 2);
     }
 
     public TileEntitySolarGenerator(IBlockProvider blockProvider, double output) {
@@ -169,7 +169,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected float getConfiguredMax() {
-        return (float) MekanismConfig.current().generators.solarGeneration.val();
+        return (float) MekanismConfigOld.current().generators.solarGeneration.get();
     }
 
     @Override
