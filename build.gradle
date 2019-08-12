@@ -24,6 +24,7 @@ defaultTasks 'fullBuild'
 
 idea {
     module {
+        //TODO: sourceDirs??
         // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
     }
@@ -315,14 +316,6 @@ task fullBuild(type: Delete) {
     dependsOn "build"
 }
 
-/*runClient {
-    jvmArgs "-Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
-}
-
-runServer {
-    jvmArgs "-Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
-}*/
-
 uploadArchives {
     if(System.getenv("LOCAL_MAVEN") != null) {
         repositories {
@@ -420,7 +413,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addArtifact apiJar
-            addGameVersion '1.12.2'
+            addGameVersion '1.14.4'
         }
 
         //Tools
@@ -434,7 +427,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.12.2'
+            addGameVersion '1.14.4'
         }
 
         //Generators
@@ -448,7 +441,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.12.2'
+            addGameVersion '1.14.4'
         }
     }
 }
