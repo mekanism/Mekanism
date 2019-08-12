@@ -5,23 +5,15 @@ import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 import dan200.computercraft.api.ComputerCraftAPI;
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.MachineRecipe;
-import ic2.api.recipe.Recipes;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import li.cil.oc.api.Driver;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismItem;
-import mekanism.common.OreDictCache;
 import mekanism.common.integration.computer.CCPeripheral;
 import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
@@ -33,7 +25,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.oredict.OreDictionary;
@@ -101,10 +92,11 @@ public final class MekanismHooks {
     }
 
     public void hookPostInit() {
-        if (IC2Loaded) {
+        //TODO: IC2
+        /*if (IC2Loaded) {
             hookIC2Recipes();
             Mekanism.logger.info("Hooked into IC2 successfully.");
-        }
+        }*/
         if (AE2Loaded) {
             registerAE2Recipes();
             Mekanism.logger.info("Hooked into AE2 successfully.");
@@ -132,7 +124,8 @@ public final class MekanismHooks {
         Wrenches.initialise();
     }
 
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    //TODO: IC2
+    /*@Method(modid = MekanismHooks.IC2_MOD_ID)
     private void hookIC2Recipes() {
         for (MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes()) {
             if (!entry.getInput().getInputs().isEmpty()) {
@@ -173,7 +166,7 @@ public final class MekanismHooks {
         Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpTin"), null, false, MekanismItem.DIRTY_TIN_DUST.getItemStack());
         Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpSilver"), null, false, MekanismItem.DIRTY_SILVER_DUST.getItemStack());
         Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpLead"), null, false, MekanismItem.DIRTY_LEAD_DUST.getItemStack());
-    }
+    }*/
 
     @Method(modid = COMPUTERCRAFT_MOD_ID)
     private void loadCCPeripheralProviders() {

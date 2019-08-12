@@ -1,15 +1,7 @@
 package mekanism.common.integration.ic2;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergyTile;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraftforge.fml.common.Optional.Method;
 
 public class IC2Integration {
 
@@ -25,7 +17,8 @@ public class IC2Integration {
         return eu * MekanismConfig.current().general.FROM_IC2.val();
     }
 
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    //TODO: IC2
+    /*@Method(modid = MekanismHooks.IC2_MOD_ID)
     public static boolean isOutputter(TileEntity tileEntity, Direction side) {
         IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
         return tile instanceof IEnergySource && ((IEnergySource) tile).emitsEnergyTo(null, side.getOpposite());
@@ -39,5 +32,5 @@ public class IC2Integration {
             return ((IEnergySink) tile).acceptsEnergyFrom(null, side.getOpposite());
         }
         return false;
-    }
+    }*/
 }

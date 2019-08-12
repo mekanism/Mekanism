@@ -1,23 +1,17 @@
 package mekanism.common.item;
 
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
 
 /**
  * Used as a impl wrapper for energy items that have default implementations that use IEnergizedItem
  */
-@InterfaceList({
+//TODO: IC2
+/*@InterfaceList({
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
-})
-public interface IItemEnergized extends IEnergizedItem, ISpecialElectricItem {
+})*/
+public interface IItemEnergized extends IEnergizedItem {
 
     //Mekanism
     @Override
@@ -31,9 +25,10 @@ public interface IItemEnergized extends IEnergizedItem, ISpecialElectricItem {
     }
 
     //IC2
-    @Override
+    //TODO: IC2
+    /*@Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     default IElectricItemManager getManager(ItemStack itemStack) {
         return IC2ItemManager.getManager(this);
-    }
+    }*/
 }

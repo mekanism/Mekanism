@@ -1,9 +1,5 @@
 package mekanism.common.tile;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyTile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -17,34 +13,29 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState, IComparatorSupport {
 
-    private boolean ic2Registered = false;
+    //TODO: IC2
+    //private boolean ic2Registered = false;
     private int currentRedstoneLevel;
 
     /**
@@ -60,9 +51,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!ic2Registered && MekanismUtils.useIC2()) {
+        //TODO: IC2
+        /*if (!ic2Registered && MekanismUtils.useIC2()) {
             register();
-        }
+        }*/
         if (!world.isRemote) {
             if (structure != null && mode) {
                 CableUtils.emit(this);
@@ -86,6 +78,69 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public boolean canReceiveEnergy(Direction side) {
         return (structure != null && !mode);
+    }
+
+    @Override
+    public double getMaxOutput() {
+        return structure != null ? structure.getRemainingOutput() : 0;
+    }
+
+    @Override
+    public void handlePacketData(PacketBuffer dataStream) {
+        super.handlePacketData(dataStream);
+        if (world.isRemote) {
+            boolean prevMode = mode;
+            mode = dataStream.readBoolean();
+            if (prevMode != mode) {
+                MekanismUtils.updateBlock(world, getPos());
+            }
+        }
+    }
+
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
+        data.add(mode);
+        return data;
+    }
+
+    @Override
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        mode = nbtTags.getBoolean("mode");
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putBoolean("mode", mode);
+        return nbtTags;
+    }
+
+    //TODO: IC2
+    /*@Override
+    public void onAdded() {
+        super.onAdded();
+        if (MekanismUtils.useIC2()) {
+            register();
+        }
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        if (MekanismUtils.useIC2()) {
+            deregister();
+        }
+        super.onChunkUnloaded();
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        if (MekanismUtils.useIC2()) {
+            deregister();
+        }
     }
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
@@ -116,68 +171,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public double getMaxOutput() {
-        return structure != null ? structure.getRemainingOutput() : 0;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (world.isRemote) {
-            boolean prevMode = mode;
-            mode = dataStream.readBoolean();
-            if (prevMode != mode) {
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(mode);
-        return data;
-    }
-
-    @Override
-    public void onAdded() {
-        super.onAdded();
-        if (MekanismUtils.useIC2()) {
-            register();
-        }
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        if (MekanismUtils.useIC2()) {
-            deregister();
-        }
-        super.onChunkUnloaded();
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (MekanismUtils.useIC2()) {
-            deregister();
-        }
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        mode = nbtTags.getBoolean("mode");
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putBoolean("mode", mode);
-        return nbtTags;
-    }
-
-    @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
         addEnergy(IC2Integration.fromEU(amount), false);
@@ -205,7 +198,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
         removeEnergy(IC2Integration.fromEU(amount), false);
-    }
+    }*/
 
     @Override
     public double acceptEnergy(Direction side, double amount, boolean simulate) {

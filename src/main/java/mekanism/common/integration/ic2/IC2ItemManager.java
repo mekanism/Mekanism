@@ -1,4 +1,5 @@
-package mekanism.common.integration.ic2;
+//TODO: IC2
+/*package mekanism.common.integration.ic2;
 
 import ic2.api.item.IElectricItemManager;
 import mekanism.api.energy.IEnergizedItem;
@@ -75,4 +76,4 @@ public class IC2ItemManager implements IElectricItemManager {
     public int getTier(ItemStack stack) {
         return 4;
     }
-}
+}*/

@@ -1,26 +1,20 @@
 package mekanism.common.base;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergyTile;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
-    private static final Supplier<EnergyAcceptorWrapper> IC2_WRAPPER = () -> {
+    //TODO: IC2
+    /*private static final Supplier<EnergyAcceptorWrapper> IC2_WRAPPER = () -> {
         if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
             if (tile instanceof IEnergySink) {
@@ -28,7 +22,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
             }
         }
         return null;
-    };
+    };*/
 
     public Coord4D coord;
 
@@ -40,12 +34,19 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
               MekanismAcceptor::new,
               () -> {
                   if (MekanismUtils.useForge()) {
+                      return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, side).getIfPresent(ForgeAcceptor::new);
+                  }
+                  return null;
+                  //TODO: IC2
+                  /*
+                  if (MekanismUtils.useForge()) {
                       return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, side).getIfPresentElseDo(
                             ForgeAcceptor::new,
                             IC2_WRAPPER
                       );
                   }
                   return IC2_WRAPPER.get();
+                   */
               }
         );
         if (wrapper != null) {
@@ -80,7 +81,8 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
     }
 
-    public static class IC2Acceptor extends EnergyAcceptorWrapper {
+    //TODO: IC2
+    /*public static class IC2Acceptor extends EnergyAcceptorWrapper {
 
         private IEnergySink acceptor;
 
@@ -108,7 +110,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         public boolean needsEnergy(Direction side) {
             return acceptor.getDemandedEnergy() > 0;
         }
-    }
+    }*/
 
     public static class ForgeAcceptor extends EnergyAcceptorWrapper {
 

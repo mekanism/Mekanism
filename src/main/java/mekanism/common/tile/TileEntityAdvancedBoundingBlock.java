@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -9,7 +7,6 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,18 +15,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
 
-@InterfaceList({
+//TODO: IC2
+/*@InterfaceList({
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
-})
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IComputerIntegration,
+})*/
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IStrictEnergyAcceptor, IComputerIntegration,
       ISpecialConfigData {
 
     @Override
@@ -186,16 +179,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction direction) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.acceptsEnergyFrom(emitter, direction);
-    }
-
-    @Override
     public double acceptEnergy(Direction side, double amount, boolean simulate) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null || !canReceiveEnergy(side)) {
@@ -211,6 +194,17 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return false;
         }
         return inv.canBoundReceiveEnergy(getPos(), side);
+    }
+
+    //TODO: IC2
+    /*@Override
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction direction) {
+        IAdvancedBoundingBlock inv = getInv();
+        if (inv == null) {
+            return false;
+        }
+        return inv.acceptsEnergyFrom(emitter, direction);
     }
 
     @Override
@@ -238,7 +232,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return 0;
         }
         return inv.getSinkTier();
-    }
+    }*/
 
     public IAdvancedBoundingBlock getInv() {
         // Return the inventory/main tile; note that it's possible, esp. when chunks are

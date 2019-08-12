@@ -1,8 +1,5 @@
 package mekanism.common.tile.transmitter.universal_cable;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergyTile;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -14,15 +11,12 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IBlockProvider;
-import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -37,7 +31,6 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 
 public abstract class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
       IStrictEnergyStorage {
@@ -88,12 +81,16 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
                                   strictStorage.setEnergy(strictStorage.getEnergy() - received);
                               },
                               //Else
-                              CapabilityUtils.getCapabilityHelper(outputter, CapabilityEnergy.ENERGY, side.getOpposite()).ifPresentElse(
+                              //TODO: IC2
+                              //ifPresentElse
+                              () -> CapabilityUtils.getCapabilityHelper(outputter, CapabilityEnergy.ENERGY, side.getOpposite()).ifPresent(
                                     //Forge Energy
                                     forgeStorage -> {
                                         double received = draw(ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(maxDraw), true)));
                                         forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(received), false);
-                                    },
+                                    }
+                                    //TODO: IC2
+                                    /*,
                                     //Else IC2
                                     () -> {
                                         if (MekanismUtils.useIC2()) {
@@ -103,7 +100,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
                                                 ((IEnergySource) tile).drawEnergy(IC2Integration.toEU(received));
                                             }
                                         }
-                                    }
+                                    }*/
                               )
                         );
                     }

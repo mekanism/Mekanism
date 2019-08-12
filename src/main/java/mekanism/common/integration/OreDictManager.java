@@ -1,6 +1,5 @@
 package mekanism.common.integration;
 
-import ic2.api.recipe.Recipes;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -21,21 +20,20 @@ import mekanism.common.world.DummyWorld;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Optional.Method;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
@@ -291,9 +289,10 @@ public final class OreDictManager {
             RecipeHandler.addCrusherRecipe(MekanismItem.BRONZE_INGOT.getItemStack(), dustBronze);
         }
 
-        if (Mekanism.hooks.IC2Loaded) {
+        //TODO: IC2
+        /*if (Mekanism.hooks.IC2Loaded) {
             addIC2BronzeRecipe();
-        }
+        }*/
 
         oreDict = OreDictionary.getOres("ingotSilver", false);
         if (oreDict.size() > 0) {
@@ -395,11 +394,12 @@ public final class OreDictManager {
         }
     }
 
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    //TODO: IC2
+    /*@Method(modid = MekanismHooks.IC2_MOD_ID)
     private static void addIC2BronzeRecipe() {
         Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotBronze"), null, false,
               StackUtils.size(OreDictionary.getOres("dustBronze", false).get(0), 1));
-    }
+    }*/
 
     private static void addResourceRecipes(Resource resource, MekanismItem shardItem, MekanismItem clumpItem, MekanismItem dirtyDustItem, MekanismItem dustItem) {
         for (ItemStack clump : OreDictionary.getOres("clump" + resource.getName(), false)) {

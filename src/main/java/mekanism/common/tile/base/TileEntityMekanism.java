@@ -1,7 +1,5 @@
 package mekanism.common.tile.base;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,9 +36,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
@@ -52,7 +48,6 @@ import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -77,12 +72,10 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -179,7 +172,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private double maxEnergy;
     private double energyPerTick;
 
-    private boolean ic2Registered;
+    //TODO: IC2
+    //private boolean ic2Registered;
     //End variables ITileElectric
 
     //Variables for handling ITileSecurity
@@ -331,18 +325,20 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (world.isRemote) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
-        if (isElectric() && MekanismUtils.useIC2()) {
+        //TODO: IC2
+        /*if (isElectric() && MekanismUtils.useIC2()) {
             register();
-        }
+        }*/
     }
 
-    @Override
+    //TODO: IC2
+    /*@Override
     public void onChunkUnloaded() {
         if (isElectric() && MekanismUtils.useIC2()) {
             deregister();
         }
         super.onChunkUnloaded();
-    }
+    }*/
 
     @Override
     public void update() {
@@ -473,9 +469,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         for (ITileComponent component : components) {
             component.invalidate();
         }
-        if (isElectric() && MekanismUtils.useIC2()) {
+        //TODO: IC2
+        /*if (isElectric() && MekanismUtils.useIC2()) {
             deregister();
-        }
+        }*/
         if (hasSound()) {
             updateSound();
         }
@@ -488,9 +485,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (world.isRemote) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
-        if (isElectric() && wasInvalid && MekanismUtils.useIC2()) {//re-register if we got invalidated and are an electric block
+        //TODO: IC2
+        /*if (isElectric() && wasInvalid && MekanismUtils.useIC2()) {//re-register if we got invalidated and are an electric block
             register();
-        }
+        }*/
     }
 
     /**
@@ -886,7 +884,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     //IC2
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    //TODO: IC2
+    /*@Method(modid = MekanismHooks.IC2_MOD_ID)
     public void register() {
         if (!world.isRemote && !ic2Registered) {
             MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
@@ -933,7 +932,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
         setEnergy(Math.max(getEnergy() - IC2Integration.fromEU(amount), 0));
-    }
+    }*/
     //End methods ITileElectric
 
     //Methods for implementing ITileSecurity

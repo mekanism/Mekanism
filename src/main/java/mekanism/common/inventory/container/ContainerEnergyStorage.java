@@ -1,15 +1,13 @@
 package mekanism.common.inventory.container;
 
-import ic2.api.item.IElectricItem;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Items;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 public abstract class ContainerEnergyStorage<TILE extends TileEntityMekanism> extends ContainerMekanism<TILE> {
 
@@ -88,6 +86,7 @@ public abstract class ContainerEnergyStorage<TILE extends TileEntityMekanism> ex
     }
 
     private boolean canTransfer(ItemStack slotStack) {
-        return MekanismUtils.useIC2() && slotStack.getItem() instanceof IElectricItem;
+        //TODO: IC2
+        return false;//MekanismUtils.useIC2() && slotStack.getItem() instanceof IElectricItem;
     }
 }

@@ -8,7 +8,6 @@ import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.tile.TileEntityInductionPort;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -80,8 +79,9 @@ public final class CableUtils {
         if (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canExtract)) {
             return true;
         }
-        return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);
-
+        return false;
+        //TODO: IC2
+        //return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);
     }
 
     public static boolean isAcceptor(TileEntity source, TileEntity tileEntity, Direction side) {
@@ -95,7 +95,8 @@ public final class CableUtils {
         if (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canReceive)) {
             return true;
         }
-        return MekanismUtils.useIC2() && IC2Integration.isAcceptor(tileEntity, side);
+        //TODO: IC2
+        //return MekanismUtils.useIC2() && IC2Integration.isAcceptor(tileEntity, side);
     }
 
     public static void emit(IEnergyWrapper emitter) {
