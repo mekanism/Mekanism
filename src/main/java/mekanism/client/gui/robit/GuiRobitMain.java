@@ -3,6 +3,7 @@ package mekanism.client.gui.robit;
 import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
@@ -65,8 +66,7 @@ public class GuiRobitMain extends GuiMekanism {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(confirmName = new Button(guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm"),
-              onPress -> changeName()));
+        buttons.add(confirmName = new GuiButtonTranslation(guiLeft + 58, guiTop + 47, 60, 20, "gui.confirm", onPress -> changeName()));
         confirmName.visible = displayNameChange;
 
         nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, "");

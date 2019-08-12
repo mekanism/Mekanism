@@ -7,6 +7,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -14,7 +15,6 @@ import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -54,16 +54,15 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(removeButton = new Button(guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove"),
-              onPress -> {
-                  int selection = scrollList.getSelection();
-                  if (tileEntity.frequency != null && selection != -1) {
-                      TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
-                      Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-                      scrollList.clearSelection();
-                  }
-                  updateButtons();
-              }));
+        buttons.add(removeButton = new GuiButtonTranslation(guiLeft + 13, guiTop + 81, 122, 20, "gui.remove", onPress -> {
+            int selection = scrollList.getSelection();
+            if (tileEntity.frequency != null && selection != -1) {
+                TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                scrollList.clearSelection();
+            }
+            updateButtons();
+        }));
         trustedField = new TextFieldWidget(font, guiLeft + 35, guiTop + 69, 86, 11, "");
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);

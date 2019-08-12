@@ -4,6 +4,7 @@ import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -13,7 +14,6 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
@@ -52,41 +52,39 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        buttons.add(saveButton = new Button(guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save"),
-              onPress -> {
-                  if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
-                      int min = Integer.parseInt(minField.getText());
-                      int max = Integer.parseInt(maxField.getText());
-                      if (max >= min && max <= 64) {
-                          filter.min = Integer.parseInt(minField.getText());
-                          filter.max = Integer.parseInt(maxField.getText());
-                          if (isNew) {
-                              Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
-                          } else {
-                              Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
-                          }
-                          sendPacketToServer(0);
-                      } else if (min > max) {
-                          //TODO: Lang Keys
-                          status = TextComponentUtil.build(EnumColor.DARK_RED, "Max<min");
-                          ticker = 20;
-                      } else { //if(max > 64 || min > 64)
-                          status = TextComponentUtil.build(EnumColor.DARK_RED, "Max>64");
-                          ticker = 20;
-                      }
-                  } else if (filter.getItemStack().isEmpty()) {
-                      status = TextComponentUtil.build(EnumColor.DARK_RED, "No item");
-                      ticker = 20;
-                  } else if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
-                      status = TextComponentUtil.build(EnumColor.DARK_RED, "Max/min");
-                      ticker = 20;
-                  }
-              }));
-        buttons.add(deleteButton = new Button(guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete"),
-              onPress -> {
-                  Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-                  sendPacketToServer(0);
-              }));
+        buttons.add(saveButton = new GuiButtonTranslation(guiLeft + 47, guiTop + 62, 60, 20, "gui.save", onPress -> {
+            if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
+                int min = Integer.parseInt(minField.getText());
+                int max = Integer.parseInt(maxField.getText());
+                if (max >= min && max <= 64) {
+                    filter.min = Integer.parseInt(minField.getText());
+                    filter.max = Integer.parseInt(maxField.getText());
+                    if (isNew) {
+                        Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                    } else {
+                        Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                    }
+                    sendPacketToServer(0);
+                } else if (min > max) {
+                    //TODO: Lang Keys
+                    status = TextComponentUtil.build(EnumColor.DARK_RED, "Max<min");
+                    ticker = 20;
+                } else { //if(max > 64 || min > 64)
+                    status = TextComponentUtil.build(EnumColor.DARK_RED, "Max>64");
+                    ticker = 20;
+                }
+            } else if (filter.getItemStack().isEmpty()) {
+                status = TextComponentUtil.build(EnumColor.DARK_RED, "No item");
+                ticker = 20;
+            } else if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
+                status = TextComponentUtil.build(EnumColor.DARK_RED, "Max/min");
+                ticker = 20;
+            }
+        }));
+        buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 109, guiTop + 62, 60, 20, "gui.delete", onPress -> {
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+            sendPacketToServer(0);
+        }));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(isNew ? 5 : 0)));
         buttons.add(defaultButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation(),

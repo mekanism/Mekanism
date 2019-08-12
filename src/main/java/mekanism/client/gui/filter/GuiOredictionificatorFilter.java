@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -13,7 +14,6 @@ import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.util.ItemRegistryUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -49,25 +49,23 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        buttons.add(saveButton = new Button(guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save"),
-              onPress -> {
-                  if (!text.getText().isEmpty()) {
-                      setText();
-                  }
-                  if (filter.filter != null && !filter.filter.isEmpty()) {
-                      if (isNew) {
-                          Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
-                      } else {
-                          Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
-                      }
-                      sendPacketToServer(52);
-                  }
-              }));
-        buttons.add(deleteButton = new Button(guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete"),
-              onPress -> {
-                  Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-                  sendPacketToServer(52);
-              }));
+        buttons.add(saveButton = new GuiButtonTranslation(guiLeft + 31, guiTop + 62, 54, 20, "gui.save", onPress -> {
+            if (!text.getText().isEmpty()) {
+                setText();
+            }
+            if (filter.filter != null && !filter.filter.isEmpty()) {
+                if (isNew) {
+                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                } else {
+                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                }
+                sendPacketToServer(52);
+            }
+        }));
+        buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 54, 20, "gui.delete", onPress -> {
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+            sendPacketToServer(52);
+        }));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(52)));
         buttons.add(prevButton = new GuiButtonDisableableImage(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(),

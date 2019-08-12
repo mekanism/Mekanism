@@ -9,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -30,8 +31,6 @@ import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacket
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -131,50 +130,45 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(publicButton = new Button(guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public"),
-              onPress -> {
-                  privateMode = false;
-                  updateButtons();
-              }));
-        buttons.add(privateButton = new Button(guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private"),
-              onPress -> {
-                  privateMode = true;
-                  updateButtons();
-              }));
-        buttons.add(setButton = new Button(guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set"),
-              onPress -> {
-                  int selection = scrollList.getSelection();
-                  if (selection != -1) {
-                      Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
-                      setFrequency(freq.name);
-                  }
-                  updateButtons();
-              }));
-        buttons.add(deleteButton = new Button(guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete"),
-              onPress -> {
-                  int selection = scrollList.getSelection();
-                  if (selection != -1) {
-                      Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
-                      if (tileEntity != null) {
-                          TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                          Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-                      } else {
-                          Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
-                          Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
-                      }
-                      scrollList.clearSelection();
-                  }
-                  updateButtons();
-              }));
+        buttons.add(publicButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
+            privateMode = false;
+            updateButtons();
+        }));
+        buttons.add(privateButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 14, 60, 20, "gui.private", onPress -> {
+            privateMode = true;
+            updateButtons();
+        }));
+        buttons.add(setButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 116, 60, 20, "gui.set", onPress -> {
+            int selection = scrollList.getSelection();
+            if (selection != -1) {
+                Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
+                setFrequency(freq.name);
+            }
+            updateButtons();
+        }));
+        buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 116, 60, 20, "gui.delete", onPress -> {
+            int selection = scrollList.getSelection();
+            if (selection != -1) {
+                Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
+                if (tileEntity != null) {
+                    TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
+                    Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                } else {
+                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
+                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
+                }
+                scrollList.clearSelection();
+            }
+            updateButtons();
+        }));
         if (!itemStack.isEmpty()) {
-            buttons.add(teleportButton = new Button(guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport"),
-                  onPress -> {
-                      if (clientFreq != null && clientStatus == 1) {
-                          minecraft.mainWindow.setIngameFocus();
-                          ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
-                      }
-                      updateButtons();
-                  }));
+            buttons.add(teleportButton = new GuiButtonTranslation(guiLeft + 42, guiTop + 140, 92, 20, "gui.teleport", onPress -> {
+                if (clientFreq != null && clientStatus == 1) {
+                    minecraft.mainWindow.setIngameFocus();
+                    ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
+                }
+                updateButtons();
+            }));
         }
         frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);

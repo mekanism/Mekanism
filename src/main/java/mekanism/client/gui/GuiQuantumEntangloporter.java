@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
@@ -18,8 +19,6 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
@@ -64,36 +63,32 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(publicButton = new Button(guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public"),
-              onPress -> {
-                  privateMode = false;
-                  updateButtons();
-              }));
-        buttons.add(privateButton = new Button(guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private"),
-              onPress -> {
-                  privateMode = true;
-                  updateButtons();
-              }));
-        buttons.add(setButton = new Button(guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set"),
-              onPress -> {
-                  int selection = scrollList.getSelection();
-                  if (selection != -1) {
-                      Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
-                      setFrequency(freq.name);
-                  }
-                  updateButtons();
-              }));
-        buttons.add(deleteButton = new Button(guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete"),
-              onPress -> {
-                  int selection = scrollList.getSelection();
-                  if (selection != -1) {
-                      Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
-                      TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                      Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-                      scrollList.clearSelection();
-                  }
-                  updateButtons();
-              }));
+        buttons.add(publicButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
+            privateMode = false;
+            updateButtons();
+        }));
+        buttons.add(privateButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 14, 60, 20, "gui.private", onPress -> {
+            privateMode = true;
+            updateButtons();
+        }));
+        buttons.add(setButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 116, 60, 20, "gui.set", onPress -> {
+            int selection = scrollList.getSelection();
+            if (selection != -1) {
+                Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
+                setFrequency(freq.name);
+            }
+            updateButtons();
+        }));
+        buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 116, 60, 20, "gui.delete", onPress -> {
+            int selection = scrollList.getSelection();
+            if (selection != -1) {
+                Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
+                TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                scrollList.clearSelection();
+            }
+            updateButtons();
+        }));
         frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);

@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
@@ -142,7 +143,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(newFilterButton = new Button(guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter"),
+        buttons.add(newFilterButton = new GuiButtonTranslation(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
               onPress -> sendPacket(MinerGuiPacket.SERVER, 5, 0, null)));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacket(MinerGuiPacket.SERVER, 4, 0, null)));

@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -21,12 +22,11 @@ import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
@@ -75,11 +75,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(this.startButton = new Button(guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start"),
+        buttons.add(this.startButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 17, 60, 20, "gui.start",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
-        buttons.add(this.stopButton = new Button(guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop"),
+        buttons.add(this.stopButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
-        buttons.add(this.configButton = new Button(guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config"),
+        buttons.add(this.configButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 57, 60, 20, "gui.config",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0))));
         buttons.add(this.resetButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -26,7 +27,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -75,7 +75,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void init() {
         super.init();
         buttons.clear();
-        buttons.add(new Button(guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter"),
+        buttons.add(new GuiButtonTranslation(guiLeft + 10, guiTop + 86, 142, 20, "gui.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketOredictionificatorGui(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0))));
     }
 
