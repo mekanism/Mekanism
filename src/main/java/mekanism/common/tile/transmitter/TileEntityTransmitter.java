@@ -56,8 +56,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void tick() {
+        super.tick();
         if (delayedRefresh) {
             //Gets run the tick after the variable has been set. This is enough
             // time to ensure that the transmitter has been registered.

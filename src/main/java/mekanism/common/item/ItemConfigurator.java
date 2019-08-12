@@ -1,7 +1,5 @@
 package mekanism.common.item;
 
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +16,6 @@ import mekanism.common.SideData;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.CapabilityUtils;
@@ -30,8 +27,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -42,22 +37,19 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
 
-@InterfaceList({
+//TODO COFH IToolHammer, BuildCraft IToolWrench
+/*@InterfaceList({
       @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = MekanismHooks.BUILDCRAFT_MOD_ID),
       @Interface(iface = "cofh.api.item.IToolHammer", modid = MekanismHooks.COFH_API_MOD_ID)
-})
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IItemNetwork, IToolHammer {
+})*/
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork {
 
     public final int ENERGY_PER_CONFIGURE = 400;
     public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -186,7 +178,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
         return false;
     }
 
-    @Override
+    //TODO: BuildCraft
+    /*@Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public boolean canWrench(PlayerEntity player, Hand hand, ItemStack wrench, BlockRayTraceResult rayTrace) {
         return canUseWrench(wrench, player, rayTrace.getPos());
@@ -195,7 +188,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, BlockRayTraceResult rayTrace) {
-    }
+    }*/
 
     @Override
     public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
@@ -208,7 +201,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     }
 
     /*cofh IToolHammer */
-    @Override
+    //TODO: COFH IToolHammer
+    /*@Override
     public boolean isUsable(ItemStack stack, LivingEntity user, BlockPos pos) {
         return getState(stack) == ConfiguratorMode.WRENCH;
     }
@@ -224,7 +218,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     @Override
     public void toolUsed(ItemStack item, LivingEntity user, Entity entity) {
-    }
+    }*/
     /*end cofh IToolHammer */
 
     @Override

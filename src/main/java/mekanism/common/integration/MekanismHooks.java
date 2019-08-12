@@ -1,34 +1,9 @@
 package mekanism.common.integration;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
-import dan200.computercraft.api.ComputerCraftAPI;
-import java.util.Optional;
-import li.cil.oc.api.Driver;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
-import mekanism.common.integration.computer.CCPeripheral;
-import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.util.StackUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Optional.Method;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -78,8 +53,9 @@ public final class MekanismHooks {
     }
 
     public void hookInit() {
+        //TODO
         //Integrate with Waila
-        FMLInterModComms.sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
+        /*FMLInterModComms.sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
 
         //Register TOP handler
         FMLInterModComms.sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
@@ -88,7 +64,7 @@ public final class MekanismHooks {
         }
         if (AE2Loaded) {
             registerAE2P2P();
-        }
+        }*/
     }
 
     public void hookPostInit() {
@@ -96,7 +72,7 @@ public final class MekanismHooks {
         /*if (IC2Loaded) {
             hookIC2Recipes();
             Mekanism.logger.info("Hooked into IC2 successfully.");
-        }*/
+        }
         if (AE2Loaded) {
             registerAE2Recipes();
             Mekanism.logger.info("Hooked into AE2 successfully.");
@@ -108,14 +84,14 @@ public final class MekanismHooks {
         if (CyclicLoaded) {
             registerCyclicRecipes();
             Mekanism.logger.info("Hooked into Cyclic successfully.");
-        }
+        }*/
         if (MetallurgyLoaded) {
             addMetallurgy();
             Mekanism.logger.info("Hooked into Metallurgy successfully.");
         }
-        if (MALoaded) {
+        /*if (MALoaded) {
             registerMysticalAgricultureRecipes();
-        }
+        }*/
         if (CraftTweakerLoaded) {
             //CraftTweaker must be ran after all other recipe changes
             CrafttweakerIntegration.registerCommands();
@@ -168,23 +144,26 @@ public final class MekanismHooks {
         Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpLead"), null, false, MekanismItem.DIRTY_LEAD_DUST.getItemStack());
     }*/
 
-    @Method(modid = COMPUTERCRAFT_MOD_ID)
+    //TODO: ComputerCraft
+    /*@Method(modid = COMPUTERCRAFT_MOD_ID)
     private void loadCCPeripheralProviders() {
         try {
             ComputerCraftAPI.registerPeripheralProvider(new CCPeripheral.CCPeripheralProvider());
         } catch (Exception ignored) {
         }
-    }
+    }*/
 
-    @Method(modid = OPENCOMPUTERS_MOD_ID)
+    //TODO: OpenComputers
+    /*@Method(modid = OPENCOMPUTERS_MOD_ID)
     private void loadOCDrivers() {
         try {
             Driver.add(new OCDriver());
         } catch (Exception ignored) {
         }
-    }
+    }*/
 
-    private void registerCyclicCombinerOreRecipe(String ore, int quantity, ItemStack extra, String outputName) {
+    //TODO: Cyclic
+    /*private void registerCyclicCombinerOreRecipe(String ore, int quantity, ItemStack extra, String outputName) {
         Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
         if (outputItem != null) {
             for (ItemStack stack : OreDictionary.getOres(ore, false)) {
@@ -218,9 +197,10 @@ public final class MekanismHooks {
         registerCyclicCombinerOreRecipe("dustDiamond", 3, end_stone, "end_diamond_ore");
         registerCyclicCombinerOreRecipe("dustGold", 8, end_stone, "end_gold_ore");
         registerCyclicCombinerOreRecipe("dustIron", 8, end_stone, "end_iron_ore");
-    }
+    }*/
 
-    private void registerAE2P2P() {
+    //TODO: AE2
+    /*private void registerAE2P2P() {
         //ITEMS
         FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.BASIC_LOGISTICAL_TRANSPORTER.getItemStack());
         FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.ADVANCED_LOGISTICAL_TRANSPORTER.getItemStack());
@@ -324,7 +304,7 @@ public final class MekanismHooks {
         } catch (IncompatibleClassChangeError e) {
             Mekanism.logger.error("AE2 api has changed unexpectedly", e);
         }
-    }
+    }*/
 
     private void addMetallurgy() {
         OreDictManager.addStandardOredictMetal("Adamantine");
@@ -368,7 +348,8 @@ public final class MekanismHooks {
         OreDictManager.addStandardOredictMetal("Zinc");
     }
 
-    private void registerMARecipeSet(MAOre ore, MAOreType type) {
+    //TODO: Mystical Agriculture
+    /*private void registerMARecipeSet(MAOre ore, MAOreType type) {
         String oreName = type.orePrefix + ore.name().toLowerCase() + "_ore";
         Item oreItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
         Item dropItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
@@ -414,5 +395,5 @@ public final class MekanismHooks {
             baseBlock = base;
             this.quantity = quantity;
         }
-    }
+    }*/
 }

@@ -57,7 +57,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (!getWorld().isRemote) {
             updateShare();
             IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(getPos(), getWorld());
@@ -71,7 +71,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
                 }
             }
         }
-        super.update();
+        super.tick();
     }
 
     @Override

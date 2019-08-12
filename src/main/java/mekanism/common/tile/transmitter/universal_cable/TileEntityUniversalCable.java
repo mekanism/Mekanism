@@ -59,7 +59,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (getWorld().isRemote) {
             double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
             if (Math.abs(currentPower - targetPower) > 0.01) {
@@ -107,7 +107,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
                 }
             }
         }
-        super.update();
+        super.tick();
     }
 
     /**

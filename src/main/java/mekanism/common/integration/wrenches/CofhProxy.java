@@ -1,16 +1,16 @@
-package mekanism.common.integration.wrenches;
-
-import cofh.api.item.IToolHammer;
+//TODO: COFH IToolHammer
+/*import cofh.api.item.IToolHammer;
 import mekanism.api.IMekWrench;
+import mekanism.common.integration.wrenches.MekWrenchProxy;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 
-/**
- * Translates to COFH's IToolHammer
- */
+/package mekanism.common.integration.wrenches;
+
+//Translates to COFH's IToolHammer
 public class CofhProxy implements MekWrenchProxy, IMekWrench {
 
     public static final String COFH_HAMMER_CLASS = "cofh.api.item.IToolHammer";
@@ -31,4 +31,4 @@ public class CofhProxy implements MekWrenchProxy, IMekWrench {
             ((IToolHammer) wrench.getItem()).toolUsed(wrench, player, rayTrace.getPos());
         }
     }
-}
+}*/

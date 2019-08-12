@@ -83,7 +83,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (!getWorld().isRemote) {
             updateShare();
             IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
@@ -102,7 +102,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
                 currentScale = (9 * currentScale + targetScale) / 10;
             }
         }
-        super.update();
+        super.tick();
     }
 
     public int getAvailablePull() {

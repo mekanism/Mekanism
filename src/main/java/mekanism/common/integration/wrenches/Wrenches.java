@@ -11,8 +11,8 @@ import net.minecraft.item.ItemStack;
  */
 public enum Wrenches {
     MEKANISM_PASSTHROUGH(IMekWrench.class.getName(), MekPassthrough::new),
-    BUILDCRAFT(BuildCraftProxy.BUILDCRAFT_WRENCH_CLASS, BuildCraftProxy::new),
-    COFH(CofhProxy.COFH_HAMMER_CLASS, CofhProxy::new),
+    //BUILDCRAFT(BuildCraftProxy.BUILDCRAFT_WRENCH_CLASS, BuildCraftProxy::new),
+    //COFH(CofhProxy.COFH_HAMMER_CLASS, CofhProxy::new),
     IC2(IC2Proxy.IC2_WRENCH_CLASS, IC2Proxy::new);
 
     private final String classname;

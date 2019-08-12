@@ -7,7 +7,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
-import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -107,9 +106,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
         float brightness = world.getSunBrightnessFactor(1.0f);
-        if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
+        //TODO: Galacticraft
+        /*if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
             brightness *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
-        }
+        }*/
 
         // Production is a function of the peak possible output in this biome and sun's current brightness
         float production = peakOutput * brightness;

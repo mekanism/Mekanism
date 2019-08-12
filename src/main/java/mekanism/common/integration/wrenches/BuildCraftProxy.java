@@ -1,16 +1,16 @@
-package mekanism.common.integration.wrenches;
+//TODO: BuildCraft
+/*package mekanism.common.integration.wrenches;
 
 import buildcraft.api.tools.IToolWrench;
 import mekanism.api.IMekWrench;
+import mekanism.common.integration.wrenches.MekWrenchProxy;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 
-/**
- * Translates to Buildcraft's IToolWrench
- */
+//Translates to Buildcraft's IToolWrench
 public class BuildCraftProxy implements MekWrenchProxy, IMekWrench {
 
     public static final String BUILDCRAFT_WRENCH_CLASS = "buildcraft.api.tools.IToolWrench";
@@ -36,4 +36,4 @@ public class BuildCraftProxy implements MekWrenchProxy, IMekWrench {
             ((IToolWrench) stack.getItem()).wrenchUsed(player, hand, stack, rayTrace);
         }
     }
-}
+}*/

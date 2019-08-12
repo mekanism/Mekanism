@@ -63,10 +63,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -83,7 +83,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
-public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, IToggleableCapability, ITileDirectional,
+public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileContainer, ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile {
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
@@ -341,7 +341,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }*/
 
     @Override
-    public void update() {
+    public void tick() {
         if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
             Block block = getBlockType();
             if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
