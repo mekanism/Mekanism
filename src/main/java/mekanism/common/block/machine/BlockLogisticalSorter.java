@@ -169,7 +169,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                     if (SecurityUtils.canAccess(player, tileEntity)) {
                         wrenchHandler.wrenchUsed(player, hand, stack, hit);
                         if (player.isSneaking()) {
-                            MekanismUtils.dismantleBlock(this, state, world, pos);
+                            MekanismUtils.dismantleBlock(state, world, pos);
                             return true;
                         }
                         if (tileEntity != null) {

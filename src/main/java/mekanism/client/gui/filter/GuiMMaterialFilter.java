@@ -75,11 +75,11 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
+            double xAxis = mouseX - guiLeft;
+            double yAxis = mouseY - guiTop;
             if (overTypeInput(xAxis, yAxis)) {
                 materialMouseClicked();
             } else {

@@ -29,7 +29,7 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160;
     }
 
@@ -52,12 +52,12 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }

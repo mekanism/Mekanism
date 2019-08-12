@@ -126,7 +126,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         if (tileEntity != null && !world.isRemote && !canStay(world, pos)) {
-            dropBlockAsItem(world, pos, world.getBlockState(pos), 0);
+            Block.spawnDrops(world.getBlockState(pos), world, pos, tileEntity);
             world.removeBlock(pos, isMoving);
         }
     }

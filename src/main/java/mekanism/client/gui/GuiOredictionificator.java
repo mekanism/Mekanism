@@ -39,7 +39,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     private Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<>();
     private boolean isDragging = false;
-    private int dragOffset = 0;
+    private double dragOffset = 0;
     private float scroll;
 
     public GuiOredictionificator(PlayerInventory inventory, TileEntityOredictionificator tile) {
@@ -58,7 +58,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         ySize += 64;
     }
 
-    private boolean overFilter(int xAxis, int yAxis, int yStart) {
+    private boolean overFilter(double xAxis, double yAxis, int yStart) {
         return xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
     }
 
@@ -117,11 +117,11 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
+            double xAxis = mouseX - guiLeft;
+            double yAxis = mouseY - guiTop;
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (tileEntity.filters.size() > 3) {
                     dragOffset = yAxis - (getScroll() + 18);

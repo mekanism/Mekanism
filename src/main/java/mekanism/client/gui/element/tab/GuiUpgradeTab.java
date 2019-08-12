@@ -29,7 +29,7 @@ public class GuiUpgradeTab extends GuiTileEntityElement<TileEntity> {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28;
     }
 
@@ -51,12 +51,12 @@ public class GuiUpgradeTab extends GuiTileEntityElement<TileEntity> {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
             Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 0, 43));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }

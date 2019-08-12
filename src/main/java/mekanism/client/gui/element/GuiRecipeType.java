@@ -21,7 +21,7 @@ public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= 180 && xAxis <= 196 && (yAxis >= 75 && yAxis <= 91 || yAxis >= 112 && yAxis <= 128);
     }
 
@@ -39,15 +39,15 @@ public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
             offsetX(26);
         }
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
             offsetX(-26);
         }
     }

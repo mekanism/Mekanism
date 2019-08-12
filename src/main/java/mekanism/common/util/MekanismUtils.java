@@ -1009,8 +1009,12 @@ public final class MekanismUtils {
     /**
      * Dismantles a block, dropping it and removing it from the world.
      */
-    public static void dismantleBlock(Block block, BlockState state, World world, BlockPos pos) {
-        block.dropBlockAsItem(world, pos, state, 0);
+    public static void dismantleBlock(BlockState state, World world, BlockPos pos) {
+        dismantleBlock(state, world, pos, world.getTileEntity(pos));
+    }
+
+    public static void dismantleBlock(BlockState state, World world, BlockPos pos, TileEntity tile) {
+        Block.spawnDrops(state, world, pos, tile);
         world.removeBlock(pos, false);
     }
 

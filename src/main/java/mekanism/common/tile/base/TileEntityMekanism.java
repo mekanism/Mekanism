@@ -297,7 +297,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     }
                     wrenchHandler.wrenchUsed(player, hand, stack, rayTrace);
                     if (player.isSneaking()) {
-                        MekanismUtils.dismantleBlock(getBlockType(), state, world, pos);
+                        MekanismUtils.dismantleBlock(state, world, pos, this);
                         return WrenchResult.DISMANTLED;
                     }
                     //Special ITileDirectional handling

@@ -33,20 +33,20 @@ public class GuiBucketIO extends GuiElement {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= 180 && xAxis <= 196 && yAxis >= 71 && yAxis <= 87 || xAxis >= 180 && xAxis <= 196 && yAxis >= 102 && yAxis <= 118;
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
-        if (inBounds(xAxis, yAxis)) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
+        if (inBounds(mouseX, mouseY)) {
             offsetX(26);
         }
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (inBounds(mouseX, mouseY)) {
             offsetX(-26);
         }
     }

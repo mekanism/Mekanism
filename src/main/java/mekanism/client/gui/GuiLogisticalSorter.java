@@ -71,14 +71,14 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseBtn) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseBtn);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
 
         // Get mouse position relative to gui
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        double xAxis = mouseX - guiLeft;
+        double yAxis = mouseY - guiTop;
 
-        if (mouseBtn == 0) {
+        if (button == 0) {
             // Check for scrollbar interaction
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (needsScrollBars()) {
@@ -123,7 +123,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         }
 
         // Check for default colour button
-        if (colorButton.isMouseOver(mouseX, mouseY) && mouseBtn == 1) {
+        if (colorButton.isMouseOver(mouseX, mouseY) && button == 1) {
             sendDataFromClick(TileNetworkList.withContents(0, 1));
         }
     }

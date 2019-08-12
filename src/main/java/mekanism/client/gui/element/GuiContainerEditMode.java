@@ -29,7 +29,7 @@ public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityMekanis
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= 179 && xAxis <= 197 && yAxis >= 142 && yAxis <= 160;
     }
 
@@ -53,13 +53,13 @@ public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityMekanis
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         IFluidContainerManager manager = (IFluidContainerManager) tileEntity;
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
             ContainerEditMode current = manager.getContainerEditMode();
             int ordinalToSet = current.ordinal() < (ContainerEditMode.values().length - 1) ? current.ordinal() + 1 : 0;
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

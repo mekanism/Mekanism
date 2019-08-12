@@ -56,7 +56,7 @@ public class GuiConfigTypeTab extends GuiElement {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos + 4 && yAxis <= yPos + 22;
     }
 
@@ -90,12 +90,12 @@ public class GuiConfigTypeTab extends GuiElement {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (visible && button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (visible && button == 0 && inBounds(mouseX, mouseY)) {
             ((GuiSideConfiguration) guiObj).setCurrentType(transmission);
             ((GuiSideConfiguration) guiObj).updateTabs();
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

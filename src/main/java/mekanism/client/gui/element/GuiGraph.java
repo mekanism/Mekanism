@@ -63,7 +63,7 @@ public class GuiGraph extends GuiElement {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= xPosition && xAxis <= xPosition + xSize && yAxis >= yPosition && yAxis <= yPosition + ySize;
     }
 
@@ -85,11 +85,11 @@ public class GuiGraph extends GuiElement {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
     }
 
     public void drawBlack(int guiWidth, int guiHeight) {

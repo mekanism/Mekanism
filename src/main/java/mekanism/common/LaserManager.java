@@ -75,7 +75,7 @@ public class LaserManager {
         }
         NonNullList<ItemStack> ret = null;
         if (dropAtBlock) {
-            blockHit.dropBlockAsItem(world, blockCoord.getPos(), state, 0);
+            Block.spawnDrops(state, world, blockCoord.getPos(), world.getTileEntity(blockCoord.getPos()));
         } else {
             ret = NonNullList.create();
             blockHit.getDrops(ret, world, blockCoord.getPos(), state, 0);

@@ -30,7 +30,7 @@ public class GuiEnergyInfo extends GuiElement {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160;
     }
 
@@ -51,11 +51,11 @@ public class GuiEnergyInfo extends GuiElement {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
             MekanismConfig.current().general.energyUnit.set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1) % EnergyType.values().length]);
         }

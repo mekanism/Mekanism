@@ -57,9 +57,9 @@ public class GuiDictionary extends GuiMekanism {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        double xAxis = mouseX - guiLeft;
+        double yAxis = mouseY - guiTop;
         if (button == 0) {
             if (InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 Slot hovering = null;
@@ -78,7 +78,7 @@ public class GuiDictionary extends GuiMekanism {
                         itemType.setCount(1);
                         scrollList.setText(OreDictCache.getOreDictName(itemType));
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        return;
+                        return true;
                     }
                 }
             }
@@ -96,7 +96,7 @@ public class GuiDictionary extends GuiMekanism {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }
-        super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

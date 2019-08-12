@@ -31,7 +31,7 @@ public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84;
     }
 
@@ -55,12 +55,12 @@ public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
             TileNetworkList data = TileNetworkList.withContents(0);
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

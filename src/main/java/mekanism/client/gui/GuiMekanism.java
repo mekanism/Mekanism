@@ -124,7 +124,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         guiElements.forEach(element -> element.renderForeground(xAxis, yAxis));
     }
 
-    protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
+    protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
     }
 
@@ -145,12 +145,13 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        double xAxis = mouseX - guiLeft;
+        double yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.preMouseClicked(xAxis, yAxis, button));
         super.mouseClicked(mouseX, mouseY, button);
         guiElements.forEach(element -> element.mouseClicked(xAxis, yAxis, button));
+        //TODO: Give return values to the implementations of these
     }
 
     @Override
@@ -160,7 +161,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
 
     @Override
     public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h) {
-        drawTexturedModalRect(x, y, icon, w, h);
+        blit(x, y, blitOffset, w, h, icon);
     }
 
     @Override
@@ -213,7 +214,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        super.renderd(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 

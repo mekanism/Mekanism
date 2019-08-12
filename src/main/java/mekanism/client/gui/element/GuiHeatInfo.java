@@ -30,7 +30,7 @@ public class GuiHeatInfo extends GuiElement {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134;
     }
 
@@ -51,12 +51,12 @@ public class GuiHeatInfo extends GuiElement {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
             MekanismConfig.current().general.tempUnit.set(TempType.values()[(MekanismConfig.current().general.tempUnit.val().ordinal() + 1) % TempType.values().length]);
         }
     }

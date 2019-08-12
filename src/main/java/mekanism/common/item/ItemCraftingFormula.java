@@ -46,7 +46,7 @@ public class ItemCraftingFormula extends ItemMekanism {
                 if (!stack.isEmpty()) {
                     boolean found = false;
                     for (ItemStack iterStack : stacks) {
-                        if (InventoryUtils.canStack(stack, iterStack)) {
+                        if (InventoryUtils.areItemsStackable(stack, iterStack)) {
                             iterStack.grow(stack.getCount());
                             found = true;
                         }

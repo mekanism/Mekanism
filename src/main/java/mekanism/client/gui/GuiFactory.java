@@ -123,11 +123,11 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button) throws IOException {
-        super.mouseClicked(x, y, button);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
         if (button == 0 || InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-            int xAxis = x - guiLeft;
-            int yAxis = y - guiTop;
+            double xAxis = mouseX - guiLeft;
+            double yAxis = mouseY - guiTop;
             if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {

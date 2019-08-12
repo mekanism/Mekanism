@@ -9,16 +9,13 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ShulkerBoxTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.item.Items;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -48,27 +45,8 @@ public final class MinerUtils {
             return Collections.emptyList();
         }
 
-        if (block instanceof ShulkerBoxBlock) {
-            //special case Shulker Boxes because bad Mojang code / no forge patch
-            ItemStack shulkerBoxItem = new ItemStack(block);
-            TileEntity tileentity = world.getTileEntity(coord.getPos());
-
-            //copied from BlockShulkerBox.breakBlock
-            if (tileentity instanceof ShulkerBoxTileEntity) {
-                ShulkerBoxTileEntity tileentityshulkerbox = (ShulkerBoxTileEntity) tileentity;
-
-                if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop()) {
-                    CompoundNBT itemTag = new CompoundNBT();
-                    CompoundNBT nbtBlockEntity = new CompoundNBT();
-                    itemTag.put("BlockEntityTag", ((ShulkerBoxTileEntity) tileentity).saveToNbt(nbtBlockEntity));
-                    shulkerBoxItem.setTag(itemTag);
-                    if (tileentityshulkerbox.hasCustomName()) {
-                        shulkerBoxItem.setStackDisplayName(tileentityshulkerbox.getName());
-                    }
-                }
-            }
-            return Collections.singletonList(shulkerBoxItem);
-        } else if (silk && (block.canSilkHarvest(world, coord.getPos(), state, fakePlayer) || specialSilkIDs.contains(block))) {
+        //TODO: I believe the shulker box is actually properly handled now, but if not we need to add back the specialized logic
+        if (silk && (block.canSilkHarvest(world, coord.getPos(), state, fakePlayer) || specialSilkIDs.contains(block))) {
             Object it = null;
             if (getSilkTouchDrop != null) {
                 try {
@@ -77,7 +55,7 @@ public final class MinerUtils {
                     Mekanism.logger.error("Block.getSilkTouchDrop errored", e);
                 }
             }
-            List<ItemStack> ret = new ArrayList<>();
+            NonNullList<ItemStack> ret = NonNullList.create();
             if (it instanceof ItemStack && !((ItemStack) it).isEmpty()) {
                 ret.add((ItemStack) it);
             } else {
@@ -85,7 +63,7 @@ public final class MinerUtils {
                 // Fallback to grabbing an itemblock
                 Item item = block.asItem();
                 if (item != Items.AIR) {
-                    ret.add(new ItemStack(item, 1, item.getHasSubtypes() ? block.getMetaFromState(state) : 0));
+                    ret.add(new ItemStack(item));
                 }
             }
             if (ret.size() > 0) {

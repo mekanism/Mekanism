@@ -118,7 +118,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 1) {
             TileEntity tile = (TileEntity) configurable;

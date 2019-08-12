@@ -90,11 +90,11 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button) throws IOException {
-        super.mouseClicked(x, y, button);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = x - guiLeft;
-            int yAxis = y - guiTop;
+            double xAxis = mouseX - guiLeft;
+            double yAxis = mouseY - guiTop;
             if (xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82) {
                 TileNetworkList data = TileNetworkList.withContents(0);
                 Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));

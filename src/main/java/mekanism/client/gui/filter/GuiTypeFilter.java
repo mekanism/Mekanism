@@ -19,7 +19,7 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
     protected void drawItemStackBackground(int xAxis, int yAxis) {
     }
 
-    protected boolean overTypeInput(int xAxis, int yAxis) {
+    protected boolean overTypeInput(double xAxis, double yAxis) {
         return xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35;
     }
 

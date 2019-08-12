@@ -34,7 +34,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     private IUpgradeTile tileEntity;
     private Upgrade selectedType;
     private boolean isDragging = false;
-    private int dragOffset = 0;
+    private double dragOffset = 0;
     private int supportedIndex;
     private int delay;
     private float scroll;
@@ -60,7 +60,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
         updateEnabledButtons();
     }
 
-    private boolean overUpgradeType(int xAxis, int yAxis, int xPos, int yPos) {
+    private boolean overUpgradeType(double xAxis, double yAxis, int xPos, int yPos) {
         return xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12;
     }
 
@@ -217,11 +217,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
+            double xAxis = mouseX - guiLeft;
+            double yAxis = mouseY - guiTop;
             if (xAxis >= 84 && xAxis <= 88 && yAxis >= getScroll() + 8 && yAxis <= getScroll() + 8 + 4) {
                 if (getCurrentUpgrades().size() > 4) {
                     dragOffset = yAxis - (getScroll() + 8);

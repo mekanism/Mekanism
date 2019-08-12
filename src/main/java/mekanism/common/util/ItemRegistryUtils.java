@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
@@ -31,7 +30,7 @@ public final class ItemRegistryUtils {
             populateMap();
         }
 
-        ResourceLocation itemResourceLocation = Item.REGISTRY.getNameForObject(stack.getItem());
+        ResourceLocation itemResourceLocation = stack.getItem().getRegistryName();
 
         if (itemResourceLocation == null) {
             return "null";

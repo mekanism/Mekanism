@@ -133,11 +133,11 @@ public abstract class GuiGauge<T> extends GuiElement {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
     }
 
     public abstract TransmissionType getTransmission();

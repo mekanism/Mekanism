@@ -30,7 +30,7 @@ public class GuiRateBar extends GuiElement {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1;
     }
 
@@ -58,11 +58,11 @@ public class GuiRateBar extends GuiElement {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
     }
 
     public static abstract class IRateInfoHandler {

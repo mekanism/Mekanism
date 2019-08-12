@@ -58,8 +58,8 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected void transporterMouseClicked(int button, TransporterFilter filter) {
-        if (button == 1 && colorButton.isMouseOver()) {
+    protected void transporterMouseClicked(double mouseX, double mouseY, int button, TransporterFilter filter) {
+        if (button == 1 && colorButton.isMouseOver(mouseX, mouseY)) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             filter.color = TransporterUtils.decrement(filter.color);
         }
@@ -96,11 +96,11 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected boolean overReplaceOutput(int xAxis, int yAxis) {
+    protected boolean overReplaceOutput(double xAxis, double yAxis) {
         return xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35;
     }
 
-    protected void minerFilterClickCommon(int xAxis, int yAxis, MinerFilter filter) {
+    protected void minerFilterClickCommon(double xAxis, double yAxis, MinerFilter filter) {
         if (overReplaceOutput(xAxis, yAxis)) {
             boolean doNull = false;
             ItemStack stack = minecraft.player.inventory.getItemStack();

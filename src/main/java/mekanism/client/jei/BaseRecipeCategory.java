@@ -98,7 +98,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h) {
-        gui.drawTexturedModalRect(x, y, icon, w, h);
+        gui.blit(x, y, icon, w, h);
     }
 
     @Override
@@ -150,5 +150,10 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     public static class GuiDummy extends AbstractGui {
+
+        public void blit(int x, int y, TextureAtlasSprite sprite, int width, int height) {
+            //Have this helper method as blitOffset is protected
+            blit(x, y, blitOffset, width, height, sprite);
+        }
     }
 }

@@ -5,15 +5,15 @@ import ic2.api.item.IElectricItemManager;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.item.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 
 public final class ChargeUtils {
 
@@ -39,11 +39,12 @@ public final class ChargeUtils {
             if (stack.getItem() instanceof IEnergizedItem) {
                 storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(stack, storer.getMaxEnergy() - storer.getEnergy()));
             } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
-                if (storage.canExtract()) {
-                    int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
-                    storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
-                }
+                stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(storage -> {
+                    if (storage.canExtract()) {
+                        int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
+                        storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
+                    }
+                });
             } else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
                 double gain = IC2Integration.fromEU(ElectricItem.manager.discharge(stack, IC2Integration.toEU(storer.getMaxEnergy() - storer.getEnergy()), 4, true, true, false));
                 storer.setEnergy(storer.getEnergy() + gain);
@@ -77,11 +78,12 @@ public final class ChargeUtils {
             if (stack.getItem() instanceof IEnergizedItem) {
                 storer.setEnergy(storer.getEnergy() - EnergizedItemManager.charge(stack, storer.getEnergy()));
             } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
-                if (storage.canReceive()) {
-                    int stored = ForgeEnergyIntegration.toForge(storer.getEnergy());
-                    storer.setEnergy(storer.getEnergy() - ForgeEnergyIntegration.fromForge(storage.receiveEnergy(stored, false)));
-                }
+                stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(storage -> {
+                    if (storage.canReceive()) {
+                        int stored = ForgeEnergyIntegration.toForge(storer.getEnergy());
+                        storer.setEnergy(storer.getEnergy() - ForgeEnergyIntegration.fromForge(storage.receiveEnergy(stored, false)));
+                    }
+                });
             } else if (MekanismUtils.useIC2() && isIC2Chargeable(stack)) {
                 double sent = IC2Integration.fromEU(ElectricItem.manager.charge(stack, IC2Integration.toEU(storer.getEnergy()), 4, true, false));
                 storer.setEnergy(storer.getEnergy() - sent);
@@ -98,17 +100,14 @@ public final class ChargeUtils {
      */
     public static boolean canBeDischarged(ItemStack itemstack) {
         if (itemstack.getItem() instanceof IEnergizedItem) {
-            if (((IEnergizedItem) itemstack.getItem()).canSend(itemstack)) {
-                if (((IEnergizedItem) itemstack.getItem()).getEnergy(itemstack) > 0) {
-                    return true;
-                }
+            IEnergizedItem energizedItem = (IEnergizedItem) itemstack.getItem();
+            if (energizedItem.canSend(itemstack) && energizedItem.getEnergy(itemstack) > 0) {
+                return true;
             }
         }
         if (MekanismUtils.useForge()) {
-            if (itemstack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                if (itemstack.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(1, true) > 0) {
-                    return true;
-                }
+            if (new LazyOptionalHelper<>(itemstack.getCapability(CapabilityEnergy.ENERGY)).matches(capability -> capability.extractEnergy(1, true) > 0)) {
+                return true;
             }
         }
         if (MekanismUtils.useIC2()) {
@@ -136,10 +135,8 @@ public final class ChargeUtils {
             }
         }
         if (MekanismUtils.useForge()) {
-            if (itemstack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                if (itemstack.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(1, true) > 0) {
-                    return true;
-                }
+            if (new LazyOptionalHelper<>(itemstack.getCapability(CapabilityEnergy.ENERGY)).matches(capability -> capability.receiveEnergy(1, true) > 0)) {
+                return true;
             }
         }
         if (MekanismUtils.useIC2()) {
@@ -168,11 +165,12 @@ public final class ChargeUtils {
             return energized.getEnergy(itemstack) == 0;
         }
         if (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-            IEnergyStorage storage = itemstack.getCapability(CapabilityEnergy.ENERGY, null);
-            if (chargeSlot) {
-                return !storage.canReceive() || storage.receiveEnergy(1, true) == 0;
-            }
-            return !storage.canExtract() || storage.extractEnergy(1, true) == 0;
+            return new LazyOptionalHelper<>(itemstack.getCapability(CapabilityEnergy.ENERGY)).matches(storage -> {
+                if (chargeSlot) {
+                    return !storage.canReceive() || storage.receiveEnergy(1, true) == 0;
+                }
+                return !storage.canExtract() || storage.extractEnergy(1, true) == 0;
+            });
         }
         if (MekanismUtils.useIC2() && (isIC2Chargeable(itemstack) || isIC2Dischargeable(itemstack))) {
             IElectricItemManager manager = ElectricItem.manager;
@@ -183,6 +181,7 @@ public final class ChargeUtils {
                 return manager.discharge(itemstack, 1, 3, true, true, true) == 0;
             }
         }
+        //TODO: Evaluate, the default used to be true but I think that is wrong
         return true;
     }
 }

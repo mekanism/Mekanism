@@ -65,10 +65,10 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button) throws IOException {
-        super.mouseClicked(x, y, button);
-        int xAxis = x - guiLeft;
-        int yAxis = y - guiTop;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
+        double xAxis = mouseX - guiLeft;
+        double yAxis = mouseY - guiTop;
         if (xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82) {
             TileNetworkList data = TileNetworkList.withContents((byte) 0);
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));

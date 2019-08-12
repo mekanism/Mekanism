@@ -4,12 +4,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.ErrorScreen;
-import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
+import net.minecraftforge.fml.ModLoadingException;
 
 /**
  * Copied from EnderCore
  */
-public class ApiJarPresentException extends CustomModLoadingErrorDisplayException {
+public class ApiJarPresentException extends ModLoadingException {
 
     private static final long serialVersionUID = 1L;
 

@@ -164,7 +164,7 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         nameChangeField.mouseClicked(mouseX, mouseY, button);
     }

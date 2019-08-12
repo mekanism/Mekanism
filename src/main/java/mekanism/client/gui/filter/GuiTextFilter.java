@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
@@ -89,13 +88,13 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
             minerFilterClickCommon(mouseX - guiLeft, mouseY - guiTop, (MinerFilter) filter);
         } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
-            transporterMouseClicked(button, (TransporterFilter) filter);
+            transporterMouseClicked(mouseX, mouseY, button, (TransporterFilter) filter);
         }
     }
 }

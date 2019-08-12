@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
@@ -87,12 +86,12 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && overTypeInput(mouseX - guiLeft, mouseY - guiTop)) {
             materialMouseClicked();
         } else {
-            transporterMouseClicked(button, filter);
+            transporterMouseClicked(mouseX, mouseY, button, filter);
         }
     }
 

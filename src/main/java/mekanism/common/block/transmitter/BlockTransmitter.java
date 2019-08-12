@@ -96,7 +96,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
         if (wrenchHandler != null) {
             if (wrenchHandler.canUseWrench(player, hand, stack, hit) && player.isSneaking()) {
                 if (!world.isRemote) {
-                    MekanismUtils.dismantleBlock(this, state, world, pos);
+                    MekanismUtils.dismantleBlock(state, world, pos);
                 }
                 return true;
             }

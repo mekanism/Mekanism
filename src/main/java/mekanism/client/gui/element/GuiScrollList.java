@@ -19,7 +19,7 @@ public class GuiScrollList extends GuiElement {
 
     private List<String> textEntries = new ArrayList<>();
     private boolean isDragging;
-    private int dragOffset = 0;
+    private double dragOffset = 0;
     private int selected = -1;
     private float scroll;
 
@@ -145,25 +145,25 @@ public class GuiScrollList extends GuiElement {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
             int xStart = xPosition + xSize - 5;
 
-            if (xAxis >= xStart && xAxis <= xStart + 4 && yAxis >= getScroll() + yPosition + 1 && yAxis <= getScroll() + 4 + yPosition + 1) {
+            if (mouseX >= xStart && mouseX <= xStart + 4 && mouseY >= getScroll() + yPosition + 1 && mouseY <= getScroll() + 4 + yPosition + 1) {
                 if (textEntries.size() > size) {
-                    dragOffset = yAxis - (getScroll() + yPosition + 1);
+                    dragOffset = mouseY - (getScroll() + yPosition + 1);
                     isDragging = true;
                 }
-            } else if (xAxis >= xPosition && xAxis <= xPosition + xSize - 6 && yAxis >= yPosition && yAxis <= yPosition + size * 10) {
+            } else if (mouseX >= xPosition && mouseX <= xPosition + xSize - 6 && mouseY >= yPosition && mouseY <= yPosition + size * 10) {
                 int index = getScrollIndex();
                 clearSelection();
                 for (int i = 0; i < size; i++) {
                     if (index + i <= textEntries.size() - 1) {
-                        if (yAxis >= (yPosition + i * 10) && yAxis <= (yPosition + i * 10 + 10)) {
+                        if (mouseY >= (yPosition + i * 10) && mouseY <= (yPosition + i * 10 + 10)) {
                             selected = index + i;
                             break;
                         }

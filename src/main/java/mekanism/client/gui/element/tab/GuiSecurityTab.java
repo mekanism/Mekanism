@@ -54,7 +54,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54;
     }
 
@@ -148,14 +148,14 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && MekanismConfig.current().general.allowProtection.val()) {
             if (getOwner() != null && minecraft.player.getUniqueID().equals(getOwner())) {
-                if (inBounds(xAxis, yAxis)) {
+                if (inBounds(mouseX, mouseY)) {
                     SecurityMode current = getSecurity();
                     int ordinalToSet = current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;
 

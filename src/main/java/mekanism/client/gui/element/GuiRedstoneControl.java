@@ -29,7 +29,7 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
     }
 
     @Override
-    protected boolean inBounds(int xAxis, int yAxis) {
+    protected boolean inBounds(double xAxis, double yAxis) {
         return xAxis >= 179 && xAxis <= 197 && yAxis >= 142 && yAxis <= 160;
     }
 
@@ -54,14 +54,13 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
     }
 
     @Override
-    public void mouseClicked(int xAxis, int yAxis, int button) {
-        IRedstoneControl control = (IRedstoneControl) tileEntity;
-
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && inBounds(mouseX, mouseY)) {
+            IRedstoneControl control = (IRedstoneControl) tileEntity;
             RedstoneControl current = control.getControlType();
             int ordinalToSet = current.ordinal() < (RedstoneControl.values().length - 1) ? current.ordinal() + 1 : 0;
             if (ordinalToSet == RedstoneControl.PULSE.ordinal() && !control.canPulse()) {

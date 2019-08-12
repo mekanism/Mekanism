@@ -22,7 +22,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -53,7 +52,6 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BushBlock;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -61,7 +59,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.ShulkerBoxTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -309,18 +306,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         BlockPos pos = obj.getPos();
         PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, this.pos).get());
 
-        //if its a shulker box, remove it TE so it can't drop itself in breakBlock - we've already captured its itemblock
-        TileEntity te = world.getTileEntity(pos);
-        ShulkerBoxTileEntity tileEntityShulkerBox = null;
-        if (te instanceof ShulkerBoxTileEntity) {
-            tileEntityShulkerBox = (ShulkerBoxTileEntity) te;
-            world.removeTileEntity(pos);
-        }
+        //TODO: Verify shulker checks not needed
 
         if (!stack.isEmpty()) {
             world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer), 3);
             BlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).canBlockStay(world, pos, s)) {
+                //TODO Block.spawnDrops fortune 1??
                 s.getBlock().dropBlockAsItem(world, pos, s, 1);
                 world.removeBlock(pos, false);
             }
@@ -332,12 +324,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                 return true;
             }
             missingStack = filter.replaceStack;
-
-            // something failed, so put that thing back where it came from
-            if (tileEntityShulkerBox != null) {
-                tileEntityShulkerBox.validate();
-                world.setTileEntity(pos, tileEntityShulkerBox);
-            }
+            //TODO: Verify shulker checks not needed
             return false;
         }
     }

@@ -68,7 +68,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
 
         radiusField.mouseClicked(mouseX, mouseY, button);
@@ -76,8 +76,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         maxField.mouseClicked(mouseX, mouseY, button);
 
         if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
+            double xAxis = mouseX - guiLeft;
+            double yAxis = mouseY - guiTop;
 
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (needsScrollBars()) {
@@ -101,14 +101,14 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                             if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20) {
                                 //Process up button click
                                 sendDataFromClick(TileNetworkList.withContents(11, index));
-                                return;
+                                return true;
                             }
                         }
                         if (index < tileEntity.filters.size() - 1) {
                             if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
                                 //Process down button click
                                 sendDataFromClick(TileNetworkList.withContents(12, index));
-                                return;
+                                return true;
                             }
                         }
                         if (filter instanceof IItemStackFilter) {
