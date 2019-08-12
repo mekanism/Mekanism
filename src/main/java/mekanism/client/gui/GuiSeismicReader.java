@@ -178,7 +178,7 @@ public class GuiSeismicReader extends Screen {
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
+    public boolean isPauseScreen() {
         return false;
     }
 

@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -15,7 +16,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -51,7 +51,7 @@ public class PacketSimpleGui {
                     openServerGui(message.guiHandler, message.guiId, (ServerPlayerEntity) player, player.world, message.coord4D);
                 }
             } else {
-                FMLCommonHandler.instance().showGuiScreen(getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
+                Minecraft.getInstance().displayGuiScreen(getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
                 player.openContainer.windowId = message.windowId;
             }
         }, player);

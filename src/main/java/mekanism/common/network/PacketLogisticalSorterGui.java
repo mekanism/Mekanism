@@ -14,6 +14,7 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,7 +24,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -62,10 +62,10 @@ public class PacketLogisticalSorterGui {
             } else if (message.coord4D.getTileEntity(player.world) instanceof TileEntityLogisticalSorter) {
                 try {
                     if (message.packetType == SorterGuiPacket.CLIENT) {
-                        FMLCommonHandler.instance().showGuiScreen(PacketLogisticalSorterGui.getGui(message.packetType, message.guiType, player, player.world,
+                        Minecraft.getInstance().displayGuiScreen(PacketLogisticalSorterGui.getGui(message.packetType, message.guiType, player, player.world,
                               message.coord4D.getPos(), -1));
                     } else if (message.packetType == SorterGuiPacket.CLIENT_INDEX) {
-                        FMLCommonHandler.instance().showGuiScreen(PacketLogisticalSorterGui.getGui(message.packetType, message.guiType, player, player.world,
+                        Minecraft.getInstance().displayGuiScreen(PacketLogisticalSorterGui.getGui(message.packetType, message.guiType, player, player.world,
                               message.coord4D.getPos(), message.index));
                     }
                     player.openContainer.windowId = message.windowId;

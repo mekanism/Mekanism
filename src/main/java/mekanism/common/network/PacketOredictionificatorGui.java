@@ -11,6 +11,7 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -20,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -58,9 +58,9 @@ public class PacketOredictionificatorGui {
             } else if (message.coord4D.getTileEntity(player.world) instanceof TileEntityOredictionificator) {
                 try {
                     if (message.packetType == OredictionificatorGuiPacket.CLIENT) {
-                        FMLCommonHandler.instance().showGuiScreen(getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), -1));
+                        Minecraft.getInstance().displayGuiScreen(getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), -1));
                     } else if (message.packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
-                        FMLCommonHandler.instance().showGuiScreen(getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), message.index));
+                        Minecraft.getInstance().displayGuiScreen(getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), message.index));
                     }
                     player.openContainer.windowId = message.windowId;
                 } catch (Exception e) {
