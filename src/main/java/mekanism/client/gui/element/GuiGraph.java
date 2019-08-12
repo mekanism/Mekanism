@@ -1,14 +1,14 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;

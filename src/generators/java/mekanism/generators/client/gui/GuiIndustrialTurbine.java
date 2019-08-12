@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiEmbeddedGaugeTile;

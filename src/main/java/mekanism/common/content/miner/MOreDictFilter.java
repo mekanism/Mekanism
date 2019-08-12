@@ -1,7 +1,6 @@
 package mekanism.common.content.miner;
 
 import mekanism.api.TileNetworkList;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.BlockItem;

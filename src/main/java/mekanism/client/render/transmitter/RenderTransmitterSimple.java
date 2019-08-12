@@ -1,12 +1,12 @@
 package mekanism.client.render.transmitter;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.renderer.BufferBuilder;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Direction;
 

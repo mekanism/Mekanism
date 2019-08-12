@@ -1,5 +1,8 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Coord4D;
@@ -13,9 +16,6 @@ import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;

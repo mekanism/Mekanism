@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
@@ -120,7 +119,6 @@ import mekanism.common.MekanismItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -201,13 +199,11 @@ import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
@@ -249,8 +245,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  */
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
-
-    private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
 
     @Override
     public void loadConfiguration() {
@@ -501,7 +495,7 @@ public class ClientProxy extends CommonProxy {
         //TODO: Redo all of these. Lots can probably just be done with json now. It is probably a good idea to do the ones, that can be done
         // in json with it, EVEN if it requires more skeleton json files.
 
-        setCustomStateMapper(fenceMapper, MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
+        /*setCustomStateMapper(fenceMapper, MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
               MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
               MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE, MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE,
               MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
@@ -552,7 +546,7 @@ public class ClientProxy extends CommonProxy {
                 return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL : ItemCraftingFormula.ENCODED_MODEL;
             }
             return ItemCraftingFormula.MODEL;
-        });
+        });*/
 
         OBJLoader.INSTANCE.addDomain(Mekanism.MODID);
     }

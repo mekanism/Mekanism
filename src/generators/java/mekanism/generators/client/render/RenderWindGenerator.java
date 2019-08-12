@@ -1,11 +1,11 @@
 package mekanism.generators.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
 public class RenderWindGenerator extends TileEntityRenderer<TileEntityWindGenerator> {

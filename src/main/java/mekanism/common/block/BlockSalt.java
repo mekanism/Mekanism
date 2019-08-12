@@ -8,9 +8,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 

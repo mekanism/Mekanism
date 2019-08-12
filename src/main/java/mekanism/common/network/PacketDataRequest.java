@@ -2,10 +2,8 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.CapabilityUtils;

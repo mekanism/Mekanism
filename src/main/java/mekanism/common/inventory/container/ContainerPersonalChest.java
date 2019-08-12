@@ -7,8 +7,8 @@ import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 

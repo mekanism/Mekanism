@@ -16,7 +16,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IFluidHandlerWrapper {
 

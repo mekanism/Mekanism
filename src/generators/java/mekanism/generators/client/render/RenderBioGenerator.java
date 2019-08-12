@@ -1,5 +1,8 @@
 package mekanism.generators.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.EnumMap;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer;
@@ -10,12 +13,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

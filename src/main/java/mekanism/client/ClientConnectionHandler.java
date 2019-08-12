@@ -4,10 +4,10 @@ import java.net.InetSocketAddress;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientConnectionHandler {

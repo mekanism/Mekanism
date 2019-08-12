@@ -1,5 +1,8 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
@@ -7,9 +10,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;

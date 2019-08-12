@@ -1,5 +1,8 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
@@ -8,15 +11,12 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {

@@ -1,5 +1,6 @@
 package mekanism.client.render.item.block;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.render.MekanismRenderer;
@@ -9,7 +10,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;

@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;

@@ -18,8 +18,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum ToolsItem implements IItemProvider {

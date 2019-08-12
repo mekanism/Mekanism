@@ -5,12 +5,12 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityPersonalChest extends TileEntityMekanism {

@@ -1,10 +1,8 @@
 package mekanism.client.gui.button;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

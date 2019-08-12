@@ -1,9 +1,9 @@
 package mekanism.client.render.item;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.base.ITileNetwork;

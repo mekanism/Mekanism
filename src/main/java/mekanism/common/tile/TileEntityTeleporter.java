@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IUpgradeTile;

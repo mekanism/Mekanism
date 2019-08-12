@@ -1,7 +1,6 @@
 package mekanism.common.content.transporter;
 
 import mekanism.api.TileNetworkList;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemStack;

@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Coord4D;
@@ -7,9 +8,8 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;

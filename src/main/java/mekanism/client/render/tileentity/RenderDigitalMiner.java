@@ -1,12 +1,12 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

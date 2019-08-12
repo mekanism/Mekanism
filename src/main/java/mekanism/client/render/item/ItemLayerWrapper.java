@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
 //From: https://github.com/Shadows-of-Fire/Singularities/blob/master/src/main/java/shadows/singularity/client/ItemLayerWrapper.java

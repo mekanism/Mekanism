@@ -1,5 +1,6 @@
 package mekanism.client.render.item.gear;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.render.MekanismRenderer;
@@ -7,7 +8,6 @@ import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;

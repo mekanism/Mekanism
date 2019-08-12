@@ -1,5 +1,8 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -8,15 +11,12 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.block.Blocks;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)

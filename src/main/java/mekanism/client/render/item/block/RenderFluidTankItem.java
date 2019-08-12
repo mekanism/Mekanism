@@ -1,5 +1,8 @@
 package mekanism.client.render.item.block;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
@@ -15,15 +18,12 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Blocks;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)

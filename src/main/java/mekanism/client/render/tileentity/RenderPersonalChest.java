@@ -1,11 +1,10 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.model.ModelChest;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.model.ChestModel;
 import net.minecraftforge.api.distmarker.Dist;

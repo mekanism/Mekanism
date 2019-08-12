@@ -1,5 +1,8 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +14,6 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import org.lwjgl.opengl.GL11;

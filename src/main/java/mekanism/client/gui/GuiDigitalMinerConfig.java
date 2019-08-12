@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;

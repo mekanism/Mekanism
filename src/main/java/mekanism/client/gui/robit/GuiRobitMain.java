@@ -1,6 +1,5 @@
 package mekanism.client.gui.robit;
 
-import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;

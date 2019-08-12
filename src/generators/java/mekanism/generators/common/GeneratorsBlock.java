@@ -35,8 +35,8 @@ import mekanism.generators.common.item.generator.ItemBlockTurbineValve;
 import mekanism.generators.common.item.generator.ItemBlockTurbineVent;
 import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsBlock implements IBlockProvider {

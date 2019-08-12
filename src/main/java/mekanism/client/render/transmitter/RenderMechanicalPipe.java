@@ -1,5 +1,6 @@
 package mekanism.client.render.transmitter;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import mekanism.client.render.FluidRenderMap;
@@ -13,12 +14,11 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityMechanicalPipe;
 import mekanism.common.transmitters.grid.FluidNetwork;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.BufferBuilder;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;

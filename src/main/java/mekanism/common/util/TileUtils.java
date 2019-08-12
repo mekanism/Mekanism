@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.common.PacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

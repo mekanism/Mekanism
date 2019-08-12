@@ -2,7 +2,6 @@ package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;

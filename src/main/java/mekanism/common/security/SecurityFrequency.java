@@ -3,7 +3,6 @@ package mekanism.common.security;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
-import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.CompoundNBT;

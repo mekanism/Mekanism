@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.infuse.InfuseType;

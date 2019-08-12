@@ -1,10 +1,10 @@
 package mekanism.generators.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
 public class RenderSolarGenerator extends TileEntityRenderer<TileEntitySolarGenerator> {

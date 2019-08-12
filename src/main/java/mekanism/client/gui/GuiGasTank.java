@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiRedstoneControl;

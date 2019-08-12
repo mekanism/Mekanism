@@ -1,5 +1,8 @@
 package mekanism.generators.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
@@ -7,18 +10,15 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {

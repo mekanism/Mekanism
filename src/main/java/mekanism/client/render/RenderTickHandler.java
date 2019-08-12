@@ -3,7 +3,6 @@ package mekanism.client.render;
 import java.util.Random;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.ClientTickHandler;

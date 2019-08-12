@@ -3,13 +3,13 @@ package mekanism.client.gui;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> extends GuiMekanismTile<TILE> {

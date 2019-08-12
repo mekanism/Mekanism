@@ -8,12 +8,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 
 public class BlockPlasticFence extends FenceBlock implements IColoredBlock, IBlockOreDict {
@@ -46,19 +43,5 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, IBlo
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH);
-    }
-
-    public static class PlasticFenceStateMapper extends StateMapperBase {
-
-        @Nonnull
-        @Override
-        protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state) {
-            String properties = "east=" + state.get(EAST) + ",";
-            properties += "north=" + state.get(NORTH) + ",";
-            properties += "south=" + state.get(SOUTH) + ",";
-            properties += "west=" + state.get(WEST);
-            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "plastic_fence");
-            return new ModelResourceLocation(baseLocation, properties);
-        }
     }
 }

@@ -1,5 +1,8 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -9,9 +12,6 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;

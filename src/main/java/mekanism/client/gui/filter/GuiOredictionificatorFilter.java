@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;

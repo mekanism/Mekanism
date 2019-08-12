@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;

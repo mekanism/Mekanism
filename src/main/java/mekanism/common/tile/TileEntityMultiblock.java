@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
