@@ -31,6 +31,39 @@ idea {
 
 apply plugin: 'net.minecraftforge.gradle'
 
+
+sourceSets {
+    api {
+        java {
+            srcDir 'src/api/java'
+        }
+    }
+    generators {
+        java {
+            srcDir 'src/generators/java'
+        }
+    }
+    tools {
+        java {
+            srcDir 'src/tools/java'
+        }
+    }
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+    test {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+}
+
+configurations {
+    apiCompile.extendsFrom(compile)
+    generatorsCompile.extendsFrom(compile)
+    toolsCompile.extendsFrom(compile)
+}
+
 repositories {
     maven {
         name 'ForgeFS'
@@ -100,12 +133,36 @@ minecraft {
     runs {
         client {
             workingDirectory project.file("run")
-            source sourceSets.main
+
+            mods {
+                mekanism {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+                mekanismgenerators {
+                    source sourceSets.generators
+                }
+                mekanismtools {
+                    source sourceSets.tools
+                }
+            }
         }
 
         server {
             workingDirectory project.file("run")
-            source sourceSets.main
+
+            mods {
+                mekanism {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+                mekanismgenerators {
+                    source sourceSets.generators
+                }
+                mekanismtools {
+                    source sourceSets.tools
+                }
+            }
         }
     }
 }
@@ -158,25 +215,41 @@ processResources {
     }
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
-
+/*
 def setMainManifestProps = { Manifest manifest->
     manifest.attributes (
-            'FMLAT': 'mekanism_at.cfg',
-            'FMLCorePluginContainsFMLMod': 'true',
-            'FMLCorePlugin': 'mekanism.coremod.MekanismCoremod'
+            'FMLAT': 'mekanism_at.cfg'
     )
 }
 
 jar {
     manifest(setMainManifestProps)
+}*/
+
+//TODO: Do this stuff properly
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "mekanism",
+                "Specification-Vendor"    : "mekanism",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "mekanism",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
+
+//TODO: Sources Jar
 
 task coreJar(type: Jar) {
     archiveName = "Mekanism-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "core"
+    from sourceSets.main.output
 
-    from('etc/core') {
+    /*from('etc/core') {
         include '*.info'
         expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
@@ -185,46 +258,49 @@ task coreJar(type: Jar) {
         exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismtools/**', 'assets/mekanismgenerators/**', 'mcmod.info'
     }
 
-    manifest(setMainManifestProps)
+    manifest(setMainManifestProps)*/
 }
 
 task toolsJar(type: Jar) {
     archiveName = "MekanismTools-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "tools"
+    from sourceSets.tools.output
 
-    from('etc/tools') {
+    /*from('etc/tools') {
         include '*.info'
         expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/tools/**', 'assets/mekanismtools/**'
-    }
+    }*/
 }
 
 task generatorsJar(type: Jar) {
     archiveName = "MekanismGenerators-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "generators"
+    from sourceSets.generators.output
 
-    from('etc/generators') {
+    /*from('etc/generators') {
         include '*.info'
         expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/generators/**', 'assets/mekanismgenerators/**'
-    }
+    }*/
 }
 
 task apiJar(type: Jar) {
+    from sourceSets.api.output
     classifier "api"
-    baseName "Mekanism"
+    /*baseName "Mekanism"
     dependsOn "sourceMainJava"
     include 'mekanism/api/**'
     from sourceSets.main.java.srcDirs
-    from sourceSets.main.output
+    from sourceSets.main.output*/
 }
 
 artifacts {

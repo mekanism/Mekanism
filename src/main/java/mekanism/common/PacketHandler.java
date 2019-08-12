@@ -100,6 +100,8 @@ public class PacketHandler {
                 output.writeItemStack((ItemStack) data);
             } else if (data instanceof CompoundNBT) {
                 output.writeCompoundTag((CompoundNBT) data);
+            } else if (data instanceof ResourceLocation) {
+                output.writeResourceLocation((ResourceLocation) data);
             } else if (data instanceof int[]) {
                 for (int i : (int[]) data) {
                     output.writeInt(i);

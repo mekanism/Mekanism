@@ -1,0 +1,12 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
+
+[[mods]]
+    modId="mekanism"
+    version="${file.jarVersion}"
+    displayName="Mekanism"
+    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster"
+    description='''
+      Main Mekanism Module.
+      '''

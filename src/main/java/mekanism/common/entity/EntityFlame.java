@@ -156,7 +156,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     }
                 }
             } else if (mop instanceof BlockRayTraceResult) {
-                BlockRayTraceResult blockResult = (BlockRayTraceResult) mop;
+                BlockRayTraceResult blockResult = mop;
                 BlockState state = world.getBlockState(blockResult.getPos());
                 boolean fluid = MekanismUtils.isFluid(world, new Coord4D(blockResult, world)) || MekanismUtils.isDeadFluid(world, new Coord4D(blockResult, world));
 
