@@ -3,7 +3,7 @@ package mekanism.client.gui.element.tab;
 import java.util.Arrays;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTileEntityElement;
@@ -80,7 +80,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            ITextComponent securityComponent = TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.security"), ": ",
+            ITextComponent securityComponent = TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.security"), ": ",
                   isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT) : SecurityUtils.getSecurity(tileEntity, Dist.CLIENT));
             ITextComponent ownerComponent = TextComponentUtil.build(OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()));
             if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tileEntity, Dist.CLIENT)) {

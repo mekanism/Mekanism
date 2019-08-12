@@ -2,7 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;

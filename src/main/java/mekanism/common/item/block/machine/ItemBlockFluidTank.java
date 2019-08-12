@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
@@ -79,9 +79,9 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (fluidStack != null) {
             int amount = fluidStack.amount;
             if (amount == Integer.MAX_VALUE) {
-                tooltip.add(TextComponentUtil.build(EnumColor.PINK, fluidStack, ": ", EnumColor.GREY, amount + "mB"));
+                tooltip.add(TextComponentUtil.build(EnumColor.PINK, fluidStack, ": ", EnumColor.GRAY, amount + "mB"));
             } else {
-                tooltip.add(TextComponentUtil.build(EnumColor.PINK, fluidStack, ": ", EnumColor.GREY, Translation.of("mekanism.gui.infinite")));
+                tooltip.add(TextComponentUtil.build(EnumColor.PINK, fluidStack, ": ", EnumColor.GRAY, Translation.of("mekanism.gui.infinite")));
             }
         } else {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.empty"), "."));
@@ -90,10 +90,10 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (tier != null) {
             int cap = tier.getStorage();
             if (cap == Integer.MAX_VALUE) {
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY,
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY,
                       Translation.of("mekanism.gui.infinite")));
             } else {
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY, cap + " mB"));
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY, cap + " mB"));
             }
         }
     }
@@ -102,13 +102,13 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack))));
-        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")"));
         }
         tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.portableTank.bucketMode", BooleanStateDisplay.YesNo.of(getBucketMode(itemstack)))));
         ListNBT inventory = getInventory(itemstack);
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY,
               BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 

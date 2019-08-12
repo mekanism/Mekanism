@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.tab;
 
 import java.util.Arrays;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;

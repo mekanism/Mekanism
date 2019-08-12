@@ -3,7 +3,7 @@ package mekanism.common.item;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -56,9 +56,9 @@ public class ItemCraftingFormula extends ItemMekanism {
                     }
                 }
             }
-            tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.tooltip.ingredients"), ":"));
+            tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.ingredients"), ":"));
             for (ItemStack stack : stacks) {
-                tooltip.add(TextComponentUtil.build(EnumColor.GREY, " - " + stack.getDisplayName() + " (" + stack.getCount() + ")"));
+                tooltip.add(TextComponentUtil.build(EnumColor.GRAY, " - " + stack.getDisplayName() + " (" + stack.getCount() + ")"));
             }
         }
     }

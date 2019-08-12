@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.SideData.IOState;
@@ -116,14 +116,14 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     public void setIOConfig(TransmissionType type) {
-        addOutput(type, new SideData("None", EnumColor.GREY, IOState.OFF));
+        addOutput(type, new SideData("None", EnumColor.GRAY, IOState.OFF));
         addOutput(type, new SideData("Input", EnumColor.DARK_GREEN, IOState.INPUT));
         addOutput(type, new SideData("Output", EnumColor.DARK_RED, IOState.OUTPUT));
         setConfig(type, new byte[]{1, 1, 2, 1, 1, 1});
     }
 
     public void setInputConfig(TransmissionType type) {
-        addOutput(type, new SideData("None", EnumColor.GREY, IOState.OFF));
+        addOutput(type, new SideData("None", EnumColor.GRAY, IOState.OFF));
         addOutput(type, new SideData("Input", EnumColor.DARK_GREEN, IOState.INPUT));
         fillConfig(type, 1);
         setCanEject(type, false);

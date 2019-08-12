@@ -2,7 +2,7 @@ package mekanism.client.render.entity;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelBalloon;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.entity.EntityBalloon;

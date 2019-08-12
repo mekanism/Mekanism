@@ -3,7 +3,7 @@ package mekanism.common.item.block.transmitter;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.block.transmitter.BlockRestrictiveTransporter;
@@ -31,9 +31,9 @@ public class ItemBlockRestrictiveTransporter extends ItemBlockMultipartAble<Bloc
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GREY, Translation.of("mekanism.tooltip.capableTrans"), ":"));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GRAY, Translation.of("mekanism.tooltip.capableTrans"), ":"));
             tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("mekanism.tooltip.items"), " (",
                   Translation.of("mekanism.tooltip.universal"), ")"));
             tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("mekanism.tooltip.blocks"), " (",

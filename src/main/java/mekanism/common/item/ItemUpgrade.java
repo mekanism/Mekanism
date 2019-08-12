@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeItem;
@@ -40,7 +40,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (!InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
             tooltip.add(TextComponentUtil.build(Translation.of(getUpgradeType(itemstack).getDescription())));
         }

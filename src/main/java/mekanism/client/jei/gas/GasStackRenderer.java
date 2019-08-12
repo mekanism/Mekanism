@@ -4,9 +4,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -153,9 +153,9 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         tooltip.add(TextComponentUtil.build(gasType).getFormattedText());
         ITextComponent component = null;
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            component = TextComponentUtil.build(EnumColor.GREY, Translation.of("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb));
+            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            component = TextComponentUtil.build(EnumColor.GREY, Translation.of("jei.tooltip.liquid.amount", gasStack.amount));
+            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount", gasStack.amount));
         }
         if (component != null) {
             tooltip.add(component.getFormattedText());

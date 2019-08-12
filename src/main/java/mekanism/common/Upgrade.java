@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
@@ -25,7 +25,7 @@ public enum Upgrade implements IHasTranslationKey {
     ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
     FILTER("filter", 1, EnumColor.DARK_AQUA),
     GAS("gas", 8, EnumColor.YELLOW),
-    MUFFLING("muffling", 4, EnumColor.DARK_GREY),
+    MUFFLING("muffling", 4, EnumColor.DARK_GRAY),
     ANCHOR("anchor", 1, EnumColor.DARK_GREEN);
 
     private String name;

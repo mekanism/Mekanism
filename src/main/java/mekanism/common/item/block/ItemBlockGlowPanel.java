@@ -2,7 +2,7 @@ package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.integration.MekanismHooks;
@@ -53,7 +53,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> i
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         EnumColor color = getColor(stack);
         if (color == EnumColor.BLACK) {
-            color = EnumColor.DARK_GREY;
+            color = EnumColor.DARK_GRAY;
         }
         return TextComponentUtil.build(color, super.getDisplayName(stack));
     }

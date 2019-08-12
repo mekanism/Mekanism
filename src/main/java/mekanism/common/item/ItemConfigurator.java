@@ -7,8 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.EnumColor;
 import mekanism.api.IMekWrench;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -85,7 +85,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     SideData initial = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
-                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                                   Translation.of("tooltip.configurator.viewMode", TextComponentUtil.build(transmissionType)), ": ", initial.color, initial,
                                   " (", initial.color.getColoredName(), ")"));
                         } else {
@@ -94,7 +94,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
                                     MekanismUtils.incrementOutput(config, transmissionType, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
                                     SideData data = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
-                                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                                           Translation.of("tooltip.configurator.toggleMode", TextComponentUtil.build(transmissionType)), ": ", data.color, data,
                                           " (", data.color.getColoredName(), ")"));
                                     if (config instanceof TileEntityMekanism) {

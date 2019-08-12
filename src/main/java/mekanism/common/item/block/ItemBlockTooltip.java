@@ -2,7 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.util.text.TextComponentUtil;
@@ -32,7 +32,7 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             addStats(itemstack, world, tooltip, flag);
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                        EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+                        EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
             addDescription(itemstack, world, tooltip, flag);
         }

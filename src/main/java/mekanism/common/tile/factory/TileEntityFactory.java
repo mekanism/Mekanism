@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
@@ -15,6 +14,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
@@ -130,7 +130,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
 
         int[] inputSlots;
         int[] outputSlots;
@@ -156,7 +156,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[]{4}));
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{4, 0, 0, 3, 1, 2});
 
-        configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+        configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[]{0}));
         configComponent.fillConfig(TransmissionType.GAS, 1);
         configComponent.setCanEject(TransmissionType.GAS, false);

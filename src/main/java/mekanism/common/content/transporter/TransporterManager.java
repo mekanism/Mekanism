@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;

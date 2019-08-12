@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import java.util.Collection;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ILogisticalTransporter;

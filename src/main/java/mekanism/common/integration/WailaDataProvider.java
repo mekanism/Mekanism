@@ -7,7 +7,7 @@ import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IServerDataProvider;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;

@@ -9,8 +9,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.EnumColor;
 import mekanism.api.IColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.state.Property;
 

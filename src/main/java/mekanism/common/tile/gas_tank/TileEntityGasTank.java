@@ -2,7 +2,6 @@ package mekanism.common.tile.gas_tank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -10,6 +9,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -64,7 +64,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
         this.tier = ((BlockGasTank) blockProvider.getBlock()).getTier();
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Fill", EnumColor.DARK_BLUE, new int[]{0}));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Empty", EnumColor.DARK_RED, new int[]{1}));
 

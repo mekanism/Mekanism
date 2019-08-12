@@ -2,8 +2,8 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
+import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;

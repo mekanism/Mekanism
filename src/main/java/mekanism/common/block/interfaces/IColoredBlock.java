@@ -1,6 +1,6 @@
 package mekanism.common.block.interfaces;
 
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 
 public interface IColoredBlock {
 

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -105,7 +105,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 int yStart = i * 22 + 18;
                 boolean mouseOver = overFilter(xAxis, yAxis, yStart);
                 if (mouseOver) {
-                    MekanismRenderer.color(EnumColor.GREY);
+                    MekanismRenderer.color(EnumColor.GRAY);
                 }
                 drawTexturedRect(guiLeft + 10, guiTop + yStart, 0, 230, 142, 22);
                 if (mouseOver) {

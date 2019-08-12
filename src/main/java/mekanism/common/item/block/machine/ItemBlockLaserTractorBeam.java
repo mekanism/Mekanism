@@ -2,7 +2,7 @@ package mekanism.common.item.block.machine;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.block.machine.BlockLaserTractorBeam;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
@@ -32,12 +32,12 @@ public class ItemBlockLaserTractorBeam extends ItemBlockAdvancedTooltip<BlockLas
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack))));
-        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")"));
         }
         ListNBT inventory = getInventory(itemstack);
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY,
               BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 }

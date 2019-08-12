@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.util.MekanismUtils;
@@ -39,13 +39,13 @@ public class ItemDictionary extends ItemMekanism {
                 ItemStack testStack = new ItemStack(block);
                 List<String> names = OreDictCache.getOreDictName(testStack);
                 if (!names.isEmpty()) {
-                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                           Translation.of("mekanism.tooltip.keysFound"), ":"));
                     for (String name : names) {
                         player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GREEN, " - " + name));
                     }
                 } else {
-                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                           Translation.of("mekanism.tooltip.noKey"), "."));
                 }
             }

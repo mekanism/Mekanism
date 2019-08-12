@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;

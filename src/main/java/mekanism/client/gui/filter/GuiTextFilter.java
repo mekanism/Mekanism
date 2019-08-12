@@ -1,7 +1,7 @@
 package mekanism.client.gui.filter;
 
 import java.util.List;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;

@@ -3,7 +3,7 @@ package mekanism.common.item.block;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -53,11 +53,11 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GREY,
+        tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GRAY,
               EnergyDisplay.of(getEnergy(itemstack))));
         EnergyCubeTier tier = getTier(itemstack);
         if (tier != null) {
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY,
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY,
                   EnergyDisplay.of(tier.getMaxEnergy())));
         }
         super.addInformation(itemstack, world, tooltip, flag);
@@ -67,12 +67,12 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     @OnlyIn(Dist.CLIENT)
     public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack))));
-        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")"));
         }
         ListNBT inventory = getInventory(itemstack);
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY,
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY,
                                             BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 

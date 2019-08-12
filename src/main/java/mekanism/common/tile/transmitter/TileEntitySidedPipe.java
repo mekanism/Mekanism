@@ -7,9 +7,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
@@ -579,7 +579,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                   Translation.of("tooltip.configurator.redstoneSensitivity"), " ", EnumColor.INDIGO, BooleanStateDisplay.OnOff.of(redstoneReactive), "."));
         }
         return ActionResultType.SUCCESS;

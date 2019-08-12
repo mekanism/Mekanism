@@ -2,9 +2,9 @@ package mekanism.common.tile.energy_cube;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -56,7 +56,7 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
 
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Charge", EnumColor.DARK_BLUE, new int[]{0}));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Discharge", EnumColor.DARK_RED, new int[]{1}));
 

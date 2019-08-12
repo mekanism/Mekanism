@@ -1,7 +1,7 @@
 package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
@@ -25,7 +25,7 @@ public class ItemBlockColoredName<BLOCK extends Block & IColoredBlock> extends I
         //TODO: Can this be removed? Or is this what is getting it to be colored
         EnumColor color = getColor(stack);
         if (color == EnumColor.BLACK) {
-            color = EnumColor.DARK_GREY;
+            color = EnumColor.DARK_GRAY;
         }
         return TextComponentUtil.build(color, super.getDisplayName(stack));
     }

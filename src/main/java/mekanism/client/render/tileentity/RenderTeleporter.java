@@ -6,7 +6,7 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;

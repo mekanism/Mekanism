@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
 import mekanism.client.gui.button.GuiButtonDisableableImage;

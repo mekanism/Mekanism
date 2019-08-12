@@ -5,8 +5,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -68,9 +68,9 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GREY,
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GRAY,
               EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
-        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GREY, getMode(stack).getTextComponent()));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     @Override

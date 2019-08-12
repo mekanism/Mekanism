@@ -1,6 +1,6 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;

@@ -1,6 +1,6 @@
 package mekanism.common.util.text;
 
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.block.Block;

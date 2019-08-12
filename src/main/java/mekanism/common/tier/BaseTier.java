@@ -1,7 +1,7 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import net.minecraft.util.IStringSerializable;
 
 /**

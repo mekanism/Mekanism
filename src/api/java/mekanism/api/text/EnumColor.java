@@ -1,7 +1,8 @@
-package mekanism.api;
+package mekanism.api.text;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.api.IColor;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -20,8 +21,8 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
     DARK_RED("\u00a74", "darkRed", null, "dark_red", new int[]{170, 0, 0}, -1, TextFormatting.DARK_RED),
     PURPLE("\u00a75", "purple", "Purple", "purple", new int[]{170, 0, 170}, 5, TextFormatting.DARK_PURPLE),
     ORANGE("\u00a76", "orange", "Orange", "orange", new int[]{255, 170, 0}, 14, TextFormatting.GOLD),
-    GREY("\u00a77", "grey", "LightGray", "light_gray", new int[]{170, 170, 170}, 7, TextFormatting.GRAY),
-    DARK_GREY("\u00a78", "darkGrey", "Gray", "gray", new int[]{85, 85, 85}, 8, TextFormatting.DARK_GRAY),
+    GRAY("\u00a77", "gray", "LightGray", "light_gray", new int[]{170, 170, 170}, 7, TextFormatting.GRAY),
+    DARK_GRAY("\u00a78", "darkGray", "Gray", "gray", new int[]{85, 85, 85}, 8, TextFormatting.DARK_GRAY),
     INDIGO("\u00a79", "indigo", "LightBlue", "light_blue", new int[]{85, 85, 255}, 12, TextFormatting.BLUE),
     BRIGHT_GREEN("\u00a7a", "brightGreen", "Lime", "lime", new int[]{85, 255, 85}, 10, TextFormatting.GREEN),
     AQUA("\u00a7b", "aqua", null, "aqua", new int[]{85, 255, 255}, -1, TextFormatting.AQUA),
@@ -33,7 +34,7 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
     BROWN("\u00a76", "brown", "Brown", "brown", new int[]{150, 75, 0}, 3, TextFormatting.GOLD),
     BRIGHT_PINK("\u00a7d", "brightPink", "Pink", "pink", new int[]{255, 192, 203}, 9, TextFormatting.LIGHT_PURPLE);
 
-    public static EnumColor[] DYES = new EnumColor[]{BLACK, RED, DARK_GREEN, BROWN, DARK_BLUE, PURPLE, DARK_AQUA, GREY, DARK_GREY, BRIGHT_PINK, BRIGHT_GREEN, YELLOW,
+    public static EnumColor[] DYES = new EnumColor[]{BLACK, RED, DARK_GREEN, BROWN, DARK_BLUE, PURPLE, DARK_AQUA, GRAY, DARK_GRAY, BRIGHT_PINK, BRIGHT_GREEN, YELLOW,
                                                      INDIGO, PINK, ORANGE, WHITE};
 
     //TODO: Switch more things over to using this

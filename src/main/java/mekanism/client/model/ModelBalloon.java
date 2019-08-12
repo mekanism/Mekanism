@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;

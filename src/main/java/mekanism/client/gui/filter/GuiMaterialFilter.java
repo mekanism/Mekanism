@@ -1,6 +1,6 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.tile.base.TileEntityMekanism;

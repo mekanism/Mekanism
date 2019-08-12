@@ -7,8 +7,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
@@ -294,7 +294,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         Mekanism.packetHandler.sendUpdatePacket(this);
         EnumColor color = getTransmitter().getColor();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("tooltip.configurator.toggleColor"), ": ",
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("tooltip.configurator.toggleColor"), ": ",
               (color != null ? color.getColoredName() : Translation.of("mekanism.gui.none"))));
         return ActionResultType.SUCCESS;
     }
@@ -303,7 +303,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         super.onRightClick(player, side);
         EnumColor color = getTransmitter().getColor();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("tooltip.configurator.viewColor"), ": ",
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("tooltip.configurator.viewColor"), ": ",
               (color != null ? color.getColoredName() : Translation.of("mekanism.gui.none"))));
         return ActionResultType.SUCCESS;
     }

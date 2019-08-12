@@ -1,7 +1,7 @@
 package mekanism.common.util;
 
 import java.util.UUID;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;

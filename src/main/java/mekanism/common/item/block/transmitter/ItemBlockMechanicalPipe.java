@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcmultipart.api.multipart.IMultipart;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.block.transmitter.BlockMechanicalPipe;
@@ -46,14 +46,14 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble<BlockMechani
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             PipeTier tier = getTier(itemstack);
             if (tier != null) {
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY, tier.getPipeCapacity() + "mB/t"));
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.pumpRate"), ": ", EnumColor.GREY, tier.getPipePullAmount() + "mB/t"));
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY, tier.getPipeCapacity() + "mB/t"));
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.pumpRate"), ": ", EnumColor.GRAY, tier.getPipePullAmount() + "mB/t"));
             }
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GREY, Translation.of("mekanism.tooltip.capableTrans"), ":"));
-            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("mekanism.tooltip.fluids"), " ", EnumColor.GREY, "(MinecraftForge)"));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GRAY, Translation.of("mekanism.tooltip.capableTrans"), ":"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("mekanism.tooltip.fluids"), " ", EnumColor.GRAY, "(MinecraftForge)"));
         }
     }
 

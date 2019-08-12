@@ -3,7 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
@@ -36,9 +36,9 @@ public class ItemSeismicReader extends ItemEnergized {
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.AQUA, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GREY, " ", Translation.of("mekanism.tooltip.and"), " ", EnumColor.AQUA, MekanismKeyHandler.modeSwitchKey.getKey(), EnumColor.GREY, " ",
+                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.and"), " ", EnumColor.AQUA, MekanismKeyHandler.modeSwitchKey.getKey(), EnumColor.GRAY, " ",
                   Translation.of("tooltip.forDesc"), "."));
         } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
             super.addInformation(itemstack, world, tooltip, flag);

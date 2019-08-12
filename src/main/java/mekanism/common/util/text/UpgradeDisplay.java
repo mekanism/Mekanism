@@ -1,6 +1,6 @@
 package mekanism.common.util.text;
 
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Upgrade;
 import net.minecraft.util.text.ITextComponent;
@@ -26,7 +26,7 @@ public class UpgradeDisplay implements IHasTextComponent {
     @Override
     public ITextComponent getTextComponent() {
         if (upgrade.canMultiply() && level > 0) {
-            return TextComponentUtil.build(upgrade.getColor(), "- ", upgrade, ": ", EnumColor.GREY, "x" + level);
+            return TextComponentUtil.build(upgrade.getColor(), "- ", upgrade, ": ", EnumColor.GRAY, "x" + level);
         }
         return TextComponentUtil.build(upgrade.getColor(), "- ", upgrade);
     }

@@ -5,7 +5,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -56,8 +56,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack))));
         if (getFrequency(itemstack) != null) {
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.frequency"), ": ", EnumColor.GREY, getFrequency(itemstack).name));
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.mode"), ": ", EnumColor.GREY,
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.frequency"), ": ", EnumColor.GRAY, getFrequency(itemstack).name));
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.mode"), ": ", EnumColor.GRAY,
                   Translation.of("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public"))));
         }
         super.addInformation(itemstack, world, tooltip, flag);
@@ -71,7 +71,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             if (getOwnerUUID(itemstack) == null) {
                 setOwnerUUID(itemstack, entityplayer.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
-                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("mekanism.gui.nowOwn")));
+                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("mekanism.gui.nowOwn")));
             } else if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                 MekanismUtils.openItemGui(entityplayer, hand, 14);
             } else {

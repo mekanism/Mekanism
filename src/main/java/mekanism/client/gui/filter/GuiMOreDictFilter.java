@@ -1,7 +1,7 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.common.Mekanism;

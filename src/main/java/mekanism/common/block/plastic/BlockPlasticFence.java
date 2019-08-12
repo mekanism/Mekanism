@@ -3,7 +3,7 @@ package mekanism.common.block.plastic;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;

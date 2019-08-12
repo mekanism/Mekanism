@@ -3,7 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.ItemDataUtils;
@@ -33,9 +33,9 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.name"), ": ", EnumColor.GREY, getName(itemstack)));
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.name"), ": ", EnumColor.GRAY, getName(itemstack)));
         ListNBT inventory = getInventory(itemstack);
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GREY, inventory != null && !inventory.isEmpty()));
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY, inventory != null && !inventory.isEmpty()));
     }
 
     @Nonnull

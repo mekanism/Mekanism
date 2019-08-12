@@ -2,7 +2,7 @@ package mekanism.client.gui.button;
 
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -45,7 +45,7 @@ public class GuiSideDataButton extends Button {
                 blit(this.x, this.y, 176, 28, this.width, this.height);
             } else {
                 EnumColor color = getColor();
-                boolean doColor = color != null && color != EnumColor.GREY;
+                boolean doColor = color != null && color != EnumColor.GRAY;
                 if (doColor) {
                     MekanismRenderer.color(getColor());
                 }

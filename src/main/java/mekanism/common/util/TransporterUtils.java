@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;

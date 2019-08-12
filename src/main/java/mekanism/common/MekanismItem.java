@@ -1,7 +1,7 @@
 package mekanism.common;
 
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.base.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
@@ -101,8 +101,8 @@ public enum MekanismItem implements IItemProvider {
     BLUE_BALLOON(new ItemBalloon(EnumColor.DARK_BLUE)),
     PURPLE_BALLOON(new ItemBalloon(EnumColor.PURPLE)),
     CYAN_BALLOON(new ItemBalloon(EnumColor.DARK_AQUA)),
-    LIGHT_GRAY_BALLOON(new ItemBalloon(EnumColor.GREY)),
-    GRAY_BALLOON(new ItemBalloon(EnumColor.DARK_GREY)),
+    LIGHT_GRAY_BALLOON(new ItemBalloon(EnumColor.GRAY)),
+    GRAY_BALLOON(new ItemBalloon(EnumColor.DARK_GRAY)),
     PINK_BALLOON(new ItemBalloon(EnumColor.BRIGHT_PINK)),
     LIME_BALLOON(new ItemBalloon(EnumColor.BRIGHT_GREEN)),
     YELLOW_BALLOON(new ItemBalloon(EnumColor.YELLOW)),

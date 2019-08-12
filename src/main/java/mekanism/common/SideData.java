@@ -2,8 +2,8 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.EnumColor;
 import mekanism.api.gas.GasTank;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ITankManager;
 import net.minecraftforge.fluids.FluidTankInfo;

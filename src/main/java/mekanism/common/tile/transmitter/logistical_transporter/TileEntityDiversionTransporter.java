@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.TransmitterType;
@@ -108,7 +108,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         }
         refreshConnections();
         notifyTileChange();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
               Translation.of("tooltip.configurator.toggleDiverter"), ": ", EnumColor.RED, description));
         Mekanism.packetHandler.sendUpdatePacket(this);
         return ActionResultType.SUCCESS;

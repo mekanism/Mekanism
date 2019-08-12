@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
@@ -174,7 +174,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (!world.isRemote) {
                 toggleMode(itemstack);
                 Mode mode = getMode(itemstack);
-                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                       Translation.of("mekanism.tooltip.modeToggle"), " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);

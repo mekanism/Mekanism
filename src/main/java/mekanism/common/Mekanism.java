@@ -846,7 +846,22 @@ public class Mekanism {
         event.blacklist(Blocks.END_PORTAL_FRAME);
 
         // Minecraft multiblock structures
-        event.blacklist(Blocks.BED);
+        event.blacklist(Blocks.WHITE_BED);
+        event.blacklist(Blocks.ORANGE_BED);
+        event.blacklist(Blocks.MAGENTA_BED);
+        event.blacklist(Blocks.LIGHT_BLUE_BED);
+        event.blacklist(Blocks.YELLOW_BED);
+        event.blacklist(Blocks.LIME_BED);
+        event.blacklist(Blocks.PINK_BED);
+        event.blacklist(Blocks.GRAY_BED);
+        event.blacklist(Blocks.LIGHT_GRAY_BED);
+        event.blacklist(Blocks.CYAN_BED);
+        event.blacklist(Blocks.PURPLE_BED);
+        event.blacklist(Blocks.BLUE_BED);
+        event.blacklist(Blocks.BROWN_BED);
+        event.blacklist(Blocks.GREEN_BED);
+        event.blacklist(Blocks.RED_BED);
+        event.blacklist(Blocks.BLACK_BED);
         event.blacklist(Blocks.OAK_DOOR);
         event.blacklist(Blocks.SPRUCE_DOOR);
         event.blacklist(Blocks.BIRCH_DOOR);

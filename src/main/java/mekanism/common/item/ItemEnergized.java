@@ -2,8 +2,8 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.util.text.EnergyDisplay;
@@ -62,7 +62,7 @@ public class ItemEnergized extends ItemMekanism implements IItemEnergized {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GREY,
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GRAY,
               EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
     }
 

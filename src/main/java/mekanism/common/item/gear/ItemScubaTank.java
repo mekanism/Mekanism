@@ -5,10 +5,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.MekanismFluids;
@@ -55,7 +55,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
         } else {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.tooltip.flowing"), ": ",
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.flowing"), ": ",
               (getFlowing(stack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED), getFlowingComponent(stack)));
     }
 

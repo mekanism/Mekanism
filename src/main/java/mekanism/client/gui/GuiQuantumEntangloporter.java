@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiScrollList;

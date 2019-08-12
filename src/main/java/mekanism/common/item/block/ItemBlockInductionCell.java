@@ -3,8 +3,8 @@ package mekanism.common.item.block;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.text.EnumColor;
 import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.InductionCellTier;
@@ -42,9 +42,9 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockInductionCell>
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InductionCellTier tier = getTier(itemstack);
         if (tier != null) {
-            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GREY,
+            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY,
                   EnergyDisplay.of(tier.getMaxEnergy())));
-            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GREY,
+            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GRAY,
                   EnergyDisplay.of(getEnergy(itemstack))));
         }
     }

@@ -1,7 +1,7 @@
 package mekanism.common.util.text;
 
 import java.util.UUID;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.MekanismClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,8 +44,8 @@ public class OwnerDisplay implements IHasTextComponent {
         //Allows for the name to be overridden by a passed value
         String name = ownerName == null ? MekanismClient.clientUUIDMap.get(ownerUUID) : ownerName;
         if (player == null) {
-            return TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.owner"), name);
+            return TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.owner"), name);
         }
-        return TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
+        return TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
     }
 }

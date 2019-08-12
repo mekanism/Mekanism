@@ -3,7 +3,7 @@ package mekanism.client;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.text.TextComponentUtil;
@@ -129,7 +129,7 @@ public final class HolidayManager {
             player.sendMessage(TextComponentUtil.build(EnumColor.RED, "May you have plenty of Christmas cheer"));
             player.sendMessage(TextComponentUtil.build(EnumColor.RED, "and have a relaxing holiday with your"));
             player.sendMessage(TextComponentUtil.build(EnumColor.RED, "family :)"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GREY, "-aidancbrady"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, "-aidancbrady"));
             player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, "[=======]" + themedLines));
         }
 
@@ -166,7 +166,7 @@ public final class HolidayManager {
             player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "Happy New Year, ", EnumColor.DARK_BLUE, player.getName(), EnumColor.RED, "!"));
             player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "Best wishes to you as we enter this"));
             player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GREY, "-aidancbrady"));
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, "-aidancbrady"));
             player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, "[=======]" + themedLines));
         }
     }

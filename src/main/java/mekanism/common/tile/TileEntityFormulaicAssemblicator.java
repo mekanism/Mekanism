@@ -3,9 +3,9 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
@@ -80,7 +80,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         super(MekanismBlock.FORMULAIC_ASSEMBLICATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{SLOT_INPUT_FIRST, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                                                                                                              16, 17, 18, 19, SLOT_INPUT_LAST}));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{SLOT_OUTPUT_FIRST, 22, 23, 24, 25, SLOT_OUTPUT_LAST}));

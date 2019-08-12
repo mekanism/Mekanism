@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
 import java.util.Map;
-import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
@@ -19,7 +19,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     public TileEntityChemicalInjectionChamber() {
         super(MekanismBlock.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
         configComponent.addSupported(TransmissionType.GAS);
-        configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+        configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[]{0}));
         configComponent.fillConfig(TransmissionType.GAS, 1);
         configComponent.setCanEject(TransmissionType.GAS, false);

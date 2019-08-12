@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;

@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.HashedItem;

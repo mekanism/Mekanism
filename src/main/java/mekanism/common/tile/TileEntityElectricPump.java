@@ -8,9 +8,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismFluids;
@@ -357,7 +357,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY, Translation.of("mekanism.tooltip.configurator.pumpReset")));
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("mekanism.tooltip.configurator.pumpReset")));
         return ActionResultType.SUCCESS;
     }
 

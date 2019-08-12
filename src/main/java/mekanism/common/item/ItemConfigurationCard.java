@@ -2,8 +2,8 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
@@ -39,7 +39,7 @@ public class ItemConfigurationCard extends ItemMekanism {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.gui.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(itemstack))));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(itemstack))));
     }
 
     @Nonnull
@@ -63,7 +63,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                         if (data != null) {
                             data.putString("dataType", getNameFromTile(tileEntity, side));
                             setData(stack, data);
-                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                                   Translation.of("tooltip.configurationCard.got",
                                         TextComponentUtil.build(EnumColor.INDIGO, Translation.of(data.getString("dataType")))
                                   )));

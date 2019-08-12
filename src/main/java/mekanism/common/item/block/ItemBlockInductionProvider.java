@@ -3,7 +3,7 @@ package mekanism.common.item.block;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.InductionProviderTier;
@@ -39,7 +39,7 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockInductionP
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InductionProviderTier tier = getTier(itemstack);
         if (tier != null) {
-            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("mekanism.tooltip.outputRate"), ": ", EnumColor.GREY,
+            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("mekanism.tooltip.outputRate"), ": ", EnumColor.GRAY,
                   EnergyDisplay.of(tier.getOutput())));
         }
     }

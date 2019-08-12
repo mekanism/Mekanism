@@ -3,10 +3,10 @@ package mekanism.common.item.gear;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
@@ -42,7 +42,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         } else {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.GREY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GREY, getMode(stack).getTextComponent()));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     public void useGas(ItemStack stack) {

@@ -7,9 +7,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
@@ -335,7 +335,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         activeNodes.clear();
         usedNodes.clear();
         finishedCalc = false;
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
               Translation.of("mekanism.tooltip.configurator.plenisherReset")));
         return ActionResultType.SUCCESS;
     }
