@@ -4,9 +4,17 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 
 [[mods]]
     modId="mekanismtools"
-    version="${file.jarVersion}"
-    displayName="Mekanism Tools"
-    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster"
+    version="${version}"
+    displayName="Mekanism: Tools"
+    displayURL="http://aidancbrady.com/mekanism/"
+    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
+    credits="unpairedbracket, CyanideX and many others"
     description='''
-      Add tools to Mekanism
-      '''
+Tools module for Mekanism
+'''
+
+[[dependencies.mekanism]]
+    modId="mekanism"
+    mandatory=true
+    versionRange="[${version}]"
+    side="BOTH"

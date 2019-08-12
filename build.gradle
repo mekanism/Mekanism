@@ -307,8 +307,8 @@ task apiJar(type: Jar) {
 artifacts {
     archives apiJar
     archives coreJar
-    archives toolsJar
     archives generatorsJar
+    archives toolsJar
 }
 
 task fullBuild(type: Delete) {
@@ -416,20 +416,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             addGameVersion '1.14.4'
         }
 
-        //Tools
-        project {
-            id = '268567'
-            changelogType = "html"
-            changelog = generatedChangelog
-            releaseType = 'release'
-            mainArtifact(toolsJar){
-                relations {
-                    requiredDependency "mekanism"
-                }
-            }
-            addGameVersion '1.14.4'
-        }
-
         //Generators
         project {
             id = '268566'
@@ -437,6 +423,20 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelog = generatedChangelog
             releaseType = 'release'
             mainArtifact(generatorsJar) {
+                relations {
+                    requiredDependency "mekanism"
+                }
+            }
+            addGameVersion '1.14.4'
+        }
+
+        //Tools
+        project {
+            id = '268567'
+            changelogType = "html"
+            changelog = generatedChangelog
+            releaseType = 'release'
+            mainArtifact(toolsJar){
                 relations {
                     requiredDependency "mekanism"
                 }

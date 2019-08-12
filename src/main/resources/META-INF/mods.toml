@@ -4,9 +4,24 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 
 [[mods]]
     modId="mekanism"
-    version="${file.jarVersion}"
+    version="${version}"
     displayName="Mekanism"
-    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster"
+    displayURL="http://aidancbrady.com/mekanism/"
+    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
+    credits="unpairedbracket, CyanideX and many others"
     description='''
-      Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.
-      '''
+Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.
+'''
+
+[[dependencies.minecraft]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${mc_version}]"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.forge]]
+    modId="forge"
+    mandatory=true
+    versionRange="[28,)" #TODO Set the version to first recommended build with fluids
+    side="BOTH"
+#TODO: Add the optional dependencies
