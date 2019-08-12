@@ -144,8 +144,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         if (!world.isRemote) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);

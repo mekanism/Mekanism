@@ -156,8 +156,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         if (MekanismUtils.useIC2()) {
             deregister();
         }

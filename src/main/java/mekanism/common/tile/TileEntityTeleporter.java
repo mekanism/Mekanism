@@ -220,8 +220,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         if (!world.isRemote) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
@@ -235,7 +235,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     public void cleanTeleportCache() {
         List<UUID> list = new ArrayList<>();
         for (Entity e : world.getEntitiesWithinAABB(Entity.class, teleportBounds)) {
-            list.add(e.getPersistentID());
+            list.add(e.getUniqueID());
         }
         Set<UUID> teleportCopy = new HashSet<>(didTeleport);
         for (UUID id : teleportCopy) {
@@ -299,7 +299,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             TileEntityTeleporter teleporter = (TileEntityTeleporter) closestCoords.getTileEntity(teleWorld);
 
             if (teleporter != null) {
-                teleporter.didTeleport.add(entity.getPersistentID());
+                teleporter.didTeleport.add(entity.getUniqueID());
                 teleporter.teleDelay = 5;
                 if (entity instanceof ServerPlayerEntity) {
                     teleportPlayerTo((ServerPlayerEntity) entity, closestCoords, teleporter);
@@ -311,7 +311,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), coords);
                 }
                 setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
-                world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
+                world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
             }
         }
     }
@@ -329,7 +329,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, teleportBounds);
         List<Entity> ret = new ArrayList<>();
         for (Entity entity : entities) {
-            if (!didTeleport.contains(entity.getPersistentID())) {
+            if (!didTeleport.contains(entity.getUniqueID())) {
                 ret.add(entity);
             }
         }

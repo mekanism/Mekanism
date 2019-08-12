@@ -236,7 +236,6 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -961,9 +960,9 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public boolean isPaused() {
-        if (FMLClientHandler.instance().getClient().isSingleplayer() && !FMLClientHandler.instance().getClient().getIntegratedServer().getPublic()) {
-            Screen screen = FMLClientHandler.instance().getClient().currentScreen;
-            return screen != null && screen.doesGuiPauseGame();
+        if (Minecraft.getInstance().isSingleplayer() && !Minecraft.getInstance().getIntegratedServer().getPublic()) {
+            //TODO: Make sure that gui's that pause game react to this properly
+            return Minecraft.getInstance().isGamePaused();
         }
         return false;
     }

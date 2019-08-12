@@ -48,7 +48,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
                 world.removeBlock(getPos().add(x, 2, z), false);
             }
         }
-        invalidate();
+        remove();
         world.removeBlock(getPos(), false);
     }
 

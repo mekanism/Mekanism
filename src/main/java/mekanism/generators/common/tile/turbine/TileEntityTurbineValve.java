@@ -127,8 +127,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         if (MekanismUtils.useIC2()) {
             deregister();
         }

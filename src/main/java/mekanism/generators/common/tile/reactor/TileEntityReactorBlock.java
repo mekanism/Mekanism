@@ -44,8 +44,8 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         if (getReactor() != null) {
             getReactor().formMultiblock(false);
         }

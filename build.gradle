@@ -118,12 +118,12 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
     runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
+    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
 
+    // Not updated yet
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
     compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
-    // Not updated yet
-    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
     compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
     compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"

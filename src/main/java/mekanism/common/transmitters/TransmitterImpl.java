@@ -75,7 +75,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
         if (cont == null) {
             return false;
         }
-        return !cont.isInvalid() && coord().exists(world()) && coord().getTileEntity(world()) == cont && cont.getTransmitter() == this;
+        return !cont.isRemoved() && coord().exists(world()) && coord().getTileEntity(world()) == cont && cont.getTransmitter() == this;
     }
 
     @Override

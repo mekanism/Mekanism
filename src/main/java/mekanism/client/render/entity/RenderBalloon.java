@@ -1,13 +1,13 @@
 package mekanism.client.render.entity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelBalloon;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
     public ModelBalloon model = new ModelBalloon();
-    private Minecraft minecraft = Minecraft.getInstance();
 
     public RenderBalloon(EntityRendererManager renderManager) {
         super(renderManager);
@@ -54,7 +53,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x, (float) y, (float) z);
         GlStateManager.rotatef(180, 1, 0, 0);
-        minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
         model.render(0.0625F, color);
         GlStateManager.popMatrix();
     }

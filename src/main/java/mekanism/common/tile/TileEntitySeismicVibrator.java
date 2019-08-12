@@ -9,11 +9,9 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -50,8 +48,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         Mekanism.activeVibrators.remove(Coord4D.get(this));
     }
 
@@ -97,11 +95,5 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         return ChargeUtils.canBeDischarged(stack);
-    }
-
-    @Nonnull
-    @Override
-    public BlockFaceShape getOffsetBlockFaceShape(@Nonnull Direction face, @Nonnull Vec3i offset) {
-        return BlockFaceShape.SOLID;
     }
 }

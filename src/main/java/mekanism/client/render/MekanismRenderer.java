@@ -41,10 +41,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
@@ -134,7 +134,7 @@ public class MekanismRenderer {
     }
 
     public static boolean isDrawing(Tessellator tess) {
-        return tess.getBuffer().isDrawing;
+        return isDrawing(tess.getBuffer());
     }
 
     public static boolean isDrawing(BufferBuilder buffer) {

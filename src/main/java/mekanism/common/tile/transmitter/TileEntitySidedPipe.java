@@ -451,9 +451,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public abstract void onWorldSeparate();
 
     @Override
-    public void invalidate() {
+    public void remove() {
         onWorldSeparate();
-        super.invalidate();
+        super.remove();
     }
 
     @Override

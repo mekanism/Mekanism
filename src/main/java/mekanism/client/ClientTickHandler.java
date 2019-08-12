@@ -42,7 +42,6 @@ import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -52,7 +51,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 @OnlyIn(Dist.CLIENT)
 public class ClientTickHandler {
 
-    public static Minecraft minecraft = FMLClientHandler.instance().getClient();
+    public static Minecraft minecraft = Minecraft.getInstance();
     public static Random rand = new Random();
     public static Set<IClientTicker> tickingSet = new HashSet<>();
     public static Map<PlayerEntity, TeleportData> portableTeleports = new HashMap<>();

@@ -1153,17 +1153,4 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         }
         return chunkSet;
     }
-
-    @Nonnull
-    @Override
-    public BlockFaceShape getOffsetBlockFaceShape(@Nonnull Direction face, @Nonnull Vec3i offset) {
-        if (offset.equals(new Vec3i(0, 1, 0))) {
-            return BlockFaceShape.SOLID;
-        }
-        Direction back = getOppositeDirection();
-        if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
-            return BlockFaceShape.SOLID;
-        }
-        return BlockFaceShape.UNDEFINED;
-    }
 }

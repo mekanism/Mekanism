@@ -1,11 +1,14 @@
-package mekanism.common.integration;
+/*package mekanism.common.integration;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IRegistrar;
+import mcp.mobius.waila.api.IServerDataProvider;
 import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.IWailaRegistrar;
+import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.bin.TileEntityBin;
@@ -16,6 +19,7 @@ import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import mekanism.common.tile.induction_cell.TileEntityInductionCell;
 import mekanism.common.tile.induction_provider.TileEntityInductionProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -24,11 +28,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
-@Interface(iface = "mcp.mobius.waila.api.IWailaDataProvider", modid = MekanismHooks.WAILA_MOD_ID)
-public class WailaDataProvider implements IWailaDataProvider {
+import java.util.List;
+
+@Interface(iface = "mcp.mobius.waila.api.IServerDataProvider", modid = MekanismHooks.WAILA_MOD_ID)
+public class WailaDataProvider implements IServerDataProvider {
 
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public static void register(IWailaRegistrar registrar) {
+    public static void register(IRegistrar registrar) {
         WailaDataProvider provider = new WailaDataProvider();
 
         registrar.registerHeadProvider(provider, TileEntityInductionCell.class);
@@ -45,17 +51,17 @@ public class WailaDataProvider implements IWailaDataProvider {
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
+    public ItemStack getWailaStack(IDataAccessor accessor, IWailaConfigHandler config) {
         return ItemStack.EMPTY;
     }
 
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IDataAccessor accessor, IWailaConfigHandler config) {
         TileEntity tile = accessor.getTileEntity();
         //TODO
-        /*if (tile instanceof TileEntityInductionCell) {
+        if (tile instanceof TileEntityInductionCell) {
             currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionCell) tile).getName());
         } else if (tile instanceof TileEntityInductionProvider) {
             currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionProvider) tile).getName());
@@ -76,21 +82,21 @@ public class WailaDataProvider implements IWailaDataProvider {
             if (bound.receivedCoords && coord.getTileEntity(tile.getWorld()) instanceof IInventory) {
                 currenttip.set(0, EnumColor.WHITE + ((IInventory) coord.getTileEntity(tile.getWorld())).getName());
             }
-        }*/
+        }
         return currenttip;
     }
 
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IDataAccessor accessor, IWailaConfigHandler config) {
         return currenttip;
     }
 
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IDataAccessor accessor, IWailaConfigHandler config) {
         return currenttip;
     }
 
@@ -100,4 +106,4 @@ public class WailaDataProvider implements IWailaDataProvider {
     public CompoundNBT getNBTData(ServerPlayerEntity player, TileEntity te, CompoundNBT tag, World world, BlockPos pos) {
         return tag;
     }
-}
+}*/

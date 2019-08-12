@@ -468,8 +468,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         for (ITileComponent component : components) {
             component.invalidate();
         }
@@ -483,7 +483,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void validate() {
-        boolean wasInvalid = this.tileEntityInvalid;//workaround for pending tile entity invalidate/revalidate cycle
+        boolean wasInvalid = this.isRemoved();//workaround for pending tile entity invalidate/revalidate cycle
         super.validate();
         if (world.isRemote) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
@@ -724,7 +724,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
-        return hasInventory() && !isInvalid() && this.world.isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
+        return hasInventory() && !isRemoved() && this.world.isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
     }
 
     @Nonnull
@@ -980,7 +980,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             return;
         }
 
-        if (getActive() && !isInvalid()) {
+        if (getActive() && !isRemoved()) {
             // If sounds are being muted, we can attempt to start them on every tick, only to have them
             // denied by the event bus, so use a cooldown period that ensures we're only trying once every
             // second or so to start a sound.
@@ -990,8 +990,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(activeSound))) {
-                activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), getInitialVolume(), getPos());
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound))) {
+                activeSound = SoundHandler.startTileSound(soundEvent.getName(), getInitialVolume(), getPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again

@@ -168,7 +168,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        ITextComponent ownerComponent = TextComponentUtil.build(OwnerDisplay.of(tileEntity.ownerUUID, tileEntity.clientOwner);
+        ITextComponent ownerComponent = TextComponentUtil.build(OwnerDisplay.of(tileEntity.ownerUUID, tileEntity.clientOwner));
         drawString(ownerComponent, xSize - 7 - getStringWidth(ownerComponent), (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
         drawCenteredText(TextComponentUtil.build(Translation.of("gui.trustedPlayers")), 74, 57, 0x787878);

@@ -20,8 +20,8 @@ import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -34,7 +34,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.glfw.GLFW;
@@ -76,7 +75,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
     @Override
     public void keyDown(KeyBinding kb, boolean isRepeat) {
         if (kb == modeSwitchKey) {
-            PlayerEntity player = FMLClientHandler.instance().getClient().player;
+            PlayerEntity player = Minecraft.getInstance().player;
             ItemStack toolStack = player.inventory.getCurrentItem();
             Item item = toolStack.getItem();
 
@@ -121,7 +120,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                       Translation.of("mekanism.tooltip.flamethrower.modeBump"), flamethrower.getMode(toolStack).getTextComponent()));
             }
         } else if (kb == armorModeSwitchKey) {
-            PlayerEntity player = FMLClientHandler.instance().getClient().player;
+            PlayerEntity player = Minecraft.getInstance().player;
             ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             Item chestItem = chestStack.getItem();
 
@@ -142,7 +141,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
         } else if (kb == freeRunnerModeSwitchKey) {
-            PlayerEntity player = FMLClientHandler.instance().getClient().player;
+            PlayerEntity player = Minecraft.getInstance().player;
             ItemStack feetStack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
             Item feetItem = feetStack.getItem();
 

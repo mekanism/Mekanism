@@ -386,7 +386,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean addSolarPanel(TileEntity tile, int i) {
-        if (tile != null && !tile.isInvalid()) {
+        if (tile != null && !tile.isRemoved()) {
             LazyOptionalHelper<IEvaporationSolar> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN);
             capabilityHelper.ifPresent(solar -> solars[i] = solar);
             return capabilityHelper.isPresent();

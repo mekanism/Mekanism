@@ -37,9 +37,9 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -65,7 +65,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.UsernameCache;
-import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -405,16 +404,18 @@ public final class MekanismUtils {
      * @param coord - Coord4D to perform the operation on
      */
     public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
+        BlockState state = coord.getBlockState(world);
         for (Direction dir : Direction.values()) {
             Coord4D offset = coord.offset(dir);
             if (offset.exists(world)) {
                 notifyNeighborofChange(world, offset, coord.getPos());
-                if (offset.getBlockState(world).isNormalCube()) {
+                if (offset.getBlockState(world).isNormalCube(world, offset.getPos())) {
                     offset = offset.offset(dir);
                     if (offset.exists(world)) {
                         Block block1 = offset.getBlock(world);
-                        if (block1.getWeakChanges(world, offset.getPos())) {
-                            block1.onNeighborChange(world, offset.getPos(), coord.getPos());
+                        //TODO: Make sure this is passing the correct state
+                        if (block1.getWeakChanges(state, world, offset.getPos())) {
+                            block1.onNeighborChange(state, world, offset.getPos(), coord.getPos());
                         }
                     }
                 }
@@ -431,7 +432,7 @@ public final class MekanismUtils {
      */
     public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos) {
         BlockState state = coord.getBlockState(world);
-        state.getBlock().onNeighborChange(world, coord.getPos(), fromPos);
+        state.getBlock().onNeighborChange(state, world, coord.getPos(), fromPos);
         state.neighborChanged(world, coord.getPos(), world.getBlockState(fromPos).getBlock(), fromPos);
     }
 
@@ -445,7 +446,7 @@ public final class MekanismUtils {
     public static void notifyNeighborOfChange(World world, Direction neighborSide, BlockPos fromPos) {
         BlockPos neighbor = fromPos.offset(neighborSide);
         BlockState state = world.getBlockState(neighbor);
-        state.getBlock().onNeighborChange(world, neighbor, fromPos);
+        state.getBlock().onNeighborChange(state, world, neighbor, fromPos);
         state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos);
     }
 
@@ -457,7 +458,7 @@ public final class MekanismUtils {
      * @param orig             - original block
      */
     public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
-        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getStateFromMeta(0));
+        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote) {
             ((TileEntityBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
         }
@@ -532,16 +533,16 @@ public final class MekanismUtils {
     public static FluidStack getFluid(World world, Coord4D pos, boolean filter) {
         BlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
-        if ((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.get(BlockLiquid.LEVEL) == 0) {
+        if (block == Blocks.WATER && state.get(FlowingFluidBlock.LEVEL) == 0) {
             if (!filter) {
                 return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
             }
             return new FluidStack(MekanismFluids.HeavyWater, 10);
-        } else if ((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.get(BlockLiquid.LEVEL) == 0) {
+        } else if (block == Blocks.LAVA && state.get(FlowingFluidBlock.LEVEL) == 0) {
             return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
         } else if (block instanceof IFluidBlock) {
             IFluidBlock fluid = (IFluidBlock) block;
-            if (state.getProperties().contains(BlockFluidBase.LEVEL) && state.get(BlockFluidBase.LEVEL) == 0) {
+            if (state.getProperties().contains(FlowingFluidBlock.LEVEL) && state.get(FlowingFluidBlock.LEVEL) == 0) {
                 return fluid.drain(world, pos.getPos(), false);
             }
         }
@@ -562,7 +563,7 @@ public final class MekanismUtils {
         if (block.getMetaFromState(state) == 0) {
             return false;
         }
-        return block instanceof BlockLiquid || block instanceof IFluidBlock;
+        return block instanceof FlowingFluidBlock || block instanceof IFluidBlock;
 
     }
 
@@ -577,9 +578,9 @@ public final class MekanismUtils {
         if (fluid == null) {
             return null;
         } else if (fluid == FluidRegistry.WATER) {
-            return Blocks.FLOWING_WATER;
+            return Blocks.WATER;
         } else if (fluid == FluidRegistry.LAVA) {
-            return Blocks.FLOWING_LAVA;
+            return Blocks.LAVA;
         }
         return fluid.getBlock();
     }
@@ -623,7 +624,7 @@ public final class MekanismUtils {
      * @param tileEntity - TileEntity to save
      */
     public static void saveChunk(TileEntity tileEntity) {
-        if (tileEntity == null || tileEntity.isInvalid() || tileEntity.getWorld() == null) {
+        if (tileEntity == null || tileEntity.isRemoved() || tileEntity.getWorld() == null) {
             return;
         }
         tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);

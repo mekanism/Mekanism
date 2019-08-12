@@ -111,7 +111,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (!MekanismConfig.current().client.enableMachineSounds.val()) {
             return;
         }
-        if (isBurning() && !isInvalid()) {
+        if (isBurning() && !isRemoved()) {
             // If sounds are being muted, we can attempt to start them on every tick, only to have them
             // denied by the event bus, so use a cooldown period that ensures we're only trying once every
             // second or so to start a sound.
@@ -130,8 +130,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void remove() {
+        super.remove();
         if (world.isRemote) {
             updateSound();
         }

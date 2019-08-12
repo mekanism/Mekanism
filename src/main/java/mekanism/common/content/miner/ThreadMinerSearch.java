@@ -9,8 +9,8 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -47,7 +47,7 @@ public class ThreadMinerSearch extends Thread {
         World world = tileEntity.getWorld();
 
         for (int i = 0; i < size; i++) {
-            if (tileEntity.isInvalid()) {
+            if (tileEntity.isRemoved()) {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
@@ -68,7 +68,7 @@ public class ThreadMinerSearch extends Thread {
             BlockState state = world.getBlockState(testPos);
             info = state.getBlock();
 
-            if (info == null || info instanceof BlockLiquid || info instanceof IFluidBlock || info.isAir(state, world, testPos)) {
+            if (info == null || info instanceof FlowingFluidBlock || info instanceof IFluidBlock || info.isAir(state, world, testPos)) {
                 //Skip air and liquids
                 continue;
             }

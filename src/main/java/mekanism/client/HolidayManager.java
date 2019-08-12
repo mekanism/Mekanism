@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 public final class HolidayManager {
 
     private static Calendar calendar = Calendar.getInstance();
-    private static Minecraft minecraft = Minecraft.getInstance();
 
     private static List<Holiday> holidays = new ArrayList<>();
     private static List<Holiday> holidaysNotified = new ArrayList<>();
@@ -34,7 +33,7 @@ public final class HolidayManager {
             for (Holiday holiday : holidays) {
                 if (!holidaysNotified.contains(holiday)) {
                     if (holiday.getDate().equals(date)) {
-                        holiday.onEvent(minecraft.player);
+                        holiday.onEvent(Minecraft.getInstance().player);
                         holidaysNotified.add(holiday);
                     }
                 }
