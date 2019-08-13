@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismgenerators:turbine_casing",
+    "count": 4
+  },
+  "pattern": [
+    " S ",
+    "SOS",
+    " S "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  }
+}

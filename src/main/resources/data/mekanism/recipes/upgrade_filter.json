@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:upgrade_filter"
+  },
+  "pattern": [
+    " G ",
+    "ADA",
+    " G "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "D": {
+      "tag": "forge:dusts/tin"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

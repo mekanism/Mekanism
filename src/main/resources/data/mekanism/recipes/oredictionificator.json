@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:oredictionificator"
+  },
+  "pattern": [
+    "SGS",
+    "CBC",
+    "SWS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Oredictionificator"
+    }
+  ],
+  "key": {
+    "B": {
+      "item": "mekanism:dictionary"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "G": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "W": {
+      "tag": "forge:chests/wooden"
+    }
+  }
+}

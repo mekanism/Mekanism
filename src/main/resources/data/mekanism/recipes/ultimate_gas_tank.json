@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:ultimate_gas_tank"
+  },
+  "pattern": [
+    "APA",
+    "PTP",
+    "APA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:elite_gas_tank"
+    }
+  }
+}

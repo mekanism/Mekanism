@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanismtools:glowstone_boots"
+  },
+  "pattern": [
+    "* *",
+    "* *"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:ingots/refined_glowstone"
+    }
+  }
+}

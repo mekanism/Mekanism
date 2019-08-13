@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidian_paxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "item": "mekanismtools:obsidian_axe"
+    },
+    "Y": {
+      "item": "mekanismtools:obsidian_pickaxe"
+    },
+    "Z": {
+      "item": "mekanismtools:obsidian_shovel"
+    }
+  }
+}

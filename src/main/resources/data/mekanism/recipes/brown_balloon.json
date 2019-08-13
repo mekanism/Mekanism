@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:brown_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "forge:dyes/brown"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

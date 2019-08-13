@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidian_shovel"
+  },
+  "pattern": [
+    "X",
+    "T",
+    "T"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "tag": "forge:ingots/refined_obsidian"
+    }
+  }
+}

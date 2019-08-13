@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:red_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "forge:dyes/red"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

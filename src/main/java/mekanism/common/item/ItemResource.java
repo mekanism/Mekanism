@@ -18,6 +18,7 @@ public class ItemResource extends ItemMekanism {
 
     @Override
     public void registerOreDict() {
+        //TODO: Make tags for Compressed resources
         OreDictionary.registerOre(type.getOrePrefix() + resource.getOreSuffix(), new ItemStack(this));
     }
 }

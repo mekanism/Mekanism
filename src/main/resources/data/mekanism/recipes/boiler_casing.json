@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:boiler_casing",
+    "count": 4
+  },
+  "pattern": [
+    " S ",
+    "SIS",
+    " S "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  }
+}

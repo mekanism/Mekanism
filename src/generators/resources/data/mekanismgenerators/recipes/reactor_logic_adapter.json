@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismgenerators:reactor_logic_adapter"
+  },
+  "pattern": [
+    " R ",
+    "RFR",
+    " R "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "F": {
+      "item": "mekanismgenerators:reactor_frame"
+    }
+  }
+}

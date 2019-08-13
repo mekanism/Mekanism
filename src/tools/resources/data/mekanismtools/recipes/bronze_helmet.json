@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanismtools:bronze_helmet"
+  },
+  "pattern": [
+    "***",
+    "* *"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:ingots/bronze"
+    }
+  }
+}

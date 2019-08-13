@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:steel_casing"
+  },
+  "pattern": [
+    "SGS",
+    "GPG",
+    "SGS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:ingots/osmium"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

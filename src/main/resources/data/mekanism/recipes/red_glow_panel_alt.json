@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:red_glow_panel",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "glowPanel",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "tag": "forge:dyes/red"
+    }
+  }
+}

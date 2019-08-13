@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:solar_neutron_activator"
+  },
+  "pattern": [
+    "APA",
+    "CSC",
+    "BBB"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "SolarNeutronActivator"
+    }
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "A": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "B": {
+      "tag": "forge:ingots/bronze"
+    },
+    "S": {
+      "item": "mekanism:steel_casing"
+    },
+    "C": {
+      "item": "#CIRCUIT_ELITE"
+    }
+  }
+}

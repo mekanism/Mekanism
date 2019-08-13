@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanism:network_reader"
+  },
+  "pattern": [
+    " G ",
+    "AEA",
+    " I "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "tag": "forge:ingots/steel"
+    }
+  }
+}

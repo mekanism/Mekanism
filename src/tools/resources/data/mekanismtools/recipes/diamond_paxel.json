@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:diamond_paxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "item": "minecraft:diamond_axe"
+    },
+    "Y": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "Z": {
+      "item": "minecraft:diamond_shovel"
+    }
+  }
+}

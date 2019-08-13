@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:resistive_heater"
+  },
+  "pattern": [
+    "CRC",
+    "RHR",
+    "CEC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ResistiveHeater"
+    }
+  ],
+  "key": {
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "C": {
+      "tag": "forge:ingots/tin"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "H": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

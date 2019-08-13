@@ -1,0 +1,37 @@
+{
+  "result": {
+    "item": "mekanism:pressurized_reaction_chamber"
+  },
+  "pattern": [
+    "SES",
+    "CIC",
+    "GFG"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "PressurizedReactionChamber"
+    }
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "E": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "F": {
+      "item": "mekanism:dynamic_tank"
+    },
+    "G": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "I": {
+      "item": "mekanism:enrichment_chamber"
+    }
+  }
+}

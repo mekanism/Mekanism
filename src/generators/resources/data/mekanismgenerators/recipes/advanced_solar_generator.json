@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanismgenerators:advanced_solar_generator"
+  },
+  "pattern": [
+    "SES",
+    "SES",
+    "III"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "AdvancedSolarGenerator"
+    }
+  ],
+  "key": {
+    "S": {
+      "item": "mekanismgenerators:solar_generator"
+    },
+    "E": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  }
+}

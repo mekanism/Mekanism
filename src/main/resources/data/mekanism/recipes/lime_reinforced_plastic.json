@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:lime_reinforced_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "POP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:lime_plastic"
+    },
+    "O": {
+      "tag": "forge:dusts/osmium"
+    }
+  }
+}

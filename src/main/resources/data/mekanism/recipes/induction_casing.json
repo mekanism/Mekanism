@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:induction_casing",
+    "count": 4
+  },
+  "pattern": [
+    " S ",
+    "SES",
+    " S "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    }
+  }
+}

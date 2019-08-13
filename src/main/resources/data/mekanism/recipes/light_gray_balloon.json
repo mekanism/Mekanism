@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:light_gray_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "forge:dyes/light_gray"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

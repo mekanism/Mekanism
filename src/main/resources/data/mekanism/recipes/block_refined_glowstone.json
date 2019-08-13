@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanism:block_refined_glowstone"
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:ingots/refined_glowstone"
+    }
+  }
+}

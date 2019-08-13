@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "mekanismgenerators:solar_generator"
+  },
+  "pattern": [
+    "SSS",
+    "AIA",
+    "PEP"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "SolarGenerator"
+    }
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:dusts/osmium"
+    },
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "S": {
+      "item": "mekanismgenerators:solar_panel"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  }
+}

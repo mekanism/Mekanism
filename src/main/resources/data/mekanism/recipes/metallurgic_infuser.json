@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:metallurgic_infuser"
+  },
+  "pattern": [
+    "IFI",
+    "ROR",
+    "IFI"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "MetallurgicInfuser"
+    }
+  ],
+  "key": {
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  }
+}

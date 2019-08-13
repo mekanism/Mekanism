@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:gas_mask"
+  },
+  "pattern": [
+    " S ",
+    "GCG",
+    "S S"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

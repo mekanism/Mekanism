@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:steel_chestplate"
+  },
+  "pattern": [
+    "I I",
+    "*I*",
+    "***"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "*": {
+      "tag": "forge:ingots/steel"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:advanced_gas_tank"
+  },
+  "pattern": [
+    "APA",
+    "PTP",
+    "APA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  }
+}

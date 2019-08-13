@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidian_boots"
+  },
+  "pattern": [
+    "* *",
+    "* *"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:ingots/refined_obsidian"
+    }
+  }
+}

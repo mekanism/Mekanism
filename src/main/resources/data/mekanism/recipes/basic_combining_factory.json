@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:basic_combining_factory"
+  },
+  "pattern": [
+    "RCR",
+    "iOi",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Factory"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "O": {
+      "item": "mekanism:combiner"
+    }
+  }
+}

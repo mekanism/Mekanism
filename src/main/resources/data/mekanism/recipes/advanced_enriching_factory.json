@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:advanced_enriching_factory"
+  },
+  "pattern": [
+    "ECE",
+    "oOo",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Factory"
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "#CIRCUIT_ADVANCED"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "o": {
+      "tag": "forge:ingots/osmium"
+    },
+    "O": {
+      "item": "mekanism:basic_enriching_factory"
+    }
+  }
+}

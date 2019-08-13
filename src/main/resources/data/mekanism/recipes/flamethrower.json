@@ -1,0 +1,30 @@
+{
+  "result": {
+    "nbt": {},
+    "item": "mekanism:flamethrower",
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "TTT",
+    "TGS",
+    "BCB"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:ingots/bronze"
+    },
+    "S": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "C": {
+      "item": "#CIRCUIT_ADVANCED"
+    },
+    "T": {
+      "tag": "forge:ingots/tin"
+    },
+    "G": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  }
+}

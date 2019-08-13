@@ -56,19 +56,6 @@ public class MekanismTools implements IModule {
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }
 
-    public static void addSmeltingRecipes() {
-        //Furnace Recipes
-        //TODO: Move furnace recipes to json
-        /*addSmeltingRecipe(ToolsItem.IRON_PAXEL, new ItemStack(Items.IRON_NUGGET));
-        addSmeltingRecipe(ToolsItem.GOLD_PAXEL, new ItemStack(Items.GOLD_NUGGET));
-        addSmeltingRecipe(ToolsItem.OBSIDIAN_SET, MekanismItem.REFINED_OBSIDIAN_NUGGET.getItemStack());
-        addSmeltingRecipe(ToolsItem.OSMIUM_SET, MekanismItem.OSMIUM_NUGGET.getItemStack());
-        addSmeltingRecipe(ToolsItem.BRONZE_SET, MekanismItem.BRONZE_NUGGET.getItemStack());
-        addSmeltingRecipe(ToolsItem.GLOWSTONE_SET, MekanismItem.REFINED_GLOWSTONE_NUGGET.getItemStack());
-        addSmeltingRecipe(ToolsItem.STEEL_SET, MekanismItem.STEEL_NUGGET.getItemStack());*/
-        //GameRegistry.addSmelting(toolsItem.getItemStackAnyDamage(), nugget, 0.1F);
-    }
-
     private void setStackIfEmpty(LivingEntity entity, EquipmentSlotType slot, ItemStack item) {
         if (entity.getItemStackFromSlot(slot).isEmpty()) {
             entity.setItemStackToSlot(slot, item);

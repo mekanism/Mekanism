@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:teleporter_frame",
+    "count": 9
+  },
+  "pattern": [
+    "OOO",
+    "OGO",
+    "OOO"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "G": {
+      "tag": "forge:ingots/refined_glowstone"
+    },
+    "O": {
+      "tag": "forge:ingots/refined_obsidian"
+    }
+  }
+}

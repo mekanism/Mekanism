@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:seismic_reader"
+  },
+  "pattern": [
+    "SLS",
+    "STS",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "T": {
+      "item": "mekanism:energy_tablet"
+    },
+    "L": {
+      "tag": "forge:gems/lapis"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:basic_thermodynamic_conductor",
+    "count": 8
+  },
+  "pattern": [
+    "SCS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "tag": "forge:ingots/copper"
+    }
+  }
+}

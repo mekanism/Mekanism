@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:personal_chest"
+  },
+  "pattern": [
+    "SGS",
+    "CcC",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "PersonalChest"
+    }
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "tag": "forge:chests/wooden"
+    },
+    "c": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

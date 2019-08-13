@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:basic_induction_cell"
+  },
+  "pattern": [
+    "LTL",
+    "TET",
+    "LTL"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "item": "mekanism:energy_tablet"
+    },
+    "E": {
+      "item": "mekanism:basic_energy_cube"
+    },
+    "L": {
+      "tag": "forge:dusts/lithium"
+    }
+  }
+}

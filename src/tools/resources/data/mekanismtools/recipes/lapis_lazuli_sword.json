@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:lapis_lazuli_sword"
+  },
+  "pattern": [
+    "X",
+    "X",
+    "T"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "tag": "forge:gems/lapis"
+    }
+  }
+}

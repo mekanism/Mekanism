@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:gray_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "blockPlastic",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "tag": "forge:dyes/gray"
+    }
+  }
+}

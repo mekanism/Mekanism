@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanism:block_tin"
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:ingots/tin"
+    }
+  }
+}

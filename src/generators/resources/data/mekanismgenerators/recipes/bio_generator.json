@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "mekanismgenerators:bio_generator"
+  },
+  "pattern": [
+    "RER",
+    "BCB",
+    "NEN"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "BioGenerator"
+    }
+  ],
+  "key": {
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "B": {
+      "item": "mekanism:bio_fuel"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "E": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "N": {
+      "tag": "forge:ingots/iron"
+    }
+  }
+}

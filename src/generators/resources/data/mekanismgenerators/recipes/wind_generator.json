@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanismgenerators:wind_generator"
+  },
+  "pattern": [
+    " O ",
+    "OAO",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "WindGenerator"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  }
+}

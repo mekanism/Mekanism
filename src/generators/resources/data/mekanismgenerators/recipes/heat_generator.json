@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanismgenerators:heat_generator"
+  },
+  "pattern": [
+    "III",
+    "WOW",
+    "CFC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "HeatGenerator"
+    }
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "W": {
+      "ore": "plankWood",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  }
+}

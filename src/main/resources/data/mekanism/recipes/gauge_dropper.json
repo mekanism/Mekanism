@@ -1,0 +1,22 @@
+{
+  "result": {
+    "nbt": {},
+    "item": "mekanism:gauge_dropper",
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    " O ",
+    "G G",
+    "GGG"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "G": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanism:green_balloon"
+  },
+  "ingredients": [
+    {
+      "ore": "balloon",
+      "type": "forge:ore_dict"
+    },
+    {
+      "tag": "forge:dyes/green"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

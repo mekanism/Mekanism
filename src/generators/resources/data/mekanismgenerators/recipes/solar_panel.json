@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanismgenerators:solar_panel"
+  },
+  "pattern": [
+    "GGG",
+    "RAR",
+    "PPP"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "G": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

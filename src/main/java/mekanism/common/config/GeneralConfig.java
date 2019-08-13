@@ -101,9 +101,6 @@ public class GeneralConfig implements IMekanismConfig {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("General Config");
 
-
-
-
         //TODO: Evaluate other mekanism blocks for if support should be added
         builder.comment("Enabled Machines").push(ENABLED_CATEGORY);
         MekanismConfig.addEnabledBlocksCategory(builder, MekanismBlock.values());

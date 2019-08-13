@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:quantum_entangloporter"
+  },
+  "pattern": [
+    "OCO",
+    "ATA",
+    "OCO"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "QuantumEntangloporter"
+    }
+  ],
+  "key": {
+    "A": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_ULTIMATE"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    },
+    "O": {
+      "tag": "forge:ingots/refined_obsidian"
+    }
+  }
+}

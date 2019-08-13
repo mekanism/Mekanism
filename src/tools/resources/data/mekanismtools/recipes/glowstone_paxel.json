@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:glowstone_paxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "item": "mekanismtools:glowstone_axe"
+    },
+    "Y": {
+      "item": "mekanismtools:glowstone_pickaxe"
+    },
+    "Z": {
+      "item": "mekanismtools:glowstone_shovel"
+    }
+  }
+}

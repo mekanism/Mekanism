@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:ultimate_fluid_tank"
+  },
+  "pattern": [
+    "AIA",
+    "ITI",
+    "AIA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "FluidTank"
+    }
+  ],
+  "key": {
+    "A": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:elite_fluid_tank"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  }
+}

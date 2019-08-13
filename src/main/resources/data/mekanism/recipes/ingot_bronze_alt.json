@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanism:ingot_bronze"
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:nuggets/bronze"
+    }
+  }
+}

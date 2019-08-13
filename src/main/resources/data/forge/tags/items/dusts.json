@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:dusts/iron",
+    "#forge:dusts/gold",
+    "#forge:dusts/osmium",
+    "#forge:dusts/copper",
+    "#forge:dusts/tin",
+    "#forge:dusts/silver",
+    "#forge:dusts/lead",
+    "#forge:dusts/diamond",
+    "#forge:dusts/steel",
+    "#forge:dusts/sulfur",
+    "#forge:dusts/lithium",
+    "#forge:dusts/refined_obsidian",
+    "#forge:dusts/obsidian"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "mekanism:black_plastic_fence",
+    "mekanism:red_plastic_fence",
+    "mekanism:green_plastic_fence",
+    "mekanism:brown_plastic_fence",
+    "mekanism:blue_plastic_fence",
+    "mekanism:purple_plastic_fence",
+    "mekanism:cyan_plastic_fence",
+    "mekanism:light_gray_plastic_fence",
+    "mekanism:gray_plastic_fence",
+    "mekanism:pink_plastic_fence",
+    "mekanism:lime_plastic_fence",
+    "mekanism:yellow_plastic_fence",
+    "mekanism:light_blue_plastic_fence",
+    "mekanism:magenta_plastic_fence",
+    "mekanism:orange_plastic_fence",
+    "mekanism:white_plastic_fence"
+  ]
+}

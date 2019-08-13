@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:magenta_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "forge:dyes/magenta"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:fuelwood_heater"
+  },
+  "pattern": [
+    "SCS",
+    "FHF",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "FuelwoodHeater"
+    }
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "H": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

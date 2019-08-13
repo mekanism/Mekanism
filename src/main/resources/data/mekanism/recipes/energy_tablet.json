@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:energy_tablet"
+  },
+  "pattern": [
+    "RCR",
+    "ECE",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "C": {
+      "tag": "forge:ingots/gold"
+    },
+    "E": {
+      "item": "mekanism:alloy_enriched"
+    }
+  }
+}

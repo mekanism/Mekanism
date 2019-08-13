@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:light_blue_reinforced_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "blockReinforcedPlastic",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "tag": "forge:dyes/light_blue"
+    }
+  }
+}

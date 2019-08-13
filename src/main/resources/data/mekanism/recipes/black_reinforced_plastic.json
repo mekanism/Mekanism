@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:black_reinforced_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "POP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:black_plastic"
+    },
+    "O": {
+      "tag": "forge:dusts/osmium"
+    }
+  }
+}

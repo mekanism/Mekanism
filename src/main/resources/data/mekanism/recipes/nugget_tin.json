@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanism:nugget_tin",
+    "count": 9
+  },
+  "pattern": [
+    "*"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:ingots/tin"
+    }
+  }
+}

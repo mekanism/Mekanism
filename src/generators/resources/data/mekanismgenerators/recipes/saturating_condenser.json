@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanismgenerators:saturating_condenser"
+  },
+  "pattern": [
+    "STS",
+    "TBT",
+    "STS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "T": {
+      "tag": "forge:ingots/tin"
+    }
+  }
+}

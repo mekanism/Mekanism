@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:enrichment_chamber"
+  },
+  "pattern": [
+    "RCR",
+    "iIi",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "EnrichmentChamber"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "I": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

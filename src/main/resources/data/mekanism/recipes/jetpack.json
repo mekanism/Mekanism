@@ -1,0 +1,27 @@
+{
+  "result": {
+    "nbt": {},
+    "item": "mekanism:jetpack",
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "SCS",
+    "TGT",
+    " T "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "T": {
+      "tag": "forge:ingots/tin"
+    },
+    "G": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  }
+}

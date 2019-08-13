@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:osmium_sword"
+  },
+  "pattern": [
+    "X",
+    "X",
+    "T"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "tag": "forge:ingots/osmium"
+    }
+  }
+}

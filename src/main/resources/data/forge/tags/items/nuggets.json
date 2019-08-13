@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:nuggets/refined_obsidian",
+    "#forge:nuggets/osmium",
+    "#forge:nuggets/bronze",
+    "#forge:nuggets/refined_glowstone",
+    "#forge:nuggets/steel",
+    "#forge:nuggets/copper",
+    "#forge:nuggets/tin"
+  ]
+}

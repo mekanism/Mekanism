@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:chemical_injection_chamber"
+  },
+  "pattern": [
+    "RCR",
+    "GPG",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ChemicalInjectionChamber"
+    }
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:purification_chamber"
+    },
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_ELITE"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    }
+  }
+}

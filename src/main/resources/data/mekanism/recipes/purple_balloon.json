@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:purple_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "forge:dyes/purple"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

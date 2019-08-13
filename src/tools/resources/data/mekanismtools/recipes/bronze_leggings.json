@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanismtools:bronze_leggings"
+  },
+  "pattern": [
+    "***",
+    "* *",
+    "* *"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "tag": "forge:ingots/bronze"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:steel_pickaxe"
+  },
+  "pattern": [
+    "XXX",
+    " I ",
+    " I "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "tag": "forge:ingots/steel"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  }
+}

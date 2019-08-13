@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:laser_amplifier"
+  },
+  "pattern": [
+    "SSS",
+    "SED",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "LaserAmplifier"
+    }
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "D": {
+      "ore": "gemDiamond",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:basic_energy_cube"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "mekanism:gray_glow_panel",
+    "count": 2
+  },
+  "pattern": [
+    "PSP",
+    "SDS",
+    "GSG"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "D": {
+      "tag": "forge:dyes/gray"
+    },
+    "G": {
+      "tag": "forge:dusts/glowstone"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanismgenerators:electromagnetic_coil"
+  },
+  "pattern": [
+    "SGS",
+    "GEG",
+    "SGS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanism:fluidic_plenisher"
+  },
+  "pattern": [
+    "TTT",
+    "CPC",
+    "TTT"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "FluidicPlenisher"
+    }
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:electric_pump"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "T": {
+      "tag": "forge:ingots/tin"
+    }
+  }
+}

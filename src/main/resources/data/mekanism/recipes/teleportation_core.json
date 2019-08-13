@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanism:teleportation_core"
+  },
+  "pattern": [
+    "LAL",
+    "GDG",
+    "LAL"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_atomic"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
+    "L": {
+      "tag": "forge:gems/lapis"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:superheating_element"
+  },
+  "pattern": [
+    "ACA",
+    "CIC",
+    "ACA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "I": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

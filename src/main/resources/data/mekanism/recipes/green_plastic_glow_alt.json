@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:green_plastic_glow",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "blockPlasticGlow",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "tag": "forge:dyes/green"
+    }
+  }
+}

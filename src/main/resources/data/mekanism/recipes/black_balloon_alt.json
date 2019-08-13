@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanism:black_balloon"
+  },
+  "ingredients": [
+    {
+      "ore": "balloon",
+      "type": "forge:ore_dict"
+    },
+    {
+      "tag": "forge:dyes/black"
+    }
+  ],
+  "type": "forge:ore_shapeless"
+}

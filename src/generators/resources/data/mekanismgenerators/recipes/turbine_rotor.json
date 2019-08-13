@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismgenerators:turbine_rotor"
+  },
+  "pattern": [
+    "SAS",
+    "SAS",
+    "SAS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  }
+}
