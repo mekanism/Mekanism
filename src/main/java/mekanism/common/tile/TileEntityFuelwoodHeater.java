@@ -8,7 +8,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
@@ -55,7 +55,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
                 }
             }
             if (burning) {
-                heatToAbsorb += MekanismConfigOld.current().general.heatPerFuelTick.get();
+                heatToAbsorb += MekanismConfig.general.heatPerFuelTick.get();
             }
             double[] loss = simulateHeat();
             applyTemperatureChange();

@@ -21,7 +21,6 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -202,7 +201,7 @@ public class BlockElectrolyticSeparator extends BlockMekanismContainer implement
 
     @Override
     public double getUsage() {
-        return MekanismConfigOld.current().general.FROM_H2.get() * 2;
+        return MekanismConfig.general.FROM_H2.get() * 2;
     }
 
     @Override

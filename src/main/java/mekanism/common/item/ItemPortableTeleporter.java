@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;

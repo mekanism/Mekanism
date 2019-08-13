@@ -120,7 +120,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -892,7 +891,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void onConfigSync(boolean fromPacket) {
         super.onConfigSync(fromPacket);
-        if (fromPacket && MekanismConfigOld.current().general.voiceServerEnabled.get() && MekanismClient.voiceClient != null) {
+        if (fromPacket && MekanismConfig.general.voiceServerEnabled.get() && MekanismClient.voiceClient != null) {
             MekanismClient.voiceClient.start();
         }
     }

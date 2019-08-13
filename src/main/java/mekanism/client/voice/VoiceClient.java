@@ -8,7 +8,7 @@ import java.net.ConnectException;
 import java.net.Socket;
 import javax.sound.sampled.AudioFormat;
 import mekanism.common.Mekanism;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -33,7 +33,7 @@ public class VoiceClient extends Thread {
         Mekanism.logger.info("VoiceServer: Starting client connection...");
 
         try {
-            socket = new Socket(ip, MekanismConfigOld.current().general.VOICE_PORT.get());
+            socket = new Socket(ip, MekanismConfig.general.VOICE_PORT.get());
             running = true;
 
             input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));

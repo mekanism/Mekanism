@@ -10,7 +10,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;

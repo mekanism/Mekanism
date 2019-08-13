@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -13,7 +13,7 @@ public class ItemControlCircuit extends ItemMekanismTiered {
 
     @Override
     public void registerOreDict() {
-        if (MekanismConfigOld.current().general.controlCircuitOreDict.get()) {
+        if (MekanismConfig.general.controlCircuitOreDict.get()) {
             OreDictionary.registerOre("circuit" + getTier().getSimpleName(), new ItemStack(this));
         }
     }

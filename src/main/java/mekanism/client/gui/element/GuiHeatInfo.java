@@ -3,7 +3,7 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
@@ -45,7 +45,7 @@ public class GuiHeatInfo extends GuiElement {
     public void renderForeground(int xAxis, int yAxis) {
         if (inBounds(xAxis, yAxis)) {
             List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
-            info.add(TextComponentUtil.build(Translation.of("mekanism.gui.unit"), ": ", MekanismConfigOld.current().general.tempUnit.get()));
+            info.add(TextComponentUtil.build(Translation.of("mekanism.gui.unit"), ": ", MekanismConfig.general.tempUnit.get()));
             displayTooltips(info, xAxis, yAxis);
         }
     }
@@ -57,7 +57,7 @@ public class GuiHeatInfo extends GuiElement {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
-            MekanismConfigOld.current().general.tempUnit.set(TempType.values()[(MekanismConfigOld.current().general.tempUnit.get().ordinal() + 1) % TempType.values().length]);
+            MekanismConfig.general.tempUnit.set(TempType.values()[(MekanismConfig.general.tempUnit.get().ordinal() + 1) % TempType.values().length]);
         }
     }
 }

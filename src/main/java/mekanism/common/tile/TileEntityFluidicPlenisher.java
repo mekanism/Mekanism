@@ -20,7 +20,7 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -121,7 +121,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     private void doPlenish() {
-        if (usedNodes.size() >= MekanismConfigOld.current().general.maxPlenisherNodes.get()) {
+        if (usedNodes.size() >= MekanismConfig.general.maxPlenisherNodes.get()) {
             finishedCalc = true;
             return;
         }

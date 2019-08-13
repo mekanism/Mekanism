@@ -10,7 +10,7 @@ import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
@@ -412,12 +412,12 @@ public class CommonProxy implements IGuiProvider {
     }
 
     public void onConfigSync(boolean fromPacket) {
-        if (MekanismConfigOld.current().general.cardboardSpawners.get()) {
+        if (MekanismConfig.general.cardboardSpawners.get()) {
             MekanismAPI.removeBoxBlacklist(Blocks.SPAWNER);
         } else {
             MekanismAPI.addBoxBlacklist(Blocks.SPAWNER);
         }
-        if (MekanismConfigOld.current().general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
+        if (MekanismConfig.general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();
         }
         if (fromPacket) {

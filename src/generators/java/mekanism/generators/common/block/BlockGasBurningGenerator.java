@@ -14,7 +14,7 @@ import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -136,7 +136,7 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
 
     @Override
     public double getStorage() {
-        return 100 * MekanismConfigOld.local().general.FROM_H2.get();
+        return 100 * MekanismConfig.general.FROM_H2.get();
     }
 
     @Override

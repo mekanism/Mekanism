@@ -4,7 +4,7 @@ import java.util.UUID;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
@@ -23,7 +23,7 @@ public final class SecurityUtils {
 
     public static boolean canAccess(PlayerEntity player, ItemStack stack) {
         // If protection is disabled, access is always granted
-        if (!MekanismConfigOld.current().general.allowProtection.get()) {
+        if (!MekanismConfig.general.allowProtection.get()) {
             return true;
         }
         if (!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem) {
@@ -54,7 +54,7 @@ public final class SecurityUtils {
 
     private static boolean canAccess(SecurityMode mode, PlayerEntity player, UUID owner) {
         // If protection is disabled, access is always granted
-        if (!MekanismConfigOld.current().general.allowProtection.get()) {
+        if (!MekanismConfig.general.allowProtection.get()) {
             return true;
         }
         if (owner == null || player.getUniqueID().equals(owner)) {

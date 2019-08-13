@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.common.config_old.MekanismConfigOld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.logging.log4j.LogManager;

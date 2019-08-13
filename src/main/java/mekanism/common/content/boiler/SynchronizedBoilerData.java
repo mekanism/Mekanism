@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -57,12 +57,12 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
      * @return how much heat energy is needed to convert one unit of water into steam
      */
     public static double getHeatEnthalpy() {
-        return MekanismConfigOld.current().general.maxEnergyPerSteam.get() / MekanismConfigOld.current().general.energyPerHeat.get();
+        return MekanismConfig.general.maxEnergyPerSteam.get() / MekanismConfig.general.energyPerHeat.get();
     }
 
     public double getHeatAvailable() {
         double heatAvailable = (temperature - BASE_BOIL_TEMP) * locations.size();
-        return Math.min(heatAvailable, superheatingElements * MekanismConfigOld.current().general.superheatingHeatTransfer.get());
+        return Math.min(heatAvailable, superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
     }
 
     public boolean needsRenderUpdate() {

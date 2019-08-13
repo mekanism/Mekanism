@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -120,7 +120,7 @@ public class PacketHandler {
     }
 
     public static void log(String log) {
-        if (MekanismConfigOld.current().general.logPackets.get()) {
+        if (MekanismConfig.general.logPackets.get()) {
             Mekanism.logger.info(log);
         }
     }

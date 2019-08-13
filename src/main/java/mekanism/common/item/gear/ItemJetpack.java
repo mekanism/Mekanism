@@ -12,7 +12,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.MekanismFluids;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -102,7 +102,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public int getMaxGas(ItemStack itemstack) {
-        return MekanismConfigOld.current().general.maxJetpackGas.get();
+        return MekanismConfig.general.maxJetpackGas.get();
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,7 +30,7 @@ public class LaserManager {
     }
 
     public static LaserInfo fireLaser(Pos3D from, Direction direction, double energy, World world) {
-        Pos3D to = from.clone().translate(direction, MekanismConfigOld.current().general.laserRange.get() - 0.002);
+        Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
         BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
             to = new Pos3D(mop.getHitVec());
@@ -59,7 +59,7 @@ public class LaserManager {
     }
 
     public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world, BlockPos laserPos) {
-        if (!MekanismConfigOld.current().general.aestheticWorldDamage.get()) {
+        if (!MekanismConfig.general.aestheticWorldDamage.get()) {
             return null;
         }
 
@@ -89,7 +89,7 @@ public class LaserManager {
     }
 
     public static BlockRayTraceResult fireLaserClient(Pos3D from, Direction direction, double energy, World world) {
-        Pos3D to = from.clone().translate(direction, MekanismConfigOld.current().general.laserRange.get() - 0.002);
+        Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
         BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
             to = new Pos3D(mop.getHitVec());

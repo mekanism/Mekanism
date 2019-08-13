@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItem;
 import mekanism.common.Resource;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.StackUtils;
@@ -51,7 +51,7 @@ public final class OreDictManager {
         for (ItemStack plank : OreDictionary.getOres("plankWood", false)) {
             plank = StackUtils.size(plank, 1);
             if (!Recipe.PRECISION_SAWMILL.containsRecipe(plank)) {
-                RecipeHandler.addPrecisionSawmillRecipe(plank, new ItemStack(Items.STICK, 6), MekanismItem.SAWDUST.getItemStack(), MekanismConfigOld.current().general.sawdustChancePlank.get());
+                RecipeHandler.addPrecisionSawmillRecipe(plank, new ItemStack(Items.STICK, 6), MekanismItem.SAWDUST.getItemStack(), MekanismConfig.general.sawdustChancePlank.get());
             }
             RecipeHandler.addPRCRecipe(plank, new FluidStack(FluidRegistry.WATER, 20), new GasStack(MekanismFluids.Oxygen, 20), ItemStack.EMPTY,
                   new GasStack(MekanismFluids.Hydrogen, 20), 0, 30);
@@ -61,7 +61,7 @@ public final class OreDictManager {
             slab = StackUtils.size(slab, 1);
             if (!Recipe.PRECISION_SAWMILL.containsRecipe(slab)) {
                 RecipeHandler.addPrecisionSawmillRecipe(slab, new ItemStack(Items.STICK, 3), MekanismItem.SAWDUST.getItemStack(),
-                      MekanismConfigOld.current().general.sawdustChancePlank.get() / 2);
+                      MekanismConfig.general.sawdustChancePlank.get() / 2);
             }
             RecipeHandler.addPRCRecipe(slab, new FluidStack(FluidRegistry.WATER, 10), new GasStack(MekanismFluids.Oxygen, 10), ItemStack.EMPTY,
                   new GasStack(MekanismFluids.Hydrogen, 10), 0, 15);
@@ -480,7 +480,7 @@ public final class OreDictManager {
 
         if (!resultEntry.isEmpty()) {
             RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6), MekanismItem.SAWDUST.getItemStack(),
-                  MekanismConfigOld.current().general.sawdustChanceLog.get());
+                  MekanismConfig.general.sawdustChanceLog.get());
         }
     }
 

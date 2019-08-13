@@ -8,7 +8,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.MekanismFluids;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -51,7 +51,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType slotType) {
-            return slotType == EquipmentSlotType.CHEST ? MekanismConfigOld.current().general.armoredJetpackArmor.get() : 0;
+            return slotType == EquipmentSlotType.CHEST ? MekanismConfig.general.armoredJetpackArmor.get() : 0;
         }
 
         @Override
@@ -61,7 +61,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
 
         @Override
         public float getToughness() {
-            return MekanismConfigOld.current().general.armoredJetpackToughness.get();
+            return MekanismConfig.general.armoredJetpackToughness.get();
         }
     }
 }

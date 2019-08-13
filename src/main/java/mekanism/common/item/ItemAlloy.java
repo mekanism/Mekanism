@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import javax.annotation.Nonnull;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.AlloyTier;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,7 +28,7 @@ public class ItemAlloy extends ItemMekanism {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player != null && MekanismConfigOld.current().general.allowTransmitterAlloyUpgrade.get()) {
+        if (player != null && MekanismConfig.general.allowTransmitterAlloyUpgrade.get()) {
             World world = context.getWorld();
             BlockPos pos = context.getPos();
             TileEntity tile = world.getTileEntity(pos);

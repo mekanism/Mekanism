@@ -3,7 +3,7 @@ package mekanism.client;
 import java.net.InetSocketAddress;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,7 +14,7 @@ public class ClientConnectionHandler {
 
     @SubscribeEvent
     public void onConnection(ClientConnectedToServerEvent event) {
-        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
+        if (MekanismConfig.general.voiceServerEnabled.get()) {
             if (event.isLocal()) {
                 // If the client is connecting to its own corresponding integrated server.
                 try {

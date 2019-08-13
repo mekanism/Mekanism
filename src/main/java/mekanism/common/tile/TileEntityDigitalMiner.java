@@ -26,7 +26,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -270,7 +270,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public double getPerTick() {
         double ret = getEnergyPerTick();
         if (silkTouch) {
-            ret *= MekanismConfigOld.current().general.minerSilkMultiplier.get();
+            ret *= MekanismConfig.general.minerSilkMultiplier.get();
         }
         int baseRad = Math.max(radius - 10, 0);
         ret *= 1 + ((float) baseRad / 22F);
@@ -559,7 +559,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     reset();
                     break;
                 case 6:
-                    setRadius(Math.min(dataStream.readInt(), MekanismConfigOld.current().general.digitalMinerMaxRadius.get()));
+                    setRadius(Math.min(dataStream.readInt(), MekanismConfig.general.digitalMinerMaxRadius.get()));
                     break;
                 case 7:
                     minY = dataStream.readInt();
@@ -848,7 +848,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
                 return new Object[]{"Invalid parameters."};
             }
-            setRadius(Math.min(((Double) arguments[0]).intValue(), MekanismConfigOld.current().general.digitalMinerMaxRadius.get()));
+            setRadius(Math.min(((Double) arguments[0]).intValue(), MekanismConfig.general.digitalMinerMaxRadius.get()));
         } else if (method == 1) {
             if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
                 return new Object[]{"Invalid parameters."};
@@ -952,7 +952,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        setRadius(Math.min(nbtTags.getInt("radius"), MekanismConfigOld.current().general.digitalMinerMaxRadius.get()));
+        setRadius(Math.min(nbtTags.getInt("radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
         minY = nbtTags.getInt("minY");
         maxY = nbtTags.getInt("maxY");
         doEject = nbtTags.getBoolean("doEject");
@@ -998,7 +998,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public void readSustainedData(ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, "hasMinerConfig")) {
-            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), MekanismConfigOld.current().general.digitalMinerMaxRadius.get()));
+            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
             minY = ItemDataUtils.getInt(itemStack, "minY");
             maxY = ItemDataUtils.getInt(itemStack, "maxY");
             doEject = ItemDataUtils.getBoolean(itemStack, "doEject");

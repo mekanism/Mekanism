@@ -34,7 +34,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.command.CommandMek;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
@@ -123,7 +122,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
-//@Mod(modid = Mekanism.MODID, useMetadata = true, guiFactory = "mekanism.client.gui.ConfigGuiFactory", acceptedMinecraftVersions = "[1.14.4,1.15)", version = "${version}")
 @Mod.EventBusSubscriber()
 public class Mekanism {
 
@@ -518,9 +516,9 @@ public class Mekanism {
 
         //Electrolytic Separator Recipes
         if (MekanismBlock.ELECTROLYTIC_SEPARATOR.isEnabled()) {
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * MekanismConfigOld.current().general.FROM_H2.get(),
+            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * MekanismConfig.general.FROM_H2.get(),
                   new GasStack(MekanismFluids.Hydrogen, 2), new GasStack(MekanismFluids.Oxygen, 1));
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * MekanismConfigOld.current().general.FROM_H2.get(),
+            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * MekanismConfig.general.FROM_H2.get(),
                   new GasStack(MekanismFluids.Sodium, 1), new GasStack(MekanismFluids.Chlorine, 1));
             RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2), MekanismConfig.usage.heavyWaterElectrolysis.get(),
                   new GasStack(MekanismFluids.Deuterium, 2), new GasStack(MekanismFluids.Oxygen, 1));
@@ -599,7 +597,7 @@ public class Mekanism {
         }
 
         //Fuel Gases
-        FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfigOld.current().general.FROM_H2.get());
+        FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.general.FROM_H2.get());
     }
 
     public static void registerTileEntities(IBlockProvider[] blockProviders) {
@@ -639,7 +637,7 @@ public class Mekanism {
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
+        if (MekanismConfig.general.voiceServerEnabled.get()) {
             voiceManager.start();
         }
         CommandMek.register(event);
@@ -647,7 +645,7 @@ public class Mekanism {
 
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
-        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
+        if (MekanismConfig.general.voiceServerEnabled.get()) {
             voiceManager.stop();
         }
 
@@ -742,7 +740,7 @@ public class Mekanism {
         PacketSimpleGui.handlers.add(0, proxy);
 
         //Set up VoiceServerManager
-        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
+        if (MekanismConfig.general.voiceServerEnabled.get()) {
             voiceManager = new VoiceServerManager();
         }
 
@@ -750,7 +748,7 @@ public class Mekanism {
         TransmitterNetworkRegistry.initiate();
 
         //Add baby skeleton spawner
-        if (MekanismConfigOld.current().general.spawnBabySkeletons.get()) {
+        if (MekanismConfig.general.spawnBabySkeletons.get()) {
             for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
                 if (biome.getSpawns(EntityClassification.MONSTER).size() > 0) {
                     EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
@@ -918,17 +916,17 @@ public class Mekanism {
             CompoundNBT nbtTags = event.getData();
 
             nbtTags.putInt("MekanismWorldGen", baseWorldGenVersion);
-            nbtTags.putInt("MekanismUserWorldGen", MekanismConfigOld.current().general.userWorldGenVersion.get());
+            nbtTags.putInt("MekanismUserWorldGen", MekanismConfig.general.userWorldGenVersion.get());
         }
     }
 
     @SubscribeEvent
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (!event.getWorld().isRemote()) {
-            if (MekanismConfigOld.current().general.enableWorldRegeneration.get()) {
+            if (MekanismConfig.general.enableWorldRegeneration.get()) {
                 CompoundNBT loadData = event.getData();
                 if (loadData.getInt("MekanismWorldGen") == baseWorldGenVersion &&
-                    loadData.getInt("MekanismUserWorldGen") == MekanismConfigOld.current().general.userWorldGenVersion.get()) {
+                    loadData.getInt("MekanismUserWorldGen") == MekanismConfig.general.userWorldGenVersion.get()) {
                     return;
                 }
                 ChunkPos coordPair = event.getChunk().getPos();

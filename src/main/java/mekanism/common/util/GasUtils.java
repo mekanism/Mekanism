@@ -11,7 +11,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -50,7 +50,7 @@ public final class GasUtils {
     }
 
     public static void clearIfInvalid(GasTank tank, Predicate<Gas> isValid) {
-        if (MekanismConfigOld.current().general.voidInvalidGases.get()) {
+        if (MekanismConfig.general.voidInvalidGases.get()) {
             Gas gas = tank.getGasType();
             if (gas != null && !isValid.test(gas)) {
                 tank.setGas(null);

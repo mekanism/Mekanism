@@ -16,7 +16,6 @@ import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -129,7 +128,7 @@ public class ClientTickHandler {
     }
 
     public static void portableTeleport(PlayerEntity player, Hand hand, Frequency freq) {
-        int delay = MekanismConfigOld.current().general.portableTeleporterDelay.get();
+        int delay = MekanismConfig.general.portableTeleporterDelay.get();
         if (delay == 0) {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {

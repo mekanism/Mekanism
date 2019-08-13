@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.item.ItemStack;
@@ -126,7 +126,7 @@ public enum Upgrade implements IHasTranslationKey {
     public List<ITextComponent> getMultScaledInfo(IUpgradeTile tile) {
         List<ITextComponent> ret = new ArrayList<>();
         if (canMultiply()) {
-            double effect = Math.pow(MekanismConfigOld.current().general.maxUpgradeMultiplier.get(), (float) tile.getComponent().getUpgrades(this) / (float) getMax());
+            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), (float) tile.getComponent().getUpgrades(this) / (float) getMax());
             ret.add(TextComponentUtil.build(Translation.of("gui.upgrades.effect"), ": " + (Math.round(effect * 100) / 100F) + "x"));
         }
         return ret;

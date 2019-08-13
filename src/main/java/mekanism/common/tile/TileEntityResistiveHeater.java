@@ -8,7 +8,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
@@ -47,7 +47,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             double toUse = 0;
             if (MekanismUtils.canFunction(this)) {
                 toUse = Math.min(getEnergy(), energyUsage);
-                heatToAbsorb += toUse / MekanismConfigOld.current().general.energyPerHeat.get();
+                heatToAbsorb += toUse / MekanismConfig.general.energyPerHeat.get();
                 setEnergy(getEnergy() - toUse);
             }
 

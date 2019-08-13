@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import mekanism.common.config_old.MekanismConfigOld;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketFlamethrowerData;

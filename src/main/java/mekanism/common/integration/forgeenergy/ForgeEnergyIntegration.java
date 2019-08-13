@@ -1,7 +1,7 @@
 package mekanism.common.integration.forgeenergy;
 
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -18,23 +18,23 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     public static double fromForge(int forge) {
-        return forge * MekanismConfigOld.current().general.FROM_FORGE.get();
+        return forge * MekanismConfig.general.FROM_FORGE.get();
     }
 
     public static double fromForge(double forge) {
-        return forge * MekanismConfigOld.current().general.FROM_FORGE.get();
+        return forge * MekanismConfig.general.FROM_FORGE.get();
     }
 
     public static int toForge(double joules) {
-        return MekanismUtils.clampToInt(joules * MekanismConfigOld.current().general.TO_FORGE.get());
+        return MekanismUtils.clampToInt(joules * MekanismConfig.general.TO_FORGE.get());
     }
 
     public static double toForgeAsDouble(double joules) {
-        return joules * MekanismConfigOld.current().general.TO_FORGE.get();
+        return joules * MekanismConfig.general.TO_FORGE.get();
     }
 
     public static long toForgeAsLong(long joules) {
-        return Math.round(joules * MekanismConfigOld.current().general.TO_FORGE.get());
+        return Math.round(joules * MekanismConfig.general.TO_FORGE.get());
     }
 
     @Override

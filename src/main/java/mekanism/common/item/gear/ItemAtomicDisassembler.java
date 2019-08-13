@@ -15,7 +15,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -57,7 +57,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class ItemAtomicDisassembler extends ItemEnergized {
 
     public ItemAtomicDisassembler() {
-        super("atomic_disassembler", MekanismConfigOld.current().general.disassemblerBatteryCapacity.get(), new Item.Properties().setNoRepair());
+        super("atomic_disassembler", MekanismConfig.general.disassemblerBatteryCapacity.get(), new Item.Properties().setNoRepair());
     }
 
     @Override
@@ -77,9 +77,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public boolean hitEntity(ItemStack itemstack, LivingEntity target, LivingEntity attacker) {
         double energy = getEnergy(itemstack);
-        int energyCost = MekanismConfigOld.current().general.disassemblerEnergyUsageWeapon.get();
-        int minDamage = MekanismConfigOld.current().general.disassemblerDamageMin.get();
-        int damageDifference = MekanismConfigOld.current().general.disassemblerDamageMax.get() - minDamage;
+        int energyCost = MekanismConfig.general.disassemblerEnergyUsageWeapon.get();
+        int minDamage = MekanismConfig.general.disassemblerDamageMin.get();
+        int damageDifference = MekanismConfig.general.disassemblerDamageMax.get() - minDamage;
         //If we don't have enough power use it at a reduced power level
         double percent = 1;
         if (energy < energyCost && energyCost != 0) {
@@ -138,7 +138,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 }
                 if (isOre || extended) {
                     Coord4D orig = new Coord4D(pos, player.world);
-                    Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ? MekanismConfigOld.current().general.disassemblerMiningRange.get() : -1).calc();
+                    Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1).calc();
                     for (Coord4D coord : found) {
                         if (coord.equals(orig)) {
                             continue;
@@ -206,7 +206,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     private ActionResultType useItemAs(PlayerEntity player, World world, BlockPos pos, Direction side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
         double energy = getEnergy(stack);
-        int hoeUsage = MekanismConfigOld.current().general.disassemblerEnergyUsageHoe.get();
+        int hoeUsage = MekanismConfig.general.disassemblerEnergyUsageHoe.get();
         if (energy < hoeUsage || consumer.use(stack, player, world, pos, side) == ActionResultType.FAIL) {
             //Fail if we don't have enough energy or using the item failed
             return ActionResultType.FAIL;
@@ -280,7 +280,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     private int getDestroyEnergy(ItemStack itemStack, float hardness) {
-        int destroyEnergy = MekanismConfigOld.current().general.disassemblerEnergyUsage.get() * getMode(itemStack).getEfficiency();
+        int destroyEnergy = MekanismConfig.general.disassemblerEnergyUsage.get() * getMode(itemStack).getEfficiency();
         return hardness == 0 ? destroyEnergy / 2 : destroyEnergy;
     }
 
@@ -310,10 +310,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     public enum Mode implements IHasTranslationKey {
         NORMAL("normal", 20, 3, () -> true),
-        SLOW("slow", 8, 1, () -> MekanismConfigOld.current().general.disassemblerSlowMode.get()),
-        FAST("fast", 128, 5, () -> MekanismConfigOld.current().general.disassemblerFastMode.get()),
-        VEIN("vein", 20, 3, () -> MekanismConfigOld.current().general.disassemblerVeinMining.get()),
-        EXTENDED_VEIN("extended_vein", 20, 3, () -> MekanismConfigOld.current().general.disassemblerExtendedMining.get()),
+        SLOW("slow", 8, 1, () -> MekanismConfig.general.disassemblerSlowMode.get()),
+        FAST("fast", 128, 5, () -> MekanismConfig.general.disassemblerFastMode.get()),
+        VEIN("vein", 20, 3, () -> MekanismConfig.general.disassemblerVeinMining.get()),
+        EXTENDED_VEIN("extended_vein", 20, 3, () -> MekanismConfig.general.disassemblerExtendedMining.get()),
         OFF("off", 0, 0, () -> true);
 
         private final Supplier<Boolean> checkEnabled;
@@ -400,7 +400,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             rayTraceResult = traceResult;
             isWood = OreDictCache.getOreDictName(stack).contains("logWood");
             maxRange = range;
-            maxCount = MekanismConfigOld.current().general.disassemblerMiningCount.get() - 1;
+            maxCount = MekanismConfig.general.disassemblerMiningCount.get() - 1;
         }
 
         public void loop(Coord4D pointer) {

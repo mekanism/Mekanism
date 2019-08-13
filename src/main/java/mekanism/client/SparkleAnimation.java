@@ -3,7 +3,7 @@ package mekanism.client;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import mekanism.common.MekanismSounds;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
@@ -37,7 +37,7 @@ public class SparkleAnimation {
 
 
     public void run() {
-        if (MekanismConfigOld.current().general.dynamicTankEasterEgg.get()) {
+        if (MekanismConfig.general.dynamicTankEasterEgg.get()) {
             tile.getWorld().playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG, SoundCategory.BLOCKS, 1F, 1F);
         }
 

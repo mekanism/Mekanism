@@ -9,7 +9,7 @@ import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey;
 import mekanism.common.security.SecurityData;
@@ -37,7 +37,7 @@ public class MekanismClient extends Mekanism {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
 
-        if (MekanismConfigOld.current().general.voiceServerEnabled.get()) {
+        if (MekanismConfig.general.voiceServerEnabled.get()) {
             if (MekanismClient.voiceClient != null) {
                 MekanismClient.voiceClient.disconnect();
                 MekanismClient.voiceClient = null;

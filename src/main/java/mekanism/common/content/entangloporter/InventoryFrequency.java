@@ -4,7 +4,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasTank;
-import mekanism.common.config_old.MekanismConfigOld;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
@@ -20,8 +20,8 @@ import net.minecraftforge.fluids.FluidTank;
 public class InventoryFrequency extends Frequency {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
-    private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = () -> new FluidTank(MekanismConfigOld.current().general.quantumEntangloporterFluidBuffer.get());
-    private static final Supplier<GasTank> GAS_TANK_SUPPLIER = () -> new GasTank(MekanismConfigOld.current().general.quantumEntangloporterGasBuffer.get());
+    private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = () -> new FluidTank(MekanismConfig.general.quantumEntangloporterFluidBuffer.get());
+    private static final Supplier<GasTank> GAS_TANK_SUPPLIER = () -> new GasTank(MekanismConfig.general.quantumEntangloporterGasBuffer.get());
 
     public double storedEnergy;
     public FluidTank storedFluid;
@@ -78,7 +78,7 @@ public class InventoryFrequency extends Frequency {
         }
         if (nbtTags.contains("storedGas")) {
             storedGas.read(nbtTags.getCompound("storedGas"));
-            storedGas.setMaxGas(MekanismConfigOld.current().general.quantumEntangloporterGasBuffer.get());
+            storedGas.setMaxGas(MekanismConfig.general.quantumEntangloporterGasBuffer.get());
         }
 
         ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
