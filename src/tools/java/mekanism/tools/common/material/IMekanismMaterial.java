@@ -11,11 +11,11 @@ public interface IMekanismMaterial extends IItemTier, IArmorMaterial {
 
     float getSwordAtkSpeed();
 
-    int getShovelDamage();
+    float getShovelDamage();
 
     float getShovelAtkSpeed();
 
-    int getAxeDamage();
+    float getAxeDamage();
 
     float getAxeAtkSpeed();
 
@@ -25,11 +25,11 @@ public interface IMekanismMaterial extends IItemTier, IArmorMaterial {
 
     float getHoeAtkSpeed();
 
-    int getPaxelHarvestLevel();
-
-    int getPaxelDamage();
+    float getPaxelDamage();
 
     float getPaxelAtkSpeed();
+
+    int getPaxelHarvestLevel();
 
     @Nonnull
     String getRegistryPrefix();

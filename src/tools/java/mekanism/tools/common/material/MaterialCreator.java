@@ -16,15 +16,15 @@ public class MaterialCreator implements IMekanismMaterial {
 
     private final ConfigValue<Integer> swordDamage;
     private final ConfigValue<Float> swordAtkSpeed;
-    private final ConfigValue<Integer> shovelDamage;
+    private final ConfigValue<Float> shovelDamage;
     private final ConfigValue<Float> shovelAtkSpeed;
-    private final ConfigValue<Integer> axeDamage;
+    private final ConfigValue<Float> axeDamage;
     private final ConfigValue<Float> axeAtkSpeed;
     private final ConfigValue<Integer> pickaxeDamage;
     private final ConfigValue<Float> pickaxeAtkSpeed;
     private final ConfigValue<Float> hoeAtkSpeed;
     private final ConfigValue<Integer> paxelHarvestLevel;
-    private final ConfigValue<Integer> paxelDamage;
+    private final ConfigValue<Float> paxelDamage;
     private final ConfigValue<Float> paxelAtkSpeed;
     private final ConfigValue<Integer> toolMaxUses;
     private final ConfigValue<Float> efficiency;
@@ -113,7 +113,7 @@ public class MaterialCreator implements IMekanismMaterial {
     }
 
     @Override
-    public int getShovelDamage() {
+    public float getShovelDamage() {
         return shovelDamage == null ? fallBack.getShovelDamage() : shovelDamage.get();
     }
 
@@ -123,7 +123,7 @@ public class MaterialCreator implements IMekanismMaterial {
     }
 
     @Override
-    public int getAxeDamage() {
+    public float getAxeDamage() {
         return axeDamage == null ? fallBack.getAxeDamage() : axeDamage.get();
     }
 
@@ -153,7 +153,7 @@ public class MaterialCreator implements IMekanismMaterial {
     }
 
     @Override
-    public int getPaxelDamage() {
+    public float getPaxelDamage() {
         return paxelDamage == null ? fallBack.getPaxelDamage() : paxelDamage.get();
     }
 

@@ -13,87 +13,90 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public int getSwordDamage() {
-        return 0;
+        return 3;
     }
 
     @Override
     public float getSwordAtkSpeed() {
-        return 0;
+        return -2.4F;
     }
 
     @Override
-    public int getShovelDamage() {
-        return 0;
+    public float getShovelDamage() {
+        return 1.5F;
     }
 
     @Override
     public float getShovelAtkSpeed() {
-        return 0;
+        return -3.0F;
     }
 
     @Override
-    public int getAxeDamage() {
-        return 0;
+    public float getAxeDamage() {
+        return 2;
     }
 
     @Override
     public float getAxeAtkSpeed() {
-        return 0;
+        return -3.1F;
     }
 
     @Override
     public int getPickaxeDamage() {
-        return 0;
+        return 1;
     }
 
     @Override
     public float getPickaxeAtkSpeed() {
-        return 0;
+        return -2.8F;
     }
 
     @Override
     public float getHoeAtkSpeed() {
-        return 0;
+        return getAttackDamage() - 3.0F;
     }
 
     @Override
-    public int getPaxelHarvestLevel() {
-        return 0;
-    }
-
-    @Override
-    public int getPaxelDamage() {
-        return 0;
+    public float getPaxelDamage() {
+        return 4;
     }
 
     @Override
     public float getPaxelAtkSpeed() {
-        return 0;
+        return -2.4F;
+    }
+
+    @Override
+    public int getPaxelHarvestLevel() {
+        return 3;
     }
 
     @Override
     public int getMaxUses() {
-        return 0;
+        //TODO: Used to be 450 for paxel
+        return 300;
     }
 
     @Override
     public float getEfficiency() {
-        return 0;
+        //TODO: Used to be 18 for paxel
+        return 14;
     }
 
     @Override
     public float getAttackDamage() {
-        return 0;
+        return 6;
     }
 
     @Override
     public int getHarvestLevel() {
-        return 0;
+        return 2;
     }
 
     @Override
     public int getEnchantability() {
-        return 0;
+        //TODO: Used to be 22 for paxel
+        return 18;
     }
 
     @Override
@@ -105,13 +108,13 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
     public int getDurability(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 0;
+                return 234;
             case LEGS:
-                return 0;
+                return 270;
             case CHEST:
-                return 0;
+                return 288;
             case HEAD:
-                return 0;
+                return 198;
         }
         return 0;
     }
@@ -120,13 +123,13 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
     public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 0;
+                return 3;
             case LEGS:
-                return 0;
+                return 6;
             case CHEST:
-                return 0;
+                return 7;
             case HEAD:
-                return 0;
+                return 3;
         }
         return 0;
     }
