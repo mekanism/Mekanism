@@ -1,6 +1,7 @@
 package mekanism.tools.client.jei;
 
 import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.tools.common.MekanismTools;
@@ -36,13 +37,13 @@ public class ToolsJEI implements IModPlugin {
             //Two damaged items combine to undamaged
             registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))), VanillaRecipeCategoryUid.ANVIL);
 
-            ItemStack repairMaterial = toolsItem.getRepairStack();
+            ItemStack[] repairStacks = toolsItem.getRepairMaterial().getMatchingStacks();
             //Damaged item + the repair material
-            if (!repairMaterial.isEmpty()) {
+            if (repairStacks.length > 0) {
                 //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
                 ItemStack damaged1 = toolsItem.getItemStack();
                 damaged1.setDamage(damaged1.getMaxDamage());
-                registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged1, Collections.singletonList(repairMaterial), Collections.singletonList(damaged2))), VanillaRecipeCategoryUid.ANVIL);
+                registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged1, Arrays.asList(repairStacks), Collections.singletonList(damaged2))), VanillaRecipeCategoryUid.ANVIL);
             }
         }
     }

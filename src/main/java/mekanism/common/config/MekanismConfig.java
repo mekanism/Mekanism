@@ -22,7 +22,6 @@ public class MekanismConfig {
     public static final UsageConfig usage = new UsageConfig();
 
     public static void loadFromFiles() {
-        //TODO: Make these all go in the mekanism directory
         load(client);
         load(general);
         load(storage);
@@ -43,7 +42,7 @@ public class MekanismConfig {
     }
 
     public static void load(IMekanismConfig config) {
-        CommentedFileConfig configData = CommentedFileConfig.builder(FMLPaths.CONFIGDIR.get().resolve(config.getFileName()))
+        CommentedFileConfig configData = CommentedFileConfig.builder(FMLPaths.CONFIGDIR.get().resolve("mekanism/" + config.getFileName()))
               .sync().autosave().writingMode(WritingMode.REPLACE).build();
         configData.load();
         config.getConfigSpec().setConfig(configData);

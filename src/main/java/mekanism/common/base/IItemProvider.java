@@ -5,10 +5,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public interface IItemProvider {
+public interface IItemProvider extends net.minecraft.util.IItemProvider {
 
     @Nonnull
     Item getItem();
+
+    @Nonnull
+    @Override
+    default Item asItem() {
+        return getItem();
+    }
 
     @Nonnull
     default ItemStack getItemStack() {

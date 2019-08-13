@@ -1,8 +1,6 @@
 package mekanism.common.base;
 
 import mekanism.common.Version;
-import mekanism.common.config_old.MekanismConfigOld;
-import net.minecraft.network.PacketBuffer;
 
 /**
  * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a Mekanism module.
@@ -32,7 +30,7 @@ public interface IModule {
      * @param dataStream - the PacketBuffer of the sync packet
      * @param config     - the configuration to write
      */
-    void writeConfig(PacketBuffer dataStream, MekanismConfigOld config);
+    //void writeConfig(PacketBuffer dataStream, MekanismConfigOld config);
 
     /**
      * Reads this module's configuration from the original ConfigSync packet.
@@ -40,7 +38,7 @@ public interface IModule {
      * @param dataStream - the incoming PacketBuffer of the sync packet
      * @param destConfig - configuration to read to
      */
-    void readConfig(PacketBuffer dataStream, MekanismConfigOld destConfig);
+    //void readConfig(PacketBuffer dataStream, MekanismConfigOld destConfig);*/
 
     /**
      * Called when the player returns to the main menu.

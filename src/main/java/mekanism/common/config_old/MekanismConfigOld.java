@@ -1,9 +1,6 @@
 package mekanism.common.config_old;
 
 import javax.annotation.Nullable;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.tools.common.MekanismTools;
-import net.minecraftforge.fml.ModList;
 
 public class MekanismConfigOld {
 
@@ -36,6 +33,4 @@ public class MekanismConfigOld {
     }
 
     public GeneralConfig general = new GeneralConfig();
-
-    public ToolsConfig tools = ModList.get().isLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
 }
