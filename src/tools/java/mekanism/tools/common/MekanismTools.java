@@ -27,7 +27,8 @@ public class MekanismTools implements IModule {
 
     public static final String MODID = "mekanismtools";
 
-    public static ToolsCommonProxy proxy = DistExecutor.runForDist(() -> ToolsClientProxy::new, () -> ToolsCommonProxy::new);
+    //Note: Do not replace with method reference: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#gistcomment-2876130
+    public static ToolsCommonProxy proxy = DistExecutor.runForDist(() -> () -> new ToolsClientProxy(), () -> () -> new ToolsCommonProxy());
 
     public static MekanismTools instance;
 

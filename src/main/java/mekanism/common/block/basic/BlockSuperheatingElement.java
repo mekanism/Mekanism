@@ -6,16 +6,13 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -28,25 +25,6 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IStateAc
     public BlockSuperheatingElement() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         setRegistryName(new ResourceLocation(Mekanism.MODID, "superheating_element"));
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

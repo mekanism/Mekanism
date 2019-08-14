@@ -9,6 +9,7 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,9 +30,13 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class BlockBasicMultiblock extends BlockTileDrops {
 
     public BlockBasicMultiblock(String name) {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
+        this(Mekanism.MODID, name, Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
+    }
+
+    public BlockBasicMultiblock(String modid, String name, Block.Properties properties) {
+        super(properties);
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        setRegistryName(new ResourceLocation(Mekanism.MODID, name.toLowerCase(Locale.ROOT)));
+        setRegistryName(new ResourceLocation(modid, name.toLowerCase(Locale.ROOT)));
     }
 
     @Override
@@ -73,6 +78,9 @@ public class BlockBasicMultiblock extends BlockTileDrops {
         TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity != null) {
             if (world.isRemote) {
+                return true;
+            }
+            if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
                 return true;
             }
             return tileEntity.onActivate(player, hand, player.getHeldItem(hand));

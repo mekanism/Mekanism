@@ -17,7 +17,6 @@ import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
@@ -33,7 +32,6 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,9 +48,13 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -76,24 +78,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         return true;
     }
 
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
-    }
+    //TODO: updatePostPlacement??
 
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
@@ -113,7 +98,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
             float xRandom = (float) pos.getX() + 0.5F;
@@ -189,7 +174,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                                 }
                             }
                             tileEntity.setFacing(change);
-                            world.notifyNeighborsOfStateChange(pos, this, true);
+                            world.notifyNeighborsOfStateChange(pos, this);
                         }
                     } else {
                         SecurityUtils.displayNoAccess(player);
@@ -224,13 +209,13 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull World world, @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
-    public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
+    public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         //TODO: This is how it was before, but should it be divided by 5 like in Block.java
         return blockResistance;
     }
@@ -277,12 +262,13 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader world, BlockPos pos) {
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         if (tile instanceof TileEntityLogisticalSorter) {
-            return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).getDirection()).offset(0.5, 0.5, 0.5);
+            return VoxelShapes.create(MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).getDirection())
+                  .offset(0.5, 0.5, 0.5));
         }
-        return super.getBoundingBox(state, world, pos);
+        return super.getShape(state, world, pos, context);
     }
 
     @Override

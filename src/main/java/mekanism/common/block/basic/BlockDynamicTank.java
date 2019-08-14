@@ -8,7 +8,6 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel, IHasInventory, IHasTileEntity<TileEntityDynamicTank> {
@@ -20,11 +19,6 @@ public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel,
     @Override
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityDynamicTank();
-    }
-
-    @Override
-    public int getLightOpacity(BlockState state, IBlockReader world, BlockPos pos) {
-        return 0;
     }
 
     @Override

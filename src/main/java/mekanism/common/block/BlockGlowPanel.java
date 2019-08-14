@@ -27,18 +27,22 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing, IColoredBlock, IHasTileEntity<TileEntityGlowPanel> {
 
-    public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
+    public static VoxelShape[] bounds = new VoxelShape[6];
 
     static {
         AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
         Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
         for (Direction side : Direction.values()) {
-            bounds[side.ordinal()] = MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side).offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z);
+            bounds[side.ordinal()] = VoxelShapes.create(MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side)
+                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
         }
     }
 
@@ -133,12 +137,12 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader world, BlockPos pos) {
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         if (tileEntity != null) {
             return bounds[tileEntity.side.ordinal()];
         }
-        return super.getBoundingBox(state, world, pos);
+        return super.getShape(state, world, pos, context);
     }
 
     @Override

@@ -12,7 +12,6 @@ import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
@@ -24,12 +23,10 @@ import mekanism.common.tile.energy_cube.TileEntityCreativeEnergyCube;
 import mekanism.common.tile.energy_cube.TileEntityEliteEnergyCube;
 import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
 import mekanism.common.tile.energy_cube.TileEntityUltimateEnergyCube;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -70,25 +67,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
         return true;
     }
 
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
-    }
-
     @Override
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
@@ -121,7 +99,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull World world, @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }

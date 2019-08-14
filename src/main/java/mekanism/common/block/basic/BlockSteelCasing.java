@@ -1,15 +1,17 @@
 package mekanism.common.block.basic;
 
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorldReader;
 
 public class BlockSteelCasing extends BlockTileDrops implements IHasModel {
 
@@ -19,7 +21,7 @@ public class BlockSteelCasing extends BlockTileDrops implements IHasModel {
     }
 
     @Override
-    public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
+    public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         return 9F;
     }
 }

@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
@@ -12,6 +13,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.multiblock.IMultiblock;
@@ -27,8 +29,11 @@ import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
@@ -110,7 +115,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     }
 
     /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)}.
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)}.
      * <br>
      * This is like Vanilla's {@link ContainerBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)} except that uses the custom {@link
      * ItemStack} from {@link #getDropItem(BlockState, IBlockReader, BlockPos)}
@@ -120,7 +125,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
      */
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        Stat blockStats = Stats.getBlockStats(this);
+        Stat blockStats = Stats.BLOCK_MINED.get(this);
         if (blockStats != null) {
             player.addStat(blockStats);
         }
@@ -159,16 +164,16 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
-     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
+     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)
      */
     @Override
-    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, false);
+    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest, IFluidState fluidState) {
+        return willHarvest || super.removedByPlayer(state, world, pos, player, false, fluidState);
     }
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player) {
+    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
         return getDropItem(state, world, pos);
     }
 
@@ -191,6 +196,17 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
         return BlockRenderType.MODEL;
     }
 
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        BlockStateHelper.fillBlockStateContainer(this, builder);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
+    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
@@ -291,15 +307,15 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
                 ((ISustainedTank) tile).setFluidStack(fluid);
             }
         }
-        if (item instanceof ISustainedInventory && tile instanceof ISustainedInventory) {
-            ((ISustainedInventory) tile).setInventory(((ISustainedInventory) item).getInventory(stack));
+        if (item instanceof ISustainedInventory && tile.hasInventory()) {
+            tile.setInventory(((ISustainedInventory) item).getInventory(stack));
         }
         /*if (item instanceof IItemEnergized && tile instanceof TileEntityElectricBlock) {
             ((TileEntityElectricBlock) tile).electricityStored = ((IItemEnergized) item).getEnergy(stack);
         }*/
         //The variant of it that was in BlockBasic
-        if (item instanceof IItemEnergized && tile instanceof IStrictEnergyStorage && !(tile instanceof TileEntityMultiblock<?>)) {
-            ((IStrictEnergyStorage) tile).setEnergy(((IItemEnergized) item).getEnergy(stack));
+        if (item instanceof IItemEnergized && tile.isElectric() && !(tile instanceof TileEntityMultiblock<?>)) {
+            tile.setEnergy(((IItemEnergized) item).getEnergy(stack));
         }
         //TODO: Figure out if this is actually needed
         if (!world.isRemote) {

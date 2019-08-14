@@ -2,6 +2,7 @@ package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -22,7 +23,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockReactorLogicAdapter extends Block implements IHasGui, IHasTileEntity<TileEntityReactorLogicAdapter> {
+public class BlockReactorLogicAdapter extends BlockTileDrops implements IHasGui, IHasTileEntity<TileEntityReactorLogicAdapter> {
 
     public BlockReactorLogicAdapter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

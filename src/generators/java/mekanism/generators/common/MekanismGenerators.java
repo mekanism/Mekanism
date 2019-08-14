@@ -54,7 +54,8 @@ public class MekanismGenerators implements IModule {
 
     public static final String MODID = "mekanismgenerators";
 
-    public static GeneratorsCommonProxy proxy = DistExecutor.runForDist(() -> GeneratorsClientProxy::new, () -> GeneratorsCommonProxy::new);
+    //Note: Do not replace with method reference: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#gistcomment-2876130
+    public static GeneratorsCommonProxy proxy = DistExecutor.runForDist(() -> () -> new GeneratorsClientProxy(), () -> () -> new GeneratorsCommonProxy());
 
     public static MekanismGenerators instance;
 

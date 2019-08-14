@@ -10,7 +10,6 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.InventoryBin;
@@ -27,7 +26,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -60,25 +58,6 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     @Override
     public BinTier getTier() {
         return tier;
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override
@@ -116,7 +95,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public void onBlockClicked(World world, BlockPos pos, PlayerEntity player) {
+    public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
         if (!world.isRemote) {
             TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
             BlockRayTraceResult mop = MekanismUtils.rayTrace(world, player);
@@ -219,14 +198,10 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
         return true;
     }
 
+    //TODO: Make this comparator stuff be in BlockTileDrops and BlockMekanismContainer and be an interface the other stuff checks
     @Override
     public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
         return ((TileEntityBin) world.getTileEntity(pos)).getRedstoneLevel();
-    }
-
-    @Override
-    public int getLightOpacity(BlockState state, IBlockReader world, BlockPos pos) {
-        return 0;
     }
 
     @Nullable

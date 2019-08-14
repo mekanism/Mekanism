@@ -15,13 +15,16 @@ import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Plane;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class BlockStateHelper {
 
@@ -41,7 +44,7 @@ public class BlockStateHelper {
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
 
-    public static BlockStateContainer getBlockState(Block block) {
+    public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
         List<IProperty> properties = new ArrayList<>();
         if (block instanceof IStateFacing) {
             if (((IStateFacing) block).supportsAll()) {
@@ -67,13 +70,13 @@ public class BlockStateHelper {
             properties.add(westConnectionProperty);
             properties.add(eastConnectionProperty);
         }
-        if (properties.isEmpty()) {
-            return new BlockStateContainer(block);
+        if (!properties.isEmpty()) {
+            builder.add(properties.toArray(new IProperty[0]));
         }
-        return new BlockStateContainer(block, properties.toArray(new IProperty[0]));
     }
 
     public static BlockState getActualState(@Nonnull Block block, @Nonnull BlockState state, @Nonnull TileEntity tile) {
+        //TODO: Make the block's actual state update when things change if needed
         if (block instanceof IStateFacing) {
             Direction facing = getFacing(tile);
             if (facing != null) {
@@ -94,6 +97,50 @@ public class BlockStateHelper {
             state = state.with(storageProperty, isStoring(tile));
         }
         if (block instanceof IStateConnection) {
+            //Add all the different connection types
+            state = state.with(downConnectionProperty, getStateConnection(tile, Direction.DOWN));
+            state = state.with(upConnectionProperty, getStateConnection(tile, Direction.UP));
+            state = state.with(northConnectionProperty, getStateConnection(tile, Direction.NORTH));
+            state = state.with(southConnectionProperty, getStateConnection(tile, Direction.SOUTH));
+            state = state.with(westConnectionProperty, getStateConnection(tile, Direction.WEST));
+            state = state.with(eastConnectionProperty, getStateConnection(tile, Direction.EAST));
+        }
+        return state;
+    }
+
+    @Nullable
+    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockItemUseContext context) {
+        if (state == null) {
+            return null;
+        }
+        //TODO: I don't know if there is a tile entity yet so this stuff may not really matter
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
+        if (block instanceof IStateFacing) {
+            //TODO: Figure out the direction it should be
+            Direction facing = getFacing(tile);
+            if (facing != null) {
+                if (((IStateFacing) block).supportsAll()) {
+                    state = state.with(facingProperty, facing);
+                } else if (facing != Direction.DOWN && facing != Direction.UP) {
+                    state = state.with(horizontalFacingProperty, facing);
+                }
+            }
+        }
+        if (block instanceof IStateActive) {
+            //TODO: False by default??
+            state = state.with(activeProperty, ((IStateActive) block).isActive(tile));
+        }
+        if (block instanceof IStateColor) {
+            //TODO: move this to https://github.com/MinecraftForge/MinecraftForge/pull/5564
+            state = state.with(BlockStateHelper.colorProperty, getColor(tile));
+        }
+        if (block instanceof IStateStorage) {
+            //TODO:
+            state = state.with(storageProperty, isStoring(tile));
+        }
+        if (block instanceof IStateConnection) {
+            //TODO: Move this to https://github.com/MinecraftForge/MinecraftForge/pull/5564
             //Add all the different connection types
             state = state.with(downConnectionProperty, getStateConnection(tile, Direction.DOWN));
             state = state.with(upConnectionProperty, getStateConnection(tile, Direction.UP));

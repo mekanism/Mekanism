@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockThermalEvaporationValve extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationValve> {
@@ -39,7 +40,7 @@ public class BlockThermalEvaporationValve extends BlockTileDrops implements IHas
     }
 
     @Override
-    public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
+    public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         return 9F;
     }
 

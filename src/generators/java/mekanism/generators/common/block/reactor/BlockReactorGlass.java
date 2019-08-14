@@ -2,8 +2,8 @@ package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.generators.common.MekanismGenerators;
@@ -11,7 +11,6 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -25,24 +24,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntityReactorGlass> {
+public class BlockReactorGlass extends BlockTileDrops implements IHasTileEntity<TileEntityReactorGlass> {
 
     public BlockReactorGlass() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         //TODO: Should the material be glass? check other materials of various blocks as well
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "reactor_glass"));
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        //TODO
-        return 0;
     }
 
     @Override
@@ -87,12 +74,12 @@ public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntit
     @Override
     @Deprecated
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
-        Block blockOffset = world.getBlockState(pos.offset(side)).getBlock();
+    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+        Block blockOffset = adjacentBlockState.getBlock();
         if (blockOffset instanceof BlockReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {
             return false;
         }
-        return super.shouldSideBeRendered(state, world, pos, side);
+        return super.isSideInvisible(state, adjacentBlockState, side);
     }
 
     @Nullable

@@ -58,9 +58,9 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     @Override
     @Deprecated
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
         //Not structural glass
-        return world.getBlockState(pos.offset(side)).getBlock() != this;
+        return adjacentBlockState.getBlock() != this;
     }
 
     @Override
@@ -78,11 +78,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
-    public int getLightOpacity(BlockState state, IBlockReader world, BlockPos pos) {
-        return 0;
     }
 
     @Override

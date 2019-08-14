@@ -40,25 +40,6 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
         setRegistryName(new ResourceLocation(Mekanism.MODID, "cardboard_box"));
     }
 
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
-    }
-
     @Override
     public boolean isReplaceable(IBlockReader world, @Nonnull BlockPos pos) {
         return testingPlace;
