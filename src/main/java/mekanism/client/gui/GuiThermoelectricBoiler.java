@@ -24,10 +24,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoilerCasing> {
+public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoilerCasing, ContainerFilter> {
 
     public GuiThermoelectricBoiler(PlayerInventory inventory, TileEntityBoilerCasing tile) {
-        super(tile, new ContainerFilter(inventory, tile));
+        super(tile, new ContainerFilter(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {

@@ -23,10 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
+public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, ContainerNull> {
 
     public GuiTurbineStats(PlayerInventory inventory, TileEntityTurbineCasing tile) {
-        super(tile, new ContainerNull(inventory.player, tile));
+        super(tile, new ContainerNull(inventory.player, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, resource));
         addGuiElement(new GuiEnergyInfo(() -> {

@@ -19,10 +19,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasing> {
+public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasing, ContainerInductionMatrix> {
 
     public GuiInductionMatrix(PlayerInventory inventory, TileEntityInductionCasing tile) {
-        super(tile, new ContainerInductionMatrix(inventory, tile));
+        super(tile, new ContainerInductionMatrix(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, resource));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(

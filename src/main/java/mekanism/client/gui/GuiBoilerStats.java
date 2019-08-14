@@ -21,13 +21,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
+public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, ContainerNull> {
 
     private final GuiGraph boilGraph;
     private final GuiGraph maxGraph;
 
     public GuiBoilerStats(PlayerInventory inventory, TileEntityBoilerCasing tile) {
-        super(tile, new ContainerNull(inventory.player, tile));
+        super(tile, new ContainerNull(inventory.player, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, resource));
         addGuiElement(new GuiHeatInfo(() -> {

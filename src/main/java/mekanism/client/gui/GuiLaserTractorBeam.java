@@ -13,10 +13,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorBeam> {
+public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorBeam, ContainerLaserTractorBeam> {
 
     public GuiLaserTractorBeam(PlayerInventory inventory, TileEntityLaserTractorBeam tile) {
-        super(tile, new ContainerLaserTractorBeam(inventory, tile));
+        super(tile, new ContainerLaserTractorBeam(inventory, tile), inventory);
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, getGuiLocation()));
     }
 

@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRobitMain extends GuiMekanism {
+public class GuiRobitMain extends GuiMekanism<ContainerRobitMain> {
 
     private final EntityRobit robit;
 
@@ -41,7 +41,7 @@ public class GuiRobitMain extends GuiMekanism {
     private Button repairButton;
 
     public GuiRobitMain(PlayerInventory inventory, EntityRobit entity) {
-        super(new ContainerRobitMain(inventory, entity));
+        super(new ContainerRobitMain(inventory, entity), inventory);
         xSize += 25;
         robit = entity;
     }

@@ -27,14 +27,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier> {
+public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier, ContainerLaserAmplifier> {
 
     private TextFieldWidget minField;
     private TextFieldWidget maxField;
     private TextFieldWidget timerField;
 
     public GuiLaserAmplifier(PlayerInventory inventory, TileEntityLaserAmplifier tile) {
-        super(tile, new ContainerLaserAmplifier(inventory, tile));
+        super(tile, new ContainerLaserAmplifier(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
             @Override

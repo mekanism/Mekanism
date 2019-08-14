@@ -20,14 +20,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDictionary extends GuiMekanism {
+public class GuiDictionary extends GuiMekanism<ContainerDictionary> {
 
     public ItemStack itemType = ItemStack.EMPTY;
 
     private final GuiScrollList scrollList;
 
     public GuiDictionary(PlayerInventory inventory) {
-        super(new ContainerDictionary(inventory));
+        super(new ContainerDictionary(inventory), inventory);
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
     }
 

@@ -25,12 +25,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
+public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, ContainerWindGenerator> {
 
     private final DecimalFormat powerFormat = new DecimalFormat("0.##");
 
     public GuiWindGenerator(PlayerInventory inventory, TileEntityWindGenerator tile) {
-        super(tile, new ContainerWindGenerator(inventory, tile));
+        super(tile, new ContainerWindGenerator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

@@ -23,10 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator> {
+public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, ContainerBioGenerator> {
 
     public GuiBioGenerator(PlayerInventory inventory, TileEntityBioGenerator tile) {
-        super(tile, new ContainerBioGenerator(inventory, tile));
+        super(tile, new ContainerBioGenerator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

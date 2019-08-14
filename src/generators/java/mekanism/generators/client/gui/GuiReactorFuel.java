@@ -32,7 +32,7 @@ public class GuiReactorFuel extends GuiReactorInfo {
     private TextFieldWidget injectionRateField;
 
     public GuiReactorFuel(PlayerInventory inventory, final TileEntityReactorController tile) {
-        super(tile, new ContainerNull(inventory.player, tile));
+        super(tile, new ContainerNull(inventory.player, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),

@@ -26,10 +26,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalOxidizer extends GuiChemical<TileEntityChemicalOxidizer> {
+public class GuiChemicalOxidizer extends GuiChemical<TileEntityChemicalOxidizer, ContainerChemicalOxidizer> {
 
     public GuiChemicalOxidizer(PlayerInventory inventory, TileEntityChemicalOxidizer tile) {
-        super(tile, new ContainerChemicalOxidizer(inventory, tile));
+        super(tile, new ContainerChemicalOxidizer(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

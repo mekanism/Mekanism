@@ -15,10 +15,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> {
+public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, ContainerDynamicTank> {
 
     public GuiDynamicTank(PlayerInventory inventory, TileEntityDynamicTank tile) {
-        super(tile, new ContainerDynamicTank(inventory, tile));
+        super(tile, new ContainerDynamicTank(inventory, tile), inventory);
         addGuiElement(new GuiContainerEditMode(this, tileEntity, getGuiLocation()));
     }
 

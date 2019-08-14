@@ -21,10 +21,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrator> {
+public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrator, ContainerSeismicVibrator> {
 
     public GuiSeismicVibrator(PlayerInventory inventory, TileEntitySeismicVibrator tile) {
-        super(tile, new ContainerSeismicVibrator(inventory, tile));
+        super(tile, new ContainerSeismicVibrator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

@@ -34,10 +34,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgicInfuser> {
+public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgicInfuser, ContainerMetallurgicInfuser> {
 
     public GuiMetallurgicInfuser(PlayerInventory inventory, TileEntityMetallurgicInfuser tile) {
-        super(tile, new ContainerMetallurgicInfuser(inventory, tile));
+        super(tile, new ContainerMetallurgicInfuser(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

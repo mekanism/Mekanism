@@ -7,6 +7,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -14,12 +15,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiMekanismTile<TILE extends TileEntityMekanism> extends GuiMekanism {
+public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
 
     protected final TILE tileEntity;
 
-    public GuiMekanismTile(TILE tile, Container container) {
-        super(container);
+    public GuiMekanismTile(TILE tile, CONTAINER container, PlayerInventory inv) {
+        super(container, inv);
         tileEntity = tile;
     }
 

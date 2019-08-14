@@ -34,13 +34,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater> {
+public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater, ContainerResistiveHeater> {
 
     private TextFieldWidget energyUsageField;
     private Button checkboxButton;
 
     public GuiResistiveHeater(PlayerInventory inventory, TileEntityResistiveHeater tile) {
-        super(tile, new ContainerResistiveHeater(inventory, tile));
+        super(tile, new ContainerResistiveHeater(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 14, 34).with(SlotOverlay.POWER));

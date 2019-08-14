@@ -37,7 +37,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
+public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, ContainerDigitalMiner> {
 
     private Button startButton;
     private Button stopButton;
@@ -48,7 +48,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     private Button autoPullButton;
 
     public GuiDigitalMiner(PlayerInventory inventory, TileEntityDigitalMiner tile) {
-        super(tile, new ContainerDigitalMiner(inventory, tile));
+        super(tile, new ContainerDigitalMiner(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

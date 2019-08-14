@@ -26,7 +26,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiUpgradeManagement extends GuiMekanism {
+public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement> {
 
     private Button backButton;
     private Button removeButton;
@@ -39,7 +39,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     private float scroll;
 
     public GuiUpgradeManagement(PlayerInventory inventory, IUpgradeTile tile) {
-        super(new ContainerUpgradeManagement(inventory, tile));
+        super(new ContainerUpgradeManagement(inventory, tile), inventory);
         tileEntity = tile;
     }
 

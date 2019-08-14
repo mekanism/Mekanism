@@ -34,14 +34,14 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     private Button checkboxButton;
 
     public GuiOredictionificatorFilter(PlayerEntity player, TileEntityOredictionificator tile, int index) {
-        super(tile, new ContainerFilter(player.inventory, tile));
+        super(player, tile);
         origFilter = tileEntity.filters.get(index);
         filter = tileEntity.filters.get(index).clone();
         updateRenderStack();
     }
 
     public GuiOredictionificatorFilter(PlayerEntity player, TileEntityOredictionificator tile) {
-        super(tile, new ContainerFilter(player.inventory, tile));
+        super(player, tile);
         filter = new OredictionificatorFilter();
         isNew = true;
     }

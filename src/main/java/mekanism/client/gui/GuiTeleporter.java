@@ -40,6 +40,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -49,7 +50,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
+public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Container> {
 
     private Hand currentHand;
     private ItemStack itemStack = ItemStack.EMPTY;
@@ -71,7 +72,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     private final boolean isPortable;
 
     public GuiTeleporter(PlayerInventory inventory, TileEntityTeleporter tile) {
-        super(tile, new ContainerTeleporter(inventory, tile));
+        super(tile, new ContainerTeleporter(inventory, tile), inventory);
         isPortable = false;
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
@@ -97,7 +98,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     }
 
     public GuiTeleporter(PlayerEntity player, Hand hand, ItemStack stack) {
-        super(null, new ContainerNull());
+        super(null, new ContainerNull(), player.inventory);
         isPortable = true;
         currentHand = hand;
         itemStack = stack;

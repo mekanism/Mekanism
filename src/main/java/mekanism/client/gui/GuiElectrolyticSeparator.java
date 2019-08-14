@@ -35,10 +35,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrolyticSeparator> {
+public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrolyticSeparator, ContainerElectrolyticSeparator> {
 
     public GuiElectrolyticSeparator(PlayerInventory inventory, TileEntityElectrolyticSeparator tile) {
-        super(tile, new ContainerElectrolyticSeparator(inventory, tile));
+        super(tile, new ContainerElectrolyticSeparator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

@@ -26,10 +26,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser> {
+public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, ContainerChemicalInfuser> {
 
     public GuiChemicalInfuser(PlayerInventory inventory, TileEntityChemicalInfuser tile) {
-        super(tile, new ContainerChemicalInfuser(inventory, tile));
+        super(tile, new ContainerChemicalInfuser(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

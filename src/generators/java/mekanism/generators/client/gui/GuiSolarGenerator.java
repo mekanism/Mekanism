@@ -21,10 +21,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator> {
+public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator, ContainerSolarGenerator> {
 
     public GuiSolarGenerator(PlayerInventory inventory, TileEntitySolarGenerator tile) {
-        super(tile, new ContainerSolarGenerator(inventory, tile));
+        super(tile, new ContainerSolarGenerator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

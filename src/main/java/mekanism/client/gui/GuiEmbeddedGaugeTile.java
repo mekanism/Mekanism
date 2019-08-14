@@ -5,6 +5,7 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,10 +13,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> extends GuiMekanismTile<TILE> {
+public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONTAINER extends Container> extends GuiMekanismTile<TILE, CONTAINER> {
 
-    protected GuiEmbeddedGaugeTile(TILE tile, Container container) {
-        super(tile, container);
+    protected GuiEmbeddedGaugeTile(TILE tile, CONTAINER container, PlayerInventory inv) {
+        super(tile, container, inv);
     }
 
     protected abstract ResourceLocation getGaugeResource();

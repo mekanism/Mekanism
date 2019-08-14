@@ -25,10 +25,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator> {
+public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, ContainerGasGenerator> {
 
     public GuiGasGenerator(PlayerInventory inventory, TileEntityGasGenerator tile) {
-        super(tile, new ContainerGasGenerator(inventory, tile));
+        super(tile, new ContainerGasGenerator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

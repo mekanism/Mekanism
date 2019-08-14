@@ -25,7 +25,7 @@ public class GuiReactorStats extends GuiReactorInfo {
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
 
     public GuiReactorStats(PlayerInventory inventory, final TileEntityReactorController tile) {
-        super(tile, new ContainerNull(inventory.player, tile));
+        super(tile, new ContainerNull(inventory.player, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),

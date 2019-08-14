@@ -14,17 +14,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiPersonalChest extends GuiMekanismTile<TileEntityPersonalChest> {
+public class GuiPersonalChest extends GuiMekanismTile<TileEntityPersonalChest, ContainerPersonalChest> {
 
     public GuiPersonalChest(PlayerInventory inventory, TileEntityPersonalChest tile) {
-        super(tile, new ContainerPersonalChest(inventory, tile));
+        super(tile, new ContainerPersonalChest(inventory, tile), inventory);
         xSize += 26;
         ySize += 64;
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, getGuiLocation()));
     }
 
     public GuiPersonalChest(PlayerInventory inventory, InventoryPersonalChest inv) {
-        super(null, new ContainerPersonalChest(inventory, inv));
+        super(null, new ContainerPersonalChest(inventory, inv), inventory);
         xSize += 26;
         ySize += 64;
         addGuiElement(new GuiSecurityTab(this, getGuiLocation(), inv.currentHand));

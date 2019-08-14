@@ -18,10 +18,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank> {
+public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, ContainerFluidTank> {
 
     public GuiFluidTank(PlayerInventory inventory, TileEntityFluidTank tile) {
-        super(tile, new ContainerFluidTank(inventory, tile));
+        super(tile, new ContainerFluidTank(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiContainerEditMode(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

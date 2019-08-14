@@ -24,13 +24,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter> {
+public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter, ContainerNull> {
 
     private List<GuiReactorLogicButton> typeButtons = new ArrayList<>();
     private Button coolingButton;
 
-    public GuiReactorLogicAdapter(PlayerInventory inventory, final TileEntityReactorLogicAdapter tile) {
-        super(tile, new ContainerNull(inventory.player, tile));
+    public GuiReactorLogicAdapter(PlayerInventory inventory, TileEntityReactorLogicAdapter tile) {
+        super(tile, new ContainerNull(inventory.player, tile), inventory);
     }
 
     @Override

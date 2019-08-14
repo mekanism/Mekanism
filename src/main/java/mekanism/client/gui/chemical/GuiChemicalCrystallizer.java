@@ -39,7 +39,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.oredict.OreDictionary;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer> {
+public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer, ContainerChemicalCrystallizer> {
 
     private List<ItemStack> iterStacks = new ArrayList<>();
     private ItemStack renderStack = ItemStack.EMPTY;
@@ -48,7 +48,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     private Gas prevGas;
 
     public GuiChemicalCrystallizer(PlayerInventory inventory, TileEntityChemicalCrystallizer tile) {
-        super(tile, new ContainerChemicalCrystallizer(inventory, tile));
+        super(tile, new ContainerChemicalCrystallizer(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

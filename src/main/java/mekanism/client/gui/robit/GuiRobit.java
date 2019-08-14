@@ -8,13 +8,14 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiRobit extends GuiMekanism {
+public abstract class GuiRobit<CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
 
     protected final EntityRobit robit;
     private Button mainButton;
@@ -23,8 +24,8 @@ public abstract class GuiRobit extends GuiMekanism {
     private Button smeltingButton;
     private Button repairButton;
 
-    protected GuiRobit(EntityRobit robit, Container container) {
-        super(container);
+    protected GuiRobit(EntityRobit robit, CONTAINER container, PlayerInventory inventory) {
+        super(container, inventory);
         this.robit = robit;
         xSize += 25;
     }

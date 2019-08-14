@@ -4,15 +4,16 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiChemical<TILE extends TileEntityMekanism> extends GuiMekanismTile<TILE> {
+public abstract class GuiChemical<TILE extends TileEntityMekanism, CONTAINER extends Container> extends GuiMekanismTile<TILE, CONTAINER> {
 
-    protected GuiChemical(TILE tile, Container container) {
-        super(tile, container);
+    protected GuiChemical(TILE tile, CONTAINER container, PlayerInventory inv) {
+        super(tile, container, inv);
     }
 
     protected abstract void drawForegroundText();

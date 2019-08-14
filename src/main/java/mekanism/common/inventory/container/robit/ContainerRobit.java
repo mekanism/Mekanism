@@ -12,6 +12,7 @@ public abstract class ContainerRobit extends Container {
     public EntityRobit robit;
 
     protected ContainerRobit(EntityRobit robit, PlayerInventory inventory) {
+
         this.robit = robit;
         robit.openInventory(inventory.player);
         addSlots();

@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator> {
+public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator, ContainerFormulaicAssemblicator> {
 
     private Button encodeFormulaButton;
     private Button stockControlButton;
@@ -44,7 +44,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     private Button autoModeButton;
 
     public GuiFormulaicAssemblicator(PlayerInventory inventory, TileEntityFormulaicAssemblicator tile) {
-        super(tile, new ContainerFormulaicAssemblicator(inventory, tile));
+        super(tile, new ContainerFormulaicAssemblicator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

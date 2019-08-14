@@ -50,7 +50,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private Button inverseButton;
 
     public GuiDigitalMinerConfig(PlayerEntity player, TileEntityDigitalMiner tile) {
-        super(tile, new ContainerNull(player, tile));
+        super(tile, new ContainerNull(player, tile), player.inventory);
     }
 
     @Override

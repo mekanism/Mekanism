@@ -26,10 +26,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityElectricMachine<RECIPE>> {
+public class GuiElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityElectricMachine<RECIPE>, ContainerElectricMachine> {
 
     public GuiElectricMachine(PlayerInventory inventory, TileEntityElectricMachine<RECIPE> tile) {
-        super(tile, new ContainerElectricMachine<>(inventory, tile));
+        super(tile, new ContainerElectricMachine<>(inventory, tile), inventory);
         ResourceLocation resource = tileEntity.guiLocation;
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

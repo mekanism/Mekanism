@@ -16,6 +16,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -28,12 +29,13 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Mouse;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper {
+public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
 
     private Set<GuiElement> guiElements = new HashSet<>();
 
-    public GuiMekanism(Container container) {
-        super(container);
+    public GuiMekanism(CONTAINER container, PlayerInventory inv) {
+        //TODO: Give them proper titles
+        super(container, inv, null);
     }
 
     public static boolean isTextboxKey(char c, int i) {

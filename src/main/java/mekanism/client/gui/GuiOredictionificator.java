@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.oredict.OreDictionary;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator> {
+public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, ContainerOredictionificator> {
 
     private Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<>();
     private boolean isDragging = false;
@@ -42,7 +42,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     private float scroll;
 
     public GuiOredictionificator(PlayerInventory inventory, TileEntityOredictionificator tile) {
-        super(tile, new ContainerOredictionificator(inventory, tile));
+        super(tile, new ContainerOredictionificator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

@@ -9,10 +9,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRobitInventory extends GuiRobit {
+public class GuiRobitInventory extends GuiRobit<ContainerRobitInventory> {
 
     public GuiRobitInventory(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitInventory(inventory, entity));
+        super(entity, new ContainerRobitInventory(inventory, entity), inventory);
     }
 
     @Override

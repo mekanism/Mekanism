@@ -23,10 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube> {
+public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, ContainerEnergyCube> {
 
     public GuiEnergyCube(PlayerInventory inventory, TileEntityEnergyCube tile) {
-        super(tile, new ContainerEnergyCube(inventory, tile));
+        super(tile, new ContainerEnergyCube(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

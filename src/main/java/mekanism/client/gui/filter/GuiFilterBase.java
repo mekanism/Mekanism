@@ -17,7 +17,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
@@ -41,10 +40,6 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected Button replaceButton;
     protected Button defaultButton;
     protected Button colorButton;
-
-    protected GuiFilterBase(TILE tile, Container container) {
-        super(tile, container);
-    }
 
     protected GuiFilterBase(PlayerEntity player, TILE tile) {
         super(player, tile);

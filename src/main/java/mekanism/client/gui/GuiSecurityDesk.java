@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
+public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, ContainerSecurityDesk> {
 
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private static final int MAX_LENGTH = 24;
@@ -44,7 +44,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     private TextFieldWidget trustedField;
 
     public GuiSecurityDesk(PlayerInventory inventory, TileEntitySecurityDesk tile) {
-        super(tile, new ContainerSecurityDesk(inventory, tile));
+        super(tile, new ContainerSecurityDesk(inventory, tile), inventory);
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 4));
         ySize += 64;
     }

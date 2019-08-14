@@ -26,10 +26,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher> {
+public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher, ContainerFluidicPlenisher> {
 
     public GuiFluidicPlenisher(PlayerInventory inventory, TileEntityFluidicPlenisher tile) {
-        super(tile, new ContainerFluidicPlenisher(inventory, tile));
+        super(tile, new ContainerFluidicPlenisher(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 50));

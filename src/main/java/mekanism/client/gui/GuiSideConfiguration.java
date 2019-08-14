@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
+public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, ContainerNull> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private ISideConfiguration configurable;
@@ -46,7 +46,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
     private int buttonID = 0;
 
     public GuiSideConfiguration(PlayerEntity player, ISideConfiguration tile) {
-        super((TileEntityMekanism) tile, new ContainerNull(player, (TileEntityMekanism) tile));
+        super((TileEntityMekanism) tile, new ContainerNull(player, (TileEntityMekanism) tile), player.inventory);
         ySize = 95;
         configurable = tile;
         ResourceLocation resource = getGuiLocation();

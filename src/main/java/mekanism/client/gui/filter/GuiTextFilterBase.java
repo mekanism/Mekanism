@@ -5,7 +5,6 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,10 +15,6 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
 
     protected ItemStack renderStack = ItemStack.EMPTY;
     protected TextFieldWidget text;
-
-    protected GuiTextFilterBase(TILE tile, Container container) {
-        super(tile, container);
-    }
 
     protected GuiTextFilterBase(PlayerEntity player, TILE tile) {
         super(player, tile);

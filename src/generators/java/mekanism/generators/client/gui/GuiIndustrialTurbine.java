@@ -31,10 +31,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing> {
+public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing, ContainerFilter> {
 
     public GuiIndustrialTurbine(PlayerInventory inventory, TileEntityTurbineCasing tile) {
-        super(tile, new ContainerFilter(inventory, tile));
+        super(tile, new ContainerFilter(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 16));

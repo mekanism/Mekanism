@@ -34,7 +34,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 public class GuiReactorHeat extends GuiReactorInfo {
 
     public GuiReactorHeat(PlayerInventory inventory, TileEntityReactorController tile) {
-        super(tile, new ContainerNull(inventory.player, tile));
+        super(tile, new ContainerNull(inventory.player, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),

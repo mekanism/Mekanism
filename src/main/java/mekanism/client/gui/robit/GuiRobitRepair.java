@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRobitRepair extends GuiRobit implements IContainerListener {
+public class GuiRobitRepair extends GuiRobit<ContainerRobitRepair> implements IContainerListener {
 
     private final RepairContainer repairContainer;
     private final PlayerInventory playerInventory;
@@ -31,7 +31,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     private TextFieldWidget itemNameField;
 
     public GuiRobitRepair(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitRepair(inventory, entity));
+        super(entity, new ContainerRobitRepair(inventory, entity), inventory);
         playerInventory = inventory;
         repairContainer = (ContainerRobitRepair) inventorySlots;
     }

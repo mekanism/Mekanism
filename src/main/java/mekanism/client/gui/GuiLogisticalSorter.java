@@ -47,7 +47,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     private Button colorButton;
 
     public GuiLogisticalSorter(PlayerEntity player, TileEntityLogisticalSorter tile) {
-        super(tile, new ContainerNull(player, tile));
+        super(tile, new ContainerNull(player, tile), player.inventory);
 
         // Add common Mekanism gui elements
         ResourceLocation resource = getGuiLocation();

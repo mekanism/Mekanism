@@ -30,10 +30,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiPRC extends GuiMekanismTile<TileEntityPRC> {
+public class GuiPRC extends GuiMekanismTile<TileEntityPRC, ContainerPRC> {
 
     public GuiPRC(PlayerInventory inventory, TileEntityPRC tile) {
-        super(tile, new ContainerPRC(inventory, tile));
+        super(tile, new ContainerPRC(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

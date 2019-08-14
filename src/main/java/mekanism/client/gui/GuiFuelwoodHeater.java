@@ -20,10 +20,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater> {
+public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater, ContainerFuelwoodHeater> {
 
     public GuiFuelwoodHeater(PlayerInventory inventory, TileEntityFuelwoodHeater tile) {
-        super(tile, new ContainerFuelwoodHeater(inventory, tile));
+        super(tile, new ContainerFuelwoodHeater(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

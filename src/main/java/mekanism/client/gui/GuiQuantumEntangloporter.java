@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter> {
+public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter, ContainerQuantumEntangloporter> {
 
     private Button publicButton;
     private Button privateButton;
@@ -45,7 +45,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     private boolean privateMode;
 
     public GuiQuantumEntangloporter(PlayerInventory inventory, TileEntityQuantumEntangloporter tile) {
-        super(tile, new ContainerQuantumEntangloporter(inventory, tile));
+        super(tile, new ContainerQuantumEntangloporter(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
         addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));

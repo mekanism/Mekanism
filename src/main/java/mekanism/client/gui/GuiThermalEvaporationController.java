@@ -21,10 +21,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController> {
+public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController, ContainerThermalEvaporationController> {
 
     public GuiThermalEvaporationController(PlayerInventory inventory, TileEntityThermalEvaporationController tile) {
-        super(tile, new ContainerThermalEvaporationController(inventory, tile));
+        super(tile, new ContainerThermalEvaporationController(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiFluidGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
         addGuiElement(new GuiFluidGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, resource, 152, 13));

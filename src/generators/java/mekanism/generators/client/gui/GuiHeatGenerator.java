@@ -28,10 +28,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator> {
+public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, ContainerHeatGenerator> {
 
     public GuiHeatGenerator(PlayerInventory inventory, TileEntityHeatGenerator tile) {
-        super(tile, new ContainerHeatGenerator(inventory, tile));
+        super(tile, new ContainerHeatGenerator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

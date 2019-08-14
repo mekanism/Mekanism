@@ -19,8 +19,10 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
+import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
@@ -29,7 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Mouse;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER extends IFilter> extends GuiMekanismTile<TILE> {
+public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER extends IFilter> extends GuiMekanismTile<TILE, ContainerNull> {
 
     // Filter dimensions
     protected final int filterX = 56;
@@ -52,8 +54,8 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     // Buttons
     protected final int BUTTON_NEW = 0;
 
-    public GuiFilterHolder(TILE tile, Container container) {
-        super(tile, container);
+    public GuiFilterHolder(TILE tile, ContainerNull container, PlayerInventory inv) {
+        super(tile, container, inv);
     }
 
     protected abstract HashList<FILTER> getFilters();

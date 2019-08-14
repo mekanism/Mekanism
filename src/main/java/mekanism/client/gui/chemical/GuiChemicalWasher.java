@@ -29,10 +29,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher> {
+public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher, ContainerChemicalWasher> {
 
     public GuiChemicalWasher(PlayerInventory inventory, TileEntityChemicalWasher tile) {
-        super(tile, new ContainerChemicalWasher(inventory, tile));
+        super(tile, new ContainerChemicalWasher(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

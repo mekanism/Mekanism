@@ -37,10 +37,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
+public class GuiFactory extends GuiMekanismTile<TileEntityFactory, ContainerFactory> {
 
     public GuiFactory(PlayerInventory inventory, TileEntityFactory tile) {
-        super(tile, new ContainerFactory(inventory, tile));
+        super(tile, new ContainerFactory(inventory, tile), inventory);
         ySize += 11;
         ResourceLocation resource = tileEntity.tier.guiLocation;
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

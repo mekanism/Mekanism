@@ -38,7 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
+public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, ContainerNull> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private ISideConfiguration configurable;
@@ -49,7 +49,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     private int buttonID = 0;
 
     public GuiTransporterConfig(PlayerEntity player, ISideConfiguration tile) {
-        super((TileEntityMekanism) tile, new ContainerNull(player, (TileEntityMekanism) tile));
+        super((TileEntityMekanism) tile, new ContainerNull(player, (TileEntityMekanism) tile), player.inventory);
         ySize = 95;
         configurable = tile;
         slotPosMap.put(0, new GuiPos(54, 64));

@@ -32,12 +32,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator> {
+public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, ContainerRotaryCondensentrator> {
 
     private Button toggleButton;
 
     public GuiRotaryCondensentrator(PlayerInventory inventory, TileEntityRotaryCondensentrator tile) {
-        super(tile, new ContainerRotaryCondensentrator(inventory, tile));
+        super(tile, new ContainerRotaryCondensentrator(inventory, tile), inventory);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
