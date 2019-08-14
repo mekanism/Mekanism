@@ -1,7 +1,9 @@
 
 [![Build Status](https://travis-ci.org/aidancbrady/Mekanism.svg?branch=master)](https://travis-ci.org/aidancbrady/Mekanism)
 
-# Mekanism for Minecraft 1.12 #
+# Mekanism for Minecraft 1.14 #
+
+A partial list of things that need to be done for 1.14 can be found [here](https://github.com/mekanism/Mekanism/projects/3).
 
 Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features at the [**Official Website**](http://aidancbrady.com/mekanism/).
