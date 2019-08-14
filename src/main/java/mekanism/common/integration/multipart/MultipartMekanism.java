@@ -1,4 +1,4 @@
-package mekanism.common.integration.multipart;
+/*package mekanism.common.integration.multipart;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
@@ -215,4 +215,4 @@ public class MultipartMekanism implements IMCMPAddon {
             ev.setCanceled(true);
         }
     }
-}
+}*/

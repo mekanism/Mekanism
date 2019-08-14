@@ -1,4 +1,4 @@
-package mekanism.common.integration.multipart;
+/*package mekanism.common.integration.multipart;
 
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
@@ -72,4 +72,4 @@ public class MultipartGlowPanel implements IMultipart {
         //TODO
         return MekanismBlock.BLACK_GLOW_PANEL.getBlock();
     }
-}
+}*/

@@ -1,12 +1,9 @@
 package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
-import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockGlowPanel;
-import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.text.TextComponentUtil;
@@ -18,7 +15,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
 
 //TODO: Maybe somehow make this extend ItemBlockColoredName
 public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> implements IItemRedirectedModel {
@@ -71,11 +67,12 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> i
         return true;
     }
 
-    @Override
+    //TODO: Multipart
+    /*@Override
     @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
     protected IMultipart getMultiPart() {
         return MultipartMekanism.GLOWPANEL_MP;
-    }
+    }*/
 
     @Nonnull
     @Override

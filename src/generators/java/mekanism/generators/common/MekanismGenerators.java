@@ -1,11 +1,6 @@
 package mekanism.generators.common;
 
-import buildcraft.api.fuels.BuildcraftFuelRegistry;
-import buildcraft.api.fuels.IFuel;
-import buildcraft.api.mj.MjAPI;
 import mekanism.api.MekanismAPI;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
@@ -13,7 +8,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
@@ -29,14 +23,12 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -114,7 +106,8 @@ public class MekanismGenerators implements IModule {
         Mekanism.logger.info("Loaded MekanismGenerators module.");
     }
 
-    @EventHandler
+    //TODO: BuildCraft
+    /*@EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         if (FuelHandler.BCPresent() && BuildcraftFuelRegistry.fuel != null) {
             for (IFuel s : BuildcraftFuelRegistry.fuel.getFuels()) {
@@ -125,7 +118,7 @@ public class MekanismGenerators implements IModule {
 
             BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (ForgeEnergyIntegration.toForgeAsLong(12 * MjAPI.MJ)), 40 * Fluid.BUCKET_VOLUME);
         }
-    }
+    }*/
 
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {

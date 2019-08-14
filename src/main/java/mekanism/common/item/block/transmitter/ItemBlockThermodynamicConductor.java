@@ -3,13 +3,10 @@ package mekanism.common.item.block.transmitter;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
-import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.ConductorTier;
@@ -22,7 +19,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Optional;
 
 public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<BlockThermodynamicConductor> implements ITieredItem<ConductorTier> {
 
@@ -58,10 +54,11 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<Bloc
         }
     }
 
-    @Override
+    //TODO: Multipart
+    /*@Override
     @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
     protected IMultipart getMultiPart() {
         //TODO
         return MultipartMekanism.TRANSMITTER_MP;
-    }
+    }*/
 }

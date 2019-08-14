@@ -19,7 +19,6 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -222,9 +221,10 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
 
     public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
         TileNetworkList data = new TileNetworkList();
-        if (Mekanism.hooks.MCMPLoaded) {
+        //TODO: Multipart
+        /*if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
-        }
+        }*/
         data.add(SYNC_PACKET);
         data.add(stackId);
         stack.write(getTransmitter(), data);
@@ -233,9 +233,10 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
 
     public TileNetworkList makeBatchPacket(Map<Integer, TransporterStack> updates, Set<Integer> deletes) {
         TileNetworkList data = new TileNetworkList();
-        if (Mekanism.hooks.MCMPLoaded) {
+        //TODO: Multipart
+        /*if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
-        }
+        }*/
         data.add(BATCH_PACKET);
         data.add(updates.size());
         for (Entry<Integer, TransporterStack> entry : updates.entrySet()) {

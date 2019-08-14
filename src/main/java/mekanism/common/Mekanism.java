@@ -48,7 +48,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketSimpleGui;
@@ -98,7 +97,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -678,16 +676,18 @@ public class Mekanism {
         //Load configuration
         proxy.loadConfiguration();
         proxy.onConfigSync(false);
+        hooks.hookPreInit();
 
         MinecraftForge.EVENT_BUS.register(MekanismItem.GAS_MASK.getItem());
         MinecraftForge.EVENT_BUS.register(MekanismItem.FREE_RUNNERS.getItem());
 
-        if (ModList.get().isLoaded("mcmultipart")) {
+        //TODO: Multipart
+        /*if (hooks.MCMPLoaded) {
             //Set up multiparts
             new MultipartMekanism();
         } else {
             logger.info("Didn't detect MCMP, ignoring compatibility package");
-        }
+        }*/
 
         Mekanism.proxy.preInit();
 
@@ -701,8 +701,6 @@ public class Mekanism {
         InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Obsidian")).setTranslationKey("obsidian"));
 
         Capabilities.registerCapabilities();
-
-        hooks.hookPreInit();
     }
 
     @EventHandler

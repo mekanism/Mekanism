@@ -12,7 +12,6 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -33,6 +32,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+//TODO: I don't think the Glow Panel needs a tile entity anymore
 public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing, IColoredBlock, IHasTileEntity<TileEntityGlowPanel> {
 
     public static VoxelShape[] bounds = new VoxelShape[6];
@@ -76,18 +76,16 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         return color;
     }
 
-    public static boolean canStay(IBlockReader world, BlockPos pos) {
+    public boolean canStay(World world, BlockPos pos, BlockState state) {
         boolean canStay = false;
-        if (Mekanism.hooks.MCMPLoaded) {
+        //TODO: Multipart
+        /*if (Mekanism.hooks.MCMPLoaded) {
             canStay = MultipartMekanism.hasCenterSlot(world, pos);
-        }
+        }*/
         if (!canStay) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityGlowPanel) {
-                TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tileEntity;
-                Coord4D adj = new Coord4D(glowPanel.getPos().offset(glowPanel.side), glowPanel.getWorld());
-                canStay = glowPanel.getWorld().isSideSolid(adj.getPos(), glowPanel.side.getOpposite());
-            }
+            Direction side = getDirection(state);
+            Coord4D adj = new Coord4D(pos.offset(side), world);
+            canStay = world.isSideSolid(adj.getPos(), side.getOpposite());
         }
         return canStay;
     }
@@ -97,12 +95,14 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         TileEntityGlowPanel glowPanel = null;
         if (tileEntity instanceof TileEntityGlowPanel) {
             glowPanel = (TileEntityGlowPanel) tileEntity;
-        } else if (Mekanism.hooks.MCMPLoaded) {
+        }
+        //TODO: Multipart
+        /*else if (Mekanism.hooks.MCMPLoaded) {
             TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
             if (childEntity instanceof TileEntityGlowPanel) {
                 glowPanel = (TileEntityGlowPanel) childEntity;
             }
-        }
+        }*/
         return glowPanel;
     }
 
@@ -110,7 +110,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-        if (tileEntity != null && !world.isRemote && !canStay(world, pos)) {
+        if (tileEntity != null && !world.isRemote && !canStay(world, pos, state)) {
             Block.spawnDrops(world.getBlockState(pos), world, pos, tileEntity);
             world.removeBlock(pos, isMoving);
         }
@@ -120,11 +120,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-        if (tileEntity != null) {
-            return bounds[tileEntity.side.ordinal()];
-        }
-        return super.getShape(state, world, pos, context);
+        return bounds[getDirection(state).ordinal()];
     }
 
     @Override

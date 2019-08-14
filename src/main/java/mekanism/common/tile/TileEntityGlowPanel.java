@@ -7,7 +7,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,9 +32,10 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        if (Mekanism.hooks.MCMPLoaded) {
+        //TODO: Multipart
+        /*if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, side);
-        }
+        }*/
         data.add(side.ordinal());
         return data;
     }

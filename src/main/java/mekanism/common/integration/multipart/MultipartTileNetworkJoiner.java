@@ -4,18 +4,11 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.List;
-import java.util.Optional;
-import mcmultipart.api.container.IMultipartContainer;
-import mcmultipart.api.multipart.IMultipartTile;
-import mcmultipart.api.slot.EnumFaceSlot;
-import mcmultipart.api.slot.IPartSlot;
-import mcmultipart.api.world.IMultipartBlockAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.ITileNetwork;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.world.IBlockReader;
 
 /**
  * Used to route {@link ITileNetwork} packets sent to multipart containers with more than one possible recipient.<br>
@@ -39,7 +32,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
      */
     public MultipartTileNetworkJoiner(List<ITileNetwork> tileList) {
         tileSideMap = new Int2ObjectArrayMap<>(7);
-        IMultipartContainer container = null;
+        /*IMultipartContainer container = null;
 
         TileEntity first = (TileEntity) tileList.get(0);
         IBlockReader world = first.getWorld();
@@ -62,7 +55,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /**
@@ -73,7 +66,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
      * @param facing The side this part is attached to or <code>null</code> for the center slot
      */
     public static void addMultipartHeader(TileEntity entity, TileNetworkList data, Direction facing) {
-        int tileNetworkParts = 0;
+        /*int tileNetworkParts = 0;
         IMultipartContainer container = MultipartMekanism.getContainer(entity.getWorld(), entity.getPos());
         if (container != null) {
             for (IPartSlot slot : container.getParts().keySet()) {
@@ -88,7 +81,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
         }
         if (tileNetworkParts > 1) {
             data.add(0, (byte) (facing == null ? 6 : facing.ordinal()));
-        }
+        }*/
     }
 
     @Override

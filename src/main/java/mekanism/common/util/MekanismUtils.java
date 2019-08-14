@@ -899,21 +899,6 @@ public final class MekanismUtils {
     }
 
     @Deprecated//todo remove this
-    public static boolean classExists(String className) {
-        if (classesFound.containsKey(className)) {
-            return classesFound.get(className) != null;
-        }
-        Class<?> found;
-        try {
-            found = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            found = null;
-        }
-        classesFound.put(className, found);
-        return found != null;
-    }
-
-    @Deprecated//todo remove this
     public static boolean existsAndInstance(Object obj, String className) {
         Class<?> theClass;
         if (classesFound.containsKey(className)) {

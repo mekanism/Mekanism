@@ -7,7 +7,6 @@ import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.states.IStateConnection;
-import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.MekanismUtils;
@@ -42,12 +41,14 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
         TileEntitySidedPipe sidedPipe = null;
         if (tileEntity instanceof TileEntitySidedPipe) {
             sidedPipe = (TileEntitySidedPipe) tileEntity;
-        } else if (Mekanism.hooks.MCMPLoaded) {
+        }
+        //TODO: Multipart
+        /*else if (Mekanism.hooks.MCMPLoaded) {
             TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
             if (childEntity instanceof TileEntitySidedPipe) {
                 sidedPipe = (TileEntitySidedPipe) childEntity;
             }
-        }
+        }*/
         return sidedPipe;
     }
 

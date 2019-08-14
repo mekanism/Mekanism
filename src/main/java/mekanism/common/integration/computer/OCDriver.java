@@ -1,4 +1,4 @@
-package mekanism.common.integration.computer;
+/*package mekanism.common.integration.computer;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -16,9 +16,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-/**
- * Created by aidancbrady on 7/20/15.
- */
+//Created by aidancbrady on 7/20/15.
 public class OCDriver extends DriverSidedTileEntity {
 
     @Override
@@ -67,4 +65,4 @@ public class OCDriver extends DriverSidedTileEntity {
             return name;
         }
     }
-}
+}*/

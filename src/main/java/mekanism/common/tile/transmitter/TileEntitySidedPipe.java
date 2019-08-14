@@ -21,8 +21,6 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.multipart.MultipartMekanism;
-import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -275,9 +273,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 return false;
             }
         }
-        if (Mekanism.hooks.MCMPLoaded) {
+        //TODO: Multipart
+        /*if (Mekanism.hooks.MCMPLoaded) {
             return MultipartMekanism.hasConnectionWith(this, side);
-        }
+        }*/
         return true;
     }
 
@@ -296,9 +295,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        if (Mekanism.hooks.MCMPLoaded) {
+        //TODO: Multipart
+        /*if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
-        }
+        }*/
         data.add(currentTransmitterConnections);
         data.add(currentAcceptorConnections);
         for (int i = 0; i < 6; i++) {

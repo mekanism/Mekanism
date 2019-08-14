@@ -1,14 +1,6 @@
 package mekanism.common.item.block;
 
-import java.util.Optional;
 import javax.annotation.Nonnull;
-import mcmultipart.api.container.IMultipartContainer;
-import mcmultipart.api.multipart.IMultipart;
-import mcmultipart.api.multipart.MultipartHelper;
-import mcmultipart.api.slot.IPartSlot;
-import mekanism.common.Mekanism;
-import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.multipart.MultipartMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -53,23 +45,26 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         }
         Direction side = context.getFace();
         BlockItemUseContext blockItemUseContext = new BlockItemUseContext(context);
-        if (Mekanism.hooks.MCMPLoaded) {
+        //TODO: Multipart
+        /*if (Mekanism.hooks.MCMPLoaded) {
             if (!block.isReplaceable(state, blockItemUseContext) && !hasFreeMultiPartSpot(itemstack, world, pos, state, side)) {//free spot handles case of no container
                 pos = pos.offset(side);
                 state = world.getBlockState(pos);
             }
-        } else if (!block.isReplaceable(state, blockItemUseContext)) {
+        } else*/
+        if (!block.isReplaceable(state, blockItemUseContext)) {
             pos = pos.offset(side);
         }
 
         if (player.canPlayerEdit(pos, side, itemstack) && mayPlace(itemstack, world, pos, state, hand, side)) {
             BlockState iblockstate1 = this.getBlock().getStateForPlacement(blockItemUseContext);
             boolean flag;
-            if (Mekanism.hooks.MCMPLoaded) {
+            //TODO: Multipart
+            /*if (Mekanism.hooks.MCMPLoaded) {
                 flag = MultipartMekanism.placeMultipartBlock(this.getBlock(), itemstack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1);
-            } else {
-                flag = placeBlock(blockItemUseContext, iblockstate1);
-            }
+            } else {*/
+            flag = placeBlock(blockItemUseContext, iblockstate1);
+            //}
             if (flag) {
                 iblockstate1 = world.getBlockState(pos);
                 SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, pos, player);
@@ -81,7 +76,8 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         return ActionResultType.FAIL;
     }
 
-    private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, BlockState state, Hand hand, Direction facing) {
+    //TODO: Multipart
+    /*private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, BlockState state, Hand hand, Direction facing) {
         if (!Mekanism.hooks.MCMPLoaded) {
             return worldIn.mayPlace(getBlock(), pos, false, facing, null);
         }
@@ -105,7 +101,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
     @Override
     public boolean canPlaceBlockOnSide(World worldIn, @Nonnull BlockPos pos, @Nonnull Direction side, @Nonnull PlayerEntity player, ItemStack stack) {
         return super.canPlaceBlockOnSide(worldIn, pos, side, player, stack) || (Mekanism.hooks.MCMPLoaded && MultipartHelper.getContainer(worldIn, pos).isPresent());
-    }
+    }*/
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {

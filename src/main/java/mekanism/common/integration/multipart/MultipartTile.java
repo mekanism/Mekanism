@@ -1,4 +1,4 @@
-package mekanism.common.integration.multipart;
+/*package mekanism.common.integration.multipart;
 
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipartTile;
@@ -32,4 +32,4 @@ public class MultipartTile implements IMultipartTile {
     public IPartInfo getInfo() {
         return partInfo;
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package mekanism.common.integration.computer;
+/*package mekanism.common.integration.computer;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -12,9 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-/**
- * Created by aidancbrady on 7/20/15.
- */
+//Created by aidancbrady on 7/20/15.
 @Optional.Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
 public class CCPeripheral implements IPeripheral {
 
@@ -75,4 +73,4 @@ public class CCPeripheral implements IPeripheral {
             return null;
         }
     }
-}
+}*/
