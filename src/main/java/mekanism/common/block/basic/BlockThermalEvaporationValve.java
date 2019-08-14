@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
@@ -21,7 +22,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationValve extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationValve> {
+public class BlockThermalEvaporationValve extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationValve>, ISupportsComparator {
 
     public BlockThermalEvaporationValve() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
@@ -52,16 +53,6 @@ public class BlockThermalEvaporationValve extends BlockTileDrops implements IHas
     @Override
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityThermalEvaporationValve();
-    }
-
-    @Override
-    public boolean hasComparatorInputOverride(BlockState blockState) {
-        return true;
-    }
-
-    @Override
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
-        return ((TileEntityThermalEvaporationValve) world.getTileEntity(pos)).getRedstoneLevel();
     }
 
     @Nullable

@@ -5,13 +5,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -45,7 +45,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasModel, IHasGui, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityLaserAmplifier>, IBlockDisableable {
+      IHasTileEntity<TileEntityLaserAmplifier>, IBlockDisableable, ISupportsComparator {
 
     private BooleanValue enabledReference;
 
@@ -143,30 +143,6 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
     public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         //TODO: This is how it was before, but should it be divided by 5 like in Block.java
         return blockResistance;
-    }
-
-    @Override
-    @Deprecated
-    public boolean hasComparatorInputOverride(BlockState state) {
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tileEntity).getRedstoneLevel();
-        }
-        if (tileEntity instanceof TileEntityLaserAmplifier) {
-            //TODO: Move this over to using IComparatorSupport?
-            TileEntityLaserAmplifier amplifier = (TileEntityLaserAmplifier) tileEntity;
-            if (amplifier.outputMode == TileEntityLaserAmplifier.RedstoneOutput.ENERGY_CONTENTS) {
-                return amplifier.getRedstoneLevel();
-            }
-            return getWeakPower(state, world, pos, null);
-        }
-        return 0;
     }
 
     @Override

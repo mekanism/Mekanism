@@ -8,6 +8,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateFacing;
@@ -40,7 +41,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityGasTank> {
+      IHasTileEntity<TileEntityGasTank, ISupportsComparator {
 
     private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
@@ -121,19 +122,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
                 return new TileEntityCreativeGasTank();
         }
         return null;
-    }
-
-    @Override
-    @Deprecated
-    public boolean hasComparatorInputOverride(BlockState state) {
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
-        TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
-        return tileEntity.getRedstoneLevel();
     }
 
     @Override

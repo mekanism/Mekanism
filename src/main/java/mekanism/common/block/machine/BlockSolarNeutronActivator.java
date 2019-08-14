@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IHasGui;
@@ -13,6 +12,7 @@ import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateActive;
@@ -46,7 +46,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, IBlockDisableable {
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, IBlockDisableable, ISupportsComparator {
 
     private BooleanValue enabledReference;
 
@@ -132,22 +132,6 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
     public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         //TODO: This is how it was before, but should it be divided by 5 like in Block.java
         return blockResistance;
-    }
-
-    @Override
-    @Deprecated
-    public boolean hasComparatorInputOverride(BlockState state) {
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tileEntity).getRedstoneLevel();
-        }
-        return 0;
     }
 
     @Override

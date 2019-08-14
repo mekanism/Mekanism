@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMekanismContainer;
@@ -19,6 +18,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.interfaces.ITieredBlock;
@@ -95,7 +95,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IBlockSound,
-      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone, IBlockDisableable {
+      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone, IBlockDisableable,
+      ISupportsComparator {
 
     private BooleanValue enabledReference;
 
@@ -301,22 +302,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
         //TODO: This is how it was before, but should it be divided by 5 like in Block.java
         return blockResistance;
-    }
-
-    @Override
-    @Deprecated
-    public boolean hasComparatorInputOverride(BlockState state) {
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tileEntity).getRedstoneLevel();
-        }
-        return 0;
     }
 
     @Override

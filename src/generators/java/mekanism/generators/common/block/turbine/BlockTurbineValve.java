@@ -2,9 +2,9 @@ package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.basic.BlockBasicMultiblock;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
@@ -15,9 +15,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 
-public class BlockTurbineValve extends BlockBasicMultiblock implements IHasTileEntity<TileEntityTurbineValve> {
+public class BlockTurbineValve extends BlockBasicMultiblock implements IHasTileEntity<TileEntityTurbineValve>, ISupportsComparator {
 
     public BlockTurbineValve() {
         super(MekanismGenerators.MODID, "turbine_valve", Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -33,20 +32,6 @@ public class BlockTurbineValve extends BlockBasicMultiblock implements IHasTileE
     @Override
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityTurbineValve();
-    }
-
-    @Override
-    public boolean hasComparatorInputOverride(BlockState blockState) {
-        return true;
-    }
-
-    @Override
-    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if (tile instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tile).getRedstoneLevel();
-        }
-        return 0;
     }
 
     @Nullable

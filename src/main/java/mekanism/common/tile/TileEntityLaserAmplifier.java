@@ -12,6 +12,7 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -29,7 +30,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration {
+public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration,
+      IComparatorSupport {
 
     public static final double MAX_ENERGY = 5E9;
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy"};
@@ -174,11 +176,13 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         return shouldFire() ? Math.min(collectedEnergy, maxThreshold) : 0;
     }
 
+    @Override
     public int getRedstoneLevel() {
-        if (outputMode != RedstoneOutput.ENERGY_CONTENTS) {
-            return 0;
+        //TODO: Do we have to keep track of this and when it changes notify the comparator the level changed. Probably
+        if (outputMode == RedstoneOutput.ENERGY_CONTENTS) {
+            return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
         }
-        return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
+        return emittingRedstone ? 15 : 0;
     }
 
     @Override

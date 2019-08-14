@@ -4,15 +4,16 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.item.IItemEnergized;
@@ -315,5 +316,23 @@ public abstract class BlockTileDrops extends Block {
             ((IBoundingBlock) tile).onBreak();
         }
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(BlockState blockState) {
+        return this instanceof ISupportsComparator;
+    }
+
+    @Override
+    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
+        if (hasComparatorInputOverride(blockState)) {
+            TileEntity tile = worldIn.getTileEntity(pos);
+            //Double check the tile actually has comparator support
+            //TODO: Eventually make it so this is not needed
+            if (tile instanceof IComparatorSupport) {
+                return ((IComparatorSupport) tile).getRedstoneLevel();
+            }
+        }
+        return 0;
     }
 }

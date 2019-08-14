@@ -9,6 +9,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -45,7 +46,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin> {
+public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator {
 
     private final BinTier tier;
 
@@ -191,17 +192,6 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                 return new TileEntityCreativeBin();
         }
         return null;
-    }
-
-    @Override
-    public boolean hasComparatorInputOverride(BlockState blockState) {
-        return true;
-    }
-
-    //TODO: Make this comparator stuff be in BlockTileDrops and BlockMekanismContainer and be an interface the other stuff checks
-    @Override
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
-        return ((TileEntityBin) world.getTileEntity(pos)).getRedstoneLevel();
     }
 
     @Nullable

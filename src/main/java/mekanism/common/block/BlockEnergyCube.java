@@ -10,6 +10,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateFacing;
@@ -47,7 +48,7 @@ import net.minecraft.world.World;
  * @author AidanBrady
  */
 public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory, IHasSecurity,
-      ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube> {
+      ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator {
 
     private final EnergyCubeTier tier;
 
@@ -135,18 +136,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
                 return new TileEntityCreativeEnergyCube();
         }
         return null;
-    }
-
-    @Override
-    @Deprecated
-    public boolean hasComparatorInputOverride(BlockState state) {
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
-        return ((TileEntityEnergyCube) world.getTileEntity(pos)).getRedstoneLevel();
     }
 
     @Override

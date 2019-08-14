@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.util.MekanismUtils;
@@ -13,9 +14,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
-import net.minecraft.world.World;
 
-public class BlockInductionPort extends BlockBasicMultiblock implements IStateActive, IHasInventory, IHasTileEntity<TileEntityInductionPort> {
+public class BlockInductionPort extends BlockBasicMultiblock implements IStateActive, IHasInventory, IHasTileEntity<TileEntityInductionPort>, ISupportsComparator {
 
     public BlockInductionPort() {
         super("induction_port");
@@ -35,16 +35,6 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
     @Override
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityInductionPort();
-    }
-
-    @Override
-    public boolean hasComparatorInputOverride(BlockState blockState) {
-        return true;
-    }
-
-    @Override
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
-        return ((TileEntityInductionPort) world.getTileEntity(pos)).getRedstoneLevel();
     }
 
     @Override
