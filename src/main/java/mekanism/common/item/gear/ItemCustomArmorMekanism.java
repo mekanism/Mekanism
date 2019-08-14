@@ -11,9 +11,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class ItemCustomArmorMekanism extends ArmorItem implements IItemMekanism {
 
-    //Note: The items are set as non repairable
     public ItemCustomArmorMekanism(IArmorMaterial material, EquipmentSlotType slot, String name) {
-        super(material, slot, new Item.Properties().group(Mekanism.tabMekanism).setNoRepair());
+        this(material, slot, name, new Item.Properties());
+    }
+
+    //Note: The items are set as non repairable
+    public ItemCustomArmorMekanism(IArmorMaterial material, EquipmentSlotType slot, String name, Item.Properties properties) {
+        super(material, slot, properties.group(Mekanism.tabMekanism).setNoRepair());
         //Ensure the name is lower case as with concatenating with values from enums it may not be
         name = name.toLowerCase(Locale.ROOT);
         setRegistryName(new ResourceLocation(Mekanism.MODID, name));

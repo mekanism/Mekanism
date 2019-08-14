@@ -16,6 +16,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
+import mekanism.generators.client.render.item.RenderSolarGeneratorItem;
 import mekanism.generators.common.block.BlockSolarGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -32,7 +33,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockSolarGenerator extends ItemBlockAdvancedTooltip<BlockSolarGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSolarGenerator(BlockSolarGenerator block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderSolarGeneratorItem::new));
     }
 
     @Override

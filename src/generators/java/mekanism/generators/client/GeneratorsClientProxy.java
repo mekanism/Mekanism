@@ -3,7 +3,6 @@ package mekanism.generators.client;
 import java.util.Map;
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.common.item.IItemRedirectedModel;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -31,9 +30,7 @@ import mekanism.generators.client.render.item.RenderGasGeneratorItem;
 import mekanism.generators.client.render.item.RenderHeatGeneratorItem;
 import mekanism.generators.client.render.item.RenderSolarGeneratorItem;
 import mekanism.generators.client.render.item.RenderWindGeneratorItem;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.GeneratorsCommonProxy;
-import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -51,8 +48,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -61,7 +56,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -86,18 +80,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
     @Override
     public void registerItemRenders() {
-        registerItemRender(GeneratorsItem.SOLAR_PANEL.getItem());
-        registerItemRender(GeneratorsItem.HOHLRAUM.getItem());
-        registerItemRender(GeneratorsItem.TURBINE_BLADE.getItem());
-
-        GeneratorsBlock.ADVANCED_SOLAR_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderAdvancedSolarGeneratorItem());
-        GeneratorsBlock.BIO_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderBioGeneratorItem());
-        GeneratorsBlock.GAS_BURNING_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderGasGeneratorItem());
-        GeneratorsBlock.HEAT_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderHeatGeneratorItem());
-        GeneratorsBlock.SOLAR_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderSolarGeneratorItem());
-        GeneratorsBlock.WIND_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderWindGeneratorItem());
-
-        //Register the item inventory model locations for the various blocks
+        //TODO
+        /*//Register the item inventory model locations for the various blocks
         for (GeneratorsBlock generatorsBlock : GeneratorsBlock.values()) {
             BlockItem item = generatorsBlock.getItem();
             if (item instanceof IItemRedirectedModel) {
@@ -106,15 +90,11 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
             } else {
                 ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
             }
-        }
+        }*/
     }
 
     @Override
     public void registerBlockRenders() {
-    }
-
-    public void registerItemRender(Item item) {
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     @SubscribeEvent

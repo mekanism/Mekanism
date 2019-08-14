@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.common.Upgrade;
 import mekanism.common.block.machine.BlockChemicalDissolutionChamber;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -37,7 +38,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockChemicalDissolutionChamber extends ItemBlockAdvancedTooltip<BlockChemicalDissolutionChamber> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockChemicalDissolutionChamber(BlockChemicalDissolutionChamber block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderChemicalDissolutionChamberItem::new));
     }
 
     @Override

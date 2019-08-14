@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
@@ -59,7 +60,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
       IItemNetwork, ITieredItem<FluidTankTier>, IItemRedirectedModel {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderFluidTankItem::new));
     }
 
     @Nullable
@@ -157,7 +158,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (getBucketMode(itemstack)) {
             if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                RayTraceResult rayTraceResult = rayTrace(world, entityplayer, !entityplayer.isSneaking());
+                //TODO: Handle picking up and putting down
+                RayTraceResult rayTraceResult = rayTrace(world, entityplayer, fluidMode);
                 //It can be null if there is nothing in range
                 if (rayTraceResult != null && rayTraceResult instanceof BlockRayTraceResult) {
                     BlockRayTraceResult pos = (BlockRayTraceResult) rayTraceResult;

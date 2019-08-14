@@ -7,6 +7,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
@@ -30,7 +31,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     public int TRANSFER_RATE = 16;
 
     public ItemFlamethrower() {
-        super("flamethrower", new Item.Properties().maxStackSize(1).setNoRepair());
+        super("flamethrower", new Item.Properties().maxStackSize(1).setNoRepair().setTEISR(() -> RenderFlameThrower::new));
     }
 
     @Override

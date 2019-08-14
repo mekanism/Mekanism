@@ -9,6 +9,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -22,6 +23,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -49,7 +51,7 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
     public double MAX_ELECTRICITY = 64000;
 
     public ItemFreeRunners() {
-        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, "free_runners");
+        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, "free_runners", new Item.Properties().setTEISR(() -> RenderFreeRunners::new));
     }
 
     @Override

@@ -11,6 +11,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
@@ -23,6 +24,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -43,7 +45,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
     public int TRANSFER_RATE = 16;
 
     public ItemScubaTank() {
-        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, "scuba_tank");
+        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, "scuba_tank", new Item.Properties().setTEISR(() -> RenderScubaTank::new));
     }
 
     @Override

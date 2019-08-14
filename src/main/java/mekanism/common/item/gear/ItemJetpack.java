@@ -11,6 +11,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
@@ -22,6 +23,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -42,11 +44,11 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
     public final int TRANSFER_RATE = 16;
 
     public ItemJetpack() {
-        this(JETPACK_MATERIAL, "jetpack");
+        this(JETPACK_MATERIAL, "jetpack", new Item.Properties().setTEISR(() -> RenderJetpack::new));
     }
 
-    public ItemJetpack(IArmorMaterial material, String name) {
-        super(material, EquipmentSlotType.CHEST, name);
+    public ItemJetpack(IArmorMaterial material, String name, Item.Properties properties) {
+        super(material, EquipmentSlotType.CHEST, name, properties);
     }
 
     @Override

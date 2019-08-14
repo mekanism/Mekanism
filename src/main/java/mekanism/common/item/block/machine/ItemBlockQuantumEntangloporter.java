@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
 import mekanism.common.Upgrade;
 import mekanism.common.block.machine.BlockQuantumEntangloporter;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -38,7 +39,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<BlockQuantumEntangloporter> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockQuantumEntangloporter(BlockQuantumEntangloporter block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderQuantumEntangloporterItem::new));
     }
 
     @Override

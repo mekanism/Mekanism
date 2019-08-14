@@ -3,6 +3,7 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderPersonalChestItem;
 import mekanism.common.block.machine.BlockPersonalChest;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -36,7 +37,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPersonalChest> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockPersonalChest(BlockPersonalChest block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderPersonalChestItem::new));
     }
 
     @Override

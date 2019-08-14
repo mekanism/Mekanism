@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -37,7 +38,10 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
       IItemRedirectedModel {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block, new Item.Properties().maxStackSize(1).setNoRepair());
+        //TODO: Figure out if this and the other TEISR's cause issues server side due to the fact this technically will also be called server side
+        // If there is an issue, the easiest way to fix it would be to basically have a proxy class getting the callable of the supplier
+        // Also test () -> () -> new RenderEnergyCubeItem(), because that may not evaluate as early
+        super(block, new Item.Properties().maxStackSize(1).setNoRepair().setTEISR(() -> RenderEnergyCubeItem::new));
     }
 
     @Nullable

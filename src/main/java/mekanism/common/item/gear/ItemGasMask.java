@@ -4,11 +4,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.item.gear.RenderGasMask;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.DamageSource;
@@ -24,7 +26,7 @@ public class ItemGasMask extends ItemCustomArmorMekanism {
     public static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
 
     public ItemGasMask() {
-        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, "gas_mask");
+        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, "gas_mask", new Item.Properties().setTEISR(() -> RenderGasMask::new));
     }
 
     @Override

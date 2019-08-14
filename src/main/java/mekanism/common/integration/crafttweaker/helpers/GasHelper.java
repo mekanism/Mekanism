@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.helpers;
 
 import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IngredientAny;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;

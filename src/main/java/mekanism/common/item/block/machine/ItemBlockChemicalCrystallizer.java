@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderChemicalCrystallizerItem;
 import mekanism.common.Upgrade;
 import mekanism.common.block.machine.BlockChemicalCrystallizer;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -37,7 +38,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockChemicalCrystallizer extends ItemBlockAdvancedTooltip<BlockChemicalCrystallizer> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockChemicalCrystallizer(BlockChemicalCrystallizer block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderChemicalCrystallizerItem::new));
     }
 
     @Override

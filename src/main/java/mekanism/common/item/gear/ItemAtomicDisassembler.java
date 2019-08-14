@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
@@ -54,11 +55,12 @@ import net.minecraftforge.event.ForgeEventFactory;
 public class ItemAtomicDisassembler extends ItemEnergized {
 
     public ItemAtomicDisassembler() {
-        super("atomic_disassembler", MekanismConfig.general.disassemblerBatteryCapacity.get(), new Item.Properties().setNoRepair());
+        super("atomic_disassembler", MekanismConfig.general.disassemblerBatteryCapacity.get(),
+              new Item.Properties().setNoRepair().setTEISR(() -> RenderAtomicDisassembler::new));
     }
 
     @Override
-    public boolean canHarvestBlock(@Nonnull BlockState state, ItemStack stack) {
+    public boolean canHarvestBlock(@Nonnull BlockState state) {
         return state.getBlock() != Blocks.BEDROCK;
     }
 

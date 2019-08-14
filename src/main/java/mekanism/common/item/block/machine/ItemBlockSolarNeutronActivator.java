@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
 import mekanism.common.Upgrade;
 import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.item.IItemSustainedInventory;
@@ -33,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip<BlockSolarNeutronActivator> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSolarNeutronActivator(BlockSolarNeutronActivator block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderSolarNeutronActivatorItem::new));
     }
 
     @Override

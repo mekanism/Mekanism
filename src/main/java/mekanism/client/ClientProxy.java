@@ -126,13 +126,10 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ItemBalloon;
-import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.recipe.machines.CombinerRecipe;
@@ -203,12 +200,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -227,7 +222,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -300,125 +294,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerItemRenders() {
-        //TODO: Figure out how many of these can just be done through json now
-        registerItemRender(MekanismItem.ELECTRIC_BOW);
-        registerItemRender(MekanismItem.ENERGY_TABLET);
-        registerItemRender(MekanismItem.SPEED_UPGRADE);
-        registerItemRender(MekanismItem.ENERGY_UPGRADE);
-        registerItemRender(MekanismItem.FILTER_UPGRADE);
-        registerItemRender(MekanismItem.MUFFLING_UPGRADE);
-        registerItemRender(MekanismItem.GAS_UPGRADE);
-        registerItemRender(MekanismItem.ANCHOR_UPGRADE);
-        registerItemRender(MekanismItem.ROBIT);
-        registerItemRender(MekanismItem.ATOMIC_DISASSEMBLER);
-        registerItemRender(MekanismItem.ENRICHED_ALLOY);
-        registerItemRender(MekanismItem.REINFORCED_ALLOY);
-        registerItemRender(MekanismItem.ATOMIC_ALLOY);
-        registerItemRender(MekanismItem.ITEM_PROXY);
-        registerItemRender(MekanismItem.ENRICHED_IRON);
-        registerItemRender(MekanismItem.COMPRESSED_CARBON);
-        registerItemRender(MekanismItem.COMPRESSED_REDSTONE);
-        registerItemRender(MekanismItem.COMPRESSED_DIAMOND);
-        registerItemRender(MekanismItem.COMPRESSED_OBSIDIAN);
-        registerItemRender(MekanismItem.PORTABLE_TELEPORTER);
-        registerItemRender(MekanismItem.TELEPORTATION_CORE);
-        registerItemRender(MekanismItem.CONFIGURATOR);
-        registerItemRender(MekanismItem.NETWORK_READER);
-        registerItemRender(MekanismItem.JETPACK);
-        registerItemRender(MekanismItem.DICTIONARY);
-        registerItemRender(MekanismItem.GAS_MASK);
-        registerItemRender(MekanismItem.SCUBA_TANK);
-        registerItemRender(MekanismItem.ELECTROLYTIC_CORE);
-        registerItemRender(MekanismItem.SAWDUST);
-        registerItemRender(MekanismItem.SALT);
-        registerItemRender(MekanismItem.FREE_RUNNERS);
-        registerItemRender(MekanismItem.ARMORED_JETPACK);
-        registerItemRender(MekanismItem.CONFIGURATION_CARD);
-        registerItemRender(MekanismItem.SEISMIC_READER);
-        registerItemRender(MekanismItem.SUBSTRATE);
-        registerItemRender(MekanismItem.BIO_FUEL);
-        registerItemRender(MekanismItem.FLAMETHROWER);
-        registerItemRender(MekanismItem.GAUGE_DROPPER);
-
-        registerItemRender(MekanismItem.BASIC_CONTROL_CIRCUIT);
-        registerItemRender(MekanismItem.ADVANCED_CONTROL_CIRCUIT);
-        registerItemRender(MekanismItem.ELITE_CONTROL_CIRCUIT);
-        registerItemRender(MekanismItem.ULTIMATE_CONTROL_CIRCUIT);
-
-        registerItemRender(MekanismItem.BASIC_TIER_INSTALLER);
-        registerItemRender(MekanismItem.ADVANCED_TIER_INSTALLER);
-        registerItemRender(MekanismItem.ELITE_TIER_INSTALLER);
-        registerItemRender(MekanismItem.ULTIMATE_TIER_INSTALLER);
-
-        registerItemRender(MekanismItem.HDPE_PELLET);
-        registerItemRender(MekanismItem.HDPE_ROD);
-        registerItemRender(MekanismItem.HDPE_SHEET);
-        registerItemRender(MekanismItem.HDPE_STICK);
-
-        registerItemRender(MekanismItem.IRON_CRYSTAL);
-        registerItemRender(MekanismItem.GOLD_CRYSTAL);
-        registerItemRender(MekanismItem.OSMIUM_CRYSTAL);
-        registerItemRender(MekanismItem.COPPER_CRYSTAL);
-        registerItemRender(MekanismItem.TIN_CRYSTAL);
-        registerItemRender(MekanismItem.SILVER_CRYSTAL);
-        registerItemRender(MekanismItem.LEAD_CRYSTAL);
-
-        registerItemRender(MekanismItem.IRON_SHARD);
-        registerItemRender(MekanismItem.GOLD_SHARD);
-        registerItemRender(MekanismItem.OSMIUM_SHARD);
-        registerItemRender(MekanismItem.COPPER_SHARD);
-        registerItemRender(MekanismItem.TIN_SHARD);
-        registerItemRender(MekanismItem.SILVER_SHARD);
-        registerItemRender(MekanismItem.LEAD_SHARD);
-
-        registerItemRender(MekanismItem.IRON_CLUMP);
-        registerItemRender(MekanismItem.GOLD_CLUMP);
-        registerItemRender(MekanismItem.OSMIUM_CLUMP);
-        registerItemRender(MekanismItem.COPPER_CLUMP);
-        registerItemRender(MekanismItem.TIN_CLUMP);
-        registerItemRender(MekanismItem.SILVER_CLUMP);
-        registerItemRender(MekanismItem.LEAD_CLUMP);
-
-        registerItemRender(MekanismItem.DIRTY_IRON_DUST);
-        registerItemRender(MekanismItem.DIRTY_GOLD_DUST);
-        registerItemRender(MekanismItem.DIRTY_OSMIUM_DUST);
-        registerItemRender(MekanismItem.DIRTY_COPPER_DUST);
-        registerItemRender(MekanismItem.DIRTY_TIN_DUST);
-        registerItemRender(MekanismItem.DIRTY_SILVER_DUST);
-        registerItemRender(MekanismItem.DIRTY_LEAD_DUST);
-
-        registerItemRender(MekanismItem.IRON_DUST);
-        registerItemRender(MekanismItem.GOLD_DUST);
-        registerItemRender(MekanismItem.OSMIUM_DUST);
-        registerItemRender(MekanismItem.COPPER_DUST);
-        registerItemRender(MekanismItem.TIN_DUST);
-        registerItemRender(MekanismItem.SILVER_DUST);
-        registerItemRender(MekanismItem.LEAD_DUST);
-
-        registerItemRender(MekanismItem.DIAMOND_DUST);
-        registerItemRender(MekanismItem.STEEL_DUST);
-        registerItemRender(MekanismItem.SULFUR_DUST);
-        registerItemRender(MekanismItem.LITHIUM_DUST);
-        registerItemRender(MekanismItem.REFINED_OBSIDIAN_DUST);
-        registerItemRender(MekanismItem.OBSIDIAN_DUST);
-
-        registerItemRender(MekanismItem.REFINED_OBSIDIAN_INGOT);
-        registerItemRender(MekanismItem.OSMIUM_INGOT);
-        registerItemRender(MekanismItem.BRONZE_INGOT);
-        registerItemRender(MekanismItem.REFINED_GLOWSTONE_INGOT);
-        registerItemRender(MekanismItem.STEEL_INGOT);
-        registerItemRender(MekanismItem.COPPER_INGOT);
-        registerItemRender(MekanismItem.TIN_INGOT);
-
-        registerItemRender(MekanismItem.REFINED_OBSIDIAN_NUGGET);
-        registerItemRender(MekanismItem.OSMIUM_NUGGET);
-        registerItemRender(MekanismItem.BRONZE_NUGGET);
-        registerItemRender(MekanismItem.REFINED_GLOWSTONE_NUGGET);
-        registerItemRender(MekanismItem.STEEL_NUGGET);
-        registerItemRender(MekanismItem.COPPER_NUGGET);
-        registerItemRender(MekanismItem.TIN_NUGGET);
-
-        setCustomModelResourceLocation(getInventoryMRL("balloon"), MekanismItem.BLACK_BALLOON, MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON,
+        //TODO: Redo this stuff via json
+        /*setCustomModelResourceLocation(getInventoryMRL("balloon"), MekanismItem.BLACK_BALLOON, MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON,
               MekanismItem.BROWN_BALLOON, MekanismItem.BLUE_BALLOON, MekanismItem.PURPLE_BALLOON, MekanismItem.CYAN_BALLOON, MekanismItem.LIGHT_GRAY_BALLOON,
               MekanismItem.GRAY_BALLOON, MekanismItem.PINK_BALLOON, MekanismItem.LIME_BALLOON, MekanismItem.YELLOW_BALLOON, MekanismItem.LIGHT_BLUE_BALLOON,
               MekanismItem.MAGENTA_BALLOON, MekanismItem.ORANGE_BALLOON, MekanismItem.WHITE_BALLOON);
@@ -431,39 +308,6 @@ public class ClientProxy extends CommonProxy {
 
         ModelBakery.registerItemVariants(MekanismItem.CRAFTING_FORMULA.getItem(), ItemCraftingFormula.MODEL, ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
 
-        MekanismItem.JETPACK.getItem().setTileEntityItemStackRenderer(new RenderJetpack());
-        MekanismItem.ARMORED_JETPACK.getItem().setTileEntityItemStackRenderer(new RenderArmoredJetpack());
-        MekanismItem.GAS_MASK.getItem().setTileEntityItemStackRenderer(new RenderGasMask());
-        MekanismItem.SCUBA_TANK.getItem().setTileEntityItemStackRenderer(new RenderScubaTank());
-        MekanismItem.FREE_RUNNERS.getItem().setTileEntityItemStackRenderer(new RenderFreeRunners());
-        MekanismItem.ATOMIC_DISASSEMBLER.getItem().setTileEntityItemStackRenderer(new RenderAtomicDisassembler());
-        MekanismItem.FLAMETHROWER.getItem().setTileEntityItemStackRenderer(new RenderFlameThrower());
-        //Energy cubes
-        MekanismBlock.BASIC_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
-        MekanismBlock.ADVANCED_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
-        MekanismBlock.ELITE_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
-        MekanismBlock.ULTIMATE_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
-        MekanismBlock.CREATIVE_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
-
-        //Used to be machine blocks
-        MekanismBlock.CHEMICAL_CRYSTALLIZER.getItem().setTileEntityItemStackRenderer(new RenderChemicalCrystallizerItem());
-        MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER.getItem().setTileEntityItemStackRenderer(new RenderChemicalDissolutionChamberItem());
-        MekanismBlock.DIGITAL_MINER.getItem().setTileEntityItemStackRenderer(new RenderDigitalMinerItem());
-        MekanismBlock.PERSONAL_CHEST.getItem().setTileEntityItemStackRenderer(new RenderPersonalChestItem());
-        MekanismBlock.QUANTUM_ENTANGLOPORTER.getItem().setTileEntityItemStackRenderer(new RenderQuantumEntangloporterItem());
-        MekanismBlock.RESISTIVE_HEATER.getItem().setTileEntityItemStackRenderer(new RenderResistiveHeaterItem());
-        MekanismBlock.SEISMIC_VIBRATOR.getItem().setTileEntityItemStackRenderer(new RenderSeismicVibratorItem());
-        MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.getItem().setTileEntityItemStackRenderer(new RenderSolarNeutronActivatorItem());
-        //Fluid Tank
-        MekanismBlock.BASIC_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
-        MekanismBlock.ADVANCED_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
-        MekanismBlock.ELITE_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
-        MekanismBlock.ULTIMATE_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
-        MekanismBlock.CREATIVE_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
-
-        //Used to be basic blocks
-        MekanismBlock.SECURITY_DESK.getItem().setTileEntityItemStackRenderer(new RenderSecurityDeskItem());
-
         //Register the item inventory model locations for the various blocks
         for (MekanismBlock mekanismBlock : MekanismBlock.values()) {
             BlockItem item = mekanismBlock.getItem();
@@ -475,33 +319,21 @@ public class ClientProxy extends CommonProxy {
         }
         //TODO: Maybe have it be two different items/blocks one for full one for not given metadata is going away?
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
-        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));
+        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));*/
     }
 
-    private void setCustomStateMapper(IStateMapper mapper, MekanismBlock... blocks) {
-        for (MekanismBlock mekanismBlock : blocks) {
-            ModelLoader.setCustomStateMapper(mekanismBlock.getBlock(), mapper);
-        }
-    }
-
-    private void setCustomModelResourceLocation(ModelResourceLocation model, MekanismItem... items) {
+    /*private void setCustomModelResourceLocation(ModelResourceLocation model, MekanismItem... items) {
         for (MekanismItem mekanismItem : items) {
             ModelLoader.setCustomModelResourceLocation(mekanismItem.getItem(), 0, model);
         }
-    }
+    }*/
 
     @Override
     public void registerBlockRenders() {
         //TODO: Redo all of these. Lots can probably just be done with json now. It is probably a good idea to do the ones, that can be done
         // in json with it, EVEN if it requires more skeleton json files.
 
-        /*setCustomStateMapper(fenceMapper, MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
-              MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
-              MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE, MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE,
-              MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
-              MekanismBlock.WHITE_PLASTIC_FENCE);
-
-        setCustomTransmitterMeshDefinition(MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
+        /*setCustomTransmitterMeshDefinition(MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
               MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,
               MekanismBlock.ULTIMATE_MECHANICAL_PIPE, MekanismBlock.BASIC_PRESSURIZED_TUBE, MekanismBlock.ADVANCED_PRESSURIZED_TUBE, MekanismBlock.ELITE_PRESSURIZED_TUBE,
               MekanismBlock.ULTIMATE_PRESSURIZED_TUBE, MekanismBlock.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlock.ADVANCED_LOGISTICAL_TRANSPORTER,
@@ -535,7 +367,7 @@ public class ClientProxy extends CommonProxy {
         OBJLoader.INSTANCE.addDomain(Mekanism.MODID);
     }
 
-    private void setCustomTransmitterMeshDefinition(MekanismBlock... transmitters) {
+    /*private void setCustomTransmitterMeshDefinition(MekanismBlock... transmitters) {
         for (MekanismBlock transmitter : transmitters) {
             ModelLoader.setCustomMeshDefinition(transmitter.getItem(), stack -> new ModelResourceLocation(transmitter.getBlock().getRegistryName(), "inventory"));
         }
@@ -543,7 +375,7 @@ public class ClientProxy extends CommonProxy {
 
     public void registerItemRender(MekanismItem item) {
         ModelLoader.setCustomModelResourceLocation(item.getItem(), 0, new ModelResourceLocation(item.getItem().getRegistryName(), "inventory"));
-    }
+    }*/
 
     private Screen getClientItemGui(PlayerEntity player, BlockPos pos) {
         int currentItem = pos.getX();
@@ -778,14 +610,14 @@ public class ClientProxy extends CommonProxy {
 
     private void registerBlockColorHandler(IBlockColor blockColor, IItemColor itemColor, MekanismBlock... blocks) {
         for (MekanismBlock mekanismBlock : blocks) {
-            Minecraft.getInstance().getBlockColors().registerBlockColorHandler(blockColor, mekanismBlock.getBlock());
-            Minecraft.getInstance().getItemColors().registerItemColorHandler(itemColor, mekanismBlock.getItem());
+            Minecraft.getInstance().getBlockColors().register(blockColor, mekanismBlock.getBlock());
+            Minecraft.getInstance().getItemColors().register(itemColor, mekanismBlock.getItem());
         }
     }
 
     private void registerItemColorHandler(IItemColor itemColor, MekanismItem... items) {
         for (MekanismItem mekanismItem : items) {
-            Minecraft.getInstance().getItemColors().registerItemColorHandler(itemColor, mekanismItem.getItem());
+            Minecraft.getInstance().getItemColors().register(itemColor, mekanismItem.getItem());
         }
     }
 

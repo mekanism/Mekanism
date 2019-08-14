@@ -3,9 +3,6 @@ package mekanism.common.integration.crafttweaker.helpers;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.IngredientAny;
-import com.blamejared.crafttweaker.api.liquid.ILiquidStack;
-import com.blamejared.crafttweaker.api.minecraft.CraftTweakerMC;
 import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import mekanism.api.gas.Gas;
@@ -66,9 +63,9 @@ public class IngredientHelper {
         } else if (ingredient instanceof Gas) {
             return new CraftTweakerGasStack(new GasStack((Gas) ingredient, 1));
         } else if (ingredient instanceof FluidStack) {
-            return CraftTweakerMC.getILiquidStack((FluidStack) ingredient);
+            return getILiquidStack((FluidStack) ingredient);
         } else if (ingredient instanceof Fluid) {
-            return CraftTweakerMC.getILiquidStack(new FluidStack((Fluid) ingredient, 1));
+            return getILiquidStack(new FluidStack((Fluid) ingredient, 1));
         }
         //TODO: Support other types of things like ore dict
         return IngredientAny.INSTANCE;
@@ -156,6 +153,10 @@ public class IngredientHelper {
 
     public static FluidStack toFluid(ILiquidStack fluid) {
         return fluid == null ? null : FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount());
+    }
+
+    public static ILiquidStack getILiquidStack(FluidStack fluidStack) {
+        return new MCLiquidStack(fluidStack);
     }
 
     public static ItemStack getItemStack(IItemStack crtItemStack) {

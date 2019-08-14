@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.liquid.ILiquidStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.gas.GasStack;

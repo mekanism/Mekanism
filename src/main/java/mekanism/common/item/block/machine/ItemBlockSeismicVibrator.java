@@ -3,6 +3,7 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.common.block.machine.BlockSeismicVibrator;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -35,7 +36,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeismicVibrator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSeismicVibrator(BlockSeismicVibrator block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderSeismicVibratorItem::new));
     }
 
     @Override

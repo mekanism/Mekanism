@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.item.block.RenderDigitalMinerItem;
 import mekanism.common.Upgrade;
 import mekanism.common.block.machine.BlockDigitalMiner;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -41,7 +42,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip<BlockDigitalMiner> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockDigitalMiner(BlockDigitalMiner block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderDigitalMinerItem::new));
     }
 
     @Override

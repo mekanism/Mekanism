@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IngredientAny;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 
 public class IngredientWrapper {
