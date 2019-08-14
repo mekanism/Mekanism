@@ -2,7 +2,6 @@ package mekanism.generators.common;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -64,10 +63,10 @@ public class GeneratorsCommonProxy implements IGuiProvider {
      * Set and load the mod's common configuration properties.
      */
     public void loadConfiguration() {
-        MekanismConfig.local().generators.load(Mekanism.configuration);
+        /*MekanismConfig.local().generators.load(Mekanism.configuration);
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
-        }
+        }*/
     }
 
     @Override

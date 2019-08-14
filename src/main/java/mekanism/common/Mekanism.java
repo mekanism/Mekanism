@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import com.mojang.authlib.GameProfile;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,7 +44,6 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.fixers.MekanismDataFixers;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
@@ -93,7 +91,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -152,10 +149,6 @@ public class Mekanism {
      */
     public static MekanismHooks hooks = new MekanismHooks();
     /**
-     * Mekanism configuration instance
-     */
-    public static Configuration configuration;
-    /**
      * Mekanism version number
      */
     public static Version versionNumber = new Version(999, 999, 999);
@@ -164,8 +157,7 @@ public class Mekanism {
      */
     public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank");
     public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<>("inductionMatrix");
-    public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>(
-          "thermoelectricBoiler");
+    public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>("thermoelectricBoiler");
     /**
      * FrequencyManagers for various networks
      */
@@ -276,6 +268,7 @@ public class Mekanism {
      */
     public static void addRecipes() {
         //Furnace Recipes
+        //TODO: Move this to JSON
         GameRegistry.addSmelting(MekanismBlock.OSMIUM_ORE.getItemStack(), MekanismItem.OSMIUM_INGOT.getItemStack(), 1.0F);
         GameRegistry.addSmelting(MekanismBlock.COPPER_ORE.getItemStack(), MekanismItem.COPPER_INGOT.getItemStack(), 1.0F);
         GameRegistry.addSmelting(MekanismBlock.TIN_ORE.getItemStack(), MekanismItem.TIN_INGOT.getItemStack(), 1.0F);
@@ -632,8 +625,6 @@ public class Mekanism {
 
         //Register the TESRs
         proxy.registerTESRs();
-
-        MekanismDataFixers.register();
     }
 
     @EventHandler
@@ -680,11 +671,6 @@ public class Mekanism {
                 proxy.throwApiPresentException();
             }
         }
-
-        File config = event.getSuggestedConfigurationFile();
-
-        //Set the mod's configuration
-        configuration = new Configuration(config);
 
         //Load configuration
         proxy.loadConfiguration();

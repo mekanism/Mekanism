@@ -2,7 +2,6 @@ package mekanism.generators.common;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockTooltip;
@@ -83,7 +82,6 @@ public enum GeneratorsBlock implements IBlockProvider {
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         for (GeneratorsBlock generatorsBlock : values()) {
             Block block = generatorsBlock.getBlock();
-            block.setCreativeTab(Mekanism.tabMekanism);
             registry.register(block);
         }
     }

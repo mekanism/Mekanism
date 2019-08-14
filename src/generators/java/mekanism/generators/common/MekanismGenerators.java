@@ -13,7 +13,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
@@ -22,24 +21,18 @@ import mekanism.common.util.StackUtils;
 import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
-import mekanism.generators.common.fixers.GeneratorTEFixer;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.datafix.FixTypes;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.CompoundDataFixer;
-import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -63,7 +56,6 @@ public class MekanismGenerators implements IModule {
      * MekanismGenerators version number
      */
     public static Version versionNumber = new Version(999, 999, 999);
-    public static final int DATA_VERSION = 1;
 
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
 
@@ -118,11 +110,6 @@ public class MekanismGenerators implements IModule {
         proxy.registerTileEntities();
         proxy.registerTESRs();
 
-        CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
-        ModFixs fixes = fixer.init(MODID, DATA_VERSION);
-        //Fix old tile entity names
-        fixes.registerFix(FixTypes.BLOCK_ENTITY, new GeneratorTEFixer(MekFixers.TILE_ENTITIES));
-
         //Finalization
         Mekanism.logger.info("Loaded MekanismGenerators module.");
     }
@@ -161,7 +148,7 @@ public class MekanismGenerators implements IModule {
         return "Generators";
     }
 
-    @Override
+    /*@Override
     public void writeConfig(PacketBuffer dataStream, MekanismConfig config) {
         config.generators.write(dataStream);
     }
@@ -169,7 +156,7 @@ public class MekanismGenerators implements IModule {
     @Override
     public void readConfig(PacketBuffer dataStream, MekanismConfig destConfig) {
         destConfig.generators.read(dataStream);
-    }
+    }*/
 
     @Override
     public void resetClient() {

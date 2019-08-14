@@ -54,7 +54,7 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
 
         @Override
         public ITextComponent getDescription() {
-            return TextComponentUtil.build(Translation.of(description));
+            return TextComponentUtil.getTranslationComponent(description);
         }
 
         @Override

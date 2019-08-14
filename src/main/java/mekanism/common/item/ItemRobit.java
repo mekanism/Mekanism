@@ -59,7 +59,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                     robit.setEnergy(getEnergy(itemstack));
                     robit.setOwnerUUID(player.getUniqueID());
                     robit.setInventory(getInventory(itemstack));
-                    robit.setCustomNameTag(getName(itemstack));
+                    robit.setCustomName(getName(itemstack));
                     world.addEntity(robit);
                 }
                 player.setHeldItem(hand, ItemStack.EMPTY);
@@ -78,8 +78,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         ItemDataUtils.setString(itemstack, "name", name);
     }
 
-    public String getName(ItemStack itemstack) {
+    public ITextComponent getName(ItemStack itemstack) {
         String name = ItemDataUtils.getString(itemstack, "name");
-        return name.isEmpty() ? "Robit" : name;
+        return TextComponentUtil.getStringComponent(name.isEmpty() ? "Robit" : name);
     }
 }

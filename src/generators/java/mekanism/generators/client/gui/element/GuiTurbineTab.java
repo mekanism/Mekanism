@@ -51,7 +51,7 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
 
         @Override
         public ITextComponent getDescription() {
-            return TextComponentUtil.build(Translation.of(description));
+            return TextComponentUtil.getTranslationComponent(description);
         }
 
         @Override

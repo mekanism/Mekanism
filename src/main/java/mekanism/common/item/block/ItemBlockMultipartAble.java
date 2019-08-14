@@ -21,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 /**
@@ -44,31 +45,31 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        BlockState iblockstate = world.getBlockState(pos);
-        Block block = iblockstate.getBlock();
+        BlockState state = world.getBlockState(pos);
+        Block block = state.getBlock();
         Hand hand = context.getHand();
         ItemStack itemstack = player.getHeldItem(hand);
         if (itemstack.isEmpty()) {
             return ActionResultType.FAIL;//WTF
         }
         Direction side = context.getFace();
+        BlockItemUseContext blockItemUseContext = new BlockItemUseContext(context);
         if (Mekanism.hooks.MCMPLoaded) {
-            if (!block.isReplaceable(world, pos) && !hasFreeMultiPartSpot(itemstack, world, pos, iblockstate, side)) {//free spot handles case of no container
+            if (!block.isReplaceable(state, blockItemUseContext) && !hasFreeMultiPartSpot(itemstack, world, pos, state, side)) {//free spot handles case of no container
                 pos = pos.offset(side);
-                iblockstate = world.getBlockState(pos);
+                state = world.getBlockState(pos);
             }
-        } else if (!block.isReplaceable(world, pos)) {
+        } else if (!block.isReplaceable(state, blockItemUseContext)) {
             pos = pos.offset(side);
         }
 
-        if (player.canPlayerEdit(pos, side, itemstack) && mayPlace(itemstack, world, pos, iblockstate, hand, side)) {
-            int i = this.getMetadata(itemstack.getMetadata());
-            BlockState iblockstate1 = this.getBlock().getStateForPlacement(world, pos, side, hitX, hitY, hitZ, i, player, hand);
+        if (player.canPlayerEdit(pos, side, itemstack) && mayPlace(itemstack, world, pos, state, hand, side)) {
+            BlockState iblockstate1 = this.getBlock().getStateForPlacement(blockItemUseContext);
             boolean flag;
             if (Mekanism.hooks.MCMPLoaded) {
                 flag = MultipartMekanism.placeMultipartBlock(this.getBlock(), itemstack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1);
             } else {
-                flag = placeBlock(new BlockItemUseContext(context), iblockstate1);
+                flag = placeBlock(blockItemUseContext, iblockstate1);
             }
             if (flag) {
                 iblockstate1 = world.getBlockState(pos);
@@ -111,7 +112,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
+        if (!world.getBlockState(pos).getBlock().isReplaceable(state, context)) {
             return false;
         }
         return super.placeBlock(context, state);

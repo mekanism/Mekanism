@@ -128,7 +128,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
             if (recipeType != null) {
                 ((TileEntityFactory) tile).setRecipeType(recipeType);
             }
-            world.notifyNeighborsOfStateChange(pos, tile.getBlockType(), true);
+            world.notifyNeighborsOfStateChange(pos, tile.getBlockType());
             Mekanism.packetHandler.sendUpdatePacket(tile);
         }
     }

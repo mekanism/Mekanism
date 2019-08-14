@@ -24,7 +24,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         if (!world.isRemote) {
             boolean outputting = checkMode();
             if (outputting != prevOutputting) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
             prevOutputting = outputting;
         }

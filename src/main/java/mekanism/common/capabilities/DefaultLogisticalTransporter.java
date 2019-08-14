@@ -14,6 +14,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -99,17 +100,17 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public String getTransmitterNetworkNeeded() {
+    public ITextComponent getTransmitterNetworkNeeded() {
         return null;
     }
 
     @Override
-    public String getTransmitterNetworkFlow() {
+    public ITextComponent getTransmitterNetworkFlow() {
         return null;
     }
 
     @Override
-    public String getTransmitterNetworkBuffer() {
+    public ITextComponent getTransmitterNetworkBuffer() {
         return null;
     }
 

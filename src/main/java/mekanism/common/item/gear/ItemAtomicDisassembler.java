@@ -29,6 +29,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -187,7 +188,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player != null && !player.isSneaking()) {
-            ItemStack stack = player.getHeldItem(context.getHand());
+            Hand hand = context.getHand();
+            ItemStack stack = player.getHeldItem(hand);
             int diameter = getMode(stack).getDiameter();
             if (diameter > 0) {
                 World world = context.getWorld();
@@ -195,19 +197,19 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 Direction side = context.getFace();
                 Block block = world.getBlockState(pos).getBlock();
                 if (block == Blocks.DIRT || block == Blocks.GRASS_PATH) {
-                    return useItemAs(player, world, pos, side, stack, diameter, this::useHoe);
+                    return useItemAs(player, world, pos, side, stack, hand, diameter, this::useHoe);
                 } else if (block == Blocks.GRASS_BLOCK) {
-                    return useItemAs(player, world, pos, side, stack, diameter, this::useShovel);
+                    return useItemAs(player, world, pos, side, stack, hand, diameter, this::useShovel);
                 }
             }
         }
         return ActionResultType.PASS;
     }
 
-    private ActionResultType useItemAs(PlayerEntity player, World world, BlockPos pos, Direction side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
+    private ActionResultType useItemAs(PlayerEntity player, World world, BlockPos pos, Direction side, ItemStack stack, Hand hand, int diameter, ItemUseConsumer consumer) {
         double energy = getEnergy(stack);
         int hoeUsage = MekanismConfig.general.disassemblerEnergyUsageHoe.get();
-        if (energy < hoeUsage || consumer.use(stack, player, world, pos, side) == ActionResultType.FAIL) {
+        if (energy < hoeUsage || consumer.use(stack, player, hand, world, pos, side) == ActionResultType.FAIL) {
             //Fail if we don't have enough energy or using the item failed
             return ActionResultType.FAIL;
         }
@@ -217,7 +219,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             for (int z = -radius; z <= radius; z++) {
                 if (energyUsed + hoeUsage > energy) {
                     break;
-                } else if ((x != 0 || z != 0) && consumer.use(stack, player, world, pos.add(x, 0, z), side) == ActionResultType.SUCCESS) {
+                } else if ((x != 0 || z != 0) && consumer.use(stack, player, hand, world, pos.add(x, 0, z), side) == ActionResultType.SUCCESS) {
                     //Don't attempt to use it on the source location as it was already done above
                     // If we successfully used it in a spot increment how much energy we used
                     energyUsed += hoeUsage;
@@ -228,7 +230,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return ActionResultType.SUCCESS;
     }
 
-    private ActionResultType useHoe(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
+    private ActionResultType useHoe(ItemStack stack, PlayerEntity player, Hand hand, World world, BlockPos pos, Direction facing) {
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         }
@@ -243,39 +245,36 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (block == Blocks.GRASS_BLOCK || block == Blocks.GRASS_PATH) {
                 newState = Blocks.FARMLAND.getDefaultState();
             } else if (block == Blocks.DIRT) {
-                DirtType type = state.get(BlockDirt.VARIANT);
-                if (type == DirtType.DIRT) {
-                    newState = Blocks.FARMLAND.getDefaultState();
-                } else if (type == DirtType.COARSE_DIRT) {
-                    newState = Blocks.DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, DirtType.DIRT);
-                }
+                newState = Blocks.FARMLAND.getDefaultState();
+            } else if (block == Blocks.COARSE_DIRT) {
+                newState = Blocks.DIRT.getDefaultState();
             }
             if (newState != null) {
-                setBlock(stack, player, world, pos, newState);
+                setBlock(stack, player, hand, world, pos, newState);
                 return ActionResultType.SUCCESS;
             }
         }
         return ActionResultType.PASS;
     }
 
-    private ActionResultType useShovel(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
+    private ActionResultType useShovel(ItemStack stack, PlayerEntity player, Hand hand, World world, BlockPos pos, Direction facing) {
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         } else if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
             Block block = world.getBlockState(pos).getBlock();
             if (block == Blocks.GRASS_BLOCK) {
-                setBlock(stack, player, world, pos, Blocks.GRASS_PATH.getDefaultState());
+                setBlock(stack, player, hand, world, pos, Blocks.GRASS_PATH.getDefaultState());
                 return ActionResultType.SUCCESS;
             }
         }
         return ActionResultType.PASS;
     }
 
-    private void setBlock(ItemStack stack, PlayerEntity player, World worldIn, BlockPos pos, BlockState state) {
+    private void setBlock(ItemStack stack, PlayerEntity player, Hand hand, World worldIn, BlockPos pos, BlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
         if (!worldIn.isRemote) {
             worldIn.setBlockState(pos, state, 11);
-            stack.damageItem(1, player);
+            stack.damageItem(1, player, entity -> entity.sendBreakAnimation(hand));
         }
     }
 
@@ -300,10 +299,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Nonnull
     @Override
     @Deprecated
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EquipmentSlotType equipmentSlot) {
-        Multimap<String, AttributeModifier> multiMap = super.getItemAttributeModifiers(equipmentSlot);
+    public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
+        Multimap<String, AttributeModifier> multiMap = super.getAttributeModifiers(equipmentSlot);
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            multiMap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
+            multiMap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
         }
         return multiMap;
     }
@@ -442,6 +441,6 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     interface ItemUseConsumer {
 
         //Used to reference useHoe and useShovel via lambda references
-        ActionResultType use(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing);
+        ActionResultType use(ItemStack stack, PlayerEntity player, Hand hand, World world, BlockPos pos, Direction facing);
     }
 }

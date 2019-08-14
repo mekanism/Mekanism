@@ -55,7 +55,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
             boolean flag = player.isCreative() || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
             ItemStack ammo = findAmmo(player);
 
-            int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
+            int maxItemUse = getUseDuration(itemstack) - itemUseCount;
             maxItemUse = ForgeEventFactory.onArrowLoose(itemstack, world, player, maxItemUse, !itemstack.isEmpty() || flag);
             if (maxItemUse < 0) {
                 return;
@@ -92,7 +92,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                 }
 
                 world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL,
-                      1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                      1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
                 if (!noConsume) {
                     ammo.shrink(1);
@@ -106,13 +106,13 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     }
 
     @Override
-    public int getMaxItemUseDuration(ItemStack itemstack) {
+    public int getUseDuration(ItemStack itemstack) {
         return 72000;
     }
 
     @Nonnull
     @Override
-    public UseAction getItemUseAction(ItemStack itemstack) {
+    public UseAction getUseAction(ItemStack itemstack) {
         return UseAction.BOW;
     }
 

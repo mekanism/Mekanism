@@ -35,7 +35,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
 
         //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)
         /*TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
-        RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
+        RecipeType type = RecipeType.getFromMachine(getBlock(), getBlockMetadata());
 
         //Basic
         factory.facing = facing;

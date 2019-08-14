@@ -2,8 +2,8 @@ package mekanism.generators.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
@@ -69,7 +69,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             }
         }
         if (coolingButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.toggleCooling")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.getTranslationComponent("mekanism.gui.toggleCooling"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

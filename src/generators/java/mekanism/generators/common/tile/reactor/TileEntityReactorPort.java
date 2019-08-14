@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
@@ -75,7 +75,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public void onUpdate() {
         if (changed) {
-            world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+            world.notifyNeighborsOfStateChange(getPos(), getBlockType());
         }
 
         super.onUpdate();
@@ -359,7 +359,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!world.isRemote) {
             fluidEject = !fluidEject;
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GREY,
+            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                   Translation.of("tooltip.configurator.reactorPortEject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), BooleanStateDisplay.OutputInput.of(fluidEject), "."));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();

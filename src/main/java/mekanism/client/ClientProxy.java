@@ -249,10 +249,10 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void loadConfiguration() {
         super.loadConfiguration();
-        MekanismConfig.current().client.load(Mekanism.configuration);
+        /*MekanismConfig.current().client.load(Mekanism.configuration);
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
-        }
+        }*/
     }
 
     @Override

@@ -1,78 +1,106 @@
 package mekanism.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import mekanism.common.util.ItemRegistryUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictCache {
 
-    public static Map<Item, List<String>> cachedKeys = new HashMap<>();
+    public static Map<Item, Collection<ResourceLocation>> cachedItemKeys = new HashMap<>();
+    public static Map<Block, Collection<ResourceLocation>> cachedBlockKeys = new HashMap<>();
     public static Map<String, List<ItemStack>> oreDictStacks = new HashMap<>();
     public static Map<String, List<ItemStack>> modIDStacks = new HashMap<>();
 
     public static List<String> getOreDictName(ItemStack check) {
+        //TODO: Switch to other methods
+        return new ArrayList<>();
+    }
+
+    public static Collection<ResourceLocation> getTagsForItem(ItemStack check) {
         if (check.isEmpty()) {
             return new ArrayList<>();
         }
         Item info = check.getItem();
-        List<String> cached = cachedKeys.get(info);
+        Collection<ResourceLocation> cached = cachedItemKeys.get(info);
         if (cached != null) {
             return cached;
         }
-
-        int[] idsFound = OreDictionary.getOreIDs(check);
-        List<String> ret = new ArrayList<>();
-        for (Integer id : idsFound) {
-            ret.add(OreDictionary.getOreName(id));
-        }
-        cachedKeys.put(info, ret);
-        return ret;
+        Collection<ResourceLocation> owningTags = ItemTags.getCollection().getOwningTags(check.getItem());
+        cachedItemKeys.put(info, owningTags);
+        return owningTags;
     }
 
-    public static List<ItemStack> getOreDictStacks(String oreName, boolean forceBlock) {
+    public static Collection<ResourceLocation> getTagsForBlock(Block check) {
+        Collection<ResourceLocation> cached = cachedBlockKeys.get(check);
+        if (cached != null) {
+            return cached;
+        }
+        Collection<ResourceLocation> owningTags = BlockTags.getCollection().getOwningTags(check);
+        cachedBlockKeys.put(check, owningTags);
+        return owningTags;
+    }
+
+    //TODO: Decide if we should have something to check the
+    public static List<ItemStack> getItemTagStacks(String oreName, boolean forceBlock) {
         if (oreDictStacks.get(oreName) != null) {
             return oreDictStacks.get(oreName);
         }
 
-        List<String> keys = new ArrayList<>();
-        for (String s : OreDictionary.getOreNames()) {
-            if (s == null) {
-                continue;
-            }
-            if (oreName.equals(s) || oreName.equals("*")) {
-                keys.add(s);
+        List<ResourceLocation> keys = new ArrayList<>();
+        TagCollection<Item> tagCollection = ItemTags.getCollection();
+        Collection<ResourceLocation> registeredTags = tagCollection.getRegisteredTags();
+        for (ResourceLocation rl : registeredTags) {
+            String key = rl.getPath();
+            if (oreName.equals(key) || oreName.equals("*")) {
+                keys.add(rl);
             } else if (oreName.endsWith("*") && !oreName.startsWith("*")) {
-                if (s.startsWith(oreName.substring(0, oreName.length() - 1))) {
-                    keys.add(s);
+                if (key.startsWith(oreName.substring(0, oreName.length() - 1))) {
+                    keys.add(rl);
                 }
             } else if (oreName.startsWith("*") && !oreName.endsWith("*")) {
-                if (s.endsWith(oreName.substring(1))) {
-                    keys.add(s);
+                if (key.endsWith(oreName.substring(1))) {
+                    keys.add(rl);
                 }
             } else if (oreName.startsWith("*") && oreName.endsWith("*")) {
-                if (s.contains(oreName.substring(1, oreName.length() - 1))) {
-                    keys.add(s);
+                if (key.contains(oreName.substring(1, oreName.length() - 1))) {
+                    keys.add(rl);
                 }
             }
         }
 
-        List<ItemStack> stacks = new ArrayList<>();
-        for (String key : keys) {
-            for (ItemStack stack : OreDictionary.getOres(key, false)) {
-                ItemStack toAdd = stack.copy();
-                if (!stacks.contains(stack) && (!forceBlock || toAdd.getItem() instanceof BlockItem)) {
-                    stacks.add(stack.copy());
+        List<Item> items = new ArrayList<>();
+        for (ResourceLocation key : keys) {
+            Tag<Item> itemTag = tagCollection.get(key);
+            if (itemTag != null) {
+                for (Item item : itemTag.getAllElements()) {
+                    if (!items.contains(item) && (!forceBlock || item instanceof BlockItem)) {
+                        items.add(item);
+                    }
                 }
             }
         }
+        List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
         oreDictStacks.put(oreName, stacks);
         return stacks;
+    }
+
+    public static List<ItemStack> getOreDictStacks(String oreName, boolean forceBlock) {
+        //TODO: Replace with others
+        return new ArrayList<>();
     }
 
     public static List<ItemStack> getModIDStacks(String modName, boolean forceBlock) {

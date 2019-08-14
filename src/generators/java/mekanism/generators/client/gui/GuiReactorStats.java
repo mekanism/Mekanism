@@ -3,7 +3,7 @@ package mekanism.generators.client.gui;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
-import mekanism.api.EnumColor;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.util.MekanismUtils;

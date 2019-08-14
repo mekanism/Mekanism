@@ -67,7 +67,7 @@ public class PortalHelper {
                     if (!this.isEmptyBlock(block)) {
                         break label56;
                     }
-                    if (block == Blocks.PORTAL) {
+                    if (block == Blocks.NETHER_PORTAL) {
                         ++this.portalBlockCount;
                     }
                     if (i == 0) {
@@ -159,11 +159,11 @@ public class PortalHelper {
         }
 
         @Override
-        public boolean trySpawnPortal(@Nonnull World world, BlockPos pos) {
+        public boolean trySpawnPortal(@Nonnull IWorld world, @Nonnull BlockPos pos) {
             return trySpawnPortal(world, pos, Axis.X) || trySpawnPortal(world, pos, Axis.Z);
         }
 
-        private boolean trySpawnPortal(@Nonnull World world, BlockPos pos, Axis axis) {
+        private boolean trySpawnPortal(@Nonnull IWorld world, BlockPos pos, Axis axis) {
             PortalHelper.Size size = new PortalHelper.Size(world, pos, axis);
             if (size.isValid() && size.portalBlockCount == 0 && !ForgeEventFactory.onTrySpawnPortal(world, pos, size)) {
                 size.placePortalBlocks();

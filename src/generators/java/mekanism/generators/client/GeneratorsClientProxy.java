@@ -1,5 +1,6 @@
 package mekanism.generators.client;
 
+import java.util.Map;
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.common.item.IItemRedirectedModel;
@@ -119,7 +120,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
-        Registry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "heat_generator", model -> RenderHeatGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "solar_generator", model -> RenderSolarGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "bio_generator", model -> RenderBioGeneratorItem.model = model);
@@ -128,9 +129,9 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         registerItemStackModel(modelRegistry, "advanced_solar_generator", model -> RenderAdvancedSolarGeneratorItem.model = model);
     }
 
-    private void registerItemStackModel(Registry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
+    private void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
         ModelResourceLocation resourceLocation = getInventoryMRL(type);
-        modelRegistry.putObject(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.getObject(resourceLocation))));
+        modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));
     }
 
     private ModelResourceLocation getInventoryMRL(String type) {

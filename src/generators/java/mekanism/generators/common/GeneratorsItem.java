@@ -1,7 +1,6 @@
 package mekanism.generators.common;
 
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemMekanism;
@@ -12,7 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsItem implements IItemProvider {
@@ -20,7 +19,7 @@ public enum GeneratorsItem implements IItemProvider {
     HOHLRAUM(new ItemHohlraum()),
     TURBINE_BLADE(new ItemMekanism(MekanismGenerators.MODID, "turbine_blade") {
         @Override
-        public boolean doesSneakBypassUse(ItemStack stack, IBlockReader world, BlockPos pos, PlayerEntity player) {
+        public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
             return MekanismUtils.getTileEntitySafe(world, pos) instanceof TileEntityTurbineRotor;
         }
     });
@@ -40,7 +39,6 @@ public enum GeneratorsItem implements IItemProvider {
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (GeneratorsItem generatorsItem : values()) {
             Item item = generatorsItem.getItem();
-            item.setCreativeTab(Mekanism.tabMekanism);
             registry.register(item);
             if (item instanceof IItemMekanism) {
                 ((IItemMekanism) item).registerOreDict();

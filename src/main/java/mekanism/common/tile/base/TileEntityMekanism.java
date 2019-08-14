@@ -232,6 +232,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         isActivatable = hasSound || block instanceof IStateActive;
     }
 
+    public Block getBlockType() {
+        return blockProvider.getBlock();
+    }
+
     public final boolean supportsUpgrades() {
         return supportsUpgrades;
     }
@@ -298,7 +302,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     if (isDirectional()) {
                         //TODO: Extract this out into a handleRotation method?
                         setFacing(getDirection().rotateY());
-                        world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
+                        world.notifyNeighborsOfStateChange(pos, getBlockType());
                     }
                     return WrenchResult.SUCCESS;
                 }

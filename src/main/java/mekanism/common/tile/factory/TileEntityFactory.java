@@ -244,7 +244,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     public void onUpdate() {
         if (!world.isRemote) {
             if (ticker == 1) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
             ChargeUtils.discharge(1, this);
 
@@ -276,7 +276,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
                         setRecipeType(toSet);
                         gasTank.setGas(null);
                         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-                        world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+                        world.notifyNeighborsOfStateChange(getPos(), getBlockType());
                         MekanismUtils.saveChunk(this);
                     }
                 } else {

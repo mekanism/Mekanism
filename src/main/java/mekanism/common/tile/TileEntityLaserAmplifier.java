@@ -139,7 +139,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                 currentRedstoneLevel = newRedstoneLevel;
             }
             if (emittingRedstone != prevRedstone) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
         }
     }

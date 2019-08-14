@@ -762,7 +762,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     }
                     BlockPos pos1 = getPos().add(x, y, z);
                     MekanismUtils.makeAdvancedBoundingBlock(world, pos1, Coord4D.get(this));
-                    world.notifyNeighborsOfStateChange(pos1, getBlockType(), true);
+                    world.notifyNeighborsOfStateChange(pos1, getBlockType());
                 }
             }
         }
