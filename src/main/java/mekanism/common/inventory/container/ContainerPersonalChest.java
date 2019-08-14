@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container;
 
-import invtweaks.api.container.ChestContainer;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
@@ -12,7 +11,8 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-@ChestContainer(isLargeChest = true)
+//TODO: InventoryTweaks
+//@ChestContainer(isLargeChest = true)
 public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonalChest> {
 
     private IInventory itemInventory;

@@ -18,7 +18,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private boolean seesSun;
     private boolean needsRainCheck = true;
-    private float peakOutput;
+    private double peakOutput;
 
     public TileEntitySolarGenerator() {
         this(GeneratorsBlock.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get() * 2);
@@ -112,17 +112,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }*/
 
         // Production is a function of the peak possible output in this biome and sun's current brightness
-        float production = peakOutput * brightness;
+        double production = peakOutput * brightness;
 
         // If the generator is in a biome where it can rain and it's raining penalize production by 80%
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
             production *= 0.2;
         }
         return production;
-    }
-
-    public String getEfficiencyStr() {
-        return String.format("%2.0f", (getProduction() / getMaxOutput()) * 100);
     }
 
     @Override
@@ -168,8 +164,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return side == Direction.DOWN;
     }
 
-    protected float getConfiguredMax() {
-        return (float) (double) MekanismGeneratorsConfig.generators.solarGeneration.get();
+    protected double getConfiguredMax() {
+        return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
     @Override

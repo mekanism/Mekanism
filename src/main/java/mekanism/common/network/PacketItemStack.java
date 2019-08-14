@@ -1,6 +1,5 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
@@ -17,7 +16,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class PacketItemStack {
 
     private List<Object> parameters;
-    private ByteBuf storedBuffer;
+    private PacketBuffer storedBuffer;
     private Hand currentHand;
 
     public PacketItemStack(Hand hand, List<Object> params) {
@@ -25,7 +24,7 @@ public class PacketItemStack {
         parameters = params;
     }
 
-    private PacketItemStack(Hand hand, ByteBuf storedBuffer) {
+    private PacketItemStack(Hand hand, PacketBuffer storedBuffer) {
         currentHand = hand;
         this.storedBuffer = storedBuffer;
     }
@@ -40,7 +39,7 @@ public class PacketItemStack {
             if (!stack.isEmpty() && stack.getItem() instanceof IItemNetwork) {
                 IItemNetwork network = (IItemNetwork) stack.getItem();
                 try {
-                    network.handlePacketData(stack, message.storedBuffer);
+                    network.handlePacketData(player.world, stack, message.storedBuffer);
                 } catch (Exception e) {
                     Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
@@ -59,6 +58,6 @@ public class PacketItemStack {
     }
 
     public static PacketItemStack decode(PacketBuffer buf) {
-        return new PacketItemStack(buf.readEnumValue(Hand.class), buf.copy());
+        return new PacketItemStack(buf.readEnumValue(Hand.class), new PacketBuffer(buf.copy()));
     }
 }

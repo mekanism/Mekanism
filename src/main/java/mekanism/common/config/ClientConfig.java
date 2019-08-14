@@ -13,7 +13,7 @@ public class ClientConfig implements IMekanismConfig {
     public final BooleanValue enablePlayerSounds;
     public final BooleanValue enableMachineSounds;
     public final BooleanValue holidays;
-    public final ConfigValue<Double> baseSoundVolume;
+    public final ConfigValue<Float> baseSoundVolume;
     public final BooleanValue machineEffects;
     public final BooleanValue enableAmbientLighting;
     public final IntValue ambientLightingLevel;
@@ -31,7 +31,7 @@ public class ClientConfig implements IMekanismConfig {
         enablePlayerSounds = builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower (all players).").define("enablePlayerSounds", true);
         enableMachineSounds = builder.comment("If enabled machines play their sounds while running.").define("enableMachineSounds", true);
         holidays = builder.comment("Christmas/New Years greetings in chat.").define("holidays", true);
-        baseSoundVolume = builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.").define("baseSoundVolume", 1D);
+        baseSoundVolume = builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.").define("baseSoundVolume", 1F);
         machineEffects = builder.comment("Show particles when machines active.").define("machineEffects", true);
         enableAmbientLighting = builder.comment("Should active machines produce block light.").define("enableAmbientLighting", true);
         ambientLightingLevel = builder.comment("How much light to produce if ambient lighting is enabled.").defineInRange("ambientLightingLevel", 15, 1, 15);

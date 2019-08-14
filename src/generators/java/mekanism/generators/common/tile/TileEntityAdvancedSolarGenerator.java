@@ -25,8 +25,8 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    protected float getConfiguredMax() {
-        return (float) (double) MekanismGeneratorsConfig.generators.advancedSolarGeneration.get();
+    protected double getConfiguredMax() {
+        return MekanismGeneratorsConfig.generators.advancedSolarGeneration.get();
     }
 
     @Override

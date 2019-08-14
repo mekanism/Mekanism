@@ -59,7 +59,7 @@ public class MekanismClient extends Mekanism {
 
         SynchronizedBoilerData.clientHotMap.clear();
 
-        MekanismConfigOld.setSyncedConfig(null);
+        //MekanismConfigOld.setSyncedConfig(null);
         Mekanism.proxy.onConfigSync(false);
 
         for (IModule module : Mekanism.modulesLoaded) {

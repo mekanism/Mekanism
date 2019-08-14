@@ -9,7 +9,6 @@ import mekanism.api.Range4D;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
-import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketContainerEditMode;
 import mekanism.common.network.PacketDataRequest;
@@ -101,6 +100,8 @@ public class PacketHandler {
                 output.writeCompoundTag((CompoundNBT) data);
             } else if (data instanceof ResourceLocation) {
                 output.writeResourceLocation((ResourceLocation) data);
+            } else if (data instanceof Enum) {
+                output.writeEnumValue((Enum) data);
             } else if (data instanceof int[]) {
                 for (int i : (int[]) data) {
                     output.writeInt(i);
@@ -156,7 +157,6 @@ public class PacketHandler {
         netHandler.registerMessage(disc++, PacketJetpackData.class, PacketJetpackData::encode, PacketJetpackData::decode, PacketJetpackData::handle);
         netHandler.registerMessage(disc++, PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
         netHandler.registerMessage(disc++, PacketScubaTankData.class, PacketScubaTankData::encode, PacketScubaTankData::decode, PacketScubaTankData::handle);
-        netHandler.registerMessage(disc++, PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
         netHandler.registerMessage(disc++, PacketBoxBlacklist.class, PacketBoxBlacklist::encode, PacketBoxBlacklist::decode, PacketBoxBlacklist::handle);
         netHandler.registerMessage(disc++, PacketContainerEditMode.class, PacketContainerEditMode::encode, PacketContainerEditMode::decode, PacketContainerEditMode::handle);
         netHandler.registerMessage(disc++, PacketFlamethrowerData.class, PacketFlamethrowerData::encode, PacketFlamethrowerData::decode, PacketFlamethrowerData::handle);
@@ -164,6 +164,8 @@ public class PacketHandler {
         netHandler.registerMessage(disc++, PacketEntityMove.class, PacketEntityMove::encode, PacketEntityMove::decode, PacketEntityMove::handle);
         netHandler.registerMessage(disc++, PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
         netHandler.registerMessage(disc++, PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
+        //TODO
+        //netHandler.registerMessage(disc++, PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
     }
 
     /**
@@ -217,9 +219,9 @@ public class PacketHandler {
     /**
      * Send this message to all players within a defined AABB cuboid.
      *
-     * @param message - the message to send
-     * @param cuboid  - the AABB cuboid to send the packet in
-     * @param dimension   - the dimension the cuboid is in
+     * @param message   - the message to send
+     * @param cuboid    - the AABB cuboid to send the packet in
+     * @param dimension - the dimension the cuboid is in
      */
     public <MSG> void sendToCuboid(MSG message, AxisAlignedBB cuboid, DimensionType dimension) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();

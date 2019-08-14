@@ -62,13 +62,13 @@ import net.minecraft.world.LightType;
 import net.minecraft.world.Region;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
@@ -957,7 +957,7 @@ public final class MekanismUtils {
     @Nonnull
     public static String getLastKnownUsername(UUID uuid) {
         String ret = UsernameCache.getLastKnownUsername(uuid);
-        if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) { // see if MC/Yggdrasil knows about it?!
+        if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get() == LogicalSide.SERVER) { // see if MC/Yggdrasil knows about it?!
             GameProfile gp = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(uuid);
             if (gp != null) {
                 ret = gp.getName();

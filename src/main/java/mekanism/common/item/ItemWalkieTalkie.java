@@ -23,10 +23,10 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
@@ -91,8 +91,8 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     }
 
     @Override
-    public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+    public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
+        if (!world.isRemote()) {
             setChannel(stack, dataStream.readInt());
         }
     }

@@ -6,7 +6,6 @@ import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketSimpleGui;

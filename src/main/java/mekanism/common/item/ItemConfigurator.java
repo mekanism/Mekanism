@@ -26,6 +26,7 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -38,11 +39,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 //TODO COFH IToolHammer, BuildCraft IToolWrench
 /*@InterfaceList({
@@ -75,7 +76,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
             Direction side = context.getFace();
             Hand hand = context.getHand();
             ItemStack stack = player.getHeldItem(hand);
-            Block block = world.getBlockState(pos).getBlock();
+            BlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
             TileEntity tile = world.getTileEntity(pos);
 
             if (getState(stack).isConfigurating()) { //Configurate
@@ -144,13 +146,13 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.ROTATE) { //Rotate
-                Direction[] rotations = block.getValidRotations(world, pos);
+                Direction[] rotations = block.getValidRotations(state, world, pos);
                 if (rotations != null && rotations.length > 0) {
-                    List<Direction> l = Arrays.asList(block.getValidRotations(world, pos));
+                    List<Direction> l = Arrays.asList(rotations);
                     if (!player.isSneaking() && l.contains(side)) {
-                        block.rotateBlock(world, pos, side);
+                        block.rotate(state, world, pos, side);
                     } else if (player.isSneaking() && l.contains(side.getOpposite())) {
-                        block.rotateBlock(world, pos, side.getOpposite());
+                        block.rotate(state, world, pos, side.getOpposite());
                     }
                 }
                 return ActionResultType.SUCCESS;
@@ -222,10 +224,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     /*end cofh IToolHammer */
 
     @Override
-    public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            int state = dataStream.readInt();
-            setState(stack, ConfiguratorMode.values()[state]);
+    public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
+        if (!world.isRemote()) {
+            setState(stack, dataStream.readEnumValue(ConfiguratorMode.class));
         }
     }
 

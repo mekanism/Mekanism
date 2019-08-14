@@ -87,8 +87,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      **/
     public float getMultiplier() {
         if (world.canBlockSeeSky(getPos().add(0, 4, 0))) {
-            final float minY = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMinY.get();
-            final float maxY = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
+            final float minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
+            final float maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
             final float minG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMin.get();
             final float maxG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMax.get();
             final float slope = (maxG - minG) / (maxY - minY);

@@ -293,8 +293,9 @@ public class ClientTickHandler {
                 } else if (newVal < 0) {
                     newVal = ConfiguratorMode.values().length + newVal;
                 }
-                configurator.setState(stack, ConfiguratorMode.values()[newVal]);
-                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newVal)));
+                ConfiguratorMode newMode = ConfiguratorMode.values()[newVal];
+                configurator.setState(stack, newMode);
+                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newMode)));
                 event.setCanceled(true);
             }
         }

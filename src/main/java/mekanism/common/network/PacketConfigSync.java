@@ -1,6 +1,8 @@
-package mekanism.common.network;
+/*package mekanism.common.network;
 
 import java.util.function.Supplier;
+import mekanism.common.Mekanism;
+import mekanism.common.base.IModule;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.logging.log4j.LogManager;
@@ -18,12 +20,12 @@ public class PacketConfigSync {
     }
 
     public static void handle(PacketConfigSync message, Supplier<Context> context) {
-        //MekanismConfigOld.setSyncedConfig(message.config);
-        //Mekanism.proxy.onConfigSync(true);
+        MekanismConfigOld.setSyncedConfig(message.config);
+        Mekanism.proxy.onConfigSync(true);
     }
 
     public static void encode(PacketConfigSync pkt, PacketBuffer buf) {
-        /*pkt.config.general.write(buf);
+        pkt.config.general.write(buf);
         pkt.config.usage.write(buf);
         pkt.config.storage.write(buf);
         try {
@@ -32,12 +34,12 @@ public class PacketConfigSync {
             }
         } catch (Exception e) {
             LOGGER.fatal("Something went wrong", e);
-        }*/
+        }
     }
 
     public static PacketConfigSync decode(PacketBuffer buf) {
         MekanismConfigOld config = new MekanismConfigOld();
-        /*config.client = null;
+        config.client = null;
 
         config.general.read(buf);
         config.usage.read(buf);
@@ -48,7 +50,7 @@ public class PacketConfigSync {
             }
         } catch (Exception e) {
             LOGGER.fatal("Something went wrong", e);
-        }*/
+        }
         return new PacketConfigSync(config);
     }
-}
+}*/

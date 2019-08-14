@@ -28,17 +28,17 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     public ItemElectricBow() {
-        super("electric_bow", 120000, new Item.Properties().setNoRepair());
-        setFull3D();
+        //TODO: Config max energy, damage, etc
+        super("electric_bow", 120_000, new Item.Properties().setNoRepair());
     }
 
     @Override
@@ -100,7 +100,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                         player.inventory.deleteStack(ammo);
                     }
                 }
-                player.addStat(Stats.getObjectUseStats(this));
+                player.addStat(Stats.ITEM_USED.get(this));
             }
         }
     }
@@ -165,8 +165,8 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     }
 
     @Override
-    public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+    public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
+        if (!world.isRemote()) {
             boolean state = dataStream.readBoolean();
             setFireState(stack, state);
         }

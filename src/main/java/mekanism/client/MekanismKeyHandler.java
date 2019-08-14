@@ -85,7 +85,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 int toSet = (configuratorMode.ordinal() + 1) % ConfiguratorMode.values().length;
                 configuratorMode = ConfiguratorMode.values()[toSet];
                 configurator.setState(toolStack, configuratorMode);
-                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(toSet)));
+                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(configuratorMode)));
                 player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                       Translation.of("mekanism.tooltip.configureState"), configuratorMode));
             } else if (player.isSneaking() && item instanceof ItemElectricBow) {

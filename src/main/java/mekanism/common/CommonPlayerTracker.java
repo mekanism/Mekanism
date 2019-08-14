@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import mekanism.common.network.PacketBoxBlacklist;
-import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketJetpackData;
@@ -27,8 +26,9 @@ public class CommonPlayerTracker {
         MinecraftServer server = event.getPlayer().getServer();
         if (!event.getPlayer().world.isRemote) {
             if (server == null || !server.isSinglePlayer()) {
-                Mekanism.packetHandler.sendTo(new PacketConfigSync(MekanismConfigOld.local()), (ServerPlayerEntity) event.getPlayer());
-                Mekanism.logger.info("Sent config to '" + event.getPlayer().getDisplayNameString() + ".'");
+                //Mekanism.packetHandler.sendTo(new PacketConfigSync(MekanismConfigOld.local()), (ServerPlayerEntity) event.getPlayer());
+                //TODO: Is this correct or should it be formatted/unformatted text component
+                Mekanism.logger.info("Sent config to '" + event.getPlayer().getDisplayName().getString() + ".'");
             }
             Mekanism.packetHandler.sendTo(new PacketBoxBlacklist(), (ServerPlayerEntity) event.getPlayer());
             syncChangedData((ServerPlayerEntity) event.getPlayer());

@@ -43,7 +43,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -51,7 +50,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ItemAtomicDisassembler extends ItemEnergized {
 
@@ -113,7 +111,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         double blockReachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
         Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
         RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
-        return res != null ? res : new BlockRayTraceResult(Type.MISS, Vec3d.ZERO, Direction.UP, pos);
+        //TODO: Should the miss have a different vector
+        return res != null ? res : BlockRayTraceResult.createMiss(Vec3d.ZERO, Direction.UP, pos);
     }
 
     @Override
@@ -161,11 +160,6 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return false;
     }
 
-    @Override
-    public boolean isFull3D() {
-        return true;
-    }
-
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
@@ -193,22 +187,21 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (diameter > 0) {
                 World world = context.getWorld();
                 BlockPos pos = context.getPos();
-                Direction side = context.getFace();
                 Block block = world.getBlockState(pos).getBlock();
                 if (block == Blocks.DIRT || block == Blocks.GRASS_PATH) {
-                    return useItemAs(player, world, pos, side, stack, hand, diameter, this::useHoe);
+                    return useItemAs(player, context, stack, diameter, this::useHoe);
                 } else if (block == Blocks.GRASS_BLOCK) {
-                    return useItemAs(player, world, pos, side, stack, hand, diameter, this::useShovel);
+                    return useItemAs(player, context, stack, diameter, this::useShovel);
                 }
             }
         }
         return ActionResultType.PASS;
     }
 
-    private ActionResultType useItemAs(PlayerEntity player, World world, BlockPos pos, Direction side, ItemStack stack, Hand hand, int diameter, ItemUseConsumer consumer) {
+    private ActionResultType useItemAs(PlayerEntity player, ItemUseContext context, ItemStack stack, int diameter, ItemUseConsumer consumer) {
         double energy = getEnergy(stack);
         int hoeUsage = MekanismConfig.general.disassemblerEnergyUsageHoe.get();
-        if (energy < hoeUsage || consumer.use(stack, player, hand, world, pos, side) == ActionResultType.FAIL) {
+        if (energy < hoeUsage || consumer.use(stack, player, context) == ActionResultType.FAIL) {
             //Fail if we don't have enough energy or using the item failed
             return ActionResultType.FAIL;
         }
@@ -218,7 +211,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             for (int z = -radius; z <= radius; z++) {
                 if (energyUsed + hoeUsage > energy) {
                     break;
-                } else if ((x != 0 || z != 0) && consumer.use(stack, player, hand, world, pos.add(x, 0, z), side) == ActionResultType.SUCCESS) {
+                }
+                if ((x != 0 || z != 0) && consumer.use(stack, player, hand, world, pos.add(x, 0, z), side) == ActionResultType.SUCCESS) {
                     //Don't attempt to use it on the source location as it was already done above
                     // If we successfully used it in a spot increment how much energy we used
                     energyUsed += hoeUsage;
@@ -229,14 +223,17 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return ActionResultType.SUCCESS;
     }
 
-    private ActionResultType useHoe(ItemStack stack, PlayerEntity player, Hand hand, World world, BlockPos pos, Direction facing) {
+    private ActionResultType useHoe(ItemStack stack, PlayerEntity player, ItemUseContext context) {
+        BlockPos pos = context.getPos();
+        Direction facing = context.getFace();
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         }
-        int hook = ForgeEventFactory.onHoeUse(stack, player, world, pos);
+        int hook = ForgeEventFactory.onHoeUse(context);
         if (hook != 0) {
             return hook > 0 ? ActionResultType.SUCCESS : ActionResultType.FAIL;
         }
+        World world = context.getWorld();
         if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
@@ -249,20 +246,24 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 newState = Blocks.DIRT.getDefaultState();
             }
             if (newState != null) {
-                setBlock(stack, player, hand, world, pos, newState);
+                setBlock(stack, player, context.getHand(), world, pos, newState);
                 return ActionResultType.SUCCESS;
             }
         }
         return ActionResultType.PASS;
     }
 
-    private ActionResultType useShovel(ItemStack stack, PlayerEntity player, Hand hand, World world, BlockPos pos, Direction facing) {
+    private ActionResultType useShovel(ItemStack stack, PlayerEntity player, ItemUseContext context) {
+        BlockPos pos = context.getPos();
+        Direction facing = context.getFace();
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
-        } else if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
+        }
+        World world = context.getWorld();
+        if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
             Block block = world.getBlockState(pos).getBlock();
             if (block == Blocks.GRASS_BLOCK) {
-                setBlock(stack, player, hand, world, pos, Blocks.GRASS_PATH.getDefaultState());
+                setBlock(stack, player, context.getHand(), world, pos, Blocks.GRASS_PATH.getDefaultState());
                 return ActionResultType.SUCCESS;
             }
         }
@@ -413,12 +414,16 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 }
                 if (coord.exists(world)) {
                     Block block = coord.getBlock(world);
-                    if (checkID(block)) {
+                    //TODO: Verify this works as a replacement for the below commented code
+                    if (block == startBlock) {
+                        loop(coord);
+                    }
+                    /*if (checkID(block)) {
                         ItemStack blockStack = block.getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
                         if (ItemHandlerHelper.canItemStacksStack(stack, blockStack) || (block == startBlock && isWood && coord.getBlockMeta(world) % 4 == stack.getDamage() % 4)) {
                             loop(coord);
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -440,6 +445,6 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     interface ItemUseConsumer {
 
         //Used to reference useHoe and useShovel via lambda references
-        ActionResultType use(ItemStack stack, PlayerEntity player, Hand hand, World world, BlockPos pos, Direction facing);
+        ActionResultType use(ItemStack stack, PlayerEntity player, ItemUseContext context);
     }
 }

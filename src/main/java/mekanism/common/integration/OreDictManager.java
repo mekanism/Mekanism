@@ -17,7 +17,6 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.StackUtils;
 import mekanism.common.world.DummyWorld;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
@@ -84,7 +83,8 @@ public final class OreDictManager {
         if (oreDict.size() > 0) {
             ItemStack itemRubber = StackUtils.size(oreDict.get(0), 1);
             for (ItemStack rubber : OreDictionary.getOres("woodRubber", false)) {
-                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(rubber, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(), 4), itemRubber, 1F);
+                //TODO: Verify this is fine
+                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(rubber, 1), new ItemStack(Blocks.JUNGLE_PLANKS, 4), itemRubber, 1F);
             }
         }
 

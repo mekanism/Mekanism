@@ -22,7 +22,7 @@ public class GeneratorsConfig implements IMekanismConfig {
     private final ForgeConfigSpec configSpec;
 
     //TODO: Limits
-    public final ConfigValue<Double> advancedSolarGeneration;
+    public final ConfigValue<Float> advancedSolarGeneration;
     public final ConfigValue<Double> bioGeneration;
     public final ConfigValue<Double> heatGeneration;
     public final ConfigValue<Double> heatGenerationLava;
@@ -48,7 +48,7 @@ public class GeneratorsConfig implements IMekanismConfig {
         solarGeneration = builder.comment("Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.")
               .define("solarGeneration", 50D);
         advancedSolarGeneration = builder.comment("Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .define("advancedSolarGeneration", 300D);
+              .define("advancedSolarGeneration", 300F);
 
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
         heatGeneration = builder.comment("Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether")

@@ -75,7 +75,7 @@ public class GeneralConfig implements IMekanismConfig {
     public final ConfigValue<Integer> maxPumpRange;
     public final BooleanValue pumpWaterSources;
     public final ConfigValue<Integer> maxPlenisherNodes;
-    public final ConfigValue<Double> evaporationHeatDissipation;
+    public final ConfigValue<Float> evaporationHeatDissipation;
     public final ConfigValue<Double> evaporationTempMultiplier;
     public final ConfigValue<Double> evaporationSolarMultiplier;
     public final ConfigValue<Double> evaporationMaxTemp;
@@ -183,7 +183,7 @@ public class GeneralConfig implements IMekanismConfig {
         maxPlenisherNodes = builder.comment("Fluidic Plenisher stops after this many blocks.").define("maxPlenisherNodes", 4_000);
 
         builder.comment("Thermal Evaporation Plant Settings").push(EVAPORATION_CATEGORY);
-        evaporationHeatDissipation = builder.comment("Thermal Evaporation Tower heat loss per tick.").define("heatDissipation", 0.02D);
+        evaporationHeatDissipation = builder.comment("Thermal Evaporation Tower heat loss per tick.").define("heatDissipation", 0.02F);
         evaporationTempMultiplier = builder.comment("Temperature to amount produced ratio for Thermal Evaporation Tower.").define("tempMultiplier", 0.1D);
         evaporationSolarMultiplier = builder.comment("Heat to absorb per Solar Panel array of Thermal Evaporation Tower.").define("solarMultiplier", 0.2D);
         evaporationMaxTemp = builder.comment("Max Temperature of the Thermal Evaporation Tower.").define("maxTemp", 3_000D);
