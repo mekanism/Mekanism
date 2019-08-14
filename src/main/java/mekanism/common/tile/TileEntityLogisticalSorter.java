@@ -395,11 +395,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return true;
-    }
-
-    @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         if (color != null) {
             nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));

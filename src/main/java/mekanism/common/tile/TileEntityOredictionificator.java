@@ -302,11 +302,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         return super.isCapabilityDisabled(capability, side);
     }
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     public static class OredictionificatorFilter implements IFilter {
 
         public String filter;

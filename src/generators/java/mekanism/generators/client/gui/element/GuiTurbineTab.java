@@ -9,7 +9,6 @@ import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.tileentity.TileEntity;

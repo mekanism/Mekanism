@@ -17,6 +17,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
@@ -39,6 +40,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -73,12 +75,13 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         setRegistryName(new ResourceLocation(Mekanism.MODID, "logistical_sorter"));
     }
 
+    @Nonnull
     @Override
-    public boolean supportsAll() {
-        return true;
+    public DirectionProperty getFacingProperty() {
+        return BlockStateHelper.facingProperty;
     }
 
-    //TODO: updatePostPlacement??
+    //TODO: updatePostPlacement?? for rotating to a block if not attached to any container yet
 
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {

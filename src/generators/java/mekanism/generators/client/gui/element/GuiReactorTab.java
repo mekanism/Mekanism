@@ -9,7 +9,6 @@ import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.tileentity.TileEntity;

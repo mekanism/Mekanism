@@ -115,12 +115,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private boolean hasSound;
     private boolean hasGui;
 
-    //Variables for handling ITileDirectional
-    //TODO: Should this be null when we don't support rotations
-    @Nonnull
-    private Direction facing = Direction.NORTH;
-    //End variables ITileDirectional
-
     //Variables for handling ITileRedstone
     public boolean redstone = false;
     public boolean redstoneLastTick = false;
@@ -233,6 +227,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     public Block getBlockType() {
+        //TODO: Should this be getBlockState().getBlock()
         return blockProvider.getBlock();
     }
 
@@ -302,7 +297,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     if (isDirectional()) {
                         //TODO: Extract this out into a handleRotation method?
                         setFacing(getDirection().rotateY());
-                        world.notifyNeighborsOfStateChange(pos, getBlockType());
+                        //TODO: I believe this is no longer needed, verify
+                        //world.notifyNeighborsOfStateChange(pos, getBlockType());
                     }
                     return WrenchResult.SUCCESS;
                 }
@@ -410,14 +406,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
-            if (isDirectional()) {
-                Direction previousDirection = getDirection();
-                facing = Direction.byIndex(dataStream.readInt());
-                if (previousDirection != getDirection()) {
-                    MekanismUtils.updateBlock(world, getPos());
-                    world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
-                }
-            }
             if (supportsRedstone()) {
                 controlType = RedstoneControl.values()[dataStream.readInt()];
             }
@@ -451,9 +439,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         //TODO: Should there be a hasComponents?
         for (ITileComponent component : components) {
             component.write(data);
-        }
-        if (isDirectional()) {
-            data.add(getDirection().ordinal());
         }
         if (supportsRedstone()) {
             data.add(controlType.ordinal());
@@ -507,9 +492,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
-        if (isDirectional() && nbtTags.contains("facing")) {
-            facing = Direction.byIndex(nbtTags.getInt("facing"));
-        }
         if (supportsRedstone() && nbtTags.contains("controlType")) {
             controlType = RedstoneControl.values()[nbtTags.getInt("controlType")];
         }
@@ -541,9 +523,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         nbtTags.putBoolean("redstone", redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags);
-        }
-        if (isDirectional()) {
-            nbtTags.putInt("facing", getDirection().ordinal());
         }
         if (supportsRedstone()) {
             nbtTags.putInt("controlType", controlType.ordinal());
@@ -656,18 +635,23 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     @Override
     public Direction getDirection() {
-        return facing;
+        BlockState state = getBlockState();
+        Block block = state.getBlock();
+        if (block instanceof IStateFacing) {
+            return ((IStateFacing) block).getDirection(state);
+        }
+        //TODO: Remove, give it some better default, or allow it to be null
+        return Direction.NORTH;
     }
 
     @Override
     public void setFacing(@Nonnull Direction direction) {
-        if (canSetFacing(direction)) {
-            Direction previousDirection = getDirection();
-            facing = direction;
-            if (!world.isRemote && previousDirection != getDirection()) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-                markDirty();
-            }
+        //TODO: Remove this method or cleanup how it is a wrapper for setting the blockstate direction
+        BlockState state = getBlockState();
+        Block block = state.getBlock();
+        if (block instanceof IStateFacing) {
+            state = ((IStateFacing) block).setDirection(state, direction);;
+            world.setBlockState(pos, state);
         }
     }
     //End methods ITileDirectional

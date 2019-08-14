@@ -19,7 +19,7 @@ import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -65,9 +65,10 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         return entries;
     }
 
+    @Nonnull
     @Override
-    public boolean supportsAll() {
-        return true;
+    public DirectionProperty getFacingProperty() {
+        return BlockStateHelper.facingProperty;
     }
 
     @Override
@@ -103,25 +104,6 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
             }
         }
         return glowPanel;
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, getTileEntityGlowPanel(world, pos));
     }
 
     @Override

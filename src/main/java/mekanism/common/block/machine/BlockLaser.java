@@ -11,6 +11,7 @@ import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityLaser;
@@ -26,6 +27,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -60,9 +62,10 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
         setRegistryName(new ResourceLocation(Mekanism.MODID, "laser"));
     }
 
+    @Nonnull
     @Override
-    public boolean supportsAll() {
-        return true;
+    public DirectionProperty getFacingProperty() {
+        return BlockStateHelper.facingProperty;
     }
 
     @Override

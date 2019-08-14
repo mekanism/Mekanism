@@ -489,11 +489,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public TileEntityThermalEvaporationController getController() {
         return structured ? this : null;
     }

@@ -170,11 +170,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public void onPlace() {
         MekanismUtils.makeBoundingBlock(world, Coord4D.get(this).offset(Direction.UP).getPos(), Coord4D.get(this));
     }

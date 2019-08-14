@@ -13,6 +13,7 @@ import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
@@ -28,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -54,9 +56,10 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
         setRegistryName(new ResourceLocation(Mekanism.MODID, "laser_tractor_beam"));
     }
 
+    @Nonnull
     @Override
-    public boolean supportsAll() {
-        return true;
+    public DirectionProperty getFacingProperty() {
+        return BlockStateHelper.facingProperty;
     }
 
     @Override

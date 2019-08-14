@@ -13,6 +13,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
@@ -32,6 +33,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -63,9 +65,10 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
         return tier;
     }
 
+    @Nonnull
     @Override
-    public boolean supportsAll() {
-        return true;
+    public DirectionProperty getFacingProperty() {
+        return BlockStateHelper.facingProperty;
     }
 
     @Override

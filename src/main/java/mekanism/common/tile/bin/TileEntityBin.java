@@ -415,11 +415,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public boolean renderUpdate() {
         return true;
     }

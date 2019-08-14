@@ -423,11 +423,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
     }
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {

@@ -169,11 +169,6 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         return nbtTags;
     }
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     public GasTank getTank(Direction side) {
         if (side == getLeftSide()) {
             return inputTank;

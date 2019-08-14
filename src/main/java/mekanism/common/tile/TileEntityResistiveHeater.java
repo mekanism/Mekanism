@@ -73,11 +73,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         energyUsage = nbtTags.getDouble("energyUsage");

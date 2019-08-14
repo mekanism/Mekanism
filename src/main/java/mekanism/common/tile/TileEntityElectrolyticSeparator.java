@@ -288,11 +288,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains("fluidTank")) {

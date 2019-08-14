@@ -91,9 +91,4 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return true;
     }
-
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
 }

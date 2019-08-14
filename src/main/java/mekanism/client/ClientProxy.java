@@ -501,22 +501,6 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
               MekanismBlock.WHITE_PLASTIC_FENCE);
 
-        setCustomStateMapper(new StateMapperBase() {
-            @Nonnull
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state) {
-                return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "fluid_tank"), "");
-            }
-        }, MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK, MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK);
-
-        setCustomStateMapper(new StateMapperBase() {
-            @Nonnull
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state) {
-                return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "energy_cube"), "");
-            }
-        }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
-
         setCustomTransmitterMeshDefinition(MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
               MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,
               MekanismBlock.ULTIMATE_MECHANICAL_PIPE, MekanismBlock.BASIC_PRESSURIZED_TUBE, MekanismBlock.ADVANCED_PRESSURIZED_TUBE, MekanismBlock.ELITE_PRESSURIZED_TUBE,

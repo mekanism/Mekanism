@@ -58,16 +58,18 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     }
 
     @Override
-    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (!world.isRemote && tileEntity instanceof TileEntityTurbineRotor) {
-            //TODO: Evaluate
-            int amount = ((TileEntityTurbineRotor) tileEntity).getHousedBlades();
-            if (amount > 0) {
-                spawnAsEntity(world, pos, GeneratorsItem.TURBINE_BLADE.getItemStack(amount));
+    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+        if (!world.isRemote && state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
+            TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityTurbineRotor) {
+                //TODO: Evaluate
+                int amount = ((TileEntityTurbineRotor) tileEntity).getHousedBlades();
+                if (amount > 0) {
+                    spawnAsEntity(world, pos, GeneratorsItem.TURBINE_BLADE.getItemStack(amount));
+                }
             }
         }
-        super.breakBlock(world, pos, state);
+        super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     @Override

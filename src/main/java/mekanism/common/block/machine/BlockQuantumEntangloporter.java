@@ -13,6 +13,7 @@ import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
@@ -32,6 +33,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -59,9 +61,10 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
         setRegistryName(new ResourceLocation(Mekanism.MODID, "quantum_entangloporter"));
     }
 
+    @Nonnull
     @Override
-    public boolean supportsAll() {
-        return true;
+    public DirectionProperty getFacingProperty() {
+        return BlockStateHelper.facingProperty;
     }
 
     @Override

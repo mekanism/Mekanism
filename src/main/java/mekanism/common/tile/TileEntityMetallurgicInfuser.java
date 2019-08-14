@@ -312,11 +312,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public TileComponentConfig getConfig() {
         return configComponent;
     }

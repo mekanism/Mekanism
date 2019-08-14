@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -78,7 +79,8 @@ public class LaserManager {
             ret = NonNullList.create();
             blockHit.getDrops(ret, world, blockCoord.getPos(), state, 0);
         }
-        blockHit.breakBlock(world, blockCoord.getPos(), state);
+        //TODO: Check this
+        blockHit.onReplaced(state, world, blockCoord.getPos(), Blocks.AIR.getDefaultState(), false);
         world.removeBlock(blockCoord.getPos(), false);
         world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockCoord.getPos(), Block.getStateId(state));
         return ret;

@@ -148,11 +148,6 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         return nbtTags;
     }
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {

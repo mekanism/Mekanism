@@ -14,6 +14,7 @@ import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -87,19 +88,19 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         removeMainBlock(world, pos);
-        super.breakBlock(world, pos, state);
+        super.onReplaced(state, world, pos, newState, isMoving);
         world.removeTileEntity(pos);
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getPickBlock(BlockState, RayTraceResult, World, BlockPos, PlayerEntity)}.
+     * {@inheritDoc} Delegate to main {@link Block#getPickBlock(BlockState, RayTraceResult, IBlockReader, BlockPos, PlayerEntity)}.
      */
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player) {
+    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
@@ -113,15 +114,15 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
-     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
+     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)
      */
     @Override
-    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest, IFluidState fluidState) {
         if (willHarvest) {
             return true;
         }
         removeMainBlock(world, pos);
-        return super.removedByPlayer(state, world, pos, player, false);
+        return super.removedByPlayer(state, world, pos, player, false, fluidState);
     }
 
     /**

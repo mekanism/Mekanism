@@ -121,11 +121,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return true;
-    }
-
-    @Override
     public double getMaxEnergy() {
         return tier.getMaxEnergy();
     }

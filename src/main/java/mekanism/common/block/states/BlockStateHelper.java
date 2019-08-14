@@ -9,12 +9,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.tile.TileEntityGlowPanel;
-import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -23,9 +22,14 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Plane;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+//TODO: Set default state for different blocks if the default is not ideal
 public class BlockStateHelper {
 
     public static final DirectionProperty facingProperty = DirectionProperty.create("facing");
@@ -47,11 +51,7 @@ public class BlockStateHelper {
     public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
         List<IProperty> properties = new ArrayList<>();
         if (block instanceof IStateFacing) {
-            if (((IStateFacing) block).supportsAll()) {
-                properties.add(facingProperty);
-            } else {
-                properties.add(horizontalFacingProperty);
-            }
+            properties.add(((IStateFacing) block).getFacingProperty());
         }
         if (block instanceof IStateActive) {
             properties.add(activeProperty);
@@ -75,39 +75,6 @@ public class BlockStateHelper {
         }
     }
 
-    public static BlockState getActualState(@Nonnull Block block, @Nonnull BlockState state, @Nonnull TileEntity tile) {
-        //TODO: Make the block's actual state update when things change if needed
-        if (block instanceof IStateFacing) {
-            Direction facing = getFacing(tile);
-            if (facing != null) {
-                if (((IStateFacing) block).supportsAll()) {
-                    state = state.with(facingProperty, facing);
-                } else if (facing != Direction.DOWN && facing != Direction.UP) {
-                    state = state.with(horizontalFacingProperty, facing);
-                }
-            }
-        }
-        if (block instanceof IStateActive) {
-            state = state.with(activeProperty, ((IStateActive) block).isActive(tile));
-        }
-        if (block instanceof IStateColor) {
-            state = state.with(BlockStateHelper.colorProperty, getColor(tile));
-        }
-        if (block instanceof IStateStorage) {
-            state = state.with(storageProperty, isStoring(tile));
-        }
-        if (block instanceof IStateConnection) {
-            //Add all the different connection types
-            state = state.with(downConnectionProperty, getStateConnection(tile, Direction.DOWN));
-            state = state.with(upConnectionProperty, getStateConnection(tile, Direction.UP));
-            state = state.with(northConnectionProperty, getStateConnection(tile, Direction.NORTH));
-            state = state.with(southConnectionProperty, getStateConnection(tile, Direction.SOUTH));
-            state = state.with(westConnectionProperty, getStateConnection(tile, Direction.WEST));
-            state = state.with(eastConnectionProperty, getStateConnection(tile, Direction.EAST));
-        }
-        return state;
-    }
-
     @Nullable
     public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockItemUseContext context) {
         if (state == null) {
@@ -117,16 +84,40 @@ public class BlockStateHelper {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
         if (block instanceof IStateFacing) {
-            //TODO: Figure out the direction it should be
-            Direction facing = getFacing(tile);
-            if (facing != null) {
-                if (((IStateFacing) block).supportsAll()) {
-                    state = state.with(facingProperty, facing);
-                } else if (facing != Direction.DOWN && facing != Direction.UP) {
-                    state = state.with(horizontalFacingProperty, facing);
+            IStateFacing blockFacing = (IStateFacing) block;
+            Direction newDirection = Direction.SOUTH;
+            //TODO: Will context.getNearestLookingDirection() do what we need
+            if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
+                PlayerEntity player = context.getPlayer();
+                float rotationPitch = player == null ? 0 : player.rotationPitch;
+                int height = Math.round(rotationPitch);
+                if (height >= 65) {
+                    newDirection = Direction.UP;
+                } else if (height <= -65) {
+                    newDirection = Direction.DOWN;
                 }
             }
+            if (newDirection != Direction.DOWN && newDirection != Direction.UP) {
+                //TODO: Can this just use newDirection = context.getPlacementHorizontalFacing().getOpposite(); or is that not accurate
+                int side = MathHelper.floor((context.getPlacementYaw() * 4.0F / 360.0F) + 0.5D) & 3;
+                switch (side) {
+                    case 0:
+                        newDirection = Direction.NORTH;
+                        break;
+                    case 1:
+                        newDirection = Direction.EAST;
+                        break;
+                    case 2:
+                        newDirection = Direction.SOUTH;
+                        break;
+                    case 3:
+                        newDirection = Direction.WEST;
+                        break;
+                }
+            }
+            state = blockFacing.setDirection(state, newDirection);
         }
+        //TODO: Set the proper defaults for the below ones, maybe do it by setting propert defaults of everything
         if (block instanceof IStateActive) {
             //TODO: False by default??
             state = state.with(activeProperty, ((IStateActive) block).isActive(tile));
@@ -136,7 +127,7 @@ public class BlockStateHelper {
             state = state.with(BlockStateHelper.colorProperty, getColor(tile));
         }
         if (block instanceof IStateStorage) {
-            //TODO:
+            //TODO: Do this based on if something is getting boxed up
             state = state.with(storageProperty, isStoring(tile));
         }
         if (block instanceof IStateConnection) {
@@ -152,18 +143,32 @@ public class BlockStateHelper {
         return state;
     }
 
-    @Nullable
-    private static Direction getFacing(@Nonnull TileEntity tile) {
-        //TODO: Make Glow Panel implement ITileDirectional
-        if (tile instanceof ITileDirectional) {
-            ITileDirectional directional = (ITileDirectional) tile;
-            if (directional.isDirectional()) {
-                return directional.getDirection();
-            }
-        } else if (tile instanceof TileEntityGlowPanel) {
-            return ((TileEntityGlowPanel) tile).side;
+    public static BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+        //TODO: use the world and pos to check that it still fits (used for multiblocks like digital miner)
+        return rotate(state, rotation);
+    }
+
+    public static BlockState rotate(BlockState state, Rotation rotation) {
+        Block block = state.getBlock();
+        if (block instanceof IStateFacing) {
+            IStateFacing blockFacing = (IStateFacing) block;
+            return rotate(blockFacing, blockFacing.getFacingProperty(), state, rotation);
         }
-        return null;
+        return state;
+    }
+
+    public static BlockState mirror(BlockState state, Mirror mirror) {
+        Block block = state.getBlock();
+        if (block instanceof IStateFacing) {
+            IStateFacing blockFacing = (IStateFacing) block;
+            DirectionProperty property = blockFacing.getFacingProperty();
+            return rotate(blockFacing, property, state, mirror.toRotation(state.get(property)));
+        }
+        return state;
+    }
+
+    private static BlockState rotate(IStateFacing blockFacing, DirectionProperty property, BlockState state, Rotation rotation) {
+        return blockFacing.setDirection(state, rotation.rotate(state.get(property)));
     }
 
     @Nonnull

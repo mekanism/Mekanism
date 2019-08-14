@@ -97,11 +97,6 @@ public class TileEntityChargepad extends TileEntityMekanism {
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public boolean lightUpdate() {
         return true;
     }

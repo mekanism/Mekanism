@@ -769,11 +769,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public void onBreak() {
         for (int x = -1; x <= +1; x++) {
             for (int y = 0; y <= +1; y++) {

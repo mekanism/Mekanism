@@ -83,11 +83,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return false;
-    }
-
-    @Override
     public void onUpdate() {
         if (world.isRemote) {
             float targetScale = (float) (fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0) / fluidTank.getCapacity();

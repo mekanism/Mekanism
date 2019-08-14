@@ -103,11 +103,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
         return data;
     }
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {

@@ -71,11 +71,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
      */
     public abstract boolean canOperate();
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)

@@ -1,6 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IBlockProvider;
@@ -9,7 +8,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
 
 //TODO
 public abstract class TileEntityMachine extends TileEntityMekanism implements IUpgradeTile {
@@ -22,11 +20,6 @@ public abstract class TileEntityMachine extends TileEntityMekanism implements IU
         super(blockProvider);
         upgradeComponent = new TileComponentUpgrade<>(this, upgradeSlot);
         upgradeComponent.setSupported(Upgrade.MUFFLING);
-    }
-
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override

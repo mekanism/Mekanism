@@ -198,11 +198,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack.getGas())) {
             return injectTank.receive(stack, doTransfer);

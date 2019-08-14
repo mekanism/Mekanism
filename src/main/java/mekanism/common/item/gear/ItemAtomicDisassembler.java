@@ -21,8 +21,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockDirt.DirtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
@@ -152,7 +150,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         block2.onBlockHarvested(player.world, coord.getPos(), state, player);
                         player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
                         player.world.removeBlock(coord.getPos(), false);
-                        block2.breakBlock(player.world, coord.getPos(), state);
+                        //TODO: Check this
+                        block2.onReplaced(state, player.world, coord.getPos(), Blocks.AIR.getDefaultState(), false);
                         Block.spawnDrops(state, player.world, coord.getPos(), player.world.getTileEntity(coord.getPos()));
                         setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
                     }

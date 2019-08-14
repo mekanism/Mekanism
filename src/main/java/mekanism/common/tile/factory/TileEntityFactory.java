@@ -876,11 +876,6 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public TileComponentConfig getConfig() {
         return configComponent;
     }

@@ -15,7 +15,6 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
@@ -34,12 +33,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -187,36 +187,9 @@ public abstract class BlockTileDrops extends Block {
         //TODO: Remove most implementations of ItemBlock#placeBlockAt and use this method instead
         //TODO: Should this just be TileEntity and then check instance of and abstract things further
         TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
-        if (this instanceof IStateFacing) {
-            Direction change = Direction.SOUTH;
-            if (tile.canSetFacing(Direction.DOWN) && tile.canSetFacing(Direction.UP)) {
-                int height = Math.round(placer.rotationPitch);
-                if (height >= 65) {
-                    change = Direction.UP;
-                } else if (height <= -65) {
-                    change = Direction.DOWN;
-                }
-            }
-            if (change != Direction.DOWN && change != Direction.UP) {
-                int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                switch (side) {
-                    case 0:
-                        change = Direction.NORTH;
-                        break;
-                    case 1:
-                        change = Direction.EAST;
-                        break;
-                    case 2:
-                        change = Direction.SOUTH;
-                        break;
-                    case 3:
-                        change = Direction.WEST;
-                        break;
-                }
-            }
-            tile.setFacing(change);
+        if (tile.supportsRedstone()) {
+            tile.redstone = world.isBlockPowered(pos);
         }
-        tile.redstone = world.isBlockPowered(pos);
 
         if (tile instanceof IBoundingBlock) {
             ((IBoundingBlock) tile).onPlace();
@@ -295,27 +268,31 @@ public abstract class BlockTileDrops extends Block {
     }
 
     @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull Direction axis) {
-        if (this instanceof IStateFacing) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
-                if (tile.isDirectional() && tile.canSetFacing(axis)) {
-                    tile.setFacing(axis);
-                    return true;
-                }
-            }
-        }
-        return false;
+    public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+        return BlockStateHelper.rotate(state, world, pos, rotation);
+    }
+
+    @Nonnull
+    @Override
+    public BlockState rotate(@Nonnull BlockState state, Rotation rotation) {
+        return BlockStateHelper.rotate(state, rotation);
+    }
+
+    @Nonnull
+    @Override
+    public BlockState mirror(@Nonnull BlockState state, Mirror mirror) {
+        return BlockStateHelper.mirror(state, mirror);
     }
 
     @Override
-    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof IBoundingBlock) {
-            ((IBoundingBlock) tile).onBreak();
+    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+        if (state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof IBoundingBlock) {
+                ((IBoundingBlock) tile).onBreak();
+            }
         }
-        super.breakBlock(world, pos, state);
+        super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     @Override

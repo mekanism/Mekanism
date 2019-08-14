@@ -264,11 +264,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
-    @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getMaxGas());
     }

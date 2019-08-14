@@ -276,11 +276,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         return getOppositeDirection() == side;
     }
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {

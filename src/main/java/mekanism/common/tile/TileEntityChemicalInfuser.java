@@ -150,11 +150,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         return nbtTags;
     }
 
-    @Override
-    public boolean canSetFacing(@Nonnull Direction facing) {
-        return facing != Direction.DOWN && facing != Direction.UP;
-    }
-
     public GasTank getTank(Direction side) {
         if (side == getLeftSide()) {
             return leftTank;

@@ -17,7 +17,6 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateActive;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -59,8 +58,8 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui, IColoredBlock, IStateFacing, IStateActive, ITieredBlock<FluidTankTier>,
-      IHasInventory, IHasTileEntity<TileEntityFluidTank>, IBlockDisableable, ISupportsComparator {
+public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>, IHasInventory,
+      IHasTileEntity<TileEntityFluidTank>, IBlockDisableable, ISupportsComparator {
 
     private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
