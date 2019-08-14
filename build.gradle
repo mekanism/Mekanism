@@ -122,6 +122,8 @@ def explodedVersion = mod_version.split("\\.")
 
 minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     /*version = "${minecraft_version}-${forge_version}"
     mappings = "${mappings_version}"
     runDir = "run"
@@ -215,7 +217,7 @@ processResources {
         exclude 'mcmod.info'
         exclude '**/*.blend*'
     }
-    rename '(.+_at.cfg)', 'META-INF/$1'
+    //rename '(.+_at.cfg)', 'META-INF/$1'
 }
 /*
 def setMainManifestProps = { Manifest manifest->

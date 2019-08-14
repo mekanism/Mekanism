@@ -50,7 +50,8 @@ public class PortalHelper {
             int i;
             for (i = 0; i < 22; ++i) {
                 BlockPos blockpos = pos.offset(facing, i);
-                if (!this.isEmptyBlock(this.world.getBlockState(blockpos).getBlock()) || !isFrame(this.world.getBlockState(blockpos.down()))) {
+                //TODO: func_196900_a -> isEmptyBlock
+                if (!this.func_196900_a(this.world.getBlockState(blockpos)) || !isFrame(this.world.getBlockState(blockpos.down()))) {
                     break;
                 }
             }
@@ -63,8 +64,9 @@ public class PortalHelper {
             for (this.height = 0; getHeight() < 21; ++this.height) {
                 for (int i = 0; i < getWidth(); ++i) {
                     BlockPos blockpos = this.bottomLeft.offset(this.rightDir, i).up(getHeight());
-                    Block block = this.world.getBlockState(blockpos).getBlock();
-                    if (!this.isEmptyBlock(block)) {
+                    BlockState blockState = this.world.getBlockState(blockpos);
+                    Block block = blockState.getBlock();
+                    if (!this.func_196900_a(blockState)) {
                         break label56;
                     }
                     if (block == Blocks.NETHER_PORTAL) {
