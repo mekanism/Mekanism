@@ -632,7 +632,10 @@ public class Mekanism {
         if (MekanismConfig.general.voiceServerEnabled.get()) {
             voiceManager.start();
         }
-        CommandMek.register(event);
+        //TODO: Check this stuff
+        //CommandMek.register(event);
+        CommandMek.register();
+        //TODO: Do we care about the alternates of mtp, and mtpop
     }
 
     @EventHandler
