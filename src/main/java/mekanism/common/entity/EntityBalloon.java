@@ -248,11 +248,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void entityInit() {
+    protected void registerData() {
     }
 
     @Override
-    protected void readEntityFromNBT(@Nonnull CompoundNBT nbtTags) {
+    protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
         color = EnumColor.values()[nbtTags.getInt("color")];
         if (nbtTags.contains("latched")) {
             latched = Coord4D.read(nbtTags.getCompound("latched"));
@@ -264,7 +264,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
+    protected void writeAdditional(@Nonnull CompoundNBT nbtTags) {
         nbtTags.putInt("color", color.ordinal());
         if (latched != null) {
             nbtTags.put("latched", latched.write(new CompoundNBT()));

@@ -1,6 +1,7 @@
 package mekanism.client.jei;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,7 +46,7 @@ public class RecipeRegistryHelper {
         MekanismBlock mekanismBlock = MekanismBlock.ENERGIZED_SMELTER;
         if (mekanismBlock.isEnabled()) {
             //TODO: Add all smelting recipes
-            registry.addRecipes(SmeltingRecipe.class, mekanismBlock.getJEICategory());
+            registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
             if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
                 registry.addRecipes(Recipe.ENERGIZED_SMELTER.get().values(), mekanismBlock.getJEICategory());
             } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed

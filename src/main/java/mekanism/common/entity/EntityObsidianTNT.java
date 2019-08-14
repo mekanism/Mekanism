@@ -43,7 +43,7 @@ public class EntityObsidianTNT extends Entity {
     }
 
     @Override
-    protected void entityInit() {
+    protected void registerData() {
     }
 
     @Override
@@ -100,12 +100,12 @@ public class EntityObsidianTNT extends Entity {
     }
 
     @Override
-    protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
+    protected void writeAdditional(@Nonnull CompoundNBT nbtTags) {
         nbtTags.putByte("Fuse", (byte) fuse);
     }
 
     @Override
-    protected void readEntityFromNBT(@Nonnull CompoundNBT nbtTags) {
+    protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
         fuse = nbtTags.getByte("Fuse");
     }
 }

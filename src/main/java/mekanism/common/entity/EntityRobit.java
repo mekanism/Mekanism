@@ -106,8 +106,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         dataManager.register(ELECTRICITY, 0F);
         dataManager.register(OWNER_UUID, "");
         dataManager.register(OWNER_NAME, "");
@@ -327,8 +327,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT nbtTags) {
-        super.writeEntityToNBT(nbtTags);
+    public void writeAdditional(CompoundNBT nbtTags) {
+        super.writeAdditional(nbtTags);
         nbtTags.putDouble("electricityStored", getEnergy());
         nbtTags.putString("name", getName());
         if (getOwnerUUID() != null) {
@@ -352,8 +352,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT nbtTags) {
-        super.readEntityFromNBT(nbtTags);
+    public void readAdditional(CompoundNBT nbtTags) {
+        super.readAdditional(nbtTags);
         setEnergy(nbtTags.getDouble("electricityStored"));
         setCustomNameTag(nbtTags.getString("name"));
         if (nbtTags.contains("ownerUUID")) {
