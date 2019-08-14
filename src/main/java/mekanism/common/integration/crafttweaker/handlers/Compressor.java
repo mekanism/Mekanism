@@ -1,9 +1,8 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IItemStack;
-import crafttweaker.api.minecraft.CraftTweakerMC;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.gas.Gas;
@@ -21,50 +20,48 @@ import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
-import stanhebben.zenscript.annotations.Optional;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mods.mekanism.compressor")
 @ZenRegister
+@ZenCodeType.Name("mekanism.compressor")
 public class Compressor {
 
     public static final String NAME = Mekanism.MOD_NAME + " Compressor";
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
-            ItemStack output = CraftTweakerMC.getItemStack(itemOutput);
+            ItemStack output = IngredientHelper.getItemStack(itemOutput);
             List<OsmiumCompressorRecipe> recipes = new ArrayList<>();
-            for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
-                recipes.add(new OsmiumCompressorRecipe(stack, output));
+            for (IItemStack stack : ingredientInput.getItems()) {
+                recipes.add(new OsmiumCompressorRecipe(stack.getInternal(), output));
             }
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, recipes));
         }
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
-            ItemStackOutput output = new ItemStackOutput(CraftTweakerMC.getItemStack(itemOutput));
+            ItemStackOutput output = new ItemStackOutput(IngredientHelper.getItemStack(itemOutput));
             Gas gas = GasHelper.toGas(gasInput).getGas();
             List<OsmiumCompressorRecipe> recipes = new ArrayList<>();
-            for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
-                recipes.add(new OsmiumCompressorRecipe(new AdvancedMachineInput(stack, gas), output));
+            for (IItemStack stack : ingredientInput.getItems()) {
+                recipes.add(new OsmiumCompressorRecipe(new AdvancedMachineInput(stack.getInternal(), gas), output));
             }
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, recipes));
         }
     }
 
-    @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput, @Optional IIngredient gasInput) {
+    @ZenCodeType.Method
+    public static void removeRecipe(IIngredient itemOutput, @ZenCodeType.Optional IIngredient itemInput, @ZenCodeType.Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, new IngredientWrapper(itemOutput),
                   new IngredientWrapper(itemInput, gasInput)));
         }
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR));
     }

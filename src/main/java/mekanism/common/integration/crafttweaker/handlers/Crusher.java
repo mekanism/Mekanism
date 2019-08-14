@@ -1,9 +1,8 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IItemStack;
-import crafttweaker.api.minecraft.CraftTweakerMC;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.Mekanism;
@@ -16,37 +15,35 @@ import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CrusherRecipe;
 import net.minecraft.item.ItemStack;
-import stanhebben.zenscript.annotations.Optional;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mods.mekanism.crusher")
 @ZenRegister
+@ZenCodeType.Name("mekanism.crusher")
 public class Crusher {
 
     public static final String NAME = Mekanism.MOD_NAME + " Crusher";
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
-            ItemStack output = CraftTweakerMC.getItemStack(itemOutput);
+            ItemStack output = IngredientHelper.getItemStack(itemOutput);
             List<CrusherRecipe> recipes = new ArrayList<>();
-            for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
-                recipes.add(new CrusherRecipe(stack, output));
+            for (IItemStack stack : ingredientInput.getItems()) {
+                recipes.add(new CrusherRecipe(stack.getInternal(), output));
             }
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CRUSHER, recipes));
         }
     }
 
-    @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput) {
+    @ZenCodeType.Method
+    public static void removeRecipe(IIngredient itemOutput, @ZenCodeType.Optional IIngredient itemInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.CRUSHER, new IngredientWrapper(itemOutput),
                   new IngredientWrapper(itemInput)));
         }
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CRUSHER));
     }

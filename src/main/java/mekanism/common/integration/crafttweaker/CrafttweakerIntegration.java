@@ -1,8 +1,7 @@
 package mekanism.common.integration.crafttweaker;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.IAction;
-import crafttweaker.mc1120.commands.CTChatCommand;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.actions.IAction;
 import java.util.LinkedList;
 import java.util.List;
 import mekanism.common.Mekanism;

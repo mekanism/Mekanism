@@ -1,12 +1,13 @@
 package mekanism.common.integration.crafttweaker.helpers;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IItemStack;
-import crafttweaker.api.item.IngredientAny;
-import crafttweaker.api.liquid.ILiquidStack;
-import crafttweaker.api.minecraft.CraftTweakerMC;
-import crafttweaker.api.oredict.IOreDictEntry;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.blamejared.crafttweaker.api.item.IngredientAny;
+import com.blamejared.crafttweaker.api.liquid.ILiquidStack;
+import com.blamejared.crafttweaker.api.minecraft.CraftTweakerMC;
+import com.blamejared.crafttweaker.impl.item.MCItemStack;
+import com.blamejared.crafttweaker.impl.tag.MCTag;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
@@ -15,7 +16,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.recipe.ingredients.IMekanismIngredient;
 import mekanism.common.recipe.ingredients.IngredientMekIngredientWrapper;
 import mekanism.common.recipe.ingredients.ItemStackMekIngredient;
-import mekanism.common.recipe.ingredients.OredictMekIngredient;
+import mekanism.common.recipe.ingredients.TagMekIngredient;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
@@ -59,7 +60,7 @@ public class IngredientHelper {
 
     private static IIngredient getIngredient(Object ingredient) {
         if (ingredient instanceof ItemStack) {
-            return CraftTweakerMC.getIItemStack((ItemStack) ingredient);
+            return new MCItemStack((ItemStack) ingredient);
         } else if (ingredient instanceof GasStack) {
             return new CraftTweakerGasStack((GasStack) ingredient);
         } else if (ingredient instanceof Gas) {
@@ -145,15 +146,19 @@ public class IngredientHelper {
     }
 
     public static IMekanismIngredient<ItemStack> getMekanismIngredient(IIngredient ingredient) {
-        if (ingredient instanceof IOreDictEntry) {
-            return new OredictMekIngredient(((IOreDictEntry) ingredient).getName());
+        if (ingredient instanceof MCTag) {
+            return new TagMekIngredient(((MCTag) ingredient).getItemTag());
         } else if (ingredient instanceof IItemStack) {
-            return new ItemStackMekIngredient(CraftTweakerMC.getItemStack(ingredient));
+            return new ItemStackMekIngredient(getItemStack((IItemStack) ingredient));
         }
-        return new IngredientMekIngredientWrapper(CraftTweakerMC.getIngredient(ingredient));
+        return new IngredientMekIngredientWrapper(ingredient.asVanillaIngredient());
     }
 
     public static FluidStack toFluid(ILiquidStack fluid) {
         return fluid == null ? null : FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount());
+    }
+
+    public static ItemStack getItemStack(IItemStack crtItemStack) {
+        return crtItemStack.getInternal();
     }
 }

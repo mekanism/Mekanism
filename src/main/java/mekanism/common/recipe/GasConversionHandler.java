@@ -17,11 +17,15 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.ingredients.IMekanismIngredient;
 import mekanism.common.recipe.ingredients.ItemStackMekIngredient;
-import mekanism.common.recipe.ingredients.OredictMekIngredient;
+import mekanism.common.recipe.ingredients.TagMekIngredient;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 public class GasConversionHandler {
 
@@ -30,19 +34,23 @@ public class GasConversionHandler {
     private final static Map<IMekanismIngredient<ItemStack>, GasStack> ingredientToGas = new HashMap<>();
 
     public static void addDefaultGasMappings() {
+        ItemTags.Wrapper sulfur = new ItemTags.Wrapper(new ResourceLocation("forge", "dusts/sulfur"));
+        ItemTags.Wrapper salt = new ItemTags.Wrapper(new ResourceLocation("forge", "dusts/salt"));
+        ItemTags.Wrapper osmiumIngot = new ItemTags.Wrapper(new ResourceLocation("forge", "ingots/osmium"));
+        ItemTags.Wrapper osmiumBlock = new ItemTags.Wrapper(new ResourceLocation("forge", "storage_blocks/osmium"));
         addGasMapping(new ItemStack(Items.FLINT), MekanismFluids.Oxygen, 10);
-        addGasMapping("dustSulfur", MekanismFluids.SulfuricAcid, 2);
-        addGasMapping("dustSalt", MekanismFluids.HydrogenChloride, 2);
-        addGasMapping("ingotOsmium", MekanismFluids.LiquidOsmium, 200);
-        addGasMapping("blockOsmium", MekanismFluids.LiquidOsmium, 1800);
+        addGasMapping(sulfur, MekanismFluids.SulfuricAcid, 2);
+        addGasMapping(salt, MekanismFluids.HydrogenChloride, 2);
+        addGasMapping(osmiumIngot, MekanismFluids.LiquidOsmium, 200);
+        addGasMapping(osmiumBlock, MekanismFluids.LiquidOsmium, 1_800);
     }
 
     public static boolean addGasMapping(@Nonnull ItemStack stack, @Nonnull Gas gas, int amount) {
         return addGasMapping(new ItemStackMekIngredient(stack), new GasStack(gas, amount));
     }
 
-    public static boolean addGasMapping(@Nonnull String oreDict, @Nonnull Gas gas, int amount) {
-        return addGasMapping(new OredictMekIngredient(oreDict), new GasStack(gas, amount));
+    public static boolean addGasMapping(@Nonnull Tag<Item> tag, @Nonnull Gas gas, int amount) {
+        return addGasMapping(new TagMekIngredient(tag), new GasStack(gas, amount));
     }
 
     public static boolean addGasMapping(@Nonnull IMekanismIngredient<ItemStack> ingredient, @Nonnull GasStack gasStack) {

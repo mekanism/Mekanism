@@ -1,11 +1,8 @@
 package mekanism.common.integration.crafttweaker.commands;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.mc1120.commands.CraftTweakerCommand;
-import crafttweaker.mc1120.commands.SpecialMessagesChat;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import java.util.Set;
 import mekanism.api.infuse.InfuseRegistry;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 

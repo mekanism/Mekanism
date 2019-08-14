@@ -1,8 +1,6 @@
 package mekanism.common.integration.crafttweaker.commands;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.mc1120.commands.CraftTweakerCommand;
-import crafttweaker.mc1120.commands.SpecialMessagesChat;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +27,6 @@ import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;

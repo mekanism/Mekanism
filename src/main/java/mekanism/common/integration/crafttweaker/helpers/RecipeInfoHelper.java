@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.helpers;
 
-import crafttweaker.mc1120.item.MCItemStack;
+import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import java.util.Map.Entry;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -59,6 +59,6 @@ public class RecipeInfoHelper {
     }
 
     public static String getItemName(ItemStack stack) {
-        return new MCItemStack(stack).toString();
+        return new MCItemStack(stack).getCommandString();
     }
 }

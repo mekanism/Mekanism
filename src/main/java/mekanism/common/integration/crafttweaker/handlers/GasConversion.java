@@ -1,39 +1,38 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.IAction;
-import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.actions.IAction;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.recipe.GasConversionHandler;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mods.mekanism.GasConversion")
 @ZenRegister
+@ZenCodeType.Name("mekanism.gas.conversion")
 public class GasConversion {
 
     public static final String NAME = Mekanism.MOD_NAME + " Gas Conversion";
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void register(IIngredient ingredient, IGasStack gas) {
         if (IngredientHelper.checkNotNull(NAME, ingredient, gas)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new Add(ingredient, gas));
         }
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void unregister(IIngredient ingredient, IGasStack gas) {
         if (IngredientHelper.checkNotNull(NAME, ingredient, gas)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(ingredient, gas));
         }
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void unregisterAll() {
         CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAll());
     }
@@ -53,13 +52,13 @@ public class GasConversion {
             boolean noOverride = GasConversionHandler.addGasMapping(IngredientHelper.getMekanismIngredient(ingredient), GasHelper.toGas(gas));
             if (!noOverride) {
                 CraftTweakerAPI.logWarning(String.format("%s: %s overrides another conversion. It is recommended to manually call unregisterGasItem and then registerGasItem " +
-                                                         "to override conversions as unexpected things may occur.", NAME, ingredient.toCommandString()));
+                                                         "to override conversions as unexpected things may occur.", NAME, ingredient.getCommandString()));
             }
         }
 
         @Override
         public String describe() {
-            return "Adding gas conversion between: " + ingredient.toCommandString() + " to " + gas.toCommandString();
+            return "Adding gas conversion between: " + ingredient.getCommandString() + " to " + gas.getCommandString();
         }
     }
 
@@ -76,7 +75,7 @@ public class GasConversion {
         @Override
         public void apply() {
             int count = GasConversionHandler.removeGasMapping(IngredientHelper.getMekanismIngredient(ingredient), GasHelper.toGas(gas));
-            CraftTweakerAPI.logInfo("Removing " + count + " gas conversion" + (count == 1 ? "" : "s") + " between: " + ingredient.toCommandString() + " and " + gas.toCommandString());
+            CraftTweakerAPI.logInfo("Removing " + count + " gas conversion" + (count == 1 ? "" : "s") + " between: " + ingredient.getCommandString() + " and " + gas.getCommandString());
         }
 
         @Override

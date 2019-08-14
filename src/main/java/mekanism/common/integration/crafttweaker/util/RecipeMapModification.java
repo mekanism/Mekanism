@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.util;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.IAction;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.actions.IAction;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;

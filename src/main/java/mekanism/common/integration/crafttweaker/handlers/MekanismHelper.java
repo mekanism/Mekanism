@@ -1,17 +1,16 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import crafttweaker.annotations.ZenRegister;
-import mekanism.common.integration.crafttweaker.gas.GasBracketHandler;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import mekanism.common.integration.crafttweaker.MekanismBracketHandlers;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mods.mekanism.MekanismHelper")
 @ZenRegister
+@ZenCodeType.Name("mekanism.helper")
 public class MekanismHelper {
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static IGasStack getGas(String name) {
-        return GasBracketHandler.getGas(name);
+        return MekanismBracketHandlers.getGas(name);
     }
 }

@@ -1,9 +1,8 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IItemStack;
-import crafttweaker.api.minecraft.CraftTweakerMC;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -15,33 +14,31 @@ import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
-import stanhebben.zenscript.annotations.Optional;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mods.mekanism.chemical.crystallizer")
 @ZenRegister
+@ZenCodeType.Name("mekanism.chemical.crystallizer")
 public class ChemicalCrystallizer {
 
     public static final String NAME = Mekanism.MOD_NAME + " Chemical Crystallizer";
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void addRecipe(IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER, new CrystallizerRecipe(GasHelper.toGas(gasInput),
-                  CraftTweakerMC.getItemStack(itemOutput))));
+                  IngredientHelper.getItemStack(itemOutput))));
         }
     }
 
-    @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient gasInput) {
+    @ZenCodeType.Method
+    public static void removeRecipe(IIngredient itemOutput, @ZenCodeType.Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER, new IngredientWrapper(itemOutput),
                   new IngredientWrapper(gasInput)));
         }
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER));
     }

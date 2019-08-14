@@ -1,21 +1,18 @@
 package mekanism.common.integration.crafttweaker.gas;
 
-import crafttweaker.annotations.ZenRegister;
-import stanhebben.zenscript.annotations.OperatorType;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenGetter;
-import stanhebben.zenscript.annotations.ZenOperator;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mod.mekanism.gas.IGasDefinition")
 @ZenRegister
+@ZenCodeType.Name("mekanism.gas.IGasDefinition")
 public interface IGasDefinition {
 
-    @ZenOperator(OperatorType.MUL)
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
     IGasStack asStack(int mb);
 
-    @ZenGetter("NAME")
+    @ZenCodeType.Getter("NAME")
     String getName();
 
-    @ZenGetter("displayName")
+    @ZenCodeType.Getter("displayName")
     String getDisplayName();
 }

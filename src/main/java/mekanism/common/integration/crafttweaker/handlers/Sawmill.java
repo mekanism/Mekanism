@@ -1,9 +1,8 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IItemStack;
-import crafttweaker.api.minecraft.CraftTweakerMC;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.Mekanism;
@@ -17,39 +16,36 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
-import net.minecraft.item.ItemStack;
-import stanhebben.zenscript.annotations.Optional;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mods.mekanism.sawmill")
 @ZenRegister
+@ZenCodeType.Name("mekanism.sawmill")
 public class Sawmill {
 
     public static final String NAME = Mekanism.MOD_NAME + " Sawmill";
 
-    @ZenMethod
-    public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput, @Optional IItemStack optionalItemOutput, @Optional double optionalChance) {
+    @ZenCodeType.Method
+    public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput, @ZenCodeType.Optional IItemStack optionalItemOutput, @ZenCodeType.Optional double optionalChance) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
-            ChanceOutput output = optionalItemOutput == null ? new ChanceOutput(CraftTweakerMC.getItemStack(itemOutput)) : new ChanceOutput(CraftTweakerMC.getItemStack(itemOutput),
-                  CraftTweakerMC.getItemStack(optionalItemOutput), optionalChance);
+            ChanceOutput output = optionalItemOutput == null ? new ChanceOutput(IngredientHelper.getItemStack(itemOutput)) : new ChanceOutput(IngredientHelper.getItemStack(itemOutput),
+                  IngredientHelper.getItemStack(optionalItemOutput), optionalChance);
             List<SawmillRecipe> recipes = new ArrayList<>();
-            for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
-                recipes.add(new SawmillRecipe(new ItemStackInput(stack), output));
+            for (IItemStack stack : ingredientInput.getItems()) {
+                recipes.add(new SawmillRecipe(new ItemStackInput(stack.getInternal()), output));
             }
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL, recipes));
         }
     }
 
-    @ZenMethod
-    public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput, @Optional IIngredient optionalItemOutput) {
+    @ZenCodeType.Method
+    public static void removeRecipe(IIngredient itemInput, @ZenCodeType.Optional IIngredient itemOutput, @ZenCodeType.Optional IIngredient optionalItemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL, new IngredientWrapper(itemOutput, optionalItemOutput),
                   new IngredientWrapper(itemInput)));
         }
     }
 
-    @ZenMethod
+    @ZenCodeType.Method
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL));
     }

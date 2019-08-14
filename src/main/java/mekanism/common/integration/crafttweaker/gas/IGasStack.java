@@ -1,27 +1,33 @@
 package mekanism.common.integration.crafttweaker.gas;
 
-import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.item.IIngredient;
-import stanhebben.zenscript.annotations.OperatorType;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenGetter;
-import stanhebben.zenscript.annotations.ZenMethod;
-import stanhebben.zenscript.annotations.ZenOperator;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IIngredient;
+import mekanism.api.gas.GasStack;
+import org.openzen.zencode.java.ZenCodeType;
 
-@ZenClass("mod.mekanism.gas.IGasStack")
+//TODO: Move this to our API package?
+// Also create a bracket handler for metallurgic infusion type
 @ZenRegister
+@ZenCodeType.Name("mekanism.gas.IGasStack")
 public interface IGasStack extends IIngredient {
+    //TODO: Should this even be extending IIngredient
 
-    @ZenGetter("definition")
+    @ZenCodeType.Getter("definition")
     IGasDefinition getDefinition();
 
-    @ZenGetter("NAME")
+    //TODO: Remove?
+    @ZenCodeType.Getter("name")
     String getName();
 
-    @ZenGetter("displayName")
+    @ZenCodeType.Getter("displayName")
     String getDisplayName();
 
-    @ZenOperator(OperatorType.MUL)
-    @ZenMethod
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
+    @ZenCodeType.Method
     IGasStack withAmount(int amount);
+
+    @ZenCodeType.Getter("amount")
+    int getAmount();
+
+    GasStack getInternal();
 }

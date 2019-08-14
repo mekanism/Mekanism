@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.util;
 
-import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IngredientAny;
+import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IngredientAny;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 
 public class IngredientWrapper {
@@ -81,6 +81,6 @@ public class IngredientWrapper {
     }
 
     private String getDescriptor(IIngredient ingredient) {
-        return ingredient.toCommandString();
+        return ingredient.getCommandString();
     }
 }

@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.util;
 
-import crafttweaker.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;

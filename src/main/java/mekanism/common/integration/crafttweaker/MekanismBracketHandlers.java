@@ -1,0 +1,29 @@
+package mekanism.common.integration.crafttweaker;
+
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.annotations.BracketResolver;
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import java.util.Locale;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
+import mekanism.common.integration.crafttweaker.gas.IGasStack;
+import org.openzen.zencode.java.ZenCodeType;
+
+@ZenRegister
+@ZenCodeType.Name("mekanism.BracketHandlers")
+public class MekanismBracketHandlers {
+
+    @BracketResolver("gas")
+    public static IGasStack getGas(String tokens) {
+        if (!tokens.toLowerCase(Locale.ENGLISH).equals(tokens)) {
+            CraftTweakerAPI.logWarning("Gas BEP <item:%s> does not seem to be lower-cased!", tokens);
+        }
+        Gas gas = GasRegistry.getGas(tokens);
+        if (gas == null) {
+            throw new IllegalArgumentException("Could not get gas with name: <gas:" + tokens + ">! Gas does not appear to exist!");
+        }
+        return new CraftTweakerGasStack(new GasStack(gas, 1));
+    }
+}
