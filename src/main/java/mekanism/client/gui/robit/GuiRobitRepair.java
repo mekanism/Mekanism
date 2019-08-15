@@ -31,7 +31,7 @@ public class GuiRobitRepair extends GuiRobit<ContainerRobitRepair> implements IC
     private TextFieldWidget itemNameField;
 
     public GuiRobitRepair(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitRepair(inventory, entity), inventory);
+        super(entity, new ContainerRobitRepair(inventory, entity), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.robit.repair"));
         playerInventory = inventory;
         repairContainer = (ContainerRobitRepair) inventorySlots;
     }

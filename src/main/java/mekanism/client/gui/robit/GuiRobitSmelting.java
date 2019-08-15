@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiRobitSmelting extends GuiRobit<ContainerRobitSmelting> {
 
     public GuiRobitSmelting(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitSmelting(inventory, entity), inventory);
+        super(entity, new ContainerRobitSmelting(inventory, entity), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.robit.smelting"));
     }
 
     @Override

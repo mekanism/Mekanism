@@ -12,6 +12,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
@@ -118,7 +119,7 @@ public final class StackUtils {
      * @param pos    where
      * @param player our fake player, usually
      *
-     * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.Direction, float, float,
+     * @return the result of {@link Block#getStateForPlacement(BlockState, Direction, BlockState, IWorld, BlockPos, BlockPos, Hand)}
      * float, int, net.minecraft.entity.LivingEntity, net.minecraft.util.Hand)}
      */
     @Nonnull

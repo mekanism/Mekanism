@@ -70,6 +70,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -276,6 +277,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     public List<ITileComponent> getComponents() {
         return components;
+    }
+
+    @Nonnull
+    public ITextComponent getName() {
+        //TODO: Is this useful or should the gui title be got a different way
+        return TextComponentUtil.build(Translation.of(getBlockType().getTranslationKey()));
     }
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
@@ -627,7 +634,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         // only has x/y/z/id data, so our readFromNBT will set a bunch of default values which are wrong.
         // So simply call the super's readFromNBT, to let Forge do whatever it wants, but don't treat this like
         // a full NBT object, don't pass it to our custom read methods.
-        super.readFromNBT(tag);
+        super.read(tag);
     }
 
 
@@ -762,13 +769,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     protected IItemHandler getItemHandler(Direction side) {
         return side == null ? nullHandler : itemManager.getWrapper(this, side);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        //TODO
-        return TextComponentUtil.build(Translation.of(getBlockType().getTranslationKey())).getFormattedText();
     }
     //End methods ITileContainer
 

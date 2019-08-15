@@ -39,7 +39,7 @@ public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement
     private float scroll;
 
     public GuiUpgradeManagement(PlayerInventory inventory, IUpgradeTile tile) {
-        super(new ContainerUpgradeManagement(inventory, tile), inventory);
+        super(new ContainerUpgradeManagement(inventory, tile), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.upgrade_management"));
         tileEntity = tile;
     }
 

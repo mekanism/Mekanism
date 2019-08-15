@@ -47,6 +47,8 @@ public class BlockStateHelper {
     public static final PropertyConnection eastConnectionProperty = PropertyConnection.create("east");
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
+    //Advanced bounding block
+    public static final BooleanProperty advancedProperty = BooleanProperty.create("advanced");
 
     public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
         List<IProperty> properties = new ArrayList<>();

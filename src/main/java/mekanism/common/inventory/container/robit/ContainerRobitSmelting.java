@@ -8,7 +8,6 @@ import net.minecraft.inventory.container.FurnaceResultSlot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.FurnaceTileEntity;
 
 public class ContainerRobitSmelting extends ContainerRobit {
@@ -78,7 +77,7 @@ public class ContainerRobitSmelting extends ContainerRobit {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (FurnaceTileEntity.isItemFuel(slotStack)) {
+                } else if (FurnaceTileEntity.isFuel(slotStack)) {
                     if (!mergeItemStack(slotStack, 1, 2, false)) {
                         return ItemStack.EMPTY;
                     }

@@ -1,28 +1,17 @@
 package mekanism.common.world;
 
-import java.io.File;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.profiler.Profiler;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
-import net.minecraft.world.chunk.storage.ChunkLoader;
-import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.storage.IPlayerFileData;
-import net.minecraft.world.storage.SaveHandler;
-import net.minecraft.world.storage.SessionLockException;
-import net.minecraft.world.storage.WorldInfo;
 
 /**
  * Dummy object for providing something to CraftingManager#findMatchingRecipe during startup, to prevent in-dev non-null assertions from breaking things
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DummyWorld extends World {
+//TODO: Reimplement this if needed
+public class DummyWorld {
+
+}/* extends World {
 
     public DummyWorld() {
         super(new DummySaveHandler(), new DummyWorldInfo(), new Dimension() {
@@ -98,4 +87,4 @@ public class DummyWorld extends World {
             throw new UnsupportedOperationException();
         }
     }
-}
+}*/

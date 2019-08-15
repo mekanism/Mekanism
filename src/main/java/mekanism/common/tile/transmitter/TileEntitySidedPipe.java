@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
@@ -491,13 +490,14 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         refreshConnections();
     }
 
-    public void onPartChanged(IMultipart part) {
+    //TODO: Multipart
+    /*public void onPartChanged(IMultipart part) {
         byte transmittersBefore = currentTransmitterConnections;
         refreshConnections();
         if (transmittersBefore != currentTransmitterConnections) {
             markDirtyTransmitters();
         }
-    }
+    }*/
 
     public ConnectionType getConnectionType(Direction side) {
         return getConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes);

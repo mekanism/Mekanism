@@ -61,9 +61,9 @@ public class Frequency {
                 continue;
             }
 
-            if (coord.dimensionId != closest.dimensionId && coord.dimensionId == iterCoord.dimensionId) {
+            if (coord.dimension != closest.dimension && coord.dimension == iterCoord.dimension) {
                 closest = iterCoord;
-            } else if (coord.dimensionId != closest.dimensionId || coord.dimensionId == iterCoord.dimensionId) {
+            } else if (coord.dimension != closest.dimension || coord.dimension == iterCoord.dimension) {
                 if (coord.distanceTo(closest) > coord.distanceTo(iterCoord)) {
                     closest = iterCoord;
                 }

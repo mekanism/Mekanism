@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.states.BlockStateBounding;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
@@ -12,10 +12,10 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -58,22 +58,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         setRegistryName(new ResourceLocation(Mekanism.MODID, "bounding_block"));
     }
 
-    @Nonnull
     @Override
-    public BlockStateContainer createBlockState() {
-        return new BlockStateBounding(this);
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockState getStateFromMeta(int meta) {
-        return getDefaultState().with(BlockStateBounding.advancedProperty, meta > 0);
-    }
-
-    @Override
-    public int getMetaFromState(BlockState state) {
-        return state.get(BlockStateBounding.advancedProperty) ? 1 : 0;
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(BlockStateHelper.advancedProperty);
     }
 
     @Override
@@ -139,7 +127,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)}.
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)}.
      *
      * @author Forge
      * @see FlowerPotBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
@@ -179,7 +167,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull World world, @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getPlayerRelativeBlockHardness(state, player, world, pos);
@@ -202,7 +190,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        if (state.get(BlockStateBounding.advancedProperty)) {
+        if (state.get(BlockStateHelper.advancedProperty)) {
             return new TileEntityAdvancedBoundingBlock();
         }
         return new TileEntityBoundingBlock();

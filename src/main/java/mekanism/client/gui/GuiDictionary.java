@@ -27,7 +27,7 @@ public class GuiDictionary extends GuiMekanism<ContainerDictionary> {
     private final GuiScrollList scrollList;
 
     public GuiDictionary(PlayerInventory inventory) {
-        super(new ContainerDictionary(inventory), inventory);
+        super(new ContainerDictionary(inventory), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.dictionary"));
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
     }
 

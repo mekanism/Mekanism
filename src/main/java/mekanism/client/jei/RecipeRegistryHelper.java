@@ -18,7 +18,6 @@ import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 
 public class RecipeRegistryHelper {

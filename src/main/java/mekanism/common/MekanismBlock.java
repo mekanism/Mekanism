@@ -507,20 +507,14 @@ public enum MekanismBlock implements IBlockProvider {
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         for (MekanismBlock mekanismBlock : values()) {
-            Block block = mekanismBlock.getBlock();
-            block.setCreativeTab(Mekanism.tabMekanism);
-            registry.register(block);
+            registry.register(mekanismBlock.getBlock());
         }
         registry.register(PortalHelper.BlockPortalOverride.instance);
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         for (MekanismBlock mekanismBlock : values()) {
-            Item item = mekanismBlock.getItem();
-            registry.register(item);
-            if (item instanceof IItemMekanism) {
-                ((IItemMekanism) item).registerOreDict();
-            }
+            registry.register(mekanismBlock.getItem());
         }
     }
 

@@ -1,6 +1,7 @@
 package mekanism.common.entity;
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
@@ -14,9 +15,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
@@ -178,8 +181,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private boolean smeltItem(ItemEntity item) {
-        ItemStack result = FurnaceRecipes.instance().getSmeltingResult(item.getItem());
-        if (!result.isEmpty()) {
+        Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(item.getItem()), world);
+        if (recipe.isPresent()) {
+            ItemStack result = recipe.get().getRecipeOutput();
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
             item.ticksExisted = 0;
             spawnParticlesAt(new Pos3D(item));
@@ -194,17 +198,18 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         if (stack.isEmpty()) {
             return false;
         }
-        ItemStack result;
+        Optional<FurnaceRecipe> recipe;
         try {
-            result = FurnaceRecipes.instance().getSmeltingResult(block.getStack(world));
+            recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(block.getStack(world)), world);
         } catch (Exception e) {
             return false;
         }
-        if (!result.isEmpty()) {
+        if (!recipe.isPresent()) {
             if (!world.isRemote) {
                 BlockState state = block.getBlockState(world);
+                ItemStack result = recipe.get().getRecipeOutput();
                 if (result.getItem() instanceof BlockItem) {
-                    world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getDamage()), 3);
+                    world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem().getItem()).getDefaultState());
                 } else {
                     world.removeBlock(block.getPos(), false);
                     ItemEntity item = new ItemEntity(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());

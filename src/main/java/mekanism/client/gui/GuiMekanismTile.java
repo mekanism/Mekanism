@@ -20,7 +20,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     protected final TILE tileEntity;
 
     public GuiMekanismTile(TILE tile, CONTAINER container, PlayerInventory inv) {
-        super(container, inv);
+        super(container, inv, tile.getName());
         tileEntity = tile;
     }
 

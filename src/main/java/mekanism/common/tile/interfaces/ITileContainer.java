@@ -60,11 +60,6 @@ public interface ITileContainer extends ISidedInventory, ISustainedInventory {
     }
 
     @Override
-    default boolean hasCustomName() {
-        return true;
-    }
-
-    @Override
     default boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         return hasInventory();
     }

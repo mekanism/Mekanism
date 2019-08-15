@@ -11,6 +11,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,8 +25,8 @@ public abstract class GuiRobit<CONTAINER extends Container> extends GuiMekanism<
     private Button smeltingButton;
     private Button repairButton;
 
-    protected GuiRobit(EntityRobit robit, CONTAINER container, PlayerInventory inventory) {
-        super(container, inventory);
+    protected GuiRobit(EntityRobit robit, CONTAINER container, PlayerInventory inventory, ITextComponent component) {
+        super(container, inventory, component);
         this.robit = robit;
         xSize += 25;
     }

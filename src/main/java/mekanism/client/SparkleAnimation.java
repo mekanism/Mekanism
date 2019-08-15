@@ -8,7 +8,6 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,7 +41,7 @@ public class SparkleAnimation {
         }
 
         // Using the provided radius, get an iterable over all the positions within the radius
-        Iterator<MutableBlockPos> itr = BlockPos.getAllInBoxMutable(corner1, corner2).iterator();
+        Iterator<BlockPos> itr = BlockPos.getAllInBoxMutable(corner1, corner2).iterator();
 
         World world = tile.getWorld();
         ThreadLocalRandom random = ThreadLocalRandom.current();

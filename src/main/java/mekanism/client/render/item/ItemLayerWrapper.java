@@ -83,7 +83,8 @@ public class ItemLayerWrapper implements IBakedModel {
         transform = type;
         //You can use a field on your TileEntityItemStackRenderer to store this TransformType for use in renderByItem, this method is always called before it.
         //return Pair.of(this, internal.handlePerspective(type).getRight());
-        return Pair.of(this, transforms.get(type).getMatrix());
+        //TODO: Figure out if this direction correct
+        return Pair.of(this, transforms.get(type).getMatrix(Direction.NORTH));
     }
 
     @Nonnull

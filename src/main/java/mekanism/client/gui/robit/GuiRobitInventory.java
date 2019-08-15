@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiRobitInventory extends GuiRobit<ContainerRobitInventory> {
 
     public GuiRobitInventory(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitInventory(inventory, entity), inventory);
+        super(entity, new ContainerRobitInventory(inventory, entity), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.robit.inventory"));
     }
 
     @Override

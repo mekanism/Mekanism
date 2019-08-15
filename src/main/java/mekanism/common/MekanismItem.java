@@ -194,6 +194,8 @@ public enum MekanismItem implements IItemProvider {
     }
 
     <ITEM extends Item & IItemMekanism> MekanismItem(@Nonnull ITEM item) {
+        //TODO: Should item be a consumer for registration that takes a ItemProperties?
+        // If it works would make it easier to ensure creative tab is set properly
         this.item = item;
     }
 
@@ -205,13 +207,7 @@ public enum MekanismItem implements IItemProvider {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (MekanismItem mekanismItem : values()) {
-            Item item = mekanismItem.getItem();
-            registry.register(item);
-            //TODO: Should it be a consumer for registration that takes a ItemProperties?
-            item.setCreativeTab(Mekanism.tabMekanism);
-            if (item instanceof IItemMekanism) {
-                ((IItemMekanism) item).registerOreDict();
-            }
+            registry.register(mekanismItem.getItem());
         }
     }
 }

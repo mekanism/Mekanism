@@ -41,7 +41,7 @@ public class GuiRobitMain extends GuiMekanism<ContainerRobitMain> {
     private Button repairButton;
 
     public GuiRobitMain(PlayerInventory inventory, EntityRobit entity) {
-        super(new ContainerRobitMain(inventory, entity), inventory);
+        super(new ContainerRobitMain(inventory, entity), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.robit.main"));
         xSize += 25;
         robit = entity;
     }
