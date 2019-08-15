@@ -1,4 +1,4 @@
-package mekanism.common.recipe;
+/*package mekanism.common.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -159,4 +159,4 @@ public class ShapedMekanismRecipe extends ShapedRecipe {
             return ShapedMekanismRecipe.factory(context, json);
         }
     }
-}
+}*/

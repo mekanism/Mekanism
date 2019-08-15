@@ -1,4 +1,5 @@
-package mekanism.client.jei.machine.other;
+//TODO: Fix this
+/*package mekanism.client.jei.machine.other;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
@@ -42,4 +43,4 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
             fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
         }
     }
-}
+}*/

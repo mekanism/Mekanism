@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.RedstoneParticle;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,13 +41,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     public boolean hasCachedEntity;
     public UUID cachedEntityUUID;
 
-    public EntityBalloon(World world) {
-        super(world);
+    public EntityBalloon(EntityType<EntityBalloon> type, World world) {
+        super(type, world);
 
         ignoreFrustumCheck = true;
         preventEntitySpawning = true;
         setPosition(posX + 0.5F, posY + 3F, posZ + 0.5F);
-        setSize(0.25F, 0.25F);
         setMotion(0, 0.04, 0);
 
         dataManager.register(IS_LATCHED, (byte) 0);
@@ -57,7 +57,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(World world, double x, double y, double z, EnumColor c) {
-        this(world);
+        this(MekanismEntityTypes.BALLOON, world);
         setPosition(x + 0.5F, y + 3F, z + 0.5F);
 
         prevPosX = posX;
@@ -67,7 +67,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(LivingEntity entity, EnumColor c) {
-        this(entity.world);
+        this(MekanismEntityTypes.BALLOON, entity.world);
         latchedEntity = entity;
         float height = latchedEntity.getSize(latchedEntity.getPose()).height;
         setPosition(latchedEntity.posX, latchedEntity.posY + height + 1.7F, latchedEntity.posZ);
@@ -82,7 +82,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(World world, Coord4D obj, EnumColor c) {
-        this(world);
+        this(MekanismEntityTypes.BALLOON, world);
         latched = obj;
         setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
 

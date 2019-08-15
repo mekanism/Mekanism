@@ -19,6 +19,7 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
@@ -66,20 +67,19 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     public int furnaceCookTime = 0;
     public boolean texTick;
 
-    public EntityRobit(World world) {
-        super(world);
-        setSize(0.5F, 0.5F);
+    public EntityRobit(EntityType<EntityRobit> type, World world) {
+        super(type, world);
         getNavigator().setCanSwim(false);
         tasks.addTask(1, new RobitAIPickup(this, 1.0F));
         tasks.addTask(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
         tasks.addTask(3, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         tasks.addTask(3, new LookRandomlyGoal(this));
         tasks.addTask(4, new SwimGoal(this));
-        setAlwaysRenderNameTag(true);
+        setCustomNameVisible(true);
     }
 
     public EntityRobit(World world, double x, double y, double z) {
-        this(world);
+        this(MekanismEntityTypes.ROBIT, world);
         setPosition(x, y, z);
         prevPosX = x;
         prevPosY = y;

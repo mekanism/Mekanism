@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "mekanism:dust_steel"
+  },
+  "result": "mekanism:ingot_steel",
+  "experience": 0.5,
+  "cookingtime": 100
+}

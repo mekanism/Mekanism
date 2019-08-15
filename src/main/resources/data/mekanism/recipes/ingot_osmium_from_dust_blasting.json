@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "mekanism:dust_osmium"
+  },
+  "result": "mekanism:ingot_osmium",
+  "experience": 0.5,
+  "cookingtime": 100
+}

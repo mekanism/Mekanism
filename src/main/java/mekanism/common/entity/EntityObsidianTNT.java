@@ -3,10 +3,12 @@ package mekanism.common.entity;
 import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Explosion.Mode;
 import net.minecraft.world.World;
 
 public class EntityObsidianTNT extends Entity {
@@ -21,15 +23,14 @@ public class EntityObsidianTNT extends Entity {
      */
     private boolean hasExploded = false;
 
-    public EntityObsidianTNT(World world) {
-        super(world);
+    public EntityObsidianTNT(EntityType<EntityObsidianTNT> type, World world) {
+        super(type, world);
         fuse = 0;
         preventEntitySpawning = true;
-        setSize(0.98F, 0.98F);
     }
 
     public EntityObsidianTNT(World world, double x, double y, double z) {
-        this(world);
+        this(MekanismEntityTypes.OBSIDIAN_TNT, world);
         setPosition(x, y, z);
         float randPi = (float) (Math.random() * Math.PI * 2);
 
@@ -95,7 +96,8 @@ public class EntityObsidianTNT extends Entity {
     }
 
     private void explode() {
-        world.createExplosion(null, posX, posY, posZ, MekanismConfig.general.obsidianTNTBlastRadius.get(), true);
+        //TODO: Given obsidian tnt is stronger should it destroy instead of break
+        world.createExplosion(null, posX, posY, posZ, MekanismConfig.general.obsidianTNTBlastRadius.get(), Mode.BREAK);
         hasExploded = true;
     }
 

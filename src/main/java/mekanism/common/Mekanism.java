@@ -40,10 +40,7 @@ import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.entity.EntityBabySkeleton;
-import mekanism.common.entity.EntityBalloon;
-import mekanism.common.entity.EntityFlame;
-import mekanism.common.entity.EntityObsidianTNT;
-import mekanism.common.entity.EntityRobit;
+import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
@@ -70,10 +67,12 @@ import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -102,7 +101,6 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -216,12 +214,15 @@ public class Mekanism {
     }
 
     @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "ObsidianTNT"), EntityObsidianTNT.class, "ObsidianTNT", 0, Mekanism.instance, 64, 5, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "Robit"), EntityRobit.class, "Robit", 1, Mekanism.instance, 64, 2, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "Balloon"), EntityBalloon.class, "Balloon", 2, Mekanism.instance, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "BabySkeleton"), EntityBabySkeleton.class, "BabySkeleton", 3, Mekanism.instance, 64, 5, true, 0xFFFFFF, 0x800080);
-        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "Flame"), EntityFlame.class, "Flame", 4, Mekanism.instance, 64, 5, true);
+    public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+        //TODO: Register recipe serializers
+        //event.getRegistry().register(ShapedMekanismRecipe.CRAFTING_SHAPED);
+    }
+
+    @SubscribeEvent
+    public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+        event.getRegistry().registerAll(MekanismEntityTypes.ROBIT, MekanismEntityTypes.BABY_SKELETON, MekanismEntityTypes.OBSIDIAN_TNT, MekanismEntityTypes.BALLOON,
+              MekanismEntityTypes.FLAME);
     }
 
     @SubscribeEvent
@@ -247,18 +248,6 @@ public class Mekanism {
      * Adds all in-game crafting, smelting and machine recipes.
      */
     public static void addRecipes() {
-        //Furnace Recipes
-        //TODO: Move this to JSON
-        GameRegistry.addSmelting(MekanismBlock.OSMIUM_ORE.getItemStack(), MekanismItem.OSMIUM_INGOT.getItemStack(), 1.0F);
-        GameRegistry.addSmelting(MekanismBlock.COPPER_ORE.getItemStack(), MekanismItem.COPPER_INGOT.getItemStack(), 1.0F);
-        GameRegistry.addSmelting(MekanismBlock.TIN_ORE.getItemStack(), MekanismItem.TIN_INGOT.getItemStack(), 1.0F);
-        GameRegistry.addSmelting(MekanismItem.OSMIUM_DUST.getItemStack(), MekanismItem.OSMIUM_INGOT.getItemStack(), 0.0F);
-        GameRegistry.addSmelting(MekanismItem.IRON_DUST.getItemStack(), new ItemStack(Items.IRON_INGOT), 0.0F);
-        GameRegistry.addSmelting(MekanismItem.GOLD_DUST.getItemStack(), new ItemStack(Items.GOLD_INGOT), 0.0F);
-        GameRegistry.addSmelting(MekanismItem.STEEL_DUST.getItemStack(), MekanismItem.STEEL_INGOT.getItemStack(), 0.0F);
-        GameRegistry.addSmelting(MekanismItem.COPPER_DUST.getItemStack(), MekanismItem.COPPER_INGOT.getItemStack(), 0.0F);
-        GameRegistry.addSmelting(MekanismItem.TIN_DUST.getItemStack(), MekanismItem.TIN_INGOT.getItemStack(), 0.0F);
-
         //Enrichment Chamber Recipes
         if (MekanismBlock.ENRICHMENT_CHAMBER.isEnabled()) {
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.OBSIDIAN), MekanismItem.OBSIDIAN_DUST.getItemStack(4));

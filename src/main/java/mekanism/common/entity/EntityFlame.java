@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -43,13 +44,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     public Entity owner = null;
     public ItemFlamethrower.FlamethrowerMode mode = ItemFlamethrower.FlamethrowerMode.COMBAT;
 
-    public EntityFlame(World world) {
-        super(world);
-        setSize(0.5F, 0.5F);
+    public EntityFlame(EntityType<EntityFlame> type, World world) {
+        super(type, world);
     }
 
     public EntityFlame(PlayerEntity player) {
-        this(player.world);
+        this(MekanismEntityTypes.FLAME, player.world);
         Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
         Pos3D flameVec = new Pos3D(1, 1, 1);
 

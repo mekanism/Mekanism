@@ -1,6 +1,7 @@
 package mekanism.common.entity;
 
 import java.util.UUID;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -18,8 +19,8 @@ public class EntityBabySkeleton extends SkeletonEntity {
 
     private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
 
-    public EntityBabySkeleton(World world) {
-        super(world);
+    public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, World world) {
+        super(type, world);
         dataManager.register(IS_CHILD, false);
         setChild(true);
     }

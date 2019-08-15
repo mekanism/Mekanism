@@ -31,21 +31,17 @@ import mekanism.client.jei.machine.chemical.ChemicalWasherRecipeCategory;
 import mekanism.client.jei.machine.other.ElectrolyticSeparatorRecipeCategory;
 import mekanism.client.jei.machine.other.MetallurgicInfuserRecipeCategory;
 import mekanism.client.jei.machine.other.PRCRecipeCategory;
-import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.other.SolarNeutronRecipeCategory;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismItem;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.inventory.container.robit.ContainerRobitInventory;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
@@ -86,8 +82,9 @@ public class MekanismJEI implements IModPlugin {
         addRecipeCategory(registry, MekanismBlock.METALLURGIC_INFUSER, new MetallurgicInfuserRecipeCategory(guiHelper));
         addRecipeCategory(registry, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, new PRCRecipeCategory(guiHelper));
 
-        addRecipeCategory(registry, MekanismBlock.ROTARY_CONDENSENTRATOR, new RotaryCondensentratorRecipeCategory(guiHelper, true));
-        addRecipeCategory(registry, MekanismBlock.ROTARY_CONDENSENTRATOR, new RotaryCondensentratorRecipeCategory(guiHelper, false));
+        //TODO
+        //addRecipeCategory(registry, MekanismBlock.ROTARY_CONDENSENTRATOR, new RotaryCondensentratorRecipeCategory(guiHelper, true));
+        //addRecipeCategory(registry, MekanismBlock.ROTARY_CONDENSENTRATOR, new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
         addRecipeCategory(registry, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, new SolarNeutronRecipeCategory(guiHelper));
 
@@ -113,7 +110,8 @@ public class MekanismJEI implements IModPlugin {
         }
     }
 
-    @Override
+    //TODO: Reimplement the blacklist?
+    /*@Override
     public void register(IModRegistry registry) {
         registry.addAdvancedGuiHandlers(new GuiElementHandler());
 
@@ -122,7 +120,7 @@ public class MekanismJEI implements IModPlugin {
         //TODO: Why do these still show up in JEI (Is it due to an error with category types?)
         ingredientBlacklist.addIngredientToBlacklist(MekanismItem.ITEM_PROXY.getItemStack());
         ingredientBlacklist.addIngredientToBlacklist(MekanismBlock.BOUNDING_BLOCK.getItemStack());
-    }
+    }*/
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {

@@ -1,29 +1,21 @@
 package mekanism.client.jei;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.util.ResourceLocation;
 
 public class RecipeRegistryHelper {
 
     public static void registerCondensentrator(IRecipeRegistration registry) {
-        MekanismBlock mekanismBlock = MekanismBlock.ROTARY_CONDENSENTRATOR;
+        //TODO
+        /*MekanismBlock mekanismBlock = MekanismBlock.ROTARY_CONDENSENTRATOR;
         if (!mekanismBlock.isEnabled()) {
             return;
         }
@@ -38,7 +30,7 @@ public class RecipeRegistryHelper {
         ResourceLocation condensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_condensentrating");
         ResourceLocation decondensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_decondensentrating");
         registry.addRecipes(condensentratorRecipes, condensentrating);
-        registry.addRecipes(decondensentratorRecipes, decondensentrating);
+        registry.addRecipes(decondensentratorRecipes, decondensentrating);*/
     }
 
     public static void registerSmelter(IRecipeRegistration registry) {
@@ -49,15 +41,16 @@ public class RecipeRegistryHelper {
             if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
                 registry.addRecipes(Recipe.ENERGIZED_SMELTER.get().values(), mekanismBlock.getJEICategory());
             } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
+                //TODO: Fix this
                 // Only add added recipes
-                Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
+                /*Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
                 List<MachineRecipeWrapper> smeltingWrapper = new ArrayList<>();
                 for (Entry<ItemStackInput, SmeltingRecipe> entry : smeltingRecipes.entrySet()) {
                     if (!FurnaceRecipes.instance().getSmeltingList().containsKey(entry.getKey().ingredient)) {
                         smeltingWrapper.add(new MachineRecipeWrapper<>(entry.getValue()));
                     }
                 }
-                registry.addRecipes(smeltingWrapper, mekanismBlock.getJEICategory());
+                registry.addRecipes(smeltingWrapper, mekanismBlock.getJEICategory());*/
             }
         }
     }

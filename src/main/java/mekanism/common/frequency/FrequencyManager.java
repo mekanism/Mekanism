@@ -16,6 +16,9 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -134,14 +137,19 @@ public class FrequencyManager {
     public void createOrLoad(World world) {
         String name = getName();
         if (dataHandler == null) {
-            dataHandler = (FrequencyDataHandler) world.getPerWorldStorage().getOrLoadData(FrequencyDataHandler.class, name);
-            if (dataHandler == null) {
-                dataHandler = new FrequencyDataHandler(name);
-                dataHandler.setManager(this);
-                world.getPerWorldStorage().setData(name, dataHandler);
-            } else {
-                dataHandler.setManager(this);
-                dataHandler.syncManager();
+            AbstractChunkProvider chunkProvider = world.getChunkProvider();
+            //TODO: Is this fine or do we have to handle the other cases also
+            if (chunkProvider instanceof ServerChunkProvider) {
+                DimensionSavedDataManager savedData = ((ServerChunkProvider) chunkProvider).getSavedData();
+                dataHandler = savedData.getOrCreate(() -> new FrequencyDataHandler(name), name);
+                //TODO: Do we have to save it if it didn't exist before, or does this automatically happen
+                /*if (dataHandler == null) {
+                    dataHandler = new FrequencyDataHandler(name);
+                    dataHandler.setManager(this);
+                    world.getPerWorldStorage().setData(name, dataHandler);
+                } else {*/
+                    dataHandler.setManager(this);
+                    dataHandler.syncManager();
             }
         }
     }

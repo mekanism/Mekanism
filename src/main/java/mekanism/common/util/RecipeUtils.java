@@ -17,7 +17,6 @@ import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.security.ISecurityItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;

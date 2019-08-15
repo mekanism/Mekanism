@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "mekanism:dust_tin"
+  },
+  "result": "mekanism:ingot_tin",
+  "experience": 0.5,
+  "cookingtime": 100
+}

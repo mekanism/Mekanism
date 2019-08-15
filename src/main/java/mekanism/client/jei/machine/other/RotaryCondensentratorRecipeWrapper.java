@@ -1,4 +1,5 @@
-package mekanism.client.jei.machine.other;
+//TODO: Fix this
+/*package mekanism.client.jei.machine.other;
 
 import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
@@ -57,4 +58,4 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
     public Fluid getFluidType() {
         return fluidType;
     }
-}
+}*/
