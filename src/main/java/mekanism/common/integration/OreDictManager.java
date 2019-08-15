@@ -1,4 +1,5 @@
-package mekanism.common.integration;
+//TODO: Reimplement something like this
+/*package mekanism.common.integration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -288,9 +289,9 @@ public final class OreDictManager {
         }
 
         //TODO: IC2
-        /*if (Mekanism.hooks.IC2Loaded) {
-            addIC2BronzeRecipe();
-        }*/
+        //if (Mekanism.hooks.IC2Loaded) {
+            //addIC2BronzeRecipe();
+        //}
 
         oreDict = OreDictionary.getOres("ingotSilver", false);
         if (oreDict.size() > 0) {
@@ -391,11 +392,10 @@ public final class OreDictManager {
     }
 
     //TODO: IC2
-    /*@Method(modid = MekanismHooks.IC2_MOD_ID)
-    private static void addIC2BronzeRecipe() {
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotBronze"), null, false,
-              StackUtils.size(OreDictionary.getOres("dustBronze", false).get(0), 1));
-    }*/
+    //@Method(modid = MekanismHooks.IC2_MOD_ID)
+    //private static void addIC2BronzeRecipe() {
+        //Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotBronze"), null, false, StackUtils.size(OreDictionary.getOres("dustBronze", false).get(0), 1));
+    //}
 
     private static void addResourceRecipes(Resource resource, MekanismItem shardItem, MekanismItem clumpItem, MekanismItem dirtyDustItem, MekanismItem dustItem) {
         for (ItemStack clump : OreDictionary.getOres("clump" + resource.getName(), false)) {
@@ -434,9 +434,7 @@ public final class OreDictManager {
         }
     }
 
-    /**
-     * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Credit to CofhCore.
-     */
+    //Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Credit to CofhCore.
     private static void addLogRecipes() {
         Container tempContainer = new Container() {
             @Override
@@ -525,4 +523,4 @@ public final class OreDictManager {
             }
         }
     }
-}
+}*/

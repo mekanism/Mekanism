@@ -38,8 +38,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     public static boolean isTextboxKey(char c, int i) {
+        //TODO: Support key combos again
         return i == GLFW.GLFW_KEY_BACKSPACE || i == GLFW.GLFW_KEY_DELETE || i == GLFW.GLFW_KEY_LEFT || i == GLFW.GLFW_KEY_RIGHT || i == GLFW.GLFW_KEY_END ||
-               i == GLFW.GLFW_KEY_HOME || isKeyComboCtrlA(i) || isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
+               i == GLFW.GLFW_KEY_HOME;// || isKeyComboCtrlA(i) || isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
     }
 
     public Set<GuiElement> getGuiElements() {
@@ -187,6 +188,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
+        //TODO: mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_, double p_mouseDragged_6_, double p_mouseDragged_8_)
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.mouseClickMove(xAxis, yAxis, button, ticks));

@@ -43,6 +43,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -54,13 +55,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceContext.BlockMode;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.LightType;
-import net.minecraft.world.Region;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -431,7 +434,8 @@ public final class MekanismUtils {
     public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos) {
         BlockState state = coord.getBlockState(world);
         state.getBlock().onNeighborChange(state, world, coord.getPos(), fromPos);
-        state.neighborChanged(world, coord.getPos(), world.getBlockState(fromPos).getBlock(), fromPos);
+        //TODO: Check if this should be true for moving
+        state.neighborChanged(world, coord.getPos(), world.getBlockState(fromPos).getBlock(), fromPos, false);
     }
 
     /**
@@ -445,7 +449,8 @@ public final class MekanismUtils {
         BlockPos neighbor = fromPos.offset(neighborSide);
         BlockState state = world.getBlockState(neighbor);
         state.getBlock().onNeighborChange(state, world, neighbor, fromPos);
-        state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos);
+        //TODO: Check if this should be true for moving
+        state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos, false);
     }
 
     /**
@@ -558,9 +563,6 @@ public final class MekanismUtils {
     public static boolean isDeadFluid(World world, Coord4D pos) {
         BlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
-        if (block.getMetaFromState(state) == 0) {
-            return false;
-        }
         return block instanceof FlowingFluidBlock || block instanceof IFluidBlock;
 
     }
@@ -666,7 +668,9 @@ public final class MekanismUtils {
         Vec3d headVec = getHeadVec(player);
         Vec3d lookVec = player.getLook(1);
         Vec3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-        return world.rayTraceBlocks(headVec, endVec, true);
+        //TODO: I am unsure if this is correct so probably needs to be fixed
+        RayTraceContext rayTraceContext = new RayTraceContext(headVec, endVec, BlockMode.COLLIDER, FluidMode.NONE, player);
+        return world.rayTraceBlocks(rayTraceContext);
     }
 
     /**
@@ -806,7 +810,8 @@ public final class MekanismUtils {
     }
 
     public static CraftingInventory getDummyCraftingInv() {
-        Container tempContainer = new Container() {
+        //TODO: is this fine for the id
+        Container tempContainer = new Container(ContainerType.CRAFTING, 1) {
             @Override
             public boolean canInteractWith(@Nonnull PlayerEntity player) {
                 return false;
@@ -825,10 +830,11 @@ public final class MekanismUtils {
      */
     public static ItemStack findRepairRecipe(CraftingInventory inv, World world) {
         NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
+        ItemStack leftStack = dmgItems.get(0);
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             if (!inv.getStackInSlot(i).isEmpty()) {
-                if (dmgItems.get(0).isEmpty()) {
-                    dmgItems.set(0, inv.getStackInSlot(i));
+                if (leftStack.isEmpty()) {
+                    dmgItems.set(0, leftStack = inv.getStackInSlot(i));
                 } else {
                     dmgItems.set(1, inv.getStackInSlot(i));
                     break;
@@ -836,18 +842,21 @@ public final class MekanismUtils {
             }
         }
 
-        if (dmgItems.get(0).isEmpty()) {
+        if (leftStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
-        if (!dmgItems.get(1).isEmpty() && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) &&
-            (dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem().isRepairable()) {
-            Item theItem = dmgItems.get(0).getItem();
-            int dmgDiff0 = theItem.getMaxDamage() - dmgItems.get(0).getDamage();
-            int dmgDiff1 = theItem.getMaxDamage() - dmgItems.get(1).getDamage();
-            int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
-            int solve = Math.max(0, theItem.getMaxDamage() - value);
-            return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
+        ItemStack rightStack = dmgItems.get(1);
+        if (!rightStack.isEmpty() && leftStack.getItem() == rightStack.getItem() && leftStack.getCount() == 1 && rightStack.getCount() == 1 &&
+            leftStack.getItem().isRepairable(leftStack)) {
+            Item theItem = leftStack.getItem();
+            int dmgDiff0 = theItem.getMaxDamage(leftStack) - leftStack.getDamage();
+            int dmgDiff1 = theItem.getMaxDamage(leftStack) - rightStack.getDamage();
+            int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage(leftStack) * 5 / 100;
+            int solve = Math.max(0, theItem.getMaxDamage(leftStack) - value);
+            ItemStack repaired = new ItemStack(leftStack.getItem());
+            repaired.setDamage(solve);
+            return repaired;
         }
         return ItemStack.EMPTY;
     }
@@ -970,7 +979,8 @@ public final class MekanismUtils {
     }
 
     public static TileEntity getTileEntitySafe(IBlockReader worldIn, BlockPos pos) {
-        return worldIn instanceof Region ? ((Region) worldIn).getTileEntity(pos, Chunk.CreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+        //TODO: Remove this/replace with getTileEntity
+        return worldIn.getTileEntity(pos);//worldIn instanceof Region ? ((Region) worldIn).getTileEntity(pos, Chunk.CreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
 
     /**
@@ -982,7 +992,7 @@ public final class MekanismUtils {
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
-    public static TileEntity getTileEntity(World world, BlockPos pos) {
+    public static TileEntity getTileEntity(IWorldReader world, BlockPos pos) {
         if (world != null && world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }

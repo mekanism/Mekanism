@@ -3,7 +3,6 @@ package mekanism.common.content.transporter;
 import java.util.List;
 import mekanism.common.OreDictCache;
 import mekanism.common.util.ItemRegistryUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -67,7 +66,7 @@ public abstract class Finder {
 
         @Override
         public boolean modifies(ItemStack stack) {
-            return itemType.getHasSubtypes() ? StackUtils.equalsWildcard(itemType, stack) : itemType.getItem() == stack.getItem();
+            return itemType.getItem() == stack.getItem();
         }
     }
 
@@ -84,7 +83,7 @@ public abstract class Finder {
             if (stack.isEmpty() || !(stack.getItem() instanceof BlockItem)) {
                 return false;
             }
-            return Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getDamage()).getMaterial() == materialType;
+            return Block.getBlockFromItem(stack.getItem()).getDefaultState().getMaterial() == materialType;
         }
     }
 

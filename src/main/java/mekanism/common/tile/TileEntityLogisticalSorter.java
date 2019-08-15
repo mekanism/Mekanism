@@ -30,12 +30,12 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -509,24 +509,23 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 autoEject = (Boolean) arguments[0];
                 return new Object[]{"Auto-eject mode set to " + autoEject};
             } else if (method == 3) {
-                if (arguments.length != 6 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double) ||
-                    !(arguments[2] instanceof String) || !(arguments[3] instanceof Boolean) ||
-                    !(arguments[4] instanceof Double) || !(arguments[5] instanceof Double)) {
+                if (arguments.length != 5 || !(arguments[0] instanceof String) || !(arguments[1] instanceof String) || !(arguments[2] instanceof Boolean) ||
+                    !(arguments[3] instanceof Double) || !(arguments[4] instanceof Double)) {
                     return new Object[]{"Invalid parameters."};
                 }
                 TItemStackFilter filter = new TItemStackFilter();
-                filter.setItemStack(new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Double) arguments[1]).intValue()));
-                filter.color = EnumColor.getFromDyeName((String) arguments[2]);
-                filter.sizeMode = (Boolean) arguments[3];
-                filter.min = ((Double) arguments[4]).intValue();
-                filter.max = ((Double) arguments[5]).intValue();
+                filter.setItemStack(new ItemStack(ItemRegistryUtils.getByName((String) arguments[0])));
+                filter.color = EnumColor.getFromDyeName((String) arguments[1]);
+                filter.sizeMode = (Boolean) arguments[2];
+                filter.min = ((Double) arguments[3]).intValue();
+                filter.max = ((Double) arguments[4]).intValue();
                 filters.add(filter);
                 return new Object[]{"Added filter."};
             } else if (method == 4) {
-                if (arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double)) {
+                if (arguments.length != 1 || !(arguments[0] instanceof String)) {
                     return new Object[]{"Invalid parameters."};
                 }
-                ItemStack stack = new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Double) arguments[1]).intValue());
+                ItemStack stack = new ItemStack(ItemRegistryUtils.getByName((String) arguments[0]));
                 Iterator<TransporterFilter> iter = filters.iterator();
                 while (iter.hasNext()) {
                     TransporterFilter filter = iter.next();

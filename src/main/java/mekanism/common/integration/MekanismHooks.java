@@ -1,6 +1,5 @@
 package mekanism.common.integration;
 
-import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import net.minecraftforge.fml.ModList;
@@ -84,12 +83,12 @@ public final class MekanismHooks {
         if (CyclicLoaded) {
             registerCyclicRecipes();
             Mekanism.logger.info("Hooked into Cyclic successfully.");
-        }*/
+        }
         if (MetallurgyLoaded) {
             addMetallurgy();
             Mekanism.logger.info("Hooked into Metallurgy successfully.");
         }
-        /*if (MALoaded) {
+        if (MALoaded) {
             registerMysticalAgricultureRecipes();
         }*/
         if (CraftTweakerLoaded) {
@@ -306,7 +305,8 @@ public final class MekanismHooks {
         }
     }*/
 
-    private void addMetallurgy() {
+    //TODO: Metallurgy
+    /*private void addMetallurgy() {
         OreDictManager.addStandardOredictMetal("Adamantine");
         OreDictManager.addStandardOredictMetal("Alduorite");
         OreDictManager.addStandardOredictMetal("Angmallen");
@@ -346,7 +346,7 @@ public final class MekanismHooks {
         OreDictManager.addStandardOredictMetal("Vulcanite");
         OreDictManager.addStandardOredictMetal("Vyroxeres");
         OreDictManager.addStandardOredictMetal("Zinc");
-    }
+    }*/
 
     //TODO: Mystical Agriculture
     /*private void registerMARecipeSet(MAOre ore, MAOreType type) {

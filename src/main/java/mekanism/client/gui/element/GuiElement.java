@@ -38,7 +38,7 @@ public abstract class GuiElement {
 
     public void offsetX(int xSize) {
         if (guiObj instanceof ContainerScreen) {
-            ((ContainerScreen) guiObj).xSizse += xSize;
+            ((ContainerScreen) guiObj).xSize += xSize;
         }
     }
 
