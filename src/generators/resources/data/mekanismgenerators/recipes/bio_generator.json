@@ -22,10 +22,10 @@
       "item": "mekanism:bio_fuel"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "E": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     },
     "N": {
       "tag": "forge:ingots/iron"

@@ -18,7 +18,7 @@
       "item": "minecraft:flint_and_steel"
     },
     "C": {
-      "item": "#CIRCUIT_ADVANCED"
+      "tag": "forge:circuits/advanced"
     },
     "T": {
       "tag": "forge:ingots/tin"

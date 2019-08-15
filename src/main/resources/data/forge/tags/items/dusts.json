@@ -13,6 +13,8 @@
     "#forge:dusts/sulfur",
     "#forge:dusts/lithium",
     "#forge:dusts/refined_obsidian",
-    "#forge:dusts/obsidian"
+    "#forge:dusts/obsidian",
+    "#forge:dusts/salt",
+    "#forge:dusts/wood"
   ]
 }

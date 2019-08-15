@@ -4,12 +4,10 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class ItemStackInput extends MachineInput<ItemStackInput> implements IWildInput<ItemStackInput> {
+public class ItemStackInput extends MachineInput<ItemStackInput> {
 
     public ItemStack ingredient = ItemStack.EMPTY;
-    private ItemStackInput wildVersion = null;
     private int ingredientHash;
 
     public ItemStackInput(ItemStack stack) {
@@ -24,7 +22,6 @@ public class ItemStackInput extends MachineInput<ItemStackInput> implements IWil
     public void load(CompoundNBT nbtTags) {
         ingredient = ItemStack.read(nbtTags.getCompound("input"));
         ingredientHash = hashIngredients();
-        wildVersion = null;
     }
 
     @Override
@@ -35,18 +32,6 @@ public class ItemStackInput extends MachineInput<ItemStackInput> implements IWil
     @Override
     public boolean isValid() {
         return !ingredient.isEmpty();
-    }
-
-    @Override
-    public ItemStackInput wildCopy() {
-        if (wildVersion == null) {
-            if (ingredient.getMetadata() != OreDictionary.WILDCARD_VALUE) {
-                this.wildVersion = new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.getCount(), OreDictionary.WILDCARD_VALUE));
-            } else {
-                this.wildVersion = this;
-            }
-        }
-        return this.wildVersion;
     }
 
     public boolean useItemStackFromInventory(NonNullList<ItemStack> inventory, int index, boolean deplete) {

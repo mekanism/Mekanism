@@ -13,7 +13,7 @@
       "tag": "forge:ingots/osmium"
     },
     "A": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     },
     "R": {
       "tag": "forge:dusts/redstone"

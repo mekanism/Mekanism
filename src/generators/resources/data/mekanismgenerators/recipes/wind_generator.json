@@ -16,10 +16,10 @@
   ],
   "key": {
     "A": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "E": {
       "item": "mekanism:energy_tablet"

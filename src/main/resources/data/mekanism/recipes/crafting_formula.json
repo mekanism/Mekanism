@@ -7,7 +7,7 @@
       "item": "minecraft:paper"
     },
     {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     }
   ],
   "type": "forge:ore_shapeless"

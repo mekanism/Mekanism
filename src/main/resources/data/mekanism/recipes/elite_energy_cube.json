@@ -13,8 +13,7 @@
       "item": "mekanism:advanced_energy_cube"
     },
     "R": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "T": {
       "item": "mekanism:energy_tablet"

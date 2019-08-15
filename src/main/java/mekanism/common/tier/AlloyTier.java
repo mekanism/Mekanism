@@ -1,9 +1,9 @@
 package mekanism.common.tier;
 
 public enum AlloyTier implements ITier {
-    ENRICHED("Enriched", BaseTier.ADVANCED),
-    REINFORCED("Reinforced", BaseTier.ELITE),
-    ATOMIC("Atomic", BaseTier.ULTIMATE);
+    ENRICHED("enriched", BaseTier.ADVANCED),
+    REINFORCED("reinforced", BaseTier.ELITE),
+    ATOMIC("atomic", BaseTier.ULTIMATE);
 
     private final BaseTier baseTier;
     private final String name;

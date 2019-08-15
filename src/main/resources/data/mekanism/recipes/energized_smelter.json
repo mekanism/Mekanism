@@ -16,11 +16,10 @@
   ],
   "key": {
     "R": {
-      "ore": "alloyBasic",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/basic"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "G": {
       "ore": "blockGlass",

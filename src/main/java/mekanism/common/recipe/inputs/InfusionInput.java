@@ -7,14 +7,13 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input ItemStack.
  *
  * @author AidanBrady
  */
-public class InfusionInput extends MachineInput<InfusionInput> implements IWildInput<InfusionInput> {
+public class InfusionInput extends MachineInput<InfusionInput> {
 
     public InfuseStorage infuse;
 
@@ -82,10 +81,5 @@ public class InfusionInput extends MachineInput<InfusionInput> implements IWildI
     @Override
     public boolean isInstance(Object other) {
         return other instanceof InfusionInput;
-    }
-
-    @Override
-    public InfusionInput wildCopy() {
-        return new InfusionInput(infuse, new ItemStack(inputStack.getItem(), inputStack.getCount(), OreDictionary.WILDCARD_VALUE));
     }
 }

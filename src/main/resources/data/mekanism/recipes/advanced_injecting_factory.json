@@ -16,11 +16,10 @@
   ],
   "key": {
     "C": {
-      "item": "#CIRCUIT_ADVANCED"
+      "tag": "forge:circuits/advanced"
     },
     "E": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     },
     "o": {
       "tag": "forge:ingots/osmium"

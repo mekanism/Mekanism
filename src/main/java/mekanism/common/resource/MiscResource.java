@@ -1,32 +1,25 @@
 package mekanism.common.resource;
 
 public enum MiscResource implements INamedResource {
-    DIAMOND("diamond", "Diamond"),
-    STEEL("steel", "Steel"),
-    REFINED_OBSIDIAN("refined_obsidian", "RefinedObsidian"),
-    OBSIDIAN("obsidian", "Obsidian"),
-    BRONZE("bronze", "Bronze"),
-    REFINED_GLOWSTONE("refined_glowstone", "RefinedGlowstone"),
-    SULFUR("sulfur", "Sulfur"),
-    LITHIUM("lithium", "Lithium"),
-    CARBON("carbon", "Carbon"),
-    REDSTONE("redstone", "Redstone");
+    DIAMOND("diamond"),
+    STEEL("steel"),
+    REFINED_OBSIDIAN("refined_obsidian"),
+    OBSIDIAN("obsidian"),
+    BRONZE("bronze"),
+    REFINED_GLOWSTONE("refined_glowstone"),
+    SULFUR("sulfur"),
+    LITHIUM("lithium"),
+    CARBON("carbon"),
+    REDSTONE("redstone");
 
     private final String registrySuffix;
-    private final String oreSuffix;
 
-    MiscResource(String registrySuffix, String oreSuffix) {
+    MiscResource(String registrySuffix) {
         this.registrySuffix = registrySuffix;
-        this.oreSuffix = oreSuffix;
     }
 
     @Override
     public String getRegistrySuffix() {
         return registrySuffix;
-    }
-
-    @Override
-    public String getOreSuffix() {
-        return oreSuffix;
     }
 }

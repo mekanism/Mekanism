@@ -16,7 +16,7 @@
   ],
   "key": {
     "B": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "S": {
       "tag": "forge:ingots/steel"

@@ -13,7 +13,7 @@
       "tag": "forge:ingots/steel"
     },
     "C": {
-      "item": "#CIRCUIT_ELITE"
+      "tag": "forge:circuits/elite"
     },
     "T": {
       "item": "mekanism:teleportation_core"

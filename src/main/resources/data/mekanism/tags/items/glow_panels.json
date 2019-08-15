@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "mekanism:black_glow_panel",
+    "mekanism:red_glow_panel",
+    "mekanism:green_glow_panel",
+    "mekanism:brown_glow_panel",
+    "mekanism:blue_glow_panel",
+    "mekanism:purple_glow_panel",
+    "mekanism:cyan_glow_panel",
+    "mekanism:light_gray_glow_panel",
+    "mekanism:gray_glow_panel",
+    "mekanism:pink_glow_panel",
+    "mekanism:lime_glow_panel",
+    "mekanism:yellow_glow_panel",
+    "mekanism:light_blue_glow_panel",
+    "mekanism:magenta_glow_panel",
+    "mekanism:orange_glow_panel",
+    "mekanism:white_glow_panel"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#mekanism:plastic_blocks/glow",
+    "#mekanism:plastic_blocks/plastic",
+    "#mekanism:plastic_blocks/reinforced",
+    "#mekanism:plastic_blocks/road",
+    "#mekanism:plastic_blocks/slick"
+  ]
+}

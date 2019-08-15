@@ -22,7 +22,7 @@
       "tag": "forge:ingots/steel"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "G": {
       "ore": "paneGlass",

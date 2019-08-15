@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.JSONUtils;
@@ -22,9 +23,8 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
+public class ShapelessMekanismRecipe extends ShapelessRecipe {
 
     public ShapelessMekanismRecipe(ResourceLocation group, Block result, Object... recipe) {
         this(group, new ItemStack(result), recipe);
@@ -34,12 +34,14 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
         this(group, new ItemStack(result), recipe);
     }
 
+    //public ShapelessRecipe(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn, NonNullList<Ingredient> recipeItemsIn) {
+
     public ShapelessMekanismRecipe(ResourceLocation group, NonNullList<Ingredient> input, @Nonnull ItemStack result) {
-        super(group, input, result);
+        super(group, "", result, input);
     }
 
     public ShapelessMekanismRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe) {
-        super(group, result, recipe);
+        super(group, "", result, recipe);
     }
 
     public static ShapelessMekanismRecipe create(CompoundNBT nbtTags) {

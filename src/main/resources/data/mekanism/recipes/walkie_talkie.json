@@ -13,7 +13,7 @@
       "tag": "forge:ingots/steel"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "O": {
       "tag": "forge:ingots/osmium"

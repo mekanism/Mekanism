@@ -14,8 +14,7 @@
       "item": "mekanism:basic_universal_cable"
     },
     "E": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     }
   }
 }

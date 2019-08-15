@@ -16,7 +16,7 @@
       "tag": "forge:ingots/gold"
     },
     "E": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     }
   }
 }

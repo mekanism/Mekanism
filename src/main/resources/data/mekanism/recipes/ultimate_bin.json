@@ -10,18 +10,16 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "ore": "alloyUltimate",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/atomic"
     },
     "B": {
       "item": "mekanism:elite_bin"
     },
     "S": {
-      "ore": "cobblestone",
-      "type": "forge:ore_dict"
+      "tag": "forge:cobblestone"
     },
     "C": {
-      "item": "#CIRCUIT_ULTIMATE"
+      "tag": "forge:circuits/ultimate"
     }
   }
 }

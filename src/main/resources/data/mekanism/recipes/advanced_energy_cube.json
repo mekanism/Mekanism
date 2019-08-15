@@ -16,8 +16,7 @@
       "item": "mekanism:energy_tablet"
     },
     "E": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     },
     "o": {
       "tag": "forge:ingots/osmium"

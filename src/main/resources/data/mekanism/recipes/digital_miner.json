@@ -16,10 +16,10 @@
   ],
   "key": {
     "A": {
-      "item": "mekanism:alloy_atomic"
+      "tag": "mekanism:alloys/atomic"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "S": {
       "item": "mekanism:logistical_sorter"

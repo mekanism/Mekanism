@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "mekanism:black_reinforced_plastic",
+    "mekanism:red_reinforced_plastic",
+    "mekanism:green_reinforced_plastic",
+    "mekanism:brown_reinforced_plastic",
+    "mekanism:blue_reinforced_plastic",
+    "mekanism:purple_reinforced_plastic",
+    "mekanism:cyan_reinforced_plastic",
+    "mekanism:light_gray_reinforced_plastic",
+    "mekanism:gray_reinforced_plastic",
+    "mekanism:pink_reinforced_plastic",
+    "mekanism:lime_reinforced_plastic",
+    "mekanism:yellow_reinforced_plastic",
+    "mekanism:light_blue_reinforced_plastic",
+    "mekanism:magenta_reinforced_plastic",
+    "mekanism:orange_reinforced_plastic",
+    "mekanism:white_reinforced_plastic"
+  ]
+}

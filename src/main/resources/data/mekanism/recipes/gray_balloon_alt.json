@@ -4,8 +4,7 @@
   },
   "ingredients": [
     {
-      "ore": "balloon",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:balloons"
     },
     {
       "tag": "forge:dyes/gray"

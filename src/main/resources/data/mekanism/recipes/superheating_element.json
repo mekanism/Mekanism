@@ -10,8 +10,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "ore": "alloyBasic",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/basic"
     },
     "C": {
       "tag": "forge:ingots/copper"

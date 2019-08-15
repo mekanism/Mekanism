@@ -1,13 +1,10 @@
 package mekanism.common.block.basic;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
-import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
@@ -20,7 +17,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 //TODO: Should we even be extending BlockTileDrops for BlockResource (probably not), as it doesn't have a tile
-public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOreDict {
+public class BlockResource extends BlockTileDrops implements IHasModel {
 
     @Nonnull
     private final BlockResourceInfo resource;
@@ -31,11 +28,6 @@ public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOr
         this.resource = resource;
         //Ensure the name is lower case as with concatenating with values from enums it may not be
         setRegistryName(new ResourceLocation(Mekanism.MODID, "block_" + resource.getRegistrySuffix().toLowerCase(Locale.ROOT)));
-    }
-
-    @Override
-    public List<String> getOredictEntries() {
-        return Collections.singletonList("block" + resource.getOreSuffix());
     }
 
     @Nonnull

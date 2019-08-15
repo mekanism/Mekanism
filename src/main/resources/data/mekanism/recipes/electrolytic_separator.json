@@ -22,7 +22,7 @@
       "item": "mekanism:electrolytic_core"
     },
     "E": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     },
     "I": {
       "tag": "forge:ingots/iron"

@@ -16,7 +16,7 @@
   ],
   "key": {
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "t": {
       "item": "mekanism:basic_gas_tank"

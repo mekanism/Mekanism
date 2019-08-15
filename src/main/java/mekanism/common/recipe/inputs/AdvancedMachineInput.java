@@ -6,9 +6,8 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> implements IWildInput<AdvancedMachineInput> {
+public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
 
     public ItemStack itemStack = ItemStack.EMPTY;
 
@@ -76,10 +75,5 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> imp
     @Override
     public boolean isInstance(Object other) {
         return other instanceof AdvancedMachineInput;
-    }
-
-    @Override
-    public AdvancedMachineInput wildCopy() {
-        return new AdvancedMachineInput(new ItemStack(itemStack.getItem(), itemStack.getCount(), OreDictionary.WILDCARD_VALUE), gasType);
     }
 }

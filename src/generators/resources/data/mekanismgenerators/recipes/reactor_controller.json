@@ -10,7 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "C": {
-      "item": "#CIRCUIT_ULTIMATE"
+      "tag": "forge:circuits/ultimate"
     },
     "T": {
       "item": "mekanism:basic_gas_tank"

@@ -1,6 +1,5 @@
 package mekanism.common.recipe;
 
-import com.google.common.base.Preconditions;
 import mekanism.api.MekanismRecipeHelper;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -8,14 +7,13 @@ import mekanism.api.infuse.InfuseType;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
 
 public class APIHandler implements MekanismRecipeHelper {
 
     private static void checkPhase() {
-        Preconditions.checkState(Loader.instance().getLoaderState().ordinal() < LoaderState.POSTINITIALIZATION.ordinal(),
-              "Recipes should be registered before PostInit. Try net.minecraftforge.event.RegistryEvent.Register<IRecipe>");
+        //TODO: Make this not true anymore, and make recipes be reloadable
+        /*Preconditions.checkState(Loader.instance().getLoaderState().ordinal() < LoaderState.POSTINITIALIZATION.ordinal(),
+              "Recipes should be registered before PostInit. Try net.minecraftforge.event.RegistryEvent.Register<IRecipe>");*/
     }
 
     @Override

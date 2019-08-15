@@ -13,7 +13,7 @@
       "item": "mekanism:elite_induction_provider"
     },
     "C": {
-      "item": "#CIRCUIT_ULTIMATE"
+      "tag": "forge:circuits/ultimate"
     },
     "E": {
       "item": "mekanism:ultimate_energy_cube"

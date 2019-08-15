@@ -22,7 +22,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeUtils {
 
@@ -32,10 +31,8 @@ public class RecipeUtils {
         } else if (target.isEmpty()) {
             return true;
         }
-        if (target.getItem() != input.getItem()) {
-            return false;
-        }
-        if (target.getDamage() != input.getDamage() && target.getDamage() != OreDictionary.WILDCARD_VALUE) {
+        //TODO: Should damage even be checked here
+        if (target.getItem() != input.getItem() || target.getDamage() != input.getDamage()) {
             return false;
         }
 

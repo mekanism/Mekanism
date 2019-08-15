@@ -6,14 +6,12 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.AlloyTier;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemAlloy extends ItemMekanism {
 
@@ -48,13 +46,5 @@ public class ItemAlloy extends ItemMekanism {
 
     public AlloyTier getTier() {
         return tier;
-    }
-
-    @Override
-    public void registerOreDict() {
-        OreDictionary.registerOre("alloy" + tier.getBaseTier().getSimpleName(), new ItemStack(this));
-        if (tier == AlloyTier.ENRICHED) {
-            OreDictionary.registerOre("itemEnrichedAlloy", new ItemStack(this));
-        }
     }
 }

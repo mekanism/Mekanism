@@ -1,10 +1,7 @@
 package mekanism.common.block.plastic;
 
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class BlockPlasticRoad extends Block implements IColoredBlock, IBlockOreDict {
+public class BlockPlasticRoad extends Block implements IColoredBlock {
 
     private final EnumColor color;
 
@@ -37,16 +34,5 @@ public class BlockPlasticRoad extends Block implements IColoredBlock, IBlockOreD
         float slipperiness = getSlipperiness(world.getBlockState(pos), world, pos, entity);
         motion = motion.add(Math.sin(a) * boost * slipperiness, 0, Math.cos(a) * boost * slipperiness);
         entity.setMotion(motion);
-    }
-
-    @Override
-    public List<String> getOredictEntries() {
-        List<String> entries = new ArrayList<>();
-        entries.add("blockPlasticRoad");
-        if (color.dyeName != null) {
-            //As of the moment none of the colors used have a null dye name but if the other ones get used this is needed
-            entries.add("blockPlasticRoad" + color.dyeName);
-        }
-        return entries;
     }
 }

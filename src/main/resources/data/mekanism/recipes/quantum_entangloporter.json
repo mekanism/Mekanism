@@ -16,11 +16,10 @@
   ],
   "key": {
     "A": {
-      "ore": "alloyUltimate",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/atomic"
     },
     "C": {
-      "item": "#CIRCUIT_ULTIMATE"
+      "tag": "forge:circuits/ultimate"
     },
     "T": {
       "item": "mekanism:teleportation_core"

@@ -10,15 +10,13 @@
   "type": "forge:ore_shaped",
   "key": {
     "R": {
-      "ore": "alloyUltimate",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/atomic"
     },
     "C": {
-      "item": "#CIRCUIT_ULTIMATE"
+      "tag": "forge:circuits/ultimate"
     },
     "d": {
-      "ore": "gemDiamond",
-      "type": "forge:ore_dict"
+      "tag": "forge:gems/diamond"
     },
     "W": {
       "ore": "plankWood",

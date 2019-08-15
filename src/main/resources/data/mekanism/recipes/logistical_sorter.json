@@ -19,7 +19,7 @@
       "item": "minecraft:piston"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "I": {
       "tag": "forge:ingots/iron"

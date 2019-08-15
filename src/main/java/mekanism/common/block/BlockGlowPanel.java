@@ -1,13 +1,10 @@
 package mekanism.common.block;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
@@ -33,7 +30,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 //TODO: I don't think the Glow Panel needs a tile entity anymore
-public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing, IColoredBlock, IHasTileEntity<TileEntityGlowPanel> {
+public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, IColoredBlock, IHasTileEntity<TileEntityGlowPanel> {
 
     public static VoxelShape[] bounds = new VoxelShape[6];
 
@@ -52,17 +49,6 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F).lightValue(15));
         this.color = color;
         setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_glow_panel"));
-    }
-
-    @Override
-    public List<String> getOredictEntries() {
-        List<String> entries = new ArrayList<>();
-        entries.add("glowPanel");
-        if (color.dyeName != null) {
-            //As of the moment none of the colors used have a null dye name but if the other ones get used this is needed
-            entries.add("glowPanel" + color.dyeName);
-        }
-        return entries;
     }
 
     @Nonnull

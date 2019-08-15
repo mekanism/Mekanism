@@ -16,10 +16,10 @@
   ],
   "key": {
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "E": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     },
     "W": {
       "item": "minecraft:bucket"

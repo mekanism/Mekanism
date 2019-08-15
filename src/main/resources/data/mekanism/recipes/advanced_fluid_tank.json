@@ -16,8 +16,7 @@
   ],
   "key": {
     "A": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     },
     "T": {
       "item": "mekanism:basic_fluid_tank"

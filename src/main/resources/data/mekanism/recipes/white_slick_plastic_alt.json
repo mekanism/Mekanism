@@ -11,8 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "P": {
-      "ore": "blockSlickPlastic",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:plastic_blocks/slick"
     },
     "D": {
       "tag": "forge:dyes/white"

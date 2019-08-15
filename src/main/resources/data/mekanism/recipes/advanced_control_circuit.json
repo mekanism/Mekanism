@@ -11,8 +11,7 @@
       "item": "mekanism:basic_control_circuit"
     },
     "E": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     }
   }
 }

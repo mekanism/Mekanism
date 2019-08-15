@@ -19,8 +19,7 @@
       "tag": "forge:ingots/steel"
     },
     "D": {
-      "ore": "gemDiamond",
-      "type": "forge:ore_dict"
+      "tag": "forge:gems/diamond"
     },
     "E": {
       "item": "mekanism:basic_energy_cube"

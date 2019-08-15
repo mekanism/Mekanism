@@ -13,7 +13,7 @@
       "item": "minecraft:bucket"
     },
     "C": {
-      "item": "#CIRCUIT_ADVANCED"
+      "tag": "forge:circuits/advanced"
     },
     "G": {
       "ore": "paneGlass",

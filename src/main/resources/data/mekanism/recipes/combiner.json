@@ -16,15 +16,13 @@
   ],
   "key": {
     "R": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "S": {
-      "ore": "cobblestone",
-      "type": "forge:ore_dict"
+      "tag": "forge:cobblestone"
     },
     "C": {
-      "item": "#CIRCUIT_ELITE"
+      "tag": "forge:circuits/elite"
     },
     "I": {
       "item": "mekanism:steel_casing"

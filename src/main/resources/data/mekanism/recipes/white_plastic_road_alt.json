@@ -11,8 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "P": {
-      "ore": "blockPlasticRoad",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:plastic_blocks/road"
     },
     "D": {
       "tag": "forge:dyes/white"

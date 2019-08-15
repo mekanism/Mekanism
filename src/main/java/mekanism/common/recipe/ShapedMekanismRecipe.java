@@ -18,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.JSONUtils;
@@ -29,7 +30,7 @@ import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-public class ShapedMekanismRecipe extends ShapedOreRecipe {
+public class ShapedMekanismRecipe extends ShapedRecipe {
 
     public ShapedMekanismRecipe(ResourceLocation group, Block result, Object... recipe) {
         this(group, new ItemStack(result), recipe);
@@ -40,11 +41,11 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
     }
 
     public ShapedMekanismRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe) {
-        this(group, result, CraftingHelper.parseShaped(recipe));
+        this(group, "", result, CraftingHelper.parseShaped(recipe));
     }
 
     public ShapedMekanismRecipe(ResourceLocation group, @Nonnull ItemStack result, CraftingHelper.ShapedPrimer primer) {
-        super(group, result, primer);
+        super(group, "", result, primer);
     }
 
     public static ShapedMekanismRecipe create(CompoundNBT nbtTags) {

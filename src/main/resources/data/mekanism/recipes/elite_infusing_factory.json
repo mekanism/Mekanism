@@ -16,11 +16,10 @@
   ],
   "key": {
     "R": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "C": {
-      "item": "#CIRCUIT_ELITE"
+      "tag": "forge:circuits/elite"
     },
     "g": {
       "tag": "forge:ingots/gold"

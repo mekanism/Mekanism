@@ -11,8 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "P": {
-      "ore": "blockReinforcedPlastic",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:plastic_blocks/reinforced"
     },
     "D": {
       "tag": "forge:dyes/pink"

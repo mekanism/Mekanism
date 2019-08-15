@@ -4,9 +4,8 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class DoubleMachineInput extends MachineInput<DoubleMachineInput> implements IWildInput<DoubleMachineInput> {
+public class DoubleMachineInput extends MachineInput<DoubleMachineInput> {
 
     public ItemStack itemStack = ItemStack.EMPTY;
     public ItemStack extraStack = ItemStack.EMPTY;
@@ -74,11 +73,5 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> impleme
     @Override
     public boolean isInstance(Object other) {
         return other instanceof DoubleMachineInput;
-    }
-
-    @Override
-    public DoubleMachineInput wildCopy() {
-        return new DoubleMachineInput(new ItemStack(itemStack.getItem(), itemStack.getCount(), OreDictionary.WILDCARD_VALUE),
-              new ItemStack(extraStack.getItem(), extraStack.getCount(), OreDictionary.WILDCARD_VALUE));
     }
 }

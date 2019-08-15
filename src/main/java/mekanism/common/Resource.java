@@ -38,9 +38,4 @@ public enum Resource implements INamedResource {
     public String getRegistrySuffix() {
         return name.toLowerCase(Locale.ROOT);
     }
-
-    @Override
-    public String getOreSuffix() {
-        return name;
-    }
 }

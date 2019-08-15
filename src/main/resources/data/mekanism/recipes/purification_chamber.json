@@ -19,11 +19,10 @@
       "item": "mekanism:enrichment_chamber"
     },
     "C": {
-      "item": "#CIRCUIT_ADVANCED"
+      "tag": "forge:circuits/advanced"
     },
     "E": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     },
     "O": {
       "tag": "forge:ingots/osmium"

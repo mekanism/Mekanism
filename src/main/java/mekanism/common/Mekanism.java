@@ -61,8 +61,6 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.tags.MekanismBlockTagsProvider;
-import mekanism.common.tags.MekanismItemTagsProvider;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
@@ -71,7 +69,6 @@ import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -109,10 +106,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -219,18 +214,6 @@ public class Mekanism {
         // Register items and itemBlocks
         MekanismItem.registerItems(event.getRegistry());
         MekanismBlock.registerItemBlocks(event.getRegistry());
-        //Ore dict entries that are for items not added by mekanism
-        OreDictionary.registerOre("alloyBasic", new ItemStack(Items.REDSTONE));
-    }
-
-    public void gatherData(GatherDataEvent event) {
-        //TODO: Register listener for this event
-        DataGenerator gen = event.getGenerator();
-        if (event.includeServer()) {
-            gen.addProvider(new MekanismBlockTagsProvider(gen));
-            gen.addProvider(new MekanismItemTagsProvider(gen));
-            //gen.addProvider(new ForgeRecipeProvider(gen));
-        }
     }
 
     @SubscribeEvent

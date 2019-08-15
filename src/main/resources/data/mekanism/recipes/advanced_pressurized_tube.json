@@ -14,8 +14,7 @@
       "item": "mekanism:basic_pressurized_tube"
     },
     "E": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     }
   }
 }

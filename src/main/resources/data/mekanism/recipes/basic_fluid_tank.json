@@ -16,8 +16,7 @@
   ],
   "key": {
     "A": {
-      "ore": "alloyBasic",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/basic"
     },
     "I": {
       "tag": "forge:ingots/iron"

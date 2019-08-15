@@ -19,8 +19,7 @@
       "item": "mekanism:hdpe_sheet"
     },
     "A": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "B": {
       "tag": "forge:ingots/bronze"
@@ -29,7 +28,7 @@
       "item": "mekanism:steel_casing"
     },
     "C": {
-      "item": "#CIRCUIT_ELITE"
+      "tag": "forge:circuits/elite"
     }
   }
 }

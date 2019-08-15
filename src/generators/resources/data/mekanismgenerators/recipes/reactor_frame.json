@@ -11,8 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "A": {
-      "ore": "alloyUltimate",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/atomic"
     },
     "C": {
       "item": "mekanism:steel_casing"

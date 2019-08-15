@@ -10,15 +10,13 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "ore": "alloyBasic",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/basic"
     },
     "S": {
-      "ore": "cobblestone",
-      "type": "forge:ore_dict"
+      "tag": "forge:cobblestone"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     }
   }
 }

@@ -16,8 +16,7 @@
   ],
   "key": {
     "A": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "T": {
       "item": "mekanism:advanced_fluid_tank"

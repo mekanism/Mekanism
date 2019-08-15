@@ -10,8 +10,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "R": {
-      "ore": "alloyBasic",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/basic"
     },
     "T": {
       "item": "mekanism:energy_tablet"

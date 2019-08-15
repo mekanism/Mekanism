@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "mekanism:black_plastic_road",
+    "mekanism:red_plastic_road",
+    "mekanism:green_plastic_road",
+    "mekanism:brown_plastic_road",
+    "mekanism:blue_plastic_road",
+    "mekanism:purple_plastic_road",
+    "mekanism:cyan_plastic_road",
+    "mekanism:light_gray_plastic_road",
+    "mekanism:gray_plastic_road",
+    "mekanism:pink_plastic_road",
+    "mekanism:lime_plastic_road",
+    "mekanism:yellow_plastic_road",
+    "mekanism:light_blue_plastic_road",
+    "mekanism:magenta_plastic_road",
+    "mekanism:orange_plastic_road",
+    "mekanism:white_plastic_road"
+  ]
+}

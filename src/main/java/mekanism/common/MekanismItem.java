@@ -6,7 +6,6 @@ import mekanism.common.base.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemBalloon;
-import mekanism.common.item.ItemBioFuel;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemControlCircuit;
@@ -20,8 +19,6 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemResource;
 import mekanism.common.item.ItemRobit;
-import mekanism.common.item.ItemSalt;
-import mekanism.common.item.ItemSawdust;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
@@ -64,14 +61,19 @@ public enum MekanismItem implements IItemProvider {
     TELEPORTATION_CORE("teleportation_core"),
     ENRICHED_IRON("enriched_iron"),
     ELECTROLYTIC_CORE("electrolytic_core"),
-    SAWDUST(new ItemSawdust()),
-    SALT(new ItemSalt()),
+    //TODO: pulps/wood? Doesn't really make sense so not adding it unless it is one of the standards
+    SAWDUST("sawdust"),
+    //TODO: Once more mods are on 1.14 see what standard for salt is, if we should have forge:foods/salt etc
+    SALT("salt"),
     SUBSTRATE("substrate"),
-    BIO_FUEL(new ItemBioFuel()),
+    //TODO: Make sure we match the common spec
+    BIO_FUEL("bio_fuel"),
 
+    //TODO: Rename compressed to enriched?
     COMPRESSED_CARBON(new ItemResource(ResourceType.COMPRESSED, MiscResource.CARBON)),
     COMPRESSED_REDSTONE(new ItemResource(ResourceType.COMPRESSED, MiscResource.REDSTONE)),
     COMPRESSED_DIAMOND(new ItemResource(ResourceType.COMPRESSED, MiscResource.DIAMOND)),
+    //TODO: Should this be refined obsidian
     COMPRESSED_OBSIDIAN(new ItemResource(ResourceType.COMPRESSED, MiscResource.OBSIDIAN)),
 
     SPEED_UPGRADE(new ItemUpgrade(Upgrade.SPEED)),

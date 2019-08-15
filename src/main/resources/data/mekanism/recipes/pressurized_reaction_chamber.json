@@ -19,10 +19,10 @@
       "tag": "forge:ingots/steel"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "E": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     },
     "F": {
       "item": "mekanism:dynamic_tank"

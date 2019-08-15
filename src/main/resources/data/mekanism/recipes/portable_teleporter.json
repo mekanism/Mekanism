@@ -10,7 +10,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "T": {
       "item": "mekanism:teleportation_core"

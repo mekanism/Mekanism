@@ -11,8 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "P": {
-      "ore": "glowPanel",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:glow_panels"
     },
     "D": {
       "tag": "forge:dyes/orange"

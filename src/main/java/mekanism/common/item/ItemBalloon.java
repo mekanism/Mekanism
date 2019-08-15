@@ -23,7 +23,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemBalloon extends ItemMekanism {
 
@@ -33,15 +32,6 @@ public class ItemBalloon extends ItemMekanism {
         super(color.registry_prefix + "_balloon");
         this.color = color;
         DispenserBlock.registerDispenseBehavior(this, new DispenserBehavior());
-    }
-
-    @Override
-    public void registerOreDict() {
-        OreDictionary.registerOre("balloon", new ItemStack(this));
-        if (color.dyeName != null) {
-            //As of the moment none of the colors used have a null dye name but if the other ones get used this is needed
-            OreDictionary.registerOre("balloon" + color.dyeName, new ItemStack(this));
-        }
     }
 
     public EnumColor getColor() {

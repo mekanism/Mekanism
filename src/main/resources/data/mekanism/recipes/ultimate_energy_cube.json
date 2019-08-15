@@ -10,12 +10,10 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "ore": "alloyUltimate",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/atomic"
     },
     "d": {
-      "ore": "gemDiamond",
-      "type": "forge:ore_dict"
+      "tag": "forge:gems/diamond"
     },
     "T": {
       "item": "mekanism:energy_tablet"

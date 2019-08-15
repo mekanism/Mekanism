@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "mekanism:black_balloon",
+    "mekanism:red_balloon",
+    "mekanism:green_balloon",
+    "mekanism:brown_balloon",
+    "mekanism:blue_balloon",
+    "mekanism:purple_balloon",
+    "mekanism:cyan_balloon",
+    "mekanism:light_gray_balloon",
+    "mekanism:gray_balloon",
+    "mekanism:pink_balloon",
+    "mekanism:lime_balloon",
+    "mekanism:yellow_balloon",
+    "mekanism:light_blue_balloon",
+    "mekanism:magenta_balloon",
+    "mekanism:orange_balloon",
+    "mekanism:white_balloon"
+  ]
+}

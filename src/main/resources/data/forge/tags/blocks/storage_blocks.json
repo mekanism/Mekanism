@@ -6,6 +6,8 @@
     "#forge:storage_blocks/refined_obsidian",
     "#forge:storage_blocks/charcoal",
     "#forge:storage_blocks/refined_glowstone",
-    "#forge:storage_blocks/steel"
+    "#forge:storage_blocks/steel",
+    "#forge:storage_blocks/copper",
+    "#forge:storage_blocks/tin"
   ]
 }

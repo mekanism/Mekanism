@@ -19,11 +19,10 @@
       "item": "mekanism:purification_chamber"
     },
     "R": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "C": {
-      "item": "#CIRCUIT_ELITE"
+      "tag": "forge:circuits/elite"
     },
     "G": {
       "tag": "forge:ingots/gold"

@@ -13,7 +13,7 @@
       "tag": "forge:ingots/steel"
     },
     "C": {
-      "item": "mekanism:alloy_atomic"
+      "tag": "mekanism:alloys/atomic"
     },
     "E": {
       "item": "mekanism:energy_tablet"

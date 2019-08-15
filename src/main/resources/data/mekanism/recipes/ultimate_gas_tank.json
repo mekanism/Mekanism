@@ -13,8 +13,7 @@
       "tag": "forge:ingots/osmium"
     },
     "A": {
-      "ore": "alloyUltimate",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/atomic"
     },
     "T": {
       "item": "mekanism:elite_gas_tank"

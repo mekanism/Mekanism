@@ -14,8 +14,7 @@
       "item": "mekanism:basic_thermodynamic_conductor"
     },
     "E": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     }
   }
 }

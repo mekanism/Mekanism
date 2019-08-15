@@ -10,18 +10,16 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "B": {
       "item": "mekanism:advanced_bin"
     },
     "S": {
-      "ore": "cobblestone",
-      "type": "forge:ore_dict"
+      "tag": "forge:cobblestone"
     },
     "C": {
-      "item": "#CIRCUIT_ELITE"
+      "tag": "forge:circuits/elite"
     }
   }
 }

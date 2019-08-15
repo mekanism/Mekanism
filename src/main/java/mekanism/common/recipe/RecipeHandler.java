@@ -19,7 +19,6 @@ import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.inputs.GasInput;
-import mekanism.common.recipe.inputs.IWildInput;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.inputs.MachineInput;
@@ -361,11 +360,6 @@ public final class RecipeHandler {
     RECIPE getRecipe(@Nonnull INPUT input, @Nonnull Map<INPUT, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = recipes.get(input);
-            if (recipe == null && input instanceof IWildInput) {
-                //noinspection unchecked
-                IWildInput<INPUT> wildInput = (IWildInput<INPUT>) input;
-                recipe = recipes.get(wildInput.wildCopy());
-            }
             return recipe == null ? null : recipe.copy();
         }
         return null;

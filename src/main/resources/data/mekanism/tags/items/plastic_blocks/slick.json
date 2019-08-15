@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "mekanism:black_slick_plastic",
+    "mekanism:red_slick_plastic",
+    "mekanism:green_slick_plastic",
+    "mekanism:brown_slick_plastic",
+    "mekanism:blue_slick_plastic",
+    "mekanism:purple_slick_plastic",
+    "mekanism:cyan_slick_plastic",
+    "mekanism:light_gray_slick_plastic",
+    "mekanism:gray_slick_plastic",
+    "mekanism:pink_slick_plastic",
+    "mekanism:lime_slick_plastic",
+    "mekanism:yellow_slick_plastic",
+    "mekanism:light_blue_slick_plastic",
+    "mekanism:magenta_slick_plastic",
+    "mekanism:orange_slick_plastic",
+    "mekanism:white_slick_plastic"
+  ]
+}

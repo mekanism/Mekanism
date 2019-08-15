@@ -11,6 +11,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -20,7 +21,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+public class BinRecipe extends IForgeRegistryEntry<IRecipe> implements IRecipe {
 
     private static boolean registered;
 
@@ -33,7 +34,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
+    public boolean matches(@Nonnull IInventory inv, @Nonnull World world) {
         return !getCraftingResult(inv).isEmpty();
     }
 
@@ -43,11 +44,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
-        return getResult(inv);
-    }
-
-    public ItemStack getResult(IInventory inv) {
+    public ItemStack getCraftingResult(@Nonnull IInventory inv) {
         ItemStack bin = ItemStack.EMPTY;
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack stack = inv.getStackInSlot(i);
@@ -101,13 +98,19 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
     @Nonnull
     @Override
+    public IRecipeType<?> getType() {
+        return IRecipeType.CRAFTING;
+    }
+
+    @Nonnull
+    @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 
     @SubscribeEvent
     public void onCrafting(ItemCraftedEvent event) {
-        if (!getResult(event.craftMatrix).isEmpty()) {
+        if (!getCraftingResult(event.craftMatrix).isEmpty()) {
             if (!isBin(event.crafting)) {
                 for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
                     if (isBin(event.craftMatrix.getStackInSlot(i))) {

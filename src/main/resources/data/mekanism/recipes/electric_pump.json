@@ -22,7 +22,7 @@
       "item": "mekanism:steel_casing"
     },
     "E": {
-      "item": "mekanism:alloy_enriched"
+      "tag": "mekanism:alloys/enriched"
     },
     "O": {
       "tag": "forge:ingots/osmium"

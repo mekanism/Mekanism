@@ -13,8 +13,7 @@
       "tag": "forge:ingots/osmium"
     },
     "A": {
-      "ore": "alloyAdvanced",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/enriched"
     },
     "T": {
       "item": "mekanism:basic_gas_tank"

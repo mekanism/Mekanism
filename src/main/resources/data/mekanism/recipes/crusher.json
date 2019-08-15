@@ -19,7 +19,7 @@
       "tag": "forge:dusts/redstone"
     },
     "C": {
-      "item": "#CIRCUIT_BASIC"
+      "tag": "forge:circuits/basic"
     },
     "I": {
       "item": "mekanism:steel_casing"

@@ -16,15 +16,13 @@
   ],
   "key": {
     "R": {
-      "ore": "alloyElite",
-      "type": "forge:ore_dict"
+      "tag": "mekanism:alloys/reinforced"
     },
     "C": {
       "item": "mekanism:steel_casing"
     },
     "D": {
-      "ore": "gemDiamond",
-      "type": "forge:ore_dict"
+      "tag": "forge:gems/diamond"
     },
     "E": {
       "item": "mekanism:energy_tablet"

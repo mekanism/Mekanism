@@ -21,7 +21,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemEnergized extends ItemMekanism implements IItemEnergized {
 
@@ -37,11 +36,6 @@ public class ItemEnergized extends ItemMekanism implements IItemEnergized {
     public ItemEnergized(String name, double maxElectricity, Item.Properties properties) {
         super(name, properties.maxStackSize(1));
         MAX_ELECTRICITY = maxElectricity;
-    }
-
-    @Override
-    public void registerOreDict() {
-        OreDictionary.registerOre("battery", new ItemStack(this));
     }
 
     @Override

@@ -371,9 +371,7 @@ public final class OreDictManager {
         }
 
         for (ItemStack sapling : OreDictionary.getOres("treeSapling", false)) {
-            if (sapling.getDamage() == 0 || sapling.getDamage() == OreDictionary.WILDCARD_VALUE) {
-                RecipeHandler.addCrusherRecipe(new ItemStack(sapling.getItem(), 1, OreDictionary.WILDCARD_VALUE), MekanismItem.BIO_FUEL.getItemStack(2));
-            }
+            RecipeHandler.addCrusherRecipe(StackUtils.size(sapling, 1), MekanismItem.BIO_FUEL.getItemStack(2));
         }
 
         for (ItemStack coal : OreDictionary.getOres("blockCoal", false)) {
@@ -461,13 +459,7 @@ public final class OreDictManager {
         }
 
         for (ItemStack logEntry : OreDictionary.getOres("logWood", false)) {
-            if (logEntry.getDamage() == OreDictionary.WILDCARD_VALUE) {
-                for (int j = 0; j < 16; j++) {
-                    addSawmillLog(tempCrafting, new ItemStack(logEntry.getItem(), 1, j), dummyWorld);
-                }
-            } else {
-                addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1), dummyWorld);
-            }
+            addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1), dummyWorld);
             RecipeHandler.addPRCRecipe(StackUtils.size(logEntry, 1), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100), ItemStack.EMPTY,
                   new GasStack(MekanismFluids.Hydrogen, 100), 0, 150);
         }
