@@ -165,12 +165,12 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
     @Override
     public ITextComponent getNeededInfo() {
-        return TextComponentUtil.build(EnergyDisplay.of(getEnergyNeeded()));
+        return EnergyDisplay.of(getEnergyNeeded()).getTextComponent();
     }
 
     @Override
     public ITextComponent getStoredInfo() {
-        return TextComponentUtil.build(EnergyDisplay.of(buffer.amount));
+        return EnergyDisplay.of(buffer.amount).getTextComponent();
     }
 
     @Override

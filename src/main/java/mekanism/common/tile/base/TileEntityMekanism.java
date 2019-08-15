@@ -51,7 +51,6 @@ import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -282,7 +281,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     public ITextComponent getName() {
         //TODO: Is this useful or should the gui title be got a different way
-        return TextComponentUtil.build(Translation.of(getBlockType().getTranslationKey()));
+        return TextComponentUtil.translate(getBlockType().getTranslationKey());
     }
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {

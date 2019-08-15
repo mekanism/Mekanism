@@ -167,10 +167,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Con
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        ITextComponent ownerComponent = TextComponentUtil.build(OwnerDisplay.of(tileEntity.ownerUUID, tileEntity.clientOwner));
+        ITextComponent ownerComponent = OwnerDisplay.of(tileEntity.ownerUUID, tileEntity.clientOwner).getTextComponent();
         drawString(ownerComponent, xSize - 7 - getStringWidth(ownerComponent), (ySize - 96) + 2, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
-        drawCenteredText(TextComponentUtil.build(Translation.of("gui.trustedPlayers")), 74, 57, 0x787878);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawCenteredText(TextComponentUtil.translate("gui.trustedPlayers"), 74, 57, 0x787878);
         if (tileEntity.frequency != null) {
             drawString(TextComponentUtil.build(Translation.of("gui.security") + ": ", tileEntity.frequency.securityMode), 13, 103, 0x404040);
         } else {
@@ -182,11 +182,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Con
         if (tileEntity.frequency != null && overrideButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.securityOverride"), ": ", OnOff.of(tileEntity.frequency.override)), xAxis, yAxis);
         } else if (publicButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.publicMode")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.publicMode"), xAxis, yAxis);
         } else if (privateButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.privateMode")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.privateMode"), xAxis, yAxis);
         } else if (trustedButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.trustedMode")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.trustedMode"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

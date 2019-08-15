@@ -6,6 +6,6 @@ import net.minecraft.client.gui.widget.button.Button;
 public class GuiButtonTranslation extends Button {
 
     public GuiButtonTranslation(int x, int y, int width, int height, String translationKey, IPressable onPress) {
-        super(x, y, width, height, TextComponentUtil.getTranslationComponent(translationKey).getFormattedText(), onPress);
+        super(x, y, width, height, TextComponentUtil.translate(translationKey).getFormattedText(), onPress);
     }
 }

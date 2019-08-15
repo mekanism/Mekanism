@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.bin.TileEntityBin;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -32,7 +31,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         if (!itemType.isEmpty()) {
             amount = Integer.toString(clientAmount);
             if (clientAmount == Integer.MAX_VALUE) {
-                amount = TextComponentUtil.build(Translation.of("gui.infinite")).getFormattedText();
+                amount = TextComponentUtil.translate("mekanism.gui.infinite").getFormattedText();
             }
             GlStateManager.pushMatrix();
             switch (facing) {

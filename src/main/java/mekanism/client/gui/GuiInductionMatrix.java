@@ -35,7 +35,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 94) + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.input"), ":"), 53, 26, 0x00CD00);
         drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastInput()), "/t"), 53, 35, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.output"), ":"), 53, 44, 0x00CD00);
@@ -43,7 +43,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), xAxis, yAxis);
+            displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

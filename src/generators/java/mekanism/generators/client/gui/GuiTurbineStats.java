@@ -39,7 +39,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Co
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.getTranslationComponent("mekanism.gui.turbineStates"), 0, xSize, 6, 0x404040);
+        drawCenteredText(TextComponentUtil.translate("mekanism.gui.turbineStates"), 0, xSize, 6, 0x404040);
         if (tileEntity.structure != null) {
             ITextComponent limiting = TextComponentUtil.build(EnumColor.DARK_RED, " (", Translation.of("mekanism.gui.limiting"), ")");
             int lowerVolume = tileEntity.structure.lowerVolume;
@@ -50,13 +50,13 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Co
                                          < vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
             boolean ventsLimiting = lowerVolume * clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get()
                                     > vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.steamFlow")), 8, 40, 0x797979);
+            drawString(TextComponentUtil.translate("mekanism.gui.steamFlow"), 8, 40, 0x797979);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.dispersers"),
                   ": " + clientDispersers, (dispersersLimiting ? limiting : "")), 14, 49, 0x404040);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.vents"), ": " + vents, (ventsLimiting ? limiting : "")), 14, 58, 0x404040);
             int coils = tileEntity.structure.coils;
             int blades = tileEntity.structure.blades;
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.production")), 8, 72, 0x797979);
+            drawString(TextComponentUtil.translate("mekanism.gui.production"), 8, 72, 0x797979);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.blades"), ": " + blades, (coils * 4 > blades ? limiting : "")), 14, 81, 0x404040);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.coils"), ": " + coils, (coils * 4 < blades ? limiting : "")), 14, 90, 0x404040);
             double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *

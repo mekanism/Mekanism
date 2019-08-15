@@ -45,6 +45,6 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
     @OnlyIn(Dist.CLIENT)
     public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         //TODO: Previously had a max width thing, is this needed or does vanilla handle it
-        tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism." + getRegistryName().getPath())));
+        tooltip.add(TextComponentUtil.translate("tooltip.mekanism." + getRegistryName().getPath()));
     }
 }

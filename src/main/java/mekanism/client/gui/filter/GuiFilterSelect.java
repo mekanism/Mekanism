@@ -5,7 +5,6 @@ import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +38,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism> extends G
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.filterSelect.title")), 43, 6, 0x404040);
+        drawString(TextComponentUtil.translate("mekanism.gui.filterSelect.title"), 43, 6, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

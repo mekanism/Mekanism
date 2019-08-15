@@ -138,11 +138,11 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.lastItem")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.lastItem"), xAxis, yAxis);
         } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.nextItem")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.nextItem"), xAxis, yAxis);
         } else if (xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.oreDictCompat")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.oreDictCompat"), xAxis, yAxis);
         } else if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35) {
             if (!renderStack.isEmpty()) {
                 String name = ItemRegistryUtils.getMod(renderStack);

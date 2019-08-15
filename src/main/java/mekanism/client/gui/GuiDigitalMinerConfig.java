@@ -174,7 +174,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         //TODO: Lang Keys
-        drawString(TextComponentUtil.build(Translation.of("gui.digitalMinerConfig")), 43, 6, 0x404040);
+        drawString(TextComponentUtil.translate("gui.digitalMinerConfig"), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.filters"), ":"), 11, 19, 0x00CD00);
         drawString(TextComponentUtil.build("T: " + tileEntity.filters.size()), 11, 28, 0x00CD00);
         drawString(TextComponentUtil.build("I: ", OnOff.of(tileEntity.inverse)), 11, 131, 0x00CD00);
@@ -188,29 +188,29 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                 int yStart = i * filterH + filterY;
                 if (filter instanceof IItemStackFilter) {
                     renderItem(((IItemStackFilter) filter).getItemStack(), 59, yStart + 3);
-                    drawString(TextComponentUtil.build(Translation.of("gui.itemFilter")), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.itemFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IOreDictFilter) {
                     IOreDictFilter oreFilter = (IOreDictFilter) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.build(Translation.of("gui.oredictFilter")), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.oredictFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IMaterialFilter) {
                     renderItem(((IMaterialFilter) filter).getMaterialItem(), 59, yStart + 3);
-                    drawString(TextComponentUtil.build(Translation.of("gui.materialFilter")), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.materialFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IModIDFilter) {
                     IModIDFilter modFilter = (IModIDFilter) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }
                     renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.build(Translation.of("gui.modIDFilter")), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.modIDFilter"), 78, yStart + 2, 0x404040);
                 }
             }
         }
         if (inverseButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.inverse")), mouseX - guiLeft, mouseY - guiTop);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.inverse"), mouseX - guiLeft, mouseY - guiTop);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -3,7 +3,6 @@ package mekanism.client.gui.chemical;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,7 +29,7 @@ public abstract class GuiChemical<TILE extends TileEntityMekanism, CONTAINER ext
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
-            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), xAxis, yAxis);
+            displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

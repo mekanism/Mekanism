@@ -59,6 +59,6 @@ public class GuiChemicalDissolutionChamber extends GuiChemical<TileEntityChemica
 
     @Override
     protected void drawForegroundText() {
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.chemicalDissolutionChamber.short")), 35, 4, 0x404040);
+        drawString(TextComponentUtil.translate("mekanism.gui.chemicalDissolutionChamber.short"), 35, 4, 0x404040);
     }
 }

@@ -39,7 +39,7 @@ public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement
     private float scroll;
 
     public GuiUpgradeManagement(PlayerInventory inventory, IUpgradeTile tile) {
-        super(new ContainerUpgradeManagement(inventory, tile), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.upgrade_management"));
+        super(new ContainerUpgradeManagement(inventory, tile), inventory, TextComponentUtil.translate("mekanism.gui.upgrade_management"));
         tileEntity = tile;
     }
 
@@ -83,7 +83,7 @@ public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.supported"), ":"), 26, 59, 0x404040);
         if (selectedType == null) {
             renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.noSelection"), "."), 92, 8, 0.8F, true);

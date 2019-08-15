@@ -18,9 +18,9 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
     @Override
     public ITextComponent getTextComponent() {
-        ITextComponent translation = TextComponentUtil.build(Translation.of(getKey()));
+        ITextComponent translation = TextComponentUtil.translate(getKey());
         if (colored) {
-            translation.getStyle().setColor(value ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
+            translation.applyTextStyle(value ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
         }
         return translation;
     }

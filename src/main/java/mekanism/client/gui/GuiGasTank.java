@@ -46,11 +46,11 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, ContainerGasT
         String stored;
         ITextComponent component;
         if (tileEntity.gasTank.getStored() == Integer.MAX_VALUE) {
-            component = TextComponentUtil.build(Translation.of("gui.infinite"));
+            component = TextComponentUtil.translate("gui.infinite");
         } else if (tileEntity.tier.getStorage() == Integer.MAX_VALUE) {
             component = TextComponentUtil.build(tileEntity.gasTank.getStored(), "/", Translation.of("gui.infinite"));
         } else {
-            component = TextComponentUtil.build(tileEntity.gasTank.getStored() + "/" + tileEntity.tier.getStorage());
+            component = TextComponentUtil.getString(tileEntity.gasTank.getStored() + "/" + tileEntity.tier.getStorage());
         }
         drawString(component, 45, 40, 0x404040);
         GasStack gasStack = tileEntity.gasTank.getGas();
@@ -59,7 +59,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, ContainerGasT
         } else {
             renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.gas"), ": ", Translation.of("mekanism.gui.none")), 45, 49, 0x404040, 112);
         }
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, ySize - 96 + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         ITextComponent dumpingComponent = TextComponentUtil.build(tileEntity.dumping);
         drawString(dumpingComponent, 156 - getStringWidth(dumpingComponent), 73, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

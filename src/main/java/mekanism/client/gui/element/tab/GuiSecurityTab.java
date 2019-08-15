@@ -82,7 +82,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
         if (inBounds(xAxis, yAxis)) {
             ITextComponent securityComponent = TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.security"), ": ",
                   isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT) : SecurityUtils.getSecurity(tileEntity, Dist.CLIENT));
-            ITextComponent ownerComponent = TextComponentUtil.build(OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()));
+            ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()).getTextComponent();
             if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tileEntity, Dist.CLIENT)) {
                 displayTooltips(Arrays.asList(securityComponent, ownerComponent,
                       TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")")

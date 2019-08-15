@@ -59,11 +59,11 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, C
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(Translation.of("gui.matrixStats")), 0, xSize, 6, 0x404040);
+        drawCenteredText(TextComponentUtil.translate("gui.matrixStats"), 0, xSize, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.input"), ":"), 53, 26, 0x797979);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastInput(), tileEntity.getTransferCap())), 59, 35, 0x404040);
+        drawString(EnergyDisplay.of(tileEntity.getLastInput(), tileEntity.getTransferCap()).getTextComponent(), 59, 35, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.output"), ":"), 53, 46, 0x797979);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastOutput(), tileEntity.getTransferCap())), 59, 55, 0x404040);
+        drawString(EnergyDisplay.of(tileEntity.getLastOutput(), tileEntity.getTransferCap()).getTextComponent(), 59, 55, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.dimensions"), ":"), 8, 82, 0x797979);
         if (tileEntity.structure != null) {
             drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x " + tileEntity.structure.volLength, 14, 91, 0x404040);

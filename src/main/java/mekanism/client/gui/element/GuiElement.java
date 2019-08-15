@@ -112,9 +112,9 @@ public abstract class GuiElement {
 
     public abstract void renderForeground(int xAxis, int yAxis);
 
-    public abstract boolean preMouseClicked(double xAxis, double yAxis, double button);
+    public abstract boolean preMouseClicked(double xAxis, double yAxis, int button);
 
-    public abstract boolean mouseClicked(double xAxis, double yAxis, double button);
+    public abstract boolean mouseClicked(double xAxis, double yAxis, int button);
 
     public interface IInfoHandler {
 

@@ -68,7 +68,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.getTranslationComponent("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
         if (tileEntity.structure != null) {
             double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
@@ -88,7 +88,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
                 if (tileEntity.structure.fluidStored != null) {
                     displayTooltip(TextComponentUtil.build(tileEntity.structure.fluidStored, ": " + tileEntity.structure.fluidStored.amount + "mB"), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.getTranslationComponent("mekanism.gui.empty"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
                 }
             }
         }

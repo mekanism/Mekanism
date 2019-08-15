@@ -16,7 +16,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -238,12 +237,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         if (buffer != null) {
             return TextComponentUtil.build(buffer, " (" + buffer.amount + ")");
         }
-        return TextComponentUtil.build(Translation.of("mekanism.none"));
+        return TextComponentUtil.translate("mekanism.none");
     }
 
     @Override
     public ITextComponent getFlowInfo() {
-        return TextComponentUtil.build(prevTransferAmount + "/t");
+        return TextComponentUtil.getString(prevTransferAmount + "/t");
     }
 
     @Override

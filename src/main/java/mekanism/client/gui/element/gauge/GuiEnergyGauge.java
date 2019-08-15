@@ -6,7 +6,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -49,9 +48,9 @@ public class GuiEnergyGauge extends GuiGauge {
     @Override
     public ITextComponent getTooltipText() {
         if (infoHandler.getEnergyStorage().getEnergy() > 0) {
-            return TextComponentUtil.build(EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()));
+            return EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()).getTextComponent();
         }
-        return TextComponentUtil.build(Translation.of("mekanism.gui.empty"));
+        return TextComponentUtil.translate("mekanism.gui.empty");
     }
 
     public interface IEnergyInfoHandler {

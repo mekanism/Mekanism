@@ -43,7 +43,7 @@ public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, Contain
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, ySize - 96 + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -66,7 +66,7 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, C
 
     @Override
     protected void drawForegroundText() {
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.chemicalInfuser.short")), 5, 5, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 4, 0x404040);
+        drawString(TextComponentUtil.translate("mekanism.gui.chemicalInfuser.short"), 5, 5, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
     }
 }

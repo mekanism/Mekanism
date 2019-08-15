@@ -7,7 +7,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -61,7 +60,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (gasStack != null) {
             return TextComponentUtil.build(gasStack, ": " + infoHandler.getTank().getStored());
         }
-        return TextComponentUtil.build(Translation.of("mekanism.gui.empty"));
+        return TextComponentUtil.translate("mekanism.gui.empty");
     }
 
     @Override

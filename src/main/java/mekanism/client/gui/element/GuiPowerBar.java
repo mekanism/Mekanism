@@ -5,7 +5,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +27,7 @@ public class GuiPowerBar extends GuiElement {
         handler = new IPowerInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()));
+                return EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent();
             }
 
             @Override

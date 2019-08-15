@@ -19,6 +19,6 @@ public class Translation implements IHasTextComponent {
 
     @Override
     public ITextComponent getTextComponent() {
-        return TextComponentUtil.getTranslationComponent(key, args);
+        return TextComponentUtil.translate(key, args);
     }
 }

@@ -41,7 +41,7 @@ public class GuiRobitMain extends GuiMekanism<ContainerRobitMain> {
     private Button repairButton;
 
     public GuiRobitMain(PlayerInventory inventory, EntityRobit entity) {
-        super(new ContainerRobitMain(inventory, entity), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.robit.main"));
+        super(new ContainerRobitMain(inventory, entity), inventory, TextComponentUtil.translate("mekanism.gui.robit.main"));
         xSize += 25;
         robit = entity;
     }
@@ -113,7 +113,7 @@ public class GuiRobitMain extends GuiMekanism<ContainerRobitMain> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit")), 76, 6, 0x404040);
+        drawString(TextComponentUtil.translate("mekanism.gui.robit"), 76, 6, 0x404040);
 
         if (!displayNameChange) {
             CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
@@ -128,15 +128,15 @@ public class GuiRobitMain extends GuiMekanism<ContainerRobitMain> {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
-            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY)), xAxis, yAxis);
+            displayTooltip(EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY).getTextComponent(), xAxis, yAxis);
         } else if (followButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.toggleFollow")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.robit.toggleFollow"), xAxis, yAxis);
         } else if (renameButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.rename")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.robit.rename"), xAxis, yAxis);
         } else if (teleportHomeButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.teleport")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.robit.teleport"), xAxis, yAxis);
         } else if (pickupButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.robit.togglePickup")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.robit.togglePickup"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

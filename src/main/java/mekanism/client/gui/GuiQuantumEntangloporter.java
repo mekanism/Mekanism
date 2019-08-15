@@ -112,7 +112,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         if (!freq.publicFreq) {
             return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.private"));
         }
-        return TextComponentUtil.build(Translation.of("gui.public"));
+        return TextComponentUtil.translate("gui.public");
     }
 
     public void updateButtons() {
@@ -185,8 +185,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        drawString(TextComponentUtil.build(OwnerDisplay.of(tileEntity.getSecurity().getOwnerUUID(), tileEntity.getSecurity().getClientOwner())),
-              8, (ySize - 96) + 4, 0x404040);
+        drawString(OwnerDisplay.of(tileEntity.getSecurity().getOwnerUUID(), tileEntity.getSecurity().getClientOwner()).getTextComponent(), 8, (ySize - 96) + 4, 0x404040);
         ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.freq"), ": ");
         drawString(frequencyComponent, 32, 81, 0x404040);
         ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.security"), ": ");
@@ -194,7 +193,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         Frequency frequency = tileEntity.getFrequency(null);
         if (frequency != null) {
             drawString(frequency.name, 32 + getStringWidth(frequencyComponent), 81, 0x797979);
-            drawString(TextComponentUtil.build(getSecurity(frequency)), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
             drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(frequencyComponent), 81, 0x797979);
             drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(securityComponent), 91, 0x797979);

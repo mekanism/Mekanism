@@ -34,7 +34,6 @@ import mekanism.common.tile.component.SideConfig;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -699,7 +698,7 @@ public final class MekanismUtils {
             case EU:
                 return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
         }
-        return TextComponentUtil.build(Translation.of("mekanism.error"));
+        return TextComponentUtil.translate("mekanism.error");
     }
 
     /**
@@ -759,7 +758,7 @@ public final class MekanismUtils {
             case STP:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
         }
-        return TextComponentUtil.build(Translation.of("mekanism.error"));
+        return TextComponentUtil.translate("mekanism.error");
     }
 
     /**

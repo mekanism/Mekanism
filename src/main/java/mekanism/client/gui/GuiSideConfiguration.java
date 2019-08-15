@@ -109,9 +109,9 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Co
         if (configurable.getConfig().canEject(currentType)) {
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(configurable.getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
         } else {
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.noEject")), 53, 17, 0x00CD00);
+            drawString(TextComponentUtil.translate("mekanism.gui.noEject"), 53, 17, 0x00CD00);
         }
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.slots")), 77, 81, 0x787878);
+        drawString(TextComponentUtil.translate("mekanism.gui.slots"), 77, 81, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiSideDataButton button : sideDataButtons) {
@@ -124,7 +124,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Co
             }
         }
         if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.autoEject")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.autoEject"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

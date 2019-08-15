@@ -26,7 +26,7 @@ public class EnergyDisplay implements IHasTextComponent {
     @Override
     public ITextComponent getTextComponent() {
         if (energy == Double.MAX_VALUE) {
-            return TextComponentUtil.build(Translation.of("mekanism.gui.infinite"));
+            return TextComponentUtil.translate("mekanism.gui.infinite");
         }
         if (max == 0) {
             return MekanismUtils.getEnergyDisplayShort(energy);

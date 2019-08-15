@@ -24,7 +24,6 @@ import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilte
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -80,7 +79,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex() + i);
@@ -89,7 +88,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 }
                 int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
-                drawString(TextComponentUtil.build(Translation.of("mekanism.gui.filter")), 32, yStart + 2, 0x404040);
+                drawString(TextComponentUtil.translate("mekanism.gui.filter"), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
             }
         }

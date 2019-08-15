@@ -45,10 +45,10 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Cont
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(Translation.of("mekanism.gui.boilerStats")), 0, xSize, 6, 0x404040);
+        drawCenteredText(TextComponentUtil.translate("mekanism.gui.boilerStats"), 0, xSize, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxWater"), ": " + tileEntity.clientWaterCapacity + " mB"), 8, 26, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxSteam"), ": " + tileEntity.clientSteamCapacity + " mB"), 8, 35, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.heatTransfer")), 8, 49, 0x797979);
+        drawString(TextComponentUtil.translate("mekanism.gui.heatTransfer"), 8, 49, 0x797979);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.superheaters"), ": " + tileEntity.getSuperheatingElements()), 14, 58, 0x404040);
         int boilCapacity = (int) (tileEntity.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get() / SynchronizedBoilerData.getHeatEnthalpy());
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.boilCapacity"), ": " + boilCapacity + " mB/t"), 8, 72, 0x404040);

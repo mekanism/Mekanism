@@ -9,7 +9,6 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -49,7 +48,7 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
 
         @Override
         public ITextComponent getDescription() {
-            return TextComponentUtil.build(Translation.of(description));
+            return TextComponentUtil.translate(description);
         }
 
         @Override

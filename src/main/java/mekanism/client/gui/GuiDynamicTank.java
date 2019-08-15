@@ -25,7 +25,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 94) + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.volume"), ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK), 53, 26, 0x00CD00);
         FluidStack fluidStored = tileEntity.structure != null ? tileEntity.structure.fluidStored : null;
         if (fluidStored != null) {
@@ -33,7 +33,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
             renderScaledText(TextComponentUtil.build(fluidStored, ":"), 53, 44, 0x00CD00, 74);
             drawString(fluidStored.amount + "mB", 53, 53, 0x00CD00);
         } else {
-            renderScaledText(TextComponentUtil.build(Translation.of("mrekanism.gui.noFluid")), 53, 44, 0x00CD00, 74);
+            renderScaledText(TextComponentUtil.translate("mekanism.gui.noFluid"), 53, 44, 0x00CD00, 74);
         }
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -41,7 +41,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
             if (fluidStored != null) {
                 displayTooltip(TextComponentUtil.build(fluidStored, ": " + fluidStored.amount + "mB"), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

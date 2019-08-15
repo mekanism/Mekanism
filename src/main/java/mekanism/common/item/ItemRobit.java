@@ -80,6 +80,6 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
 
     public ITextComponent getName(ItemStack itemstack) {
         String name = ItemDataUtils.getString(itemstack, "name");
-        return TextComponentUtil.getStringComponent(name.isEmpty() ? "Robit" : name);
+        return TextComponentUtil.getString(name.isEmpty() ? "Robit" : name);
     }
 }

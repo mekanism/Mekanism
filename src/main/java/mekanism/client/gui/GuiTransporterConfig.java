@@ -83,11 +83,11 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Co
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(Translation.of("gui.configuration.transporter")), 0, xSize, 5, 0x404040);
+        drawCenteredText(TextComponentUtil.translate("gui.configuration.transporter"), 0, xSize, 5, 0x404040);
         renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(configurable.getEjector().hasStrictInput()), ")"),
               53, 17, 0x00CD00, 70);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.input")), 48, 81, 0x787878);
-        drawString(TextComponentUtil.build(Translation.of("gui.output")), 114, 68, 0x787878);
+        drawString(TextComponentUtil.translate("mekanism.gui.input"), 48, 81, 0x787878);
+        drawString(TextComponentUtil.translate("gui.output"), 114, 68, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiSideDataButton button : sideDataButtons) {
@@ -98,19 +98,19 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Co
                     if (color != null) {
                         displayTooltip(color.getColoredName(), xAxis, yAxis);
                     } else {
-                        displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
+                        displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
                     }
                 }
                 break;
             }
         }
         if (strictInputButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.configuration.strictInput")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.configuration.strictInput"), xAxis, yAxis);
         } else if (colorButton.isMouseOver(mouseX, mouseY)) {
             if (configurable.getEjector().getOutputColor() != null) {
                 displayTooltip(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

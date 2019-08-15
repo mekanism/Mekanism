@@ -43,8 +43,8 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Con
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 6, 0x404040);
-        drawString(TextComponentUtil.getTranslationComponent("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy())), 51, 26, 0x00CD00);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(EnergyDisplay.of(tileEntity.getEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.bioGenerator.bioFuel"), ": " + tileEntity.bioFuelSlot.fluidStored), 51, 35, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.out"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

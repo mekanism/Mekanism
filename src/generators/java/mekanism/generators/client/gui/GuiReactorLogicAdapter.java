@@ -65,11 +65,11 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             renderItem(type.getRenderStack(), 27, 35 + typeOffset);
             drawString(TextComponentUtil.build(EnumColor.WHITE, type), 46, 34 + typeOffset, 0x404040);
             if (button.isMouseOver(mouseX, mouseY)) {
-                displayTooltip(TextComponentUtil.build(Translation.of(type.getDescription())), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate(type.getDescription()), xAxis, yAxis);
             }
         }
         if (coolingButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.getTranslationComponent("mekanism.gui.toggleCooling"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.toggleCooling"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

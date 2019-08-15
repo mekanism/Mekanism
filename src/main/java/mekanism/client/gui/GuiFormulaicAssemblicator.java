@@ -97,17 +97,17 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (fillEmptyButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.fillEmpty")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.fillEmpty"), xAxis, yAxis);
         } else if (encodeFormulaButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.encodeFormula")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.encodeFormula"), xAxis, yAxis);
         } else if (craftSingleButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.craftSingle")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.craftSingle"), xAxis, yAxis);
         } else if (craftAvailableButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.craftAvailable")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.craftAvailable"), xAxis, yAxis);
         } else if (autoModeButton.isMouseOver(mouseX, mouseY)) {
             displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.autoModeToggle"), ": ", OnOff.of(tileEntity.autoMode)), xAxis, yAxis);
         } else if (stockControlButton.isMouseOver(mouseX, mouseY)) {

@@ -148,7 +148,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
     }
 
     public ITextComponent getFlowingComponent(ItemStack stack) {
-        return TextComponentUtil.build(YesNo.of(getFlowing(stack)));
+        return YesNo.of(getFlowing(stack)).getTextComponent();
     }
 
     public void setFlowing(ItemStack stack, boolean flowing) {

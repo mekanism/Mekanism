@@ -8,7 +8,6 @@ import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -27,14 +26,14 @@ public class GuiDictionary extends GuiMekanism<ContainerDictionary> {
     private final GuiScrollList scrollList;
 
     public GuiDictionary(PlayerInventory inventory) {
-        super(new ContainerDictionary(inventory), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.dictionary"));
+        super(new ContainerDictionary(inventory), inventory, TextComponentUtil.translate("mekanism.gui.dictionary"));
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of("mekanism.item.dictionary")), 64, 5, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, ySize - 96 + 2, 0x404040);
+        drawString(TextComponentUtil.translate("mekanism.item.dictionary"), 64, 5, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         renderItem(itemType, 6, 6);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

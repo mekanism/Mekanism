@@ -37,7 +37,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 4, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(getStruct(), 50, 21, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.height"), ": " + tileEntity.height), 50, 30, 0x00CD00);
@@ -52,14 +52,14 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
             if (fluid != null) {
                 displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.inputTank.getFluidAmount() + "mB"), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
             }
         } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.outputTank.getFluid();
             if (fluid != null) {
                 displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.outputTank.getFluidAmount() + "mB"), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.empty")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
             }
         } else if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
             displayTooltip(MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT), xAxis, yAxis);
@@ -69,11 +69,11 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     private ITextComponent getStruct() {
         if (tileEntity.structured) {
-            return TextComponentUtil.build(Translation.of("gui.formed"));
+            return TextComponentUtil.translate("gui.formed");
         } else if (tileEntity.controllerConflict) {
-            return TextComponentUtil.build(Translation.of("gui.conflict"));
+            return TextComponentUtil.translate("gui.conflict");
         }
-        return TextComponentUtil.build(Translation.of("gui.incomplete"));
+        return TextComponentUtil.translate("gui.incomplete");
     }
 
     @Override

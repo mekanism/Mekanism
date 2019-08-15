@@ -89,16 +89,16 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         if (tileEntity.mode == 0) {
-            drawString(TextComponentUtil.build(Translation.of("gui.condensentrating")), 6, (ySize - 94) + 2, 0x404040);
+            drawString(TextComponentUtil.translate("gui.condensentrating"), 6, (ySize - 94) + 2, 0x404040);
         } else {
-            drawString(TextComponentUtil.build(Translation.of("gui.decondensentrating")), 6, (ySize - 94) + 2, 0x404040);
+            drawString(TextComponentUtil.translate("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
         }
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (toggleButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.rotaryCondensentrator.toggleOperation")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
         } else if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
-            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), xAxis, yAxis);
+            displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

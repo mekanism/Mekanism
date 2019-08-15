@@ -46,8 +46,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, C
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 6, 0x404040);
-        drawString(TextComponentUtil.getTranslationComponent("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), 51, 26, 0x00CD00);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         //TODO: Why is this different from how all the other ones do it
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.power"),
               ": " + powerFormat.format(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier()))),

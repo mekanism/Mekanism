@@ -107,14 +107,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Con
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 69, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 96) + 2, 0x404040);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         ITextComponent runningType;
         if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()) {
-            runningType = TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.lowPower"));
+            runningType = TextComponentUtil.translate("mekanism.gui.digitalMiner.lowPower");
         } else if (tileEntity.running) {
-            runningType = TextComponentUtil.build(Translation.of("gui.digitalMiner.running"));
+            runningType = TextComponentUtil.translate("gui.digitalMiner.running");
         } else {
-            runningType = TextComponentUtil.build(Translation.of("gui.idle"));
+            runningType = TextComponentUtil.translate("gui.idle");
         }
         drawString(runningType, 9, 10, 0x00CD00);
         drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
@@ -137,20 +137,20 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Con
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.autoEject")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.autoEject"), xAxis, yAxis);
         } else if (autoPullButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.autoPull")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.autoPull"), xAxis, yAxis);
         } else if (resetButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.reset")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.reset"), xAxis, yAxis);
         } else if (silkTouchButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.silkTouch")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.silkTouch"), xAxis, yAxis);
         } else if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
-            displayTooltip(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), xAxis, yAxis);
+            displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         } else if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
             if (!tileEntity.missingStack.isEmpty()) {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.missingBlock")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.missingBlock"), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.well")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.well"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

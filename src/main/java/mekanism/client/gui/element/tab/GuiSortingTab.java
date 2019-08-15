@@ -12,7 +12,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,9 +45,9 @@ public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        drawString(TextComponentUtil.build(OnOff.of(tileEntity.sorting)), -21, 86, 0x0404040);
+        drawString(OnOff.of(tileEntity.sorting).getTextComponent(), -21, 86, 0x0404040);
         if (inBounds(xAxis, yAxis)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.factory.autoSort")), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("mekanism.gui.factory.autoSort"), xAxis, yAxis);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
         MekanismRenderer.resetColor();

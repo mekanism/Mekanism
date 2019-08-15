@@ -45,7 +45,7 @@ public class UnitDisplayUtils {
     }
 
     public static ITextComponent getDisplayShort(double value, ElectricUnit unit) {
-        return TextComponentUtil.build(getDisplay(value, unit, 2, true));
+        return TextComponentUtil.getString(getDisplay(value, unit, 2, true));
     }
 
     public static String getDisplayShort(double value, ElectricUnit unit, int decimalPlaces) {
@@ -98,7 +98,7 @@ public class UnitDisplayUtils {
     }
 
     public static ITextComponent getDisplayShort(double value, TemperatureUnit unit) {
-        return TextComponentUtil.build(getDisplayShort(value, true, unit));
+        return TextComponentUtil.getString(getDisplayShort(value, true, unit));
     }
 
     public static String getDisplayShort(double value, boolean shift, TemperatureUnit unit) {
@@ -232,7 +232,7 @@ public class UnitDisplayUtils {
 
         @Override
         public ITextComponent getTextComponent() {
-            return TextComponentUtil.build(name());
+            return TextComponentUtil.getString(name());
         }
     }
 
@@ -245,7 +245,7 @@ public class UnitDisplayUtils {
 
         @Override
         public ITextComponent getTextComponent() {
-            return TextComponentUtil.build(name());
+            return TextComponentUtil.getString(name());
         }
     }
 }

@@ -48,14 +48,14 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("container.inventory")), 8, (ySize - 94) + 2, 0x404040);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())), 51, 26, 0x00CD00);
+        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
+        drawString(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.finished"), ": ", YesNo.of(tileEntity.finishedCalc)), 51, 35, 0x00CD00);
         FluidStack fluid = tileEntity.fluidTank.getFluid();
         if (fluid != null) {
             drawString(TextComponentUtil.build(fluid, ": " + fluid.amount), 51, 44, 0x00CD00);
         } else {
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.noFluid")), 51, 44, 0x00CD00);
+            drawString(TextComponentUtil.translate("mekanism.gui.noFluid"), 51, 44, 0x00CD00);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

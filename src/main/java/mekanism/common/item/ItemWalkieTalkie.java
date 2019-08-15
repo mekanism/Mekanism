@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -46,7 +46,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(BooleanStateDisplay.OnOff.of(getOn(itemstack), true)));
+        tooltip.add(OnOff.of(getOn(itemstack), true).getTextComponent());
         tooltip.add(TextComponentUtil.build(EnumColor.DARK_AQUA, Translation.of("tooltip.channel"), ": ", EnumColor.GRAY, getChannel(itemstack)));
         if (!MekanismConfig.general.voiceServerEnabled.get()) {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("tooltip.walkie_disabled")));

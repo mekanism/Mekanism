@@ -81,7 +81,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
         addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(EnergyDisplay.of(getEnergy(), getMaxEnergy()));
+                return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();
             }
 
             @Override
@@ -107,7 +107,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
         addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(EnergyDisplay.of(getEnergy(), getMaxEnergy()));
+                return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();
             }
 
             @Override
@@ -209,7 +209,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
         if (!freq.publicFreq) {
             return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.private"));
         }
-        return TextComponentUtil.build(Translation.of("gui.public"));
+        return TextComponentUtil.translate("gui.public");
     }
 
     public void updateButtons() {
@@ -285,7 +285,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(getName(), (xSize / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
-        drawString(TextComponentUtil.build(OwnerDisplay.of(getOwner(), getOwnerUsername())), 8, !itemStack.isEmpty() ? ySize - 12 : (ySize - 96) + 4, 0x404040);
+        drawString(OwnerDisplay.of(getOwner(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? ySize - 12 : (ySize - 96) + 4, 0x404040);
         ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.freq"), ": ");
         drawString(frequencyComponent, 32, 81, 0x404040);
         ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.security"), ": ");

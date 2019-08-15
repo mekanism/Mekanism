@@ -129,7 +129,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         if (tileEntity.singleItem && filter.sizeMode) {
             drawString(TextComponentUtil.build(EnumColor.RED, OnOff.of(filter.sizeMode), "!"), 141, 46, 0x404040);
         } else {
-            drawString(TextComponentUtil.build(OnOff.of(filter.sizeMode)), 141, 46, 0x404040);
+            drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, 0x404040);
         }
         drawTransporterForegroundLayer(mouseX, mouseY, filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
@@ -142,7 +142,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             if (tileEntity.singleItem && filter.sizeMode) {
                 displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.sizeMode"), " - ", Translation.of("mekanism.gui.sizeModeConflict")), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.sizeMode")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.sizeMode"), xAxis, yAxis);
             }
         }
     }

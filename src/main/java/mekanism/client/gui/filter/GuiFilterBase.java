@@ -75,17 +75,17 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected void drawTransporterForegroundLayer(int mouseX, int mouseY, @Nonnull ItemStack stack) {
         if (filter instanceof TransporterFilter) {
             TransporterFilter tFilter = (TransporterFilter) filter;
-            drawString(TextComponentUtil.build(OnOff.of(tFilter.allowDefault)), 24, 66, 0x404040);
+            drawString(OnOff.of(tFilter.allowDefault).getTextComponent(), 24, 66, 0x404040);
             renderItem(stack, 12, 19);
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             if (defaultButton.isMouseOver(mouseX, mouseY)) {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.allowDefault")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("mekanism.gui.allowDefault"), xAxis, yAxis);
             } else if (colorButton.isMouseOver(mouseX, mouseY)) {
                 if (tFilter.color != null) {
                     displayTooltip(tFilter.color.getColoredName(), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.none")), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
                 }
             }
         }

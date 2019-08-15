@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
@@ -31,7 +30,7 @@ public class GuiRobitRepair extends GuiRobit<ContainerRobitRepair> implements IC
     private TextFieldWidget itemNameField;
 
     public GuiRobitRepair(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitRepair(inventory, entity), inventory, TextComponentUtil.getTranslationComponent("mekanism.gui.robit.repair"));
+        super(entity, new ContainerRobitRepair(inventory, entity), inventory, TextComponentUtil.translate("mekanism.gui.robit.repair"));
         playerInventory = inventory;
         repairContainer = (ContainerRobitRepair) inventorySlots;
     }
@@ -59,16 +58,16 @@ public class GuiRobitRepair extends GuiRobit<ContainerRobitRepair> implements IC
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         GlStateManager.disableLighting();
-        drawString(TextComponentUtil.build(Translation.of("container.repair")), 60, 6, 0x404040);
+        drawString(TextComponentUtil.translate("container.repair"), 60, 6, 0x404040);
 
         //func_216976_f = getMaximumCost
         if (repairContainer.func_216976_f() > 0) {
             int k = 8453920;
             boolean flag = true;
-            ITextComponent component = TextComponentUtil.build(Translation.of("container.repair.cost", repairContainer.func_216976_f()));
+            ITextComponent component = TextComponentUtil.translate("container.repair.cost", repairContainer.func_216976_f());
 
             if (repairContainer.func_216976_f() >= 40 && !minecraft.player.isCreative()) {
-                component = TextComponentUtil.build(Translation.of("container.repair.expensive"));
+                component = TextComponentUtil.translate("container.repair.expensive");
                 k = 16736352;
             } else if (!repairContainer.getSlot(2).getHasStack()) {
                 flag = false;

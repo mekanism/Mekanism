@@ -42,7 +42,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
                   EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(Translation.of(getUpgradeType(itemstack).getDescription())));
+            tooltip.add(TextComponentUtil.translate(getUpgradeType(itemstack).getDescription()));
         }
     }
 
