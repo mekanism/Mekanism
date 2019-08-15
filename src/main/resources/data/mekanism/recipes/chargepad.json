@@ -10,7 +10,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "Chargepad"
+      "block": "mekanism:chargepad"
     }
   ],
   "key": {

@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "generatorType": "HeatGenerator"
+      "block": "mekanismgenerators:heat_generator"
     }
   ],
   "key": {

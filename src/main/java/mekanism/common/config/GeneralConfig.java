@@ -23,7 +23,6 @@ public class GeneralConfig implements IMekanismConfig {
 
     private final ForgeConfigSpec configSpec;
 
-    public final BooleanValue controlCircuitOreDict;
     public final BooleanValue logPackets;
     public final BooleanValue dynamicTankEasterEgg;
     public final BooleanValue voiceServerEnabled;
@@ -108,7 +107,6 @@ public class GeneralConfig implements IMekanismConfig {
         //TODO: Move things to different files where it makes more sense
         // Also make config options for the different gear types, where previously we didn't allow them to be configured
 
-        controlCircuitOreDict = builder.comment("Enables recipes using Control Circuits to use OreDict'd Control Circuits from other mods.").define("controlCircuitOreDict", true);
         logPackets = builder.comment("Log Mekanism packet names. Debug setting.").define("logPackets", false);
         dynamicTankEasterEgg = builder.comment("Audible sparkles.").define("dynamicTankEasterEgg", false);
         voiceServerEnabled = builder.comment("Enables the voice server for Walkie Talkies.").define("voiceServerEnabled", false);

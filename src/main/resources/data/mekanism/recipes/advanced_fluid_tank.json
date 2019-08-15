@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "FluidTank"
+      "block": "mekanism:advanced_fluid_tank"
     }
   ],
   "key": {

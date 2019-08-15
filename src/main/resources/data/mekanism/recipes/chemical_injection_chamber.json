@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "ChemicalInjectionChamber"
+      "block": "mekanism:chemical_injection_chamber"
     }
   ],
   "key": {

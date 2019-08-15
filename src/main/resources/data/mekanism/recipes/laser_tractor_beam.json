@@ -10,7 +10,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "LaserTractorBeam"
+      "block": "mekanism:laser_tractor_beam"
     }
   ],
   "key": {

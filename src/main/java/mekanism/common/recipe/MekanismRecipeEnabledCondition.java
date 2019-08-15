@@ -2,46 +2,32 @@ package mekanism.common.recipe;
 
 import com.google.gson.JsonObject;
 import java.util.function.BooleanSupplier;
-import mekanism.common.config.MekanismConfig;
+import javax.annotation.Nonnull;
+import mekanism.common.block.interfaces.IBlockDisableable;
+import net.minecraft.block.Block;
 import net.minecraft.util.JSONUtils;
-import net.minecraftforge.common.crafting.IConditionFactory;
-import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.IConditionSerializer;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Used as a condition in mekanism _factories.json
  *
  * WARNING: Only one of these values could apply!
  */
-public class MekanismRecipeEnabledCondition implements IConditionFactory {
+public class MekanismRecipeEnabledCondition implements IConditionSerializer {
 
+    @Nonnull
     @Override
-    public BooleanSupplier parse(JsonContext context, JsonObject json) {
-        //TODO
-        /*if (JSONUtils.hasField(json, "machineType")) {
-            String machineType = JSONUtils.getString(json, "machineType");
-            final MachineType type = MekanismConfig.general.machinesManager.typeFromName(machineType);
-            //TODO: Check config
-            return () -> true;//() -> MekanismConfig.current().general.machinesManager.isEnabled(type);
+    public BooleanSupplier parse(@Nonnull JsonObject json) {
+        if (JSONUtils.hasField(json, "block")) {
+            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(JSONUtils.getString(json, "block")));
+            if (block instanceof IBlockDisableable) {
+                return ((IBlockDisableable) block)::isEnabled;
+            }
+            //TODO: Should this also throw an illegal state exception?
+            return () -> true;
         }
-
-        if (ModList.get().isLoaded(MekanismGenerators.MODID) && JSONUtils.hasField(json, "generatorType")) {
-            final String generatorType = JSONUtils.getString(json, "generatorType");
-            final GeneratorType type = MekanismConfig.generators.generatorsManager.typeFromName(generatorType);
-            //noinspection Convert2Lambda - classloading issues if generators not installed
-            return new BooleanSupplier() {
-                @Override
-                public boolean getAsBoolean() {
-                    //TODO: Check config
-                    return true;//MekanismConfig.current().generators.generatorsManager.isEnabled(type);
-                }
-            };
-        }*/
-
-        if (JSONUtils.hasField(json, "circuitOredict")) {
-            return () -> MekanismConfig.general.controlCircuitOreDict.get();
-        }
-
-        throw new IllegalStateException("Config defined with recipe_enabled condition without a valid field defined! Valid values: \"machineType\", \"generatorType\" "
-                                        + "(when Mekanism Generators installed) and \"circuitOredict\"");
+        throw new IllegalStateException("Config defined with recipe_enabled condition without a valid field defined! Valid values: \"block\"");
     }
 }

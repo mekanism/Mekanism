@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "ElectricPump"
+      "block": "mekanism:electric_pump"
     }
   ],
   "key": {

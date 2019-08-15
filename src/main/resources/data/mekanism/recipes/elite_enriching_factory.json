@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "Factory"
+      "block": "mekanism:elite_enriching_factory"
     }
   ],
   "key": {

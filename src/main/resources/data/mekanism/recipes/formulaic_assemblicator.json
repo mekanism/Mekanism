@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "FormulaicAssemblicator"
+      "block": "mekanism:formulaic_assemblicator"
     }
   ],
   "key": {

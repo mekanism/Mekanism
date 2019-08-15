@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "SolarNeutronActivator"
+      "block": "mekanism:solar_neutron_activator"
     }
   ],
   "key": {

@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanism:basic_smelting_factory",
-    "type": "mekanism:item_nbt"
+    "item": "mekanism:basic_smelting_factory"
   },
   "pattern": [
     "RCR",
@@ -12,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "Factory"
+      "block": "mekanism:basic_smelting_factory"
     }
   ],
   "key": {

@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "Factory"
+      "block": "mekanism:advanced_injecting_factory"
     }
   ],
   "key": {

@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "generatorType": "WindGenerator"
+      "block": "mekanismgenerators:wind_generator"
     }
   ],
   "key": {

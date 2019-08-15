@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "ChemicalWasher"
+      "block": "mekanism:chemical_washer"
     }
   ],
   "key": {

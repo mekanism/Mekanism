@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "PressurizedReactionChamber"
+      "block": "mekanism:pressurized_reaction_chamber"
     }
   ],
   "key": {

@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "OsmiumCompressor"
+      "block": "mekanism:osmium_compressor"
     }
   ],
   "key": {

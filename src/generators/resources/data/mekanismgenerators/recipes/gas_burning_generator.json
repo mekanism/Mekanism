@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "generatorType": "GasGenerator"
+      "block": "mekanismgenerators:gas_burning_generator"
     }
   ],
   "key": {

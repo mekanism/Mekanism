@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "QuantumEntangloporter"
+      "block": "mekanism:quantum_entangloporter"
     }
   ],
   "key": {

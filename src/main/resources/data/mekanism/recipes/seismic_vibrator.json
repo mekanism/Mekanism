@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "SeismicVibrator"
+      "block": "mekanism:seismic_vibrator"
     }
   ],
   "key": {

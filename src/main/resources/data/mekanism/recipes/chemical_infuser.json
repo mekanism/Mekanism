@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "ChemicalInfuser"
+      "block": "mekanism:chemical_infuser"
     }
   ],
   "key": {

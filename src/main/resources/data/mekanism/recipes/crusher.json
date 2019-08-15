@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "Crusher"
+      "block": "mekanism:crusher"
     }
   ],
   "key": {

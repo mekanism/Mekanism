@@ -11,7 +11,7 @@
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
-      "machineType": "ResistiveHeater"
+      "block": "mekanism:resistive_heater"
     }
   ],
   "key": {
