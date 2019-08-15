@@ -8,7 +8,7 @@
     "SBS",
     "RRR"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
       "tag": "forge:dusts/redstone"

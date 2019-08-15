@@ -8,7 +8,7 @@
     "SDS",
     "SSS"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
       "item": "mekanism:hdpe_sheet"

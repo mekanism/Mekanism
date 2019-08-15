@@ -14,5 +14,5 @@
       "tag": "forge:dyes/light_blue"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

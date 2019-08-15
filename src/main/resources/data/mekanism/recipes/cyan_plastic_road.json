@@ -14,8 +14,7 @@
       "item": "mekanism:cyan_slick_plastic"
     },
     "S": {
-      "ore": "sand",
-      "type": "forge:ore_dict"
+      "tag": "minecraft:sand"
     }
   }
 }

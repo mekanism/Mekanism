@@ -7,7 +7,7 @@
     "dWd",
     "RCR"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
       "tag": "mekanism:alloys/atomic"
@@ -19,8 +19,7 @@
       "tag": "forge:gems/diamond"
     },
     "W": {
-      "ore": "plankWood",
-      "type": "forge:ore_dict"
+      "tag": "minecraft:planks"
     }
   }
 }

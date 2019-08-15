@@ -1,11 +1,9 @@
 {
   "recipes": {
-    "ore_shaped": "mekanism.common.recipe.ShapedMekanismRecipe$RecipeFactory",
-    "ore_shapeless": "mekanism.common.recipe.ShapelessMekanismRecipe$RecipeFactory"
+    "ore_shaped": "mekanism.common.recipe.ShapedMekanismRecipe$RecipeFactory"
   },
   "ingredients": {
-    "item_nbt": "mekanism.common.recipe.MekanismIngredient$IngredientFactory",
-    "multi_ore": "mekanism.common.recipe.MultiOredictIngredient$Factory"
+    "item_nbt": "mekanism.common.recipe.MekanismIngredient$IngredientFactory"
   },
   "conditions": {
     "recipe_enabled": "mekanism.common.recipe.MekanismRecipeEnabledCondition"

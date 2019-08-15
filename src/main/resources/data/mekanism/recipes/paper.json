@@ -9,11 +9,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
-      "ores": [
-        "pulpWood",
-        "dustWood"
-      ],
-      "type": "mekanism:multi_ore"
+      "tag": "forge:sawdust"
     }
   }
 }

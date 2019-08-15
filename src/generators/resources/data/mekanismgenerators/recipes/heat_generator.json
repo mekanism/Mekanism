@@ -22,8 +22,7 @@
       "item": "minecraft:furnace"
     },
     "W": {
-      "ore": "plankWood",
-      "type": "forge:ore_dict"
+      "tag": "minecraft:planks"
     },
     "I": {
       "tag": "forge:ingots/iron"

@@ -6,14 +6,10 @@
     "SS",
     "SS"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
-      "ores": [
-        "pulpWood",
-        "dustWood"
-      ],
-      "type": "mekanism:multi_ore"
+      "tag": "forge:sawdust"
     }
   }
 }

@@ -7,7 +7,7 @@
     "gWg",
     "RCR"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
       "tag": "mekanism:alloys/reinforced"
@@ -19,8 +19,7 @@
       "tag": "forge:ingots/gold"
     },
     "W": {
-      "ore": "plankWood",
-      "type": "forge:ore_dict"
+      "tag": "minecraft:planks"
     }
   }
 }

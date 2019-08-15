@@ -8,7 +8,7 @@
     "TET",
     "TTT"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "T": {
       "item": "mekanism:basic_mechanical_pipe"

@@ -8,7 +8,7 @@
     "CAC",
     " C "
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
       "tag": "mekanism:alloys/atomic"

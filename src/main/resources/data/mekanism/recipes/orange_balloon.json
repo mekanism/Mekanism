@@ -14,5 +14,5 @@
       "tag": "forge:dyes/orange"
     }
   ],
-  "type": "forge:ore_shapeless"
+  "type": "minecraft:crafting_shapeless"
 }

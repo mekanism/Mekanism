@@ -7,7 +7,7 @@
     "iWi",
     "RCR"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
       "tag": "mekanism:alloys/basic"
@@ -16,8 +16,7 @@
       "tag": "forge:circuits/basic"
     },
     "W": {
-      "ore": "plankWood",
-      "type": "forge:ore_dict"
+      "tag": "minecraft:planks"
     },
     "i": {
       "tag": "forge:ingots/iron"
