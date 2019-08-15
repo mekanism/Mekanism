@@ -10,10 +10,13 @@ import mekanism.api.MekanismAPI;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.ILocationArgument;
+import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 
 public class CommandMek {
@@ -68,30 +71,22 @@ public class CommandMek {
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("tp")
                   .requires(cs -> cs.hasPermissionLevel(4))
+                  .then(Commands.argument("location", Vec3Argument.vec3())
                   .executes(ctx -> {
-                      if (args.length < 3) {
-                          notifyCommandListener(sender, this, "cmd.mek.tp.missing.args");
-                          return 1;
-                      }
                       CommandSource source = ctx.getSource();
                       Entity entity = source.getEntity();
-
-                      // Parse the target arguments from command line
-                      //TODO: Use Vec3Argument, look at TeleportCommand
-                      CoordinateArg xArg = parseCoordinate(10, args[0], true);
-                      CoordinateArg yArg = parseCoordinate(10, args[1], true);
-                      CoordinateArg zArg = parseCoordinate(10, args[2], true);
-
                       // Save the current location on the stack
-                      UUID player = sender.getCommandSenderEntity().getUniqueID();
+                      UUID player = entity.getUniqueID();
                       Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
                       playerLocations.push(entity.getPosition());
                       tpStack.put(player, playerLocations);
 
+                      ILocationArgument location = Vec3Argument.getLocation(ctx, "location");
+                      Vec3d position = location.getPosition(source);
                       // Teleport user to new location
-                      teleport(entity, xArg.getResult(), yArg.getResult(), zArg.getResult());
+                      teleport(entity, position.getX(), position.getY(), position.getZ());
                       return 0;
-                  });
+                  }));
         }
     }
 

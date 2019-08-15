@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.actions.IAction;
+import com.blamejared.crafttweaker.impl.commands.CTCommands;
 import java.util.LinkedList;
 import java.util.List;
 import mekanism.common.Mekanism;
@@ -37,8 +38,8 @@ public class CrafttweakerIntegration {
     }
 
     public static void registerCommands() {
-        CTChatCommand.registerCommand(new GasesCommand());
-        CTChatCommand.registerCommand(new InfuseTypesCommand());
-        CTChatCommand.registerCommand(new MekRecipesCommand());
+        CTCommands.registerCommand(new GasesCommand());
+        CTCommands.registerCommand(new InfuseTypesCommand());
+        CTCommands.registerCommand(new MekRecipesCommand());
     }
 }

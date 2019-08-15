@@ -7,8 +7,8 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -83,7 +83,7 @@ public class ChunkCommand {
                       ServerChunkProvider sp = (ServerChunkProvider) entity.getEntityWorld().getChunkProvider();
                       int startCount = sp.getLoadedChunkCount();
                       //TODO: Check this
-                      sp.queueUnloadAll();
+                      //sp.queueUnloadAll();
                       sp.tick(() -> false);
                       return 0;
                   });
@@ -108,10 +108,8 @@ public class ChunkCommand {
         long key = ChunkPos.asLong(pos.x, pos.z);
         if (chunkWatchers.contains(key)) {
             String msg = String.format("%s chunk %d, %d", direction, pos.x, pos.z);
-            MinecraftServer server = event.getWorld().getMinecraftServer();
-            if (server != null) {
-                server.getPlayerList().sendMessage(TextComponentUtil.build(msg));
-            }
+            ITextComponent message = TextComponentUtil.build(msg);
+            event.getWorld().getPlayers().forEach(player -> player.sendMessage(message));
         }
     }
 }
