@@ -25,12 +25,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.oredict.OreDictionary;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, ContainerOredictionificator> {
@@ -89,7 +89,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
                 drawString(TextComponentUtil.translate("mekanism.gui.filter"), 32, yStart + 2, 0x404040);
-                renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
+                renderScaledText(filter.getFilterText(), 32, yStart + 2 + 9, 0x404040, 117);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -165,17 +165,17 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void updateRenderStacks() {
         renderStacks.clear();
         for (OredictionificatorFilter filter : tileEntity.filters) {
-            if (filter.filter == null || filter.filter.isEmpty()) {
+            if (filter.hasFilter()) {
                 renderStacks.put(filter, ItemStack.EMPTY);
                 continue;
             }
-            List<ItemStack> stacks = OreDictionary.getOres(filter.filter, false);
-            if (stacks.isEmpty()) {
+            List<Item> matchingItems = filter.getMatchingItems();
+            if (matchingItems.isEmpty()) {
                 renderStacks.put(filter, ItemStack.EMPTY);
                 continue;
             }
-            if (stacks.size() - 1 >= filter.index) {
-                renderStacks.put(filter, stacks.get(filter.index).copy());
+            if (matchingItems.size() - 1 >= filter.index) {
+                renderStacks.put(filter, new ItemStack(matchingItems.get(filter.index)));
             } else {
                 renderStacks.put(filter, ItemStack.EMPTY);
             }

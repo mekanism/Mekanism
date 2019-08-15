@@ -1,5 +1,6 @@
 package mekanism.client.gui.filter;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
@@ -19,11 +20,11 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.oredict.OreDictionary;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator> {
@@ -51,7 +52,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             if (!text.getText().isEmpty()) {
                 setText();
             }
-            if (filter.filter != null && !filter.filter.isEmpty()) {
+            if (filter.hasFilter()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
                 } else {
@@ -68,21 +69,21 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
               onPress -> sendPacketToServer(52)));
         buttons.add(prevButton = new GuiButtonDisableableImage(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(),
               onPress -> {
-                  if (filter.filter != null) {
-                      List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
+                  if (filter.hasFilter()) {
+                      List<Item> matchingItems = filter.getMatchingItems();
                       if (filter.index > 0) {
                           filter.index--;
                       } else {
-                          filter.index = ores.size() - 1;
+                          filter.index = matchingItems.size() - 1;
                       }
                       updateRenderStack();
                   }
               }));
         buttons.add(nextButton = new GuiButtonDisableableImage(guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation(),
               onPress -> {
-                  if (filter.filter != null) {
-                      List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
-                      if (filter.index < ores.size() - 1) {
+                  if (filter.hasFilter()) {
+                      List<Item> matchingItems = filter.getMatchingItems();
+                      if (filter.index < matchingItems.size() - 1) {
                           filter.index++;
                       } else {
                           filter.index = 0;
@@ -101,9 +102,16 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     public void setText() {
-        String newFilter = text.getText();
-        if (TileEntityOredictionificator.possibleFilters.stream().anyMatch(newFilter::startsWith)) {
-            filter.filter = newFilter;
+        String newFilter = text.getText().toLowerCase();
+        String modid = "forge";
+        if (newFilter.contains(":")) {
+            String[] split = newFilter.split(":");
+            modid = split[0];
+            newFilter = split[1];
+        }
+        List<String> possibleFilters = TileEntityOredictionificator.possibleFilters.getOrDefault(modid, Collections.emptyList());
+        if (possibleFilters.stream().anyMatch(newFilter::startsWith)) {
+            filter.setFilter(new ResourceLocation(modid, newFilter));
             filter.index = 0;
             text.setText("");
             updateRenderStack();
@@ -112,7 +120,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     public void updateButtons() {
-        saveButton.active = filter.filter != null && !filter.filter.isEmpty();
+        saveButton.active = filter.hasFilter();
         deleteButton.active = !isNew;
     }
 
@@ -131,8 +139,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.filter")), 0, xSize, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.index"), ": " + filter.index), 79, 23, 0x404040);
-        if (filter.filter != null) {
-            renderScaledText(filter.filter, 32, 38, 0x404040, 111);
+        if (filter.hasFilter()) {
+            renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);
         }
         renderItem(renderStack, 45, 19);
         int xAxis = mouseX - guiLeft;
@@ -172,17 +180,17 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     private void updateRenderStack() {
-        if (filter.filter == null || filter.filter.isEmpty()) {
+        if (!filter.hasFilter()) {
             renderStack = ItemStack.EMPTY;
             return;
         }
-        List<ItemStack> stacks = OreDictionary.getOres(filter.filter, false);
-        if (stacks.isEmpty()) {
+        List<Item> matchingItems = filter.getMatchingItems();
+        if (matchingItems.isEmpty()) {
             renderStack = ItemStack.EMPTY;
             return;
         }
-        if (stacks.size() - 1 >= filter.index) {
-            renderStack = stacks.get(filter.index).copy();
+        if (matchingItems.size() - 1 >= filter.index) {
+            renderStack = new ItemStack(matchingItems.get(filter.index));
         } else {
             renderStack = ItemStack.EMPTY;
         }

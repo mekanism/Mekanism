@@ -26,7 +26,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -44,7 +43,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
@@ -291,12 +289,13 @@ public class MekanismRenderer {
 
     @Nonnull
     public static GlowInfo enableGlow(int glow) {
-        if (!FMLClientHandler.instance().hasOptifine() && glow > 0) {
+        //TODO: Fix glow
+        /*if (!FMLClientHandler.instance().hasOptifine() && glow > 0) {
             GlowInfo info = new GlowInfo(OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY, true);
             float glowStrength = (glow / 15F) * 240F;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
             return info;
-        }
+        }*/
         return NO_GLOW;
     }
 
@@ -311,9 +310,10 @@ public class MekanismRenderer {
     }
 
     public static void disableGlow(@Nonnull GlowInfo info) {
-        if (info.glowEnabled) {
+        //TODO: Fix glow
+        /*if (info.glowEnabled) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, info.lightmapLastX, info.lightmapLastY);
-        }
+        }*/
     }
 
     public static float getPartialTick() {
@@ -339,6 +339,7 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Pre event) {
+        //TODO: Look at sprite uploader
         for (TransmissionType type : TransmissionType.values()) {
             overlays.put(type, event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
         }

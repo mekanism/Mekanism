@@ -1,7 +1,12 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -9,7 +14,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.OreDictCache;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
@@ -18,26 +22,34 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData {
 
     private static final int[] SLOTS = {0, 1};
-    public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
+    //TODO: Improve on this and make it be a map of mod id to start of resource
+    public static final Map<String, List<String>> possibleFilters = new HashMap<>();
+
+    static {
+        possibleFilters.put("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/"));
+    }
+
     public HashList<OredictionificatorFilter> filters = new HashList<>();
+
 
     public boolean didProcess;
 
@@ -82,12 +94,16 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         }
     }
 
-    public String getValidName(ItemStack stack) {
-        List<String> def = OreDictCache.getOreDictName(stack);
-        for (String s : def) {
-            for (String pre : possibleFilters) {
-                if (s.startsWith(pre)) {
-                    return s;
+    @Nullable
+    public ResourceLocation getValidName(ItemStack stack) {
+        //TODO: Cache this?
+        Set<ResourceLocation> tags = stack.getItem().getTags();
+        for (ResourceLocation resource : tags) {
+            List<String> filters = possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList());
+            String path = resource.getPath();
+            for (String pre : filters) {
+                if (path.startsWith(pre)) {
+                    return resource;
                 }
             }
         }
@@ -95,15 +111,16 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     public ItemStack getResult(ItemStack stack) {
-        String s = getValidName(stack);
-        if (s == null) {
+        ResourceLocation resource = getValidName(stack);
+        if (resource == null) {
             return ItemStack.EMPTY;
         }
-        List<ItemStack> ores = OreDictionary.getOres(s, false);
+
         for (OredictionificatorFilter filter : filters) {
-            if (filter.filter.equals(s)) {
-                if (ores.size() - 1 >= filter.index) {
-                    return StackUtils.size(ores.get(filter.index), 1);
+            if (filter.filterMatches(resource)) {
+                List<Item> matchingItems = filter.getMatchingItems();
+                if (matchingItems.size() - 1 >= filter.index) {
+                    return new ItemStack(matchingItems.get(filter.index), 1);
                 }
                 return ItemStack.EMPTY;
             }
@@ -304,7 +321,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     public static class OredictionificatorFilter implements IFilter {
 
-        public String filter;
+        private ResourceLocation filterLocation;
         public int index;
 
         public static OredictionificatorFilter readFromNBT(CompoundNBT nbtTags) {
@@ -319,30 +336,50 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             return filter;
         }
 
+        public String getFilterText() {
+            return filterLocation.toString();
+        }
+
+        public void setFilter(ResourceLocation location) {
+            filterLocation = location;
+        }
+
+        public boolean filterMatches(ResourceLocation location) {
+            return filterLocation.equals(location);
+        }
+
         public void write(CompoundNBT nbtTags) {
-            nbtTags.putString("filter", filter);
+            nbtTags.putString("filter", getFilterText());
             nbtTags.putInt("index", index);
         }
 
         protected void read(CompoundNBT nbtTags) {
-            filter = nbtTags.getString("filter");
+            filterLocation = new ResourceLocation(nbtTags.getString("filter"));
             index = nbtTags.getInt("index");
         }
 
         public void write(TileNetworkList data) {
-            data.add(filter);
+            data.add(filterLocation);
             data.add(index);
         }
 
         protected void read(PacketBuffer dataStream) {
-            filter = dataStream.readString();
+            filterLocation = dataStream.readResourceLocation();
             index = dataStream.readInt();
+        }
+
+        public List<Item> getMatchingItems() {
+            if (!hasFilter()) {
+                return Collections.emptyList();
+            }
+            //TODO: Cache the wrapper and maybe elements also
+            return new ArrayList<>(new ItemTags.Wrapper(filterLocation).getAllElements());
         }
 
         @Override
         public OredictionificatorFilter clone() {
             OredictionificatorFilter newFilter = new OredictionificatorFilter();
-            newFilter.filter = filter;
+            newFilter.filterLocation = filterLocation;
             newFilter.index = index;
             return newFilter;
         }
@@ -350,13 +387,17 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         @Override
         public int hashCode() {
             int code = 1;
-            code = 31 * code + filter.hashCode();
+            code = 31 * code + filterLocation.hashCode();
             return code;
+        }
+
+        public boolean hasFilter() {
+            return filterLocation != null;
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof OredictionificatorFilter && ((OredictionificatorFilter) obj).filter.equals(filter);
+            return obj instanceof OredictionificatorFilter && filterLocation.equals(((OredictionificatorFilter) obj).filterLocation);
         }
     }
 }
