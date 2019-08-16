@@ -6,6 +6,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -17,6 +18,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
@@ -26,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism> extends GuiFilter<TILE> {
+public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiFilter<TILE, CONTAINER> {
 
     protected ITextComponent status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.allOK"));
     protected FILTER origFilter;
@@ -41,8 +43,13 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected Button defaultButton;
     protected Button colorButton;
 
+    protected GuiFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+    }
+
+    @Deprecated
     protected GuiFilterBase(PlayerEntity player, TILE tile) {
-        super(player, tile);
+
     }
 
     @Override

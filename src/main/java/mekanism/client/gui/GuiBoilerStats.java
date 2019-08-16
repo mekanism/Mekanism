@@ -7,7 +7,7 @@ import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.inventory.container_old.ContainerNull;
+import mekanism.common.inventory.container.tile.BoilerStatsContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -17,17 +17,18 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, ContainerNull> {
+public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, BoilerStatsContainer> {
 
     private final GuiGraph boilGraph;
     private final GuiGraph maxGraph;
 
-    public GuiBoilerStats(PlayerInventory inventory, TileEntityBoilerCasing tile) {
-        super(tile, new ContainerNull(inventory.player, tile), inventory);
+    public GuiBoilerStats(BoilerStatsContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, resource));
         addGuiElement(new GuiHeatInfo(() -> {

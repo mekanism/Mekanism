@@ -10,6 +10,11 @@ import mekanism.generators.common.inventory.container.fuel.GasBurningGeneratorCo
 import mekanism.generators.common.inventory.container.fuel.HeatGeneratorContainer;
 import mekanism.generators.common.inventory.container.passive.SolarGeneratorContainer;
 import mekanism.generators.common.inventory.container.passive.WindGeneratorContainer;
+import mekanism.generators.common.inventory.container.reactor.ReactorControllerContainer;
+import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapterContainer;
+import mekanism.generators.common.inventory.container.reactor.info.ReactorFuelContainer;
+import mekanism.generators.common.inventory.container.reactor.info.ReactorHeatContainer;
+import mekanism.generators.common.inventory.container.reactor.info.ReactorStatsContainer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
@@ -25,7 +30,12 @@ public class GeneratorsContainerTypes {
     public static final ContainerType<GasBurningGeneratorContainer> GAS_BURNING_GENERATOR = create(GeneratorsBlock.GAS_BURNING_GENERATOR, GasBurningGeneratorContainer::new);
     public static final ContainerType<HeatGeneratorContainer> HEAT_GENERATOR = create(GeneratorsBlock.HEAT_GENERATOR, HeatGeneratorContainer::new);
     public static final ContainerType<ReactorControllerContainer> REACTOR_CONTROLLER = create(GeneratorsBlock.REACTOR_CONTROLLER, ReactorControllerContainer::new);
+    public static final ContainerType<ReactorFuelContainer> REACTOR_FUEL = create("reactor_fuel", ReactorFuelContainer::new);
+    public static final ContainerType<ReactorHeatContainer> REACTOR_HEAT = create("reactor_heat", ReactorHeatContainer::new);
+    public static final ContainerType<ReactorStatsContainer> REACTOR_STATS = create("reactor_stats", ReactorStatsContainer::new);
+    public static final ContainerType<ReactorLogicAdapterContainer> REACTOR_LOGIC_ADAPTER = create(GeneratorsBlock.REACTOR_LOGIC_ADAPTER, ReactorLogicAdapterContainer::new);
     public static final ContainerType<SolarGeneratorContainer> SOLAR_GENERATOR = create("solar_generator", SolarGeneratorContainer::new);
+    public static final ContainerType<TurbineStatsContainer> TURBINE_STATS = create("turbine_stats", TurbineStatsContainer::new);
     public static final ContainerType<WindGeneratorContainer> WIND_GENERATOR = create(GeneratorsBlock.WIND_GENERATOR, WindGeneratorContainer::new);
 
     //Can just use IItemProvider because IBlockProvider extends it. This way we support both tiles and items

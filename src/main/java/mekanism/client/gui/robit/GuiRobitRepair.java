@@ -3,8 +3,7 @@ package mekanism.client.gui.robit;
 import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.buffer.Unpooled;
 import javax.annotation.Nonnull;
-import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container_old.robit.ContainerRobitRepair;
+import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -22,17 +21,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRobitRepair extends GuiRobit<ContainerRobitRepair> implements IContainerListener {
+public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
     private final RepairContainer repairContainer;
     private final PlayerInventory playerInventory;
 
     private TextFieldWidget itemNameField;
 
-    public GuiRobitRepair(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitRepair(inventory, entity), inventory, TextComponentUtil.translate("mekanism.gui.robit.repair"));
-        playerInventory = inventory;
-        repairContainer = (ContainerRobitRepair) inventorySlots;
+    public GuiRobitRepair(RepairRobitContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+        playerInventory = inv;
+        repairContainer = (RepairRobitContainer) container.inventorySlots;
     }
 
     @Override
@@ -44,15 +43,15 @@ public class GuiRobitRepair extends GuiRobit<ContainerRobitRepair> implements IC
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
         itemNameField.setMaxStringLength(30);
-        inventorySlots.removeListener(this);
-        inventorySlots.addListener(this);
+        repairContainer.removeListener(this);
+        repairContainer.addListener(this);
     }
 
     @Override
     public void onClose() {
         super.onClose();
         Keyboard.enableRepeatEvents(false);
-        inventorySlots.removeListener(this);
+        repairContainer.removeListener(this);
     }
 
     @Override

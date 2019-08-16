@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
@@ -13,19 +12,20 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import mekanism.generators.common.inventory.container.reactor.info.ReactorStatsContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiReactorStats extends GuiReactorInfo {
+public class GuiReactorStats extends GuiReactorInfo<ReactorStatsContainer> {
 
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
 
-    public GuiReactorStats(PlayerInventory inventory, final TileEntityReactorController tile) {
-        super(tile, new ContainerNull(inventory.player, tile), inventory);
+    public GuiReactorStats(ReactorStatsContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),

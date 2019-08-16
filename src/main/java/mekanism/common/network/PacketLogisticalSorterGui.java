@@ -11,7 +11,7 @@ import mekanism.client.gui.filter.GuiTOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
-import mekanism.common.inventory.container_old.ContainerNull;
+import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
@@ -120,9 +120,9 @@ public class PacketLogisticalSorterGui {
         playerMP.closeContainer();
 
         if (guiType == 0) {
-            container = new ContainerNull(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+            container = new LSFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
         } else if (guiType == 4) {
-            container = new ContainerNull(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+            container = new LSFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
         } else if (guiType == 1 || guiType == 2 || guiType == 3 || guiType == 5) {
             container = new FilterContainer<TileEntityLogisticalSorter>(playerMP.inventory, (TileEntityMekanism) obj.getTileEntity(world));
         }

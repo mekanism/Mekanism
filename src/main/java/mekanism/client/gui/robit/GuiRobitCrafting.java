@@ -1,17 +1,17 @@
 package mekanism.client.gui.robit;
 
-import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container_old.robit.ContainerRobitCrafting;
+import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRobitCrafting extends GuiRobit<ContainerRobitCrafting> {
+public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
-    public GuiRobitCrafting(PlayerInventory inventory, EntityRobit entity) {
-        super(entity, new ContainerRobitCrafting(inventory, entity), inventory, TextComponentUtil.translate("mekanism.gui.robit.crafting"));
+    public GuiRobitCrafting(CraftingRobitContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     @Override

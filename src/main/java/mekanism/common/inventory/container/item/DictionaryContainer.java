@@ -48,10 +48,6 @@ public class DictionaryContainer extends MekanismItemContainer {
         return stack;
     }
 
-    @Override
-    protected void addSlots() {
-    }
-
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {

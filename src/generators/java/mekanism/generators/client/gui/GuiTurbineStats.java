@@ -5,7 +5,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -15,6 +14,7 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
+import mekanism.generators.common.inventory.container.TurbineStatsContainer;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -23,10 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, ContainerNull> {
+public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, TurbineStatsContainer> {
 
-    public GuiTurbineStats(PlayerInventory inventory, TileEntityTurbineCasing tile) {
-        super(tile, new ContainerNull(inventory.player, tile), inventory);
+    public GuiTurbineStats(TurbineStatsContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, resource));
         addGuiElement(new GuiEnergyInfo(() -> {

@@ -7,7 +7,12 @@ import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
 import mekanism.generators.client.gui.GuiReactorController;
+import mekanism.generators.client.gui.GuiReactorFuel;
+import mekanism.generators.client.gui.GuiReactorHeat;
+import mekanism.generators.client.gui.GuiReactorLogicAdapter;
+import mekanism.generators.client.gui.GuiReactorStats;
 import mekanism.generators.client.gui.GuiSolarGenerator;
+import mekanism.generators.client.gui.GuiTurbineStats;
 import mekanism.generators.client.gui.GuiWindGenerator;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
@@ -93,7 +98,12 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         ScreenManager.registerFactory(GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GuiGasGenerator::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.HEAT_GENERATOR, GuiHeatGenerator::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_CONTROLLER, GuiReactorController::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_FUEL, GuiReactorFuel::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_HEAT, GuiReactorHeat::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_STATS, GuiReactorStats::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, GuiReactorLogicAdapter::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.SOLAR_GENERATOR, GuiSolarGenerator::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.TURBINE_STATS, GuiTurbineStats::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);
     }
 

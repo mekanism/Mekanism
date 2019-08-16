@@ -35,8 +35,8 @@ import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
+import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
-import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -138,7 +138,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public void onUpdate() {
         if (getActive()) {
             for (PlayerEntity player : new HashSet<>(playersUsing)) {
-                if (player.openContainer instanceof ContainerNull || player.openContainer instanceof FilterContainer) {
+                if (player.openContainer instanceof IEmptyContainer || player.openContainer instanceof FilterContainer) {
                     player.closeScreen();
                 }
             }

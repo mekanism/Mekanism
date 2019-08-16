@@ -35,6 +35,7 @@ public abstract class MekanismContainer extends Container implements INamedConta
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        //TODO: Implement this
         return null;
     }
 
@@ -55,6 +56,10 @@ public abstract class MekanismContainer extends Container implements INamedConta
     }
 
     protected void addInventorySlots(@Nonnull PlayerInventory inv) {
+        if (this instanceof IEmptyContainer) {
+            //Don't include the player's inventory slots
+            return;
+        }
         int offset = getInventoryOffset();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {

@@ -18,7 +18,7 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.inventory.container_old.ContainerNull;
+import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity;
@@ -30,25 +30,25 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSorter, TransporterFilter> {
+public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSorter, TransporterFilter, LSFilterListContainer> {
 
     private Button singleItemButton;
     private Button roundRobinButton;
     private Button autoEjectButton;
     private Button colorButton;
 
-    public GuiLogisticalSorter(PlayerEntity player, TileEntityLogisticalSorter tile) {
-        super(tile, new ContainerNull(player, tile), player.inventory);
-
+    public GuiLogisticalSorter(LSFilterListContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         // Add common Mekanism gui elements
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

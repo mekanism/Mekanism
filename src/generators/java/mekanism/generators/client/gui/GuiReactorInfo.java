@@ -4,24 +4,25 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.inventory.container.reactor.info.ReactorInfoContainer;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorController, ContainerNull> {
+public abstract class GuiReactorInfo<CONTAINER extends ReactorInfoContainer> extends GuiMekanismTile<TileEntityReactorController, CONTAINER> {
 
     private Button backButton;
 
-    public GuiReactorInfo(TileEntityReactorController tile, ContainerNull container, PlayerInventory inv) {
-        super(tile, container, inv);
+    protected GuiReactorInfo(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     @Override

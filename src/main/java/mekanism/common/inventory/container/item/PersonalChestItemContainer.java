@@ -12,6 +12,7 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 
 public class PersonalChestItemContainer extends MekanismItemContainer {
@@ -23,15 +24,18 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
     }
 
     public PersonalChestItemContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        //TODO: Set item inventory new InventoryPersonalChest(stack, hand), Inventory needs to be set before calling addslots/opening it
         this(id, inv);
+        ItemStack stack = buf.readItemStack();
+        Hand hand = buf.readEnumValue(Hand.class);
+        //TODO: This has to be set before addSlots etc is called
+        itemInventory = new InventoryPersonalChest(stack, hand);
     }
 
     @Override
     protected void addSlots() {
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new SlotPersonalChest(getItemInventory(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
+                addSlot(new SlotPersonalChest(itemInventory, slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
             }
         }
     }
@@ -47,12 +51,12 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
 
     @Override
     protected void closeInventory(PlayerEntity player) {
-        getItemInventory().closeInventory(player);
+        itemInventory.closeInventory(player);
     }
 
     @Override
     protected void openInventory(@Nonnull PlayerInventory inventory) {
-        getItemInventory().openInventory(inventory.player);
+        itemInventory.openInventory(inventory.player);
     }
 
     @Override

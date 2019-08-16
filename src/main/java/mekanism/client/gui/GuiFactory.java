@@ -18,7 +18,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.tile.FactoryContainer;
-import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.FactoryTier;

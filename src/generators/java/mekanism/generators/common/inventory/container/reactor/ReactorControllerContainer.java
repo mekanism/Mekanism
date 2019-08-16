@@ -1,10 +1,10 @@
-package mekanism.generators.common.inventory.container;
+package mekanism.generators.common.inventory.container.reactor;
 
 import javax.annotation.Nonnull;
-import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
+import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ReactorControllerContainer extends MekanismTileContainer<TileEntityReactorController> {
 
     public ReactorControllerContainer(int id, PlayerInventory inv, TileEntityReactorController tile) {
-        super(MekanismContainerTypes.GAS_TANK, id, inv, tile);
+        super(GeneratorsContainerTypes.REACTOR_CONTROLLER, id, inv, tile);
     }
 
     public ReactorControllerContainer(int id, PlayerInventory inv, PacketBuffer buf) {

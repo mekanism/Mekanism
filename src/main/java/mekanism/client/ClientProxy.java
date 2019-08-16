@@ -12,7 +12,6 @@ import mekanism.client.entity.ParticleLaser;
 import mekanism.client.gui.GuiDictionary;
 import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiPortableTeleporter;
-import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.entity.RenderBalloon;

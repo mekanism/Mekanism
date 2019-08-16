@@ -6,11 +6,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.base.IItemProvider;
+import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
+import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
+import mekanism.common.inventory.container.item.PortableTeleporterContainer;
+import mekanism.common.inventory.container.tile.BoilerStatsContainer;
 import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
 import mekanism.common.inventory.container.tile.ChemicalDissolutionChamberContainer;
 import mekanism.common.inventory.container.tile.ChemicalInfuserContainer;
@@ -26,6 +30,7 @@ import mekanism.common.inventory.container.tile.FuelwoodHeaterContainer;
 import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.inventory.container.tile.LaserAmplifierContainer;
 import mekanism.common.inventory.container.tile.LaserTractorBeamContainer;
+import mekanism.common.inventory.container.tile.MatrixStatsContainer;
 import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
@@ -35,9 +40,11 @@ import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
 import mekanism.common.inventory.container.tile.RotaryCondensentratorContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.inventory.container.tile.SeismicVibratorContainer;
+import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.SolarNeutronActivatorContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.inventory.container.tile.ThermalEvaporationControllerContainer;
+import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.inventory.container.tile.advanced.ChemicalInjectionChamberContainer;
 import mekanism.common.inventory.container.tile.advanced.OsmiumCompressorContainer;
@@ -50,6 +57,10 @@ import mekanism.common.inventory.container.tile.electric.EnrichmentChamberContai
 import mekanism.common.inventory.container.tile.energy.EnergyCubeContainer;
 import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
+import mekanism.common.inventory.container.tile.filter.list.DMFilterListContainer;
+import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
+import mekanism.common.inventory.container.tile.filter.select.DMFilterSelectContainer;
+import mekanism.common.inventory.container.tile.filter.select.LSFilterSelectContainer;
 import mekanism.common.inventory.container.tile.fluid.DynamicTankContainer;
 import mekanism.common.inventory.container.tile.fluid.FluidTankContainer;
 import net.minecraft.inventory.container.Container;
@@ -66,11 +77,16 @@ public class MekanismContainerTypes {
 
     //Items
     public static final ContainerType<DictionaryContainer> DICTIONARY = create(MekanismItem.DICTIONARY, DictionaryContainer::new);
+    public static final ContainerType<PortableTeleporterContainer> PORTABLE_TELEPORTER = create(MekanismItem.PORTABLE_TELEPORTER, PortableTeleporterContainer::new);
 
     //Entity
     public static final ContainerType<MainRobitContainer> MAIN_ROBIT = create("main_robit", MainRobitContainer::new);
     public static final ContainerType<InventoryRobitContainer> INVENTORY_ROBIT = create("inventory_robit", InventoryRobitContainer::new);
+    //TODO: Should this be like Crafting/Repair except with FurnaceContainer??
     public static final ContainerType<SmeltingRobitContainer> SMELTING_ROBIT = create("smelting_robit", SmeltingRobitContainer::new);
+    //TODO: Are these two technically used
+    public static final ContainerType<CraftingRobitContainer> CRAFTING_ROBIT = create("crafting_robit", CraftingRobitContainer::new);
+    public static final ContainerType<RepairRobitContainer> REPAIR_ROBIT = create("repair_robit", RepairRobitContainer::new);
 
 
     //TODO: Decide if tiered ones should be done differently/evaluate how their container name is done
@@ -120,7 +136,16 @@ public class MekanismContainerTypes {
     public static final ContainerType<PersonalChestItemContainer> PERSONAL_CHEST_ITEM = create("personal_chest_item", PersonalChestItemContainer::new);
     public static final ContainerType<PersonalChestTileContainer> PERSONAL_CHEST_BLOCK = create("personal_chest_block", PersonalChestTileContainer::new);
 
+    public static final ContainerType<BoilerStatsContainer> BOILER_STATS = create("boiler_stats", BoilerStatsContainer::new);
+    public static final ContainerType<MatrixStatsContainer> MATRIX_STATS = create("matrix_stats", MatrixStatsContainer::new);
+    public static final ContainerType<SideConfigurationContainer> SIDE_CONFIGURATION = create("side_configuration", SideConfigurationContainer::new);
+    public static final ContainerType<TransporterConfigurationContainer> TRANSPORTER_CONFIGURATION = create("transporter_configuration", TransporterConfigurationContainer::new);
     public static final ContainerType<FilterContainer> FILTER = create("filter", FilterContainer::new);
+
+    public static final ContainerType<DMFilterListContainer> DM_FILTER_LIST = create("digital_miner_filter_list", DMFilterListContainer::new);
+    public static final ContainerType<LSFilterListContainer> LS_FILTER_LIST = create("logistical_sorter_filter_list", LSFilterListContainer::new);
+    public static final ContainerType<DMFilterSelectContainer> DM_FILTER_SELECT = create("digital_miner_filter_select", DMFilterSelectContainer::new);
+    public static final ContainerType<LSFilterSelectContainer> LS_FILTER_SELECT = create("logistical_sorter_filter_select", LSFilterSelectContainer::new);
 
 
     //Can just use IItemProvider because IBlockProvider extends it. This way we support both tiles and items

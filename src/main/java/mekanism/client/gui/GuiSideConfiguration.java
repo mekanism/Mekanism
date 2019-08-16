@@ -13,7 +13,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.inventory.container_old.ContainerNull;
+import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSimpleGui;
@@ -25,32 +25,29 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, ContainerNull> {
+public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiMekanismTile<TILE, SideConfigurationContainer<TILE>> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
-    private ISideConfiguration configurable;
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
     private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
     private Button backButton;
     private Button autoEjectButton;
-    private int buttonID = 0;
 
-    public GuiSideConfiguration(PlayerEntity player, ISideConfiguration tile) {
-        super((TileEntityMekanism) tile, new ContainerNull(player, (TileEntityMekanism) tile), player.inventory);
+    public GuiSideConfiguration(SideConfigurationContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ySize = 95;
-        configurable = tile;
         ResourceLocation resource = getGuiLocation();
-        for (TransmissionType type : configurable.getConfig().getTransmissions()) {
+        for (TransmissionType type : tileEntity.getConfig().getTransmissions()) {
             GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource);
             addGuiElement(tab);
             configTabs.add(tab);
@@ -70,21 +67,21 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Co
         super.init();
         buttons.clear();
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get((TileEntity) configurable), 0, Mekanism.proxy.getGuiId(((TileEntity) configurable).getBlockType())))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 0, Mekanism.proxy.getGuiId(tileEntity.getBlockType())))));
         buttons.add(autoEjectButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get((TileEntity) configurable), 0, 0, currentType))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType))));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             GuiSideDataButton button = new GuiSideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
-                  () -> configurable.getConfig().getOutput(currentType, facing), () -> configurable.getConfig().getOutput(currentType, facing).color, () -> (TileEntity) configurable);
+                  () -> tileEntity.getConfig().getOutput(currentType, facing), () -> tileEntity.getConfig().getOutput(currentType, facing).color, () -> tileEntity);
             buttons.add(button);
             sideDataButtons.add(button);
         }
     }
 
     public TransmissionType getTopTransmission() {
-        return configurable.getConfig().getTransmissions().get(0);
+        return tileEntity.getConfig().getTransmissions().get(0);
     }
 
     public void setCurrentType(TransmissionType type) {
@@ -106,8 +103,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Co
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config")), 0, xSize, 5, 0x404040);
-        if (configurable.getConfig().canEject(currentType)) {
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(configurable.getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
+        if (tileEntity.getConfig().canEject(currentType)) {
+            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(tileEntity.getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
         } else {
             drawString(TextComponentUtil.translate("mekanism.gui.noEject"), 53, 17, 0x00CD00);
         }
@@ -132,8 +129,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Co
     @Override
     public void tick() {
         super.tick();
-        TileEntity tile = (TileEntity) configurable;
-        if (tile == null || minecraft.world.getTileEntity(tile.getPos()) == null) {
+        if (tileEntity == null || minecraft.world.getTileEntity(tileEntity.getPos()) == null) {
             minecraft.displayGuiScreen(null);
         }
     }
@@ -146,7 +142,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Co
             for (GuiSideDataButton sideDataButton : sideDataButtons) {
                 if (sideDataButton.isMouseOver(mouseX, mouseY)) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.SIDE_DATA, Coord4D.get((TileEntity) configurable), 1, sideDataButton.getSlotPosMapIndex(), currentType));
+                    Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.SIDE_DATA, Coord4D.get(tileEntity), 1, sideDataButton.getSlotPosMapIndex(), currentType));
                     break;
                 }
             }

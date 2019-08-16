@@ -10,7 +10,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.DistExecutor;
 
-public abstract class MekanismEntityContainer<ENTITY extends Entity> extends MekanismContainer {
+public abstract class MekanismEntityContainer<ENTITY extends Entity> extends MekanismContainer implements IEntityContainer<ENTITY> {
 
     protected final ENTITY entity;
 
@@ -19,6 +19,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
         this.entity = entity;
     }
 
+    @Override
     public ENTITY getEntity() {
         return entity;
     }

@@ -14,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
-import mekanism.common.inventory.container_old.ContainerNull;
+import mekanism.common.inventory.container.tile.filter.list.DMFilterListContainer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
@@ -118,13 +118,13 @@ public class PacketDigitalMinerGui {
         playerMP.closeContainer();
         switch (guiType) {
             case 0:
-                container = new ContainerNull(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+                container = new DMFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
                 break;
             case 4:
                 container = new DigitalMinerContainer(playerMP.inventory, (TileEntityDigitalMiner) obj.getTileEntity(world));
                 break;
             case 5:
-                container = new ContainerNull(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+                container = new DMFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
                 break;
 //				case 1:
 //				case 2:

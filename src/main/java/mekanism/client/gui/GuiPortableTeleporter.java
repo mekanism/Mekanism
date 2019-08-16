@@ -15,7 +15,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.inventory.container_old.ContainerNull;
+import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
@@ -29,7 +29,7 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -39,11 +39,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiPortableTeleporter extends GuiMekanism<Container> {
+public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> {
 
     private Hand currentHand;
     private ItemStack itemStack;
-    private PlayerEntity entityPlayer;
+    private PlayerEntity player;
     private Button publicButton;
     private Button privateButton;
     private Button setButton;
@@ -59,11 +59,12 @@ public class GuiPortableTeleporter extends GuiMekanism<Container> {
     private List<Frequency> clientPrivateCache = new ArrayList<>();
     private boolean isInit = true;
 
-    public GuiPortableTeleporter(PlayerEntity player, Hand hand, ItemStack stack) {
-        super(null, player.inventory, new ContainerNull());
-        currentHand = hand;
-        itemStack = stack;
-        entityPlayer = player;
+    public GuiPortableTeleporter(PortableTeleporterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+        //TODO: Can the hand/stack stuff be partially removed?? There is not much reason to contain the hand
+        currentHand = container.getHand();
+        itemStack = container.getStack();
+        player = inv.player;
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
@@ -120,7 +121,7 @@ public class GuiPortableTeleporter extends GuiMekanism<Container> {
         buttons.add(teleportButton = new GuiButtonTranslation(guiLeft + 42, guiTop + 140, 92, 20, "gui.teleport", onPress -> {
             if (clientFreq != null && clientStatus == 1) {
                 minecraft.mainWindow.setIngameFocus();
-                ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
+                ClientTickHandler.portableTeleport(player, currentHand, clientFreq);
             }
             updateButtons();
         }));

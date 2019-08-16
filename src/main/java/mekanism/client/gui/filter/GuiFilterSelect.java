@@ -2,17 +2,18 @@ package mekanism.client.gui.filter;
 
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
-import mekanism.common.inventory.container_old.ContainerNull;
+import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.Button.IPressable;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiFilterSelect<TILE extends TileEntityMekanism> extends GuiFilter<TILE> {
+public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER extends FilterEmptyContainer<TILE>> extends GuiFilter<TILE, CONTAINER> {
 
     protected Button itemStackButton;
     protected Button oredictButton;
@@ -20,8 +21,8 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism> extends G
     protected Button modIDButton;
     protected Button backButton;
 
-    protected GuiFilterSelect(PlayerEntity player, TILE tile) {
-        super(tile, new ContainerNull(player, tile));
+    protected GuiFilterSelect(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     @Override

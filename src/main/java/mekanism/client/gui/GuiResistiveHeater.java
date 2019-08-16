@@ -15,7 +15,6 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityResistiveHeater;
