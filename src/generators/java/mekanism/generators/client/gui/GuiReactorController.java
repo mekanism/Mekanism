@@ -13,7 +13,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
-import mekanism.generators.common.inventory.container.ContainerReactorController;
+import mekanism.generators.common.inventory.container.ReactorControllerContainer;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -22,9 +22,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController, ContainerReactorController> {
+public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController, ReactorControllerContainer> {
 
-    public GuiReactorController(ContainerReactorController container, PlayerInventory inv, ITextComponent title) {
+    public GuiReactorController(ReactorControllerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         if (tileEntity.isFormed()) {
             ResourceLocation resource = getGuiLocation();

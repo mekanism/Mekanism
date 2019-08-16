@@ -39,6 +39,14 @@ import mekanism.common.inventory.container.tile.SolarNeutronActivatorContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.inventory.container.tile.ThermalEvaporationControllerContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
+import mekanism.common.inventory.container.tile.advanced.ChemicalInjectionChamberContainer;
+import mekanism.common.inventory.container.tile.advanced.OsmiumCompressorContainer;
+import mekanism.common.inventory.container.tile.advanced.PurificationChamberContainer;
+import mekanism.common.inventory.container.tile.chance.PrecisionSawmillContainer;
+import mekanism.common.inventory.container.tile.double_electric.CombinerContainer;
+import mekanism.common.inventory.container.tile.electric.CrusherContainer;
+import mekanism.common.inventory.container.tile.electric.EnergizedSmelterContainer;
+import mekanism.common.inventory.container.tile.electric.EnrichmentChamberContainer;
 import mekanism.common.inventory.container.tile.energy.EnergyCubeContainer;
 import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
@@ -93,19 +101,26 @@ public class MekanismContainerTypes {
     public static final ContainerType<ChemicalWasherContainer> CHEMICAL_WASHER = create(MekanismBlock.CHEMICAL_WASHER, ChemicalWasherContainer::new);
     public static final ContainerType<TeleporterContainer> TELEPORTER = create(MekanismBlock.TELEPORTER, TeleporterContainer::new);
 
+    public static final ContainerType<PrecisionSawmillContainer> PRECISION_SAWMILL = create(MekanismBlock.PRECISION_SAWMILL, PrecisionSawmillContainer::new);
+    public static final ContainerType<CombinerContainer> COMBINER = create(MekanismBlock.COMBINER, CombinerContainer::new);
+    public static final ContainerType<ChemicalInjectionChamberContainer> CHEMICAL_INJECTION_CHAMBER = create(MekanismBlock.CHEMICAL_INJECTION_CHAMBER, ChemicalInjectionChamberContainer::new);
+    public static final ContainerType<OsmiumCompressorContainer> OSMIUM_COMPRESSOR = create(MekanismBlock.OSMIUM_COMPRESSOR, OsmiumCompressorContainer::new);
+    public static final ContainerType<PurificationChamberContainer> PURIFICATION_CHAMBER = create(MekanismBlock.PURIFICATION_CHAMBER, PurificationChamberContainer::new);
+    public static final ContainerType<CrusherContainer> CRUSHER = create(MekanismBlock.CRUSHER, CrusherContainer::new);
+    public static final ContainerType<EnergizedSmelterContainer> ENERGIZED_SMELTER = create(MekanismBlock.ENERGIZED_SMELTER, EnergizedSmelterContainer::new);
+    public static final ContainerType<EnrichmentChamberContainer> ENRICHMENT_CHAMBER = create(MekanismBlock.ENRICHMENT_CHAMBER, EnrichmentChamberContainer::new);
+
     //Named
     public static final ContainerType<FactoryContainer> FACTORY = create("factory", FactoryContainer::new);
     public static final ContainerType<GasTankContainer> GAS_TANK = create("gas_tank", GasTankContainer::new);
     public static final ContainerType<FluidTankContainer> FLUID_TANK = create("fluid_tank", FluidTankContainer::new);
     public static final ContainerType<EnergyCubeContainer> ENERGY_CUBE = create("energy_cube", EnergyCubeContainer::new);
     public static final ContainerType<InductionMatrixContainer> INDUCTION_MATRIX = create("induction_matrix", InductionMatrixContainer::new);
-    public static final ContainerType<FilterContainer> FILTER = create("filter", FilterContainer::new);
     public static final ContainerType<UpgradeManagementContainer> UPGRADE_MANAGEMENT = create("upgrade_management", UpgradeManagementContainer::new);
     public static final ContainerType<PersonalChestItemContainer> PERSONAL_CHEST_ITEM = create("personal_chest_item", PersonalChestItemContainer::new);
     public static final ContainerType<PersonalChestTileContainer> PERSONAL_CHEST_BLOCK = create("personal_chest_block", PersonalChestTileContainer::new);
 
-
-
+    public static final ContainerType<FilterContainer> FILTER = create("filter", FilterContainer::new);
 
 
     //Can just use IItemProvider because IBlockProvider extends it. This way we support both tiles and items

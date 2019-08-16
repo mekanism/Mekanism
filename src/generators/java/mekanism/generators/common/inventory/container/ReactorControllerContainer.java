@@ -17,13 +17,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ContainerReactorController extends MekanismTileContainer<TileEntityReactorController> {
+public class ReactorControllerContainer extends MekanismTileContainer<TileEntityReactorController> {
 
-    public ContainerReactorController(int id, PlayerInventory inv, TileEntityReactorController tile) {
+    public ReactorControllerContainer(int id, PlayerInventory inv, TileEntityReactorController tile) {
         super(MekanismContainerTypes.GAS_TANK, id, inv, tile);
     }
 
-    public ContainerReactorController(int id, PlayerInventory inv, PacketBuffer buf) {
+    public ReactorControllerContainer(int id, PlayerInventory inv, PacketBuffer buf) {
         this(id, inv, getTileFromBuf(buf, TileEntityReactorController.class));
     }
 

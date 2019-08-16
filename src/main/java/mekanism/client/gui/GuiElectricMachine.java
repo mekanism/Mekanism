@@ -14,7 +14,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container_old.ContainerElectricMachine;
+import mekanism.common.inventory.container.tile.electric.ElectricMachineContainer;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.text.EnergyDisplay;
@@ -22,14 +22,16 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityElectricMachine<RECIPE>, ContainerElectricMachine> {
+public abstract class GuiElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>, TILE extends TileEntityElectricMachine<RECIPE>,
+      CONTAINER extends ElectricMachineContainer<RECIPE, TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
 
-    public GuiElectricMachine(PlayerInventory inventory, TileEntityElectricMachine<RECIPE> tile) {
-        super(tile, new ContainerElectricMachine<>(inventory, tile), inventory);
+    protected GuiElectricMachine(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = tileEntity.guiLocation;
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

@@ -1,22 +1,25 @@
-package mekanism.common.inventory.container_old;
+package mekanism.common.inventory.container.tile.double_electric;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.common.recipe.machines.AdvancedMachineRecipe;
-import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.recipe.inputs.DoubleMachineInput;
+import mekanism.common.recipe.machines.DoubleMachineRecipe;
+import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityAdvancedElectricMachine<RECIPE>> {
+public abstract class DoubleElectricMachineContainer<RECIPE extends DoubleMachineRecipe<RECIPE>, TILE extends TileEntityDoubleElectricMachine<RECIPE>> extends MekanismTileContainer<TILE> {
 
-    public ContainerAdvancedElectricMachine(PlayerInventory inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {
-        super(tile, inventory);
+    protected DoubleElectricMachineContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
+        super(type, id, inv, tile);
     }
 
     @Nonnull
@@ -39,7 +42,7 @@ public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineReci
                 } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tile.getItemGas(slotStack) != null) {
+            } else if (isExtraItem(slotStack)) {
                 if (slotID != 1) {
                     if (!mergeItemStack(slotStack, 1, 2, false)) {
                         return ItemStack.EMPTY;
@@ -80,8 +83,17 @@ public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineReci
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        for (AdvancedMachineInput input : tile.getRecipes().keySet()) {
+        for (DoubleMachineInput input : tile.getRecipes().keySet()) {
             if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isExtraItem(ItemStack itemstack) {
+        for (DoubleMachineInput input : tile.getRecipes().keySet()) {
+            if (ItemHandlerHelper.canItemStacksStack(input.extraStack, itemstack)) {
                 return true;
             }
         }

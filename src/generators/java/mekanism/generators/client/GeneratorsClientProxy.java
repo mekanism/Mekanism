@@ -3,7 +3,12 @@ package mekanism.generators.client;
 import java.util.Map;
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.generators.client.gui.GuiBioGenerator;
+import mekanism.generators.client.gui.GuiGasGenerator;
+import mekanism.generators.client.gui.GuiHeatGenerator;
 import mekanism.generators.client.gui.GuiReactorController;
+import mekanism.generators.client.gui.GuiSolarGenerator;
+import mekanism.generators.client.gui.GuiWindGenerator;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderGasGenerator;
@@ -84,8 +89,12 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
     @Override
     public void registerScreenHandlers() {
-        //TODO: Make sure all are here
+        ScreenManager.registerFactory(GeneratorsContainerTypes.BIO_GENERATOR, GuiBioGenerator::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GuiGasGenerator::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.HEAT_GENERATOR, GuiHeatGenerator::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_CONTROLLER, GuiReactorController::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.SOLAR_GENERATOR, GuiSolarGenerator::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);
     }
 
     @SubscribeEvent

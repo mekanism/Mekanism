@@ -1,18 +1,20 @@
-package mekanism.generators.common.inventory.container_old;
+package mekanism.generators.common.inventory.container.passive;
 
 import javax.annotation.Nonnull;
-import mekanism.common.inventory.container_old.ContainerMekanism;
-import mekanism.common.tile.base.TileEntityMekanism;
+import javax.annotation.Nullable;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.ChargeUtils;
+import mekanism.generators.common.tile.TileEntityGenerator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerPassiveGenerator<TILE extends TileEntityMekanism> extends ContainerMekanism<TILE> {
+public abstract class PassiveGeneratorContainer<TILE extends TileEntityGenerator> extends MekanismTileContainer<TILE> {
 
-    protected ContainerPassiveGenerator(PlayerInventory inventory, TILE tile) {
-        super(tile, inventory);
+    protected PassiveGeneratorContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
+        super(type, id, inv, tile);
     }
 
     @Nonnull

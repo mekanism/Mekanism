@@ -2,17 +2,19 @@ package mekanism.client.gui.chemical;
 
 import mekanism.client.gui.GuiAdvancedElectricMachine;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.common.inventory.container.tile.advanced.ChemicalInjectionChamberContainer;
 import mekanism.common.recipe.machines.InjectionRecipe;
-import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<InjectionRecipe> {
+public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<InjectionRecipe, TileEntityChemicalInjectionChamber, ChemicalInjectionChamberContainer> {
 
-    public GuiChemicalInjectionChamber(PlayerInventory inventory, TileEntityAdvancedElectricMachine<InjectionRecipe> tile) {
-        super(inventory, tile);
+    public GuiChemicalInjectionChamber(ChemicalInjectionChamberContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     @Override

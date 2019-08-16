@@ -1,17 +1,19 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.common.inventory.container.tile.electric.EnrichmentChamberContainer;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
-import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import mekanism.common.tile.TileEntityEnrichmentChamber;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiEnrichmentChamber extends GuiElectricMachine<EnrichmentRecipe> {
+public class GuiEnrichmentChamber extends GuiElectricMachine<EnrichmentRecipe, TileEntityEnrichmentChamber, EnrichmentChamberContainer> {
 
-    public GuiEnrichmentChamber(PlayerInventory inventory, TileEntityElectricMachine<EnrichmentRecipe> tile) {
-        super(inventory, tile);
+    public GuiEnrichmentChamber(EnrichmentChamberContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     @Override

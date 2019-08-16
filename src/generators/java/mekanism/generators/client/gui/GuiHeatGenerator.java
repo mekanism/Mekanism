@@ -20,18 +20,19 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import mekanism.generators.common.inventory.container_old.ContainerHeatGenerator;
+import mekanism.generators.common.inventory.container.fuel.HeatGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, ContainerHeatGenerator> {
+public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, HeatGeneratorContainer> {
 
-    public GuiHeatGenerator(PlayerInventory inventory, TileEntityHeatGenerator tile) {
-        super(tile, new ContainerHeatGenerator(inventory, tile), inventory);
+    public GuiHeatGenerator(HeatGeneratorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

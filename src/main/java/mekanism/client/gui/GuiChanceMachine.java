@@ -14,7 +14,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container_old.ContainerChanceMachine;
+import mekanism.common.inventory.container.tile.chance.ChanceMachineContainer;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.text.EnergyDisplay;
@@ -22,14 +22,16 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityChanceMachine<RECIPE>, ContainerChanceMachine> {
+public abstract class GuiChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>, TILE extends TileEntityChanceMachine<RECIPE>,
+      CONTAINER extends ChanceMachineContainer<RECIPE, TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
 
-    public GuiChanceMachine(PlayerInventory inventory, TileEntityChanceMachine<RECIPE> tile) {
-        super(tile, new ContainerChanceMachine<>(inventory, tile), inventory);
+    protected GuiChanceMachine(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

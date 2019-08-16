@@ -1,6 +1,8 @@
-package mekanism.common.inventory.container_old;
+package mekanism.common.inventory.container.tile.chance;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
@@ -10,13 +12,14 @@ import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityChanceMachine<RECIPE>> {
+public abstract class ChanceMachineContainer<RECIPE extends ChanceMachineRecipe<RECIPE>, TILE extends TileEntityChanceMachine<RECIPE>> extends MekanismTileContainer<TILE> {
 
-    public ContainerChanceMachine(PlayerInventory inventory, TileEntityChanceMachine<RECIPE> tile) {
-        super(tile, inventory);
+    protected ChanceMachineContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
+        super(type, id, inv, tile);
     }
 
     @Nonnull

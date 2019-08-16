@@ -17,20 +17,21 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.inventory.container_old.ContainerWindGenerator;
+import mekanism.generators.common.inventory.container.passive.WindGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, ContainerWindGenerator> {
+public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, WindGeneratorContainer> {
 
     private final DecimalFormat powerFormat = new DecimalFormat("0.##");
 
-    public GuiWindGenerator(PlayerInventory inventory, TileEntityWindGenerator tile) {
-        super(tile, new ContainerWindGenerator(inventory, tile), inventory);
+    public GuiWindGenerator(WindGeneratorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

@@ -1,6 +1,8 @@
-package mekanism.common.inventory.container_old;
+package mekanism.common.inventory.container.tile.electric;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
@@ -10,13 +12,14 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityElectricMachine<RECIPE>> {
+public abstract class ElectricMachineContainer<RECIPE extends BasicMachineRecipe<RECIPE>, TILE extends TileEntityElectricMachine<RECIPE>> extends MekanismTileContainer<TILE> {
 
-    public ContainerElectricMachine(PlayerInventory inventory, TileEntityElectricMachine<RECIPE> tile) {
-        super(tile, inventory);
+    protected ElectricMachineContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
+        super(type, id, inv, tile);
     }
 
     @Nonnull
