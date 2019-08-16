@@ -9,9 +9,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.inventory.container.ContainerUpgradeManagement;
+import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -25,12 +26,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+//TODO: Switch this to being GuiMekanismTile??
 @OnlyIn(Dist.CLIENT)
-public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement> {
+public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile> extends GuiMekanism<UpgradeManagementContainer<TILE>> {
 
     private Button backButton;
     private Button removeButton;
-    private IUpgradeTile tileEntity;
+    private TILE tileEntity;
     private Upgrade selectedType;
     private boolean isDragging = false;
     private double dragOffset = 0;
@@ -38,9 +40,9 @@ public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement
     private int delay;
     private float scroll;
 
-    public GuiUpgradeManagement(PlayerInventory inventory, IUpgradeTile tile) {
-        super(new ContainerUpgradeManagement(inventory, tile), inventory, TextComponentUtil.translate("mekanism.gui.upgrade_management"));
-        tileEntity = tile;
+    public GuiUpgradeManagement(UpgradeManagementContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+        tileEntity = container.getTileEntity();
     }
 
     @Override
@@ -49,7 +51,7 @@ public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement
         buttons.clear();
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
               onPress -> {
-                  Block block = ((TileEntity) tileEntity).getBlockType();
+                  Block block = tileEntity.getBlockType();
                   if (block instanceof IHasGui) {
                       Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get((TileEntity) tileEntity), 0, ((IHasGui) block).getGuiID()));
                   }
@@ -92,7 +94,7 @@ public class GuiUpgradeManagement extends GuiMekanism<ContainerUpgradeManagement
             renderText(TextComponentUtil.build(selectedType, " ", Translation.of("mekanism.gui.upgrade")), 92, 8, 0.6F, true);
             renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
             int text = 0;
-            for (ITextComponent component : selectedType.getInfo((TileEntity) tileEntity)) {
+            for (ITextComponent component : selectedType.getInfo(tileEntity)) {
                 renderText(component, 92, 22 + (6 * text++), 0.6F, true);
             }
         }

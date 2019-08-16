@@ -11,7 +11,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerGasTank;
+import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
@@ -27,10 +27,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, ContainerGasTank> {
+public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContainer> {
 
-    public GuiGasTank(PlayerInventory inventory, TileEntityGasTank tile) {
-        super(tile, new ContainerGasTank(inventory, tile), inventory);
+    public GuiGasTank(GasTankContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

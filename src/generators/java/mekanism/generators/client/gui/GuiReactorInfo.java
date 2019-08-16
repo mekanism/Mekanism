@@ -4,7 +4,7 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

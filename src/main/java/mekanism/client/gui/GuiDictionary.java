@@ -4,7 +4,7 @@ import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.OreDictCache;
-import mekanism.common.inventory.container.ContainerDictionary;
+import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -14,19 +14,20 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDictionary extends GuiMekanism<ContainerDictionary> {
+public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     public ItemStack itemType = ItemStack.EMPTY;
 
     private final GuiScrollList scrollList;
 
-    public GuiDictionary(PlayerInventory inventory) {
-        super(new ContainerDictionary(inventory), inventory, TextComponentUtil.translate("mekanism.gui.dictionary"));
+    public GuiDictionary(DictionaryContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
     }
 

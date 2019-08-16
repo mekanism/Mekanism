@@ -33,8 +33,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     private Set<GuiElement> guiElements = new HashSet<>();
 
-    public GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent name) {
-        super(container, inv, name);
+    protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     public static boolean isTextboxKey(char c, int i) {

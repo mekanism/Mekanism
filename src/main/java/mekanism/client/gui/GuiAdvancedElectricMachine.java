@@ -16,7 +16,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
+import mekanism.common.inventory.container_old.ContainerAdvancedElectricMachine;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.text.EnergyDisplay;

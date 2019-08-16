@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.ClientTickHandler;
-import mekanism.client.MekanismClient;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -22,13 +20,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.inventory.container.ContainerTeleporter;
-import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.network.PacketPortableTeleporter;
-import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
+import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.security.IOwnerItem;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -38,11 +31,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -50,11 +39,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Container> {
+public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, TeleporterContainer> {
 
-    private Hand currentHand;
-    private ItemStack itemStack = ItemStack.EMPTY;
-    private PlayerEntity entityPlayer;
     private Button publicButton;
     private Button privateButton;
     private Button setButton;
@@ -68,12 +54,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
     private byte clientStatus;
     private List<Frequency> clientPublicCache = new ArrayList<>();
     private List<Frequency> clientPrivateCache = new ArrayList<>();
-    private boolean isInit = true;
-    private final boolean isPortable;
 
-    public GuiTeleporter(PlayerInventory inventory, TileEntityTeleporter tile) {
-        super(tile, new ContainerTeleporter(inventory, tile), inventory);
-        isPortable = false;
+    public GuiTeleporter(TeleporterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
@@ -95,35 +78,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
             privateMode = !tileEntity.frequency.publicFreq;
         }
         ySize += 64;
-    }
-
-    public GuiTeleporter(PlayerEntity player, Hand hand, ItemStack stack) {
-        super(null, new ContainerNull(), player.inventory);
-        isPortable = true;
-        currentHand = hand;
-        itemStack = stack;
-        entityPlayer = player;
-        ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
-            @Override
-            public ITextComponent getTooltip() {
-                return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();
-            }
-
-            @Override
-            public double getLevel() {
-                return getEnergy() / getMaxEnergy();
-            }
-        }, resource, 158, 26));
-        addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
-        ItemPortableTeleporter item = (ItemPortableTeleporter) itemStack.getItem();
-        if (item.getFrequency(stack) != null) {
-            privateMode = !item.getFrequency(stack).publicFreq;
-            setFrequency(item.getFrequency(stack).name);
-        } else {
-            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
-        }
-        ySize = 175;
     }
 
     @Override
@@ -150,26 +104,12 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
-                if (tileEntity != null) {
-                    TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                    Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-                } else {
-                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
-                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
-                }
+                TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
                 scrollList.clearSelection();
             }
             updateButtons();
         }));
-        if (!itemStack.isEmpty()) {
-            buttons.add(teleportButton = new GuiButtonTranslation(guiLeft + 42, guiTop + 140, 92, 20, "gui.teleport", onPress -> {
-                if (clientFreq != null && clientStatus == 1) {
-                    minecraft.mainWindow.setIngameFocus();
-                    ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
-                }
-                updateButtons();
-            }));
-        }
         frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
@@ -180,13 +120,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
                   updateButtons();
               }));
         updateButtons();
-        if (!itemStack.isEmpty()) {
-            if (!isInit) {
-                Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
-            } else {
-                isInit = false;
-            }
-        }
     }
 
     public void setFrequency(Frequency newFrequency) {
@@ -242,9 +175,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
             setButton.active = false;
             deleteButton.active = false;
         }
-        if (!itemStack.isEmpty()) {
-            teleportButton.active = clientFreq != null && clientStatus == 1;
-        }
     }
 
     @Override
@@ -263,7 +193,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, isPortable ? "GuiPortableTeleporter.png" : "GuiTeleporter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png");
     }
 
     @Override
@@ -285,7 +215,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(getName(), (xSize / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
-        drawString(OwnerDisplay.of(getOwner(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? ySize - 12 : (ySize - 96) + 4, 0x404040);
+        drawString(OwnerDisplay.of(getOwner(), tileEntity.getSecurity().getClientOwner()).getTextComponent(), 8, ySize - 92, 0x404040);
         ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.freq"), ": ");
         drawString(frequencyComponent, 32, 81, 0x404040);
         ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.security"), ": ");
@@ -335,17 +265,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
     }
 
     private UUID getOwner() {
-        if (tileEntity != null) {
-            return tileEntity.getSecurity().getOwnerUUID();
-        }
-        return ((IOwnerItem) itemStack.getItem()).getOwnerUUID(itemStack);
-    }
-
-    private String getOwnerUsername() {
-        if (tileEntity != null) {
-            return tileEntity.getSecurity().getClientOwner();
-        }
-        return MekanismClient.clientUUIDMap.get(((IOwnerItem) itemStack.getItem()).getOwnerUUID(itemStack));
+        return tileEntity.getSecurity().getOwnerUUID();
     }
 
     private byte getStatus() {
@@ -368,34 +288,19 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Contain
         if (freq.isEmpty()) {
             return;
         }
-        if (tileEntity != null) {
-            TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-        } else {
-            Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
-            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));
-        }
+        TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
+        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
     }
 
-    private String getName() {
-        return tileEntity != null ? tileEntity.getName() : itemStack.getDisplayName();
+    private ITextComponent getName() {
+        return tileEntity.getName();
     }
 
     private double getEnergy() {
-        if (!itemStack.isEmpty()) {
-            return ((ItemPortableTeleporter) itemStack.getItem()).getEnergy(itemStack);
-        }
         return tileEntity.getEnergy();
     }
 
     private double getMaxEnergy() {
-        if (!itemStack.isEmpty()) {
-            return ((ItemPortableTeleporter) itemStack.getItem()).getMaxEnergy(itemStack);
-        }
         return tileEntity.getMaxEnergy();
-    }
-
-    public boolean isStackEmpty() {
-        return itemStack.isEmpty();
     }
 }

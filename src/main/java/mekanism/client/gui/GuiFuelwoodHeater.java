@@ -6,7 +6,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerFuelwoodHeater;
+import mekanism.common.inventory.container.tile.FuelwoodHeaterContainer;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,14 +16,15 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater, ContainerFuelwoodHeater> {
+public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater, FuelwoodHeaterContainer> {
 
-    public GuiFuelwoodHeater(PlayerInventory inventory, TileEntityFuelwoodHeater tile) {
-        super(tile, new ContainerFuelwoodHeater(inventory, tile), inventory);
+    public GuiFuelwoodHeater(FuelwoodHeaterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

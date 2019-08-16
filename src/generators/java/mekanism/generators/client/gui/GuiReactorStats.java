@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;

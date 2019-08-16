@@ -13,7 +13,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSimpleGui;

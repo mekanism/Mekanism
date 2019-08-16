@@ -18,7 +18,8 @@ import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
+import mekanism.common.inventory.container.tile.GasTankContainer;
+import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.MekanismUtils;
@@ -30,14 +31,15 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgicInfuser, ContainerMetallurgicInfuser> {
+public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgicInfuser, MetallurgicInfuserContainer> {
 
-    public GuiMetallurgicInfuser(PlayerInventory inventory, TileEntityMetallurgicInfuser tile) {
-        super(tile, new ContainerMetallurgicInfuser(inventory, tile), inventory);
+    public GuiMetallurgicInfuser(MetallurgicInfuserContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

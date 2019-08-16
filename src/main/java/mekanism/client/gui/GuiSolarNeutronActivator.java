@@ -11,21 +11,22 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
+import mekanism.common.inventory.container.tile.SolarNeutronActivatorContainer;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeutronActivator, ContainerSolarNeutronActivator> {
+public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeutronActivator, SolarNeutronActivatorContainer> {
 
-    public GuiSolarNeutronActivator(PlayerInventory inventory, TileEntitySolarNeutronActivator tile) {
-        super(tile, new ContainerSolarNeutronActivator(inventory, tile), inventory);
+    public GuiSolarNeutronActivator(SolarNeutronActivatorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

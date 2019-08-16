@@ -26,6 +26,8 @@ import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ClientTickHandler;
+import mekanism.client.gui.GuiDictionary;
+import mekanism.client.gui.GuiGasTank;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IModule;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -45,6 +47,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketSimpleGui;
@@ -66,6 +69,7 @@ import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
@@ -106,6 +110,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -222,14 +227,13 @@ public class Mekanism {
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        event.getRegistry().registerAll(MekanismEntityTypes.ROBIT, MekanismEntityTypes.BABY_SKELETON, MekanismEntityTypes.OBSIDIAN_TNT, MekanismEntityTypes.BALLOON,
-              MekanismEntityTypes.FLAME);
+        MekanismEntityTypes.registerEntities(event.getRegistry());
     }
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        //TODO:
-        //event.getRegistry().register(MekanismContainerType.);
+        MekanismContainerTypes.registerContainers(event.getRegistry());
+        proxy.registerScreenHandlers();
     }
 
     @SubscribeEvent

@@ -3,18 +3,7 @@ package mekanism.generators.client;
 import java.util.Map;
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.generators.client.gui.GuiBioGenerator;
-import mekanism.generators.client.gui.GuiGasGenerator;
-import mekanism.generators.client.gui.GuiHeatGenerator;
-import mekanism.generators.client.gui.GuiIndustrialTurbine;
 import mekanism.generators.client.gui.GuiReactorController;
-import mekanism.generators.client.gui.GuiReactorFuel;
-import mekanism.generators.client.gui.GuiReactorHeat;
-import mekanism.generators.client.gui.GuiReactorLogicAdapter;
-import mekanism.generators.client.gui.GuiReactorStats;
-import mekanism.generators.client.gui.GuiSolarGenerator;
-import mekanism.generators.client.gui.GuiTurbineStats;
-import mekanism.generators.client.gui.GuiWindGenerator;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderGasGenerator;
@@ -32,6 +21,7 @@ import mekanism.generators.client.render.item.RenderSolarGeneratorItem;
 import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -39,19 +29,14 @@ import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -97,6 +82,12 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     public void registerBlockRenders() {
     }
 
+    @Override
+    public void registerScreenHandlers() {
+        //TODO: Make sure all are here
+        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_CONTROLLER, GuiReactorController::new);
+    }
+
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
@@ -120,40 +111,6 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     @Override
     public void preInit() {
         MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @Override
-    public Screen getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-
-        switch (ID) {
-            case 0:
-                return new GuiHeatGenerator(player.inventory, (TileEntityHeatGenerator) tileEntity);
-            case 1:
-                return new GuiSolarGenerator(player.inventory, (TileEntitySolarGenerator) tileEntity);
-            case 3:
-                return new GuiGasGenerator(player.inventory, (TileEntityGasGenerator) tileEntity);
-            case 4:
-                return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator) tileEntity);
-            case 5:
-                return new GuiWindGenerator(player.inventory, (TileEntityWindGenerator) tileEntity);
-            case 6:
-                return new GuiIndustrialTurbine(player.inventory, (TileEntityTurbineCasing) tileEntity);
-            case 7:
-                return new GuiTurbineStats(player.inventory, (TileEntityTurbineCasing) tileEntity);
-            case 10:
-                return new GuiReactorController(player.inventory, (TileEntityReactorController) tileEntity);
-            case 11:
-                return new GuiReactorHeat(player.inventory, (TileEntityReactorController) tileEntity);
-            case 12:
-                return new GuiReactorFuel(player.inventory, (TileEntityReactorController) tileEntity);
-            case 13:
-                return new GuiReactorStats(player.inventory, (TileEntityReactorController) tileEntity);
-            case 15:
-                return new GuiReactorLogicAdapter(player.inventory, (TileEntityReactorLogicAdapter) tileEntity);
-        }
-
-        return null;
     }
 
     @SubscribeEvent

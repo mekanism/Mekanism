@@ -15,7 +15,8 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerResistiveHeater;
+import mekanism.common.inventory.container.tile.GasTankContainer;
+import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.util.MekanismUtils;
@@ -29,18 +30,19 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater, ContainerResistiveHeater> {
+public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater, ResistiveHeaterContainer> {
 
     private TextFieldWidget energyUsageField;
     private Button checkboxButton;
 
-    public GuiResistiveHeater(PlayerInventory inventory, TileEntityResistiveHeater tile) {
-        super(tile, new ContainerResistiveHeater(inventory, tile), inventory);
+    public GuiResistiveHeater(ResistiveHeaterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 14, 34).with(SlotOverlay.POWER));

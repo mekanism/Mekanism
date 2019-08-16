@@ -18,7 +18,7 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity;

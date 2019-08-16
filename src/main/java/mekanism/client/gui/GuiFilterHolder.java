@@ -19,7 +19,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
-import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerInventory;

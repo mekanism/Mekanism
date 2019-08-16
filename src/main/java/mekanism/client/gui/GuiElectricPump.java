@@ -11,7 +11,7 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerElectricPump;
+import mekanism.common.inventory.container.tile.ElectricPumpContainer;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -20,16 +20,17 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, ContainerElectricPump> {
+public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, ElectricPumpContainer> {
 
 
-    public GuiElectricPump(PlayerInventory inventory, TileEntityElectricPump tile) {
-        super(tile, new ContainerElectricPump(inventory, tile), inventory);
+    public GuiElectricPump(ElectricPumpContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 50));

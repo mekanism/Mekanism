@@ -16,7 +16,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import mekanism.generators.common.inventory.container.ContainerGasGenerator;
+import mekanism.generators.common.inventory.container_old.ContainerGasGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;

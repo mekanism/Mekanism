@@ -12,7 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
+import mekanism.generators.common.inventory.container_old.ContainerSolarGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.entity.player.PlayerInventory;

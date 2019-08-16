@@ -6,7 +6,7 @@ import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.robit.ContainerRobitMain;
+import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.MekanismUtils;
@@ -18,12 +18,13 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRobitMain extends GuiMekanism<ContainerRobitMain> {
+public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     private final EntityRobit robit;
 
@@ -40,10 +41,10 @@ public class GuiRobitMain extends GuiMekanism<ContainerRobitMain> {
     private Button smeltingButton;
     private Button repairButton;
 
-    public GuiRobitMain(PlayerInventory inventory, EntityRobit entity) {
-        super(new ContainerRobitMain(inventory, entity), inventory, TextComponentUtil.translate("mekanism.gui.robit.main"));
+    public GuiRobitMain(MainRobitContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         xSize += 25;
-        robit = entity;
+        robit = container.getEntity();
     }
 
     private void toggleNameChange() {

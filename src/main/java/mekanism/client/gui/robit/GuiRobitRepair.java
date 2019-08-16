@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.buffer.Unpooled;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.robit.ContainerRobitRepair;
+import mekanism.common.inventory.container_old.robit.ContainerRobitRepair;
 import mekanism.common.util.text.TextComponentUtil;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.widget.TextFieldWidget;

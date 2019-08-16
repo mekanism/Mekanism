@@ -1,21 +1,22 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.inventory.container.ContainerLaserTractorBeam;
+import mekanism.common.inventory.container.tile.LaserTractorBeamContainer;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorBeam, ContainerLaserTractorBeam> {
+public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorBeam, LaserTractorBeamContainer> {
 
-    public GuiLaserTractorBeam(PlayerInventory inventory, TileEntityLaserTractorBeam tile) {
-        super(tile, new ContainerLaserTractorBeam(inventory, tile), inventory);
+    public GuiLaserTractorBeam(LaserTractorBeamContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, getGuiLocation()));
     }
 

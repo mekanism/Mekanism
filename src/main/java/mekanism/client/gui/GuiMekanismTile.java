@@ -4,22 +4,30 @@ import java.util.List;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
+public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
+    //TODO: Potentially replace usages of this with getTileEntity() and make getTileEntity return container.getTileEntity()
     protected final TILE tileEntity;
 
-    public GuiMekanismTile(TILE tile, CONTAINER container, PlayerInventory inv) {
+    protected GuiMekanismTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+        tileEntity = container.getTileEntity();
+    }
+
+    @Deprecated
+    protected GuiMekanismTile(TILE tile, CONTAINER container, PlayerInventory inv) {
         super(container, inv, tile.getName());
         tileEntity = tile;
     }

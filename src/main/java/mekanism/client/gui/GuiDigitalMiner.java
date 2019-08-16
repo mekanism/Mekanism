@@ -17,7 +17,7 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.gui.element.tab.GuiVisualsTab;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
-import mekanism.common.inventory.container.ContainerDigitalMiner;
+import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity;
@@ -37,7 +37,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, ContainerDigitalMiner> {
+public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, DigitalMinerContainer> {
 
     private Button startButton;
     private Button stopButton;
@@ -47,8 +47,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Con
     private Button autoEjectButton;
     private Button autoPullButton;
 
-    public GuiDigitalMiner(PlayerInventory inventory, TileEntityDigitalMiner tile) {
-        super(tile, new ContainerDigitalMiner(inventory, tile), inventory);
+    public GuiDigitalMiner(DigitalMinerContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

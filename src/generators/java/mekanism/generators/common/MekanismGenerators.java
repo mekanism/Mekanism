@@ -9,13 +9,16 @@ import mekanism.common.MekanismTags;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import net.minecraft.block.Block;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -128,6 +131,12 @@ public class MekanismGenerators implements IModule {
         for (Item dust : MekanismTags.GOLD_DUST.getAllElements()) {
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(dust, 4), GeneratorsItem.HOHLRAUM.getItemStack());
         }
+    }
+
+    @SubscribeEvent
+    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+        GeneratorsContainerTypes.registerContainers(event.getRegistry());
+        proxy.registerScreenHandlers();
     }
 
     @Override

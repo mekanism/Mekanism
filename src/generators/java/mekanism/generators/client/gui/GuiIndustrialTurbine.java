@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
@@ -31,10 +31,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing, ContainerFilter> {
+public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing, FilterContainer<TileEntityTurbineCasing>> {
 
-    public GuiIndustrialTurbine(PlayerInventory inventory, TileEntityTurbineCasing tile) {
-        super(tile, new ContainerFilter(inventory, tile), inventory);
+    public GuiIndustrialTurbine(FilterContainer<TileEntityTurbineCasing> container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 16));

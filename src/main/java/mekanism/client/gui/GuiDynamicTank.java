@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.inventory.container.ContainerDynamicTank;
+import mekanism.common.inventory.container.tile.fluid.DynamicTankContainer;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -10,15 +10,16 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, ContainerDynamicTank> {
+public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, DynamicTankContainer> {
 
-    public GuiDynamicTank(PlayerInventory inventory, TileEntityDynamicTank tile) {
-        super(tile, new ContainerDynamicTank(inventory, tile), inventory);
+    public GuiDynamicTank(DynamicTankContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         addGuiElement(new GuiContainerEditMode(this, tileEntity, getGuiLocation()));
     }
 

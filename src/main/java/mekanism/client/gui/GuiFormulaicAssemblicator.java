@@ -15,7 +15,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
+import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
@@ -30,11 +30,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator, ContainerFormulaicAssemblicator> {
+public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator, FormulaicAssemblicatorContainer> {
 
     private Button encodeFormulaButton;
     private Button stockControlButton;
@@ -43,8 +44,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     private Button craftAvailableButton;
     private Button autoModeButton;
 
-    public GuiFormulaicAssemblicator(PlayerInventory inventory, TileEntityFormulaicAssemblicator tile) {
-        super(tile, new ContainerFormulaicAssemblicator(inventory, tile), inventory);
+    public GuiFormulaicAssemblicator(FormulaicAssemblicatorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

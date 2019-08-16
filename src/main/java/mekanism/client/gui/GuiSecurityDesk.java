@@ -10,7 +10,7 @@ import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerSecurityDesk;
+import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, ContainerSecurityDesk> {
+public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, SecurityDeskContainer> {
 
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private static final int MAX_LENGTH = 24;
@@ -43,8 +43,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Con
     private GuiScrollList scrollList;
     private TextFieldWidget trustedField;
 
-    public GuiSecurityDesk(PlayerInventory inventory, TileEntitySecurityDesk tile) {
-        super(tile, new ContainerSecurityDesk(inventory, tile), inventory);
+    public GuiSecurityDesk(SecurityDeskContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 4));
         ySize += 64;
     }

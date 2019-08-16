@@ -18,7 +18,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
+import mekanism.common.inventory.container.tile.ElectrolyticSeparatorContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
@@ -35,10 +35,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrolyticSeparator, ContainerElectrolyticSeparator> {
+public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrolyticSeparator, ElectrolyticSeparatorContainer> {
 
-    public GuiElectrolyticSeparator(PlayerInventory inventory, TileEntityElectrolyticSeparator tile) {
-        super(tile, new ContainerElectrolyticSeparator(inventory, tile), inventory);
+    public GuiElectrolyticSeparator(ElectrolyticSeparatorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

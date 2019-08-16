@@ -12,9 +12,9 @@ import mekanism.client.gui.filter.GuiMModIDFilter;
 import mekanism.client.gui.filter.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.inventory.container.ContainerDigitalMiner;
-import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container.tile.DigitalMinerContainer;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
+import mekanism.common.inventory.container_old.ContainerNull;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
@@ -30,6 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+//TODO: Fix
 public class PacketDigitalMinerGui {
 
     private MinerGuiPacket packetType;
@@ -120,8 +121,7 @@ public class PacketDigitalMinerGui {
                 container = new ContainerNull(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
                 break;
             case 4:
-                container = new ContainerDigitalMiner(playerMP.inventory,
-                      (TileEntityDigitalMiner) obj.getTileEntity(world));
+                container = new DigitalMinerContainer(playerMP.inventory, (TileEntityDigitalMiner) obj.getTileEntity(world));
                 break;
             case 5:
                 container = new ContainerNull(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
@@ -131,7 +131,7 @@ public class PacketDigitalMinerGui {
 //				case 3:
 //				case 6:
             default:
-                container = new ContainerFilter(playerMP.inventory, (TileEntityMekanism) obj.getTileEntity(world));
+                container = new FilterContainer<TileEntityDigitalMiner>(playerMP.inventory, (TileEntityMekanism) obj.getTileEntity(world));
                 break;
         }
 

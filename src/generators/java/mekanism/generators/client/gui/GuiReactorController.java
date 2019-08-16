@@ -17,14 +17,15 @@ import mekanism.generators.common.inventory.container.ContainerReactorController
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController, ContainerReactorController> {
 
-    public GuiReactorController(PlayerInventory inventory, final TileEntityReactorController tile) {
-        super(tile, new ContainerReactorController(inventory, tile), inventory);
+    public GuiReactorController(ContainerReactorController container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         if (tileEntity.isFormed()) {
             ResourceLocation resource = getGuiLocation();
             addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(

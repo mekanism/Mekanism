@@ -5,7 +5,7 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.inventory.container.ContainerInductionMatrix;
+import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -15,14 +15,15 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasing, ContainerInductionMatrix> {
+public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasing, InductionMatrixContainer> {
 
-    public GuiInductionMatrix(PlayerInventory inventory, TileEntityInductionCasing tile) {
-        super(tile, new ContainerInductionMatrix(inventory, tile), inventory);
+    public GuiInductionMatrix(InductionMatrixContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, resource));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(

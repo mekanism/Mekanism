@@ -22,7 +22,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
+import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
@@ -34,12 +34,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.oredict.OreDictionary;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer, ContainerChemicalCrystallizer> {
+public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer, ChemicalCrystallizerContainer> {
 
     private List<ItemStack> iterStacks = new ArrayList<>();
     private ItemStack renderStack = ItemStack.EMPTY;
@@ -47,8 +48,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     private int stackIndex = 0;
     private Gas prevGas;
 
-    public GuiChemicalCrystallizer(PlayerInventory inventory, TileEntityChemicalCrystallizer tile) {
-        super(tile, new ContainerChemicalCrystallizer(inventory, tile), inventory);
+    public GuiChemicalCrystallizer(ChemicalCrystallizerContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

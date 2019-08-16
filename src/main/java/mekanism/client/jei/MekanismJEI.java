@@ -35,8 +35,8 @@ import mekanism.client.jei.machine.other.SolarNeutronRecipeCategory;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
-import mekanism.common.inventory.container.robit.ContainerRobitInventory;
+import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
+import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -197,9 +197,9 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
-        registry.addRecipeTransferHandler(ContainerRobitInventory.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
+        registry.addRecipeTransferHandler(InventoryRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
         if (MekanismBlock.FORMULAIC_ASSEMBLICATOR.isEnabled()) {
-            registry.addRecipeTransferHandler(ContainerFormulaicAssemblicator.class, VanillaRecipeCategoryUid.CRAFTING, 20, 9, 35, 36);
+            registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 20, 9, 35, 36);
         }
     }
 }

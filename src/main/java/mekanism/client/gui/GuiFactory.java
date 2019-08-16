@@ -17,7 +17,8 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.inventory.container.ContainerFactory;
+import mekanism.common.inventory.container.tile.FactoryContainer;
+import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.FactoryTier;
@@ -32,15 +33,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFactory extends GuiMekanismTile<TileEntityFactory, ContainerFactory> {
+public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContainer> {
 
-    public GuiFactory(PlayerInventory inventory, TileEntityFactory tile) {
-        super(tile, new ContainerFactory(inventory, tile), inventory);
+    public GuiFactory(FactoryContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ySize += 11;
         ResourceLocation resource = tileEntity.tier.guiLocation;
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

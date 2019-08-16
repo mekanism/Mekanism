@@ -9,7 +9,7 @@ import mekanism.client.gui.element.tab.GuiAmplifierTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerLaserAmplifier;
+import mekanism.common.inventory.container.tile.LaserAmplifierContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
@@ -27,14 +27,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier, ContainerLaserAmplifier> {
+public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier, LaserAmplifierContainer> {
 
     private TextFieldWidget minField;
     private TextFieldWidget maxField;
     private TextFieldWidget timerField;
 
-    public GuiLaserAmplifier(PlayerInventory inventory, TileEntityLaserAmplifier tile) {
-        super(tile, new ContainerLaserAmplifier(inventory, tile), inventory);
+    public GuiLaserAmplifier(LaserAmplifierContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
             @Override

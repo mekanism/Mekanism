@@ -1,18 +1,19 @@
 package mekanism.client.gui.chemical;
 
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiChemical<TILE extends TileEntityMekanism, CONTAINER extends Container> extends GuiMekanismTile<TILE, CONTAINER> {
+public abstract class GuiChemical<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
 
-    protected GuiChemical(TILE tile, CONTAINER container, PlayerInventory inv) {
-        super(tile, container, inv);
+    protected GuiChemical(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     protected abstract void drawForegroundText();

@@ -7,107 +7,16 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.common.base.IGuiProvider;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
-import mekanism.common.inventory.container.ContainerChanceMachine;
-import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
-import mekanism.common.inventory.container.ContainerChemicalDissolutionChamber;
-import mekanism.common.inventory.container.ContainerChemicalInfuser;
-import mekanism.common.inventory.container.ContainerChemicalOxidizer;
-import mekanism.common.inventory.container.ContainerChemicalWasher;
-import mekanism.common.inventory.container.ContainerDictionary;
-import mekanism.common.inventory.container.ContainerDigitalMiner;
-import mekanism.common.inventory.container.ContainerDoubleElectricMachine;
-import mekanism.common.inventory.container.ContainerDynamicTank;
-import mekanism.common.inventory.container.ContainerElectricMachine;
-import mekanism.common.inventory.container.ContainerElectricPump;
-import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
-import mekanism.common.inventory.container.ContainerEnergyCube;
-import mekanism.common.inventory.container.ContainerFactory;
-import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.inventory.container.ContainerFluidTank;
-import mekanism.common.inventory.container.ContainerFluidicPlenisher;
-import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
-import mekanism.common.inventory.container.ContainerFuelwoodHeater;
-import mekanism.common.inventory.container.ContainerGasTank;
-import mekanism.common.inventory.container.ContainerInductionMatrix;
-import mekanism.common.inventory.container.ContainerLaserAmplifier;
-import mekanism.common.inventory.container.ContainerLaserTractorBeam;
-import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
-import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.inventory.container.ContainerOredictionificator;
-import mekanism.common.inventory.container.ContainerPRC;
-import mekanism.common.inventory.container.ContainerPersonalChest;
-import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
-import mekanism.common.inventory.container.ContainerResistiveHeater;
-import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
-import mekanism.common.inventory.container.ContainerSecurityDesk;
-import mekanism.common.inventory.container.ContainerSeismicVibrator;
-import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
-import mekanism.common.inventory.container.ContainerTeleporter;
-import mekanism.common.inventory.container.ContainerThermalEvaporationController;
-import mekanism.common.inventory.container.ContainerUpgradeManagement;
-import mekanism.common.inventory.container.robit.ContainerRobitCrafting;
-import mekanism.common.inventory.container.robit.ContainerRobitInventory;
-import mekanism.common.inventory.container.robit.ContainerRobitMain;
-import mekanism.common.inventory.container.robit.ContainerRobitRepair;
-import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
-import mekanism.common.item.ItemDictionary;
-import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.network.PacketPortableTeleporter;
-import mekanism.common.tile.TileEntityChemicalCrystallizer;
-import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
-import mekanism.common.tile.TileEntityChemicalInfuser;
-import mekanism.common.tile.TileEntityChemicalOxidizer;
-import mekanism.common.tile.TileEntityChemicalWasher;
-import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityElectricPump;
-import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityFluidicPlenisher;
-import mekanism.common.tile.TileEntityFormulaicAssemblicator;
-import mekanism.common.tile.TileEntityFuelwoodHeater;
-import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityLaserAmplifier;
-import mekanism.common.tile.TileEntityLaserTractorBeam;
-import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPersonalChest;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.tile.TileEntityResistiveHeater;
-import mekanism.common.tile.TileEntityRotaryCondensentrator;
-import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.tile.TileEntitySolarNeutronActivator;
-import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
-import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
-import mekanism.common.tile.gas_tank.TileEntityGasTank;
-import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.tile.prefab.TileEntityChanceMachine;
-import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
-import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
@@ -121,7 +30,8 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  *
  * @author AidanBrady
  */
-public class CommonProxy implements IGuiProvider {
+//TODO: I don't think IGuiProvider is needed with 1.14 and can be done through forge hooks instead
+public class CommonProxy/* implements IGuiProvider*/ {
 
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
                                                     "please delete it from your mods folder and restart the game."};
@@ -192,203 +102,7 @@ public class CommonProxy implements IGuiProvider {
     public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
     }
 
-    @Override
-    public Object getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
-        return null;
-    }
-
-    private Container getServerItemGui(PlayerEntity player, BlockPos pos) {
-        int currentItem = pos.getX();
-        int handOrdinal = pos.getY();
-        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= Hand.values().length) {
-            //If it is out of bounds don't do anything
-            return null;
-        }
-        ItemStack stack = player.inventory.getStackInSlot(currentItem);
-        if (stack.isEmpty()) {
-            return null;
-        }
-        Hand hand = Hand.values()[handOrdinal];
-        int guiID = pos.getZ();
-        switch (guiID) {
-            case 0:
-                if (stack.getItem() instanceof ItemDictionary) {
-                    return new ContainerDictionary(player.inventory);
-                }
-                break;
-            case 14:
-                if (stack.getItem() instanceof ItemPortableTeleporter) {
-                    return new ContainerNull();
-                }
-            case 19:
-                if (MekanismBlock.PERSONAL_CHEST.blockMatches(stack)) {
-                    //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
-                    return new ContainerPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
-                }
-                break;
-            case 38:
-                if (stack.getItem() instanceof ItemSeismicReader) {
-                    return new ContainerNull();
-                }
-                break;
-        }
-        return null;
-    }
-
-    private Container getServerEntityGui(PlayerEntity player, World world, BlockPos pos) {
-        int entityID = pos.getX();
-        Entity entity = world.getEntityByID(entityID);
-        if (entity == null) {
-            return null;
-        }
-        int guiID = pos.getY();
-        switch (guiID) {
-            case 21:
-                if (entity instanceof EntityRobit) {
-                    return new ContainerRobitMain(player.inventory, (EntityRobit) entity);
-                }
-                break;
-            case 22:
-                if (entity instanceof EntityRobit) {
-                    return new ContainerRobitCrafting(player.inventory, (EntityRobit) entity);
-                }
-                break;
-            case 23:
-                if (entity instanceof EntityRobit) {
-                    return new ContainerRobitInventory(player.inventory, (EntityRobit) entity);
-                }
-                break;
-            case 24:
-                if (entity instanceof EntityRobit) {
-                    return new ContainerRobitSmelting(player.inventory, (EntityRobit) entity);
-                }
-                break;
-            case 25:
-                if (entity instanceof EntityRobit) {
-                    return new ContainerRobitRepair(player.inventory, (EntityRobit) entity);
-                }
-                break;
-        }
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Container getServerGui(int ID, PlayerEntity player, World world, BlockPos pos) {
-        //TODO: Replace magic numbers here and in sub methods with static lookup ints
-        if (ID == 0) {
-            return getServerItemGui(player, pos);
-        } else if (ID == 1) {
-            return getServerEntityGui(player, world, pos);
-        }
-        TileEntity tileEntity = world.getTileEntity(pos);
-        switch (ID) {
-            //0, 1 USED BEFORE SWITCH
-            case 2:
-                return new ContainerDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
-            case 3:
-                return new ContainerElectricMachine<>(player.inventory, (TileEntityElectricMachine) tileEntity);
-            case 4:
-                return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
-            case 5:
-                return new ContainerDoubleElectricMachine<>(player.inventory, (TileEntityDoubleElectricMachine) tileEntity);
-            case 6:
-                return new ContainerElectricMachine<>(player.inventory, (TileEntityElectricMachine) tileEntity);
-            case 7:
-                return new ContainerRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator) tileEntity);
-            case 8:
-                return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube) tileEntity);
-            case 9:
-                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
-            case 10:
-                return new ContainerGasTank(player.inventory, (TileEntityGasTank) tileEntity);
-            case 11:
-                return new ContainerFactory(player.inventory, (TileEntityFactory) tileEntity);
-            case 12:
-                return new ContainerMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser) tileEntity);
-            case 13:
-                return new ContainerTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
-            //EMPTY 14
-            case 15:
-                return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
-            case 16:
-                return new ContainerElectricMachine<>(player.inventory, (TileEntityElectricMachine) tileEntity);
-            case 17:
-                return new ContainerElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
-            case 18:
-                return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
-            case 19:
-                return new ContainerPersonalChest(player.inventory, (TileEntityPersonalChest) tileEntity);
-            //EMPTY 20, 21, 22, 23, 24, 25
-            case 26:
-                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
-            case 27:
-                return new ContainerFilter(player.inventory, (TileEntityMekanism) tileEntity);
-            case 28:
-                return new ContainerFilter(player.inventory, (TileEntityMekanism) tileEntity);
-            case 29:
-                return new ContainerChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer) tileEntity);
-            case 30:
-                return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser) tileEntity);
-            case 31:
-                return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
-            case 32:
-                return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator) tileEntity);
-            case 33:
-                return new ContainerThermalEvaporationController(player.inventory, (TileEntityThermalEvaporationController) tileEntity);
-            case 34:
-                return new ContainerChanceMachine<>(player.inventory, (TileEntityChanceMachine) tileEntity);
-            case 35:
-                return new ContainerChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber) tileEntity);
-            case 36:
-                return new ContainerChemicalWasher(player.inventory, (TileEntityChemicalWasher) tileEntity);
-            case 37:
-                return new ContainerChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer) tileEntity);
-            //EMPTY 38
-            case 39:
-                return new ContainerSeismicVibrator(player.inventory, (TileEntitySeismicVibrator) tileEntity);
-            case 40:
-                return new ContainerPRC(player.inventory, (TileEntityPRC) tileEntity);
-            case 41:
-                return new ContainerFluidTank(player.inventory, (TileEntityFluidTank) tileEntity);
-            case 42:
-                return new ContainerFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher) tileEntity);
-            case 43:
-                return new ContainerUpgradeManagement(player.inventory, (IUpgradeTile) tileEntity);
-            case 44:
-                return new ContainerLaserAmplifier(player.inventory, (TileEntityLaserAmplifier) tileEntity);
-            case 45:
-                return new ContainerLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam) tileEntity);
-            case 46:
-                return new ContainerQuantumEntangloporter(player.inventory, (TileEntityQuantumEntangloporter) tileEntity);
-            case 47:
-                return new ContainerSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator) tileEntity);
-            case 48:
-                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
-            case 49:
-                return new ContainerInductionMatrix(player.inventory, (TileEntityInductionCasing) tileEntity);
-            case 50:
-                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
-            case 51:
-                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
-            case 52:
-                return new ContainerOredictionificator(player.inventory, (TileEntityOredictionificator) tileEntity);
-            case 53:
-                return new ContainerResistiveHeater(player.inventory, (TileEntityResistiveHeater) tileEntity);
-            case 54:
-                return new ContainerFilter(player.inventory, (TileEntityMekanism) tileEntity);
-            case 55:
-                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
-            case 56:
-                return new ContainerFormulaicAssemblicator(player.inventory, (TileEntityFormulaicAssemblicator) tileEntity);
-            case 57:
-                return new ContainerSecurityDesk(player.inventory, (TileEntitySecurityDesk) tileEntity);
-            case 58:
-                return new ContainerFuelwoodHeater(player.inventory, (TileEntityFuelwoodHeater) tileEntity);
-            case 59:
-                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
-        }
-        return null;
+    public void registerScreenHandlers() {
     }
 
     public void preInit() {

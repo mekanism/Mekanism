@@ -11,7 +11,7 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerFluidicPlenisher;
+import mekanism.common.inventory.container.tile.FluidicPlenisherContainer;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,15 +21,16 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher, ContainerFluidicPlenisher> {
+public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher, FluidicPlenisherContainer> {
 
-    public GuiFluidicPlenisher(PlayerInventory inventory, TileEntityFluidicPlenisher tile) {
-        super(tile, new ContainerFluidicPlenisher(inventory, tile), inventory);
+    public GuiFluidicPlenisher(FluidicPlenisherContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 50));

@@ -1,8 +1,10 @@
 package mekanism.generators.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.common.inventory.container.ContainerMekanism;
+import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,18 +12,19 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ContainerReactorController extends ContainerMekanism<TileEntityReactorController> {
+public class ContainerReactorController extends MekanismTileContainer<TileEntityReactorController> {
 
-    public ContainerReactorController(PlayerInventory inventory, TileEntityReactorController tile) {
-        super(tile, inventory);
+    public ContainerReactorController(int id, PlayerInventory inv, TileEntityReactorController tile) {
+        super(MekanismContainerTypes.GAS_TANK, id, inv, tile);
     }
 
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotReactor(tileEntity, 0, 80, 39));
+    public ContainerReactorController(int id, PlayerInventory inv, PacketBuffer buf) {
+        this(id, inv, getTileFromBuf(buf, TileEntityReactorController.class));
     }
 
     @Nonnull
@@ -64,6 +67,17 @@ public class ContainerReactorController extends ContainerMekanism<TileEntityReac
         return stack;
     }
 
+    @Override
+    protected void addSlots() {
+        addSlot(new SlotReactor(tile, 0, 80, 39));
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getDisplayName() {
+        return TextComponentUtil.translate("mekanismgenerators.container.reactor_controller");
+    }
+
     public class SlotReactor extends Slot {
 
         public SlotReactor(IInventory inventory, int index, int x, int y) {
@@ -73,7 +87,7 @@ public class ContainerReactorController extends ContainerMekanism<TileEntityReac
         @Override
         @OnlyIn(Dist.CLIENT)
         public boolean isEnabled() {
-            return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorld(), tileEntity.getPos());
+            return tile != null && MekanismUtils.isActive(tile.getWorld(), tile.getPos());
         }
     }
 }

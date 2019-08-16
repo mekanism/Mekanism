@@ -13,7 +13,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerChemicalInfuser;
+import mekanism.common.inventory.container.tile.ChemicalInfuserContainer;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -22,14 +22,15 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, ContainerChemicalInfuser> {
+public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, ChemicalInfuserContainer> {
 
-    public GuiChemicalInfuser(PlayerInventory inventory, TileEntityChemicalInfuser tile) {
-        super(tile, new ContainerChemicalInfuser(inventory, tile), inventory);
+    public GuiChemicalInfuser(ChemicalInfuserContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

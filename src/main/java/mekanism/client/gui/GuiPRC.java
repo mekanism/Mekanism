@@ -17,7 +17,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerPRC;
+import mekanism.common.inventory.container.tile.PressurizedReactionChamberContainer;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -26,14 +26,15 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiPRC extends GuiMekanismTile<TileEntityPRC, ContainerPRC> {
+public class GuiPRC extends GuiMekanismTile<TileEntityPRC, PressurizedReactionChamberContainer> {
 
-    public GuiPRC(PlayerInventory inventory, TileEntityPRC tile) {
-        super(tile, new ContainerPRC(inventory, tile), inventory);
+    public GuiPRC(PressurizedReactionChamberContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

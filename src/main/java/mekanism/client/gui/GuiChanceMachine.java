@@ -14,7 +14,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerChanceMachine;
+import mekanism.common.inventory.container_old.ContainerChanceMachine;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.text.EnergyDisplay;

@@ -17,7 +17,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
+import mekanism.common.inventory.container.tile.RotaryCondensentratorContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
@@ -28,16 +28,17 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, ContainerRotaryCondensentrator> {
+public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, RotaryCondensentratorContainer> {
 
     private Button toggleButton;
 
-    public GuiRotaryCondensentrator(PlayerInventory inventory, TileEntityRotaryCondensentrator tile) {
-        super(tile, new ContainerRotaryCondensentrator(inventory, tile), inventory);
+    public GuiRotaryCondensentrator(RotaryCondensentratorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

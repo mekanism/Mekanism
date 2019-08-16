@@ -6,21 +6,22 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.inventory.container.ContainerFluidTank;
+import mekanism.common.inventory.container.tile.fluid.FluidTankContainer;
 import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, ContainerFluidTank> {
+public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, FluidTankContainer> {
 
-    public GuiFluidTank(PlayerInventory inventory, TileEntityFluidTank tile) {
-        super(tile, new ContainerFluidTank(inventory, tile), inventory);
+    public GuiFluidTank(FluidTankContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiContainerEditMode(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

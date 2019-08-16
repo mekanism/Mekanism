@@ -3,12 +3,11 @@ package mekanism.common.network;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.filter.GuiOredictionificatorFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.inventory.container.ContainerOredictionificator;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
+import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
@@ -24,6 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+//TODO: Fix this
 public class PacketOredictionificatorGui {
 
     private OredictionificatorGuiPacket packetType;
@@ -111,9 +111,9 @@ public class PacketOredictionificatorGui {
         Container container = null;
         playerMP.closeContainer();
         if (guiType == 0) {
-            container = new ContainerOredictionificator(playerMP.inventory, (TileEntityOredictionificator) obj.getTileEntity(world));
+            container = new OredictionificatorContainer(playerMP.inventory, (TileEntityOredictionificator) obj.getTileEntity(world));
         } else if (guiType == 1) {
-            container = new ContainerFilter(playerMP.inventory, (TileEntityMekanism) obj.getTileEntity(world));
+            container = new FilterContainer<TileEntityOredictionificator>(playerMP.inventory, (TileEntityMekanism) obj.getTileEntity(world));
         }
         playerMP.getNextWindowId();
         int window = playerMP.currentWindowId;
@@ -139,7 +139,7 @@ public class PacketOredictionificatorGui {
     @OnlyIn(Dist.CLIENT)
     public static Screen getGui(OredictionificatorGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
         if (type == 0) {
-            return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator) world.getTileEntity(pos));
+            return new OredictionificatorContainer(player.inventory, (TileEntityOredictionificator) world.getTileEntity(pos));
         } else if (packetType == OredictionificatorGuiPacket.CLIENT) {
             if (type == 1) {
                 return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator) world.getTileEntity(pos));

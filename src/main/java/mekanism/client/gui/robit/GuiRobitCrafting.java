@@ -1,7 +1,7 @@
 package mekanism.client.gui.robit;
 
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.robit.ContainerRobitCrafting;
+import mekanism.common.inventory.container_old.robit.ContainerRobitCrafting;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.api.distmarker.Dist;

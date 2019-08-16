@@ -16,7 +16,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.ContainerChemicalWasher;
+import mekanism.common.inventory.container.tile.ChemicalWasherContainer;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -25,14 +25,15 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher, ContainerChemicalWasher> {
+public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher, ChemicalWasherContainer> {
 
-    public GuiChemicalWasher(PlayerInventory inventory, TileEntityChemicalWasher tile) {
-        super(tile, new ContainerChemicalWasher(inventory, tile), inventory);
+    public GuiChemicalWasher(ChemicalWasherContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

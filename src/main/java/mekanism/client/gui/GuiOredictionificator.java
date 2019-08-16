@@ -16,7 +16,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.ContainerOredictionificator;
+import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiPacket;
 import mekanism.common.tile.TileEntityOredictionificator;
@@ -29,19 +29,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, ContainerOredictionificator> {
+public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, OredictionificatorContainer> {
 
     private Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<>();
     private boolean isDragging = false;
     private double dragOffset = 0;
     private float scroll;
 
-    public GuiOredictionificator(PlayerInventory inventory, TileEntityOredictionificator tile) {
-        super(tile, new ContainerOredictionificator(inventory, tile), inventory);
+    public GuiOredictionificator(OredictionificatorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));

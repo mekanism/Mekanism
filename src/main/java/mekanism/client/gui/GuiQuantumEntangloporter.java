@@ -15,7 +15,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
+import mekanism.common.inventory.container.tile.GasTankContainer;
+import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter, ContainerQuantumEntangloporter> {
+public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter, QuantumEntangloporterContainer> {
 
     private Button publicButton;
     private Button privateButton;
@@ -44,8 +45,8 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     private TextFieldWidget frequencyField;
     private boolean privateMode;
 
-    public GuiQuantumEntangloporter(PlayerInventory inventory, TileEntityQuantumEntangloporter tile) {
-        super(tile, new ContainerQuantumEntangloporter(inventory, tile), inventory);
+    public GuiQuantumEntangloporter(QuantumEntangloporterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
         addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));

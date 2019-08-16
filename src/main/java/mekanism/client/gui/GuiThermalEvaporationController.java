@@ -5,7 +5,7 @@ import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerThermalEvaporationController;
+import mekanism.common.inventory.container.tile.ThermalEvaporationControllerContainer;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,10 +21,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController, ContainerThermalEvaporationController> {
+public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController, ThermalEvaporationControllerContainer> {
 
-    public GuiThermalEvaporationController(PlayerInventory inventory, TileEntityThermalEvaporationController tile) {
-        super(tile, new ContainerThermalEvaporationController(inventory, tile), inventory);
+    public GuiThermalEvaporationController(ThermalEvaporationControllerContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiFluidGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
         addGuiElement(new GuiFluidGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, resource, 152, 13));

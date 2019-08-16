@@ -4,19 +4,19 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.inventory.container.entity.MekanismEntityContainer;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiRobit<CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
+public abstract class GuiRobit<CONTAINER extends MekanismEntityContainer<EntityRobit>> extends GuiMekanism<CONTAINER> {
 
     protected final EntityRobit robit;
     private Button mainButton;
@@ -25,6 +25,13 @@ public abstract class GuiRobit<CONTAINER extends Container> extends GuiMekanism<
     private Button smeltingButton;
     private Button repairButton;
 
+    protected GuiRobit(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+        robit = container.getEntity();
+        xSize += 25;
+    }
+
+    @Deprecated
     protected GuiRobit(EntityRobit robit, CONTAINER container, PlayerInventory inventory, ITextComponent component) {
         super(container, inventory, component);
         this.robit = robit;

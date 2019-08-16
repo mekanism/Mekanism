@@ -8,7 +8,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.inventory.container.ContainerSeismicVibrator;
+import mekanism.common.inventory.container.tile.SeismicVibratorContainer;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -17,14 +17,15 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrator, ContainerSeismicVibrator> {
+public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrator, SeismicVibratorContainer> {
 
-    public GuiSeismicVibrator(PlayerInventory inventory, TileEntitySeismicVibrator tile) {
-        super(tile, new ContainerSeismicVibrator(inventory, tile), inventory);
+    public GuiSeismicVibrator(SeismicVibratorContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
