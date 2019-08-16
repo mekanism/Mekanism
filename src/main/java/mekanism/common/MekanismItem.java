@@ -70,11 +70,11 @@ public enum MekanismItem implements IItemProvider {
     BIO_FUEL("bio_fuel"),
 
     //TODO: Rename compressed to enriched?
-    COMPRESSED_CARBON(new ItemResource(ResourceType.COMPRESSED, MiscResource.CARBON)),
-    COMPRESSED_REDSTONE(new ItemResource(ResourceType.COMPRESSED, MiscResource.REDSTONE)),
-    COMPRESSED_DIAMOND(new ItemResource(ResourceType.COMPRESSED, MiscResource.DIAMOND)),
+    ENRICHED_CARBON(new ItemResource(ResourceType.ENRICHED, MiscResource.CARBON)),
+    ENRICHED_REDSTONE(new ItemResource(ResourceType.ENRICHED, MiscResource.REDSTONE)),
+    ENRICHED_DIAMOND(new ItemResource(ResourceType.ENRICHED, MiscResource.DIAMOND)),
     //TODO: Should this be refined obsidian
-    COMPRESSED_OBSIDIAN(new ItemResource(ResourceType.COMPRESSED, MiscResource.OBSIDIAN)),
+    ENRICHED_OBSIDIAN(new ItemResource(ResourceType.ENRICHED, MiscResource.REFINED_OBSIDIAN)),
 
     SPEED_UPGRADE(new ItemUpgrade(Upgrade.SPEED)),
     ENERGY_UPGRADE(new ItemUpgrade(Upgrade.ENERGY)),
@@ -84,7 +84,7 @@ public enum MekanismItem implements IItemProvider {
     ANCHOR_UPGRADE(new ItemUpgrade(Upgrade.ANCHOR)),
 
     //Alloy names are alloy_type for purposes of tab complete
-    ENRICHED_ALLOY(new ItemAlloy(AlloyTier.ENRICHED)),
+    INFUSED_ALLOY(new ItemAlloy(AlloyTier.INFUSED)),
     REINFORCED_ALLOY(new ItemAlloy(AlloyTier.REINFORCED)),
     ATOMIC_ALLOY(new ItemAlloy(AlloyTier.ATOMIC)),
 

@@ -4,7 +4,7 @@
 
 # Items
 tile.ObsidianTNT.name=Obsidian TNT
-item.EnrichedAlloy.name=Enriched Alloy
+item.mekanism.alloy_infused.name=Infused Alloy
 item.ReinforcedAlloy.name=Reinforced Alloy
 item.AtomicAlloy.name=Atomic Alloy
 item.EnergyTablet.name=Energy Tablet
@@ -18,10 +18,10 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
 item.ElectricBow.name=Electric Bow
 item.EnrichedIron.name=Enriched Iron
-item.CompressedCarbon.name=Compressed Carbon
-item.CompressedRedstone.name=Compressed Redstone
-item.CompressedDiamond.name=Compressed Diamond
-item.CompressedObsidian.name=Compressed Obsidian
+item.mekanism.carbon_enriched.name=Enriched Carbon
+item.mekanism.redstone_enriched.name=Enriched Redstone
+item.mekanism.diamond_enriched.name=Enriched Diamond
+item.mekanism.refined_obsidian_enriched.name=Enriched Obsidian
 item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator

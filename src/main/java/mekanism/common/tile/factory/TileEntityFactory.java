@@ -984,7 +984,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     @Override
     public String getDataType() {
-        return getName();
+        return getName().getFormattedText();
     }
 
     @Override

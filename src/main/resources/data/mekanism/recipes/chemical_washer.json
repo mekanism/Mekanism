@@ -19,7 +19,7 @@
       "tag": "forge:circuits/basic"
     },
     "E": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "W": {
       "item": "minecraft:bucket"

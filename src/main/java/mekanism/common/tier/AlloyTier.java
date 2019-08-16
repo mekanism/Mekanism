@@ -1,7 +1,7 @@
 package mekanism.common.tier;
 
 public enum AlloyTier implements ITier {
-    ENRICHED("enriched", BaseTier.ADVANCED),
+    INFUSED("infused", BaseTier.ADVANCED),
     REINFORCED("reinforced", BaseTier.ELITE),
     ATOMIC("atomic", BaseTier.ULTIMATE);
 

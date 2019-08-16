@@ -68,6 +68,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -226,6 +227,12 @@ public class Mekanism {
     }
 
     @SubscribeEvent
+    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+        //TODO:
+        //event.getRegistry().register(MekanismContainerType.);
+    }
+
+    @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         // Register models
         proxy.registerBlockRenders();
@@ -251,9 +258,9 @@ public class Mekanism {
         //Enrichment Chamber Recipes
         if (MekanismBlock.ENRICHMENT_CHAMBER.isEnabled()) {
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.OBSIDIAN), MekanismItem.OBSIDIAN_DUST.getItemStack(4));
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.COAL), MekanismItem.COMPRESSED_CARBON.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.CHARCOAL), MekanismItem.COMPRESSED_CARBON.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.REDSTONE), MekanismItem.COMPRESSED_REDSTONE.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.COAL), MekanismItem.ENRICHED_CARBON.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.CHARCOAL), MekanismItem.ENRICHED_CARBON.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.REDSTONE), MekanismItem.ENRICHED_REDSTONE.getItemStack());
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.MOSSY_COBBLESTONE), new ItemStack(Blocks.COBBLESTONE));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.STONE), new ItemStack(Blocks.CRACKED_STONE_BRICKS));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.SAND), new ItemStack(Blocks.GRAVEL));
@@ -265,7 +272,7 @@ public class Mekanism {
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.GLOWSTONE), new ItemStack(Items.GLOWSTONE_DUST, 4));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.CLAY), new ItemStack(Items.CLAY_BALL, 4));
             RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.SALT_BLOCK.getItemStack(), MekanismItem.SALT.getItemStack(4));
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.DIAMOND), MekanismItem.COMPRESSED_DIAMOND.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.DIAMOND), MekanismItem.ENRICHED_DIAMOND.getItemStack());
             RecipeHandler.addEnrichmentChamberRecipe(MekanismItem.HDPE_PELLET.getItemStack(3), MekanismItem.HDPE_SHEET.getItemStack());
 
             //Plastic to Slick Plastic
@@ -447,25 +454,25 @@ public class Mekanism {
             InfuseRegistry.registerInfuseObject(new ItemStack(Items.CHARCOAL), new InfuseObject(carbon, 20));
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.COAL_BLOCK), new InfuseObject(carbon, 90));
             InfuseRegistry.registerInfuseObject(MekanismBlock.CHARCOAL_BLOCK.getItemStack(), new InfuseObject(carbon, 180));
-            InfuseRegistry.registerInfuseObject(MekanismItem.COMPRESSED_CARBON.getItemStack(), new InfuseObject(carbon, 80));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_CARBON.getItemStack(), new InfuseObject(carbon, 80));
             InfuseRegistry.registerInfuseObject(new ItemStack(Items.REDSTONE), new InfuseObject(redstone, 10));
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.REDSTONE_BLOCK), new InfuseObject(redstone, 90));
-            InfuseRegistry.registerInfuseObject(MekanismItem.COMPRESSED_REDSTONE.getItemStack(), new InfuseObject(redstone, 80));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_REDSTONE.getItemStack(), new InfuseObject(redstone, 80));
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.RED_MUSHROOM), new InfuseObject(fungi, 10));
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.BROWN_MUSHROOM), new InfuseObject(fungi, 10));
-            InfuseRegistry.registerInfuseObject(MekanismItem.COMPRESSED_DIAMOND.getItemStack(), new InfuseObject(diamond, 80));
-            InfuseRegistry.registerInfuseObject(MekanismItem.COMPRESSED_OBSIDIAN.getItemStack(), new InfuseObject(obsidian, 80));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_DIAMOND.getItemStack(), new InfuseObject(diamond, 80));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_OBSIDIAN.getItemStack(), new InfuseObject(obsidian, 80));
 
             //Metallurgic Infuser Recipes
             RecipeHandler.addMetallurgicInfuserRecipe(carbon, 10, new ItemStack(Items.IRON_INGOT), MekanismItem.ENRICHED_IRON.getItemStack());
             RecipeHandler.addMetallurgicInfuserRecipe(carbon, 10, MekanismItem.ENRICHED_IRON.getItemStack(), MekanismItem.STEEL_DUST.getItemStack());
-            RecipeHandler.addMetallurgicInfuserRecipe(redstone, 10, new ItemStack(Items.IRON_INGOT), MekanismItem.ENRICHED_ALLOY.getItemStack());
+            RecipeHandler.addMetallurgicInfuserRecipe(redstone, 10, new ItemStack(Items.IRON_INGOT), MekanismItem.INFUSED_ALLOY.getItemStack());
             RecipeHandler.addMetallurgicInfuserRecipe(fungi, 10, new ItemStack(Blocks.DIRT), new ItemStack(Blocks.MYCELIUM));
             RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.MOSSY_COBBLESTONE));
             RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.STONE_BRICKS), new ItemStack(Blocks.MOSSY_STONE_BRICKS));
             RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.SAND), new ItemStack(Blocks.DIRT));
             RecipeHandler.addMetallurgicInfuserRecipe(bio, 10, new ItemStack(Blocks.DIRT), new ItemStack(Blocks.PODZOL));
-            RecipeHandler.addMetallurgicInfuserRecipe(diamond, 10, MekanismItem.ENRICHED_ALLOY.getItemStack(), MekanismItem.REINFORCED_ALLOY.getItemStack());
+            RecipeHandler.addMetallurgicInfuserRecipe(diamond, 10, MekanismItem.INFUSED_ALLOY.getItemStack(), MekanismItem.REINFORCED_ALLOY.getItemStack());
             RecipeHandler.addMetallurgicInfuserRecipe(obsidian, 10, MekanismItem.REINFORCED_ALLOY.getItemStack(), MekanismItem.ATOMIC_ALLOY.getItemStack());
         }
 

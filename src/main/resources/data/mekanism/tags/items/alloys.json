@@ -2,7 +2,7 @@
   "replace": false,
   "values": [
     "#mekanism:alloys/basic",
-    "#mekanism:alloys/enriched",
+    "#mekanism:alloys/infused",
     "#mekanism:alloys/reinforced",
     "#mekanism:alloys/atomic"
   ]

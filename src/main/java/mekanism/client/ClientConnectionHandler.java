@@ -1,4 +1,5 @@
-package mekanism.client;
+//TODO: Figure out the 1.14 equivalent
+/*package mekanism.client;
 
 import java.net.InetSocketAddress;
 import mekanism.client.voice.VoiceClient;
@@ -34,4 +35,4 @@ public class ClientConnectionHandler {
             }
         }
     }
-}
+}*/

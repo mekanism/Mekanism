@@ -22,7 +22,7 @@
       "tag": "forge:circuits/basic"
     },
     "E": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "G": {
       "item": "mekanism:basic_gas_tank"

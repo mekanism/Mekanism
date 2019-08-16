@@ -19,7 +19,7 @@
       "item": "mekanismgenerators:solar_generator"
     },
     "E": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "I": {
       "tag": "forge:ingots/iron"

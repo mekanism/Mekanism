@@ -16,7 +16,7 @@
   ],
   "key": {
     "A": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "T": {
       "item": "mekanism:basic_fluid_tank"

@@ -16,7 +16,7 @@
   ],
   "key": {
     "A": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "C": {
       "tag": "forge:circuits/basic"

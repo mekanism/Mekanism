@@ -10,7 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "B": {
       "item": "minecraft:string"

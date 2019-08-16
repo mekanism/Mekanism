@@ -16,7 +16,7 @@
       "item": "mekanism:energy_tablet"
     },
     "E": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "o": {
       "tag": "forge:ingots/osmium"

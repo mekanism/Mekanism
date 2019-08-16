@@ -10,7 +10,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "C": {
       "tag": "mekanism:alloys/atomic"

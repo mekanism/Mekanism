@@ -10,7 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "A": {
-      "tag": "mekanism:alloys/enriched"
+      "tag": "mekanism:alloys/infused"
     },
     "D": {
       "tag": "forge:dusts/osmium"

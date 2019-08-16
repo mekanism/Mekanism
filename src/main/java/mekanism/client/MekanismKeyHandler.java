@@ -32,10 +32,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
@@ -68,7 +68,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
     }
 
     @SubscribeEvent
-    public void onTick(InputEvent event) {
+    public void onTick(InputEvent.KeyInputEvent event) {
         keyTick();
     }
 

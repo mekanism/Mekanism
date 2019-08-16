@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#mekanism:enriched/carbon",
+    "#mekanism:enriched/diamond",
+    "#mekanism:enriched/redstone",
+    "#mekanism:enriched/obsidian"
+  ]
+}

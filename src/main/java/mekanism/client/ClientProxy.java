@@ -693,7 +693,7 @@ public class ClientProxy extends CommonProxy {
               MekanismItem.LIME_BALLOON, MekanismItem.YELLOW_BALLOON, MekanismItem.LIGHT_BLUE_BALLOON, MekanismItem.MAGENTA_BALLOON, MekanismItem.ORANGE_BALLOON,
               MekanismItem.WHITE_BALLOON);
 
-        MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
+        //MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());

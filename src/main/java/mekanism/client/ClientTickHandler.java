@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,21 +10,17 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.IClientTicker;
 import mekanism.api.gas.GasStack;
-import mekanism.client.render.RenderTickHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFreeRunnerData;
-import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import net.minecraft.client.Minecraft;
@@ -38,7 +33,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -265,7 +259,7 @@ public class ClientTickHandler {
                 if (minecraft.player.getAir() == max) {
                     for (EffectInstance effect : minecraft.player.getActivePotionEffects()) {
                         for (int i = 0; i < 9; i++) {
-                            effect.onUpdate(minecraft.player);
+                            effect.tick(minecraft.player);
                         }
                     }
                 }
@@ -273,8 +267,9 @@ public class ClientTickHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onMouseEvent(MouseEvent event) {
+    //TODO: I believe this requires https://github.com/MinecraftForge/MinecraftForge/pull/6037
+    /*@SubscribeEvent
+    public void onMouseEvent(InputEvent.MouseInputEvent event) {
         if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.isSneaking()) {
             ItemStack stack = minecraft.player.getHeldItemMainhand();
             int delta = event.getDwheel();
@@ -299,7 +294,7 @@ public class ClientTickHandler {
                 event.setCanceled(true);
             }
         }
-    }
+    }*/
 
     private static class TeleportData {
 
