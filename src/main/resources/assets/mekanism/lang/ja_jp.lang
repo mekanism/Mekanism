@@ -4,7 +4,7 @@
 
 # Items
 tile.ObsidianTNT.name=黒曜石TNT
-item.EnrichedAlloy.name=濃縮合金
+item.EnrichedAlloy.name=富化合金
 item.ReinforcedAlloy.name=強化合金
 item.AtomicAlloy.name=原子合金
 item.EnergyTablet.name=エネルギータブレット
@@ -15,9 +15,9 @@ item.MufflingUpgrade.name=消音アップグレード
 item.GasUpgrade.name=ガスアップグレード
 item.AnchorUpgrade.name=アンカーアップグレード
 item.Robit.name=ロビット
-item.AtomicDisassembler.name=原子分解機
-item.ElectricBow.name=電動弓
-item.EnrichedIron.name=濃縮鉄
+item.AtomicDisassembler.name=アトミックディスアセンブラー
+item.ElectricBow.name=エレクトリックボウ
+item.EnrichedIron.name=富化鉄
 item.CompressedCarbon.name=圧縮炭素
 item.CompressedRedstone.name=圧縮レッドストーン
 item.CompressedDiamond.name=圧縮ダイヤモンド
@@ -41,10 +41,10 @@ item.FreeRunners.name=フリーランナー
 item.ArmoredJetpack.name=装甲ジェットパック
 item.ConfigurationCard.name=設定カード
 item.SeismicReader.name=弾性波解析器
-item.HDPEPellet.name=HDPE ペレット
-item.HDPERod.name=HDPE ロッド
-item.HDPESheet.name=HDPE シート
-item.PlaStick.name=プラスティック
+item.HDPEPellet.name=高密度ポリエチレンペレット
+item.HDPERod.name=高密度ポリエチレンロッド
+item.HDPESheet.name=高密度ポリエチレンシート
+item.PlaStick.name=プラスチック
 item.Substrate.name=基質
 item.Flamethrower.name=火炎放射器
 item.GaugeDropper.name=ゲージドロッパー
@@ -121,13 +121,13 @@ tile.BasicBlock2.BoilerValve.name=ボイラーバルブ
 tile.BasicBlock2.SecurityDesk.name=セキュリティーデスク
 
 # Machine Block
-tile.MachineBlock.EnrichmentChamber.name=濃縮チャンバー
+tile.MachineBlock.EnrichmentChamber.name=品質向上チャンバー
 tile.MachineBlock.OsmiumCompressor.name=オスミウム圧縮機
 tile.MachineBlock.Combiner.name=抱合機
 tile.MachineBlock.Crusher.name=粉砕機
 tile.MachineBlock.Factory.name=ファクトリー
 tile.MachineBlock.MetallurgicInfuser.name=冶金注入機
-tile.MachineBlock.PurificationChamber.name=精製室
+tile.MachineBlock.PurificationChamber.name=純化チャンバー
 tile.MachineBlock.EnergizedSmelter.name=電動かまど
 tile.MachineBlock.Teleporter.name=テレポーター
 tile.MachineBlock.ElectricPump.name=電動ポンプ
@@ -141,14 +141,15 @@ tile.MachineBlock2.RotaryCondensentrator.name=回転式流体凝縮器
 tile.MachineBlock2.ChemicalOxidizer.name=化学酸化機
 tile.MachineBlock2.ChemicalInfuser.name=化学混成機
 tile.MachineBlock2.ChemicalCombiner.name=化学結合機
-tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入室
+tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入チャンバー
 tile.MachineBlock2.ElectrolyticSeparator.name=電解分離機
 tile.MachineBlock2.PrecisionSawmill.name=精密製材機
-tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解機
+tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解チャンバー
 tile.MachineBlock2.ChemicalWasher.name=化学洗浄機
 tile.MachineBlock2.ChemicalCrystallizer.name=化学結晶化装置
 tile.MachineBlock2.SeismicVibrator.name=弾性波発振装置
-tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応室
+tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応チャンバー
+tile.MachineBlock2.PressurizedReactionChamber.short.name=加圧反応チャンバー
 tile.MachineBlock2.FluidicPlenisher.name=流体再供給機
 tile.MachineBlock2.Laser.name=レーザー
 tile.MachineBlock2.LaserAmplifier.name=レーザー増幅器
@@ -167,7 +168,7 @@ tile.PlasticBlock.name=プラスチックブロック
 tile.SlickPlasticBlock.name=滑らかなプラスチックブロック
 tile.GlowPlasticBlock.name=輝くプラスチックブロック
 tile.ReinforcedPlasticBlock.name=強化プラスチックブロック
-tile.RoadPlasticBlock.name=プラスチックロード
+tile.RoadPlasticBlock.name=プラスチックの歩道
 
 tile.PlasticFence.name=プラスチックの柵
 
@@ -186,28 +187,28 @@ tile.OreBlock.CopperOre.name=銅鉱石
 tile.OreBlock.TinOre.name=錫鉱石
 
 # Transmitters
-tile.Transmitter.BasicPressurizedTube.name=基本加圧チューブ
-tile.Transmitter.AdvancedPressurizedTube.name=発展加圧チューブ
-tile.Transmitter.ElitePressurizedTube.name=精鋭加圧チューブ
-tile.Transmitter.UltimatePressurizedTube.name=究極加圧チューブ
-tile.Transmitter.BasicUniversalCable.name=ベーシックユニバーサルケーブル
-tile.Transmitter.AdvancedUniversalCable.name=アドバンスドユニバーサルケーブル
-tile.Transmitter.EliteUniversalCable.name=エリートユニバーサルケーブル
-tile.Transmitter.UltimateUniversalCable.name=アルティメットユニバーサルケーブル
-tile.Transmitter.BasicMechanicalPipe.name=ベーシックメカニカルパイプ
-tile.Transmitter.AdvancedMechanicalPipe.name=アドバンスドメカニカルパイプ
-tile.Transmitter.EliteMechanicalPipe.name=エリートメカニカルパイプ
-tile.Transmitter.UltimateMechanicalPipe.name=アルティメットメカニカルパイプ
-tile.Transmitter.BasicLogisticalTransporter.name=基本ロジスティカルトランスポーター
-tile.Transmitter.AdvancedLogisticalTransporter.name=発展ロジスティカルトランスポーター
-tile.Transmitter.EliteLogisticalTransporter.name=精鋭ロジスティカルトランスポーター
-tile.Transmitter.UltimateLogisticalTransporter.name=究極ロジスティカルトランスポーター
+tile.Transmitter.BasicPressurizedTube.name=基本型加圧チューブ
+tile.Transmitter.AdvancedPressurizedTube.name=発展型加圧チューブ
+tile.Transmitter.ElitePressurizedTube.name=精鋭型加圧チューブ
+tile.Transmitter.UltimatePressurizedTube.name=究極型加圧チューブ
+tile.Transmitter.BasicUniversalCable.name=基本型ユニバーサルケーブル
+tile.Transmitter.AdvancedUniversalCable.name=発展型ユニバーサルケーブル
+tile.Transmitter.EliteUniversalCable.name=精鋭型ユニバーサルケーブル
+tile.Transmitter.UltimateUniversalCable.name=究極型ユニバーサルケーブル
+tile.Transmitter.BasicMechanicalPipe.name=基本型メカニカルパイプ
+tile.Transmitter.AdvancedMechanicalPipe.name=発展型メカニカルパイプ
+tile.Transmitter.EliteMechanicalPipe.name=精鋭型メカニカルパイプ
+tile.Transmitter.UltimateMechanicalPipe.name=究極型メカニカルパイプ
+tile.Transmitter.BasicLogisticalTransporter.name=基本型物流トランスポーター
+tile.Transmitter.AdvancedLogisticalTransporter.name=発展型物流トランスポーター
+tile.Transmitter.EliteLogisticalTransporter.name=精鋭型物流トランスポーター
+tile.Transmitter.UltimateLogisticalTransporter.name=究極型物流トランスポーター
 tile.Transmitter.RestrictiveTransporter.name=制限トランスポーター
 tile.Transmitter.DiversionTransporter.name=迂回トランスポーター
-tile.Transmitter.BasicThermodynamicConductor.name=基本サーモダイナミックコンダクター
-tile.Transmitter.AdvancedThermodynamicConductor.name=発展サーモダイナミックコンダクター
-tile.Transmitter.EliteThermodynamicConductor.name=精鋭サーモダイナミックコンダクター
-tile.Transmitter.UltimateThermodynamicConductor.name=究極サーモダイナミックコンダクター
+tile.Transmitter.BasicThermodynamicConductor.name=基本型熱力学伝導管
+tile.Transmitter.AdvancedThermodynamicConductor.name=発展型熱力学伝導管
+tile.Transmitter.EliteThermodynamicConductor.name=精鋭型熱力学伝導管
+tile.Transmitter.UltimateThermodynamicConductor.name=究極型熱力学伝導管
 
 # Glow Panel
 tile.GlowPanel.name=発光パネル
@@ -220,10 +221,10 @@ tile.EnergyCubeUltimate.name=究極エネルギーキューブ
 tile.EnergyCubeCreative.name=クリエイティブエネルギーキューブ
 
 # Tier Installers
-item.basicTierInstaller.name=基本ランクインストーラ
-item.advancedTierInstaller.name=発展ランクインストーラ
-item.eliteTierInstaller.name=精鋭ランクインストーラ
-item.ultimateTierInstaller.name=究極ランクインストーラ
+item.basicTierInstaller.name=基本ランクインストーラー
+item.advancedTierInstaller.name=発展ランクインストーラー
+item.eliteTierInstaller.name=精鋭ランクインストーラー
+item.ultimateTierInstaller.name=究極ランクインストーラー
 
 # Dust
 item.ironDust.name=鉄の粉
@@ -332,7 +333,7 @@ gas.cleanLead=純粋な鉛の懸濁液
 
 # BC Fuel Gases
 gas.fuel=気化燃料
-gas.oil=気化油
+gas.oil=気化石油
 
 # Fluids
 fluid.liquidhydrogen=液体水素
@@ -593,7 +594,7 @@ gui.upgrades.max=最大
 gui.upgrades.effect=効果
 
 gui.chemicalInfuser.short=化学混成機
-gui.chemicalDissolutionChamber.short=化学溶解機
+gui.chemicalDissolutionChamber.short=化学溶解チャンバー
 gui.thermalEvaporationController.short=加温蒸縮ｺﾝﾄﾛｰﾗ
 
 gui.dictionary.noKey=対応する鉱石辞書名がありません。
@@ -609,15 +610,15 @@ gui.factory.secondaryEnergy=二次エネルギー
 gui.factory.autoSort=自動分配
 
 # Recipe types
-gui.factory.Smelting=精煉
-gui.factory.Enriching=濃縮
+gui.factory.Smelting=製錬
+gui.factory.Enriching=品質向上
 gui.factory.Crushing=粉砕
 gui.factory.Compressing=オスミウム圧縮
-gui.factory.Combining=抱合
+gui.factory.Combining=結合
 gui.factory.Purifying=精製
 gui.factory.Injecting=化学注入
 gui.factory.Infusing=冶金
-gui.factory.Sawing=製材
+gui.factory.Sawing=ノコギリ
 
 gui.seismicReader.short=弾性波解析器
 gui.seismicReader.solids=固体
@@ -840,7 +841,7 @@ tooltip.BoilerCasing=耐圧性の高密な筐体です。ボイラー室の組�
 tooltip.BoilerValve=ボイラー室の組み立てに使用し、水と熱の搬入、そして蒸気の搬出を行います。
 tooltip.SecurityDesk=あなたの保有するマシンのセキュリティ管理の中心となる機械です。
 
-tooltip.EnrichmentChamber=鉱石を2つの粉にする簡単な機械です。他の類似する処理も行います。
+tooltip.EnrichmentChamber=鉱石を品質向上し2つの粉にする簡単な機械です。他の類似する処理も行います。
 tooltip.OsmiumCompressor=オスミウムを様々な粉に詰め込み、新たなインゴットへと加工する先進的な機械です。
 tooltip.Combiner=鉱石などの粉を対応する鉱石などに加工する機械です。
 tooltip.Crusher=インゴットを砕いて粉にする機械です。他の類似する処理も行います。
