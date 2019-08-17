@@ -9,7 +9,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityOredictionificator;
@@ -56,15 +55,15 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
-                sendPacketToServer(52);
+                sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             }
         }));
         buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 54, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(52);
+            sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
-              onPress -> sendPacketToServer(52)));
+              onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
         buttons.add(prevButton = new GuiButtonDisableableImage(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(),
               onPress -> {
                   if (filter.hasFilter()) {
@@ -91,11 +90,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
               }));
         buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation(),
               onPress -> setText()));
-    }
-
-    @Override
-    protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0));
     }
 
     @Override

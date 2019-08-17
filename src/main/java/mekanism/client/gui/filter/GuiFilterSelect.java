@@ -27,15 +27,22 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void addButtons() {
-        buttons.add(itemStackButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 32, 128, 20, "gui.itemstack", onPress -> sendPacketToServer(1)));
-        buttons.add(oredictButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 52, 128, 20, "gui.oredict", onPress -> sendPacketToServer(2)));
-        buttons.add(materialButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 72, 128, 20, "gui.material", onPress -> sendPacketToServer(3)));
-        buttons.add(modIDButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 92, 128, 20, "gui.modID", onPress -> onModIDButton()));
-        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
-              onPress -> sendPacketToServer(0)));
+        buttons.add(itemStackButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 32, 128, 20, "gui.itemstack", onItemStackButton()));
+        buttons.add(oredictButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 52, 128, 20, "gui.oredict", onTagButton()));
+        buttons.add(materialButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 72, 128, 20, "gui.material", onMaterialButton()));
+        buttons.add(modIDButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 92, 128, 20, "gui.modID", onModIDButton()));
+        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(), onBackButton()));
     }
 
+    protected abstract IPressable onItemStackButton();
+
+    protected abstract IPressable onTagButton();
+
+    protected abstract IPressable onMaterialButton();
+
     protected abstract IPressable onModIDButton();
+
+    protected abstract IPressable onBackButton();
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {

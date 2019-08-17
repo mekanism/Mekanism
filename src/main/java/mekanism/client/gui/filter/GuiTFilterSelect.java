@@ -1,10 +1,7 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.filter.select.LSFilterSelectContainer;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -23,13 +20,28 @@ public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter
     }
 
     @Override
-    protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
+    protected IPressable onItemStackButton() {
+        return onPress -> sendPacketToServer(ClickedTileButton.LS_FILTER_ITEMSTACK);
+    }
+
+    @Override
+    protected IPressable onTagButton() {
+        return onPress -> sendPacketToServer(ClickedTileButton.LS_FILTER_TAG);
+    }
+
+    @Override
+    protected IPressable onMaterialButton() {
+        return onPress -> sendPacketToServer(ClickedTileButton.LS_FILTER_MATERIAL);
     }
 
     @Override
     protected IPressable onModIDButton() {
-        return onPress -> sendPacketToServer(5);
+        return onPress -> sendPacketToServer(ClickedTileButton.LS_FILTER_MOD_ID);
+    }
+
+    @Override
+    protected IPressable onBackButton() {
+        return onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON);
     }
 
     @Override

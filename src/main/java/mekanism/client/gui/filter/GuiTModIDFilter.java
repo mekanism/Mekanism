@@ -10,8 +10,7 @@ import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TModIDFilter;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
@@ -62,7 +61,7 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
-                sendPacketToServer(0);
+                sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             } else {
                 status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.modIDFilter.noID"));
                 ticker = 20;
@@ -70,10 +69,10 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
         }));
         buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 109, guiTop + 62, 60, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(0);
+            sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
-              onPress -> sendPacketToServer(isNew ? 5 : 0)));
+              onPress -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         buttons.add(defaultButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 64, 11, 11, 199, 11, -11, getGuiLocation(),
               onPress -> filter.allowDefault = !filter.allowDefault));
         buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation(),
@@ -86,10 +85,5 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
                       filter.color = TransporterUtils.increment(filter.color);
                   }
               }));
-    }
-
-    @Override
-    protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
     }
 }

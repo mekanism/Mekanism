@@ -22,6 +22,7 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
 
     @Override
     public void buttonClicked() {
+        //TODO: Handle this correctly
         NetworkHooks.openGui(ServerPlayerEntity, tabType.getProvider(tileEntity), BlockPos);
     }
 

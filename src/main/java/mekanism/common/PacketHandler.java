@@ -146,11 +146,9 @@ public class PacketHandler {
         netHandler.registerMessage(disc++, PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
         netHandler.registerMessage(disc++, PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);
         netHandler.registerMessage(disc++, PacketRedstoneControl.class, PacketRedstoneControl::encode, PacketRedstoneControl::decode, PacketRedstoneControl::handle);
-        //netHandler.registerMessage(disc++, PacketLogisticalSorterGui.class, PacketLogisticalSorterGui::encode, PacketLogisticalSorterGui::decode, PacketLogisticalSorterGui::handle);
         netHandler.registerMessage(disc++, PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
         netHandler.registerMessage(disc++, PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
         netHandler.registerMessage(disc++, PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
-        //netHandler.registerMessage(disc++, PacketDigitalMinerGui.class, PacketDigitalMinerGui::encode, PacketDigitalMinerGui::decode, PacketDigitalMinerGui::handle);
         netHandler.registerMessage(disc++, PacketJetpackData.class, PacketJetpackData::encode, PacketJetpackData::decode, PacketJetpackData::handle);
         netHandler.registerMessage(disc++, PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
         netHandler.registerMessage(disc++, PacketScubaTankData.class, PacketScubaTankData::encode, PacketScubaTankData::decode, PacketScubaTankData::handle);

@@ -3,14 +3,11 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.inventory.InventoryList;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -19,14 +16,14 @@ public class UpgradeManagementContainer<TILE extends TileEntityMekanism & IUpgra
 
     public UpgradeManagementContainer(int id, PlayerInventory inv, TILE tile) {
         super(MekanismContainerTypes.UPGRADE_MANAGEMENT, id, inv, tile);
-        //TODO: Fix this
+        //TODO: Figure out if something like this is needed
         //Bit of a hack I guess, but we need to give it access to the inventory list, not the Frequency
-        IInventory upgradeInv;
+        /*IInventory upgradeInv;
         if (tile instanceof TileEntityQuantumEntangloporter) {
             upgradeInv = new InventoryList(tile.getInventory(), tile);
         } else {
             upgradeInv = (TileEntityMekanism) tile;
-        }
+        }*/
     }
 
     public UpgradeManagementContainer(int id, PlayerInventory inv, PacketBuffer buf) {

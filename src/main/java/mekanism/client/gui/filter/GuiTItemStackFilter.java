@@ -10,8 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
 import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
@@ -60,7 +59,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                     } else {
                         Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
                     }
-                    sendPacketToServer(0);
+                    sendPacketToServer(ClickedTileButton.BACK_BUTTON);
                 } else if (min > max) {
                     //TODO: Lang Keys
                     status = TextComponentUtil.build(EnumColor.DARK_RED, "Max<min");
@@ -79,10 +78,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         }));
         buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 109, guiTop + 62, 60, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(0);
+            sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
-              onPress -> sendPacketToServer(isNew ? 5 : 0)));
+              onPress -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         buttons.add(defaultButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation(),
               onPress -> filter.allowDefault = !filter.allowDefault));
         buttons.add(colorButton = new GuiColorButton(guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color,
@@ -155,11 +154,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     protected void drawItemStackBackground(int xAxis, int yAxis) {
         minField.drawTextBox();
         maxField.drawTextBox();
-    }
-
-    @Override
-    protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
     }
 
     @Override

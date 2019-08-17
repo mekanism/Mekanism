@@ -1,7 +1,10 @@
 package mekanism.client.gui.filter;
 
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -17,7 +20,13 @@ public abstract class GuiFilter<TILE extends TileEntityMekanism, CONTAINER exten
 
     protected abstract void addButtons();
 
-    protected abstract void sendPacketToServer(int guiID);
+    protected void sendPacketToServer(ClickedTileButton button) {
+        sendPacketToServer(button, 0);
+    }
+
+    protected void sendPacketToServer(ClickedTileButton button, int extra) {
+        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tileEntity.getPos(), extra));
+    }
 
     @Override
     public void init() {

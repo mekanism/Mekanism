@@ -8,9 +8,8 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
-import mekanism.common.network.PacketDigitalMinerGui;
-import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -53,7 +52,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
-                sendPacketToServer(0);
+                sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
             } else {
                 status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.itemFilter.noItem"));
                 ticker = 20;
@@ -61,19 +60,14 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         }));
         buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 60, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(0);
+            sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
-              onPress -> sendPacketToServer(isNew ? 5 : 0)));
+              onPress -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         buttons.add(replaceButton = new GuiButtonDisableableImage(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
               onPress -> filter.requireStack = !filter.requireStack));
         buttons.add(fuzzyButton = new GuiButtonDisableableImage(guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation(),
               onPress -> filter.fuzzy = !filter.fuzzy));
-    }
-
-    @Override
-    protected void sendPacketToServer(int) {
-        Mekanism.packetHandler.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
     }
 
     @Override
