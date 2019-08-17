@@ -62,7 +62,7 @@ public interface ITankManager {
                     LazyOptionalHelper<FluidStack> fluidStack = new LazyOptionalHelper<>(FluidUtil.getFluidContained(stack));
                     int dropperStored = fluidStack.getIfPresentElse(fluid -> fluid.amount, 0);
 
-                    if (fluidStack.matches(fluid-> fluidTank.getFluid() != null && !fluid.isFluidEqual(fluidTank.getFluid()))) {
+                    if (fluidStack.matches(fluid -> fluidTank.getFluid() != null && !fluid.isFluidEqual(fluidTank.getFluid()))) {
                         return;
                     }
 

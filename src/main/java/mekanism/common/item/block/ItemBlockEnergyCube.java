@@ -77,7 +77,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         }
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY,
-                                            BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
+              BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
     @Override

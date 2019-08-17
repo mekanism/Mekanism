@@ -72,21 +72,21 @@ public class CommandMek {
             return Commands.literal("tp")
                   .requires(cs -> cs.hasPermissionLevel(4))
                   .then(Commands.argument("location", Vec3Argument.vec3())
-                  .executes(ctx -> {
-                      CommandSource source = ctx.getSource();
-                      Entity entity = source.getEntity();
-                      // Save the current location on the stack
-                      UUID player = entity.getUniqueID();
-                      Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
-                      playerLocations.push(entity.getPosition());
-                      tpStack.put(player, playerLocations);
+                        .executes(ctx -> {
+                            CommandSource source = ctx.getSource();
+                            Entity entity = source.getEntity();
+                            // Save the current location on the stack
+                            UUID player = entity.getUniqueID();
+                            Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
+                            playerLocations.push(entity.getPosition());
+                            tpStack.put(player, playerLocations);
 
-                      ILocationArgument location = Vec3Argument.getLocation(ctx, "location");
-                      Vec3d position = location.getPosition(source);
-                      // Teleport user to new location
-                      teleport(entity, position.getX(), position.getY(), position.getZ());
-                      return 0;
-                  }));
+                            ILocationArgument location = Vec3Argument.getLocation(ctx, "location");
+                            Vec3d position = location.getPosition(source);
+                            // Teleport user to new location
+                            teleport(entity, position.getX(), position.getY(), position.getZ());
+                            return 0;
+                        }));
         }
     }
 

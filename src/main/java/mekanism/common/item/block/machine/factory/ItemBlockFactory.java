@@ -68,10 +68,10 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> imp
                   Translation.of(recipeType.getGuiTranslationKey())));
         }
         tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GRAY,
-                 EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
+              EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY,
-                 BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
+              BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
         if (ItemDataUtils.hasData(itemstack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {

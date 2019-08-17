@@ -148,8 +148,8 @@ public class FrequencyManager {
                     dataHandler.setManager(this);
                     world.getPerWorldStorage().setData(name, dataHandler);
                 } else {*/
-                    dataHandler.setManager(this);
-                    dataHandler.syncManager();
+                dataHandler.setManager(this);
+                dataHandler.syncManager();
             }
         }
     }

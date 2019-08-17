@@ -39,7 +39,7 @@ public class UsageConfig implements IMekanismConfig {
     public final ConfigValue<Integer> teleporterDimensionPenalty;
 
     UsageConfig() {
-        ForgeConfigSpec.Builder builder  = new ForgeConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Machine Energy Usage Config");
 
         enrichmentChamber = builder.comment("Energy per operation tick (Joules).").define("enrichmentChamber", 50D);

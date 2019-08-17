@@ -26,7 +26,7 @@ public class ToolsConfig implements IMekanismConfig {
     public final IMekanismMaterial steel;
 
     ToolsConfig() {
-        ForgeConfigSpec.Builder builder  = new ForgeConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Mekanism Tools Config");
 
         armorSpawnRate = builder.comment("The chance that Mekanism Armor can spawn on mobs.").defineInRange("mobArmorSpawnRate", 0.03D, 0, 1);

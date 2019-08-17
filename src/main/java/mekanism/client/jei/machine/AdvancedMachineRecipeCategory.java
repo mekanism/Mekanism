@@ -70,7 +70,7 @@ public class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<
         itemStacks.set(2, getFuelStacks(recipe.recipeInput.gasType));
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(recipe.recipeInput.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
-                                                                                                * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK), false);
+                                                                                            * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK), false);
     }
 
     public List<ItemStack> getFuelStacks(Gas gasType) {

@@ -41,8 +41,8 @@ public interface IOffsetCapability extends IToggleableCapability {
      * @param side       The Side to check from: CAN BE NULL. Null is defined to represent 'internal' or 'self'
      * @param offset     An offset position to figure out what block is actually the one that is being checked.
      *
-     * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(Capability, Direction, Vec3i)}
-     * should return {@link LazyOptional#empty()}.
+     * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(Capability, Direction, Vec3i)} should
+     * return {@link LazyOptional#empty()}.
      */
     default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side, @Nonnull Vec3i offset) {
         return false;

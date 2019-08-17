@@ -25,7 +25,7 @@ public class ClientConfig implements IMekanismConfig {
     ClientConfig() {
         //TODO: Should this stuff be moved from constructor to an init method defined in IMekanismConfig
         // Only really matters if they can't stay final
-        ForgeConfigSpec.Builder builder  = new ForgeConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Client Config");
 
         enablePlayerSounds = builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower (all players).").define("enablePlayerSounds", true);

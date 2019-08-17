@@ -35,7 +35,7 @@ public class StorageConfig implements IMekanismConfig {
     public final ConfigValue<Double> teleporter;
 
     StorageConfig() {
-        ForgeConfigSpec.Builder builder  = new ForgeConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Machine Energy Storage Config");
 
         enrichmentChamber = builder.comment("Base energy storage (Joules).").define("enrichmentChamber", 20_000D);

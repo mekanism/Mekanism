@@ -32,7 +32,7 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             addStats(itemstack, world, tooltip, flag);
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                        EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
         } else {
             addDescription(itemstack, world, tooltip, flag);
         }

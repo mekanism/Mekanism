@@ -22,6 +22,7 @@ public class LazyOptionalHelper<T> {
 
     /**
      * Used to not have null warnings everywhere, {@link LazyOptional#orElse(Object)} does not error when passed a null value though it is annotated Nonnull
+     *
      * @return The value of the optional or null if there is none.
      */
     @Nullable

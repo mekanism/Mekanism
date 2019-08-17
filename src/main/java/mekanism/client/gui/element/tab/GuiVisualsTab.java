@@ -27,7 +27,7 @@ public class GuiVisualsTab extends GuiTabElement<TileEntityDigitalMiner> {
         if (tileEntity.getRadius() <= 64) {
             displayTooltip(visualsComponent, xAxis, yAxis);
         } else {
-            displayComponentTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("mekanism.gui.visuals.toobig"))), xAxis, yAxis);
+            displayTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("mekanism.gui.visuals.toobig"))), xAxis, yAxis);
         }
     }
 

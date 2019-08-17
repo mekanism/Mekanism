@@ -658,7 +658,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         BlockState state = getBlockState();
         Block block = state.getBlock();
         if (block instanceof IStateFacing) {
-            state = ((IStateFacing) block).setDirection(state, direction);;
+            state = ((IStateFacing) block).setDirection(state, direction);
+            ;
             world.setBlockState(pos, state);
         }
     }
