@@ -31,7 +31,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
             return false;
         }
         world.removeBlock(getPos(), false);
-        //world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
+        //world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5));
 
         //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)
         /*TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));

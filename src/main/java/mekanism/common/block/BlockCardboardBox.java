@@ -59,7 +59,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
                     BlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, player, hand);
                     data.meta = newstate.getBlock().getMetaFromState(newstate);
                 }
-                world.setBlockState(pos, data.block.getStateFromMeta(data.meta), 3);
+                world.setBlockState(pos, data.block.getStateFromMeta(data.meta));
                 if (data.tileTag != null && world.getTileEntity(pos) != null) {
                     data.updateLocation(pos);
                     world.getTileEntity(pos).read(data.tileTag);

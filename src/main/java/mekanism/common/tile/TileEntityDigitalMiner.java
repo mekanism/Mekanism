@@ -45,6 +45,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
 import mekanism.common.util.StackUtils;
@@ -56,6 +57,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -189,7 +191,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
                             BlockState state = coord.getBlockState(world);
                             Block block = state.getBlock();
-                            int meta = block.getMetaFromState(state);
 
                             if (coord.isAirBlock(world)) {
                                 set.clear(index);
@@ -202,7 +203,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                             }
 
                             boolean hasFilter = false;
-                            ItemStack is = new ItemStack(block, 1, meta);
+                            ItemStack is = new ItemStack(block);
                             for (MinerFilter filter : filters) {
                                 if (filter.canFilter(is)) {
                                     hasFilter = true;
@@ -311,7 +312,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         if (!stack.isEmpty()) {
             world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer), 3);
             BlockState s = obj.getBlockState(world);
-            if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).canBlockStay(world, pos, s)) {
+            if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).isValidPosition(s, world, pos)) {
                 //TODO Block.spawnDrops fortune 1??
                 s.getBlock().dropBlockAsItem(world, pos, s, 1);
                 world.removeBlock(pos, false);
@@ -531,11 +532,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         searcher.state = State.values()[dataStream.readInt()];
         clientToMine = dataStream.readInt();
         inverse = dataStream.readBoolean();
-        if (dataStream.readBoolean()) {
-            missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-        } else {
-            missingStack = ItemStack.EMPTY;
-        }
+        missingStack = dataStream.readItemStack();
     }
 
     @Override
@@ -623,11 +620,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             } else if (type == 3) {
                 running = dataStream.readBoolean();
                 clientToMine = dataStream.readInt();
-                if (dataStream.readBoolean()) {
-                    missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-                } else {
-                    missingStack = ItemStack.EMPTY;
-                }
+                missingStack = dataStream.readItemStack();
             }
             //TODO: Does this get handled by TileEntityMekanism
             if (wasActive != getActive()) {
@@ -654,13 +647,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         }
 
         data.add(inverse);
-        if (!missingStack.isEmpty()) {
-            data.add(true);
-            data.add(MekanismUtils.getID(missingStack));
-            data.add(missingStack.getDamage());
-        } else {
-            data.add(false);
-        }
+        data.add(missingStack);
     }
 
     @Override
@@ -687,13 +674,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         } else {
             data.add(getSize());
         }
-        if (!missingStack.isEmpty()) {
-            data.add(true);
-            data.add(MekanismUtils.getID(missingStack));
-            data.add(missingStack.getDamage());
-        } else {
-            data.add(false);
-        }
+        data.add(missingStack);
         return data;
     }
 
@@ -855,17 +836,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             }
             maxY = ((Double) arguments[0]).intValue();
         } else if (method == 3) {
-            if (arguments.length < 1 || !(arguments[0] instanceof Double)) {
+            if (arguments.length < 1 || !(arguments[0] instanceof String)) {
                 return new Object[]{"Invalid parameters."};
             }
-            int id = ((Double) arguments[0]).intValue();
-            int meta = 0;
-            if (arguments.length > 1) {
-                if (arguments[1] instanceof Double) {
-                    meta = ((Double) arguments[1]).intValue();
-                }
+            Item item = ItemRegistryUtils.getByName((String) arguments[0]);
+            if (item != Items.AIR) {
+                filters.add(new MItemStackFilter(new ItemStack(item)));
             }
-            filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(id), 1, meta)));
             return new Object[]{"Added filter."};
         } else if (method == 4) {
             if (arguments.length < 1 || !(arguments[0] instanceof Double)) {

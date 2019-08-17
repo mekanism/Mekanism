@@ -4,11 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.transporter.Finder.MaterialFinder;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -18,7 +16,7 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
     private ItemStack materialItem = ItemStack.EMPTY;
 
     public Material getMaterial() {
-        return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getDamage()).getMaterial();
+        return Block.getBlockFromItem(materialItem.getItem()).getDefaultState().getMaterial();
     }
 
     @Override
@@ -49,23 +47,19 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
         data.add(2);
 
         super.write(data);
-        data.add(MekanismUtils.getID(materialItem));
-        data.add(materialItem.getCount());
-        data.add(materialItem.getDamage());
+        data.add(materialItem);
     }
 
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
+        materialItem = dataStream.readItemStack();
     }
 
     @Override
     public int hashCode() {
         int code = 1;
-        code = 31 * code + MekanismUtils.getID(materialItem);
-        code = 31 * code + materialItem.getCount();
-        code = 31 * code + materialItem.getDamage();
+        code = 31 * code + materialItem.hashCode();
         return code;
     }
 

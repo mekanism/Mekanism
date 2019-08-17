@@ -3,8 +3,6 @@ package mekanism.common.content.miner;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -61,22 +59,12 @@ public abstract class MinerFilter implements IFilter {
 
     public void write(TileNetworkList data) {
         data.add(requireStack);
-        if (!replaceStack.isEmpty()) {
-            data.add(true);
-            data.add(MekanismUtils.getID(replaceStack));
-            data.add(replaceStack.getDamage());
-        } else {
-            data.add(false);
-        }
+        data.add(replaceStack);
     }
 
     protected void read(PacketBuffer dataStream) {
         requireStack = dataStream.readBoolean();
-        if (dataStream.readBoolean()) {
-            replaceStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-        } else {
-            replaceStack = ItemStack.EMPTY;
-        }
+        replaceStack = dataStream.readItemStack();
     }
 
     @Override

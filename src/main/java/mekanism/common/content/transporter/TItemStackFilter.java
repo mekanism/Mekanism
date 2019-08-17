@@ -4,8 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -22,9 +20,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
-        return super.canFilter(itemStack, strict) &&
-               !(strict && sizeMode && (max == 0 || itemStack.getCount() < min)) &&
-               ItemHandlerHelper.canItemStacksStackRelaxed(itemType, itemStack);
+        return super.canFilter(itemStack, strict) && !(strict && sizeMode && (max == 0 || itemStack.getCount() < min)) && ItemHandlerHelper.canItemStacksStackRelaxed(itemType, itemStack);
     }
 
     @Override
@@ -69,9 +65,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
         data.add(min);
         data.add(max);
 
-        data.add(MekanismUtils.getID(itemType));
-        data.add(itemType.getCount());
-        data.add(itemType.getDamage());
+        data.add(itemType);
     }
 
     @Override
@@ -80,16 +74,14 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
         sizeMode = dataStream.readBoolean();
         min = dataStream.readInt();
         max = dataStream.readInt();
-        itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
+        itemType = dataStream.readItemStack();
     }
 
     @Override
     public int hashCode() {
         int code = 1;
         code = 31 * code + super.hashCode();
-        code = 31 * code + MekanismUtils.getID(itemType);
-        code = 31 * code + itemType.getCount();
-        code = 31 * code + itemType.getDamage();
+        code = 31 * code + itemType.hashCode();
         code = 31 * code + (sizeMode ? 1 : 0);
         code = 31 * code + min;
         code = 31 * code + max;

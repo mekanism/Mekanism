@@ -6,6 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay;
@@ -91,7 +92,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 // double updates, but if the block we are wrapping has multiple stacked blocks,
                 // we need to make sure it has a chance to update.
                 world.removeBlock(pos, false);
-                world.setBlockState(pos, getBlock().getStateFromMeta(1));
+                world.setBlockState(pos, getBlock().getDefaultState().with(BlockStateHelper.storageProperty, true));
                 isMonitoring = false;
                 TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
                 if (tileEntity != null) {
