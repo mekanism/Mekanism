@@ -115,13 +115,14 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
         return guiType != RobitGuiType.REPAIR;
     }
 
-    @Override
+    //TODO: Draw Text box
+    /*@Override
     public void render(int mouseX, int mouseY, float partialTick) {
         super.render(mouseX, mouseY, partialTick);
         GlStateManager.disableLighting();
         itemNameField.drawTextBox();
         GlStateManager.enableLighting();
-    }
+    }*/
 
     @Override
     protected String getBackgroundImage() {

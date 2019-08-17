@@ -78,7 +78,7 @@ public class ItemBalloon extends ItemMekanism {
                 return ActionResultType.FAIL;
             }
             World world = context.getWorld();
-            if (world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
+            if (world.getBlockState(pos).getMaterial().isReplaceable()) {
                 pos = pos.down();
             }
             if (!world.isSideSolid(pos, Direction.UP)) {
@@ -119,7 +119,7 @@ public class ItemBalloon extends ItemMekanism {
     }
 
     private boolean canReplace(World world, BlockPos pos) {
-        return world.isAirBlock(pos) || world.getBlockState(pos).getBlock().isReplaceable(world, pos);
+        return world.isAirBlock(pos) || world.getBlockState(pos).getMaterial().isReplaceable();
     }
 
     public class DispenserBehavior extends DefaultDispenseItemBehavior {

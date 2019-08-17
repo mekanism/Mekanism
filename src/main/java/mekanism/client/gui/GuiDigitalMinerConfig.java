@@ -210,14 +210,16 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    @Override
+    //TODO: Draw Text box
+    /*@Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+        //TODO: Draw Text box
         radiusField.drawTextBox();
         minField.drawTextBox();
         maxField.drawTextBox();
         MekanismRenderer.resetColor();
-    }
+    }*/
 
     @Override
     public boolean charTyped(char c, int i) {

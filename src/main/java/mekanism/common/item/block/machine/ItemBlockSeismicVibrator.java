@@ -59,7 +59,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeis
         World world = context.getWorld();
         BlockPos pos = context.getPos();
         BlockPos abovePos = pos.up();
-        if (!World.isValid(abovePos) || !world.getBlockState(abovePos).getBlock().isReplaceable(world, abovePos)) {
+        if (!World.isValid(abovePos) || !world.getBlockState(abovePos).getMaterial().isReplaceable()) {
             //If there isn't room then fail
             return false;
         }

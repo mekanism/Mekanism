@@ -150,11 +150,12 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         maxField.tick();
     }
 
-    @Override
+    //TODO: Draw Text box
+    /*@Override
     protected void drawItemStackBackground(int xAxis, int yAxis) {
         minField.drawTextBox();
         maxField.drawTextBox();
-    }
+    }*/
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

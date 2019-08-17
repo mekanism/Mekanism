@@ -80,8 +80,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     public static void teleportPlayerTo(ServerPlayerEntity player, Coord4D coord, TileEntityTeleporter teleporter) {
-        if (player.dimension != coord.dimensionId) {
-            player.changeDimension(coord.dimensionId, (world, entity, yaw) -> entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
+        if (player.dimension != coord.dimension) {
+            player.changeDimension(coord.dimension, (world, entity, yaw) -> entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
         } else {
             player.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
         }
@@ -338,7 +338,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     public int calculateEnergyCost(Entity entity, Coord4D coords) {
         int energyCost = MekanismConfig.usage.teleporterBase.get();
         if (entity.world.getDimension().getType().equals(coords.dimension)) {
-            int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
+            int distance = (int) Math.sqrt(entity.getDistanceSq(coords.x, coords.y, coords.z));
             energyCost += distance * MekanismConfig.usage.teleporterDistance.get();
         } else {
             energyCost += MekanismConfig.usage.teleporterDimensionPenalty.get();

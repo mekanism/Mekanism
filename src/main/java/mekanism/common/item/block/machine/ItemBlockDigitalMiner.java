@@ -1,5 +1,6 @@
 package mekanism.common.item.block.machine;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,7 +24,6 @@ import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.common.util.text.UpgradeDisplay;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -69,13 +69,16 @@ public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip<BlockDigital
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
-        BlockPos.getAllInBox(-1, 0, -1, 1, 1, 1).forEach(testPos -> {
-            Block b = world.getBlockState(testPos).getBlock();
-            if (!World.isValid(testPos) || !world.isBlockLoaded(testPos, false) || !b.isReplaceable(world, testPos)) {
+        //TODO: Do this better
+        Iterator<BlockPos> iterator = BlockPos.getAllInBox(-1, 0, -1, 1, 1, 1).iterator();
+        while (iterator.hasNext()) {
+            BlockPos pos = iterator.next();
+            BlockState blockState = world.getBlockState(pos);
+            if (!World.isValid(pos) || !world.isBlockLoaded(pos) || !blockState.getMaterial().isReplaceable()) {
                 //If it won't fit then fail
                 return false;
             }
-        });
+        }
         return super.placeBlock(context, state);
     }
 

@@ -228,6 +228,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
+    protected void drawRect(int x, int y, int width, int height, int color) {
+        //TODO: Figure out the proper replacement for drawRect, or if we are actually supposed to just be using gradientRect
+        GuiUtils.drawGradientRect(0, x, y, width, height, color, color);
+    }
+
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
         renderItem(stack, xAxis, yAxis, 1);
     }

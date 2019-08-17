@@ -199,7 +199,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         } else {
             drawTexturedRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
         }
-        trustedField.drawTextBox();
+        //TODO: Draw Text box
+        //trustedField.drawTextBox();
         MekanismRenderer.resetColor();
     }
 }

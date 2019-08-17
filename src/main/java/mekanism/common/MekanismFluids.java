@@ -4,9 +4,9 @@ import java.util.Locale;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
+import mekanism.common.temporary.FluidRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 public class MekanismFluids {
 

@@ -153,12 +153,13 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    @Override
+    //TODO: Draw Text box
+    /*@Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         text.drawTextBox();
         MekanismRenderer.resetColor();
-    }
+    }*/
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

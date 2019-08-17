@@ -695,8 +695,9 @@ public class Mekanism {
         //Initialization notification
         logger.info("Version " + versionNumber + " initializing...");
 
+        //TODO: Chunk Loading
         //Register with ForgeChunkManager
-        ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());
+        //ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());
 
         //Register to receive subscribed events
         MinecraftForge.EVENT_BUS.register(this);

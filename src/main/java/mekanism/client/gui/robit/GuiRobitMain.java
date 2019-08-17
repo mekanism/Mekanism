@@ -150,7 +150,8 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         drawTexturedRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
         if (displayNameChange) {
             drawTexturedRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
-            nameChangeField.drawTextBox();
+            //TODO: Draw Text box
+            //nameChangeField.drawTextBox();
             MekanismRenderer.resetColor();
         }
     }

@@ -22,7 +22,6 @@ import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketRedstoneControl;
@@ -141,7 +140,6 @@ public class PacketHandler {
         netHandler.registerMessage(disc++, PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
         netHandler.registerMessage(disc++, PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
         netHandler.registerMessage(disc++, PacketDataRequest.class, PacketDataRequest::encode, PacketDataRequest::decode, PacketDataRequest::handle);
-        netHandler.registerMessage(disc++, PacketOredictionificatorGui.class, PacketOredictionificatorGui::encode, PacketOredictionificatorGui::decode, PacketOredictionificatorGui::handle);
         netHandler.registerMessage(disc++, PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
         netHandler.registerMessage(disc++, PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
         netHandler.registerMessage(disc++, PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);

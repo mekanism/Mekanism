@@ -202,10 +202,11 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    @Override
+    //TODO: Draw Text box
+    /*@Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         frequencyField.drawTextBox();
         MekanismRenderer.resetColor();
-    }
+    }*/
 }

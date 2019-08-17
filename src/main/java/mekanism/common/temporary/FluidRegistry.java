@@ -7,7 +7,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 //TODO: Remove this when Forge adds back fluid support.
 // This class mainly exists to remove the compile errors due to forge not having a fluid system yet in 1.14
-public class FluidRegistry {
+public class FluidRegistry extends net.minecraftforge.fluids.FluidRegistry {
 
     public static Fluid WATER = new Fluid("water", new ResourceLocation("blocks/water_still"), new ResourceLocation("blocks/water_flow"),
           new ResourceLocation("blocks/water_overlay")).setBlock(Blocks.WATER).setUnlocalizedName(Blocks.WATER.getTranslationKey());
@@ -22,6 +22,14 @@ public class FluidRegistry {
     public static FluidStack getFluidStack(String fluidName, int amount) {
         //Note: always return water as a temporary so that there is no crash
         return new FluidStack(WATER, amount);
+    }
+
+    public static void registerFluid(Fluid fluid) {
+
+    }
+
+    public static void addBucketForFluid(Fluid fluid) {
+
     }
 
     public static boolean isFluidRegistered(String name) {

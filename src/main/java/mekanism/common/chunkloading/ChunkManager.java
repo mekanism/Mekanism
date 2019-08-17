@@ -1,4 +1,5 @@
-package mekanism.common.chunkloading;
+//TODO: Chunk Loading
+/*package mekanism.common.chunkloading;
 
 import com.google.common.collect.ListMultimap;
 import java.util.List;
@@ -32,4 +33,4 @@ public class ChunkManager implements LoadingCallback, PlayerOrderedLoadingCallba
     public ListMultimap<String, Ticket> playerTicketsLoaded(ListMultimap<String, Ticket> tickets, World world) {
         return tickets;
     }
-}
+}*/

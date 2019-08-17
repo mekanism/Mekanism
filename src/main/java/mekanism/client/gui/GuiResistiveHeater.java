@@ -80,12 +80,13 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    @Override
+    //TODO: Draw Text box
+    /*@Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         energyUsageField.drawTextBox();
         MekanismRenderer.resetColor();
-    }
+    }*/
 
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {

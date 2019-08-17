@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.element.GuiProgress;
@@ -17,8 +16,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
-import mekanism.common.network.PacketOredictionificatorGui;
-import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiPacket;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.util.MekanismUtils;
@@ -74,7 +73,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         super.init();
         buttons.clear();
         buttons.add(new GuiButtonTranslation(guiLeft + 10, guiTop + 86, 142, 20, "gui.newFilter",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketOredictionificatorGui(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
     }
 
     @Override
@@ -132,8 +131,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
             for (int i = 0; i < 3; i++) {
                 if (tileEntity.filters.get(getFilterIndex() + i) != null && overFilter(xAxis, yAxis, i * 22 + 18)) {
+                    Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), getFilterIndex() + i));
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    Mekanism.packetHandler.sendToServer(new PacketOredictionificatorGui(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                 }
             }
         }

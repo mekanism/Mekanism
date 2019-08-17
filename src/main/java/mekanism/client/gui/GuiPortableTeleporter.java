@@ -79,9 +79,9 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }, resource, 158, 26));
         addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
         ItemPortableTeleporter item = (ItemPortableTeleporter) itemStack.getItem();
-        if (item.getFrequency(stack) != null) {
-            privateMode = !item.getFrequency(stack).publicFreq;
-            setFrequency(item.getFrequency(stack).name);
+        if (item.getFrequency(itemStack) != null) {
+            privateMode = !item.getFrequency(itemStack).publicFreq;
+            setFrequency(item.getFrequency(itemStack).name);
         } else {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
         }
@@ -268,7 +268,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int y = clientFreq == null ? 94 : clientStatus == 2 ? 22 : clientStatus == 3 ? 40 : clientStatus == 4 ? 58 : 76;
         drawTexturedRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
-        frequencyField.drawTextBox();
+        //TODO: Draw Text box
+        //frequencyField.drawTextBox();
         MekanismRenderer.resetColor();
     }
 

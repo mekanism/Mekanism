@@ -365,9 +365,7 @@ public class Coord4D {
      * @return if this Coord4D is replaceable
      */
     public boolean isReplaceable(IWorldReader world) {
-        BlockState blockState = world.getBlockState(getPos());
-        //TODO
-        return false;//blockState.isReplaceable(context);
+        return world.getBlockState(getPos()).getMaterial().isReplaceable();
     }
 
     /**
