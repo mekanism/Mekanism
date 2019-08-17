@@ -45,7 +45,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
             int x = guiLeft + 6;
             int y = guiTop + 6;
-            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
+            fill(x, y, x + 16, y + 16, 0x80FFFFFF);
             MekanismRenderer.resetColor();
         }
     }

@@ -37,7 +37,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     public void init() {
         super.init();
-        Keyboard.enableRepeatEvents(true);
+        minecraft.keyboardListener.enableRepeatEvents(true);
         itemNameField = new TextFieldWidget(font, guiLeft + 62, guiTop + 24, 103, 12, "");
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
@@ -50,7 +50,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     public void onClose() {
         super.onClose();
-        Keyboard.enableRepeatEvents(false);
+        minecraft.keyboardListener.enableRepeatEvents(false);
         repairContainer.removeListener(this);
     }
 
@@ -76,12 +76,12 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
             if (flag) {
                 int l = -16777216 | (k & 16579836) >> 2 | k & -16777216;
-                int i1 = xSize - 25 - 8 - getStringWidth(s);
+                int i1 = xSize - 25 - 8 - getStringWidth(component);
                 byte b0 = 67;
 
                 if (font.getUnicodeFlag()) {
-                    drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
-                    drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
+                    fill(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
+                    fill(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
                 } else {
                     drawString(component, i1, b0 + 1, l);
                     drawString(component, i1 + 1, b0, l);

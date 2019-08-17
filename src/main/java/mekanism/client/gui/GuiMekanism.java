@@ -223,14 +223,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {
         if (color != null) {
-            drawRect(x, y, x + 16, y + 16, MekanismRenderer.getColorARGB(color, alpha));
+            fill(x, y, x + 16, y + 16, MekanismRenderer.getColorARGB(color, alpha));
             MekanismRenderer.resetColor();
         }
-    }
-
-    protected void drawRect(int x, int y, int width, int height, int color) {
-        //TODO: Figure out the proper replacement for drawRect, or if we are actually supposed to just be using gradientRect
-        GuiUtils.drawGradientRect(0, x, y, width, height, color, color);
     }
 
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {

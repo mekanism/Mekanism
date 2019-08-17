@@ -73,7 +73,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         //text.drawTextBox();
         if (tileEntity instanceof TileEntityDigitalMiner) {
             if (overReplaceOutput(xAxis, yAxis)) {
-                drawRect(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
+                fill(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
             }
         }
         //This is needed here and not just inside the if statements due to the text box drawing
