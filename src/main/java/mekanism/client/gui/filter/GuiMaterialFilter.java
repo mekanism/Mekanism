@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
+public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE, FILTER>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
 
     protected GuiMaterialFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

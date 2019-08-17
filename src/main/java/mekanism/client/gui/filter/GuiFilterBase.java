@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiFilter<TILE, CONTAINER> {
+public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE, FILTER>> extends GuiFilter<TILE, CONTAINER> {
 
     protected ITextComponent status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.allOK"));
     protected FILTER origFilter;

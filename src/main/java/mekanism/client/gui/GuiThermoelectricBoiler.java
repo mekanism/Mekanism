@@ -8,7 +8,7 @@ import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
+import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -24,9 +24,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoilerCasing, FilterContainer<TileEntityBoilerCasing>> {
+public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoilerCasing, ThermoelectricBoilerContainer> {
 
-    public GuiThermoelectricBoiler(FilterContainer<TileEntityBoilerCasing> container, PlayerInventory inv, ITextComponent title) {
+    public GuiThermoelectricBoiler(ThermoelectricBoilerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));

@@ -1,35 +1,24 @@
-package mekanism.common.inventory.container.tile.filter;
+package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.common.content.filter.IFilter;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 
-public abstract class FilterContainer<TILE extends TileEntityMekanism, FILTER extends IFilter> extends MekanismTileContainer<TILE> {
+public class ThermoelectricBoilerContainer extends MekanismTileContainer<TileEntityBoilerCasing> {
 
-    protected FILTER filter;
-    protected FILTER origFilter;
-
-    protected FilterContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
-        super(type, id, inv, tile);
+    public ThermoelectricBoilerContainer(int id, PlayerInventory inv, TileEntityBoilerCasing tile) {
+        super(MekanismContainerTypes.THERMOELECTRIC_BOILER, id, inv, tile);
     }
 
-    public boolean isNew() {
-        return origFilter == null;
-    }
-
-    public FILTER getFilter() {
-        return filter;
-    }
-
-    public FILTER getOrigFilter() {
-        return origFilter;
+    public ThermoelectricBoilerContainer(int id, PlayerInventory inv, PacketBuffer buf) {
+        this(id, inv, getTileFromBuf(buf, TileEntityBoilerCasing.class));
     }
 
     @Nonnull
@@ -58,5 +47,11 @@ public abstract class FilterContainer<TILE extends TileEntityMekanism, FILTER ex
             currentSlot.onTake(player, slotStack);
         }
         return stack;
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getDisplayName() {
+        return TextComponentUtil.translate("mekanism.container.thermoelectric_boiler");
     }
 }

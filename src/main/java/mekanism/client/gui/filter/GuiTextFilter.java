@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiTextFilterBase<FILTER, TILE, CONTAINER> {
+public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE, FILTER>> extends GuiTextFilterBase<FILTER, TILE, CONTAINER> {
 
     protected List<ItemStack> iterStacks;
     protected int stackSwitch;

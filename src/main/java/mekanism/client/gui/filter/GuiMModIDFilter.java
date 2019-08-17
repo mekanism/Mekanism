@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.miner.MModIDFilter;
 import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
-import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter;
@@ -18,7 +17,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -28,18 +26,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigitalMiner, DMModIDFilterContainer> {
 
-    public GuiMModIDFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
-        //TODO
-        super(player, tile);
-        origFilter = (MModIDFilter) tileEntity.filters.get(index);
-        filter = ((MModIDFilter) tileEntity.filters.get(index)).clone();
-        updateStackList(filter.getModID());
-    }
-
     public GuiMModIDFilter(DMModIDFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        isNew = true;
-        filter = new MModIDFilter();
+        origFilter = container.getFilter();
+        filter = container.getFilter();
+        isNew = container.isNew();
     }
 
     @Override

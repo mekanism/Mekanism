@@ -14,7 +14,7 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
-import mekanism.generators.common.inventory.container.TurbineStatsContainer;
+import mekanism.generators.common.inventory.container.turbine.TurbineStatsContainer;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;

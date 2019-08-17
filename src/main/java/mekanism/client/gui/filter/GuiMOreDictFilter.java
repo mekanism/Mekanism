@@ -17,7 +17,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -27,18 +26,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEntityDigitalMiner, DMTagFilterContainer> {
 
-    public GuiMOreDictFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
-        //TODO
-        super(player, tile);
-        origFilter = (MOreDictFilter) tileEntity.filters.get(index);
-        filter = ((MOreDictFilter) tileEntity.filters.get(index)).clone();
-        updateStackList(filter.getOreDictName());
-    }
-
     public GuiMOreDictFilter(DMTagFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        isNew = true;
-        filter = new MOreDictFilter();
+        origFilter = container.getFilter();
+        filter = container.getFilter();
+        isNew = container.isNew();
     }
 
     @Override

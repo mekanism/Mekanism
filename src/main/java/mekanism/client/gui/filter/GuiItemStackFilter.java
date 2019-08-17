@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
+public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE, FILTER>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
 
     protected GuiItemStackFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

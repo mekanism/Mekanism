@@ -8,7 +8,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
-import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter;
@@ -23,7 +22,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -39,17 +37,11 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     private Button fuzzyButton;
 
-    public GuiMItemStackFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
-        //TODO
-        super(player, tile);
-        origFilter = (MItemStackFilter) tileEntity.filters.get(index);
-        filter = ((MItemStackFilter) tileEntity.filters.get(index)).clone();
-    }
-
     public GuiMItemStackFilter(DMItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        isNew = true;
-        filter = new MItemStackFilter();
+        origFilter = container.getFilter();
+        filter = container.getFilter();
+        isNew = container.isNew();
     }
 
     @Override

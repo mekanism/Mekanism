@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.entity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,8 +36,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
         }
         //TODO: Handle it being client side only better?
         return DistExecutor.runForDist(() -> () -> {
-            //TODO: Implement this
-            Entity entity = null;
+            Entity entity = Minecraft.getInstance().world.getEntityByID(buf.readInt());
             if (type.isInstance(entity)) {
                 return (ENTITY) entity;
             }

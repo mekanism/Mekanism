@@ -15,6 +15,8 @@ import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapte
 import mekanism.generators.common.inventory.container.reactor.info.ReactorFuelContainer;
 import mekanism.generators.common.inventory.container.reactor.info.ReactorHeatContainer;
 import mekanism.generators.common.inventory.container.reactor.info.ReactorStatsContainer;
+import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
+import mekanism.generators.common.inventory.container.turbine.TurbineStatsContainer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
@@ -29,6 +31,7 @@ public class GeneratorsContainerTypes {
     public static final ContainerType<BioGeneratorContainer> BIO_GENERATOR = create(GeneratorsBlock.BIO_GENERATOR, BioGeneratorContainer::new);
     public static final ContainerType<GasBurningGeneratorContainer> GAS_BURNING_GENERATOR = create(GeneratorsBlock.GAS_BURNING_GENERATOR, GasBurningGeneratorContainer::new);
     public static final ContainerType<HeatGeneratorContainer> HEAT_GENERATOR = create(GeneratorsBlock.HEAT_GENERATOR, HeatGeneratorContainer::new);
+    public static final ContainerType<TurbineContainer> INDUSTRIAL_TURBINE = create("industrial_turbine", TurbineContainer::new);
     public static final ContainerType<ReactorControllerContainer> REACTOR_CONTROLLER = create(GeneratorsBlock.REACTOR_CONTROLLER, ReactorControllerContainer::new);
     public static final ContainerType<ReactorFuelContainer> REACTOR_FUEL = create("reactor_fuel", ReactorFuelContainer::new);
     public static final ContainerType<ReactorHeatContainer> REACTOR_HEAT = create("reactor_heat", ReactorHeatContainer::new);

@@ -44,6 +44,7 @@ import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.SolarNeutronActivatorContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.inventory.container.tile.ThermalEvaporationControllerContainer;
+import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.inventory.container.tile.advanced.ChemicalInjectionChamberContainer;
@@ -139,6 +140,7 @@ public class MekanismContainerTypes {
     public static final ContainerType<FluidTankContainer> FLUID_TANK = create("fluid_tank", FluidTankContainer::new);
     public static final ContainerType<EnergyCubeContainer> ENERGY_CUBE = create("energy_cube", EnergyCubeContainer::new);
     public static final ContainerType<InductionMatrixContainer> INDUCTION_MATRIX = create("induction_matrix", InductionMatrixContainer::new);
+    public static final ContainerType<ThermoelectricBoilerContainer> THERMOELECTRIC_BOILER = create("thermoelectric_boiler", ThermoelectricBoilerContainer::new);
     public static final ContainerType<UpgradeManagementContainer> UPGRADE_MANAGEMENT = create("upgrade_management", UpgradeManagementContainer::new);
     public static final ContainerType<PersonalChestItemContainer> PERSONAL_CHEST_ITEM = create("personal_chest_item", PersonalChestItemContainer::new);
     public static final ContainerType<PersonalChestTileContainer> PERSONAL_CHEST_BLOCK = create("personal_chest_block", PersonalChestTileContainer::new);

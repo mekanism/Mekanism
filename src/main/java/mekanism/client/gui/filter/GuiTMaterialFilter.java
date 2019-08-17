@@ -7,7 +7,6 @@ import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.gui.button.GuiColorButton;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TMaterialFilter;
-import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
@@ -20,7 +19,6 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -31,17 +29,11 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileEntityLogisticalSorter, LSMaterialFilterContainer> {
 
-    public GuiTMaterialFilter(PlayerEntity player, TileEntityLogisticalSorter tile, int index) {
-        //TODO
-        super(player, tile);
-        origFilter = (TMaterialFilter) tileEntity.filters.get(index);
-        filter = ((TMaterialFilter) tileEntity.filters.get(index)).clone();
-    }
-
     public GuiTMaterialFilter(LSMaterialFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        isNew = true;
-        filter = new TMaterialFilter();
+        origFilter = container.getFilter();
+        filter = container.getFilter();
+        isNew = container.isNew();
     }
 
     @Override

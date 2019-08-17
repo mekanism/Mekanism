@@ -1,35 +1,25 @@
-package mekanism.common.inventory.container.tile.filter;
+package mekanism.generators.common.inventory.container.turbine;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.text.TextComponentUtil;
+import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 
-public abstract class FilterContainer<TILE extends TileEntityMekanism, FILTER extends IFilter> extends MekanismTileContainer<TILE> {
+public class TurbineContainer extends MekanismTileContainer<TileEntityTurbineCasing> {
 
-    protected FILTER filter;
-    protected FILTER origFilter;
-
-    protected FilterContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
-        super(type, id, inv, tile);
+    public TurbineContainer(int id, PlayerInventory inv, TileEntityTurbineCasing tile) {
+        super(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, id, inv, tile);
     }
 
-    public boolean isNew() {
-        return origFilter == null;
-    }
-
-    public FILTER getFilter() {
-        return filter;
-    }
-
-    public FILTER getOrigFilter() {
-        return origFilter;
+    public TurbineContainer(int id, PlayerInventory inv, PacketBuffer buf) {
+        this(id, inv, getTileFromBuf(buf, TileEntityTurbineCasing.class));
     }
 
     @Nonnull
@@ -58,5 +48,11 @@ public abstract class FilterContainer<TILE extends TileEntityMekanism, FILTER ex
             currentSlot.onTake(player, slotStack);
         }
         return stack;
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getDisplayName() {
+        return TextComponentUtil.translate("mekanismgenerators.container.industrial_turbine");
     }
 }

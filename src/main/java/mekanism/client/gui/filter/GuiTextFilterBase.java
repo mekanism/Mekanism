@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiFilterBase<FILTER, TILE, CONTAINER> {
+public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE, FILTER>> extends GuiFilterBase<FILTER, TILE, CONTAINER> {
 
     protected ItemStack renderStack = ItemStack.EMPTY;
     protected TextFieldWidget text;
