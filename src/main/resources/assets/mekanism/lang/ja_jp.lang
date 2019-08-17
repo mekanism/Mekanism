@@ -991,7 +991,7 @@ reactor.depleted.desc=反応に十分な量の燃料が不足している時
 
 # Items
 item.SolarPanel.name=ソーラーパネル
-item.Hohlraum.name=フーラム
+item.Hohlraum.name=ホーラム
 item.TurbineBlade.name=タービンの羽
 
 # Generators
@@ -999,7 +999,7 @@ tile.Generator.HeatGenerator.name=熱発電機
 tile.Generator.SolarGenerator.name=太陽光発電機
 tile.Generator.GasGenerator.name=ガス燃焼発電機
 tile.Generator.BioGenerator.name=バイオ発電機
-tile.Generator.AdvancedSolarGenerator.name=発展太陽光発電機
+tile.Generator.AdvancedSolarGenerator.name=発展型太陽光発電機
 tile.Generator.WindGenerator.name=風力発電機
 tile.Generator.TurbineRotor.name=タービンローター
 tile.Generator.RotationalComplex.name=回転機構
