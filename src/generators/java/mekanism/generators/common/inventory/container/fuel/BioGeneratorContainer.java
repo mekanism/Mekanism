@@ -2,13 +2,13 @@ package mekanism.generators.common.inventory.container.fuel;
 
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
+import mekanism.common.temporary.FluidRegistry;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class BioGeneratorContainer extends FuelGeneratorContainer<TileEntityBioGenerator> {

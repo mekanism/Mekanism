@@ -11,6 +11,7 @@ import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
+import mekanism.common.temporary.ILiquidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister

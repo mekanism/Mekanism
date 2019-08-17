@@ -31,9 +31,11 @@ import mekanism.common.recipe.outputs.GasOutput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
+import mekanism.common.temporary.FluidRegistry;
+import mekanism.common.temporary.ILiquidStack;
+import mekanism.common.temporary.MCLiquidStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class IngredientHelper {
