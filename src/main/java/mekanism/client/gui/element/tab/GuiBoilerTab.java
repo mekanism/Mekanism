@@ -1,15 +1,16 @@
 package mekanism.client.gui.element.tab;
 
-import mekanism.api.Coord4D;
+import java.util.function.Function;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.BoilerStatsContainer;
+import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,18 +23,20 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
         super(gui, tile, type, def);
     }
 
-    public enum BoilerTab implements TabType {
-        MAIN("GuiGasesTab.png", 54, "mekanism.gui.main"),
-        STAT("GuiStatsTab.png", 55, "mekanism.gui.stats");
+    public enum BoilerTab implements TabType<TileEntityBoilerCasing> {
+        MAIN("GuiGasesTab.png", "mekanism.gui.main", tile ->
+              new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, tile))),
+        STAT("GuiStatsTab.png", "mekanism.gui.stats", tile ->
+              new ContainerProvider("mekanism.container.boiler_stats", (i, inv, player) -> new BoilerStatsContainer(i, inv, tile)));
 
+        private final Function<TileEntityBoilerCasing, INamedContainerProvider> provider;
         private final String description;
         private final String path;
-        private final int guiId;
 
-        BoilerTab(String path, int id, String desc) {
+        BoilerTab(String path, String desc, Function<TileEntityBoilerCasing, INamedContainerProvider> provider) {
             this.path = path;
-            guiId = id;
             description = desc;
+            this.provider = provider;
         }
 
         @Override
@@ -42,8 +45,8 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
         }
 
         @Override
-        public void openGui(TileEntity tile) {
-            Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tile), 0, guiId));
+        public INamedContainerProvider getProvider(TileEntityBoilerCasing tile) {
+            return provider.apply(tile);
         }
 
         @Override

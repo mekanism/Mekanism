@@ -1,15 +1,16 @@
 package mekanism.client.gui.element.tab;
 
-import mekanism.api.Coord4D;
+import java.util.function.Function;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.MatrixStatsContainer;
+import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,18 +23,20 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
         super(gui, tile, type, def);
     }
 
-    public enum MatrixTab implements TabType {
-        MAIN("GuiEnergyTab.png", 49, "mekanism.gui.main"),
-        STAT("GuiStatsTab.png", 50, "mekanism.gui.stats");
+    public enum MatrixTab implements TabType<TileEntityInductionCasing> {
+        MAIN("GuiEnergyTab.png", "mekanism.gui.main", tile ->
+              new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv, tile))),
+        STAT("GuiStatsTab.png", "mekanism.gui.stats", tile ->
+              new ContainerProvider("mekanism.container.matrix_stats", (i, inv, player) -> new MatrixStatsContainer(i, inv, tile)));
 
+        private final Function<TileEntityInductionCasing, INamedContainerProvider> provider;
         private final String description;
         private final String path;
-        private final int guiId;
 
-        MatrixTab(String path, int id, String desc) {
+        MatrixTab(String path, String desc, Function<TileEntityInductionCasing, INamedContainerProvider> provider) {
             this.path = path;
-            guiId = id;
             description = desc;
+            this.provider = provider;
         }
 
         @Override
@@ -42,8 +45,8 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
         }
 
         @Override
-        public void openGui(TileEntity tile) {
-            Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tile), 0, guiId));
+        public INamedContainerProvider getProvider(TileEntityInductionCasing tile) {
+            return provider.apply(tile);
         }
 
         @Override

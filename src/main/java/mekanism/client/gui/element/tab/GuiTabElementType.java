@@ -2,13 +2,16 @@ package mekanism.client.gui.element.tab;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enum & TabType> extends GuiTabElement<TILE> {
+public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enum & TabType<TILE>> extends GuiTabElement<TILE> {
 
     private final TAB tabType;
 
@@ -19,7 +22,7 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
 
     @Override
     public void buttonClicked() {
-        tabType.openGui(tileEntity);
+        NetworkHooks.openGui(ServerPlayerEntity, tabType.getProvider(tileEntity), BlockPos);
     }
 
     @Override
