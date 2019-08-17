@@ -1,12 +1,14 @@
 package mekanism.generators.common.inventory.container.turbine;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -48,6 +50,12 @@ public class TurbineContainer extends MekanismTileContainer<TileEntityTurbineCas
             currentSlot.onTake(player, slotStack);
         }
         return stack;
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new TurbineContainer(i, inv, tile);
     }
 
     @Nonnull

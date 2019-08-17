@@ -37,16 +37,15 @@ public class CraftingRobitContainer extends WorkbenchContainer implements INamed
         return entity;
     }
 
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new CraftingRobitContainer(i, inv, entity);
+    }
+
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
         return TextComponentUtil.translate("mekanism.container.robit.crafting");
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        //TODO: Implement this
-        return null;
     }
 }

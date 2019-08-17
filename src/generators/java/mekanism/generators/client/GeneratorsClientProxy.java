@@ -102,8 +102,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_CONTROLLER, GuiReactorController::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_FUEL, GuiReactorFuel::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_HEAT, GuiReactorHeat::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_STATS, GuiReactorStats::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, GuiReactorLogicAdapter::new);
+        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_STATS, GuiReactorStats::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.SOLAR_GENERATOR, GuiSolarGenerator::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.TURBINE_STATS, GuiTurbineStats::new);
         ScreenManager.registerFactory(GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);

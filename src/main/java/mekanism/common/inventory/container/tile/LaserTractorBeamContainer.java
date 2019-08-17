@@ -1,11 +1,13 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -56,6 +58,12 @@ public class LaserTractorBeamContainer extends MekanismTileContainer<TileEntityL
                 addSlot(new Slot(tile, slotX + slotY * 9, 8 + slotX * 18, 16 + slotY * 18));
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new LaserTractorBeamContainer(i, inv, tile);
     }
 
     @Nonnull

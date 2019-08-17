@@ -1,6 +1,7 @@
 package mekanism.generators.common.inventory.container.fuel;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.FuelHandler;
@@ -8,7 +9,9 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -37,6 +40,12 @@ public class GasBurningGeneratorContainer extends FuelGeneratorContainer<TileEnt
             return gasStack != null && FuelHandler.getFuel(gasStack.getGas()) != null;
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new GasBurningGeneratorContainer(i, inv, tile);
     }
 
     @Nonnull

@@ -26,12 +26,6 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
         tileEntity = container.getTileEntity();
     }
 
-    @Deprecated
-    protected GuiMekanismTile(TILE tile, CONTAINER container, PlayerInventory inv) {
-        super(container, inv, tile.getName());
-        tileEntity = tile;
-    }
-
     public TILE getTileEntity() {
         return tileEntity;
     }

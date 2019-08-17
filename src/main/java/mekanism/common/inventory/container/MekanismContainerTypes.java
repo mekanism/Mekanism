@@ -14,6 +14,7 @@ import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
+import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.inventory.container.tile.BoilerStatsContainer;
 import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
 import mekanism.common.inventory.container.tile.ChemicalDissolutionChamberContainer;
@@ -65,6 +66,7 @@ import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContaine
 import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
+import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.inventory.container.tile.filter.list.DMFilterListContainer;
 import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
 import mekanism.common.inventory.container.tile.filter.select.DMFilterSelectContainer;
@@ -86,6 +88,7 @@ public class MekanismContainerTypes {
     //Items
     public static final ContainerType<DictionaryContainer> DICTIONARY = create(MekanismItem.DICTIONARY, DictionaryContainer::new);
     public static final ContainerType<PortableTeleporterContainer> PORTABLE_TELEPORTER = create(MekanismItem.PORTABLE_TELEPORTER, PortableTeleporterContainer::new);
+    public static final ContainerType<SeismicReaderContainer> SEISMIC_READER = create(MekanismItem.SEISMIC_READER, SeismicReaderContainer::new);
 
     //Entity
     public static final ContainerType<MainRobitContainer> MAIN_ROBIT = create("main_robit", MainRobitContainer::new);
@@ -96,44 +99,42 @@ public class MekanismContainerTypes {
     public static final ContainerType<CraftingRobitContainer> CRAFTING_ROBIT = create("crafting_robit", CraftingRobitContainer::new);
     public static final ContainerType<RepairRobitContainer> REPAIR_ROBIT = create("repair_robit", RepairRobitContainer::new);
 
-
-    //TODO: Decide if tiered ones should be done differently/evaluate how their container name is done
     //Blocks
-    public static final ContainerType<ElectricPumpContainer> ELECTRIC_PUMP = create(MekanismBlock.ELECTRIC_PUMP, ElectricPumpContainer::new);
-    public static final ContainerType<ElectrolyticSeparatorContainer> ELECTROLYTIC_SEPARATOR = create(MekanismBlock.ELECTROLYTIC_SEPARATOR, ElectrolyticSeparatorContainer::new);
-    public static final ContainerType<OredictionificatorContainer> OREDICTIONIFICATOR = create(MekanismBlock.OREDICTIONIFICATOR, OredictionificatorContainer::new);
-    public static final ContainerType<PressurizedReactionChamberContainer> PRESSURIZED_REACTION_CHAMBER = create(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, PressurizedReactionChamberContainer::new);
-    public static final ContainerType<SecurityDeskContainer> SECURITY_DESK = create(MekanismBlock.SECURITY_DESK, SecurityDeskContainer::new);
-    public static final ContainerType<LaserAmplifierContainer> LASER_AMPLIFIER = create(MekanismBlock.LASER_AMPLIFIER, LaserAmplifierContainer::new);
-    public static final ContainerType<LaserTractorBeamContainer> LASER_TRACTOR_BEAM = create(MekanismBlock.LASER_TRACTOR_BEAM, LaserTractorBeamContainer::new);
-    public static final ContainerType<ResistiveHeaterContainer> RESISTIVE_HEATER = create(MekanismBlock.RESISTIVE_HEATER, ResistiveHeaterContainer::new);
-    public static final ContainerType<QuantumEntangloporterContainer> QUANTUM_ENTANGLOPORTER = create(MekanismBlock.QUANTUM_ENTANGLOPORTER, QuantumEntangloporterContainer::new);
-    public static final ContainerType<ThermalEvaporationControllerContainer> THERMAL_EVAPORATION_CONTROLLER = create(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, ThermalEvaporationControllerContainer::new);
-    public static final ContainerType<SeismicVibratorContainer> SEISMIC_VIBRATOR = create(MekanismBlock.SEISMIC_VIBRATOR, SeismicVibratorContainer::new);
-    public static final ContainerType<FuelwoodHeaterContainer> FUELWOOD_HEATER = create(MekanismBlock.FUELWOOD_HEATER, FuelwoodHeaterContainer::new);
-    public static final ContainerType<FormulaicAssemblicatorContainer> FORMULAIC_ASSEMBLICATOR = create(MekanismBlock.FORMULAIC_ASSEMBLICATOR, FormulaicAssemblicatorContainer::new);
-    public static final ContainerType<MetallurgicInfuserContainer> METALLURGIC_INFUSER = create(MekanismBlock.METALLURGIC_INFUSER, MetallurgicInfuserContainer::new);
-    public static final ContainerType<SolarNeutronActivatorContainer> SOLAR_NEUTRON_ACTIVATOR = create(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronActivatorContainer::new);
-    public static final ContainerType<FluidicPlenisherContainer> FLUIDIC_PLENISHER = create(MekanismBlock.FLUIDIC_PLENISHER, FluidicPlenisherContainer::new);
-    public static final ContainerType<DigitalMinerContainer> DIGITAL_MINER = create(MekanismBlock.DIGITAL_MINER, DigitalMinerContainer::new);
-    public static final ContainerType<DynamicTankContainer> DYNAMIC_TANK = create(MekanismBlock.DYNAMIC_TANK, DynamicTankContainer::new);
-    public static final ContainerType<RotaryCondensentratorContainer> ROTARY_CONDENSENTRATOR = create(MekanismBlock.ROTARY_CONDENSENTRATOR, RotaryCondensentratorContainer::new);
     public static final ContainerType<ChemicalCrystallizerContainer> CHEMICAL_CRYSTALLIZER = create(MekanismBlock.CHEMICAL_CRYSTALLIZER, ChemicalCrystallizerContainer::new);
     public static final ContainerType<ChemicalDissolutionChamberContainer> CHEMICAL_DISSOLUTION_CHAMBER = create(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, ChemicalDissolutionChamberContainer::new);
     public static final ContainerType<ChemicalInfuserContainer> CHEMICAL_INFUSER = create(MekanismBlock.CHEMICAL_INFUSER, ChemicalInfuserContainer::new);
+    public static final ContainerType<ChemicalInjectionChamberContainer> CHEMICAL_INJECTION_CHAMBER = create(MekanismBlock.CHEMICAL_INJECTION_CHAMBER, ChemicalInjectionChamberContainer::new);
     public static final ContainerType<ChemicalOxidizerContainer> CHEMICAL_OXIDIZER = create(MekanismBlock.CHEMICAL_OXIDIZER, ChemicalOxidizerContainer::new);
     public static final ContainerType<ChemicalWasherContainer> CHEMICAL_WASHER = create(MekanismBlock.CHEMICAL_WASHER, ChemicalWasherContainer::new);
-    public static final ContainerType<TeleporterContainer> TELEPORTER = create(MekanismBlock.TELEPORTER, TeleporterContainer::new);
-
-    public static final ContainerType<PrecisionSawmillContainer> PRECISION_SAWMILL = create(MekanismBlock.PRECISION_SAWMILL, PrecisionSawmillContainer::new);
     public static final ContainerType<CombinerContainer> COMBINER = create(MekanismBlock.COMBINER, CombinerContainer::new);
-    public static final ContainerType<ChemicalInjectionChamberContainer> CHEMICAL_INJECTION_CHAMBER = create(MekanismBlock.CHEMICAL_INJECTION_CHAMBER, ChemicalInjectionChamberContainer::new);
-    public static final ContainerType<OsmiumCompressorContainer> OSMIUM_COMPRESSOR = create(MekanismBlock.OSMIUM_COMPRESSOR, OsmiumCompressorContainer::new);
-    public static final ContainerType<PurificationChamberContainer> PURIFICATION_CHAMBER = create(MekanismBlock.PURIFICATION_CHAMBER, PurificationChamberContainer::new);
     public static final ContainerType<CrusherContainer> CRUSHER = create(MekanismBlock.CRUSHER, CrusherContainer::new);
+    public static final ContainerType<DigitalMinerContainer> DIGITAL_MINER = create(MekanismBlock.DIGITAL_MINER, DigitalMinerContainer::new);
+    public static final ContainerType<DynamicTankContainer> DYNAMIC_TANK = create(MekanismBlock.DYNAMIC_TANK, DynamicTankContainer::new);
+    public static final ContainerType<ElectricPumpContainer> ELECTRIC_PUMP = create(MekanismBlock.ELECTRIC_PUMP, ElectricPumpContainer::new);
+    public static final ContainerType<ElectrolyticSeparatorContainer> ELECTROLYTIC_SEPARATOR = create(MekanismBlock.ELECTROLYTIC_SEPARATOR, ElectrolyticSeparatorContainer::new);
     public static final ContainerType<EnergizedSmelterContainer> ENERGIZED_SMELTER = create(MekanismBlock.ENERGIZED_SMELTER, EnergizedSmelterContainer::new);
     public static final ContainerType<EnrichmentChamberContainer> ENRICHMENT_CHAMBER = create(MekanismBlock.ENRICHMENT_CHAMBER, EnrichmentChamberContainer::new);
+    public static final ContainerType<FluidicPlenisherContainer> FLUIDIC_PLENISHER = create(MekanismBlock.FLUIDIC_PLENISHER, FluidicPlenisherContainer::new);
+    public static final ContainerType<FormulaicAssemblicatorContainer> FORMULAIC_ASSEMBLICATOR = create(MekanismBlock.FORMULAIC_ASSEMBLICATOR, FormulaicAssemblicatorContainer::new);
+    public static final ContainerType<FuelwoodHeaterContainer> FUELWOOD_HEATER = create(MekanismBlock.FUELWOOD_HEATER, FuelwoodHeaterContainer::new);
+    public static final ContainerType<LaserAmplifierContainer> LASER_AMPLIFIER = create(MekanismBlock.LASER_AMPLIFIER, LaserAmplifierContainer::new);
+    public static final ContainerType<LaserTractorBeamContainer> LASER_TRACTOR_BEAM = create(MekanismBlock.LASER_TRACTOR_BEAM, LaserTractorBeamContainer::new);
+    public static final ContainerType<MetallurgicInfuserContainer> METALLURGIC_INFUSER = create(MekanismBlock.METALLURGIC_INFUSER, MetallurgicInfuserContainer::new);
+    public static final ContainerType<OredictionificatorContainer> OREDICTIONIFICATOR = create(MekanismBlock.OREDICTIONIFICATOR, OredictionificatorContainer::new);
+    public static final ContainerType<OsmiumCompressorContainer> OSMIUM_COMPRESSOR = create(MekanismBlock.OSMIUM_COMPRESSOR, OsmiumCompressorContainer::new);
+    public static final ContainerType<PrecisionSawmillContainer> PRECISION_SAWMILL = create(MekanismBlock.PRECISION_SAWMILL, PrecisionSawmillContainer::new);
+    public static final ContainerType<PressurizedReactionChamberContainer> PRESSURIZED_REACTION_CHAMBER = create(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, PressurizedReactionChamberContainer::new);
+    public static final ContainerType<PurificationChamberContainer> PURIFICATION_CHAMBER = create(MekanismBlock.PURIFICATION_CHAMBER, PurificationChamberContainer::new);
+    public static final ContainerType<QuantumEntangloporterContainer> QUANTUM_ENTANGLOPORTER = create(MekanismBlock.QUANTUM_ENTANGLOPORTER, QuantumEntangloporterContainer::new);
+    public static final ContainerType<ResistiveHeaterContainer> RESISTIVE_HEATER = create(MekanismBlock.RESISTIVE_HEATER, ResistiveHeaterContainer::new);
+    public static final ContainerType<RotaryCondensentratorContainer> ROTARY_CONDENSENTRATOR = create(MekanismBlock.ROTARY_CONDENSENTRATOR, RotaryCondensentratorContainer::new);
+    public static final ContainerType<SecurityDeskContainer> SECURITY_DESK = create(MekanismBlock.SECURITY_DESK, SecurityDeskContainer::new);
+    public static final ContainerType<SeismicVibratorContainer> SEISMIC_VIBRATOR = create(MekanismBlock.SEISMIC_VIBRATOR, SeismicVibratorContainer::new);
+    public static final ContainerType<SolarNeutronActivatorContainer> SOLAR_NEUTRON_ACTIVATOR = create(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronActivatorContainer::new);
+    public static final ContainerType<TeleporterContainer> TELEPORTER = create(MekanismBlock.TELEPORTER, TeleporterContainer::new);
+    public static final ContainerType<ThermalEvaporationControllerContainer> THERMAL_EVAPORATION_CONTROLLER = create(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, ThermalEvaporationControllerContainer::new);
 
+    //TODO: Decide if tiered ones should be done differently/evaluate how their container name is done
     //Named
     public static final ContainerType<FactoryContainer> FACTORY = create("factory", FactoryContainer::new);
     public static final ContainerType<GasTankContainer> GAS_TANK = create("gas_tank", GasTankContainer::new);
@@ -167,7 +168,7 @@ public class MekanismContainerTypes {
     public static final ContainerType<DMItemStackFilterContainer> DM_ITEMSTACK_FILTER = create("digital_miner_itemstack_filter", DMItemStackFilterContainer::new);
     public static final ContainerType<LSItemStackFilterContainer> LS_ITEMSTACK_FILTER = create("logistical_sorter_itemstack_filter", LSItemStackFilterContainer::new);
 
-    public static final ContainerType<OredictionificatorContainer> OREDICTIONIFICATOR_FILTER = create("oredictionificator_filter", OredictionificatorContainer::new);
+    public static final ContainerType<OredictionificatorFilterContainer> OREDICTIONIFICATOR_FILTER = create("oredictionificator_filter", OredictionificatorFilterContainer::new);
 
 
     //Can just use IItemProvider because IBlockProvider extends it. This way we support both tiles and items

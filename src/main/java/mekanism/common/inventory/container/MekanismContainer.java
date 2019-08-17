@@ -17,12 +17,16 @@ public abstract class MekanismContainer extends Container implements INamedConta
     protected MekanismContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv) {
         super(type, id);
         this.inv = inv;
-        if (shouldAddSlots()) {
-            addSlots();
-            if (inv != null) {
-                addInventorySlots(inv);
-                openInventory(inv);
-            }
+    }
+
+    /**
+     * Adds slots and opens, must be called at end of extending classes constructors
+     */
+    protected void addSlotsAndOpen() {
+        addSlots();
+        if (inv != null) {
+            addInventorySlots(inv);
+            openInventory(inv);
         }
     }
 
@@ -30,13 +34,6 @@ public abstract class MekanismContainer extends Container implements INamedConta
     public boolean canInteractWith(@Nonnull PlayerEntity player) {
         //Is this the proper default
         return true;
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        //TODO: Implement this
-        return null;
     }
 
     @Override
@@ -70,11 +67,6 @@ public abstract class MekanismContainer extends Container implements INamedConta
         for (int slotY = 0; slotY < 9; slotY++) {
             addSlot(new Slot(inv, slotY, 8 + slotY * 18, offset));
         }
-    }
-
-    //TODO: Remove??
-    protected boolean shouldAddSlots() {
-        return true;
     }
 
     protected void addSlots() {

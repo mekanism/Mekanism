@@ -1,11 +1,13 @@
 package mekanism.common.inventory.container.entity.robit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.FurnaceResultSlot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
@@ -119,9 +121,15 @@ public class SmeltingRobitContainer extends RobitContainer {
     }
 
     @Override
-    protected void addInventorySlots(PlayerInventory inventory) {
+    protected void addInventorySlots(@Nonnull PlayerInventory inventory) {
         addSlot(new FurnaceResultSlot(inventory.player, entity, 30, 116, 35));
         super.addInventorySlots(inventory);
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new SmeltingRobitContainer(i, inv, entity);
     }
 
     @Nonnull

@@ -35,8 +35,8 @@ public class GeneratorsContainerTypes {
     public static final ContainerType<ReactorControllerContainer> REACTOR_CONTROLLER = create(GeneratorsBlock.REACTOR_CONTROLLER, ReactorControllerContainer::new);
     public static final ContainerType<ReactorFuelContainer> REACTOR_FUEL = create("reactor_fuel", ReactorFuelContainer::new);
     public static final ContainerType<ReactorHeatContainer> REACTOR_HEAT = create("reactor_heat", ReactorHeatContainer::new);
-    public static final ContainerType<ReactorStatsContainer> REACTOR_STATS = create("reactor_stats", ReactorStatsContainer::new);
     public static final ContainerType<ReactorLogicAdapterContainer> REACTOR_LOGIC_ADAPTER = create(GeneratorsBlock.REACTOR_LOGIC_ADAPTER, ReactorLogicAdapterContainer::new);
+    public static final ContainerType<ReactorStatsContainer> REACTOR_STATS = create("reactor_stats", ReactorStatsContainer::new);
     public static final ContainerType<SolarGeneratorContainer> SOLAR_GENERATOR = create("solar_generator", SolarGeneratorContainer::new);
     public static final ContainerType<TurbineStatsContainer> TURBINE_STATS = create("turbine_stats", TurbineStatsContainer::new);
     public static final ContainerType<WindGeneratorContainer> WIND_GENERATOR = create(GeneratorsBlock.WIND_GENERATOR, WindGeneratorContainer::new);

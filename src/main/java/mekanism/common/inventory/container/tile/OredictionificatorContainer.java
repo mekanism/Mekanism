@@ -1,12 +1,14 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -75,6 +77,12 @@ public class OredictionificatorContainer extends MekanismTileContainer<TileEntit
     @Override
     protected int getInventoryOffset() {
         return 148;
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new OredictionificatorContainer(i, inv, tile);
     }
 
     @Nonnull

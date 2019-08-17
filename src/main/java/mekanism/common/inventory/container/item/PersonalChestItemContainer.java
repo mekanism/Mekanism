@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.item;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotPersonalChest;
@@ -9,6 +10,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -19,16 +21,18 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
 
     private InventoryPersonalChest itemInventory;
 
-    public PersonalChestItemContainer(int id, PlayerInventory inv) {
-        super(MekanismContainerTypes.PERSONAL_CHEST_ITEM, id, inv);
+    public PersonalChestItemContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+        super(MekanismContainerTypes.PERSONAL_CHEST_ITEM, id, inv, hand, stack);
     }
 
     public PersonalChestItemContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv);
-        ItemStack stack = buf.readItemStack();
-        Hand hand = buf.readEnumValue(Hand.class);
-        //TODO: This has to be set before addSlots etc is called
+        this(id, inv, buf.readEnumValue(Hand.class), getStackFromBuffer(buf, ItemBlockPersonalChest.class));
+    }
+
+    @Override
+    protected void addSlotsAndOpen() {
         itemInventory = new InventoryPersonalChest(stack, hand);
+        super.addSlotsAndOpen();
     }
 
     @Override
@@ -57,11 +61,6 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
     @Override
     protected void openInventory(@Nonnull PlayerInventory inventory) {
         itemInventory.openInventory(inventory.player);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
-        return true;
     }
 
     @Nonnull
@@ -104,6 +103,12 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
             }
         }
         return super.slotClick(slotId, dragType, clickType, player);
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new PersonalChestItemContainer(i, inv, hand, stack);
     }
 
     @Nonnull

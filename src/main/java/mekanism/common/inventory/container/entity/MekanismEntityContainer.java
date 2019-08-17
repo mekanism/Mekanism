@@ -18,6 +18,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
     protected MekanismEntityContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, ENTITY entity) {
         super(type, id, inv);
         this.entity = entity;
+        addSlotsAndOpen();
     }
 
     @Override

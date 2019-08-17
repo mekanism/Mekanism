@@ -1,11 +1,13 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -64,6 +66,12 @@ public class FuelwoodHeaterContainer extends MekanismTileContainer<TileEntityFue
     @Override
     protected void addSlots() {
         addSlot(new Slot(tile, 0, 15, 29));
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new FuelwoodHeaterContainer(i, inv, tile);
     }
 
     @Nonnull

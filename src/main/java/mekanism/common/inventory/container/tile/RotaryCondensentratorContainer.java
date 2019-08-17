@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
@@ -12,6 +13,7 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -96,6 +98,12 @@ public class RotaryCondensentratorContainer extends MekanismTileContainer<TileEn
         addSlot(new Slot(tile, 2, 155, 25));
         addSlot(new SlotOutput(tile, 3, 155, 56));
         addSlot(new SlotDischarge(tile, 4, 155, 5));
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new RotaryCondensentratorContainer(i, inv, tile);
     }
 
     @Nonnull

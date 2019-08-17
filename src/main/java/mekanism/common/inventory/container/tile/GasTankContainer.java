@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotStorageTank;
@@ -8,6 +9,7 @@ import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -69,6 +71,12 @@ public class GasTankContainer extends MekanismTileContainer<TileEntityGasTank> {
     protected void addSlots() {
         addSlot(new SlotStorageTank(tile, 0, 8, 8));
         addSlot(new SlotStorageTank(tile, 1, 8, 40));
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new GasTankContainer(i, inv, tile);
     }
 
     @Nonnull

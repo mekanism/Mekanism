@@ -21,9 +21,9 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
     protected MekanismTileContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
         super(type, id, inv);
         this.tile = tile;
+        addSlotsAndOpen();
     }
 
-    //TODO:
     public TILE getTileEntity() {
         return tile;
     }

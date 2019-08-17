@@ -37,16 +37,15 @@ public class RepairRobitContainer extends RepairContainer implements INamedConta
         return entity;
     }
 
+    @Nullable
+    @Override
+    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
+        return new RepairRobitContainer(i, inv, entity);
+    }
+
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
         return TextComponentUtil.translate("mekanism.container.robit.repair");
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        //TODO: Implement this
-        return null;
     }
 }

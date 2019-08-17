@@ -28,6 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.util.Rectangle;
 
+//TODO: Switch Screen to GuiMekanism
 @OnlyIn(Dist.CLIENT)
 public class GuiSeismicReader extends Screen {
 
@@ -43,7 +44,12 @@ public class GuiSeismicReader extends Screen {
 
     private int currentLayer;
 
+    /*public GuiSeismicReader(SeismicReaderContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+    }*/
+
     public GuiSeismicReader(World world, Coord4D coord, ItemStack stack) {
+        super(TextComponentUtil.translate("mekanism.container.seismic_reader"));
         pos = new Coord4D(coord.x, Math.min(255, coord.y), coord.z, world.getDimension().getType());
         worldObj = world;
         itemStack = stack;
