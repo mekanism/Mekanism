@@ -6,10 +6,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
 
-public abstract class MekanismContainer extends Container implements INamedContainerProvider {
+public abstract class MekanismContainer extends Container {
 
     @Nullable
     protected final PlayerInventory inv;

@@ -18,6 +18,8 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -30,6 +32,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
@@ -51,7 +54,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockQuantumEntangloporter extends BlockMekanismContainer implements IBlockElectric, IHasGui, ISupportsUpgrades, IStateFacing, IHasInventory, IHasSecurity,
+public class BlockQuantumEntangloporter extends BlockMekanismContainer implements IBlockElectric, IHasGui<TileEntityQuantumEntangloporter>, ISupportsUpgrades, IStateFacing, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityQuantumEntangloporter>, IBlockDisableable {
 
     private BooleanValue enabledReference;
@@ -189,11 +192,6 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     }
 
     @Override
-    public int getGuiID() {
-        return 46;
-    }
-
-    @Override
     public int getInventorySize() {
         return 1;
     }
@@ -212,5 +210,10 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityQuantumEntangloporter tile) {
+        return new ContainerProvider("mekanism.container.quantum_entangloporter", (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile));
     }
 }

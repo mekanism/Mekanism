@@ -10,6 +10,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IBlockProvider;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
@@ -20,6 +21,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -28,6 +30,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer {
@@ -144,7 +147,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
             Mekanism.packetHandler.sendUpdatePacket(this);
-            player.openGui(Mekanism.instance, 54, world, getPos().getX(), getPos().getY(), getPos().getZ());
+            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityBoilerCasing>) blockProvider.getBlock()).getProvider(this), pos);
             return true;
         }
         return false;

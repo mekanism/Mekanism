@@ -21,6 +21,8 @@ import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -31,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -51,7 +54,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockMetallurgicInfuser extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui, IStateFacing, IHasFactoryType,
+public class BlockMetallurgicInfuser extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityMetallurgicInfuser>, IStateFacing, IHasFactoryType,
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityMetallurgicInfuser>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.metalinfuser"));
@@ -170,11 +173,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
     }
 
     @Override
-    public int getGuiID() {
-        return 12;
-    }
-
-    @Override
     public double getUsage() {
         return MekanismConfig.usage.metallurgicInfuser.get();
     }
@@ -209,5 +207,10 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityMetallurgicInfuser tile) {
+        return new ContainerProvider("mekanism.container.metallurgic_infuser", (i, inv, player) -> new MetallurgicInfuserContainer(i, inv, tile));
     }
 }

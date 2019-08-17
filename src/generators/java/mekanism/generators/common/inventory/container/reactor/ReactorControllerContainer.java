@@ -1,21 +1,17 @@
 package mekanism.generators.common.inventory.container.reactor;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -72,18 +68,6 @@ public class ReactorControllerContainer extends MekanismTileContainer<TileEntity
     @Override
     protected void addSlots() {
         addSlot(new SlotReactor(tile, 0, 80, 39));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new ReactorControllerContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanismgenerators.container.reactor_controller");
     }
 
     public class SlotReactor extends Slot {

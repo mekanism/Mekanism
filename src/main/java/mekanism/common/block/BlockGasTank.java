@@ -12,6 +12,8 @@ import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -28,6 +30,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -40,7 +43,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity, ISupportsRedstone,
+public class BlockGasTank extends BlockMekanismContainer implements IHasGui<TileEntityGasTank>, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityGasTank>, ISupportsComparator {
 
     private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
@@ -125,11 +128,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     }
 
     @Override
-    public int getGuiID() {
-        return 10;
-    }
-
-    @Override
     public int getInventorySize() {
         return 2;
     }
@@ -150,5 +148,10 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
                 return TileEntityCreativeGasTank.class;
         }
         return null;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityGasTank tile) {
+        return new ContainerProvider("mekanism.container.gas_tank", (i, inv, player) -> new GasTankContainer(i, inv, tile));
     }
 }

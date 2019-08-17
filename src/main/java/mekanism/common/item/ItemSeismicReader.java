@@ -7,17 +7,21 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemSeismicReader extends ItemEnergized {
 
@@ -49,28 +53,31 @@ public class ItemSeismicReader extends ItemEnergized {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
-        Chunk3D chunk = new Chunk3D(entityplayer);
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+        Chunk3D chunk = new Chunk3D(player);
+        ItemStack stack = player.getHeldItem(hand);
 
-        if (getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.isCreative()) {
+        if (getEnergy(stack) < ENERGY_USAGE && !player.isCreative()) {
             if (!world.isRemote) {
-                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
                       Translation.of("mekanism.tooltip.seismicReader.needsEnergy")));
             }
 
-            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+            return new ActionResult<>(ActionResultType.SUCCESS, stack);
         } else if (!MekanismUtils.isChunkVibrated(chunk)) {
             if (!world.isRemote) {
-                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
                       Translation.of("mekanism.tooltip.seismicReader.noVibrations")));
             }
-            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+            return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        if (!entityplayer.isCreative()) {
-            setEnergy(itemstack, getEnergy(itemstack) - ENERGY_USAGE);
+        if (!player.isCreative()) {
+            setEnergy(stack, getEnergy(stack) - ENERGY_USAGE);
         }
-        MekanismUtils.openItemGui(entityplayer, hand, 38);
-        return new ActionResult<>(ActionResultType.PASS, itemstack);
+        NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new SeismicReaderContainer(i, inv, hand, stack)), buf -> {
+            buf.writeEnumValue(hand);
+            buf.writeItemStack(stack);
+        });
+        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 }

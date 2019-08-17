@@ -1,19 +1,15 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 
 public class SolarNeutronActivatorContainer extends MekanismTileContainer<TileEntitySolarNeutronActivator> {
 
@@ -75,17 +71,5 @@ public class SolarNeutronActivatorContainer extends MekanismTileContainer<TileEn
     protected void addSlots() {
         addSlot(new SlotStorageTank(tile, 0, 5, 56));
         addSlot(new SlotStorageTank(tile, 1, 155, 56));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new SolarNeutronActivatorContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanism.container.solar_neutron_activator");
     }
 }

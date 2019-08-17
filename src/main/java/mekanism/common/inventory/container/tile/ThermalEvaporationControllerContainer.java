@@ -1,20 +1,16 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -88,17 +84,5 @@ public class ThermalEvaporationControllerContainer extends MekanismTileContainer
         addSlot(new SlotOutput(tile, 1, 28, 51));
         addSlot(new Slot(tile, 2, 132, 20));
         addSlot(new SlotOutput(tile, 3, 132, 51));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new ThermalEvaporationControllerContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanism.container.thermal_evaporation_controller");
     }
 }

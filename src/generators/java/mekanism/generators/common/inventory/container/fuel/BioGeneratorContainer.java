@@ -1,19 +1,13 @@
 package mekanism.generators.common.inventory.container.fuel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -42,17 +36,5 @@ public class BioGeneratorContainer extends FuelGeneratorContainer<TileEntityBioG
             return new LazyOptionalHelper<>(FluidUtil.getFluidContained(slotStack)).matches(fluidStack -> fluidStack.getFluid() == FluidRegistry.getFluid("bioethanol"));
         }
         return false;
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new BioGeneratorContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanismgenerators.container.bio_generator");
     }
 }

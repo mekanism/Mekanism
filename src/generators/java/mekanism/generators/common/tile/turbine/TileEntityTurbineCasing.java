@@ -6,6 +6,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -22,11 +23,13 @@ import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage {
@@ -108,7 +111,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
             Mekanism.packetHandler.sendUpdatePacket(this);
-            player.openGui(MekanismGenerators.instance, 6, world, getPos().getX(), getPos().getY(), getPos().getZ());
+            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityTurbineCasing>) blockProvider.getBlock()).getProvider(this), pos);
             return true;
         }
         return false;

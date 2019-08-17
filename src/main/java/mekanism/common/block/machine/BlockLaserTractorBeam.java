@@ -17,6 +17,8 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.LaserTractorBeamContainer;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -27,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
@@ -46,7 +49,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHasModel, IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
+public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLaserTractorBeam>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityLaserTractorBeam>, IBlockDisableable, ISupportsComparator {
 
     private BooleanValue enabledReference;
@@ -160,11 +163,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public int getGuiID() {
-        return 45;
-    }
-
-    @Override
     public int getInventorySize() {
         return 27;
     }
@@ -183,5 +181,10 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityLaserTractorBeam tile) {
+        return new ContainerProvider("mekanism.container.laser_tractor_beam", (i, inv, player) -> new LaserTractorBeamContainer(i, inv, tile));
     }
 }

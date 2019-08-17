@@ -18,6 +18,8 @@ import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.fluid.FluidTankContainer;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -37,6 +39,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -58,7 +61,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>, IHasInventory,
+public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>, IHasInventory,
       IHasTileEntity<TileEntityFluidTank>, IBlockDisableable, ISupportsComparator {
 
     private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
@@ -248,11 +251,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     }
 
     @Override
-    public int getGuiID() {
-        return 41;
-    }
-
-    @Override
     public EnumColor getColor() {
         return getTier().getBaseTier().getColor();
     }
@@ -288,5 +286,10 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityFluidTank tile) {
+        return new ContainerProvider("mekanism.container.fluid_tank", (i, inv, player) -> new FluidTankContainer(i, inv, tile));
     }
 }

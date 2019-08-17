@@ -12,16 +12,19 @@ import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.inventory.container.passive.SolarGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
@@ -36,7 +39,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Maybe make this extend BlockSolarGenerator
-public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
+public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui<TileEntityAdvancedSolarGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityAdvancedSolarGenerator>, IBlockDisableable {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
@@ -94,11 +97,6 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
     }
 
     @Override
-    public int getGuiID() {
-        return 1;
-    }
-
-    @Override
     public double getStorage() {
         return 200_000;
     }
@@ -128,5 +126,11 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityAdvancedSolarGenerator tile) {
+        //TODO: Should this be advanced solar generator and stuff
+        return new ContainerProvider("mekanism.container.solar_generator", (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
     }
 }

@@ -9,12 +9,11 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 
-public class CraftingRobitContainer extends WorkbenchContainer implements INamedContainerProvider, IEntityContainer<EntityRobit> {
+public class CraftingRobitContainer extends WorkbenchContainer implements IEntityContainer<EntityRobit> {
 
     private EntityRobit entity;
 

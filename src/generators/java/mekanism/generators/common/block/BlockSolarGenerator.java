@@ -11,16 +11,19 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.inventory.container.passive.SolarGeneratorContainer;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
@@ -37,7 +40,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
+public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui<TileEntitySolarGenerator>, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntitySolarGenerator>, IBlockDisableable {
 
     private static final VoxelShape SOLAR_BOUNDS = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
@@ -103,11 +106,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     }
 
     @Override
-    public int getGuiID() {
-        return 1;
-    }
-
-    @Override
     public double getStorage() {
         return 96000;
     }
@@ -137,5 +135,10 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntitySolarGenerator tile) {
+        return new ContainerProvider("mekanismgenerators.container.solar_generator", (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
     }
 }

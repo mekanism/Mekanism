@@ -17,6 +17,8 @@ import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -27,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -45,7 +48,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockFormulaicAssemblicator extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IHasInventory,
+public class BlockFormulaicAssemblicator extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFormulaicAssemblicator>, IStateFacing, IStateActive, IHasInventory,
       IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFormulaicAssemblicator>, IBlockDisableable {
 
     private BooleanValue enabledReference;
@@ -153,11 +156,6 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
     }
 
     @Override
-    public int getGuiID() {
-        return 56;
-    }
-
-    @Override
     public double getUsage() {
         return MekanismConfig.usage.formulaicAssemblicator.get();
     }
@@ -186,5 +184,10 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityFormulaicAssemblicator tile) {
+        return new ContainerProvider("mekanism.container.formulaic_assemblicator", (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, tile));
     }
 }

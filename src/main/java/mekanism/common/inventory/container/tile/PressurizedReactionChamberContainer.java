@@ -1,21 +1,17 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 
 public class PressurizedReactionChamberContainer extends MekanismTileContainer<TileEntityPRC> {
 
@@ -84,17 +80,5 @@ public class PressurizedReactionChamberContainer extends MekanismTileContainer<T
         addSlot(new Slot(tile, 0, 54, 35));
         addSlot(new SlotDischarge(tile, 1, 141, 19));
         addSlot(new SlotOutput(tile, 2, 116, 35));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new PressurizedReactionChamberContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanism.container.pressurized_reaction_chamber");
     }
 }

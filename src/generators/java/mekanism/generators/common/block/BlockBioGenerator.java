@@ -14,16 +14,19 @@ import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.inventory.container.fuel.BioGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -39,7 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
+public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui<TileEntityBioGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityBioGenerator>, IBlockDisableable, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.bio"));
@@ -115,11 +118,6 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     }
 
     @Override
-    public int getGuiID() {
-        return 4;
-    }
-
-    @Override
     public double getStorage() {
         return 160000;
     }
@@ -149,5 +147,10 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityBioGenerator tile) {
+        return new ContainerProvider("mekanismgenerators.container.bio_generator", (i, inv, player) -> new BioGeneratorContainer(i, inv, tile));
     }
 }

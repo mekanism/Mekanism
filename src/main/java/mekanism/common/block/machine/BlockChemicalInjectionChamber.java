@@ -21,6 +21,8 @@ import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.advanced.ChemicalInjectionChamberContainer;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -31,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -50,7 +53,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockChemicalInjectionChamber extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive,
+public class BlockChemicalInjectionChamber extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityChemicalInjectionChamber>, IStateFacing, IStateActive,
       IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInjectionChamber>, IBlockSound, ISupportsRedstone, IBlockDisableable,
       ISupportsComparator {
 
@@ -167,11 +170,6 @@ public class BlockChemicalInjectionChamber extends BlockMekanismContainer implem
     }
 
     @Override
-    public int getGuiID() {
-        return 31;
-    }
-
-    @Override
     public double getUsage() {
         return MekanismConfig.usage.chemicalInjectionChamber.get();
     }
@@ -206,5 +204,10 @@ public class BlockChemicalInjectionChamber extends BlockMekanismContainer implem
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityChemicalInjectionChamber tile) {
+        return new ContainerProvider("mekanism.container.chemical_injection_chamber", (i, inv, player) -> new ChemicalInjectionChamberContainer(i, inv, tile));
     }
 }

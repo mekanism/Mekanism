@@ -49,7 +49,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -586,21 +585,12 @@ public final class MekanismUtils {
     }
 
     /**
-     * Encodes current item info as a gui, and opens it.
-     *
-     * @apiNote Should only be used from the server side
-     */
-    public static void openItemGui(PlayerEntity player, Hand hand, int guiID) {
-        //current item, hand, gui type
-        player.openGui(Mekanism.instance, 0, player.world, player.inventory.currentItem, hand.ordinal(), guiID);
-    }
-
-    /**
      * Encodes entity info as a gui, and opens it.
      *
      * @apiNote Should only be used from the server side
      */
     public static void openEntityGui(PlayerEntity player, Entity entity, int guiID) {
+        //TODO:
         //entity id, gui type
         player.openGui(Mekanism.instance, 1, player.world, entity.getEntityId(), guiID, 0);
     }

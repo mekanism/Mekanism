@@ -34,6 +34,8 @@ import mekanism.common.block.machine.BlockPurificationChamber;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -74,6 +76,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
@@ -94,7 +97,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IBlockSound,
+public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFactory>, IStateFacing, IStateActive, IBlockSound,
       ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone, IBlockDisableable,
       ISupportsComparator {
 
@@ -325,11 +328,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public int getGuiID() {
-        return 11;
-    }
-
-    @Override
     public int getInventorySize() {
         return 5 + tier.processes * 2;
     }
@@ -458,5 +456,10 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityFactory tile) {
+        return new ContainerProvider("mekanism.container.factory", (i, inv, player) -> new FactoryContainer(i, inv, tile));
     }
 }

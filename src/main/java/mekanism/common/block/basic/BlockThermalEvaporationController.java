@@ -12,6 +12,8 @@ import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.ThermalEvaporationControllerContainer;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -20,6 +22,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -30,8 +34,9 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasGui,
+public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasGui<TileEntityThermalEvaporationController>,
       IHasTileEntity<TileEntityThermalEvaporationController> {
 
     public BlockThermalEvaporationController() {
@@ -78,9 +83,10 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (!player.isSneaking()) {
+        TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
+        if (tileEntity instanceof TileEntityThermalEvaporationController && !player.isSneaking()) {
             if (!world.isRemote) {
-                player.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+                NetworkHooks.openGui((ServerPlayerEntity) player, getProvider((TileEntityThermalEvaporationController) tileEntity), pos);
             }
             return true;
         }
@@ -99,7 +105,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public int getGuiID() {
-        return 33;
+    public INamedContainerProvider getProvider(TileEntityThermalEvaporationController tile) {
+        return new ContainerProvider("mekanism.container.thermal_evaporation_controller", (i, inv, player) -> new ThermalEvaporationControllerContainer(i, inv, tile));
     }
 }

@@ -21,6 +21,8 @@ import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.double_electric.CombinerContainer;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -31,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -50,7 +53,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockCombiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IHasFactoryType,
+public class BlockCombiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityCombiner>, IStateFacing, IStateActive, IHasFactoryType,
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityCombiner>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.combiner"));
@@ -166,11 +169,6 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
     }
 
     @Override
-    public int getGuiID() {
-        return 5;
-    }
-
-    @Override
     public double getUsage() {
         return MekanismConfig.usage.combiner.get();
     }
@@ -205,5 +203,10 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityCombiner tile) {
+        return new ContainerProvider("mekanism.container.combiner", (i, inv, player) -> new CombinerContainer(i, inv, tile));
     }
 }

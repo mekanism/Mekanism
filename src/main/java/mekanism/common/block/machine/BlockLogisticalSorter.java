@@ -22,6 +22,8 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -37,6 +39,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
@@ -62,7 +65,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound, IHasInventory,
+public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLogisticalSorter>, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound, IHasInventory,
       ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, IBlockDisableable, ISupportsComparator {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
@@ -258,11 +261,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         return super.getShape(state, world, pos, context);
     }
 
-    @Override
-    public int getGuiID() {
-        return 59;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -288,5 +286,10 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityLogisticalSorter tile) {
+        return new ContainerProvider("mekanism.container.logistical_sorter", (i, inv, player) -> new LSFilterListContainer(i, inv, tile));
     }
 }

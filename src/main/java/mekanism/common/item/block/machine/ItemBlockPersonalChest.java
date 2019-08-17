@@ -7,6 +7,8 @@ import mekanism.client.render.item.block.RenderPersonalChestItem;
 import mekanism.common.block.machine.BlockPersonalChest;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
@@ -21,6 +23,7 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,6 +36,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPersonalChest> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
@@ -57,19 +61,22 @@ public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPerson
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
-            if (getOwnerUUID(itemstack) == null) {
-                setOwnerUUID(itemstack, entityplayer.getUniqueID());
+            if (getOwnerUUID(stack) == null) {
+                setOwnerUUID(stack, player.getUniqueID());
             }
-            if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                MekanismUtils.openItemGui(entityplayer, hand, 19);
+            if (SecurityUtils.canAccess(player, stack)) {
+                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PersonalChestItemContainer(i, inv, hand, stack)), buf -> {
+                    buf.writeEnumValue(hand);
+                    buf.writeItemStack(stack);
+                });
             } else {
-                SecurityUtils.displayNoAccess(entityplayer);
+                SecurityUtils.displayNoAccess(player);
             }
         }
-        return new ActionResult<>(ActionResultType.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
     @Override

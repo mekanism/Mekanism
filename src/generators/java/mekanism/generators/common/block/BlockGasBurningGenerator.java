@@ -14,16 +14,19 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.inventory.container.fuel.GasBurningGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
@@ -37,7 +40,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
+public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui<TileEntityGasGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityGasGenerator>, IBlockDisableable, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.gas"));
@@ -95,11 +98,6 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
     }
 
     @Override
-    public int getGuiID() {
-        return 3;
-    }
-
-    @Override
     public double getStorage() {
         return 100 * MekanismConfig.general.FROM_H2.get();
     }
@@ -129,5 +127,10 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityGasGenerator tile) {
+        return new ContainerProvider("mekanismgenerators.container.gas_burning_generator", (i, inv, player) -> new GasBurningGeneratorContainer(i, inv, tile));
     }
 }

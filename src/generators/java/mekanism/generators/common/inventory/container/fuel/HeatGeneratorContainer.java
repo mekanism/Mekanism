@@ -1,18 +1,12 @@
 package mekanism.generators.common.inventory.container.fuel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 
 public class HeatGeneratorContainer extends FuelGeneratorContainer<TileEntityHeatGenerator> {
 
@@ -33,17 +27,5 @@ public class HeatGeneratorContainer extends FuelGeneratorContainer<TileEntityHea
     @Override
     protected boolean tryFuel(ItemStack slotStack) {
         return tile.getFuel(slotStack) > 0;
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new HeatGeneratorContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanismgenerators.container.heat_generator");
     }
 }

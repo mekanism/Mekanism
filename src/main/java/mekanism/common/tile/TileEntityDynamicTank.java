@@ -10,6 +10,7 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.LazyOptionalHelper;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
@@ -21,6 +22,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -28,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager {
@@ -112,7 +115,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (!player.isSneaking() && structure != null) {
             if (!manageInventory(player, hand, stack)) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
-                player.openGui(Mekanism.instance, 18, world, getPos().getX(), getPos().getY(), getPos().getZ());
+                NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityDynamicTank>) blockProvider.getBlock()).getProvider(this), pos);
             } else {
                 player.inventory.markDirty();
                 sendPacketToRenderer();

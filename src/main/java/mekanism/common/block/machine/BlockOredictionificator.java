@@ -15,6 +15,8 @@ import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -25,6 +27,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +46,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone,
+public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui<TileEntityOredictionificator>, IStateFacing, IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityOredictionificator>, IBlockDisableable {
 
     private BooleanValue enabledReference;
@@ -151,11 +154,6 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
     }
 
     @Override
-    public int getGuiID() {
-        return 52;
-    }
-
-    @Override
     public int getInventorySize() {
         return 2;
     }
@@ -174,5 +172,10 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityOredictionificator tile) {
+        return new ContainerProvider("mekanism.container.oredictionificator", (i, inv, player) -> new OredictionificatorContainer(i, inv, tile));
     }
 }

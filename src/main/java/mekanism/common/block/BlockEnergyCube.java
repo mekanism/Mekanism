@@ -15,6 +15,8 @@ import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.energy.EnergyCubeContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -31,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
@@ -49,7 +52,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory, IHasSecurity,
+public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator {
 
     private final EnergyCubeTier tier;
@@ -142,11 +145,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     }
 
     @Override
-    public int getGuiID() {
-        return 8;
-    }
-
-    @Override
     public double getStorage() {
         return tier.getMaxEnergy();
     }
@@ -172,5 +170,10 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
                 return TileEntityCreativeEnergyCube.class;
         }
         return null;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityEnergyCube tile) {
+        return new ContainerProvider("mekanism.container.energy_cube", (i, inv, player) -> new EnergyCubeContainer(i, inv, tile));
     }
 }

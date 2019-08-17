@@ -15,6 +15,8 @@ import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -25,6 +27,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -45,7 +48,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Why is the personal chest electric
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, IStateFacing, IHasInventory, IHasSecurity,
+public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityPersonalChest>, IStateFacing, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityPersonalChest>, IBlockDisableable {
 
     private BooleanValue enabledReference;
@@ -157,11 +160,6 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     }
 
     @Override
-    public int getGuiID() {
-        return 19;
-    }
-
-    @Override
     public int getInventorySize() {
         return 54;
     }
@@ -180,5 +178,10 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityPersonalChest tile) {
+        return new ContainerProvider("mekanism.container.personal_chest", (i, inv, player) -> new PersonalChestTileContainer(i, inv, tile));
     }
 }

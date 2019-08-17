@@ -10,6 +10,8 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.SecurityUtils;
@@ -19,6 +21,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -29,8 +33,9 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
+public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui<TileEntitySecurityDesk>, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
 
     public BlockSecurityDesk() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
@@ -79,7 +84,7 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
                 if (!world.isRemote) {
                     UUID ownerUUID = tile.ownerUUID;
                     if (ownerUUID == null || player.getUniqueID().equals(ownerUUID)) {
-                        player.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+                        NetworkHooks.openGui((ServerPlayerEntity) player, getProvider(tile), pos);
                     } else {
                         SecurityUtils.displayNoAccess(player);
                     }
@@ -91,11 +96,6 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
     }
 
     @Override
-    public int getGuiID() {
-        return 57;
-    }
-
-    @Override
     public int getInventorySize() {
         return 2;
     }
@@ -104,5 +104,10 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
     @Override
     public Class<? extends TileEntitySecurityDesk> getTileClass() {
         return TileEntitySecurityDesk.class;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntitySecurityDesk tile) {
+        return new ContainerProvider("mekanism.container.security_desk", (i, inv, player) -> new SecurityDeskContainer(i, inv, tile));
     }
 }

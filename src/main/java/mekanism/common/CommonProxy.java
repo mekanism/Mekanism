@@ -7,11 +7,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.voice.VoiceServerManager;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -161,13 +159,6 @@ public class CommonProxy/* implements IGuiProvider*/ {
             //player.world.getWorldInfo().getScheduledEvents().scheduleReplaceDuplicate();
             ((ServerWorld) player.world).addScheduledTask(runnable);
         }
-    }
-
-    public int getGuiId(Block block) {
-        if (block instanceof IHasGui) {
-            return ((IHasGui) block).getGuiID();
-        }
-        return -1;
     }
 
     public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {

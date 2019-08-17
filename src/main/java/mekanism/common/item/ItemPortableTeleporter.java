@@ -9,11 +9,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
@@ -22,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -30,6 +32,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
 
@@ -65,20 +68,23 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
-            if (getOwnerUUID(itemstack) == null) {
-                setOwnerUUID(itemstack, entityplayer.getUniqueID());
-                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
-                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("mekanism.gui.nowOwn")));
-            } else if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                MekanismUtils.openItemGui(entityplayer, hand, 14);
+            if (getOwnerUUID(stack) == null) {
+                setOwnerUUID(stack, player.getUniqueID());
+                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, player.getUniqueID(), null));
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("mekanism.gui.nowOwn")));
+            } else if (SecurityUtils.canAccess(player, stack)) {
+                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
+                    buf.writeEnumValue(hand);
+                    buf.writeItemStack(stack);
+                });
             } else {
-                SecurityUtils.displayNoAccess(entityplayer);
+                SecurityUtils.displayNoAccess(player);
             }
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
     @Override

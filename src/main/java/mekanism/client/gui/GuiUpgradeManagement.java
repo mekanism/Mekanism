@@ -20,7 +20,6 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,11 +52,11 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
               onPress -> {
                   Block block = tileEntity.getBlockType();
                   if (block instanceof IHasGui) {
-                      Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get((TileEntity) tileEntity), 0, ((IHasGui) block).getGuiID()));
+                      Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 0, ((IHasGui) block).getGuiID()));
                   }
               }));
         buttons.add(removeButton = new GuiButtonDisableableImage(guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get((TileEntity) tileEntity), selectedType))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), selectedType))));
         updateEnabledButtons();
     }
 

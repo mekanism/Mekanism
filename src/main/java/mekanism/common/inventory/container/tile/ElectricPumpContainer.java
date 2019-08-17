@@ -1,21 +1,17 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class ElectricPumpContainer extends MekanismTileContainer<TileEntityElectricPump> {
@@ -93,17 +89,5 @@ public class ElectricPumpContainer extends MekanismTileContainer<TileEntityElect
         addSlot(new Slot(tile, 0, 28, 20));
         addSlot(new SlotOutput(tile, 1, 28, 51));
         addSlot(new SlotDischarge(tile, 2, 143, 35));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new ElectricPumpContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanism.container.electric_pump");
     }
 }

@@ -14,16 +14,19 @@ import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.inventory.container.fuel.HeatGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -39,7 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
+public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGui<TileEntityHeatGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityHeatGenerator>, IBlockDisableable, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.heat"));
@@ -123,12 +126,6 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     }
 
     @Override
-    public int getGuiID() {
-        //TODO: Check
-        return 0;
-    }
-
-    @Override
     public double getStorage() {
         return 160000;
     }
@@ -158,5 +155,10 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityHeatGenerator tile) {
+        return new ContainerProvider("mekanismgenerators.container.heat_generator", (i, inv, player) -> new HeatGeneratorContainer(i, inv, tile));
     }
 }

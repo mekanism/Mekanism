@@ -1,10 +1,9 @@
 package mekanism.common.block.interfaces;
 
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.tileentity.TileEntity;
 
-public interface IHasGui {
+public interface IHasGui<TILE extends TileEntity> {
 
-    int getGuiID();
-
-    INamedContainerProvider getProvider();
+    INamedContainerProvider getProvider(TILE tile);
 }

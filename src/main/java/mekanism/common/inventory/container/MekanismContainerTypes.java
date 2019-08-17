@@ -152,7 +152,7 @@ public class MekanismContainerTypes {
     public static final ContainerType<TransporterConfigurationContainer> TRANSPORTER_CONFIGURATION = create("transporter_configuration", TransporterConfigurationContainer::new);
 
     public static final ContainerType<DMFilterListContainer> DM_FILTER_LIST = create("digital_miner_filter_list", DMFilterListContainer::new);
-    public static final ContainerType<LSFilterListContainer> LS_FILTER_LIST = create("logistical_sorter_filter_list", LSFilterListContainer::new);
+    public static final ContainerType<LSFilterListContainer> LOGISTICAL_SORTER = create(MekanismBlock.LOGISTICAL_SORTER, LSFilterListContainer::new);
     public static final ContainerType<DMFilterSelectContainer> DM_FILTER_SELECT = create("digital_miner_filter_select", DMFilterSelectContainer::new);
     public static final ContainerType<LSFilterSelectContainer> LS_FILTER_SELECT = create("logistical_sorter_filter_select", LSFilterSelectContainer::new);
 

@@ -5,12 +5,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -19,6 +21,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemDictionary extends ItemMekanism {
 
@@ -56,12 +59,15 @@ public class ItemDictionary extends ItemMekanism {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
-        if (entityplayer.isSneaking()) {
-            MekanismUtils.openItemGui(entityplayer, hand, 0);
-            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (player.isSneaking()) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new DictionaryContainer(i, inv, hand, stack)), buf -> {
+                buf.writeEnumValue(hand);
+                buf.writeItemStack(stack);
+            });
+            return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        return new ActionResult<>(ActionResultType.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 }

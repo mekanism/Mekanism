@@ -17,6 +17,8 @@ import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -27,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -46,7 +49,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
+public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IHasGui<TileEntityResistiveHeater>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone, IBlockDisableable {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.resistiveheater"));
@@ -156,11 +159,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
     }
 
     @Override
-    public int getGuiID() {
-        return 53;
-    }
-
-    @Override
     public double getUsage() {
         return 100;
     }
@@ -190,5 +188,10 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityResistiveHeater tile) {
+        return new ContainerProvider("mekanism.container.resistive_heater", (i, inv, player) -> new ResistiveHeaterContainer(i, inv, tile));
     }
 }

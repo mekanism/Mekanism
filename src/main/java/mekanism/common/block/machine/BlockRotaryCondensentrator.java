@@ -19,6 +19,8 @@ import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.RotaryCondensentratorContainer;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -30,6 +32,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -50,7 +53,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockRotaryCondensentrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IHasInventory,
+public class BlockRotaryCondensentrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityRotaryCondensentrator>, ISupportsUpgrades, IStateFacing, IHasInventory,
       IHasSecurity, IHasTileEntity<TileEntityRotaryCondensentrator>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.rotarycondensentrator"));
@@ -163,11 +166,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
     }
 
     @Override
-    public int getGuiID() {
-        return 7;
-    }
-
-    @Override
     public double getUsage() {
         return MekanismConfig.usage.rotaryCondensentrator.get();
     }
@@ -202,5 +200,10 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityRotaryCondensentrator tile) {
+        return new ContainerProvider("mekanism.container.rotary_condensentrator", (i, inv, player) -> new RotaryCondensentratorContainer(i, inv, tile));
     }
 }

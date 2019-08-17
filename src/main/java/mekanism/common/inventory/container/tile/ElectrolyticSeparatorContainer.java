@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.inventory.container.MekanismContainerTypes;
@@ -10,14 +9,11 @@ import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 
 public class ElectrolyticSeparatorContainer extends MekanismTileContainer<TileEntityElectrolyticSeparator> {
 
@@ -97,17 +93,5 @@ public class ElectrolyticSeparatorContainer extends MekanismTileContainer<TileEn
         addSlot(new SlotStorageTank(tile, 1, 59, 52));
         addSlot(new SlotStorageTank(tile, 2, 101, 52));
         addSlot(new SlotDischarge(tile, 3, 143, 35));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new ElectrolyticSeparatorContainer(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanism.container.electrolytic_separator");
     }
 }

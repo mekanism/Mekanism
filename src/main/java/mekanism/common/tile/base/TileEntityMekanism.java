@@ -319,9 +319,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
             } else {
-                //TODO: Is this correct
-                NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui) blockProvider.getBlock()).getProvider(), pos);
-                //player.openGui(Mekanism.instance, ((IHasGui) blockProvider.getBlock()).getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+                //TODO: Is this correct. Also check the other spots were NetworkHooks.openGui are
+                NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityMekanism>) blockProvider.getBlock()).getProvider(this), pos);
             }
             return true;
         }

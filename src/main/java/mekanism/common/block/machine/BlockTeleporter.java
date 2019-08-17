@@ -16,6 +16,8 @@ import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -26,6 +28,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +45,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockTeleporter extends BlockMekanismContainer implements IBlockElectric, IHasGui, ISupportsUpgrades, IHasInventory, IHasSecurity, ISupportsRedstone,
+public class BlockTeleporter extends BlockMekanismContainer implements IBlockElectric, IHasGui<TileEntityTeleporter>, ISupportsUpgrades, IHasInventory, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityTeleporter>, IBlockDisableable, ISupportsComparator {
 
     private BooleanValue enabledReference;
@@ -132,11 +135,6 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     }
 
     @Override
-    public int getGuiID() {
-        return 13;
-    }
-
-    @Override
     public double getUsage() {
         return 12500;
     }
@@ -165,5 +163,10 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityTeleporter tile) {
+        return new ContainerProvider("mekanism.container.teleporter", (i, inv, player) -> new TeleporterContainer(i, inv, tile));
     }
 }

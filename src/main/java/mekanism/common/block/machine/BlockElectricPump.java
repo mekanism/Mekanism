@@ -18,6 +18,8 @@ import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.ElectricPumpContainer;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -28,6 +30,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -47,7 +50,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockElectricPump extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IHasInventory, IHasSecurity,
+public class BlockElectricPump extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityElectricPump>, ISupportsUpgrades, IStateFacing, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, IBlockDisableable, ISupportsComparator {
 
     private BooleanValue enabledReference;
@@ -155,11 +158,6 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     }
 
     @Override
-    public int getGuiID() {
-        return 17;
-    }
-
-    @Override
     public double getUsage() {
         return MekanismConfig.usage.electricPump.get();
     }
@@ -188,5 +186,10 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityElectricPump tile) {
+        return new ContainerProvider("mekanism.container.electric_pump", (i, inv, player) -> new ElectricPumpContainer(i, inv, tile));
     }
 }

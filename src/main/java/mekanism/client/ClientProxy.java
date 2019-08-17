@@ -414,7 +414,7 @@ public class ClientProxy extends CommonProxy {
         ScreenManager.registerFactory(MekanismContainerTypes.PERSONAL_CHEST_BLOCK, GuiPersonalChestTile::new);
 
         ScreenManager.registerFactory(MekanismContainerTypes.DM_FILTER_LIST, GuiDigitalMinerConfig::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LS_FILTER_LIST, GuiLogisticalSorter::new);
+        ScreenManager.registerFactory(MekanismContainerTypes.LOGISTICAL_SORTER, GuiLogisticalSorter::new);
         ScreenManager.registerFactory(MekanismContainerTypes.DM_FILTER_SELECT, GuiMFilterSelect::new);
         ScreenManager.registerFactory(MekanismContainerTypes.LS_FILTER_SELECT, GuiTFilterSelect::new);
         ScreenManager.registerFactory(MekanismContainerTypes.DM_TAG_FILTER, GuiMOreDictFilter::new);

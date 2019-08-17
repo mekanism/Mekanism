@@ -14,6 +14,8 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.FuelwoodHeaterContainer;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -24,6 +26,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +45,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity, IBlockDisableable,
+public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasGui<TileEntityFuelwoodHeater>, IStateFacing, IStateActive, IHasInventory, IHasSecurity, IBlockDisableable,
       IHasTileEntity<TileEntityFuelwoodHeater> {
 
     private BooleanValue enabledReference;
@@ -150,11 +153,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
     }
 
     @Override
-    public int getGuiID() {
-        return 58;
-    }
-
-    @Override
     public int getInventorySize() {
         return 1;
     }
@@ -173,5 +171,10 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public INamedContainerProvider getProvider(TileEntityFuelwoodHeater tile) {
+        return new ContainerProvider("mekanism.container.fuelwood_heater", (i, inv, player) -> new FuelwoodHeaterContainer(i, inv, tile));
     }
 }
