@@ -1,7 +1,5 @@
 package mekanism.client.gui;
 
-import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
@@ -18,9 +16,9 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterContainer;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
@@ -32,7 +30,6 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,14 +37,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSorter, TransporterFilter, LSFilterListContainer> {
+public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSorter, TransporterFilter, LogisticalSorterContainer> {
 
     private Button singleItemButton;
     private Button roundRobinButton;
     private Button autoEjectButton;
     private Button colorButton;
 
-    public GuiLogisticalSorter(LSFilterListContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiLogisticalSorter(LogisticalSorterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         // Add common Mekanism gui elements
         ResourceLocation resource = getGuiLocation();
@@ -81,7 +78,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
             // Check for scrollbar interaction
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (needsScrollBars()) {
-                    dragOffset = yAxis - (getScroll() + 18);
+                    dragOffset = (int) (yAxis - (getScroll() + 18));
                     isDragging = true;
                 } else {
                     scroll = 0;
@@ -108,13 +105,17 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                             return;
                         }
                         if (filter instanceof IItemStackFilter) {
-                            sendPacket(SorterGuiPacket.SERVER_INDEX, 1, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IOreDictFilter) {
-                            sendPacket(SorterGuiPacket.SERVER_INDEX, 2, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IMaterialFilter) {
-                            sendPacket(SorterGuiPacket.SERVER_INDEX, 3, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IModIDFilter) {
-                            sendPacket(SorterGuiPacket.SERVER_INDEX, 5, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         }
                     }
                 }
@@ -124,13 +125,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         // Check for default colour button
         if (colorButton.isMouseOver(mouseX, mouseY) && button == 1) {
             sendDataFromClick(TileNetworkList.withContents(0, 1));
-        }
-    }
-
-    private void sendPacket(SorterGuiPacket type, int guiID, int extra, @Nullable SoundEvent sound) {
-        Mekanism.packetHandler.sendToServer(new PacketLogisticalSorterGui(type, Coord4D.get(tileEntity), guiID, extra, 0));
-        if (sound != null) {
-            SoundHandler.playSound(sound);
         }
     }
 
@@ -145,7 +139,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         // Add buttons to gui
         buttons.clear();
         buttons.add(new GuiButtonTranslation(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
-              onPress -> sendPacket(SorterGuiPacket.SERVER, 4, 0, null)));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
         buttons.add(singleItemButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
         buttons.add(roundRobinButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation(),

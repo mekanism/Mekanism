@@ -9,6 +9,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+//TODO: Convert the gui tabs on the side that are buttons to actual button elements?
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiTabElement<TILE extends TileEntity> extends GuiTileEntityElement<TILE> {
 

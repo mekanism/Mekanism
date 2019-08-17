@@ -67,8 +67,8 @@ import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
-import mekanism.common.inventory.container.tile.filter.list.DMFilterListContainer;
-import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
+import mekanism.common.inventory.container.tile.filter.list.DigitalMinerConfigContainer;
+import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterContainer;
 import mekanism.common.inventory.container.tile.filter.select.DMFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.select.LSFilterSelectContainer;
 import mekanism.common.inventory.container.tile.fluid.DynamicTankContainer;
@@ -151,8 +151,8 @@ public class MekanismContainerTypes {
     public static final ContainerType<SideConfigurationContainer> SIDE_CONFIGURATION = create("side_configuration", SideConfigurationContainer::new);
     public static final ContainerType<TransporterConfigurationContainer> TRANSPORTER_CONFIGURATION = create("transporter_configuration", TransporterConfigurationContainer::new);
 
-    public static final ContainerType<DMFilterListContainer> DM_FILTER_LIST = create("digital_miner_filter_list", DMFilterListContainer::new);
-    public static final ContainerType<LSFilterListContainer> LOGISTICAL_SORTER = create(MekanismBlock.LOGISTICAL_SORTER, LSFilterListContainer::new);
+    public static final ContainerType<DigitalMinerConfigContainer> DIGITAL_MINER_CONFIG = create("digital_miner_config", DigitalMinerConfigContainer::new);
+    public static final ContainerType<LogisticalSorterContainer> LOGISTICAL_SORTER = create(MekanismBlock.LOGISTICAL_SORTER, LogisticalSorterContainer::new);
     public static final ContainerType<DMFilterSelectContainer> DM_FILTER_SELECT = create("digital_miner_filter_select", DMFilterSelectContainer::new);
     public static final ContainerType<LSFilterSelectContainer> LS_FILTER_SELECT = create("logistical_sorter_filter_select", LSFilterSelectContainer::new);
 

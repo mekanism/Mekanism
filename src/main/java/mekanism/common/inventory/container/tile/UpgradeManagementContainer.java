@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.InventoryList;
@@ -9,15 +8,12 @@ import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 
 public class UpgradeManagementContainer<TILE extends TileEntityMekanism & IUpgradeTile> extends MekanismTileContainer<TILE> {
 
@@ -81,17 +77,5 @@ public class UpgradeManagementContainer<TILE extends TileEntityMekanism & IUpgra
     @Override
     protected void addSlots() {
         addSlot(new SlotMachineUpgrade(tile, tile.getComponent().getUpgradeSlot(), 154, 7));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new UpgradeManagementContainer<>(i, inv, tile);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanism.container.upgrade_management");
     }
 }

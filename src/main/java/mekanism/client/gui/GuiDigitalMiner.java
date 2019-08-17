@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
@@ -18,8 +17,8 @@ import mekanism.client.gui.element.tab.GuiVisualsTab;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
-import mekanism.common.network.PacketDigitalMinerGui;
-import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -80,7 +79,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         buttons.add(this.stopButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
         buttons.add(this.configButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 57, 60, 20, "gui.config",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
         buttons.add(this.resetButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
         buttons.add(this.silkTouchButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation(),

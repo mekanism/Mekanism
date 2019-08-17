@@ -1,7 +1,5 @@
 package mekanism.client.gui;
 
-import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
@@ -16,9 +14,9 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
-import mekanism.common.inventory.container.tile.filter.list.DMFilterListContainer;
-import mekanism.common.network.PacketDigitalMinerGui;
-import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
+import mekanism.common.inventory.container.tile.filter.list.DigitalMinerConfigContainer;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -30,7 +28,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMiner, MinerFilter, DMFilterListContainer> {
+public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMiner, MinerFilter, DigitalMinerConfigContainer> {
 
     private TextFieldWidget radiusField;
     private TextFieldWidget minField;
@@ -50,7 +47,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private Button setMaxButton;
     private Button inverseButton;
 
-    public GuiDigitalMinerConfig(DMFilterListContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiDigitalMinerConfig(DigitalMinerConfigContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
@@ -81,7 +78,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
 
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (needsScrollBars()) {
-                    dragOffset = yAxis - (getScroll() + 18);
+                    dragOffset = (int) (yAxis - (getScroll() + 18));
                     isDragging = true;
                 } else {
                     scroll = 0;
@@ -112,24 +109,21 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                             }
                         }
                         if (filter instanceof IItemStackFilter) {
-                            sendPacket(MinerGuiPacket.SERVER_INDEX, 1, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_ITEMSTACK, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IOreDictFilter) {
-                            sendPacket(MinerGuiPacket.SERVER_INDEX, 2, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_TAG, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IMaterialFilter) {
-                            sendPacket(MinerGuiPacket.SERVER_INDEX, 3, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MATERIAL, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IModIDFilter) {
-                            sendPacket(MinerGuiPacket.SERVER_INDEX, 6, index, SoundEvents.UI_BUTTON_CLICK);
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MOD_ID, tileEntity.getPos(), index));
+                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         }
                     }
                 }
             }
-        }
-    }
-
-    private void sendPacket(MinerGuiPacket type, int guiID, int extra, @Nullable SoundEvent sound) {
-        Mekanism.packetHandler.sendToServer(new PacketDigitalMinerGui(type, Coord4D.get(tileEntity), guiID, extra, 0));
-        if (sound != null) {
-            SoundHandler.playSound(sound);
         }
     }
 
@@ -143,9 +137,9 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         super.init();
         buttons.clear();
         buttons.add(newFilterButton = new GuiButtonTranslation(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
-              onPress -> sendPacket(MinerGuiPacket.SERVER, 5, 0, null)));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
-              onPress -> sendPacket(MinerGuiPacket.SERVER, 4, 0, null)));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         buttons.add(setRadiButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation(),
               onPress -> setRadius()));
         buttons.add(setMinButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation(),

@@ -16,7 +16,8 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
-import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.MekanismUtils;
@@ -67,7 +68,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         super.init();
         buttons.clear();
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 0, Mekanism.proxy.getGuiId(tileEntity.getBlockType())))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         buttons.add(autoEjectButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType))));
         for (int i = 0; i < slotPosMap.size(); i++) {

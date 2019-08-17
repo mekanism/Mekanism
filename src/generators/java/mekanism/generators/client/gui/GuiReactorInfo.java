@@ -1,10 +1,10 @@
 package mekanism.generators.client.gui;
 
-import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.reactor.info.ReactorInfoContainer;
@@ -30,7 +30,7 @@ public abstract class GuiReactorInfo<CONTAINER extends ReactorInfoContainer> ext
         super.init();
         buttons.clear();
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 1, 10))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
     }
 
     @Override

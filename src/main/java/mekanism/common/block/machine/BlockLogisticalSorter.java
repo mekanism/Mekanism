@@ -23,9 +23,7 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterContainer;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
@@ -38,7 +36,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -189,13 +186,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                 }
             }
         }
-
-        if (!player.isSneaking()) {
-            if (SecurityUtils.canAccess(player, tileEntity)) {
-                PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (ServerPlayerEntity) player, Coord4D.get(tileEntity), -1);
-            } else {
-                SecurityUtils.displayNoAccess(player);
-            }
+        if (tileEntity.openGui(player)) {
             return true;
         }
         return false;
@@ -290,6 +281,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     @Override
     public INamedContainerProvider getProvider(TileEntityLogisticalSorter tile) {
-        return new ContainerProvider("mekanism.container.logistical_sorter", (i, inv, player) -> new LSFilterListContainer(i, inv, tile));
+        return new ContainerProvider("mekanism.container.logistical_sorter", (i, inv, player) -> new LogisticalSorterContainer(i, inv, tile));
     }
 }

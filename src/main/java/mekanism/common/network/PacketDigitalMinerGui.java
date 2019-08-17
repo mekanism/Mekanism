@@ -1,34 +1,6 @@
 package mekanism.common.network;
 
-import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
-import mekanism.client.gui.GuiDigitalMiner;
-import mekanism.client.gui.GuiDigitalMinerConfig;
-import mekanism.client.gui.filter.GuiMFilterSelect;
-import mekanism.client.gui.filter.GuiMItemStackFilter;
-import mekanism.client.gui.filter.GuiMMaterialFilter;
-import mekanism.client.gui.filter.GuiMModIDFilter;
-import mekanism.client.gui.filter.GuiMOreDictFilter;
-import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.inventory.container.tile.DigitalMinerContainer;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
-import mekanism.common.inventory.container.tile.filter.list.DMFilterListContainer;
-import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 //TODO: Fix
 public class PacketDigitalMinerGui {
@@ -53,7 +25,7 @@ public class PacketDigitalMinerGui {
         }
     }
 
-    public static void handle(PacketDigitalMinerGui message, Supplier<Context> context) {
+    /*public static void handle(PacketDigitalMinerGui message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
@@ -118,13 +90,13 @@ public class PacketDigitalMinerGui {
         playerMP.closeContainer();
         switch (guiType) {
             case 0:
-                container = new DMFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+                container = new DigitalMinerConfigContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
                 break;
             case 4:
                 container = new DigitalMinerContainer(playerMP.inventory, (TileEntityDigitalMiner) obj.getTileEntity(world));
                 break;
             case 5:
-                container = new DMFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+                container = new DigitalMinerConfigContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
                 break;
 //				case 1:
 //				case 2:
@@ -186,7 +158,7 @@ public class PacketDigitalMinerGui {
             }
         }
         return null;
-    }
+    }*/
 
     public enum MinerGuiPacket {
         SERVER,

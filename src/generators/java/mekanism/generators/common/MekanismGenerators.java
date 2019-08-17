@@ -10,7 +10,6 @@ import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -91,9 +90,6 @@ public class MekanismGenerators implements IModule {
     public void init(FMLInitializationEvent event) {
         //Add this module to the core list
         Mekanism.modulesLoaded.add(this);
-
-        //Register this module's GUI handler in the simple packet protocol
-        PacketSimpleGui.handlers.add(1, proxy);
 
         //Set up the GUI handler
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());

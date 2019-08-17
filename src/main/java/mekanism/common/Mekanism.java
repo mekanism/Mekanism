@@ -48,7 +48,6 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.BinRecipe;
@@ -701,9 +700,6 @@ public class Mekanism {
 
         //Register to receive subscribed events
         MinecraftForge.EVENT_BUS.register(this);
-
-        //Register this module's GUI handler in the simple packet protocol
-        PacketSimpleGui.handlers.add(0, proxy);
 
         //Set up VoiceServerManager
         if (MekanismConfig.general.voiceServerEnabled.get()) {

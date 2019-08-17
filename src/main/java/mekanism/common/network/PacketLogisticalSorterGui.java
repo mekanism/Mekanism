@@ -1,31 +1,6 @@
 package mekanism.common.network;
 
-import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.GuiLogisticalSorter;
-import mekanism.client.gui.filter.GuiTFilterSelect;
-import mekanism.client.gui.filter.GuiTItemStackFilter;
-import mekanism.client.gui.filter.GuiTMaterialFilter;
-import mekanism.client.gui.filter.GuiTModIDFilter;
-import mekanism.client.gui.filter.GuiTOreDictFilter;
-import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
-import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
-import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 //TODO: Fix
 public class PacketLogisticalSorterGui {
@@ -52,7 +27,7 @@ public class PacketLogisticalSorterGui {
         }
     }
 
-    public static void handle(PacketLogisticalSorterGui message, Supplier<Context> context) {
+    /*public static void handle(PacketLogisticalSorterGui message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
@@ -120,9 +95,9 @@ public class PacketLogisticalSorterGui {
         playerMP.closeContainer();
 
         if (guiType == 0) {
-            container = new LSFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+            container = new LogisticalSorterContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
         } else if (guiType == 4) {
-            container = new LSFilterListContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
+            container = new LogisticalSorterContainer(playerMP, (TileEntityMekanism) obj.getTileEntity(world));
         } else if (guiType == 1 || guiType == 2 || guiType == 3 || guiType == 5) {
             container = new FilterContainer<TileEntityLogisticalSorter>(playerMP.inventory, (TileEntityMekanism) obj.getTileEntity(world));
         }
@@ -166,7 +141,7 @@ public class PacketLogisticalSorterGui {
             }
         }
         return null;
-    }
+    }*/
 
     public enum SorterGuiPacket {
         SERVER,

@@ -6,13 +6,13 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-public class LSFilterListContainer extends FilterEmptyContainer<TileEntityLogisticalSorter> {
+public class LogisticalSorterContainer extends FilterEmptyContainer<TileEntityLogisticalSorter> {
 
-    public LSFilterListContainer(int id, PlayerInventory inv, TileEntityLogisticalSorter tile) {
+    public LogisticalSorterContainer(int id, PlayerInventory inv, TileEntityLogisticalSorter tile) {
         super(MekanismContainerTypes.LOGISTICAL_SORTER, id, inv, tile);
     }
 
-    public LSFilterListContainer(int id, PlayerInventory inv, PacketBuffer buf) {
+    public LogisticalSorterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
         this(id, inv, getTileFromBuf(buf, TileEntityLogisticalSorter.class));
     }
 }

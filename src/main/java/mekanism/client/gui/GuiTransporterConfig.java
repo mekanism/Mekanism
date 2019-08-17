@@ -18,7 +18,8 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
-import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.MekanismUtils;
@@ -62,7 +63,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         super.init();
         buttons.clear();
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 0, Mekanism.proxy.getGuiId(tileEntity.getBlockType())))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         buttons.add(strictInputButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null))));
         buttons.add(colorButton = new GuiColorButton(guiLeft + 122, guiTop + 49, 16, 16, () -> tileEntity.getEjector().getOutputColor(),
