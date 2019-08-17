@@ -7,6 +7,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.MekanismUtils;
@@ -88,13 +90,13 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
                   //Clicking main button doesn't do anything while already on the main GUI
               }));
         buttons.add(craftingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 22))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getEntityId()))));
         buttons.add(inventoryButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 23))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getEntityId()))));
         buttons.add(smeltingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 24))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getEntityId()))));
         buttons.add(repairButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 25))));
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getEntityId()))));
     }
 
     @Override

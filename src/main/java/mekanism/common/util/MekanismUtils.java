@@ -38,7 +38,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
@@ -583,18 +582,6 @@ public final class MekanismUtils {
         }
         return fluid.getBlock();
     }
-
-    /**
-     * Encodes entity info as a gui, and opens it.
-     *
-     * @apiNote Should only be used from the server side
-     */
-    public static void openEntityGui(PlayerEntity player, Entity entity, int guiID) {
-        //TODO:
-        //entity id, gui type
-        player.openGui(Mekanism.instance, 1, player.world, entity.getEntityId(), guiID, 0);
-    }
-
 
     /**
      * Gets a ResourceLocation with a defined resource type and name.

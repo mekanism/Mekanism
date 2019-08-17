@@ -8,7 +8,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
@@ -16,6 +18,8 @@ import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.CreatureEntity;
@@ -306,7 +310,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
                 return ActionResultType.SUCCESS;
             }
         } else {
-            MekanismUtils.openEntityGui(entityplayer, this, 21);
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, getEntityId()));
             return ActionResultType.SUCCESS;
         }
 

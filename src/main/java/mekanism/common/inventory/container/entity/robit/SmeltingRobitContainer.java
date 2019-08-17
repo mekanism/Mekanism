@@ -125,16 +125,4 @@ public class SmeltingRobitContainer extends RobitContainer {
         addSlot(new FurnaceResultSlot(inventory.player, entity, 30, 116, 35));
         super.addInventorySlots(inventory);
     }
-
-    @Nullable
-    @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new SmeltingRobitContainer(i, inv, entity);
-    }
-
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.translate("mekanism.container.robit.smelting");
-    }
 }
