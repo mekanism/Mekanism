@@ -8,6 +8,8 @@ import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TItemStackFilter;
+import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
@@ -23,28 +25,31 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, TileEntityLogisticalSorter> {
+public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, TileEntityLogisticalSorter, LSItemStackFilterContainer> {
 
     private TextFieldWidget minField;
     private TextFieldWidget maxField;
     private Button sizeButton;
 
     public GuiTItemStackFilter(PlayerEntity player, TileEntityLogisticalSorter tile, int index) {
+        //TODO
         super(player, tile);
         origFilter = (TItemStackFilter) tileEntity.filters.get(index);
         filter = ((TItemStackFilter) tileEntity.filters.get(index)).clone();
     }
 
-    public GuiTItemStackFilter(PlayerEntity player, TileEntityLogisticalSorter tile) {
-        super(player, tile);
+    public GuiTItemStackFilter(LSItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         isNew = true;
         filter = new TItemStackFilter();
     }

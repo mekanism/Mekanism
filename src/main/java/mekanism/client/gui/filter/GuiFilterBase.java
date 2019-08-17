@@ -17,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -45,11 +44,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
 
     protected GuiFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-    }
-
-    @Deprecated
-    protected GuiFilterBase(PlayerEntity player, TILE tile) {
-
+        //TODO: Set filter stuff here
     }
 
     @Override

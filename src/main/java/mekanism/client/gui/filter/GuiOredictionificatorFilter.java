@@ -7,6 +7,8 @@ import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
+import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketSimpleGui;
@@ -20,28 +22,31 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator> {
+public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator, OredictionificatorFilterContainer> {
 
     private Button prevButton;
     private Button nextButton;
     private Button checkboxButton;
 
     public GuiOredictionificatorFilter(PlayerEntity player, TileEntityOredictionificator tile, int index) {
+        //TODO
         super(player, tile);
         origFilter = tileEntity.filters.get(index);
         filter = tileEntity.filters.get(index).clone();
         updateRenderStack();
     }
 
-    public GuiOredictionificatorFilter(PlayerEntity player, TileEntityOredictionificator tile) {
-        super(player, tile);
+    public GuiOredictionificatorFilter(OredictionificatorFilterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         filter = new OredictionificatorFilter();
         isNew = true;
     }

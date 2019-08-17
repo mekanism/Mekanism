@@ -8,6 +8,8 @@ import mekanism.client.gui.button.GuiColorButton;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TOreDictFilter;
+import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
@@ -20,23 +22,26 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEntityLogisticalSorter> {
+public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEntityLogisticalSorter, LSTagFilterContainer> {
 
     public GuiTOreDictFilter(PlayerEntity player, TileEntityLogisticalSorter tile, int index) {
+        //TODO
         super(player, tile);
         origFilter = (TOreDictFilter) tileEntity.filters.get(index);
         filter = ((TOreDictFilter) tileEntity.filters.get(index)).clone();
         updateStackList(filter.getOreDictName());
     }
 
-    public GuiTOreDictFilter(PlayerEntity player, TileEntityLogisticalSorter tile) {
-        super(player, tile);
+    public GuiTOreDictFilter(LSTagFilterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         isNew = true;
         filter = new TOreDictFilter();
     }

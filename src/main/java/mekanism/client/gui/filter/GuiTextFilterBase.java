@@ -2,22 +2,24 @@ package mekanism.client.gui.filter;
 
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism> extends GuiFilterBase<FILTER, TILE> {
+public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiFilterBase<FILTER, TILE, CONTAINER> {
 
     protected ItemStack renderStack = ItemStack.EMPTY;
     protected TextFieldWidget text;
 
-    protected GuiTextFilterBase(PlayerEntity player, TILE tile) {
-        super(player, tile);
+    protected GuiTextFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     protected abstract void setText();

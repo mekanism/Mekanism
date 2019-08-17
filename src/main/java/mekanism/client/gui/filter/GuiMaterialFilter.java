@@ -3,25 +3,27 @@ package mekanism.client.gui.filter;
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IMaterialFilter;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism> extends GuiTypeFilter<FILTER, TILE> {
+public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
 
-    protected GuiMaterialFilter(PlayerEntity player, TILE tile) {
-        super(player, tile);
+    protected GuiMaterialFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     @Override

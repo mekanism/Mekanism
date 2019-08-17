@@ -7,6 +7,8 @@ import mekanism.client.gui.button.GuiButtonTranslation;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MItemStackFilter;
+import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter;
@@ -22,27 +24,30 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner> {
+public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner, DMItemStackFilterContainer> {
 
     private Button fuzzyButton;
 
     public GuiMItemStackFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
+        //TODO
         super(player, tile);
         origFilter = (MItemStackFilter) tileEntity.filters.get(index);
         filter = ((MItemStackFilter) tileEntity.filters.get(index)).clone();
     }
 
-    public GuiMItemStackFilter(PlayerEntity player, TileEntityDigitalMiner tile) {
-        super(player, tile);
+    public GuiMItemStackFilter(DMItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
         isNew = true;
         filter = new MItemStackFilter();
     }

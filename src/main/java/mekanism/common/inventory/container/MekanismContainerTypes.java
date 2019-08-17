@@ -56,7 +56,14 @@ import mekanism.common.inventory.container.tile.electric.EnergizedSmelterContain
 import mekanism.common.inventory.container.tile.electric.EnrichmentChamberContainer;
 import mekanism.common.inventory.container.tile.energy.EnergyCubeContainer;
 import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
+import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
+import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
+import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
+import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.inventory.container.tile.filter.list.DMFilterListContainer;
 import mekanism.common.inventory.container.tile.filter.list.LSFilterListContainer;
 import mekanism.common.inventory.container.tile.filter.select.DMFilterSelectContainer;
@@ -140,12 +147,25 @@ public class MekanismContainerTypes {
     public static final ContainerType<MatrixStatsContainer> MATRIX_STATS = create("matrix_stats", MatrixStatsContainer::new);
     public static final ContainerType<SideConfigurationContainer> SIDE_CONFIGURATION = create("side_configuration", SideConfigurationContainer::new);
     public static final ContainerType<TransporterConfigurationContainer> TRANSPORTER_CONFIGURATION = create("transporter_configuration", TransporterConfigurationContainer::new);
-    public static final ContainerType<FilterContainer> FILTER = create("filter", FilterContainer::new);
 
     public static final ContainerType<DMFilterListContainer> DM_FILTER_LIST = create("digital_miner_filter_list", DMFilterListContainer::new);
     public static final ContainerType<LSFilterListContainer> LS_FILTER_LIST = create("logistical_sorter_filter_list", LSFilterListContainer::new);
     public static final ContainerType<DMFilterSelectContainer> DM_FILTER_SELECT = create("digital_miner_filter_select", DMFilterSelectContainer::new);
     public static final ContainerType<LSFilterSelectContainer> LS_FILTER_SELECT = create("logistical_sorter_filter_select", LSFilterSelectContainer::new);
+
+    public static final ContainerType<DMTagFilterContainer> DM_TAG_FILTER = create("digital_miner_tag_filter", DMTagFilterContainer::new);
+    public static final ContainerType<LSTagFilterContainer> LS_TAG_FILTER = create("logistical_sorter_tag_filter", LSTagFilterContainer::new);
+
+    public static final ContainerType<DMModIDFilterContainer> DM_MOD_ID_FILTER = create("digital_miner_mod_id_filter", DMModIDFilterContainer::new);
+    public static final ContainerType<LSModIDFilterContainer> LS_MOD_ID_FILTER = create("logistical_sorter_mod_id_filter", LSModIDFilterContainer::new);
+
+    public static final ContainerType<DMMaterialFilterContainer> DM_MATERIAL_FILTER = create("digital_miner_material_filter", DMMaterialFilterContainer::new);
+    public static final ContainerType<LSMaterialFilterContainer> LS_MATERIAL_FILTER = create("logistical_sorter_material_filter", LSMaterialFilterContainer::new);
+
+    public static final ContainerType<DMItemStackFilterContainer> DM_ITEMSTACK_FILTER = create("digital_miner_itemstack_filter", DMItemStackFilterContainer::new);
+    public static final ContainerType<LSItemStackFilterContainer> LS_ITEMSTACK_FILTER = create("logistical_sorter_itemstack_filter", LSItemStackFilterContainer::new);
+
+    public static final ContainerType<OredictionificatorContainer> OREDICTIONIFICATOR_FILTER = create("oredictionificator_filter", OredictionificatorContainer::new);
 
 
     //Can just use IItemProvider because IBlockProvider extends it. This way we support both tiles and items

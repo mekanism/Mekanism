@@ -2,18 +2,20 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.IItemStackFilter;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityMekanism> extends GuiTypeFilter<FILTER, TILE> {
+public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
 
-    protected GuiItemStackFilter(PlayerEntity player, TILE tile) {
-        super(player, tile);
+    protected GuiItemStackFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     @Override

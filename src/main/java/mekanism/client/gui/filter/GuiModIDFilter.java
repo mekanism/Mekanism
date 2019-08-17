@@ -2,18 +2,20 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.IModIDFilter;
+import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends TileEntityMekanism> extends GuiTextFilter<FILTER, TILE> {
+public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE>> extends GuiTextFilter<FILTER, TILE, CONTAINER> {
 
-    protected GuiModIDFilter(PlayerEntity player, TILE tile) {
-        super(player, tile);
+    protected GuiModIDFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
     }
 
     protected abstract void updateStackList(String modName);
