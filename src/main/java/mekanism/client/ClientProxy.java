@@ -43,6 +43,7 @@ import mekanism.client.gui.GuiQuantumEntangloporter;
 import mekanism.client.gui.GuiResistiveHeater;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSecurityDesk;
+import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
@@ -357,11 +358,9 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerScreenHandlers() {
-        //TODO: Make sure all are here
         ScreenManager.registerFactory(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
         ScreenManager.registerFactory(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
-        //TODO
-        //ScreenManager.registerFactory(MekanismContainerTypes.SEISMIC_READER, GuiSeismicReader::new);
+        ScreenManager.registerFactory(MekanismContainerTypes.SEISMIC_READER, GuiSeismicReader::new);
 
         ScreenManager.registerFactory(MekanismContainerTypes.MAIN_ROBIT, GuiRobitMain::new);
         ScreenManager.registerFactory(MekanismContainerTypes.INVENTORY_ROBIT, GuiRobitInventory::new);
@@ -426,7 +425,6 @@ public class ClientProxy extends CommonProxy {
         ScreenManager.registerFactory(MekanismContainerTypes.DM_ITEMSTACK_FILTER, GuiMItemStackFilter::new);
         ScreenManager.registerFactory(MekanismContainerTypes.LS_ITEMSTACK_FILTER, GuiTItemStackFilter::new);
         ScreenManager.registerFactory(MekanismContainerTypes.OREDICTIONIFICATOR_FILTER, GuiOredictionificatorFilter::new);
-
     }
 
     @Override
