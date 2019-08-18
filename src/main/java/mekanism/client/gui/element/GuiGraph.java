@@ -84,14 +84,6 @@ public class GuiGraph extends GuiElement {
         }
     }
 
-    @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    }
-
     public void drawBlack(int guiWidth, int guiHeight) {
         int xDisplays = xSize / 10 + (xSize % 10 > 0 ? 1 : 0);
         int yDisplays = ySize / 10 + (ySize % 10 > 0 ? 1 : 0);

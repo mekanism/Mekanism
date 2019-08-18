@@ -174,6 +174,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         } else {
             transporterMouseClicked(mouseX, mouseY, button, filter);
         }
+        return true;
     }
 
     @Override

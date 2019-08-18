@@ -60,14 +60,6 @@ public class GuiSlot extends GuiElement {
     public void renderForeground(int xAxis, int yAxis) {
     }
 
-    @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    }
-
     public enum SlotType {
         NORMAL(18, 18, 0, 0),
         POWER(18, 18, 18, 0),

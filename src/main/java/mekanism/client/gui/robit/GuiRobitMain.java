@@ -170,6 +170,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         nameChangeField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

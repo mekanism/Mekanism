@@ -148,6 +148,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
                 }
             }
         }
+        return true;
     }
 
     @Override

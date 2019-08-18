@@ -76,6 +76,7 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
                 minerFilterClickCommon(xAxis, yAxis, filter);
             }
         }
+        return true;
     }
 
     @Override

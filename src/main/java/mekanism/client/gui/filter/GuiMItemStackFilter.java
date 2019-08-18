@@ -109,6 +109,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 minerFilterClickCommon(xAxis, yAxis, filter);
             }
         }
+        return true;
     }
 
     @Override

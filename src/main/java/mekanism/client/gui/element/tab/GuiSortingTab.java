@@ -54,15 +54,13 @@ public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             TileNetworkList data = TileNetworkList.withContents(0);
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

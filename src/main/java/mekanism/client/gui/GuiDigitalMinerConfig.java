@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -125,6 +124,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                 }
             }
         }
+        return true;
     }
 
     @Override

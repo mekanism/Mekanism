@@ -100,6 +100,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         minField.mouseClicked(mouseX, mouseY, button);
         maxField.mouseClicked(mouseX, mouseY, button);
         timerField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

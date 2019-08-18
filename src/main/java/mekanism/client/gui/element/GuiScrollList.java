@@ -21,7 +21,7 @@ public class GuiScrollList extends GuiElement {
     private boolean isDragging;
     private double dragOffset = 0;
     private int selected = -1;
-    private float scroll;
+    private double scroll;
 
     public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiScrollList.png"), gui, def);
@@ -145,10 +145,6 @@ public class GuiScrollList extends GuiElement {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
             int xStart = xPosition + xSize - 5;
@@ -157,6 +153,7 @@ public class GuiScrollList extends GuiElement {
                 if (textEntries.size() > size) {
                     dragOffset = mouseY - (getScroll() + yPosition + 1);
                     isDragging = true;
+                    return true;
                 }
             } else if (mouseX >= xPosition && mouseX <= xPosition + xSize - 6 && mouseY >= yPosition && mouseY <= yPosition + size * 10) {
                 int index = getScrollIndex();
@@ -169,16 +166,20 @@ public class GuiScrollList extends GuiElement {
                         }
                     }
                 }
+                return true;
             }
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public void mouseClickMove(int xAxis, int yAxis, int button, long ticks) {
-        super.mouseClickMove(xAxis, yAxis, button, ticks);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
+        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
-            scroll = Math.min(Math.max((float) (yAxis - (yPosition + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
+            scroll = Math.min(Math.max((mouseY - (yPosition + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
         }
+        return true;
     }
 
     @Override

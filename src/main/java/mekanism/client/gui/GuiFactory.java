@@ -137,6 +137,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
                 }
             }
         }
+        return true;
     }
 
     @Override

@@ -212,6 +212,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

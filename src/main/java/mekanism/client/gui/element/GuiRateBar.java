@@ -57,14 +57,6 @@ public class GuiRateBar extends GuiElement {
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
-    @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    }
-
     public static abstract class IRateInfoHandler {
 
         public ITextComponent getTooltip() {

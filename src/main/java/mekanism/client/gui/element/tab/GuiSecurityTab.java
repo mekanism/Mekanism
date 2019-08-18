@@ -148,10 +148,6 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && MekanismConfig.general.allowProtection.get()) {
             if (getOwner() != null && minecraft.player.getUniqueID().equals(getOwner())) {
@@ -165,8 +161,10 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
                     } else {
                         Mekanism.packetHandler.sendToServer(new PacketSecurityMode(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
                     }
+                    return true;
                 }
             }
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

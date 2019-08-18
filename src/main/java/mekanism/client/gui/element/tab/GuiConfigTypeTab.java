@@ -90,15 +90,13 @@ public class GuiConfigTypeTab extends GuiElement {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (visible && button == 0 && inBounds(mouseX, mouseY)) {
             ((GuiSideConfiguration) guiObj).setCurrentType(transmission);
             ((GuiSideConfiguration) guiObj).updateTabs();
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

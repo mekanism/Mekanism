@@ -45,14 +45,6 @@ public class GuiProgress extends GuiElement {
     public void renderForeground(int xAxis, int yAxis) {
     }
 
-    @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    }
-
     public enum ProgressBar {
         BLUE(28, 11, 0, 0),
         YELLOW(28, 11, 0, 11),

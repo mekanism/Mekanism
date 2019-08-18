@@ -12,7 +12,6 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
@@ -107,6 +106,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         energyUsageField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

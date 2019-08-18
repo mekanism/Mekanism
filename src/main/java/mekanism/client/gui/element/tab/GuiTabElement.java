@@ -39,11 +39,9 @@ public abstract class GuiTabElement<TILE extends TileEntity> extends GuiTileEnti
         if (button == 0 && inBounds(mouseX, mouseY)) {
             buttonClicked();
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            return true;
         }
-    }
-
-    @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

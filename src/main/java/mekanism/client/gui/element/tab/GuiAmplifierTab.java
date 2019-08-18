@@ -52,14 +52,12 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

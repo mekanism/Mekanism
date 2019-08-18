@@ -99,5 +99,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
             transporterMouseClicked(mouseX, mouseY, button, (TransporterFilter) filter);
         }
+        return true;
     }
 }

@@ -133,6 +133,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
                 }
             }
         }
+        return true;
     }
 
     @Override

@@ -84,6 +84,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         } else {
             transporterMouseClicked(mouseX, mouseY, button, filter);
         }
+        return true;
     }
 
     @Override

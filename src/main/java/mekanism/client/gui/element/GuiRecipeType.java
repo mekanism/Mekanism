@@ -39,7 +39,7 @@ public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
+    public void preMouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             offsetX(26);
         }
@@ -49,6 +49,8 @@ public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             offsetX(-26);
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

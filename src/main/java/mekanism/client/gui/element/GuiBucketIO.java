@@ -38,7 +38,7 @@ public class GuiBucketIO extends GuiElement {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
+    public void preMouseClicked(double mouseX, double mouseY, int button) {
         if (inBounds(mouseX, mouseY)) {
             offsetX(26);
         }
@@ -48,6 +48,8 @@ public class GuiBucketIO extends GuiElement {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (inBounds(mouseX, mouseY)) {
             offsetX(-26);
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

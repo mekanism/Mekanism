@@ -189,6 +189,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

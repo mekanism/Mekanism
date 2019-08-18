@@ -5,7 +5,6 @@ import io.netty.buffer.Unpooled;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.util.text.TextComponentUtil;
-import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -108,6 +107,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         itemNameField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

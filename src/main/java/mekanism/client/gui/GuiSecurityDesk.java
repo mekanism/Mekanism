@@ -141,6 +141,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         trustedField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

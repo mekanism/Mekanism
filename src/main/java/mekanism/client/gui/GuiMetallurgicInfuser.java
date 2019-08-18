@@ -101,6 +101,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }
+        return true;
     }
 
     @Override

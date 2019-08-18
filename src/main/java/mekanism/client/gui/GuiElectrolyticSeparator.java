@@ -77,6 +77,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
+        return true;
     }
 
     @Override

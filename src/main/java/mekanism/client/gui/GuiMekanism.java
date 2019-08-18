@@ -152,8 +152,14 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         double yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.preMouseClicked(xAxis, yAxis, button));
         super.mouseClicked(mouseX, mouseY, button);
-        guiElements.forEach(element -> element.mouseClicked(xAxis, yAxis, button));
-        //TODO: Give return values to the implementations of these
+        for (GuiElement element : guiElements) {
+            if (element.mouseClicked(xAxis, yAxis, button)) {
+                //TODO: I think this should return true?
+                //return true;
+            }
+        }
+        //TODO: Figure out all of this mouseClicked stuff when it should return true and when it should return false
+        return true;
     }
 
     @Override
@@ -186,12 +192,19 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
-        super.mouseClickMove(mouseX, mouseY, button, ticks);
-        //TODO: mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_, double p_mouseDragged_6_, double p_mouseDragged_8_)
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        guiElements.forEach(element -> element.mouseClickMove(xAxis, yAxis, button, ticks));
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
+        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        double xAxis = mouseX - guiLeft;
+        double yAxis = mouseY - guiTop;
+        for (GuiElement element : guiElements) {
+            if (element.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld)) {
+                //TODO: I think this should return true?
+                //return true;
+            }
+        }
+        //TODO: Figure out all of this mouseDragged stuff when it should return true and when it should return false
+        return true;
     }
 
     @Override

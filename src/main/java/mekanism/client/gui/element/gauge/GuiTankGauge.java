@@ -47,8 +47,10 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
                         Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));
                     }
                 }
+                return true;
             }
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     public interface ITankInfoHandler<TANK> {

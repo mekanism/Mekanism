@@ -48,7 +48,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     /**
      * Amount scrolled in filter list (0 = top, 1 = bottom)
      */
-    protected float scroll;
+    protected double scroll;
     protected int stackSwitch;
     protected int dragOffset;
 
@@ -194,13 +194,15 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
-        super.mouseClickMove(mouseX, mouseY, button, ticks);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
+        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
             // Get mouse position relative to gui
-            int yAxis = mouseY - guiTop;
+            double yAxis = mouseY - guiTop;
             scroll = Math.min(Math.max((yAxis - 18 - dragOffset) / 123F, 0), 1);
         }
+        return true;
     }
 
     @Override

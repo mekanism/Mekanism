@@ -54,10 +54,6 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             IRedstoneControl control = (IRedstoneControl) tileEntity;
@@ -69,6 +65,8 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
 
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             Mekanism.packetHandler.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

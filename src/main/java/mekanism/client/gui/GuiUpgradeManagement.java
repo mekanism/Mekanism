@@ -36,7 +36,7 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
     private double dragOffset = 0;
     private int supportedIndex;
     private int delay;
-    private float scroll;
+    private double scroll;
 
     public GuiUpgradeManagement(UpgradeManagementContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -187,12 +187,14 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
-        super.mouseClickMove(mouseX, mouseY, button, ticks);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
+        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
-            int yAxis = mouseY - (height - ySize) / 2;
-            scroll = Math.min(Math.max((float) (yAxis - 8 - dragOffset) / 42F, 0), 1);
+            double yAxis = mouseY - (height - ySize) / 2D;
+            scroll = Math.min(Math.max((yAxis - 8 - dragOffset) / 42F, 0), 1);
         }
+        return true;
     }
 
     @Override
@@ -234,5 +236,6 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
                 }
             }
         }
+        return true;
     }
 }

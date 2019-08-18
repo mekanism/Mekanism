@@ -51,13 +51,11 @@ public class GuiEnergyInfo extends GuiElement {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             MekanismConfig.general.energyUnit.set(EnergyType.values()[(MekanismConfig.general.energyUnit.get().ordinal() + 1) % EnergyType.values().length]);
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

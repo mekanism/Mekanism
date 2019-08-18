@@ -97,12 +97,12 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                         if (index > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
                             //Process up button click
                             sendDataFromClick(TileNetworkList.withContents(3, index));
-                            return;
+                            return true;
                         }
                         if (index < tileEntity.filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
                             //Process down button click
                             sendDataFromClick(TileNetworkList.withContents(4, index));
-                            return;
+                            return true;
                         }
                         if (filter instanceof IItemStackFilter) {
                             Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tileEntity.getPos(), index));
@@ -126,6 +126,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         if (colorButton.isMouseOver(mouseX, mouseY) && button == 1) {
             sendDataFromClick(TileNetworkList.withContents(0, 1));
         }
+        return true;
     }
 
     @Override

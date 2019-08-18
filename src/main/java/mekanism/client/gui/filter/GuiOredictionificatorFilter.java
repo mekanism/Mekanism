@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.network.PacketEditFilter;
@@ -165,6 +164,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

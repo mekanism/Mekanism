@@ -51,13 +51,11 @@ public class GuiHeatInfo extends GuiElement {
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             MekanismConfig.general.tempUnit.set(TempType.values()[(MekanismConfig.general.tempUnit.get().ordinal() + 1) % TempType.values().length]);
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

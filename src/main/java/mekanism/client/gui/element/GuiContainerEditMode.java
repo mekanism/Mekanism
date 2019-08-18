@@ -53,10 +53,6 @@ public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityMekanis
     }
 
     @Override
-    public boolean preMouseClicked(double mouseX, double mouseY, int button) {
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         IFluidContainerManager manager = (IFluidContainerManager) tileEntity;
         if (button == 0 && inBounds(mouseX, mouseY)) {
@@ -64,6 +60,8 @@ public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityMekanis
             int ordinalToSet = current.ordinal() < (ContainerEditMode.values().length - 1) ? current.ordinal() + 1 : 0;
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             Mekanism.packetHandler.sendToServer(new PacketContainerEditMode(Coord4D.get(tileEntity), ContainerEditMode.values()[ordinalToSet]));
+            return true;
         }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

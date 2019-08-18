@@ -96,7 +96,8 @@ public abstract class GuiElement {
         return guiObj.getFont();
     }
 
-    public void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        return true;
     }
 
     public boolean mouseReleased(double mouseX, double mouseY, int type) {
@@ -112,9 +113,12 @@ public abstract class GuiElement {
 
     public abstract void renderForeground(int xAxis, int yAxis);
 
-    public abstract boolean preMouseClicked(double xAxis, double yAxis, int button);
+    public void preMouseClicked(double xAxis, double yAxis, int button) {
+    }
 
-    public abstract boolean mouseClicked(double xAxis, double yAxis, int button);
+    public boolean mouseClicked(double xAxis, double yAxis, int button) {
+        return false;
+    }
 
     public interface IInfoHandler {
 

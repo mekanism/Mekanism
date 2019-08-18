@@ -87,6 +87,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
+        return true;
     }
 
     @Override
