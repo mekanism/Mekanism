@@ -1,9 +1,9 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nullable;
+import mekanism.api.block.IHasModel;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IHasModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;

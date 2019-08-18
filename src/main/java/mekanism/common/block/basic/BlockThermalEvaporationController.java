@@ -2,13 +2,13 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.block.IHasInventory;
+import mekanism.api.block.IHasModel;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IHasInventory;
-import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.container.ContainerProvider;

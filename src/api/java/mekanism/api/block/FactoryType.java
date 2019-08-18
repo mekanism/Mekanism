@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.api.block;
 
 public enum FactoryType {
     SMELTING("smelting"),

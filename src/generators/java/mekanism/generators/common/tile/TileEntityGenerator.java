@@ -2,9 +2,9 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.IBlockProvider;
+import mekanism.api.block.IBlockDisableable;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IBlockProvider;
-import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;

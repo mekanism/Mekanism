@@ -2,10 +2,10 @@ package mekanism.common.block.basic;
 
 import java.util.Locale;
 import mekanism.api.Coord4D;
+import mekanism.api.block.IHasInventory;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IHasInventory;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;

@@ -2,7 +2,7 @@ package mekanism.generators.common;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.common.base.IBlockProvider;
+import mekanism.api.IBlockProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.common.block.BlockAdvancedSolarGenerator;

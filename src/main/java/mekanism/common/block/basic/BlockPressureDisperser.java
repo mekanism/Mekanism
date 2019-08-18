@@ -1,9 +1,9 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.Coord4D;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;

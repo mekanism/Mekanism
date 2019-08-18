@@ -1,8 +1,8 @@
 package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.generators.common.MekanismGenerators;

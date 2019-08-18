@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -10,12 +11,12 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.LazyOptionalHelper;
-import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.security.ISecurityItem;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -152,11 +153,11 @@ public class RecipeUtils {
             }
         }
 
-        if (ISupportsUpgrades.isInstance(toReturn)) {
+        if (supportsUpgrades(toReturn)) {
             Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-                if (ISupportsUpgrades.isInstance(itemstack)) {
+                if (supportsUpgrades(itemstack)) {
                     Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
                     for (Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
                         if (entry != null && entry.getKey() != null && entry.getValue() != null) {
@@ -169,6 +170,10 @@ public class RecipeUtils {
             Upgrade.saveMap(upgrades, ItemDataUtils.getDataMap(toReturn));
         }
         return toReturn;
+    }
+
+    private static boolean supportsUpgrades(ItemStack stack) {
+        return !stack.isEmpty() && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ISupportsUpgrades;
     }
 
     public static IRecipe getRecipeFromGrid(CraftingInventory inv, World world) {

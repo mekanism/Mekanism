@@ -1,8 +1,8 @@
 package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
+import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
-import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

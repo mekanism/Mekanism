@@ -1,10 +1,10 @@
 package mekanism.common.block;
 
 import javax.annotation.Nonnull;
+import mekanism.api.block.IHasModel;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;

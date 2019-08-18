@@ -172,7 +172,7 @@ public class MekanismGenerators implements IModule {
     @SubscribeEvent
     public void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
         // Mekanism Generators multiblock structures
-        MekanismAPI.addBoxBlacklist(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR.getBlock());
-        MekanismAPI.addBoxBlacklist(GeneratorsBlock.WIND_GENERATOR.getBlock());
+        MekanismAPI.addBoxBlacklist(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR);
+        MekanismAPI.addBoxBlacklist(GeneratorsBlock.WIND_GENERATOR);
     }
 }

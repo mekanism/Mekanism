@@ -2,11 +2,11 @@ package mekanism.common.tile.prefab;
 
 import java.util.Map;
 import javax.annotation.Nonnull;
+import mekanism.api.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.base.IBlockProvider;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;

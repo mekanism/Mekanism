@@ -1,8 +1,8 @@
 package mekanism.common.tile.prefab;
 
+import mekanism.api.IBlockProvider;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;

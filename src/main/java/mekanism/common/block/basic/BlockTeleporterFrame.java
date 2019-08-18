@@ -1,8 +1,8 @@
 package mekanism.common.block.basic;
 
+import mekanism.api.block.IHasModel;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IHasModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;

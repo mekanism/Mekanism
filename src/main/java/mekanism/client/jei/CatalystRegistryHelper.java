@@ -1,8 +1,8 @@
 package mekanism.client.jei;
 
+import mekanism.api.block.FactoryType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.base.FactoryType;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.tier.FactoryTier;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;

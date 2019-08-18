@@ -1,7 +1,7 @@
-package mekanism.common.base;
+package mekanism.api;
 
 import javax.annotation.Nonnull;
-import mekanism.common.block.interfaces.IBlockDisableable;
+import mekanism.api.block.IBlockDisableable;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;

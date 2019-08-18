@@ -1,6 +1,6 @@
 package mekanism.common.tile.prefab;
 
-import mekanism.common.base.IBlockProvider;
+import mekanism.api.IBlockProvider;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;

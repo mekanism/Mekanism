@@ -11,6 +11,8 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 
+//TODO: Refactor what packages various things are in
+// Also move more things from main mekanism package to here, for example tier information and stuff
 public class MekanismAPI {
 
     //TODO: Add back support for the other mods API as needed, ideally would be through gradle
@@ -37,11 +39,19 @@ public class MekanismAPI {
         return cardboardBoxIgnore.stream().noneMatch(i -> i == block);
     }
 
+    public static void addBoxBlacklist(@Nonnull IBlockProvider blockProvider) {
+        addBoxBlacklist(blockProvider.getBlock());
+    }
+
     public static void addBoxBlacklist(@Nullable Block block) {
         //Allow block to be null but don't do anything if it is
         if (block != null) {
             cardboardBoxIgnore.add(block);
         }
+    }
+
+    public static void removeBoxBlacklist(@Nonnull IBlockProvider blockProvider) {
+        removeBoxBlacklist(blockProvider.getBlock());
     }
 
     public static void removeBoxBlacklist(@Nonnull Block block) {
@@ -88,12 +98,20 @@ public class MekanismAPI {
             blacklist(ForgeRegistries.BLOCKS.getValue(blockLocation));
         }
 
+        public void blacklist(@Nonnull IBlockProvider blockProvider) {
+            addBoxBlacklist(blockProvider);
+        }
+
         public void blacklist(@Nullable Block block) {
             addBoxBlacklist(block);
         }
 
         public void blacklistMod(@Nonnull String modid) {
             addBoxBlacklistMod(modid);
+        }
+
+        public void removeBlacklist(@Nonnull IBlockProvider blockProvider) {
+            removeBoxBlacklist(blockProvider);
         }
 
         public void removeBlacklist(@Nonnull Block block) {

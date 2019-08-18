@@ -2,10 +2,10 @@ package mekanism.common.inventory.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
-import mekanism.common.base.IItemProvider;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;

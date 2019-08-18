@@ -1,4 +1,4 @@
-package mekanism.common.block.interfaces;
+package mekanism.api.block;
 
 /**
  * Implement this if the block is electric

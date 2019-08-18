@@ -2,13 +2,13 @@ package mekanism.common.block;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.api.block.IHasInventory;
+import mekanism.api.block.IHasSecurity;
+import mekanism.api.block.IHasTileEntity;
+import mekanism.api.block.ISupportsComparator;
+import mekanism.api.block.ISupportsRedstone;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IHasInventory;
-import mekanism.common.block.interfaces.IHasSecurity;
-import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.interfaces.ISupportsComparator;
-import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.container.ContainerProvider;

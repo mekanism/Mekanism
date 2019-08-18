@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.api;
 
 import javax.annotation.Nonnull;
 import net.minecraft.item.Item;

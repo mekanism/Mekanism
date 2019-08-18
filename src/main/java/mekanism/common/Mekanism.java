@@ -47,7 +47,6 @@ import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.temporary.FluidRegistry;
-import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
@@ -61,7 +60,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -81,7 +79,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -210,10 +207,6 @@ public class Mekanism {
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         MekanismTileEntityTypes.registerTileEntities(event.getRegistry());
-
-        //TODO: Make block for advanced bounding?
-        GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, new ResourceLocation(MODID, "advanced_bounding_block"));
-
         //Register the TESRs
         proxy.registerTESRs();
     }
@@ -234,14 +227,6 @@ public class Mekanism {
     @SubscribeEvent
     public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         MekanismSounds.register(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-        //TODO: Bin recipe
-        //event.getRegistry().register(new BinRecipe());
-        addRecipes();
-        GasConversionHandler.addDefaultGasMappings();
     }
 
     /**
@@ -642,6 +627,13 @@ public class Mekanism {
     public void commonSetup(FMLCommonSetupEvent event) {
         //TODO: Figure out where preinit stuff should be, potentially also move it directly into this method
         preInit();
+
+        //TODO: Make recipes be done from JSON
+        //TODO: Bin recipe
+        //event.getRegistry().register(new BinRecipe());
+        addRecipes();
+        GasConversionHandler.addDefaultGasMappings();
+
         //Register the mod's world generators
         GenHandler.setupWorldGeneration();
 
@@ -766,15 +758,15 @@ public class Mekanism {
 
     @SubscribeEvent
     public void onBlacklistUpdate(BoxBlacklistEvent event) {
-        event.blacklist(MekanismBlock.CARDBOARD_BOX.getBlock());
+        event.blacklist(MekanismBlock.CARDBOARD_BOX);
 
         // Mekanism multiblock structures
-        event.blacklist(MekanismBlock.BOUNDING_BLOCK.getBlock());
-        event.blacklist(MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock());
-        event.blacklist(MekanismBlock.SECURITY_DESK.getBlock());
-        event.blacklist(MekanismBlock.DIGITAL_MINER.getBlock());
-        event.blacklist(MekanismBlock.SEISMIC_VIBRATOR.getBlock());
-        event.blacklist(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.getBlock());
+        event.blacklist(MekanismBlock.BOUNDING_BLOCK);
+        event.blacklist(MekanismBlock.ADVANCED_BOUNDING_BLOCK);
+        event.blacklist(MekanismBlock.SECURITY_DESK);
+        event.blacklist(MekanismBlock.DIGITAL_MINER);
+        event.blacklist(MekanismBlock.SEISMIC_VIBRATOR);
+        event.blacklist(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
 
         // Minecraft unobtainable
         event.blacklist(Blocks.BEDROCK);

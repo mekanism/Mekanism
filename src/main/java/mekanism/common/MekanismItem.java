@@ -1,8 +1,8 @@
 package mekanism.common;
 
 import javax.annotation.Nonnull;
+import mekanism.api.IItemProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.common.base.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemBalloon;

@@ -1,9 +1,9 @@
 package mekanism.common.block.basic;
 
+import mekanism.api.block.IHasInventory;
+import mekanism.api.block.IHasTileEntity;
+import mekanism.api.block.ISupportsComparator;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IHasInventory;
-import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.tile.TileEntityBoilerValve;

@@ -1,10 +1,10 @@
 package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
+import mekanism.api.block.IHasTileEntity;
+import mekanism.api.block.ISupportsComparator;
 import mekanism.common.block.basic.BlockBasicMultiblock;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;

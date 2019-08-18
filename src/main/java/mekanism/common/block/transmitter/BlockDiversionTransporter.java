@@ -1,6 +1,6 @@
 package mekanism.common.block.transmitter;
 
-import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import net.minecraft.block.BlockState;

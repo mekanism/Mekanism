@@ -3,7 +3,7 @@ package mekanism.common.recipe;
 import com.google.gson.JsonObject;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
-import mekanism.common.block.interfaces.IBlockDisableable;
+import mekanism.api.block.IBlockDisableable;
 import net.minecraft.block.Block;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;

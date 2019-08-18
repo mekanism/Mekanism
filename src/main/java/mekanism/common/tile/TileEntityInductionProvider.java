@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import mekanism.common.base.IBlockProvider;
+import mekanism.api.IBlockProvider;
 import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.base.TileEntityMekanism;

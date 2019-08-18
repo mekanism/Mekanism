@@ -2,8 +2,8 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;

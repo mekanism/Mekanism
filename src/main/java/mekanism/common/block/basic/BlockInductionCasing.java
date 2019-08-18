@@ -1,7 +1,7 @@
 package mekanism.common.block.basic;
 
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
 import mekanism.common.tile.TileEntityInductionCasing;

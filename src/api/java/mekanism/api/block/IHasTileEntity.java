@@ -1,4 +1,4 @@
-package mekanism.common.block.interfaces;
+package mekanism.api.block;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;

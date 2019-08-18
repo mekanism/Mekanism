@@ -2,11 +2,11 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.block.IHasModel;
+import mekanism.api.block.IHasTileEntity;
+import mekanism.api.block.ISupportsComparator;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;

@@ -2,10 +2,10 @@ package mekanism.common.block.basic;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.api.block.IHasModel;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
-import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

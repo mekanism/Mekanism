@@ -1,7 +1,7 @@
 package mekanism.common.multiblock;
 
+import mekanism.api.IBlockProvider;
 import mekanism.api.TileNetworkList;
-import mekanism.common.base.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.network.PacketBuffer;
 

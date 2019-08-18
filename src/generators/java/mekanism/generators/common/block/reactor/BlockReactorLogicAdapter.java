@@ -1,8 +1,8 @@
 package mekanism.generators.common.block.reactor;
 
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;

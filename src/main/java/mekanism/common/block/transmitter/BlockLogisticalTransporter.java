@@ -1,7 +1,7 @@
 package mekanism.common.block.transmitter;
 
 import java.util.Locale;
-import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateColor;
 import mekanism.common.tier.TransporterTier;

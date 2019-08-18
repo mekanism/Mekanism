@@ -1,8 +1,8 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.IBlockProvider;
 import mekanism.api.TileNetworkList;
-import mekanism.common.base.IBlockProvider;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;

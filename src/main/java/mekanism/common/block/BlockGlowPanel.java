@@ -2,10 +2,10 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.block.IColoredBlock;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntityGlowPanel;

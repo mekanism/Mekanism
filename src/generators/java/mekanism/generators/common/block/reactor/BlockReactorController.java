@@ -1,10 +1,10 @@
 package mekanism.generators.common.block.reactor;
 
+import mekanism.api.block.IBlockElectric;
+import mekanism.api.block.IHasInventory;
+import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IHasInventory;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;

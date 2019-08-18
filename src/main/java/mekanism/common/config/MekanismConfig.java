@@ -2,8 +2,8 @@ package mekanism.common.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import mekanism.common.base.IBlockProvider;
-import mekanism.common.block.interfaces.IBlockDisableable;
+import mekanism.api.IBlockProvider;
+import mekanism.api.block.IBlockDisableable;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;

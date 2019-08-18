@@ -1,7 +1,7 @@
 package mekanism.tools.common;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.IItemProvider;
+import mekanism.api.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.item.ItemMekanismArmor;

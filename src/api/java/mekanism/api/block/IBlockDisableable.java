@@ -1,4 +1,4 @@
-package mekanism.common.block.interfaces;
+package mekanism.api.block;
 
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
