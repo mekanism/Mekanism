@@ -1,6 +1,6 @@
 package mekanism.common.integration;
 
-import java.util.List;
+import java.util.stream.Stream;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -12,8 +12,9 @@ import net.minecraftforge.fml.InterModComms.IMCMessage;
 
 public class IMCHandler {
 
-    public void onIMCEvent(List<IMCMessage> messages) {
-        for (IMCMessage msg : messages) {
+    public void onIMCEvent(Stream<IMCMessage> messages) {
+        //TODO: Should this be using InterModComms.getMessages(Mekanism.MODID)
+        messages.forEach(msg -> {
             //Make sure we are the correct receiver
             if (msg.getModId().equals(Mekanism.MODID)) {
                 boolean found = false;
@@ -36,7 +37,7 @@ public class IMCHandler {
                     Mekanism.logger.error(msg.getSenderModId() + " sent unknown IMC message with method '" + msg.getMethod() + "'.");
                 }
             }
-        }
+        });
     }
 
     private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>

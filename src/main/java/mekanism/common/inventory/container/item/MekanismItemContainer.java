@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
 public abstract class MekanismItemContainer extends MekanismContainer {
@@ -28,15 +29,12 @@ public abstract class MekanismItemContainer extends MekanismContainer {
         if (buf == null) {
             return ItemStack.EMPTY;
         }
-        //TODO: Handle it being client side only better?
-        return DistExecutor.runForDist(() -> () -> {
+        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
             ItemStack stack = buf.readItemStack();
             if (type.isInstance(stack.getItem())) {
                 return stack;
             }
             return ItemStack.EMPTY;
-        }, () -> () -> {
-            throw new RuntimeException("Shouldn't be called on server!");
         });
     }
 }

@@ -682,8 +682,9 @@ public class ClientProxy extends CommonProxy {
         return Minecraft.getInstance().fontRenderer;
     }
 
-    @Override
+    //TODO
+    /*@Override
     public void throwApiPresentException() {
         throw new ApiJarPresentException(API_PRESENT_MESSAGE);
-    }
+    }*/
 }

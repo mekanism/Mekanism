@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -36,7 +33,6 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -49,10 +45,6 @@ import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.SmeltingRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -64,7 +56,6 @@ import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -72,36 +63,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -188,7 +173,12 @@ public class Mekanism {
         instance = this;
         MekanismConfig.registerConfigs(ModLoadingContext.get());
 
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         //TODO: Register other listeners and various stuff that is needed
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::serverStarting);
+        modEventBus.addListener(this::serverStopping);
+        modEventBus.addListener(this::handleIMC);
 
         MekanismConfig.loadFromFiles();
     }
@@ -573,8 +563,7 @@ public class Mekanism {
         FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.general.FROM_H2.get());
     }
 
-    @EventHandler
-    public void serverStarting(FMLServerStartingEvent event) {
+    private void serverStarting(FMLServerStartingEvent event) {
         if (MekanismConfig.general.voiceServerEnabled.get()) {
             voiceManager.start();
         }
@@ -584,8 +573,7 @@ public class Mekanism {
         //TODO: Do we care about the alternates of mtp, and mtpop
     }
 
-    @EventHandler
-    public void serverStopping(FMLServerStoppingEvent event) {
+    private void serverStopping(FMLServerStoppingEvent event) {
         if (MekanismConfig.general.voiceServerEnabled.get()) {
             voiceManager.stop();
         }
@@ -606,20 +594,19 @@ public class Mekanism {
         TransmitterNetworkRegistry.reset();
     }
 
-    @EventHandler
-    public void loadComplete(FMLInterModComms.IMCEvent event) {
-        new IMCHandler().onIMCEvent(event.getMessages());
+    public void handleIMC(InterModProcessEvent event) {
+        new IMCHandler().onIMCEvent(event.getIMCStream());
     }
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit() {
         //sanity check the api location if not deobf
-        if (!((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
+        //TODO: Check API
+        /*if (!((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
             String apiLocation = MekanismAPI.class.getProtectionDomain().getCodeSource().getLocation().toString();
             if (apiLocation.toLowerCase(Locale.ROOT).contains("-api.jar")) {
                 proxy.throwApiPresentException();
             }
-        }
+        }*/
 
         //Load configuration
         proxy.loadConfiguration();
@@ -640,6 +627,7 @@ public class Mekanism {
         Mekanism.proxy.preInit();
 
         //Register infuses
+        //TODO: Let infuse types be registered via JSON and data packs
         InfuseRegistry.registerInfuseType(new InfuseType("CARBON", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Carbon")).setTranslationKey("carbon"));
         InfuseRegistry.registerInfuseType(new InfuseType("TIN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Tin")).setTranslationKey("tin"));
         InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Diamond")).setTranslationKey("diamond"));
@@ -651,14 +639,11 @@ public class Mekanism {
         Capabilities.registerCapabilities();
     }
 
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void commonSetup(FMLCommonSetupEvent event) {
+        //TODO: Figure out where preinit stuff should be, potentially also move it directly into this method
+        preInit();
         //Register the mod's world generators
-        GameRegistry.registerWorldGenerator(genHandler, 1);
         GenHandler.setupWorldGeneration();
-
-        //Register the mod's GUI handler
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
 
         //Register player tracker
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
@@ -683,16 +668,17 @@ public class Mekanism {
         TransmitterNetworkRegistry.initiate();
 
         //Add baby skeleton spawner
-        if (MekanismConfig.general.spawnBabySkeletons.get()) {
+        //TODO: Spawn baby skeletons
+        /*if (MekanismConfig.general.spawnBabySkeletons.get()) {
             for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
                 if (biome.getSpawns(EntityClassification.MONSTER).size() > 0) {
                     EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
                 }
             }
-        }
+        }*/
 
         //Load this module
-        hooks.hookInit();
+        hooks.hookCommonSetup();
 
         //Packet registrations
         packetHandler.initialize();
@@ -700,29 +686,26 @@ public class Mekanism {
         //Load proxy
         proxy.init();
 
+        //Fake player info
+        logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
+
+        // Add all furnace recipes to the energized smelter
+        // Must happen after CraftTweaker for vanilla stuff has run.
+        //TODO: Needs to be handled after/whenever reload is done
+        /*for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
+            SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
+            Recipe.ENERGIZED_SMELTER.put(recipe);
+        }*/
+
+        MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
+
         //Completion notification
         logger.info("Loading complete.");
 
         //Success message
         logger.info("Mod loaded.");
-    }
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
-
-        // Add all furnace recipes to the energized smelter
-        // Must happen after CraftTweaker for vanilla stuff has run.
-        for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
-            SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
-            Recipe.ENERGIZED_SMELTER.put(recipe);
-        }
-
-        hooks.hookPostInit();
-
-        MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
-
-        logger.info("Hooking complete.");
+        //TODO: Use FMLDedicatedServerSetupEvent and FMLClientSetupEvent
     }
 
     @SubscribeEvent

@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
 public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
@@ -53,16 +54,13 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
         if (buf == null) {
             return null;
         }
-        //TODO: Handle it being client side only better?
-        return DistExecutor.runForDist(() -> () -> {
+        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
             BlockPos pos = buf.readBlockPos();
             TileEntity tile = Minecraft.getInstance().world.getTileEntity(pos);
             if (type.isInstance(tile)) {
                 return (TILE) tile;
             }
             return null;
-        }, () -> () -> {
-            throw new RuntimeException("Shouldn't be called on server!");
         });
     }
 }

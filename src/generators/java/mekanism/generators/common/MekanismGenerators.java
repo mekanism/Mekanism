@@ -101,8 +101,6 @@ public class MekanismGenerators implements IModule {
         //Add this module to the core list
         Mekanism.modulesLoaded.add(this);
 
-        //Set up the GUI handler
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
         MinecraftForge.EVENT_BUS.register(this);
 
         //Finalization

@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
 public abstract class MekanismEntityContainer<ENTITY extends Entity> extends MekanismContainer implements IEntityContainer<ENTITY> {
@@ -35,15 +36,12 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
         if (buf == null) {
             return null;
         }
-        //TODO: Handle it being client side only better?
-        return DistExecutor.runForDist(() -> () -> {
+        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
             Entity entity = Minecraft.getInstance().world.getEntityByID(buf.readInt());
             if (type.isInstance(entity)) {
                 return (ENTITY) entity;
             }
             return null;
-        }, () -> () -> {
-            throw new RuntimeException("Shouldn't be called on server!");
         });
     }
 }

@@ -51,7 +51,7 @@ public final class MekanismHooks {
         OCLoaded = modList.isLoaded(OPENCOMPUTERS_MOD_ID);
     }
 
-    public void hookInit() {
+    public void hookCommonSetup() {
         //TODO
         //Integrate with Waila
         /*FMLInterModComms.sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
@@ -64,9 +64,6 @@ public final class MekanismHooks {
         if (AE2Loaded) {
             registerAE2P2P();
         }*/
-    }
-
-    public void hookPostInit() {
         //TODO: IC2
         /*if (IC2Loaded) {
             hookIC2Recipes();
