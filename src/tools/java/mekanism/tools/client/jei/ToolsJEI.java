@@ -1,4 +1,5 @@
-package mekanism.tools.client.jei;
+//TODO: Re-enable this after figuring out why the module doesn't have access to the JEI dependency
+/*package mekanism.tools.client.jei;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
@@ -47,4 +48,4 @@ public class ToolsJEI implements IModPlugin {
             }
         }
     }
-}
+}*/
