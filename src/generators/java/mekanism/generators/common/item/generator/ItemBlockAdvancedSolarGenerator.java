@@ -18,7 +18,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.client.render.item.RenderAdvancedSolarGeneratorItem;
 import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -59,14 +58,13 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip<Bl
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        Block block = world.getBlockState(pos).getBlock();
-        if (!(block.isReplaceable(world, pos) && world.isAirBlock(pos.up()))) {
+        if (!world.getBlockState(pos).getMaterial().isReplaceable() || !world.isAirBlock(pos.up())) {
             return false;
         }
         for (int xPos = -1; xPos <= 1; xPos++) {
             for (int zPos = -1; zPos <= 1; zPos++) {
                 BlockPos toCheck = pos.add(xPos, 2, zPos);
-                if (World.isValid(toCheck) || !world.getBlockState(toCheck).getBlock().isReplaceable(world, toCheck)) {
+                if (World.isValid(toCheck) || !world.getBlockState(toCheck).getMaterial().isReplaceable()) {
                     //If there is not enough room, fail
                     return false;
                 }

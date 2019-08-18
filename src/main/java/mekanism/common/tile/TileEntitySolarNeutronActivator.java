@@ -36,6 +36,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.biome.Biome.RainType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -70,7 +71,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         super.validate();
         // Cache the flag to know if rain matters where this block is placed
         //TODO: I believe this is incorrect but check it
-        needsRainCheck = world.getDimension().getBiome(getPos()).getDownfall() > 0;
+        needsRainCheck = world.getDimension().getBiome(getPos()).getPrecipitation() != RainType.NONE;
     }
 
     @Override

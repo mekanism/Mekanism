@@ -20,19 +20,18 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
 @Mod.EventBusSubscriber()
@@ -56,6 +55,8 @@ public class MekanismGenerators implements IModule {
         instance = this;
         MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
 
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::commonSetup);
         //TODO: Register other listeners and various stuff that is needed
 
         MekanismGeneratorsConfig.loadFromFiles();
@@ -89,16 +90,25 @@ public class MekanismGenerators implements IModule {
         proxy.registerItemRenders();
     }
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit() {
         proxy.preInit();
         proxy.loadConfiguration();
     }
 
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void commonSetup(FMLCommonSetupEvent event) {
+        //TODO: Figure out where preinit stuff should be, potentially also move it directly into this method
+        preInit();
         //Add this module to the core list
         Mekanism.modulesLoaded.add(this);
+
+        //TODO: Move recipes to JSON
+        //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+        FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.general.ETHENE_BURN_TIME.get(),
+              MekanismConfig.general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfig.general.ETHENE_BURN_TIME.get());
+
+        for (Item dust : MekanismTags.GOLD_DUST.getAllElements()) {
+            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(dust, 4), GeneratorsItem.HOHLRAUM.getItemStack());
+        }
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -119,17 +129,6 @@ public class MekanismGenerators implements IModule {
             BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (ForgeEnergyIntegration.toForgeAsLong(12 * MjAPI.MJ)), 40 * Fluid.BUCKET_VOLUME);
         }
     }*/
-
-    @SubscribeEvent
-    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-        //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.general.ETHENE_BURN_TIME.get(),
-              MekanismConfig.general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfig.general.ETHENE_BURN_TIME.get());
-
-        for (Item dust : MekanismTags.GOLD_DUST.getAllElements()) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(dust, 4), GeneratorsItem.HOHLRAUM.getItemStack());
-        }
-    }
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {

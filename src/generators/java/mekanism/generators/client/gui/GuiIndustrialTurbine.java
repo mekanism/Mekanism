@@ -123,7 +123,9 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             TileNetworkList data = TileNetworkList.withContents((byte) 0);
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            return true;
         }
+        return false;
     }
 
     @Override

@@ -81,18 +81,13 @@ public enum GeneratorsBlock implements IBlockProvider {
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         for (GeneratorsBlock generatorsBlock : values()) {
-            Block block = generatorsBlock.getBlock();
-            registry.register(block);
+            registry.register(generatorsBlock.getBlock());
         }
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         for (GeneratorsBlock generatorsBlock : values()) {
-            Item item = generatorsBlock.getItem();
-            registry.register(item);
-            if (item instanceof IItemMekanism) {
-                ((IItemMekanism) item).registerOreDict();
-            }
+            registry.register(generatorsBlock.getItem());
         }
     }
 }

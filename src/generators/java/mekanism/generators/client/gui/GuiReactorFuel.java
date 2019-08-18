@@ -9,7 +9,6 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.EnergyDisplay;
@@ -67,12 +66,13 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
         drawString("Edit Rate" + ":", 50, 117, 0x404040);
     }
 
-    @Override
+    //TODO: Draw TextBox
+    /*@Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         injectionRateField.drawTextBox();
         MekanismRenderer.resetColor();
-    }
+    }*/
 
     @Override
     public void tick() {
@@ -84,6 +84,7 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         injectionRateField.mouseClicked(mouseX, mouseY, button);
+        return true;
     }
 
     @Override

@@ -171,11 +171,11 @@ public class Mekanism {
         MekanismConfig.registerConfigs(ModLoadingContext.get());
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        //TODO: Register other listeners and various stuff that is needed
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::serverStarting);
         modEventBus.addListener(this::serverStopping);
         modEventBus.addListener(this::handleIMC);
+        //TODO: Register other listeners and various stuff that is needed
 
         MekanismConfig.loadFromFiles();
     }

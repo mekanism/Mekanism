@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.RainType;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
@@ -52,10 +53,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
         // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
         // (like the End) have rainfall set, but can't actually support rain.
-        float humidityEff = -0.3f * (b.canRain() ? b.getRainfall() : 0.0f);
+        float humidityEff = -0.3f * (b.getPrecipitation() != RainType.NONE ? b.getDownfall() : 0.0f);
 
         peakOutput = getConfiguredMax() * (1.0f + tempEff + humidityEff);
-        needsRainCheck = b.canRain();
+        needsRainCheck = b.getPrecipitation() != RainType.NONE;
     }
 
     @Override

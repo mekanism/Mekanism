@@ -2,7 +2,6 @@ package mekanism.tools.common;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IItemProvider;
-import mekanism.common.item.IItemMekanism;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.item.ItemMekanismArmor;
 import mekanism.tools.common.item.ItemMekanismAxe;
@@ -117,11 +116,7 @@ public enum ToolsItem implements IItemProvider {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (ToolsItem toolsItem : values()) {
-            Item item = toolsItem.getItem();
-            registry.register(item);
-            if (item instanceof IItemMekanism) {
-                ((IItemMekanism) item).registerOreDict();
-            }
+            registry.register(toolsItem.getItem());
         }
     }
 

@@ -18,7 +18,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.block.BlockWindGenerator;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -59,13 +58,12 @@ public class ItemBlockWindGenerator extends ItemBlockAdvancedTooltip<BlockWindGe
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        Block block = world.getBlockState(pos).getBlock();
-        if (!block.isReplaceable(world, pos)) {
+        if (!world.getBlockState(pos).getMaterial().isReplaceable()) {
             return false;
         }
         for (int yPos = 1; yPos <= 4; yPos++) {
             BlockPos toCheck = pos.up(yPos);
-            if (World.isValid(toCheck) || !world.getBlockState(toCheck).getBlock().isReplaceable(world, toCheck)) {
+            if (World.isValid(toCheck) || !world.getBlockState(toCheck).getMaterial().isReplaceable()) {
                 //If there is not enough room, fail
                 return false;
             }
