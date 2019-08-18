@@ -38,7 +38,7 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
         float lidangle = tileEntity.prevLidAngle + (tileEntity.lidAngle - tileEntity.prevLidAngle) * partialTick;
         lidangle = 1.0F - lidangle;
         lidangle = 1.0F - lidangle * lidangle * lidangle;
-        model.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
+        model.getLid().rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
         GlStateManager.rotatef(180, 0, 0, 1);
         model.renderAll();
         GlStateManager.popMatrix();

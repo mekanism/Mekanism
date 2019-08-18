@@ -19,6 +19,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -177,6 +178,6 @@ public class RecipeUtils {
     }
 
     public static IRecipe getRecipeFromGrid(CraftingInventory inv, World world) {
-        return CraftingManager.findMatchingRecipe(inv, world);
+        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, inv, world).get();
     }
 }

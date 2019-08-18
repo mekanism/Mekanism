@@ -310,7 +310,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         //TODO: Verify shulker checks not needed
 
         if (!stack.isEmpty()) {
-            world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer), 3);
+            world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer));
             BlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).isValidPosition(s, world, pos)) {
                 //TODO Block.spawnDrops fortune 1??

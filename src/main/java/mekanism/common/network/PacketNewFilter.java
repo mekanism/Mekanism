@@ -15,9 +15,8 @@ import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilte
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketNewFilter {
 
@@ -38,9 +37,10 @@ public class PacketNewFilter {
     }
 
     public static void handle(PacketNewFilter message, Supplier<Context> context) {
-        ServerWorld worldServer = ServerLifecycleHooks.getCurrentServer().getWorld(message.coord4D.dimension);
-
-        worldServer.addScheduledTask(() -> {
+        PlayerEntity player = PacketHandler.getPlayer(context);
+        PacketHandler.handlePacket(() -> {
+            //TODO: Verify this
+            World worldServer = player.world;
             if (message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
                 TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) message.coord4D.getTileEntity(worldServer);
                 sorter.filters.add((TransporterFilter) message.filter);
@@ -60,7 +60,7 @@ public class PacketNewFilter {
                     Mekanism.packetHandler.sendTo(new PacketTileEntity(oredictionificator, oredictionificator.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
                 }
             }
-        });
+        }, player);
     }
 
     public static void encode(PacketNewFilter pkt, PacketBuffer buf) {
@@ -74,7 +74,7 @@ public class PacketNewFilter {
         } else if (pkt.type == 2) {
             ((OredictionificatorFilter) pkt.filter).write(data);
         }
-        PacketHandler.encode(data.toArray(), dataStream);
+        PacketHandler.encode(data.toArray(), buf);
     }
 
     public static PacketNewFilter decode(PacketBuffer buf) {

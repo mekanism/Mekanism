@@ -43,6 +43,9 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceContext.BlockMode;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -107,12 +110,14 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return true;
     }
 
-    private RayTraceResult doRayTrace(BlockState state, BlockPos pos, PlayerEntity player) {
+    private BlockRayTraceResult doRayTrace(BlockState state, BlockPos pos, PlayerEntity player) {
         Vec3d positionEyes = player.getEyePosition(1.0F);
         Vec3d playerLook = player.getLook(1.0F);
         double blockReachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
         Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
-        RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
+        //TODO: Fix this
+        BlockRayTraceResult res = player.world.rayTraceBlocks(new RayTraceContext(positionEyes, playerLook, BlockMode.COLLIDER, FluidMode.NONE, player));
+        //RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
         //TODO: Should the miss have a different vector
         return res != null ? res : BlockRayTraceResult.createMiss(Vec3d.ZERO, Direction.UP, pos);
     }
@@ -126,7 +131,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (extended || mode == Mode.VEIN) {
                 BlockState state = player.world.getBlockState(pos);
                 Block block = state.getBlock();
-                RayTraceResult raytrace = doRayTrace(state, pos, player);
+                BlockRayTraceResult raytrace = doRayTrace(state, pos, player);
                 ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
                 List<String> names = OreDictCache.getOreDictName(stack);
                 boolean isOre = false;
@@ -214,11 +219,12 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 if (energyUsed + hoeUsage > energy) {
                     break;
                 }
-                if ((x != 0 || z != 0) && consumer.use(stack, player, hand, world, pos.add(x, 0, z), side) == ActionResultType.SUCCESS) {
+                //TODO: Fix AOE usage
+                /*if ((x != 0 || z != 0) && consumer.use(stack, player, hand, world, pos.add(x, 0, z), side) == ActionResultType.SUCCESS) {
                     //Don't attempt to use it on the source location as it was already done above
                     // If we successfully used it in a spot increment how much energy we used
                     energyUsed += hoeUsage;
-                }
+                }*/
             }
         }
         setEnergy(stack, energy - energyUsed);

@@ -5,6 +5,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +15,10 @@ import net.minecraft.util.Hand;
 public class TileEntityStructuralGlass extends TileEntity implements IStructuralMultiblock {
 
     public Coord4D master;
+
+    public TileEntityStructuralGlass() {
+        super(MekanismTileEntityTypes.STRUCTURAL_GLASS);
+    }
 
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {

@@ -1,8 +1,5 @@
 package mekanism.common.block.transmitter;
 
-import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
@@ -13,7 +10,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -22,7 +18,6 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -52,7 +47,8 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
         return sidedPipe;
     }
 
-    @Override
+    //TODO: Is some form of this needed or is it covered by the voxelshape
+    /*@Override
     @Deprecated
     public void addCollisionBoxToList(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB entityBox,
           @Nonnull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) {
@@ -63,7 +59,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
                 collidingBoxes.add(box.offset(pos));
             }
         }
-    }
+    }*/
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {

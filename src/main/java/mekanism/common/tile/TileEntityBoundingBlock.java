@@ -9,11 +9,13 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,6 +31,14 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     public boolean receivedCoords;
 
     public int prevPower;
+
+    public TileEntityBoundingBlock() {
+        this(MekanismTileEntityTypes.BOUNDING_BLOCK);
+    }
+
+    public TileEntityBoundingBlock(TileEntityType<TileEntityBoundingBlock> type) {
+        super(type);
+    }
 
     public void setMainLocation(BlockPos pos) {
         receivedCoords = pos != null;

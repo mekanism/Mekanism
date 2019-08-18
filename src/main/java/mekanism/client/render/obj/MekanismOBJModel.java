@@ -29,8 +29,7 @@ public class MekanismOBJModel extends OBJModel {
     @Override
     public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, @Nonnull VertexFormat format) {
         IBakedModel preBaked = super.bake(bakery, spriteGetter, sprite, format);
-        //State was IModelState
-        return new TransmitterModel(preBaked, this, state, format, TransmitterModel.getTexturesForOBJModel(preBaked), null);
+        return new TransmitterModel(preBaked, this, sprite.getState(), format, TransmitterModel.getTexturesForOBJModel(preBaked), null);
     }
 
     @Nonnull

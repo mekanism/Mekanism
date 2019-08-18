@@ -17,6 +17,7 @@ public class SecurityFrequency extends Frequency {
 
     public boolean override;
 
+    //TODO: Change trusted to using UUID's internally but continue having it display Strings
     public HashList<String> trusted;
 
     public SecurityMode securityMode;

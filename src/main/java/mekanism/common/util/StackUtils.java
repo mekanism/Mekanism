@@ -8,8 +8,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -28,13 +26,13 @@ public final class StackUtils {
     }
 
     //ignores count
+    //TODO: Remove this method/replace it as there is no longer a wildcard
     public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check) {
         boolean wildcard = equalsWildcard(wild, check);
         if (wild.isEmpty() || check.isEmpty()) {
             return wildcard;
         }
-        return wildcard && (!wild.hasTag() ? !check.hasTag() : (wild.getTag() == check.getTag() ||
-                                                                wild.getTag().equals(check.getTag())));
+        return wildcard && (!wild.hasTag() ? !check.hasTag() : (wild.getTag() == check.getTag() || wild.getTag().equals(check.getTag())));
     }
 
     //assumes stacks same
@@ -107,7 +105,8 @@ public final class StackUtils {
         }
         ResourceLocation registryName = stack.getItem().getRegistryName();
         int nameHash = registryName == null ? 0 : registryName.hashCode();
-        return nameHash << 8 | stack.getMetadata();
+        //TODO: Is this fine
+        return nameHash;// << 8 | stack.getMetadata();
     }
 
     /**
@@ -123,6 +122,7 @@ public final class StackUtils {
     @Nonnull
     public static BlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, PlayerEntity player) {
         Block blockFromItem = Block.getBlockFromItem(stack.getItem());
-        return blockFromItem.getStateForPlacement(world, pos, Direction.UP, 0, 0, 0, stack.getMetadata(), player, Hand.MAIN_HAND);
+        //TODO: Fix this
+        return blockFromItem.getDefaultState();//.getStateForPlacement(world, pos, Direction.UP, 0, 0, 0, stack.getMetadata(), player, Hand.MAIN_HAND);
     }
 }

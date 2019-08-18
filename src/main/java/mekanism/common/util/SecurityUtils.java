@@ -70,7 +70,8 @@ public final class SecurityUtils {
         if (mode == SecurityMode.PUBLIC) {
             return true;
         } else if (mode == SecurityMode.TRUSTED) {
-            return freq.trusted.contains(player.getName());
+            //TODO: Fix trusted to make it be uuid internally
+            return false;//freq.trusted.contains(player.getUniqueID());
         }
         return false;
     }

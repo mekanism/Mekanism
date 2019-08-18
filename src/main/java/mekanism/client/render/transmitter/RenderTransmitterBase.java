@@ -65,13 +65,13 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         }
 
         for (Direction side : Direction.values()) {
-            for (BakedQuad quad : cc.getQuads(null, side, 0)) {
+            for (BakedQuad quad : cc.getQuads(null, side, minecraft.world.getRandom())) {
                 quad = MekanismRenderer.iconTransform(quad, icon);
                 LightUtil.renderQuadColor(renderer, quad, color.argb());
             }
         }
 
-        for (BakedQuad quad : cc.getQuads(null, null, 0)) {
+        for (BakedQuad quad : cc.getQuads(null, null, minecraft.world.getRandom())) {
             quad = MekanismRenderer.iconTransform(quad, icon);
             LightUtil.renderQuadColor(renderer, quad, color.argb());
         }

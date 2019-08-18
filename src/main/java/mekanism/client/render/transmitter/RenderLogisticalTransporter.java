@@ -31,6 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -46,8 +47,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
-    private ItemEntity entityItem = new ItemEntity(null);
-    private EntityRenderer<ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getEntityClassRenderObject(ItemEntity.class);
+    private ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
+    private EntityRenderer<ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(ItemEntity.class);
 
     public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
@@ -69,8 +70,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             GlStateManager.pushMatrix();
             pushed = true;
 
+            //TODO: Do we have to make a new entity item each time we render
             entityItem.setNoDespawn();
-            entityItem.hoverStart = 0;
+            //entityItem.hoverStart = 0;
             entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
             entityItem.world = transporter.getWorld();
 

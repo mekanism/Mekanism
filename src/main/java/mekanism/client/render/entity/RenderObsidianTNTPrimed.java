@@ -47,7 +47,8 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         GlStateManager.translatef(0, 0, 1.0F);
 
         if (entityobsidiantnt.fuse / 5 % 2 == 0) {
-            GlStateManager.disableTexture2D();
+            //TODO: Verify we don't have to find a substitute for the 2d texture toggling
+            //GlStateManager.disableTexture2D();
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
@@ -60,7 +61,7 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
             MekanismRenderer.resetColor();
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
-            GlStateManager.enableTexture2D();
+            //GlStateManager.enableTexture2D();
         }
 
         GlStateManager.popMatrix();

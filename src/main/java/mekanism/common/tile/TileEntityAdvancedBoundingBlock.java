@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
@@ -23,6 +24,10 @@ import net.minecraftforge.common.util.LazyOptional;
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })*/
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
+
+    public TileEntityAdvancedBoundingBlock() {
+        super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK);
+    }
 
     @Override
     public boolean isEmpty() {

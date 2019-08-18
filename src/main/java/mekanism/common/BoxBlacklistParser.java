@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import mekanism.api.MekanismAPI;
-import net.minecraft.block.Block;
 
 public final class BoxBlacklistParser {
 
@@ -62,13 +60,14 @@ public final class BoxBlacklistParser {
                     continue;
                 }
 
-                String blockName = split[0].trim();
+                //TODO: Add config file support again for this
+                /*String blockName = split[0].trim();
                 Block block = Block.getBlockFromName(blockName);
                 if (block == null) {
                     Mekanism.logger.error("BoxBlacklist.txt: Couldn't find specified block on line " + line);
                     continue;
                 }
-                MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length - 1]));
+                MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length - 1]));*/
                 entries++;
             }
             Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");

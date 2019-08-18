@@ -10,7 +10,9 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public final class ChargeUtils {
 
@@ -34,10 +36,11 @@ public final class ChargeUtils {
         IInventory inv = (TileEntityMekanism) storer;
         ItemStack stack = inv.getStackInSlot(slotID);
         if (!stack.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
+            LazyOptional<IEnergyStorage> forgeCapability;
             if (stack.getItem() instanceof IEnergizedItem) {
                 storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(stack, storer.getMaxEnergy() - storer.getEnergy()));
-            } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(storage -> {
+            } else if (MekanismUtils.useForge() && (forgeCapability = stack.getCapability(CapabilityEnergy.ENERGY)).isPresent()) {
+                forgeCapability.ifPresent(storage -> {
                     if (storage.canExtract()) {
                         int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
                         storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
@@ -76,10 +79,11 @@ public final class ChargeUtils {
      */
     public static void charge(ItemStack stack, IStrictEnergyStorage storer) {
         if (!stack.isEmpty() && storer.getEnergy() > 0) {
+            LazyOptional<IEnergyStorage> forgeCapability;
             if (stack.getItem() instanceof IEnergizedItem) {
                 storer.setEnergy(storer.getEnergy() - EnergizedItemManager.charge(stack, storer.getEnergy()));
-            } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(storage -> {
+            } else if (MekanismUtils.useForge() && (forgeCapability = stack.getCapability(CapabilityEnergy.ENERGY)).isPresent()) {
+                forgeCapability.ifPresent(storage -> {
                     if (storage.canReceive()) {
                         int stored = ForgeEnergyIntegration.toForge(storer.getEnergy());
                         storer.setEnergy(storer.getEnergy() - ForgeEnergyIntegration.fromForge(storage.receiveEnergy(stored, false)));
@@ -156,21 +160,22 @@ public final class ChargeUtils {
      * Whether or not a defined deemed-electrical ItemStack can be outputted out of a slot. This puts into account whether or not that slot is used for charging or
      * discharging.
      *
-     * @param itemstack  - ItemStack to perform the check on
+     * @param stack      - ItemStack to perform the check on
      * @param chargeSlot - whether or not the outputting slot is for charging or discharging
      *
      * @return if the ItemStack can be outputted
      */
-    public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot) {
-        if (itemstack.getItem() instanceof IEnergizedItem) {
-            IEnergizedItem energized = (IEnergizedItem) itemstack.getItem();
+    public static boolean canBeOutputted(ItemStack stack, boolean chargeSlot) {
+        if (stack.getItem() instanceof IEnergizedItem) {
+            IEnergizedItem energized = (IEnergizedItem) stack.getItem();
             if (chargeSlot) {
-                return energized.getEnergy(itemstack) == energized.getMaxEnergy(itemstack);
+                return energized.getEnergy(stack) == energized.getMaxEnergy(stack);
             }
-            return energized.getEnergy(itemstack) == 0;
+            return energized.getEnergy(stack) == 0;
         }
-        if (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-            return new LazyOptionalHelper<>(itemstack.getCapability(CapabilityEnergy.ENERGY)).matches(storage -> {
+        LazyOptional<IEnergyStorage> forgeCapability;
+        if (MekanismUtils.useForge() && (forgeCapability = stack.getCapability(CapabilityEnergy.ENERGY)).isPresent()) {
+            return new LazyOptionalHelper<>(forgeCapability).matches(storage -> {
                 if (chargeSlot) {
                     return !storage.canReceive() || storage.receiveEnergy(1, true) == 0;
                 }
@@ -178,13 +183,13 @@ public final class ChargeUtils {
             });
         }
         //TODO: IC2
-        /*if (MekanismUtils.useIC2() && (isIC2Chargeable(itemstack) || isIC2Dischargeable(itemstack))) {
+        /*if (MekanismUtils.useIC2() && (isIC2Chargeable(stack) || isIC2Dischargeable(stack))) {
             IElectricItemManager manager = ElectricItem.manager;
             if (manager != null) {
                 if (chargeSlot) {
-                    return manager.charge(itemstack, 1, 3, true, true) == 0;
+                    return manager.charge(stack, 1, 3, true, true) == 0;
                 }
-                return manager.discharge(itemstack, 1, 3, true, true, true) == 0;
+                return manager.discharge(stack, 1, 3, true, true, true) == 0;
             }
         }*/
         //TODO: Evaluate, the default used to be true but I think that is wrong

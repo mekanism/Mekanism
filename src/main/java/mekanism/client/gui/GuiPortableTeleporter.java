@@ -120,7 +120,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }));
         buttons.add(teleportButton = new GuiButtonTranslation(guiLeft + 42, guiTop + 140, 92, 20, "gui.teleport", onPress -> {
             if (clientFreq != null && clientStatus == 1) {
-                minecraft.mainWindow.setIngameFocus();
+                //TODO: Set focus
+                //minecraft.mainWindow.setIngameFocus();
                 ClientTickHandler.portableTeleport(player, currentHand, clientFreq);
             }
             updateButtons();

@@ -1,4 +1,5 @@
-package mekanism.common.world;
+//TODO: Is this needed/extract the values used in GenHandler for salt generation from here
+/*package mekanism.common.world;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
@@ -47,4 +48,4 @@ public class WorldGenSalt extends Feature {
         }
         return true;
     }
-}
+}*/

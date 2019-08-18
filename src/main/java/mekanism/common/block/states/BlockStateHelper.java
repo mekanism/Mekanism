@@ -117,8 +117,9 @@ public class BlockStateHelper {
             }
             state = blockFacing.setDirection(state, newDirection);
         }
-        //TODO: Set the proper defaults for the below ones, maybe do it by setting propert defaults of everything
-        if (block instanceof IStateActive) {
+        //TODO: Set the proper defaults for the below ones, maybe do it by setting property defaults of everything
+        // Also ensure that when the state changes from the tile the state is actually updated
+        /*if (block instanceof IStateActive) {
             //TODO: False by default??
             state = state.with(activeProperty, ((IStateActive) block).isActive(tile));
         }
@@ -139,7 +140,7 @@ public class BlockStateHelper {
             state = state.with(southConnectionProperty, getStateConnection(tile, Direction.SOUTH));
             state = state.with(westConnectionProperty, getStateConnection(tile, Direction.WEST));
             state = state.with(eastConnectionProperty, getStateConnection(tile, Direction.EAST));
-        }
+        }*/
         return state;
     }
 

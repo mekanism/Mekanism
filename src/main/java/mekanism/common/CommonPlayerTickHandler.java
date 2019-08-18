@@ -31,7 +31,7 @@ public class CommonPlayerTickHandler {
         int z = MathHelper.floor(player.posZ);
         BlockPos pos = new BlockPos(x, y, z);
         BlockState s = player.world.getBlockState(pos);
-        AxisAlignedBB box = s.getBoundingBox(player.world, pos).offset(pos);
+        AxisAlignedBB box = s.getShape(player.world, pos).getBoundingBox().offset(pos);
         AxisAlignedBB playerBox = player.getBoundingBox();
         return !s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(box);
 

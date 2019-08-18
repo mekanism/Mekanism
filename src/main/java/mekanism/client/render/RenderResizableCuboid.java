@@ -258,7 +258,8 @@ public class RenderResizableCuboid {
 
         skyLight[0] = combindedLight / 0x10000;
         blockLight[0] = combindedLight % 0x10000;
-        colorMultiplier[0] = state.getAmbientOcclusionLightValue();
+        //TODO: Check light value via voxelshape
+        colorMultiplier[0] = 0;//state.getAmbientOcclusionLightValue();
         distances[0] = transVertex.distanceTo(convertMiddle(pos));
 
         int index = 0;
@@ -273,7 +274,8 @@ public class RenderResizableCuboid {
 
             skyLight[index] = combindedLight / 0x10000;
             blockLight[index] = combindedLight % 0x10000;
-            colorMultiplier[index] = state.getAmbientOcclusionLightValue();
+            //TODO: Check light value via voxelshape
+            colorMultiplier[index] = 0;//state.getAmbientOcclusionLightValue();
             // The extra 0.1 is to stop any 1 divided by 0 errors
             distances[index] = 1 / (transVertex.distanceTo(convertMiddle(pos)) + 0.1);
             totalDist += distances[index];

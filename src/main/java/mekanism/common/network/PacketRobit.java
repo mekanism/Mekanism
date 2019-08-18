@@ -6,20 +6,21 @@ import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketRobit {
 
     private RobitPacketType activeType;
     private int entityId;
-    private String name;
+    private ITextComponent name;
 
     public PacketRobit(RobitPacketType type, int entityId) {
         activeType = type;
         this.entityId = entityId;
     }
 
-    public PacketRobit(int entityId, @Nonnull String name) {
+    public PacketRobit(int entityId, @Nonnull ITextComponent name) {
         activeType = RobitPacketType.NAME;
         this.entityId = entityId;
         this.name = name;
@@ -35,7 +36,7 @@ public class PacketRobit {
                         robit.setFollowing(!robit.getFollowing());
                         break;
                     case NAME:
-                        robit.setCustomNameTag(message.name);
+                        robit.setCustomName(message.name);
                         break;
                     case GO_HOME:
                         robit.goHome();
@@ -52,7 +53,7 @@ public class PacketRobit {
         buf.writeEnumValue(pkt.activeType);
         buf.writeInt(pkt.entityId);
         if (pkt.activeType == RobitPacketType.NAME) {
-            buf.writeString(pkt.name);
+            buf.writeTextComponent(pkt.name);
         }
     }
 
@@ -60,7 +61,7 @@ public class PacketRobit {
         RobitPacketType activeType = buf.readEnumValue(RobitPacketType.class);
         int entityId = buf.readInt();
         if (activeType == RobitPacketType.NAME) {
-            return new PacketRobit(entityId, buf.readString());
+            return new PacketRobit(entityId, buf.readTextComponent());
         }
         return new PacketRobit(activeType, entityId);
     }
