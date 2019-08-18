@@ -132,16 +132,18 @@ public abstract class BlockTileDrops extends Block {
      *
      * @return false
      */
-    @Override
+    //TODO: Silk touch/denial
+    /*@Override
     @Deprecated
     protected boolean canSilkHarvest() {
         return false;
     }
 
+    //TODO: Add drops to loot table??
     @Override
     public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
         drops.add(getDropItem(state, world, pos));
-    }
+    }*/
 
     /**
      * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link

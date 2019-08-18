@@ -260,12 +260,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         return 2;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityLogisticalSorter> getTileClass() {
-        return TileEntityLogisticalSorter.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();

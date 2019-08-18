@@ -15,9 +15,8 @@ import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilte
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketEditFilter {
 
@@ -43,8 +42,10 @@ public class PacketEditFilter {
     }
 
     public static void handle(PacketEditFilter message, Supplier<Context> context) {
-        ServerWorld worldServer = ServerLifecycleHooks.getCurrentServer().getWorld(message.coord4D.dimension);
-        worldServer.addScheduledTask(() -> {
+        PlayerEntity player = PacketHandler.getPlayer(context);
+        PacketHandler.handlePacket(() -> {
+            //TODO: Verify this
+            World worldServer = player.world;
             if (message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
                 TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) message.coord4D.getTileEntity(worldServer);
 
@@ -87,7 +88,7 @@ public class PacketEditFilter {
                     Mekanism.packetHandler.sendTo(new PacketTileEntity(oredictionificator, oredictionificator.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
                 }
             }
-        });
+        }, player);
     }
 
     public static void encode(PacketEditFilter pkt, PacketBuffer buf) {

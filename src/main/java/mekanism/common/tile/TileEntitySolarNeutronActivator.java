@@ -69,7 +69,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public void validate() {
         super.validate();
         // Cache the flag to know if rain matters where this block is placed
-        needsRainCheck = world.getDimension().getBiome(getPos()).canRain();
+        //TODO: I believe this is incorrect but check it
+        needsRainCheck = world.getDimension().getBiome(getPos()).getDownfall() > 0;
     }
 
     @Override

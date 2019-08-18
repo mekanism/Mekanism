@@ -28,6 +28,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 //TODO: I don't think the Glow Panel needs a tile entity anymore
@@ -72,7 +73,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
         if (!canStay) {
             Direction side = getDirection(state);
             Coord4D adj = new Coord4D(pos.offset(side), world);
-            canStay = world.isSideSolid(adj.getPos(), side.getOpposite());
+            canStay = Block.hasSolidSide(world.getBlockState(adj.getPos()), world, adj.getPos(), side.getOpposite());
         }
         return canStay;
     }
@@ -111,8 +112,11 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
     }
 
     @Override
-    public boolean canPlaceBlockOnSide(@Nonnull World world, @Nonnull BlockPos pos, Direction side) {
-        return world.isSideSolid(pos.offset(side.getOpposite()), side);
+    public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
+        //TODO: Check this
+        Direction side = getDirection(state);
+        BlockPos positionOn = pos.offset(side.getOpposite());
+        return Block.hasSolidSide(world.getBlockState(positionOn), world, positionOn, side);
     }
 
     @Override

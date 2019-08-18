@@ -23,7 +23,8 @@ public class RobitAIPickup extends RobitAIBase {
         if (!theRobit.getDropPickup()) {
             return false;
         }
-        if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ) != null) {
+        //TODO: Check if pathing is correct and what the param is for
+        if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToEntityLiving(closest, 0) != null) {
             return true;
         }
         List<ItemEntity> items = theRobit.world.getEntitiesWithinAABB(ItemEntity.class,
@@ -37,7 +38,8 @@ public class RobitAIPickup extends RobitAIBase {
             double distance = theRobit.getDistance(entity);
             if (distance <= 10) {
                 if (closestDistance == -1 || distance < closestDistance) {
-                    if (thePathfinder.getPathToXYZ(entity.posX, entity.posY, entity.posZ) != null) {
+                    //TODO: Check if pathing is correct and what the param is for
+                    if (thePathfinder.getPathToEntityLiving(entity, 0) != null) {
                         closest = entity;
                         closestDistance = distance;
                     }
@@ -55,7 +57,7 @@ public class RobitAIPickup extends RobitAIBase {
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         if (theRobit.getDropPickup()) {
             updateTask(closest);
         }

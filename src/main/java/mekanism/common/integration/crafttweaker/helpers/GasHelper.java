@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.item.IIngredient;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
+import mekanism.common.temporary.IngredientAny;
 
 public class GasHelper {
 

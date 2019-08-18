@@ -26,6 +26,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel, IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
@@ -37,10 +38,11 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
         setRegistryName(new ResourceLocation(Mekanism.MODID, "cardboard_box"));
     }
 
-    @Override
+    //TODO: Test place
+    /*@Override
     public boolean isReplaceable(IBlockReader world, @Nonnull BlockPos pos) {
         return testingPlace;
-    }
+    }*/
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
@@ -49,23 +51,24 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
             if (tileEntity != null && tileEntity.storedData != null) {
                 BlockData data = tileEntity.storedData;
-                testingPlace = true;
+                //TODO: Test Place
+                /*testingPlace = true;
                 if (!data.block.canPlaceBlockAt(world, pos)) {
                     testingPlace = false;
                     return true;
                 }
-                testingPlace = false;
+                testingPlace = false;*/
                 if (data.block != null) {
-                    BlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, player, hand);
-                    data.meta = newstate.getBlock().getMetaFromState(newstate);
+                    //TODO: State for placement
+                    //BlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, player, hand);
+                    world.setBlockState(pos, data.block.getDefaultState());
                 }
-                world.setBlockState(pos, data.block.getStateFromMeta(data.meta));
                 if (data.tileTag != null && world.getTileEntity(pos) != null) {
                     data.updateLocation(pos);
                     world.getTileEntity(pos).read(data.tileTag);
                 }
                 if (data.block != null) {
-                    data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), player, new ItemStack(data.block, 1, data.meta));
+                    data.block.onBlockPlacedBy(world, pos, data.block.getDefaultState(), player, new ItemStack(data.block));
                 }
                 spawnAsEntity(world, pos, MekanismBlock.CARDBOARD_BOX.getItemStack());
             }
@@ -108,12 +111,10 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
     public static class BlockData {
 
         public Block block;
-        public int meta;
         public CompoundNBT tileTag;
 
-        public BlockData(Block b, int j, CompoundNBT nbtTags) {
+        public BlockData(Block b, CompoundNBT nbtTags) {
             block = b;
-            meta = j;
             tileTag = nbtTags;
         }
 
@@ -122,8 +123,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
         public static BlockData read(CompoundNBT nbtTags) {
             BlockData data = new BlockData();
-            data.block = Block.getBlockById(nbtTags.getInt("id"));
-            data.meta = nbtTags.getInt("meta");
+            data.block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbtTags.getString("registryName")));
             if (nbtTags.contains("tileTag")) {
                 data.tileTag = nbtTags.getCompound("tileTag");
             }
@@ -139,8 +139,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
         }
 
         public CompoundNBT write(CompoundNBT nbtTags) {
-            nbtTags.putInt("id", Block.getIdFromBlock(block));
-            nbtTags.putInt("meta", meta);
+            nbtTags.putString("registryName", block.getRegistryName().toString());
             if (tileTag != null) {
                 nbtTags.put("tileTag", tileTag);
             }

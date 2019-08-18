@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -19,6 +20,10 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
 
     public Direction side = Direction.DOWN;
+
+    public TileEntityGlowPanel() {
+        super(MekanismTileEntityTypes.GLOW_PANEL);
+    }
 
     public void setOrientation(Direction newSide) {
         side = newSide;

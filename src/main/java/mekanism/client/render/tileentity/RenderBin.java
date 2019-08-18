@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -21,7 +22,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
     @Override
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.getDirection());
-        if (!obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.getOppositeDirection())) {
+        if (!Block.hasSolidSide(obj.getBlockState(tileEntity.getWorld()), tileEntity.getWorld(), obj.getPos(), tileEntity.getOppositeDirection())) {
             render(tileEntity.getDirection(), tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
         }
     }

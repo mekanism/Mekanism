@@ -135,7 +135,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
         if (!world.isRemote) {
             ItemStack dropItem = getDropItem(state, world, pos);
             if (te instanceof INameable) {
-                dropItem.setStackDisplayName(((INameable) te).getName());
+                dropItem.setDisplayName(((INameable) te).getName());
             }
             Block.spawnAsEntity(world, pos, dropItem);
         }
@@ -150,16 +150,18 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
      *
      * @return false
      */
-    @Override
+    //TODO: Silk touch/denial
+    /*@Override
     @Deprecated
     protected boolean canSilkHarvest() {
         return false;
     }
 
+    //TDO: Add drops to loot table
     @Override
     public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
         drops.add(getDropItem(state, world, pos));
-    }
+    }*/
 
     /**
      * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link

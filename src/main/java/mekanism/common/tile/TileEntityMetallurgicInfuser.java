@@ -24,7 +24,6 @@ import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -68,8 +67,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
-
-        securityComponent = new TileComponentSecurity(this);
     }
 
     @Override

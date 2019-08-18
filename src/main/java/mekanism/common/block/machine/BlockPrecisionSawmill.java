@@ -180,12 +180,6 @@ public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBl
         return 5;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityPrecisionSawmill> getTileClass() {
-        return TileEntityPrecisionSawmill.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

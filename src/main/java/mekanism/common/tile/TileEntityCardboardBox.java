@@ -2,12 +2,17 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.block.BlockCardboardBox.BlockData;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityCardboardBox extends TileEntity {
 
     public BlockData storedData;
+
+    public TileEntityCardboardBox() {
+        super(MekanismTileEntityTypes.CARDBOARD_BOX);
+    }
 
     @Override
     public void read(CompoundNBT nbtTags) {

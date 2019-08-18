@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockGlowPanel;
-import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -17,7 +17,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 //TODO: Maybe somehow make this extend ItemBlockColoredName
-public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> implements IItemRedirectedModel {
+public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> {
 
     public ItemBlockGlowPanel(BlockGlowPanel block) {
         super(block);
@@ -32,7 +32,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> i
             if (tile != null) {
                 Direction side = context.getFace();
                 BlockPos pos1 = pos.offset(side.getOpposite());
-                if (world.isSideSolid(pos1, side)) {
+                if (Block.hasSolidSide(world.getBlockState(pos1), world, pos1, side)) {
                     tile.setOrientation(side.getOpposite());
                 }
                 if (!world.isRemote) {
@@ -62,21 +62,15 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble<BlockGlowPanel> i
         return EnumColor.BLACK;
     }
 
-    @Override
+    //TODO: Multipart
+    /*@Override
     public boolean shouldRotateAroundWhenRendering() {
         return true;
     }
 
-    //TODO: Multipart
-    /*@Override
+    @Override
     @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
     protected IMultipart getMultiPart() {
         return MultipartMekanism.GLOWPANEL_MP;
     }*/
-
-    @Nonnull
-    @Override
-    public String getRedirectLocation() {
-        return "glow_panel";
-    }
 }

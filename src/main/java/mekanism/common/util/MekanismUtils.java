@@ -977,7 +977,6 @@ public final class MekanismUtils {
         return null;
     }
 
-
     /**
      * Dismantles a block, dropping it and removing it from the world.
      */

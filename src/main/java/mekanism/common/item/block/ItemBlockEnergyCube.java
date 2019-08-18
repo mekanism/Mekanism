@@ -9,7 +9,6 @@ import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
-import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.security.ISecurityItem;
@@ -34,8 +33,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier>,
-      IItemRedirectedModel {
+public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier> {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
         //TODO: Figure out if this and the other TEISR's cause issues server side due to the fact this technically will also be called server side
@@ -127,11 +125,5 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, new ForgeEnergyItemWrapper());
-    }
-
-    @Nonnull
-    @Override
-    public String getRedirectLocation() {
-        return "energy_cube";
     }
 }

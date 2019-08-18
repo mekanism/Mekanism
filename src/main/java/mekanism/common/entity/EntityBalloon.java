@@ -3,12 +3,8 @@ package mekanism.common.entity;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.Pos3D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismSounds;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.RedstoneParticle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -19,6 +15,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -225,11 +222,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @OnlyIn(Dist.CLIENT)
     private void doParticle() {
-        Pos3D pos = new Pos3D(posX + (rand.nextFloat() * .6 - 0.3), posY + (rand.nextFloat() * .6 - 0.3), posZ + (rand.nextFloat() * .6 - 0.3));
-
-        Particle fx = new RedstoneParticle.Factory().createParticle(0, world, pos.x, pos.y, pos.z, 0, 0, 0);
-        fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
-        Minecraft.getInstance().particles.addEffect(fx);
+        world.addParticle(new RedstoneParticleData(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F),
+              posX + (rand.nextFloat() * 0.6 - 0.3), posY + (rand.nextFloat() * 0.6 - 0.3), posZ + (rand.nextFloat() * 0.6 - 0.3), 0, 0, 0);
     }
 
     @Override

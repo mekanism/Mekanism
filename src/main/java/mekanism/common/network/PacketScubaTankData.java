@@ -53,7 +53,7 @@ public class PacketScubaTankData {
                 // TODO: Why is this a dimensional thing?!
                 // because we dont send a packet when a player starts tracking another player (net.minecraftforge.event.entity.player.PlayerEvent.StartTracking)
                 if (!player.world.isRemote) {
-                    Mekanism.packetHandler.sendToDimension(message, player.world.getDimension());
+                    Mekanism.packetHandler.sendToDimension(message, player.world.getDimension().getType());
                 }
             } else if (message.packetType == ScubaTankPacket.MODE) {
                 // Use has changed the mode of their gasmask; update it

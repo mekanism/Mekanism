@@ -56,7 +56,8 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
             pos = pos.offset(side);
         }
 
-        if (player.canPlayerEdit(pos, side, itemstack) && mayPlace(itemstack, world, pos, state, hand, side)) {
+        //TODO: Multipart
+        if (player.canPlayerEdit(pos, side, itemstack)/* && mayPlace(itemstack, world, pos, state, hand, side)*/) {
             BlockState iblockstate1 = this.getBlock().getStateForPlacement(blockItemUseContext);
             boolean flag;
             //TODO: Multipart

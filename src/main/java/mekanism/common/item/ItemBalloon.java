@@ -7,6 +7,7 @@ import mekanism.api.Pos3D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
@@ -81,7 +82,7 @@ public class ItemBalloon extends ItemMekanism {
             if (world.getBlockState(pos).getMaterial().isReplaceable()) {
                 pos = pos.down();
             }
-            if (!world.isSideSolid(pos, Direction.UP)) {
+            if (!Block.hasSolidSide(world.getBlockState(pos), world, pos, Direction.UP)) {
                 return ActionResultType.FAIL;
             }
             if (canReplace(world, pos.up()) && canReplace(world, pos.up(2))) {

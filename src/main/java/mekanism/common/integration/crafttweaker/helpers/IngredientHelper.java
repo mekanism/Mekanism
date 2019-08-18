@@ -33,6 +33,7 @@ import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
 import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.temporary.ILiquidStack;
+import mekanism.common.temporary.IngredientAny;
 import mekanism.common.temporary.MCLiquidStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -79,7 +80,8 @@ public class IngredientHelper {
         } else if (input instanceof IItemStack) {
             return toMatch != null && toMatch.matches((IItemStack) input);
         } else if (input instanceof ILiquidStack) {
-            return toMatch != null && toMatch.matches((ILiquidStack) input);
+            //TODO
+            return toMatch != null;// && toMatch.matches((ILiquidStack) input);
         }
         //TODO: Support other types of things like ore dict
         return false;

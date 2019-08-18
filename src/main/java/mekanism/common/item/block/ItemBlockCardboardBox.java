@@ -50,7 +50,6 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         if (data != null) {
             try {
                 tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.block"), ": " + new ItemStack(data.block).getDisplayName()));
-                tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.meta"), ": " + data.meta));
                 if (data.tileTag != null) {
                     tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.tile"), ": " + data.tileTag.getString("id")));
                 }
@@ -75,7 +74,6 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
             if (!world.isRemote && MekanismAPI.isBlockCompatible(block) && state.getBlockHardness(world, pos) != -1) {
                 BlockData data = new BlockData();
                 data.block = block;
-                data.meta = meta;
                 isMonitoring = true;
                 if (world.getTileEntity(pos) != null) {
                     TileEntity tile = world.getTileEntity(pos);

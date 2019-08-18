@@ -1,15 +1,12 @@
 package mekanism.common.inventory;
 
 import javax.annotation.Nonnull;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
 
 /*Copied & modified from net.minecraft.inventory.InventoryBasic */
 public class InventoryList implements IInventory {
@@ -17,10 +14,8 @@ public class InventoryList implements IInventory {
     private final int slotsCount;
     private final NonNullList<ItemStack> inventoryContents;
     private final TileEntity te;
-    private String inventoryTitle;
 
     public InventoryList(NonNullList<ItemStack> list, TileEntity parent) {
-        this.inventoryTitle = "Proxy";
         this.slotsCount = list.size();
         this.inventoryContents = list;
         this.te = parent;
@@ -90,38 +85,6 @@ public class InventoryList implements IInventory {
             }
         }
         return true;
-    }
-
-    /**
-     * Get the name of this object. For players this returns their username
-     */
-    @Nonnull
-    @Override
-    public String getName() {
-        return this.inventoryTitle;
-    }
-
-    /**
-     * Returns true if this thing is named
-     */
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    /**
-     * Sets the name of this inventory. This is displayed to the client on opening.
-     */
-    public void setCustomName(String inventoryTitleIn) {
-    }
-
-    /**
-     * Get the formatted ChatComponent that will be used for the sender's username in chat
-     */
-    @Nonnull
-    @Override
-    public ITextComponent getDisplayName() {
-        return TextComponentUtil.build(hasCustomName() ? getName() : Translation.of(getName()));
     }
 
     /**

@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class PacketBoxBlacklist {
 
@@ -19,7 +20,7 @@ public class PacketBoxBlacklist {
         Set<Block> boxIgnore = MekanismAPI.getBoxIgnore();
         buf.writeInt(boxIgnore.size());
         for (Block info : boxIgnore) {
-            buf.writeInt(Block.getIdFromBlock(info));
+            buf.writeResourceLocation(info.getRegistryName());
         }
         Set<String> boxModIgnore = MekanismAPI.getBoxModIgnore();
         buf.writeInt(boxModIgnore.size());
@@ -33,7 +34,7 @@ public class PacketBoxBlacklist {
         MekanismAPI.getBoxIgnore().clear();
         int amount = buf.readInt();
         for (int i = 0; i < amount; i++) {
-            MekanismAPI.addBoxBlacklist(Block.getBlockById(buf.readInt()));
+            MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()));
         }
         int amountMods = buf.readInt();
         for (int i = 0; i < amountMods; i++) {

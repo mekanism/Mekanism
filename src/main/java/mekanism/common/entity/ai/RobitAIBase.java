@@ -1,6 +1,7 @@
 package mekanism.common.entity.ai;
 
 import mekanism.common.entity.EntityRobit;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -73,7 +74,7 @@ public abstract class RobitAIBase extends Goal {
                         for (int i1 = 0; i1 <= 4; ++i1) {
                             BlockPos pos = new BlockPos(x + l, y, z + i1);
                             BlockPos under = new BlockPos(x + l, y - 1, z + i1);
-                            if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.getBlockState(under).isSideSolid(world, under, Direction.UP) && isEmptyBlock(pos) &&
+                            if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && Block.hasSolidSide(world.getBlockState(under), world, under, Direction.UP) && isEmptyBlock(pos) &&
                                 isEmptyBlock(new BlockPos(x + l, y + 1, z + i1))) {
                                 theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
                                 thePathfinder.clearPath();
@@ -88,6 +89,7 @@ public abstract class RobitAIBase extends Goal {
 
     private boolean isEmptyBlock(BlockPos pos) {
         BlockState iblockstate = world.getBlockState(pos);
-        return world.isAirBlock(pos) || !iblockstate.isFullCube();
+        //TODO: Check voxel shape
+        return world.isAirBlock(pos);// || !iblockstate.isFullCube();
     }
 }

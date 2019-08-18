@@ -11,7 +11,6 @@ import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.ITieredItem;
@@ -46,6 +45,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorld;
@@ -57,7 +57,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem,
-      IItemNetwork, ITieredItem<FluidTankTier>, IItemRedirectedModel {
+      IItemNetwork, ITieredItem<FluidTankTier> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderFluidTankItem::new));
@@ -158,8 +158,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (getBucketMode(itemstack)) {
             if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                //TODO: Handle picking up and putting down
-                RayTraceResult rayTraceResult = rayTrace(world, entityplayer, fluidMode);
+                //TODO: Handle picking up and putting down, for now just setting it as source only but this is almost certainly wrong
+                RayTraceResult rayTraceResult = rayTrace(world, entityplayer, FluidMode.SOURCE_ONLY);
                 //It can be null if there is nothing in range
                 if (rayTraceResult != null && rayTraceResult instanceof BlockRayTraceResult) {
                     BlockRayTraceResult pos = (BlockRayTraceResult) rayTraceResult;
@@ -280,11 +280,5 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (!world.isRemote()) {
             setBucketMode(stack, dataStream.readBoolean());
         }
-    }
-
-    @Nonnull
-    @Override
-    public String getRedirectLocation() {
-        return "fluid_tank";
     }
 }

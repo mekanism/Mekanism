@@ -59,7 +59,7 @@ public class RobitAIFollow extends RobitAIBase {
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         if (theRobit.getFollowing()) {
             updateTask(theOwner);
         }

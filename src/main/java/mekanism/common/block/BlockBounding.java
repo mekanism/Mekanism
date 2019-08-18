@@ -71,8 +71,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             return false;
         }
         BlockState state1 = world.getBlockState(mainPos);
-        //TODO: Use proper ray trace result
-        return state1.getBlock().onBlockActivated(state1, world, mainPos, player, hand, hit1);
+        //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
+        return state1.getBlock().onBlockActivated(state1, world, mainPos, player, hand, hit);
     }
 
     @Override
@@ -116,7 +116,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     /**
      * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}.
      */
-    @Override
+    //TODO: Loot table? Or how should the bounding block handle drops
+    /*@Override
     public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
@@ -124,7 +125,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
         BlockState state1 = world.getBlockState(mainPos);
         state1.getBlock().getDrops(drops, world, mainPos, state1, fortune);
-    }
+    }*/
 
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)}.
@@ -145,11 +146,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
      *
      * @return false
      */
-    @Override
+    //TODO: Silk touch/denial
+    /*@Override
     @Deprecated
     protected boolean canSilkHarvest() {
         return false;
-    }
+    }*/
 
     @Override
     @Deprecated

@@ -4,6 +4,7 @@ import java.util.UUID;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +16,7 @@ import net.minecraft.world.World;
 public class EntityBabySkeleton extends SkeletonEntity {
 
     private static final UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, 1);
+    private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, Operation.ADDITION);
 
     private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
 
@@ -39,7 +40,8 @@ public class EntityBabySkeleton extends SkeletonEntity {
                 iattributeinstance.applyModifier(babySpeedBoostModifier);
             }
         }
-        updateChildSize(child);
+        //TODO: Update size?
+        //updateChildSize(child);
     }
 
     @Override
@@ -50,7 +52,8 @@ public class EntityBabySkeleton extends SkeletonEntity {
         return super.getExperiencePoints(player);
     }
 
-    public void updateChildSize(boolean child) {
+    //TODO
+    /*public void updateChildSize(boolean child) {
         updateSize(child ? 0.5F : 1.0F);
     }
 
@@ -62,5 +65,5 @@ public class EntityBabySkeleton extends SkeletonEntity {
     @Override
     public float getEyeHeight() {
         return getSize(getPose()).height * 0.85F;
-    }
+    }*/
 }

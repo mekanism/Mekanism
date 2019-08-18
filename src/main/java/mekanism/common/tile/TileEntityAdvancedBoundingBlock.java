@@ -81,25 +81,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         inv.setInventorySlotContents(i, itemstack);
     }
 
-    @Nonnull
-    @Override
-    public String getName() {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return "null";
-        }
-        return inv.getName();
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.hasCustomName();
-    }
-
     @Override
     public int getInventoryStackLimit() {
         IAdvancedBoundingBlock inv = getInv();

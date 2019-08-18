@@ -1,14 +1,9 @@
 package mekanism.common.block;
 
-import java.util.Random;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismItem;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 public class BlockSalt extends Block {
@@ -18,7 +13,8 @@ public class BlockSalt extends Block {
         setRegistryName(new ResourceLocation(Mekanism.MODID, "salt_block"));
     }
 
-    @Nonnull
+    //TODO: Put drops in loot table
+    /*@Nonnull
     @Override
     public Item getItemDropped(BlockState state, Random random, int fortune) {
         return MekanismItem.SALT.getItem();
@@ -27,5 +23,5 @@ public class BlockSalt extends Block {
     @Override
     public int quantityDropped(Random random) {
         return 4;
-    }
+    }*/
 }

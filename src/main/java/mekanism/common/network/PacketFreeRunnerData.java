@@ -36,8 +36,7 @@ public class PacketFreeRunnerData {
                     Mekanism.freeRunnerOn.remove(message.uuid);
                 }
                 if (!entityPlayer.world.isRemote) {
-                    Mekanism.packetHandler.sendToDimension(new PacketFreeRunnerData(FreeRunnerPacket.UPDATE, message.uuid, message.value),
-                          entityPlayer.world.getDimension());
+                    Mekanism.packetHandler.sendToDimension(new PacketFreeRunnerData(FreeRunnerPacket.UPDATE, message.uuid, message.value), entityPlayer.world.getDimension().getType());
                 }
             } else if (message.packetType == FreeRunnerPacket.MODE) {
                 ItemStack stack = entityPlayer.getItemStackFromSlot(EquipmentSlotType.FEET);

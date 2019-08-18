@@ -11,8 +11,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketDataRequest {
@@ -26,22 +24,20 @@ public class PacketDataRequest {
     public static void handle(PacketDataRequest message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
-            World worldServer = DimensionManager.getWorld(message.coord4D.dimension);
-            if (worldServer != null) {
-                TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
-                if (tileEntity instanceof TileEntityMultiblock) {
-                    ((TileEntityMultiblock<?>) tileEntity).sendStructure = true;
-                }
-                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
-                    transmitter.setRequestsUpdate();
-                    if (transmitter.hasTransmitterNetwork()) {
-                        transmitter.getTransmitterNetwork().addUpdate(player);
-                    }
-                });
-                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
-                      network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player)
-                );
+            //TODO: Verify this
+            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+            if (tileEntity instanceof TileEntityMultiblock) {
+                ((TileEntityMultiblock<?>) tileEntity).sendStructure = true;
             }
+            CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
+                transmitter.setRequestsUpdate();
+                if (transmitter.hasTransmitterNetwork()) {
+                    transmitter.getTransmitterNetwork().addUpdate(player);
+                }
+            });
+            CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
+                  network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player)
+            );
         }, player);
     }
 

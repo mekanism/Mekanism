@@ -6,9 +6,11 @@ import mekanism.api.Pos3D;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,6 +20,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceContext.BlockMode;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,8 +38,10 @@ public class LaserManager {
 
     public static LaserInfo fireLaser(Pos3D from, Direction direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-        BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
-        if (mop != null) {
+        PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, new BlockPos(from)).get();
+        //TODO: Verify this is correct
+        BlockRayTraceResult mop = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
+        if (mop.getType() != Type.MISS) {
             to = new Pos3D(mop.getHitVec());
             Coord4D toCoord = new Coord4D(mop.getPos(), world);
             TileEntity tile = toCoord.getTileEntity(world);
@@ -67,22 +75,24 @@ public class LaserManager {
         BlockState state = blockCoord.getBlockState(world);
         Block blockHit = state.getBlock();
         PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, laserPos).get();
-        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
+        BlockPos pos = blockCoord.getPos();
+        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) {
             return null;
         }
         NonNullList<ItemStack> ret = null;
         if (dropAtBlock) {
-            Block.spawnDrops(state, world, blockCoord.getPos(), world.getTileEntity(blockCoord.getPos()));
+            Block.spawnDrops(state, world, pos, world.getTileEntity(pos));
         } else {
             ret = NonNullList.create();
-            blockHit.getDrops(ret, world, blockCoord.getPos(), state, 0);
+            //TODO: Check this is correct/handle tile entity
+            ret.addAll(Block.getDrops(state, (ServerWorld) world, pos, MekanismUtils.getTileEntity(world, pos)));
         }
         //TODO: Check this
-        blockHit.onReplaced(state, world, blockCoord.getPos(), Blocks.AIR.getDefaultState(), false);
-        world.removeBlock(blockCoord.getPos(), false);
-        world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockCoord.getPos(), Block.getStateId(state));
+        blockHit.onReplaced(state, world, pos, Blocks.AIR.getDefaultState(), false);
+        world.removeBlock(pos, false);
+        world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
         return ret;
     }
 
@@ -92,8 +102,9 @@ public class LaserManager {
 
     public static BlockRayTraceResult fireLaserClient(Pos3D from, Direction direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-        BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
-        if (mop != null) {
+        //TODO: Verify this is correct
+        BlockRayTraceResult mop = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, Minecraft.getInstance().player));
+        if (mop.getType() != Type.MISS) {
             to = new Pos3D(mop.getHitVec());
         }
         from.translate(direction, -0.501);
