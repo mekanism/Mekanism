@@ -20,6 +20,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.LaserAmplifierContainer;
 import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -34,6 +35,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -126,11 +128,6 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityLaserAmplifier();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -177,12 +174,6 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
         return 0;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityLaserAmplifier> getTileClass() {
-        return TileEntityLaserAmplifier.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -196,5 +187,10 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
     @Override
     public INamedContainerProvider getProvider(TileEntityLaserAmplifier tile) {
         return new ContainerProvider("mekanism.container.laser_amplifier", (i, inv, player) -> new LaserAmplifierContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityLaserAmplifier> getTileType() {
+        return MekanismTileEntityTypes.LASER_AMPLIFIER;
     }
 }

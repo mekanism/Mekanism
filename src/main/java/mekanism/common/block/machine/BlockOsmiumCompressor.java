@@ -24,6 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.advanced.OsmiumCompressorContainer;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -132,11 +134,6 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityOsmiumCompressor();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -183,12 +180,6 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
         return 5;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityOsmiumCompressor> getTileClass() {
-        return TileEntityOsmiumCompressor.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -208,5 +199,10 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
     @Override
     public INamedContainerProvider getProvider(TileEntityOsmiumCompressor tile) {
         return new ContainerProvider("mekanism.container.osmium_compressor", (i, inv, player) -> new OsmiumCompressorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityOsmiumCompressor> getTileType() {
+        return MekanismTileEntityTypes.OSMIUM_COMPRESSOR;
     }
 }

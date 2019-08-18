@@ -5,7 +5,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.pressurized_tube.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.transmitters.grid.GasNetwork;
 import net.minecraft.client.renderer.BufferBuilder;

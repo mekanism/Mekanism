@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +34,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     private N lastClientNetwork = null;
 
-    public TileEntityTransmitter() {
+    public TileEntityTransmitter(TileEntityType<? extends TileEntityTransmitter> type) {
+        super(type);
         transmitterDelegate = new TransmitterImpl<>(this);
     }
 

@@ -2,7 +2,6 @@ package mekanism.generators.common.block;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDisableable;
@@ -21,6 +20,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.fuel.HeatGeneratorContainer;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -113,11 +114,6 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityHeatGenerator();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -133,12 +129,6 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public int getInventorySize() {
         return 2;
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityHeatGenerator> getTileClass() {
-        return TileEntityHeatGenerator.class;
     }
 
     @Nonnull
@@ -160,5 +150,10 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public INamedContainerProvider getProvider(TileEntityHeatGenerator tile) {
         return new ContainerProvider("mekanismgenerators.container.heat_generator", (i, inv, player) -> new HeatGeneratorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityHeatGenerator> getTileType() {
+        return GeneratorsTileEntityTypes.HEAT_GENERATOR;
     }
 }

@@ -1,4 +1,4 @@
-package mekanism.common.tile.induction_cell;
+package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,7 +15,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityInductionCell extends TileEntityMekanism implements IStrictEnergyStorage {
+public class TileEntityInductionCell extends TileEntityMekanism implements IStrictEnergyStorage {
 
     public InductionCellTier tier;
 

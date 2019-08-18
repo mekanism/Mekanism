@@ -19,6 +19,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -32,6 +33,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -106,11 +108,6 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityTeleporter();
-    }
-
-    @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
@@ -149,12 +146,6 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
         return 2;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityTeleporter> getTileClass() {
-        return TileEntityTeleporter.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -168,5 +159,10 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     @Override
     public INamedContainerProvider getProvider(TileEntityTeleporter tile) {
         return new ContainerProvider("mekanism.container.teleporter", (i, inv, player) -> new TeleporterContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityTeleporter> getTileType() {
+        return MekanismTileEntityTypes.TELEPORTER;
     }
 }

@@ -14,6 +14,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -26,6 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -117,11 +119,6 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityChargepad();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -170,12 +167,6 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
         return MekanismConfig.storage.chargePad.get();
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityChargepad> getTileClass() {
-        return TileEntityChargepad.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -190,5 +181,10 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public TileEntityType<TileEntityChargepad> getTileType() {
+        return MekanismTileEntityTypes.CHARGEPAD;
     }
 }

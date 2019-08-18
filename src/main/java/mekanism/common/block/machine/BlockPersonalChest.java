@@ -18,6 +18,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -31,6 +32,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -119,11 +121,6 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityPersonalChest();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -164,12 +161,6 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
         return 54;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityPersonalChest> getTileClass() {
-        return TileEntityPersonalChest.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -183,5 +174,10 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Override
     public INamedContainerProvider getProvider(TileEntityPersonalChest tile) {
         return new ContainerProvider("mekanism.container.personal_chest", (i, inv, player) -> new PersonalChestTileContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityPersonalChest> getTileType() {
+        return MekanismTileEntityTypes.PERSONAL_CHEST;
     }
 }

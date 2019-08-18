@@ -2,7 +2,6 @@ package mekanism.common.block;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockElectric;
@@ -19,14 +18,10 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.energy.EnergyCubeContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
+import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.tile.energy_cube.TileEntityAdvancedEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityBasicEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityCreativeEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityEliteEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityUltimateEnergyCube;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -38,6 +33,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -128,23 +124,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<T
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        switch (tier) {
-            case BASIC:
-                return new TileEntityBasicEnergyCube();
-            case ADVANCED:
-                return new TileEntityAdvancedEnergyCube();
-            case ELITE:
-                return new TileEntityEliteEnergyCube();
-            case ULTIMATE:
-                return new TileEntityUltimateEnergyCube();
-            case CREATIVE:
-                return new TileEntityCreativeEnergyCube();
-        }
-        return null;
-    }
-
-    @Override
     public double getStorage() {
         return tier.getMaxEnergy();
     }
@@ -154,26 +133,25 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<T
         return 2;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityEnergyCube> getTileClass() {
-        switch (tier) {
-            case BASIC:
-                return TileEntityBasicEnergyCube.class;
-            case ADVANCED:
-                return TileEntityAdvancedEnergyCube.class;
-            case ELITE:
-                return TileEntityEliteEnergyCube.class;
-            case ULTIMATE:
-                return TileEntityUltimateEnergyCube.class;
-            case CREATIVE:
-                return TileEntityCreativeEnergyCube.class;
-        }
-        return null;
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityEnergyCube tile) {
         return new ContainerProvider("mekanism.container.energy_cube", (i, inv, player) -> new EnergyCubeContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityEnergyCube> getTileType() {
+        switch (tier) {
+            case ADVANCED:
+                return MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE;
+            case ELITE:
+                return MekanismTileEntityTypes.ELITE_ENERGY_CUBE;
+            case ULTIMATE:
+                return MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE;
+            case CREATIVE:
+                return MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE;
+            case BASIC:
+            default:
+                return MekanismTileEntityTypes.BASIC_ENERGY_CUBE;
+        }
     }
 }

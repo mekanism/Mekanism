@@ -1,21 +1,15 @@
 package mekanism.common.block.transmitter;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateColor;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.tile.transmitter.logistical_transporter.TileEntityAdvancedLogisticalTransporter;
-import mekanism.common.tile.transmitter.logistical_transporter.TileEntityBasicLogisticalTransporter;
-import mekanism.common.tile.transmitter.logistical_transporter.TileEntityEliteLogisticalTransporter;
-import mekanism.common.tile.transmitter.logistical_transporter.TileEntityLogisticalTransporter;
-import mekanism.common.tile.transmitter.logistical_transporter.TileEntityUltimateLogisticalTransporter;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.world.IBlockReader;
 
 public class BlockLogisticalTransporter extends BlockLargeTransmitter implements IStateColor, ITieredBlock<TransporterTier>, IHasTileEntity<TileEntityLogisticalTransporter> {
 
@@ -32,38 +26,22 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        switch (tier) {
-            case BASIC:
-                return new TileEntityBasicLogisticalTransporter();
-            case ADVANCED:
-                return new TileEntityAdvancedLogisticalTransporter();
-            case ELITE:
-                return new TileEntityEliteLogisticalTransporter();
-            case ULTIMATE:
-                return new TileEntityUltimateLogisticalTransporter();
-        }
-        return null;
-    }
-
-    @Override
     public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.TRANSLUCENT || layer == BlockRenderLayer.CUTOUT;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityLogisticalTransporter> getTileClass() {
+    public TileEntityType<TileEntityLogisticalTransporter> getTileType() {
         switch (tier) {
-            case BASIC:
-                return TileEntityBasicLogisticalTransporter.class;
             case ADVANCED:
-                return TileEntityAdvancedLogisticalTransporter.class;
+                return MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER;
             case ELITE:
-                return TileEntityEliteLogisticalTransporter.class;
+                return MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER;
             case ULTIMATE:
-                return TileEntityUltimateLogisticalTransporter.class;
+                return MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER;
+            case BASIC:
+            default:
+                return MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER;
         }
-        return null;
     }
 }

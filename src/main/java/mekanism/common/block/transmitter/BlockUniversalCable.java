@@ -1,20 +1,14 @@
 package mekanism.common.block.transmitter;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.CableTier;
-import mekanism.common.tile.transmitter.universal_cable.TileEntityAdvancedUniversalCable;
-import mekanism.common.tile.transmitter.universal_cable.TileEntityBasicUniversalCable;
-import mekanism.common.tile.transmitter.universal_cable.TileEntityEliteUniversalCable;
-import mekanism.common.tile.transmitter.universal_cable.TileEntityUltimateUniversalCable;
-import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.world.IBlockReader;
 
 public class BlockUniversalCable extends BlockSmallTransmitter implements ITieredBlock<CableTier>, IHasTileEntity<TileEntityUniversalCable> {
 
@@ -31,38 +25,22 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        switch (tier) {
-            case BASIC:
-                return new TileEntityBasicUniversalCable();
-            case ADVANCED:
-                return new TileEntityAdvancedUniversalCable();
-            case ELITE:
-                return new TileEntityEliteUniversalCable();
-            case ULTIMATE:
-                return new TileEntityUltimateUniversalCable();
-        }
-        return null;
-    }
-
-    @Override
     public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.CUTOUT;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityUniversalCable> getTileClass() {
+    public TileEntityType<TileEntityUniversalCable> getTileType() {
         switch (tier) {
-            case BASIC:
-                return TileEntityBasicUniversalCable.class;
             case ADVANCED:
-                return TileEntityAdvancedUniversalCable.class;
+                return MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE;
             case ELITE:
-                return TileEntityEliteUniversalCable.class;
+                return MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE;
             case ULTIMATE:
-                return TileEntityUltimateUniversalCable.class;
+                return MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE;
+            case BASIC:
+            default:
+                return MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE;
         }
-        return null;
     }
 }

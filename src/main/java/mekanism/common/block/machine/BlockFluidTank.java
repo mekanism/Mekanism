@@ -21,14 +21,10 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.fluid.FluidTankContainer;
 import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.tile.fluid_tank.TileEntityAdvancedFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityBasicFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityCreativeFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityEliteFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityUltimateFluidTank;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -42,6 +38,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -118,23 +115,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
             return true;
         }
         return false;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        switch (tier) {
-            case BASIC:
-                return new TileEntityBasicFluidTank();
-            case ADVANCED:
-                return new TileEntityAdvancedFluidTank();
-            case ELITE:
-                return new TileEntityEliteFluidTank();
-            case ULTIMATE:
-                return new TileEntityUltimateFluidTank();
-            case CREATIVE:
-                return new TileEntityCreativeFluidTank();
-        }
-        return null;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -260,24 +240,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         return 2;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityFluidTank> getTileClass() {
-        switch (tier) {
-            case BASIC:
-                return TileEntityBasicFluidTank.class;
-            case ADVANCED:
-                return TileEntityAdvancedFluidTank.class;
-            case ELITE:
-                return TileEntityEliteFluidTank.class;
-            case ULTIMATE:
-                return TileEntityUltimateFluidTank.class;
-            case CREATIVE:
-                return TileEntityCreativeFluidTank.class;
-        }
-        return null;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -291,5 +253,22 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public INamedContainerProvider getProvider(TileEntityFluidTank tile) {
         return new ContainerProvider("mekanism.container.fluid_tank", (i, inv, player) -> new FluidTankContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityFluidTank> getTileType() {
+        switch (tier) {
+            case ADVANCED:
+                return MekanismTileEntityTypes.ADVANCED_FLUID_TANK;
+            case ELITE:
+                return MekanismTileEntityTypes.ELITE_FLUID_TANK;
+            case ULTIMATE:
+                return MekanismTileEntityTypes.ULTIMATE_FLUID_TANK;
+            case CREATIVE:
+                return MekanismTileEntityTypes.CREATIVE_FLUID_TANK;
+            case BASIC:
+            default:
+                return MekanismTileEntityTypes.BASIC_FLUID_TANK;
+        }
     }
 }

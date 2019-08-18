@@ -1,7 +1,6 @@
 package mekanism.generators.common.block;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDisableable;
@@ -19,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.passive.WindGeneratorContainer;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,6 +26,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -83,11 +84,6 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityWindGenerator();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -103,12 +99,6 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public int getInventorySize() {
         return 1;
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityWindGenerator> getTileClass() {
-        return TileEntityWindGenerator.class;
     }
 
     @Nonnull
@@ -130,5 +120,10 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public INamedContainerProvider getProvider(TileEntityWindGenerator tile) {
         return new ContainerProvider("mekanismgenerators.container.wind_generator", (i, inv, player) -> new WindGeneratorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityWindGenerator> getTileType() {
+        return GeneratorsTileEntityTypes.WIND_GENERATOR;
     }
 }

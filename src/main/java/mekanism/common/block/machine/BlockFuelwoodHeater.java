@@ -17,6 +17,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FuelwoodHeaterContainer;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -30,6 +31,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -116,11 +118,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityFuelwoodHeater();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -157,12 +154,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
         return 1;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityFuelwoodHeater> getTileClass() {
-        return TileEntityFuelwoodHeater.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -176,5 +167,10 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
     @Override
     public INamedContainerProvider getProvider(TileEntityFuelwoodHeater tile) {
         return new ContainerProvider("mekanism.container.fuelwood_heater", (i, inv, player) -> new FuelwoodHeaterContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityFuelwoodHeater> getTileType() {
+        return MekanismTileEntityTypes.FUELWOOD_HEATER;
     }
 }

@@ -1,4 +1,4 @@
-package mekanism.common.tile.bin;
+package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +38,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class TileEntityBin extends TileEntityMekanism implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
+public class TileEntityBin extends TileEntityMekanism implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
 
     private static final int[] UPSLOTS = {1};
     private static final int[] DOWNSLOTS = {0};
@@ -352,11 +352,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
         ItemStack ret = stack.copy();
         ret.setCount(1);
         itemType = ret;
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return true;
     }
 
     @Override

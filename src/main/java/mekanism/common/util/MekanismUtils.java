@@ -23,7 +23,6 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
@@ -62,7 +61,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.Fluid;
@@ -474,7 +472,7 @@ public final class MekanismUtils {
      * @param orig             - original block
      */
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
-        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState().with(BlockStateHelper.advancedProperty, true));
+        world.setBlockState(boundingLocation, MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote) {
             ((TileEntityAdvancedBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
         }
@@ -494,7 +492,8 @@ public final class MekanismUtils {
         // This is because that is mainly used for rendering machine effects, but we need to run a render update
         // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
         // For example the laser, or charge pad.
-        world.markBlockRangeForRenderUpdate(pos, pos);
+        //TODO: Render update
+        //world.markBlockRangeForRenderUpdate(pos, pos);
         TileEntity tileEntity = world.getTileEntity(pos);
         if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             updateAllLightTypes(world, pos);
@@ -508,8 +507,9 @@ public final class MekanismUtils {
      * @param pos   - coordinates of the block to update
      */
     public static void updateAllLightTypes(World world, BlockPos pos) {
-        world.checkLightFor(LightType.BLOCK, pos);
-        world.checkLightFor(LightType.SKY, pos);
+        //TODO: Update light types
+        //world.checkLightFor(LightType.BLOCK, pos);
+        //world.checkLightFor(LightType.SKY, pos);
     }
 
     /**

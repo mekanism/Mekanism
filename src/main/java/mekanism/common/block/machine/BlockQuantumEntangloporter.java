@@ -21,6 +21,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.ItemDataUtils;
@@ -38,6 +39,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -143,11 +145,6 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityQuantumEntangloporter();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -196,12 +193,6 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
         return 1;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityQuantumEntangloporter> getTileClass() {
-        return TileEntityQuantumEntangloporter.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -215,5 +206,10 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     @Override
     public INamedContainerProvider getProvider(TileEntityQuantumEntangloporter tile) {
         return new ContainerProvider("mekanism.container.quantum_entangloporter", (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityQuantumEntangloporter> getTileType() {
+        return MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER;
     }
 }

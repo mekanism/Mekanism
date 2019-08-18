@@ -1,7 +1,6 @@
 package mekanism.common.block;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -10,6 +9,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
@@ -17,6 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -115,33 +116,12 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityGlowPanel();
-    }
-
-    @Override
     public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return true;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityGlowPanel> getTileClass() {
-        return TileEntityGlowPanel.class;
-    }
-
-    @Override
-    public boolean hasMultipleBlocks() {
-        return true;
-    }
-
-    @Override
-    public String getTileName() {
-        return "glow_panel";
+    public TileEntityType<TileEntityGlowPanel> getTileType() {
+        return MekanismTileEntityTypes.GLOW_PANEL;
     }
 }

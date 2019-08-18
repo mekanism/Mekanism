@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter.mechanical_pipe;
+package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import javax.annotation.Nonnull;
@@ -8,12 +8,12 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockMechanicalPipe;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.PipeTier;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
@@ -29,7 +29,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
 
     public PipeTier tier;
 
@@ -41,6 +41,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
+        super(((IHasTileEntity<TileEntityMechanicalPipe>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockMechanicalPipe) blockProvider.getBlock()).getTier();
         buffer = new FluidTank(getCapacity());
     }

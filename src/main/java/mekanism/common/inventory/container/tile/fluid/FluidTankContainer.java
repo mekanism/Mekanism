@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.tile.fluid;
 
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
+import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;

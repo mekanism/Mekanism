@@ -1,7 +1,5 @@
 package mekanism.generators.common.block.reactor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -11,6 +9,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapterContainer;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -60,16 +60,6 @@ public class BlockReactorLogicAdapter extends BlockTileDrops implements IHasGui<
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityReactorLogicAdapter();
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
     @Deprecated
     public int getWeakPower(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
@@ -84,14 +74,13 @@ public class BlockReactorLogicAdapter extends BlockTileDrops implements IHasGui<
         return true;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityReactorLogicAdapter> getTileClass() {
-        return TileEntityReactorLogicAdapter.class;
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityReactorLogicAdapter tile) {
         return new ContainerProvider("mekanismgenerators.container.reactor_logic_adapter", (i, inv, player) -> new ReactorLogicAdapterContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityReactorLogicAdapter> getTileType() {
+        return GeneratorsTileEntityTypes.REACTOR_LOGIC_ADAPTER;
     }
 }

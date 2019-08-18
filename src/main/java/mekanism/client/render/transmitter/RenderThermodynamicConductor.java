@@ -3,7 +3,7 @@ package mekanism.client.render.transmitter;
 import mekanism.client.render.ColourTemperature;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermodynamicConductor;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.Direction;

@@ -21,6 +21,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ElectricPumpContainer;
 import mekanism.common.tile.TileEntityElectricPump;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -34,6 +35,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -121,11 +123,6 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityElectricPump();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -172,12 +169,6 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
         return 4;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityElectricPump> getTileClass() {
-        return TileEntityElectricPump.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -191,5 +182,10 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     @Override
     public INamedContainerProvider getProvider(TileEntityElectricPump tile) {
         return new ContainerProvider("mekanism.container.electric_pump", (i, inv, player) -> new ElectricPumpContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityElectricPump> getTileType() {
+        return MekanismTileEntityTypes.ELECTRIC_PUMP;
     }
 }

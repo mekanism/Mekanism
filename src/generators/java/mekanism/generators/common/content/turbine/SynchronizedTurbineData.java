@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
-import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData> {

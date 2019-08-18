@@ -1,4 +1,4 @@
-package mekanism.common.tile.gas_tank;
+package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +40,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, ITierUpgradeable, IComputerIntegration, IComparatorSupport {
+public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, ITierUpgradeable, IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**

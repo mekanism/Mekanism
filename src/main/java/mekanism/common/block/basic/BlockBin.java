@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -15,14 +14,10 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.tile.bin.TileEntityAdvancedBin;
-import mekanism.common.tile.bin.TileEntityBasicBin;
-import mekanism.common.tile.bin.TileEntityBin;
-import mekanism.common.tile.bin.TileEntityCreativeBin;
-import mekanism.common.tile.bin.TileEntityEliteBin;
-import mekanism.common.tile.bin.TileEntityUltimateBin;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,6 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -173,42 +169,19 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+    public TileEntityType<TileEntityBin> getTileType() {
         switch (tier) {
-            case BASIC:
-                return new TileEntityBasicBin();
             case ADVANCED:
-                return new TileEntityAdvancedBin();
+                return MekanismTileEntityTypes.ADVANCED_BIN;
             case ELITE:
-                return new TileEntityEliteBin();
+                return MekanismTileEntityTypes.ELITE_BIN;
             case ULTIMATE:
-                return new TileEntityUltimateBin();
+                return MekanismTileEntityTypes.ULTIMATE_BIN;
             case CREATIVE:
-                return new TileEntityCreativeBin();
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityBin> getTileClass() {
-        switch (tier) {
+                return MekanismTileEntityTypes.CREATIVE_BIN;
             case BASIC:
-                return TileEntityBasicBin.class;
-            case ADVANCED:
-                return TileEntityAdvancedBin.class;
-            case ELITE:
-                return TileEntityEliteBin.class;
-            case ULTIMATE:
-                return TileEntityUltimateBin.class;
-            case CREATIVE:
-                return TileEntityCreativeBin.class;
+            default:
+                return MekanismTileEntityTypes.BASIC_BIN;
         }
-        return null;
     }
 }

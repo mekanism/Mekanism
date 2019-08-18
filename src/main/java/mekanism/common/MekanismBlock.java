@@ -321,7 +321,8 @@ public enum MekanismBlock implements IBlockProvider {
     ULTIMATE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ULTIMATE), ItemBlockThermodynamicConductor::new),
 
     OBSIDIAN_TNT(new BlockObsidianTNT()),
-    BOUNDING_BLOCK(new BlockBounding()),
+    BOUNDING_BLOCK(new BlockBounding(false)),
+    ADVANCED_BOUNDING_BLOCK(new BlockBounding(true)),
 
     BASIC_GAS_TANK(new BlockGasTank(GasTankTier.BASIC), ItemBlockGasTank::new),
     ADVANCED_GAS_TANK(new BlockGasTank(GasTankTier.ADVANCED), ItemBlockGasTank::new),

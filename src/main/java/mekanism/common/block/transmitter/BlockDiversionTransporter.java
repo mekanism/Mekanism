@@ -1,13 +1,11 @@
 package mekanism.common.block.transmitter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.tile.transmitter.logistical_transporter.TileEntityDiversionTransporter;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.world.IBlockReader;
 
 public class BlockDiversionTransporter extends BlockLargeTransmitter implements IHasTileEntity<TileEntityDiversionTransporter> {
 
@@ -16,18 +14,12 @@ public class BlockDiversionTransporter extends BlockLargeTransmitter implements 
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityDiversionTransporter();
-    }
-
-    @Override
     public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.TRANSLUCENT || layer == BlockRenderLayer.CUTOUT;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityDiversionTransporter> getTileClass() {
-        return TileEntityDiversionTransporter.class;
+    public TileEntityType<TileEntityDiversionTransporter> getTileType() {
+        return MekanismTileEntityTypes.DIVERSION_TRANSPORTER;
     }
 }

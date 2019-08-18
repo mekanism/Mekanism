@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter.logistical_transporter;
+package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import java.util.Map;
@@ -12,6 +12,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -21,7 +22,6 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
@@ -41,7 +41,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-public abstract class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
     private final int SYNC_PACKET = 1;
     private final int BATCH_PACKET = 2;
@@ -52,6 +52,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     private int delayCount = 0;
 
     public TileEntityLogisticalTransporter(IBlockProvider blockProvider) {
+        super(((IHasTileEntity<TileEntityLogisticalTransporter>) blockProvider.getBlock()).getTileType());
         Block block = blockProvider.getBlock();
         if (block instanceof BlockLogisticalTransporter) {
             this.tier = ((BlockLogisticalTransporter) block).getTier();
@@ -291,7 +292,8 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     @Override
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         TransporterUtils.incrementColor(getTransmitter());
-        onPartChanged(null);
+        //TODO: Multipart
+        //onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         Mekanism.packetHandler.sendUpdatePacket(this);
         EnumColor color = getTransmitter().getColor();

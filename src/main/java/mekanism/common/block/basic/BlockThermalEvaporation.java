@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
@@ -8,16 +7,17 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -45,18 +45,7 @@ public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityThermalEvaporationBlock();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityThermalEvaporationBlock> getTileClass() {
-        return TileEntityThermalEvaporationBlock.class;
+    public TileEntityType<TileEntityThermalEvaporationBlock> getTileType() {
+        return MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK;
     }
 }

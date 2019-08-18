@@ -2,7 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.api.Coord4D;
-import mekanism.common.tile.bin.TileEntityBin;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

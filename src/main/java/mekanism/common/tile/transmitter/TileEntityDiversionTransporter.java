@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter.logistical_transporter;
+package mekanism.common.tile.transmitter;
 
 import java.util.Map;
 import java.util.Set;

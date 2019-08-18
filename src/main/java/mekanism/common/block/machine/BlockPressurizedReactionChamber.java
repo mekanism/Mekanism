@@ -23,6 +23,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.PressurizedReactionChamberContainer;
 import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -36,6 +37,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -125,11 +127,6 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityPRC();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -176,12 +173,6 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
         return 4;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityPRC> getTileClass() {
-        return TileEntityPRC.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -201,5 +192,10 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     @Override
     public INamedContainerProvider getProvider(TileEntityPRC tile) {
         return new ContainerProvider("mekanism.container.pressurized_reaction_chamber", (i, inv, player) -> new PressurizedReactionChamberContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityPRC> getTileType() {
+        return MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER;
     }
 }

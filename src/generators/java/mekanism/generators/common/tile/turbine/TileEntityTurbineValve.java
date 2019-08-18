@@ -12,7 +12,7 @@ import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.temporary.FluidRegistry;
-import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;

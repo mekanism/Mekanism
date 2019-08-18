@@ -21,6 +21,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -34,6 +35,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -120,11 +122,6 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityDigitalMiner();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -172,12 +169,6 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
         return 29;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityDigitalMiner> getTileClass() {
-        return TileEntityDigitalMiner.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -191,5 +182,10 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     @Override
     public INamedContainerProvider getProvider(TileEntityDigitalMiner tile) {
         return new ContainerProvider("mekanism.container.digital_miner", (i, inv, player) -> new DigitalMinerContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityDigitalMiner> getTileType() {
+        return MekanismTileEntityTypes.DIGITAL_MINER;
     }
 }

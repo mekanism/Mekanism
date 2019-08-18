@@ -22,8 +22,7 @@ import net.minecraftforge.common.util.LazyOptional;
 /*@InterfaceList({
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })*/
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IStrictEnergyAcceptor, IComputerIntegration,
-      ISpecialConfigData {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
 
     @Override
     public boolean isEmpty() {

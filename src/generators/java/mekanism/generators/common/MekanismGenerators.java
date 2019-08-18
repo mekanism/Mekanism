@@ -33,7 +33,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 @Mod(MekanismGenerators.MODID)
 @Mod.EventBusSubscriber()
@@ -173,7 +172,7 @@ public class MekanismGenerators implements IModule {
     @SubscribeEvent
     public void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
         // Mekanism Generators multiblock structures
-        MekanismAPI.addBoxBlacklist(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR.getBlock(), 0);
-        MekanismAPI.addBoxBlacklist(GeneratorsBlock.WIND_GENERATOR.getBlock(), 0);
+        MekanismAPI.addBoxBlacklist(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR.getBlock());
+        MekanismAPI.addBoxBlacklist(GeneratorsBlock.WIND_GENERATOR.getBlock());
     }
 }

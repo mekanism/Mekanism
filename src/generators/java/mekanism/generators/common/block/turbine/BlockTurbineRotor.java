@@ -1,7 +1,6 @@
 package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -10,6 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -116,11 +117,6 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         return true;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityTurbineRotor();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -135,9 +131,8 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         return ROTOR_BOUNDS;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityTurbineRotor> getTileClass() {
-        return TileEntityTurbineRotor.class;
+    public TileEntityType<TileEntityTurbineRotor> getTileType() {
+        return GeneratorsTileEntityTypes.TURBINE_ROTOR;
     }
 }

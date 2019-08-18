@@ -1,7 +1,6 @@
 package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -9,12 +8,14 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -60,13 +61,7 @@ public class BlockRotationalComplex extends BlockMekanismContainer implements IH
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityRotationalComplex();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityRotationalComplex> getTileClass() {
-        return TileEntityRotationalComplex.class;
+    public TileEntityType<TileEntityRotationalComplex> getTileType() {
+        return GeneratorsTileEntityTypes.ROTATIONAL_COMPLEX;
     }
 }

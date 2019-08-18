@@ -1,19 +1,12 @@
 package mekanism.common.block.transmitter;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.PipeTier;
-import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityAdvancedMechanicalPipe;
-import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityBasicMechanicalPipe;
-import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityEliteMechanicalPipe;
-import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityMechanicalPipe;
-import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityUltimateMechanicalPipe;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import net.minecraft.tileentity.TileEntityType;
 
 public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITieredBlock<PipeTier>, IHasTileEntity<TileEntityMechanicalPipe> {
 
@@ -30,33 +23,17 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITiere
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+    public TileEntityType<TileEntityMechanicalPipe> getTileType() {
         switch (tier) {
-            case BASIC:
-                return new TileEntityBasicMechanicalPipe();
             case ADVANCED:
-                return new TileEntityAdvancedMechanicalPipe();
+                return MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE;
             case ELITE:
-                return new TileEntityEliteMechanicalPipe();
+                return MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE;
             case ULTIMATE:
-                return new TileEntityUltimateMechanicalPipe();
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityMechanicalPipe> getTileClass() {
-        switch (tier) {
+                return MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE;
             case BASIC:
-                return TileEntityBasicMechanicalPipe.class;
-            case ADVANCED:
-                return TileEntityAdvancedMechanicalPipe.class;
-            case ELITE:
-                return TileEntityEliteMechanicalPipe.class;
-            case ULTIMATE:
-                return TileEntityUltimateMechanicalPipe.class;
+            default:
+                return MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE;
         }
-        return null;
     }
 }

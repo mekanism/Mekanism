@@ -38,36 +38,10 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.factory.combining.TileEntityAdvancedCombiningFactory;
-import mekanism.common.tile.factory.combining.TileEntityBasicCombiningFactory;
-import mekanism.common.tile.factory.combining.TileEntityEliteCombiningFactory;
-import mekanism.common.tile.factory.compressing.TileEntityAdvancedCompressingFactory;
-import mekanism.common.tile.factory.compressing.TileEntityBasicCompressingFactory;
-import mekanism.common.tile.factory.compressing.TileEntityEliteCompressingFactory;
-import mekanism.common.tile.factory.crushing.TileEntityAdvancedCrushingFactory;
-import mekanism.common.tile.factory.crushing.TileEntityBasicCrushingFactory;
-import mekanism.common.tile.factory.crushing.TileEntityEliteCrushingFactory;
-import mekanism.common.tile.factory.enriching.TileEntityAdvancedEnrichingFactory;
-import mekanism.common.tile.factory.enriching.TileEntityBasicEnrichingFactory;
-import mekanism.common.tile.factory.enriching.TileEntityEliteEnrichingFactory;
-import mekanism.common.tile.factory.infusing.TileEntityAdvancedInfusingFactory;
-import mekanism.common.tile.factory.infusing.TileEntityBasicInfusingFactory;
-import mekanism.common.tile.factory.infusing.TileEntityEliteInfusingFactory;
-import mekanism.common.tile.factory.injecting.TileEntityAdvancedInjectingFactory;
-import mekanism.common.tile.factory.injecting.TileEntityBasicInjectingFactory;
-import mekanism.common.tile.factory.injecting.TileEntityEliteInjectingFactory;
-import mekanism.common.tile.factory.purifying.TileEntityAdvancedPurifyingFactory;
-import mekanism.common.tile.factory.purifying.TileEntityBasicPurifyingFactory;
-import mekanism.common.tile.factory.purifying.TileEntityElitePurifyingFactory;
-import mekanism.common.tile.factory.sawing.TileEntityAdvancedSawingFactory;
-import mekanism.common.tile.factory.sawing.TileEntityBasicSawingFactory;
-import mekanism.common.tile.factory.sawing.TileEntityEliteSawingFactory;
-import mekanism.common.tile.factory.smelting.TileEntityAdvancedSmeltingFactory;
-import mekanism.common.tile.factory.smelting.TileEntityBasicSmeltingFactory;
-import mekanism.common.tile.factory.smelting.TileEntityEliteSmeltingFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -81,6 +55,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -198,95 +173,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        //TODO
-        switch (type) {
-            case SMELTING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicSmeltingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedSmeltingFactory();
-                    case ELITE:
-                        return new TileEntityEliteSmeltingFactory();
-                }
-            case ENRICHING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicEnrichingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedEnrichingFactory();
-                    case ELITE:
-                        return new TileEntityEliteEnrichingFactory();
-                }
-            case CRUSHING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicCrushingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedCrushingFactory();
-                    case ELITE:
-                        return new TileEntityEliteCrushingFactory();
-                }
-            case COMPRESSING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicCompressingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedCompressingFactory();
-                    case ELITE:
-                        return new TileEntityEliteCompressingFactory();
-                }
-            case COMBINING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicCombiningFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedCombiningFactory();
-                    case ELITE:
-                        return new TileEntityEliteCombiningFactory();
-                }
-            case PURIFYING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicPurifyingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedPurifyingFactory();
-                    case ELITE:
-                        return new TileEntityElitePurifyingFactory();
-                }
-            case INJECTING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicInjectingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedInjectingFactory();
-                    case ELITE:
-                        return new TileEntityEliteInjectingFactory();
-                }
-            case INFUSING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicInfusingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedInfusingFactory();
-                    case ELITE:
-                        return new TileEntityEliteInfusingFactory();
-                }
-            case SAWING:
-                switch (tier) {
-                    case BASIC:
-                        return new TileEntityBasicSawingFactory();
-                    case ADVANCED:
-                        return new TileEntityAdvancedSawingFactory();
-                    case ELITE:
-                        return new TileEntityEliteSawingFactory();
-                }
-        }
-        return null;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -332,96 +218,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         return 5 + tier.processes * 2;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityFactory> getTileClass() {
-        //TODO: Clean this up
-        switch (type) {
-            case SMELTING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicSmeltingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedSmeltingFactory.class;
-                    case ELITE:
-                        return TileEntityEliteSmeltingFactory.class;
-                }
-            case ENRICHING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicEnrichingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedEnrichingFactory.class;
-                    case ELITE:
-                        return TileEntityEliteEnrichingFactory.class;
-                }
-            case CRUSHING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicCrushingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedCrushingFactory.class;
-                    case ELITE:
-                        return TileEntityEliteCrushingFactory.class;
-                }
-            case COMPRESSING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicCompressingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedCompressingFactory.class;
-                    case ELITE:
-                        return TileEntityEliteCompressingFactory.class;
-                }
-            case COMBINING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicCombiningFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedCombiningFactory.class;
-                    case ELITE:
-                        return TileEntityEliteCombiningFactory.class;
-                }
-            case PURIFYING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicPurifyingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedPurifyingFactory.class;
-                    case ELITE:
-                        return TileEntityElitePurifyingFactory.class;
-                }
-            case INJECTING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicInjectingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedInjectingFactory.class;
-                    case ELITE:
-                        return TileEntityEliteInjectingFactory.class;
-                }
-            case INFUSING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicInfusingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedInfusingFactory.class;
-                    case ELITE:
-                        return TileEntityEliteInfusingFactory.class;
-                }
-            case SAWING:
-                switch (tier) {
-                    case BASIC:
-                        return TileEntityBasicSawingFactory.class;
-                    case ADVANCED:
-                        return TileEntityAdvancedSawingFactory.class;
-                    case ELITE:
-                        return TileEntityEliteSawingFactory.class;
-                }
-        }
-        return null;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -461,5 +257,102 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     public INamedContainerProvider getProvider(TileEntityFactory tile) {
         return new ContainerProvider("mekanism.container.factory", (i, inv, player) -> new FactoryContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityFactory> getTileType() {
+        switch (type) {
+            case CRUSHING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY;
+                }
+            case COMBINING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_COMBINING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_COMBINING_FACTORY;
+                }
+            case COMPRESSING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY;
+                }
+            case ENRICHING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY;
+                }
+            case INFUSING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_INFUSING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_INFUSING_FACTORY;
+                }
+            case INJECTING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_INJECTING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_INJECTING_FACTORY;
+                }
+            case PURIFYING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY;
+                }
+            case SAWING:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_SAWING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_SAWING_FACTORY;
+                }
+            case SMELTING:
+            default:
+                switch (tier) {
+                    case ADVANCED:
+                        return MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY;
+                    case ELITE:
+                        return MekanismTileEntityTypes.ELITE_SMELTING_FACTORY;
+                    case BASIC:
+                    default:
+                        return MekanismTileEntityTypes.BASIC_SMELTING_FACTORY;
+                }
+        }
     }
 }

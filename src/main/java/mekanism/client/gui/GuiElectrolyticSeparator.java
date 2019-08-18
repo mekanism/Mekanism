@@ -21,7 +21,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.ElectrolyticSeparatorContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;

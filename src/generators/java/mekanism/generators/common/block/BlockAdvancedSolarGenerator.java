@@ -1,7 +1,6 @@
 package mekanism.generators.common.block;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDisableable;
@@ -19,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.passive.SolarGeneratorContainer;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,6 +26,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -84,11 +85,6 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityAdvancedSolarGenerator();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -106,10 +102,9 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
         return 1;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityAdvancedSolarGenerator> getTileClass() {
-        return TileEntityAdvancedSolarGenerator.class;
+    public TileEntityType<TileEntityAdvancedSolarGenerator> getTileType() {
+        return GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR;
     }
 
     @Nonnull

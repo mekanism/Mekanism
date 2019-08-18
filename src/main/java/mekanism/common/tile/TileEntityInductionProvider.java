@@ -1,11 +1,11 @@
-package mekanism.common.tile.induction_provider;
+package mekanism.common.tile;
 
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 
-public abstract class TileEntityInductionProvider extends TileEntityMekanism {
+public class TileEntityInductionProvider extends TileEntityMekanism {
 
     public InductionProviderTier tier;
 

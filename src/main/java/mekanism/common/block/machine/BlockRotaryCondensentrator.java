@@ -23,6 +23,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.RotaryCondensentratorContainer;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -36,6 +37,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -129,11 +131,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityRotaryCondensentrator();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -180,12 +177,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
         return 6;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityRotaryCondensentrator> getTileClass() {
-        return TileEntityRotaryCondensentrator.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -205,5 +196,10 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
     @Override
     public INamedContainerProvider getProvider(TileEntityRotaryCondensentrator tile) {
         return new ContainerProvider("mekanism.container.rotary_condensentrator", (i, inv, player) -> new RotaryCondensentratorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityRotaryCondensentrator> getTileType() {
+        return MekanismTileEntityTypes.ROTARY_CONDENSENTRATOR;
     }
 }

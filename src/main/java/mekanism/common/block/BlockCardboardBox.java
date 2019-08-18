@@ -1,7 +1,6 @@
 package mekanism.common.block;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.interfaces.IHasModel;
@@ -9,13 +8,14 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -73,11 +73,6 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
         return player.isSneaking();
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityCardboardBox();
-    }
-
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
@@ -105,10 +100,9 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
         }
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityCardboardBox> getTileClass() {
-        return TileEntityCardboardBox.class;
+    public TileEntityType<TileEntityCardboardBox> getTileType() {
+        return MekanismTileEntityTypes.CARDBOARD_BOX;
     }
 
     public static class BlockData {

@@ -23,6 +23,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -36,6 +37,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -125,11 +127,6 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityChemicalCrystallizer();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -176,12 +173,6 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
         return 4;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityChemicalCrystallizer> getTileClass() {
-        return TileEntityChemicalCrystallizer.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -201,5 +192,10 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
     @Override
     public INamedContainerProvider getProvider(TileEntityChemicalCrystallizer tile) {
         return new ContainerProvider("mekanism.container.chemical_crystallizer", (i, inv, player) -> new ChemicalCrystallizerContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityChemicalCrystallizer> getTileType() {
+        return MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER;
     }
 }

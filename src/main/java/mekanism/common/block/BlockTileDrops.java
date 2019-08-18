@@ -13,6 +13,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.item.IItemEnergized;
@@ -158,6 +159,19 @@ public abstract class BlockTileDrops extends Block {
     @Override
     public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
         return getDropItem(state, world, pos);
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return this instanceof IHasTileEntity<?>;
+    }
+
+    @Override
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+        if (this instanceof IHasTileEntity<?>) {
+            return ((IHasTileEntity<?>) this).getTileType().create();
+        }
+        return null;
     }
 
     //TODO: Try to merge BlockMekanismContainer and this class

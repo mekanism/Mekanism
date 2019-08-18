@@ -18,6 +18,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.tile.TileEntityOredictionificator;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -31,6 +32,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -117,11 +119,6 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityOredictionificator();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -158,12 +155,6 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
         return 2;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityOredictionificator> getTileClass() {
-        return TileEntityOredictionificator.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -177,5 +168,10 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
     @Override
     public INamedContainerProvider getProvider(TileEntityOredictionificator tile) {
         return new ContainerProvider("mekanism.container.oredictionificator", (i, inv, player) -> new OredictionificatorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityOredictionificator> getTileType() {
+        return MekanismTileEntityTypes.OREDICTIONIFICATOR;
     }
 }

@@ -24,6 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -136,11 +138,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityMetallurgicInfuser();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -187,12 +184,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
         return 5;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityMetallurgicInfuser> getTileClass() {
-        return TileEntityMetallurgicInfuser.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -212,5 +203,10 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
     @Override
     public INamedContainerProvider getProvider(TileEntityMetallurgicInfuser tile) {
         return new ContainerProvider("mekanism.container.metallurgic_infuser", (i, inv, player) -> new MetallurgicInfuserContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityMetallurgicInfuser> getTileType() {
+        return MekanismTileEntityTypes.METALLURGIC_INFUSER;
     }
 }

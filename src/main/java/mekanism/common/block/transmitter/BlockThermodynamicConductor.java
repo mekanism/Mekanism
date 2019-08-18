@@ -1,19 +1,12 @@
 package mekanism.common.block.transmitter;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.ConductorTier;
-import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityAdvancedThermodynamicConductor;
-import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityBasicThermodynamicConductor;
-import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityEliteThermodynamicConductor;
-import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermodynamicConductor;
-import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityUltimateThermodynamicConductor;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import net.minecraft.tileentity.TileEntityType;
 
 public class BlockThermodynamicConductor extends BlockSmallTransmitter implements ITieredBlock<ConductorTier>, IHasTileEntity<TileEntityThermodynamicConductor> {
 
@@ -30,33 +23,17 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter implement
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+    public TileEntityType<TileEntityThermodynamicConductor> getTileType() {
         switch (tier) {
-            case BASIC:
-                return new TileEntityBasicThermodynamicConductor();
             case ADVANCED:
-                return new TileEntityAdvancedThermodynamicConductor();
+                return MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR;
             case ELITE:
-                return new TileEntityEliteThermodynamicConductor();
+                return MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR;
             case ULTIMATE:
-                return new TileEntityUltimateThermodynamicConductor();
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityThermodynamicConductor> getTileClass() {
-        switch (tier) {
+                return MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR;
             case BASIC:
-                return TileEntityBasicThermodynamicConductor.class;
-            case ADVANCED:
-                return TileEntityAdvancedThermodynamicConductor.class;
-            case ELITE:
-                return TileEntityEliteThermodynamicConductor.class;
-            case ULTIMATE:
-                return TileEntityUltimateThermodynamicConductor.class;
+            default:
+                return MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR;
         }
-        return null;
     }
 }

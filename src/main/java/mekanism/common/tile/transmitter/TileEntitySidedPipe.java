@@ -33,6 +33,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
@@ -64,6 +65,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
     public TileEntity[] cachedAcceptors = new TileEntity[6];
+
+    public TileEntitySidedPipe(TileEntityType<? extends TileEntitySidedPipe> type) {
+        super(type);
+    }
 
     public static boolean connectionMapContainsSide(byte connections, Direction side) {
         byte tester = (byte) (1 << side.ordinal());

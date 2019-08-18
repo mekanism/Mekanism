@@ -770,6 +770,7 @@ public class Mekanism {
 
         // Mekanism multiblock structures
         event.blacklist(MekanismBlock.BOUNDING_BLOCK.getBlock());
+        event.blacklist(MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock());
         event.blacklist(MekanismBlock.SECURITY_DESK.getBlock());
         event.blacklist(MekanismBlock.DIGITAL_MINER.getBlock());
         event.blacklist(MekanismBlock.SEISMIC_VIBRATOR.getBlock());

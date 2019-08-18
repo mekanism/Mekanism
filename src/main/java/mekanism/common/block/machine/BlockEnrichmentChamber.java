@@ -24,6 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.electric.EnrichmentChamberContainer;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -132,11 +134,6 @@ public class BlockEnrichmentChamber extends BlockMekanismContainer implements IB
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityEnrichmentChamber();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -183,12 +180,6 @@ public class BlockEnrichmentChamber extends BlockMekanismContainer implements IB
         return 4;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityEnrichmentChamber> getTileClass() {
-        return TileEntityEnrichmentChamber.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -208,5 +199,10 @@ public class BlockEnrichmentChamber extends BlockMekanismContainer implements IB
     @Override
     public INamedContainerProvider getProvider(TileEntityEnrichmentChamber tile) {
         return new ContainerProvider("mekanism.container.enrichment_chamber", (i, inv, player) -> new EnrichmentChamberContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityEnrichmentChamber> getTileType() {
+        return MekanismTileEntityTypes.ENRICHMENT_CHAMBER;
     }
 }

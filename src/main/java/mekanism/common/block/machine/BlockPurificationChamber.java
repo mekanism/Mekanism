@@ -24,6 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.advanced.PurificationChamberContainer;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -132,11 +134,6 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityPurificationChamber();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -183,12 +180,6 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
         return 5;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityPurificationChamber> getTileClass() {
-        return TileEntityPurificationChamber.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -208,5 +199,10 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
     @Override
     public INamedContainerProvider getProvider(TileEntityPurificationChamber tile) {
         return new ContainerProvider("mekanism.container.purification_chamber", (i, inv, player) -> new PurificationChamberContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityPurificationChamber> getTileType() {
+        return MekanismTileEntityTypes.PURIFICATION_CHAMBER;
     }
 }

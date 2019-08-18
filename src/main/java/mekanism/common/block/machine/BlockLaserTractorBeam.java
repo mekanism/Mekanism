@@ -20,6 +20,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.LaserTractorBeamContainer;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -34,6 +35,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -126,11 +128,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityLaserTractorBeam();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -167,12 +164,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
         return 27;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityLaserTractorBeam> getTileClass() {
-        return TileEntityLaserTractorBeam.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -186,5 +177,10 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
     @Override
     public INamedContainerProvider getProvider(TileEntityLaserTractorBeam tile) {
         return new ContainerProvider("mekanism.container.laser_tractor_beam", (i, inv, player) -> new LaserTractorBeamContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityLaserTractorBeam> getTileType() {
+        return MekanismTileEntityTypes.LASER_TRACTOR_BEAM;
     }
 }

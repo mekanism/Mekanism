@@ -15,6 +15,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityLaser;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -29,6 +30,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -126,11 +128,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityLaser();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -183,12 +180,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
         return MekanismConfig.storage.laser.get();
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityLaser> getTileClass() {
-        return TileEntityLaser.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -203,5 +194,10 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     @Override
     public void setEnabledConfigReference(BooleanValue enabledReference) {
         this.enabledReference = enabledReference;
+    }
+
+    @Override
+    public TileEntityType<TileEntityLaser> getTileType() {
+        return MekanismTileEntityTypes.LASER;
     }
 }

@@ -24,6 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.chance.PrecisionSawmillContainer;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -132,11 +134,6 @@ public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBl
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityPrecisionSawmill();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -208,5 +205,10 @@ public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBl
     @Override
     public INamedContainerProvider getProvider(TileEntityPrecisionSawmill tile) {
         return new ContainerProvider("mekanism.container.precision_sawmill", (i, inv, player) -> new PrecisionSawmillContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityPrecisionSawmill> getTileType() {
+        return MekanismTileEntityTypes.PRECISION_SAWMILL;
     }
 }

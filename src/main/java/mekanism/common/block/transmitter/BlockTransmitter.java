@@ -114,9 +114,4 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
     public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.CUTOUT;
     }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
 }

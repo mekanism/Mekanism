@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter.pressurized_tube;
+package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import javax.annotation.Nonnull;
@@ -11,12 +11,12 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IBlockProvider;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -27,7 +27,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
+public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
 
     public TubeTier tier;
 
@@ -67,6 +67,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     };
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
+        super(((IHasTileEntity<TileEntityPressurizedTube>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockPressurizedTube) blockProvider.getBlock()).getTier();
         buffer = new GasTank(getCapacity());
     }

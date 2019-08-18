@@ -4,9 +4,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -15,8 +14,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -51,17 +50,18 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
     }
 
-    public BlockBounding() {
+    private final boolean advanced;
+
+    public BlockBounding(boolean advanced) {
         //TODO: Replace meta with two blocks one normal and one advanced with a boolean param
         // Or maybe use blockstate
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "bounding_block"));
-    }
-
-    @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
-        builder.add(BlockStateHelper.advancedProperty);
+        this.advanced = advanced;
+        if (advanced) {
+            setRegistryName(new ResourceLocation(Mekanism.MODID, "advanced_bounding_block"));
+        } else {
+            setRegistryName(new ResourceLocation(Mekanism.MODID, "bounding_block"));
+        }
     }
 
     @Override
@@ -184,22 +184,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        if (state.get(BlockStateHelper.advancedProperty)) {
-            return new TileEntityAdvancedBoundingBlock();
+    public TileEntityType<TileEntityBoundingBlock> getTileType() {
+        if (advanced) {
+            return MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK;
         }
-        return new TileEntityBoundingBlock();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityBoundingBlock> getTileClass() {
-        //TODO: Advanced?
-        return TileEntityBoundingBlock.class;
+        return MekanismTileEntityTypes.BOUNDING_BLOCK;
     }
 }

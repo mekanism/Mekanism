@@ -20,6 +20,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -33,6 +34,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -119,11 +121,6 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityFormulaicAssemblicator();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -170,12 +167,6 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
         return 36;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityFormulaicAssemblicator> getTileClass() {
-        return TileEntityFormulaicAssemblicator.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -189,5 +180,10 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
     @Override
     public INamedContainerProvider getProvider(TileEntityFormulaicAssemblicator tile) {
         return new ContainerProvider("mekanism.container.formulaic_assemblicator", (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityFormulaicAssemblicator> getTileType() {
+        return MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR;
     }
 }

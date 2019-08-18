@@ -21,6 +21,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.SolarNeutronActivatorContainer;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -34,6 +35,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -120,11 +122,6 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntitySolarNeutronActivator();
-    }
-
-    @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
@@ -153,12 +150,6 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
         return 4;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntitySolarNeutronActivator> getTileClass() {
-        return TileEntitySolarNeutronActivator.class;
-    }
-
     @Override
     public boolean isEnabled() {
         return enabledReference == null ? true : enabledReference.get();
@@ -172,5 +163,10 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
     @Override
     public INamedContainerProvider getProvider(TileEntitySolarNeutronActivator tile) {
         return new ContainerProvider("mekanism.container.solar_neutron_activator", (i, inv, player) -> new SolarNeutronActivatorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntitySolarNeutronActivator> getTileType() {
+        return MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR;
     }
 }

@@ -13,6 +13,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.item.IItemEnergized;
@@ -179,7 +180,17 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     }
 
     @Override
-    public abstract TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world);
+    public boolean hasTileEntity(BlockState state) {
+        return this instanceof IHasTileEntity<?>;
+    }
+
+    @Override
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+        if (this instanceof IHasTileEntity<?>) {
+            return ((IHasTileEntity<?>) this).getTileType().create();
+        }
+        return null;
+    }
 
     /**
      * Unused, Use {@link #createTileEntity(BlockState, IBlockReader)} instead.

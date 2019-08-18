@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.tile.gas_tank.TileEntityGasTank;
+import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;

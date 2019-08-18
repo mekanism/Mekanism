@@ -1,7 +1,6 @@
 package mekanism.generators.common.block;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDisableable;
@@ -18,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.passive.SolarGeneratorContainer;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,6 +25,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -86,11 +87,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntitySolarGenerator();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -115,12 +111,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
         return 1;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntitySolarGenerator> getTileClass() {
-        return TileEntitySolarGenerator.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -140,5 +130,10 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     @Override
     public INamedContainerProvider getProvider(TileEntitySolarGenerator tile) {
         return new ContainerProvider("mekanismgenerators.container.solar_generator", (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntitySolarGenerator> getTileType() {
+        return GeneratorsTileEntityTypes.SOLAR_GENERATOR;
     }
 }

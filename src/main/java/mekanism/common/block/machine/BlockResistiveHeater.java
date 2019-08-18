@@ -20,6 +20,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
 import mekanism.common.tile.TileEntityResistiveHeater;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -33,6 +34,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -122,11 +124,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityResistiveHeater();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -168,12 +165,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
         return 1;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityResistiveHeater> getTileClass() {
-        return TileEntityResistiveHeater.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -193,5 +184,10 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
     @Override
     public INamedContainerProvider getProvider(TileEntityResistiveHeater tile) {
         return new ContainerProvider("mekanism.container.resistive_heater", (i, inv, player) -> new ResistiveHeaterContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityResistiveHeater> getTileType() {
+        return MekanismTileEntityTypes.RESISTIVE_HEATER;
     }
 }

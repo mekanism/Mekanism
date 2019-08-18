@@ -9,6 +9,7 @@ import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -18,6 +19,7 @@ import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -63,16 +65,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
         return adjacentBlockState.getBlock() != this;
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityStructuralGlass();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -92,9 +84,8 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
         return false;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityStructuralGlass> getTileClass() {
-        return TileEntityStructuralGlass.class;
+    public TileEntityType<TileEntityStructuralGlass> getTileType() {
+        return MekanismTileEntityTypes.STRUCTURAL_GLASS;
     }
 }

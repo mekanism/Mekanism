@@ -23,6 +23,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ChemicalWasherContainer;
 import mekanism.common.tile.TileEntityChemicalWasher;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -36,6 +37,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -125,11 +127,6 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityChemicalWasher();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -176,12 +173,6 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
         return 5;
     }
 
-    @Nullable
-    @Override
-    public Class<? extends TileEntityChemicalWasher> getTileClass() {
-        return TileEntityChemicalWasher.class;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -201,5 +192,10 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
     @Override
     public INamedContainerProvider getProvider(TileEntityChemicalWasher tile) {
         return new ContainerProvider("mekanism.container.chemical_washer", (i, inv, player) -> new ChemicalWasherContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityChemicalWasher> getTileType() {
+        return MekanismTileEntityTypes.CHEMICAL_WASHER;
     }
 }

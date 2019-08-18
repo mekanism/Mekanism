@@ -1,7 +1,6 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
@@ -9,14 +8,15 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.tile.TileEntitySuperheatingElement;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
@@ -39,16 +39,6 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IStateAc
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntitySuperheatingElement();
-    }
-
-    @Override
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         return isActive(state, world, pos) ? 15 : super.getLightValue(state, world, pos);
     }
@@ -65,9 +55,8 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IStateAc
         return false;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntitySuperheatingElement> getTileClass() {
-        return TileEntitySuperheatingElement.class;
+    public TileEntityType<TileEntitySuperheatingElement> getTileType() {
+        return MekanismTileEntityTypes.SUPERHEATING_ELEMENT;
     }
 }

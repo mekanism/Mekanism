@@ -1,8 +1,6 @@
 package mekanism.common.block.basic;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
@@ -10,19 +8,16 @@ import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.induction_cell.TileEntityAdvancedInductionCell;
-import mekanism.common.tile.induction_cell.TileEntityBasicInductionCell;
-import mekanism.common.tile.induction_cell.TileEntityEliteInductionCell;
-import mekanism.common.tile.induction_cell.TileEntityInductionCell;
-import mekanism.common.tile.induction_cell.TileEntityUltimateInductionCell;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasInventory, IHasTileEntity<TileEntityInductionCell> {
@@ -52,43 +47,22 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        switch (tier) {
-            case BASIC:
-                return new TileEntityBasicInductionCell();
-            case ADVANCED:
-                return new TileEntityAdvancedInductionCell();
-            case ELITE:
-                return new TileEntityEliteInductionCell();
-            case ULTIMATE:
-                return new TileEntityUltimateInductionCell();
-        }
-        return null;
-    }
-
-    @Override
     public int getInventorySize() {
         return 2;
     }
 
-    @Nullable
     @Override
-    public Class<? extends TileEntityInductionCell> getTileClass() {
+    public TileEntityType<TileEntityInductionCell> getTileType() {
         switch (tier) {
-            case BASIC:
-                return TileEntityBasicInductionCell.class;
             case ADVANCED:
-                return TileEntityAdvancedInductionCell.class;
+                return MekanismTileEntityTypes.ADVANCED_INDUCTION_CELL;
             case ELITE:
-                return TileEntityEliteInductionCell.class;
+                return MekanismTileEntityTypes.ELITE_INDUCTION_CELL;
             case ULTIMATE:
-                return TileEntityUltimateInductionCell.class;
+                return MekanismTileEntityTypes.ULTIMATE_INDUCTION_CELL;
+            case BASIC:
+            default:
+                return MekanismTileEntityTypes.BASIC_INDUCTION_CELL;
         }
-        return null;
     }
 }

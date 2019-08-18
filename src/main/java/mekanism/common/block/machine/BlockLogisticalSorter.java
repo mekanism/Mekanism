@@ -25,6 +25,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterContainer;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -42,6 +43,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -192,11 +194,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         return false;
     }
 
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityLogisticalSorter();
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -282,5 +279,10 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public INamedContainerProvider getProvider(TileEntityLogisticalSorter tile) {
         return new ContainerProvider("mekanism.container.logistical_sorter", (i, inv, player) -> new LogisticalSorterContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityLogisticalSorter> getTileType() {
+        return MekanismTileEntityTypes.LOGISTICAL_SORTER;
     }
 }

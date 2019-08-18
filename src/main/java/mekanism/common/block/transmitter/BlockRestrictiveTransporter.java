@@ -1,12 +1,9 @@
 package mekanism.common.block.transmitter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.tile.transmitter.logistical_transporter.TileEntityRestrictiveTransporter;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
+import net.minecraft.tileentity.TileEntityType;
 
 public class BlockRestrictiveTransporter extends BlockLargeTransmitter implements IHasTileEntity<TileEntityRestrictiveTransporter> {
 
@@ -15,13 +12,7 @@ public class BlockRestrictiveTransporter extends BlockLargeTransmitter implement
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityRestrictiveTransporter();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityRestrictiveTransporter> getTileClass() {
-        return TileEntityRestrictiveTransporter.class;
+    public TileEntityType<TileEntityRestrictiveTransporter> getTileType() {
+        return MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER;
     }
 }

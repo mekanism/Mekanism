@@ -2,7 +2,6 @@ package mekanism.common.block;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
@@ -16,14 +15,10 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.tier.GasTankTier;
+import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.tile.gas_tank.TileEntityAdvancedGasTank;
-import mekanism.common.tile.gas_tank.TileEntityBasicGasTank;
-import mekanism.common.tile.gas_tank.TileEntityCreativeGasTank;
-import mekanism.common.tile.gas_tank.TileEntityEliteGasTank;
-import mekanism.common.tile.gas_tank.TileEntityGasTank;
-import mekanism.common.tile.gas_tank.TileEntityUltimateGasTank;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -111,47 +107,29 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        switch (tier) {
-            case BASIC:
-                return new TileEntityBasicGasTank();
-            case ADVANCED:
-                return new TileEntityAdvancedGasTank();
-            case ELITE:
-                return new TileEntityEliteGasTank();
-            case ULTIMATE:
-                return new TileEntityUltimateGasTank();
-            case CREATIVE:
-                return new TileEntityCreativeGasTank();
-        }
-        return null;
-    }
-
-    @Override
     public int getInventorySize() {
         return 2;
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityGasTank> getTileClass() {
-        switch (tier) {
-            case BASIC:
-                return TileEntityBasicGasTank.class;
-            case ADVANCED:
-                return TileEntityAdvancedGasTank.class;
-            case ELITE:
-                return TileEntityEliteGasTank.class;
-            case ULTIMATE:
-                return TileEntityUltimateGasTank.class;
-            case CREATIVE:
-                return TileEntityCreativeGasTank.class;
-        }
-        return null;
     }
 
     @Override
     public INamedContainerProvider getProvider(TileEntityGasTank tile) {
         return new ContainerProvider("mekanism.container.gas_tank", (i, inv, player) -> new GasTankContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityGasTank> getTileType() {
+        switch (tier) {
+            case ADVANCED:
+                return MekanismTileEntityTypes.ADVANCED_GAS_TANK;
+            case ELITE:
+                return MekanismTileEntityTypes.ELITE_GAS_TANK;
+            case ULTIMATE:
+                return MekanismTileEntityTypes.ULTIMATE_GAS_TANK;
+            case CREATIVE:
+                return MekanismTileEntityTypes.CREATIVE_GAS_TANK;
+            case BASIC:
+            default:
+                return MekanismTileEntityTypes.BASIC_GAS_TANK;
+        }
     }
 }

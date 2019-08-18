@@ -1,20 +1,19 @@
 package mekanism.common.block.basic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockPressureDisperser extends BlockTileDrops implements IHasTileEntity<TileEntityPressureDisperser> {
@@ -36,18 +35,7 @@ public class BlockPressureDisperser extends BlockTileDrops implements IHasTileEn
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityPressureDisperser();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityPressureDisperser> getTileClass() {
-        return TileEntityPressureDisperser.class;
+    public TileEntityType<TileEntityPressureDisperser> getTileType() {
+        return MekanismTileEntityTypes.PRESSURE_DISPERSER;
     }
 }

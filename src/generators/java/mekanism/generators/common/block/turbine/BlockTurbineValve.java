@@ -1,7 +1,6 @@
 package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.block.basic.BlockBasicMultiblock;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -10,6 +9,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
@@ -34,18 +35,12 @@ public class BlockTurbineValve extends BlockBasicMultiblock implements IHasTileE
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityTurbineValve();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends TileEntityTurbineValve> getTileClass() {
-        return TileEntityTurbineValve.class;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityTurbineValve tile) {
         return new ContainerProvider("mekanismgenerators.container.industrial_turbine", (i, inv, player) -> new TurbineContainer(i, inv, tile));
+    }
+
+    @Override
+    public TileEntityType<TileEntityTurbineValve> getTileType() {
+        return GeneratorsTileEntityTypes.TURBINE_VALVE;
     }
 }
