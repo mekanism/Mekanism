@@ -341,24 +341,24 @@ public class MekanismRenderer {
     public void onStitch(TextureStitchEvent.Pre event) {
         //TODO: Look at sprite uploader
         for (TransmissionType type : TransmissionType.values()) {
-            overlays.put(type, event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
+            event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay"));
         }
 
-        whiteIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_white"));
-        energyIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
-        heatIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
-        laserIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_white"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
 
-        event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeavyWater"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeavyWater"));
 
-        TransmitterModel.registerIcons(event.getMap());
+        TransmitterModel.getIcons(event.getMap());
 
         for (Gas gas : GasRegistry.getRegisteredGasses()) {
-            gas.registerIcon(event.getMap());
+            gas.registerIcon(event);
         }
 
         for (InfuseType type : InfuseRegistry.getInfuseMap().values()) {
-            type.setIcon(event.getMap().registerSprite(type.iconResource));
+            event.addSprite(type.iconResource);
         }
 
         FluidRenderer.resetDisplayInts();
@@ -367,6 +367,18 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Post event) {
+
+        for (TransmissionType type : TransmissionType.values()) {
+            overlays.put(type, event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
+        }
+
+        whiteIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_white"));
+        energyIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
+        heatIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
+        laserIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
+
+        TransmitterModel.registerIcons(event.getMap());
+
         initFluidTextures(event.getMap());
 
         RenderLogisticalTransporter.onStitch(event.getMap());
@@ -374,6 +386,10 @@ public class MekanismRenderer {
 
         for (Gas gas : GasRegistry.getRegisteredGasses()) {
             gas.updateIcon(event.getMap());
+        }
+
+        for (InfuseType type : InfuseRegistry.getInfuseMap().values()) {
+            type.setIcon(event.getMap().getSprite(type.iconResource));
         }
     }
 

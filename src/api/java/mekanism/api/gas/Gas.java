@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fluids.Fluid;
 
 /**
@@ -174,13 +175,10 @@ public class Gas implements IHasTranslationKey {
     /**
      * Sets this gas's icon.
      *
-     * @param map - IIcon to associate with this Gas
-     *
      * @return this Gas object
      */
-    public Gas registerIcon(AtlasTexture map) {
-        //TODO: Sprites
-        //map.registerSprite(iconLocation);
+    public Gas registerIcon(TextureStitchEvent.Pre event) {
+        event.addSprite(iconLocation);
         from_fluid = false;
         return this;
     }

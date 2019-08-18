@@ -32,6 +32,7 @@ import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterUpdate;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
@@ -165,7 +167,7 @@ public class PacketHandler {
      * @param player  - the player to send it to
      */
     public <MSG> void sendTo(MSG message, ServerPlayerEntity player) {
-        netHandler.sendTo(message, player);
+        netHandler.sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
     /**
