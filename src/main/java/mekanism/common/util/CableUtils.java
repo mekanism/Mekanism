@@ -79,9 +79,9 @@ public final class CableUtils {
         if (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canExtract)) {
             return true;
         }
-        return false;
         //TODO: IC2
         //return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);
+        return false;
     }
 
     public static boolean isAcceptor(TileEntity source, TileEntity tileEntity, Direction side) {
@@ -97,6 +97,7 @@ public final class CableUtils {
         }
         //TODO: IC2
         //return MekanismUtils.useIC2() && IC2Integration.isAcceptor(tileEntity, side);
+        return false;
     }
 
     public static void emit(IEnergyWrapper emitter) {

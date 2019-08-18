@@ -1,18 +1,13 @@
 package mekanism.common.entity;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
@@ -29,11 +24,7 @@ import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.WorldEvents;
@@ -105,7 +96,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private void calculateVector() {
-        Vec3d localVec = new Vec3d(posX, posY, posZ);
+        //TODO: Reimplement this
+        /*Vec3d localVec = new Vec3d(posX, posY, posZ);
         Vec3d motion = getMotion();
         Vec3d motionVec = new Vec3d(posX + motion.getX() * 2, posY + motion.getY() * 2, posZ + motion.getZ() * 2);
         BlockRayTraceResult mop = world.rayTraceBlocks(localVec, motionVec, true, false, false);
@@ -181,7 +173,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 }
             }
             remove();
-        }
+        }*/
     }
 
     private boolean smeltItem(ItemEntity item) {

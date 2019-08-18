@@ -146,7 +146,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                 latched = null;
                 dataManager.set(IS_LATCHED, (byte) 0);
             }
-            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive() || !world.loadedEntityList.contains(latchedEntity))) {
+            //TODO: Get nearby entities
+            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive()/* || !world.loadedEntityList.contains(latchedEntity)*/)) {
                 latchedEntity = null;
                 dataManager.set(IS_LATCHED, (byte) 0);
             }
@@ -199,14 +200,15 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     private void findCachedEntity() {
-        for (Object obj : world.loadedEntityList) {
+        //TODO: Get nearby entities
+        /*for (Object obj : world.loadedEntityList) {
             if (obj instanceof LivingEntity) {
                 LivingEntity entity = (LivingEntity) obj;
                 if (entity.getUniqueID().equals(cachedEntityUUID)) {
                     latchedEntity = entity;
                 }
             }
-        }
+        }*/
     }
 
     private void pop() {

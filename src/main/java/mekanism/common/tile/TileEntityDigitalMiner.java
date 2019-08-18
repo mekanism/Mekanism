@@ -313,8 +313,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer));
             BlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).isValidPosition(s, world, pos)) {
-                //TODO Block.spawnDrops fortune 1??
-                s.getBlock().dropBlockAsItem(world, pos, s, 1);
+                //TODO Block.spawnDrops fortune 1?? Also make sure to drop the item
+                //s.getBlock().dropBlockAsItem(world, pos, s, 1);
                 world.removeBlock(pos, false);
             }
             return true;

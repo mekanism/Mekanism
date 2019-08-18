@@ -149,11 +149,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 Direction[] rotations = block.getValidRotations(state, world, pos);
                 if (rotations != null && rotations.length > 0) {
                     List<Direction> l = Arrays.asList(rotations);
-                    if (!player.isSneaking() && l.contains(side)) {
+                    //TODO: Convert direction to Rotation
+                    /*if (!player.isSneaking() && l.contains(side)) {
                         block.rotate(state, world, pos, side);
                     } else if (player.isSneaking() && l.contains(side.getOpposite())) {
                         block.rotate(state, world, pos, side.getOpposite());
-                    }
+                    }*/
                 }
                 return ActionResultType.SUCCESS;
             } else if (getState(stack) == ConfiguratorMode.WRENCH) { //Wrench

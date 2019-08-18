@@ -32,7 +32,6 @@ import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterUpdate;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -47,6 +46,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -167,6 +167,7 @@ public class PacketHandler {
      * @param player  - the player to send it to
      */
     public <MSG> void sendTo(MSG message, ServerPlayerEntity player) {
+        //TODO: Check this
         netHandler.sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
@@ -176,27 +177,24 @@ public class PacketHandler {
      * @param message - message to send
      */
     public <MSG> void sendToAll(MSG message) {
-        netHandler.sendToAll(message);
-    }
-
-    /**
-     * Send this message to everyone within a certain range of a point.
-     *
-     * @param message - the message to send
-     * @param point   - the TargetPoint around which to send
-     */
-    public <MSG> void sendToAllAround(MSG message, TargetPoint point) {
-        netHandler.sendToAllAround(message, point);
+        //TODO: Check this
+        for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+            sendTo(message, player);
+        }
     }
 
     /**
      * Send this message to everyone within the supplied dimension.
      *
      * @param message     - the message to send
-     * @param dimensionId - the dimension id to target
+     * @param dimension - the dimension to target
      */
     public <MSG> void sendToDimension(MSG message, DimensionType dimension) {
-        netHandler.sendToDimension(message, dimension);
+        //TODO: Check this
+        ServerWorld world = ServerLifecycleHooks.getCurrentServer().getWorld(dimension);
+        for (ServerPlayerEntity player : world.getPlayers()) {
+            sendTo(message, player);
+        }
     }
 
     /**
@@ -245,7 +243,9 @@ public class PacketHandler {
     }
 
     public <MSG> void sendToAllTracking(MSG message, TargetPoint point) {
-        netHandler.sendToAllTracking(message, point);
+        //netHandler.sendToAllTracking(message, point);
+        //TODO: Fix this, currently just acting as sendToAll for testing purposes
+        sendToAll(message);
     }
 
     //TODO: change Network stuff over to using this

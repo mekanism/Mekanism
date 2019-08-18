@@ -50,7 +50,6 @@ import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiThermoelectricBoiler;
-import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.gui.chemical.GuiChemicalCrystallizer;
 import mekanism.client.gui.chemical.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.chemical.GuiChemicalInfuser;
@@ -405,7 +404,8 @@ public class ClientProxy extends CommonProxy {
         ScreenManager.registerFactory(MekanismContainerTypes.ENERGY_CUBE, GuiEnergyCube::new);
         ScreenManager.registerFactory(MekanismContainerTypes.INDUCTION_MATRIX, GuiInductionMatrix::new);
         ScreenManager.registerFactory(MekanismContainerTypes.THERMOELECTRIC_BOILER, GuiThermoelectricBoiler::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
+        //TODO: Fix UpgradeManagement gui registration
+        //ScreenManager.registerFactory(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
         ScreenManager.registerFactory(MekanismContainerTypes.PERSONAL_CHEST_ITEM, GuiPersonalChestItem::new);
         ScreenManager.registerFactory(MekanismContainerTypes.PERSONAL_CHEST_BLOCK, GuiPersonalChestTile::new);
 

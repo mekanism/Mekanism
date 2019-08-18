@@ -1,11 +1,9 @@
 package mekanism.client.render.transmitter;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -19,18 +17,15 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.lwjgl.opengl.GL11;
 
 public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> extends TileEntityRenderer<T> {
 
     /* Credit to Eternal Energy */
-    public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
+    //public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
     private static OBJModel contentsModel;
     private static Map<String, IBakedModel> contentsMap = new HashMap<>();
     protected Minecraft minecraft = Minecraft.getInstance();
@@ -52,7 +47,8 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         if (!keys.isEmpty()) {
             for (String key : keys) {
                 if (!modelParts.containsKey(key)) {
-                    modelParts.put(key, objModel.bake(new OBJState(Collections.singletonList(key), false), Attributes.DEFAULT_BAKED_FORMAT, textureGetterFlipV));
+                    //TODO: Fix this
+                    //modelParts.put(key, objModel.bake(new OBJState(Collections.singletonList(key), false), textureGetterFlipV, sprite, Attributes.DEFAULT_BAKED_FORMAT));
                 }
             }
         }
@@ -84,7 +80,8 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         return contentsMap.get(name);
     }
 
-    private static class DummyAtlasTextureFlipV extends TextureAtlasSprite {
+    //TODO: Fix
+    /*private static class DummyAtlasTextureFlipV extends TextureAtlasSprite {
 
         public static DummyAtlasTextureFlipV instance = new DummyAtlasTextureFlipV();
 
@@ -101,5 +98,5 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         public float getInterpolatedV(double v) {
             return (float) v / -16;
         }
-    }
+    }*/
 }

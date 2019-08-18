@@ -377,7 +377,7 @@ public class MekanismRenderer {
         heatIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
         laserIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
 
-        TransmitterModel.registerIcons(event.getMap());
+        TransmitterModel.getIcons(event.getMap());
 
         initFluidTextures(event.getMap());
 

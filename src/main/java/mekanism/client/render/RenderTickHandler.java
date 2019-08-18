@@ -6,9 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.ClientTickHandler;
-import mekanism.client.render.particle.EntityJetpackFlameFX;
-import mekanism.client.render.particle.EntityJetpackSmokeFX;
-import mekanism.client.render.particle.EntityScubaBubbleFX;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -23,7 +20,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -56,7 +52,8 @@ public class RenderTickHandler {
 
                 PlayerEntity player = minecraft.player;
                 World world = minecraft.player.world;
-                BlockRayTraceResult pos = player.rayTrace(40.0D, 1.0F);
+                //TODO: Fix block player is hovering
+                BlockRayTraceResult pos = null;//player.rayTrace(40.0D, 1.0F);
                 if (pos != null) {
                     Coord4D obj = new Coord4D(pos.getPos(), world);
                     Block block = obj.getBlock(world);
@@ -219,7 +216,8 @@ public class RenderTickHandler {
     }
 
     public void spawnAndSetParticle(ParticleType s, World world, double x, double y, double z, double velX, double velY, double velZ) {
-        Particle fx = null;
+        //TODO: Fix this
+        /*Particle fx = null;
         if (s.equals(ParticleTypes.FLAME)) {
             fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
         } else if (s.equals(ParticleTypes.SMOKE)) {
@@ -227,7 +225,7 @@ public class RenderTickHandler {
         } else if (s.equals(ParticleTypes.BUBBLE)) {
             fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
         }
-        minecraft.particles.addEffect(fx);
+        minecraft.particles.addEffect(fx);*/
     }
 
     private void drawString(String s, boolean leftSide, int y, int color) {

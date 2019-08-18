@@ -1,4 +1,5 @@
-package mekanism.client.render.particle;
+//TODO: Fix this, probably just needs an AT to expose superclass constructor
+/*package mekanism.client.render.particle;
 
 import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
@@ -28,4 +29,4 @@ public class EntityJetpackSmokeFX extends SmokeParticle {
             super.renderParticle(buffer, renderInfo, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         }
     }
-}
+}*/
