@@ -25,6 +25,7 @@ import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateActive;
@@ -196,6 +197,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End variables ITileSound
 
     public TileEntityMekanism(IBlockProvider blockProvider) {
+        super(((IHasTileEntity<TileEntityMekanism>) blockProvider.getBlock()).getTileType());
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
         if (hasInventory()) {

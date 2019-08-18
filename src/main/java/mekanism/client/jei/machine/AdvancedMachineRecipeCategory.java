@@ -25,7 +25,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 
-public class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
+public abstract class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public AdvancedMachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiAdvancedMachine.png", mekanismBlock, progress, 28, 16, 144, 54);

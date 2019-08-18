@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +27,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Mouse;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER extends IFilter, CONTAINER extends FilterEmptyContainer<TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
@@ -173,7 +171,8 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     /**
      * Handles mouse input.
      */
-    @Override
+    //TODO: Mouse scrolling
+    /*@Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         int i = Mouse.getEventDWheel();
@@ -191,8 +190,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
                 scroll = 1.0F;
             }
         }
-    }
-
+    }*/
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer

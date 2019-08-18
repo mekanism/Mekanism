@@ -25,8 +25,8 @@ public class MekanismEntityTypes {
     public static final EntityType<EntityFlame> FLAME = create("flame", EntityType.Builder.<EntityFlame>create(EntityFlame::new, EntityClassification.MISC)
           .size(0.5F, 0.5F));
 
-    private static <T extends Entity> EntityType<T> create(String name, EntityType.Builder<T> factory) {
-        EntityType<T> type = factory.build(name);
+    private static <T extends Entity> EntityType<T> create(String name, EntityType.Builder<T> builder) {
+        EntityType<T> type = builder.build(name);
         type.setRegistryName(new ResourceLocation(Mekanism.MODID, name));
         types.add(type);
         return type;

@@ -15,11 +15,13 @@ import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -74,6 +76,14 @@ public class MekanismGenerators implements IModule {
     }
 
     @SubscribeEvent
+    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
+        GeneratorsTileEntityTypes.registerTileEntities(event.getRegistry());
+
+        //Register the TESRs
+        proxy.registerTESRs();
+    }
+
+    @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         // Register models
         proxy.registerBlockRenders();
@@ -94,10 +104,6 @@ public class MekanismGenerators implements IModule {
         //Set up the GUI handler
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
         MinecraftForge.EVENT_BUS.register(this);
-
-        //Load the proxy
-        proxy.registerTileEntities();
-        proxy.registerTESRs();
 
         //Finalization
         Mekanism.logger.info("Loaded MekanismGenerators module.");

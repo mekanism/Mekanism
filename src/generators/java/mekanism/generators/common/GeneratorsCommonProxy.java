@@ -1,20 +1,11 @@
 package mekanism.generators.common;
 
-import mekanism.common.Mekanism;
-
 /**
  * Common proxy for the Mekanism Generators module.
  *
  * @author AidanBrady
  */
 public class GeneratorsCommonProxy {
-
-    /**
-     * Register normal tile entities
-     */
-    public void registerTileEntities() {
-        Mekanism.registerTileEntities(GeneratorsBlock.values());
-    }
 
     /**
      * Register tile entities that have special models. Overwritten in client to register TESRs.

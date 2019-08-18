@@ -22,7 +22,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.util.Rectangle;
 
 //TODO: Test to see if this properly was converted to GuiMekanism
 @OnlyIn(Dist.CLIENT)
@@ -31,7 +30,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private Coord4D pos;
     private World worldObj;
     private List<BlockState> blockList = new ArrayList<>();
-    private Rectangle tooltip;
+    //private Rectangle tooltip;
     private Button upButton;
     private Button downButton;
 
@@ -59,7 +58,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
               onPress -> currentLayer++));
         buttons.add(downButton = new GuiButtonSeismicReader(guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
               onPress -> currentLayer--));
-        tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
+        //tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
         updateEnabledButtons();
     }
 
@@ -130,7 +129,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             drawString(displayName, 0, 0, 0x919191);
             GlStateManager.popMatrix();
 
-            if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
+            //TODO
+            /*if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
                 minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
                 int fontLengthX = lengthX + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;
@@ -139,7 +139,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 blit(renderX + fontLengthX, renderY, 0, 16, 2, 16);
                 drawString(displayName, renderX + 4, renderY + 4, 0x919191);
                 GlStateManager.popMatrix();
-            }
+            }*/
 
             frequency = (int) blockList.stream().filter(blockState -> state.getBlock() == blockState.getBlock()).count();
         }

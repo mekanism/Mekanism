@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +25,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.input.Mouse;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
@@ -216,7 +214,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return true;
     }
 
-    @Override
+    //TODO: Mouse scrolling
+    /*@Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         int delta = Mouse.getEventDWheel();
@@ -225,11 +224,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             int yAxis = height - Mouse.getEventY() * height / minecraft.mainWindow.getHeight() - 1 - guiTop;
             guiElements.forEach(element -> element.mouseWheel(xAxis, yAxis, delta));
         }
-    }
+    }*/
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
+        //TODO
+        //this.drawDefaultBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }

@@ -26,9 +26,7 @@ import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ClientTickHandler;
-import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IModule;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
 import mekanism.common.config.MekanismConfig;
@@ -59,6 +57,7 @@ import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
@@ -76,7 +75,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.ChunkPos;
@@ -221,6 +220,17 @@ public class Mekanism {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         MekanismEntityTypes.registerEntities(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
+        MekanismTileEntityTypes.registerTileEntities(event.getRegistry());
+
+        //TODO: Make block for advanced bounding?
+        GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, new ResourceLocation(MODID, "advanced_bounding_block"));
+
+        //Register the TESRs
+        proxy.registerTESRs();
     }
 
     @SubscribeEvent
@@ -567,39 +577,6 @@ public class Mekanism {
         FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.general.FROM_H2.get());
     }
 
-    public static void registerTileEntities(IBlockProvider[] blockProviders) {
-        Set<Class<? extends TileEntity>> alreadyAdded = new HashSet<>();
-        for (IBlockProvider blockProvider : blockProviders) {
-            Block block = blockProvider.getBlock();
-            if (block instanceof IHasTileEntity<?>) {
-                IHasTileEntity<?> tileHolder = (IHasTileEntity<?>) block;
-                Class<? extends TileEntity> tileClass = tileHolder.getTileClass();
-                if (tileClass != null) {
-                    if (tileHolder.hasMultipleBlocks()) {
-                        if (!alreadyAdded.contains(tileClass)) {
-                            alreadyAdded.add(tileClass);
-                            GameRegistry.registerTileEntity(tileClass, new ResourceLocation(MODID, tileHolder.getTileName()));
-                        }
-                    } else {
-                        GameRegistry.registerTileEntity(tileClass, new ResourceLocation(MODID, blockProvider.getName()));
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Adds and registers all tile entities.
-     */
-    private void registerTileEntities() {
-        registerTileEntities(MekanismBlock.values());
-        //TODO: Make block for advanced bounding?
-        GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, new ResourceLocation(MODID, "advanced_bounding_block"));
-
-        //Register the TESRs
-        proxy.registerTESRs();
-    }
-
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         if (MekanismConfig.general.voiceServerEnabled.get()) {
@@ -718,8 +695,6 @@ public class Mekanism {
         }
 
         //Load this module
-        registerTileEntities();
-
         hooks.hookInit();
 
         //Packet registrations
