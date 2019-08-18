@@ -1,48 +1,56 @@
 package mekanism.common.world;
 
-import java.util.Random;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import mekanism.common.MekanismBlock;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.BlockMatcher;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.EndChunkGenerator;
-import net.minecraft.world.gen.NetherChunkGenerator;
-import net.minecraft.world.gen.feature.OreFeature;
-import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage.Decoration;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
+import net.minecraft.world.gen.feature.SphereReplaceConfig;
+import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.FrequencyConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraftforge.common.BiomeManager;
+import net.minecraftforge.common.BiomeManager.BiomeEntry;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
-public class GenHandler implements IWorldGenerator {
+public class GenHandler {
 
-    @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, ChunkGenerator chunkGenerator, AbstractChunkProvider chunkProvider) {
-        if (!(chunkGenerator instanceof NetherChunkGenerator) && !(chunkGenerator instanceof EndChunkGenerator)) {
-            for (int i = 0; i < MekanismConfig.general.osmiumPerChunk.get(); i++) {
-                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
-                new OreFeature(MekanismBlock.OSMIUM_ORE.getBlock().getDefaultState(), MekanismConfig.general.osmiumMaxVeinSize.get(),
-                      BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
-            }
-
-            for (int i = 0; i < MekanismConfig.general.copperPerChunk.get(); i++) {
-                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
-                new OreFeature(MekanismBlock.COPPER_ORE.getBlock().getDefaultState(), MekanismConfig.general.copperMaxVeinSize.get(),
-                      BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
-            }
-
-            for (int i = 0; i < MekanismConfig.general.tinPerChunk.get(); i++) {
-                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
-                new OreFeature(MekanismBlock.TIN_ORE.getBlock().getDefaultState(), MekanismConfig.general.tinMaxVeinSize.get(),
-                      BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
-            }
-
-            for (int i = 0; i < MekanismConfig.general.saltPerChunk.get(); i++) {
-                int randPosX = (chunkX * 16) + random.nextInt(16) + 8;
-                int randPosZ = (chunkZ * 16) + random.nextInt(16) + 8;
-                BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 60, randPosZ));
-                new WorldGenSalt(MekanismConfig.general.saltMaxVeinSize.get()).generate(world, random, pos);
+    public static void setupWorldGeneration() {
+        for (BiomeManager.BiomeType type : BiomeManager.BiomeType.values()) {
+            ImmutableList<BiomeEntry> biomes = BiomeManager.getBiomes(type);
+            if (biomes != null) {
+                for (BiomeManager.BiomeEntry entry : biomes) {
+                    addGeneration(entry.biome);
+                }
             }
         }
+    }
+
+    private static void addGeneration( Biome biome) {
+        addOreGeneration(biome, MekanismBlock.COPPER_ORE, MekanismConfig.general.copperPerChunk, MekanismConfig.general.copperMaxVeinSize, 0, 0, 60);
+        addOreGeneration(biome, MekanismBlock.TIN_ORE, MekanismConfig.general.tinPerChunk, MekanismConfig.general.tinMaxVeinSize, 0, 0, 60);
+        addOreGeneration(biome, MekanismBlock.OSMIUM_ORE, MekanismConfig.general.osmiumPerChunk, MekanismConfig.general.osmiumMaxVeinSize, 0, 0, 60);
+        //TODO: Add proper values for this
+        addSaltGeneration(biome, MekanismBlock.SALT_BLOCK, MekanismConfig.general.saltPerChunk, MekanismConfig.general.saltMaxVeinSize, 4, 1, 6);
+    }
+
+    private static void addOreGeneration(Biome biome, IBlockProvider blockProvider, IntValue maxVeinSize, IntValue veinsPerChunk, int minHeight, int topOffset, int maxHeight) {
+        biome.addFeature(Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE,
+              new OreFeatureConfig(FillerBlockType.NATURAL_STONE, blockProvider.getBlock().getDefaultState(), maxVeinSize.get()), Placement.COUNT_RANGE,
+              new CountRangeConfig(veinsPerChunk.get(), minHeight, topOffset, maxHeight)));
+    }
+
+    private static void addSaltGeneration(Biome biome, IBlockProvider blockProvider, IntValue maxVeinSize, IntValue veinsPerChunk, int radius, int ySize, int count) {
+        BlockState state = blockProvider.getBlock().getDefaultState();
+        //TODO: Does this need to include the above state in the targets or is dirt fine
+        biome.addFeature(Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.DISK,
+              new SphereReplaceConfig(state, radius, ySize, Lists.newArrayList(Blocks.DIRT.getDefaultState())), Placement.COUNT_TOP_SOLID, new FrequencyConfig(count)));
     }
 }

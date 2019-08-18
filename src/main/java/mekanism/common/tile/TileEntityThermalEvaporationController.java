@@ -213,7 +213,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private void updateTemperature() {
         if (!temperatureSet) {
-            biomeTemp = world.getBiomeForCoordsBody(getPos()).getTemperature(getPos());
+            biomeTemp = world.getBiomeBody(getPos()).getTemperature(getPos());
             temperatureSet = true;
         }
         heatToAbsorb += getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get();

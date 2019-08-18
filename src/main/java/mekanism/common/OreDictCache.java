@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import mekanism.common.util.ItemRegistryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -16,8 +15,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
 
+//TODO: Rewrite this entire class to be more of a tag helper class than a caching class
 public final class OreDictCache {
 
     public static Map<Item, Collection<ResourceLocation>> cachedItemKeys = new HashMap<>();
@@ -107,8 +106,9 @@ public final class OreDictCache {
         if (modIDStacks.get(modName) != null) {
             return modIDStacks.get(modName);
         }
+        //TODO: Fix this
         List<ItemStack> stacks = new ArrayList<>();
-        for (String key : OreDictionary.getOreNames()) {
+        /*for (String key : OreDictionary.getOreNames()) {
             for (ItemStack stack : OreDictionary.getOres(key, false)) {
                 ItemStack toAdd = stack.copy();
                 String s = ItemRegistryUtils.getMod(toAdd);
@@ -130,7 +130,7 @@ public final class OreDictCache {
                     }
                 }
             }
-        }
+        }*/
         modIDStacks.put(modName, stacks);
         return stacks;
     }

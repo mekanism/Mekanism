@@ -1,5 +1,6 @@
 package mekanism.common.entity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -120,10 +121,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
             if ((entity1 instanceof ItemEntity || entity1.canBeCollidedWith()) && entity1 != owner) {
                 float boundsScale = 0.3F;
                 AxisAlignedBB newBounds = entity1.getBoundingBox().expand(boundsScale, boundsScale, boundsScale);
-                RayTraceResult RayTraceResult1 = newBounds.calculateIntercept(localVec, motionVec);
+                //TODO: Verify this is correct
+                BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(newBounds), localVec, motionVec, getPosition());
 
-                if (RayTraceResult1 != null) {
-                    double dist = localVec.distanceTo(RayTraceResult1.getHitVec());
+                if (result != null) {
+                    double dist = localVec.distanceTo(result.getHitVec());
                     if (dist < entityDist || entityDist == 0) {
                         entity = entity1;
                         entityDist = dist;

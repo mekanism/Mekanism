@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import org.lwjgl.input.Mouse;
 
 public abstract class MekKeyHandler {
 
@@ -41,7 +40,8 @@ public abstract class MekKeyHandler {
             int keyCode = keyBinding.getKey().getKeyCode();
             long windowHandle = Minecraft.getInstance().mainWindow.getHandle();
             //GLFW.glfwGetMouseButton(windowHandle, )
-            return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : InputMappings.isKeyDown(windowHandle, keyCode);
+            //TODO: Fix this
+            return keyCode < 0 ? false/* Mouse.isButtonDown(keyCode + 100)*/ : InputMappings.isKeyDown(windowHandle, keyCode);
         } catch (Exception e) {
             return false;
         }

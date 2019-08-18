@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import java.util.Collection;
+import java.util.Collections;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
@@ -77,11 +78,10 @@ public final class MultipartUtils {
     }
 
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB bounds, int subHit, Object hitInfo) {
-        BlockRayTraceResult result = bounds.offset(pos).calculateIntercept(start, end);
+        BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(bounds.offset(pos)), start, end, pos);
         if (result == null) {
             return null;
         }
-        result = new BlockRayTraceResult(result.getHitVec(), result.getFace(), pos);
         result.subHit = subHit;
         result.hitInfo = hitInfo;
         return new AdvancedRayTraceResult(result, bounds);

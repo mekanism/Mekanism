@@ -1,14 +1,18 @@
 package mekanism.common.inventory.container.entity.robit;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.FurnaceResultSlot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.FurnaceTileEntity;
 
@@ -34,7 +38,8 @@ public class SmeltingRobitContainer extends RobitContainer {
         listener.sendWindowProperty(this, 2, entity.currentItemBurnTime);
     }
 
-    @Override
+    //TODO: I believe this stuff is handled in the super handling of listeners
+    /*@Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         for (IContainerListener listener : listeners) {
@@ -51,7 +56,7 @@ public class SmeltingRobitContainer extends RobitContainer {
         lastCookTime = entity.furnaceCookTime;
         lastBurnTime = entity.furnaceBurnTime;
         lastItemBurnTime = entity.currentItemBurnTime;
-    }
+    }*/
 
     @Override
     public void updateProgressBar(int i, int j) {
@@ -79,7 +84,8 @@ public class SmeltingRobitContainer extends RobitContainer {
                     return ItemStack.EMPTY;
                 }
             } else if (slotID != 1 && slotID != 0) {
-                if (!FurnaceRecipes.instance().getSmeltingResult(slotStack).isEmpty()) {
+                Optional<FurnaceRecipe> recipe = entity.world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(slotStack), entity.world);
+                if (recipe.isPresent() && !recipe.get().getRecipeOutput().isEmpty()) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }

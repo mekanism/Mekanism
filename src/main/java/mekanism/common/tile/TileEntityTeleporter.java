@@ -81,11 +81,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     public static void teleportPlayerTo(ServerPlayerEntity player, Coord4D coord, TileEntityTeleporter teleporter) {
         if (player.dimension != coord.dimension) {
-            player.changeDimension(coord.dimension, (world, entity, yaw) -> entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
-        } else {
-            player.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
+            player.changeDimension(coord.dimension);
         }
-        player.world.updateEntityWithOptionalForce(player, true);
+        player.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
+        //TODO: I believe this is not needed
+        //player.world.updateEntityWithOptionalForce(player, true);
     }
 
     public static void alignPlayer(ServerPlayerEntity player, Coord4D coord) {
@@ -320,7 +320,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
             Mekanism.packetHandler.sendToAllTracking(new PacketEntityMove(entity), new Coord4D(entity));
         } else {
-            entity.changeDimension(coord.dimension, (world, entity2, yaw) -> entity2.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
+            entity.changeDimension(coord.dimension);
+            //TODO: Verify
+            entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
         }
     }
 

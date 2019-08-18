@@ -1,21 +1,19 @@
 package mekanism.common.recipe;
 
-import com.google.gson.JsonObject;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IIngredientFactory;
-import net.minecraftforge.common.crafting.JsonContext;
 
 public class MekanismIngredient extends Ingredient {
 
     private final ItemStack stack;
 
     protected MekanismIngredient(ItemStack stack) {
-        super(stack);
+        //TODO: Check if this is correct
+        super(Stream.of(new Ingredient.SingleItemList(stack)));
         this.stack = stack;
     }
 
@@ -32,15 +30,16 @@ public class MekanismIngredient extends Ingredient {
     }
 
     @Override
-    public boolean apply(@Nullable ItemStack input) {
+    public boolean test(@Nullable ItemStack input) {
         if (input == null) {
             return false;
         }
         return RecipeUtils.areItemsEqualForCrafting(this.stack, input);
     }
 
+    //TODO: Support serializing this if we are keeping MekanismIngredient
     // Used in _factories.json
-    public static class IngredientFactory implements IIngredientFactory {
+    /*public static class IngredientFactory implements IIngredientFactory {
 
         @Nonnull
         @Override
@@ -48,5 +47,5 @@ public class MekanismIngredient extends Ingredient {
             final ItemStack stack = CraftingHelper.getItemStack(json, context);
             return MekanismIngredient.fromStacks(stack);
         }
-    }
+    }*/
 }

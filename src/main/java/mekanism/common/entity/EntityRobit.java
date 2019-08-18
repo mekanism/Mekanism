@@ -3,6 +3,7 @@ package mekanism.common.entity;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -30,9 +31,12 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -73,11 +77,6 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     public EntityRobit(EntityType<EntityRobit> type, World world) {
         super(type, world);
         getNavigator().setCanSwim(false);
-        tasks.addTask(1, new RobitAIPickup(this, 1.0F));
-        tasks.addTask(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
-        tasks.addTask(3, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        tasks.addTask(3, new LookRandomlyGoal(this));
-        tasks.addTask(4, new SwimGoal(this));
         setCustomNameVisible(true);
     }
 
@@ -96,6 +95,16 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(1, new RobitAIPickup(this, 1.0F));
+        goalSelector.addGoal(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
+        goalSelector.addGoal(3, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        goalSelector.addGoal(3, new LookRandomlyGoal(this));
+        goalSelector.addGoal(4, new SwimGoal(this));
+    }
+
+    @Override
     protected void registerAttributes() {
         super.registerAttributes();
         getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);
@@ -103,7 +112,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     @Override
-    protected boolean canDespawn() {
+    public boolean canDespawn(double distanceToClosestPlayer) {
         return false;
     }
 
@@ -118,7 +127,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     public double getRoundedTravelEnergy() {
-        return new BigDecimal(getDistance(prevPosX, prevPosY, prevPosZ) * 1.5).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        double distance = Math.sqrt(getDistanceSq(prevPosX, prevPosY, prevPosZ));
+        return new BigDecimal(distance * 1.5).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
     @Override
@@ -249,8 +259,9 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
         if (world.getDimension().getType().equals(homeLocation.dimension)) {
             setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
         } else {
-            changeDimension(homeLocation.dimension, (world1, entity, yaw) ->
-                  entity.setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, yaw, rotationPitch));
+            //TODO: Check if this is the correct way to change dimensions
+            changeDimension(homeLocation.dimension);
+            setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, rotationYaw, rotationPitch);
         }
         setMotion(0, 0, 0);
     }
@@ -260,7 +271,11 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
         if (input.isEmpty()) {
             return false;
         }
-        ItemStack result = FurnaceRecipes.instance().getSmeltingResult(input);
+        Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
+        if (!recipe.isPresent()) {
+            return false;
+        }
+        ItemStack result = recipe.get().getRecipeOutput();
         if (result.isEmpty()) {
             return false;
         }
@@ -278,7 +293,11 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     public void smeltItem() {
         if (canSmelt()) {
             ItemStack input = inventory.get(28);
-            ItemStack result = FurnaceRecipes.instance().getSmeltingResult(input);
+            Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
+            if (!recipe.isPresent()) {
+                return;
+            }
+            ItemStack result = recipe.get().getRecipeOutput();
             ItemStack currentOutput = inventory.get(30);
             if (currentOutput.isEmpty()) {
                 inventory.set(30, result.copy());
@@ -321,7 +340,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
         ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
         item.setEnergy(entityItem.getItem(), getEnergy());
         item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());
-        item.setName(entityItem.getItem(), getName());
+        item.setName(entityItem.getItem(), getName().getFormattedText());
 
         float k = 0.05F;
         entityItem.setMotion(0, rand.nextGaussian() * k + 0.2F, 0);
@@ -332,7 +351,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     public void writeAdditional(CompoundNBT nbtTags) {
         super.writeAdditional(nbtTags);
         nbtTags.putDouble("electricityStored", getEnergy());
-        nbtTags.putString("name", getName());
+        //TODO: Is this necessary or is it handled by the main entity class
+        //nbtTags.putString("name", getName());
         if (getOwnerUUID() != null) {
             nbtTags.putString("ownerUUID", getOwnerUUID().toString());
         }
@@ -357,7 +377,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     public void readAdditional(CompoundNBT nbtTags) {
         super.readAdditional(nbtTags);
         setEnergy(nbtTags.getDouble("electricityStored"));
-        setCustomNameTag(nbtTags.getString("name"));
+        //TODO: Is this necessary or is it handled by the main entity class
+        //setCustomNameTag(nbtTags.getString("name"));
         if (nbtTags.contains("ownerUUID")) {
             setOwnerUUID(UUID.fromString(nbtTags.getString("ownerUUID")));
         }

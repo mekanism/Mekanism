@@ -19,8 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindMethodException;
 
 public final class MinerUtils {
 
@@ -30,7 +29,8 @@ public final class MinerUtils {
 
     static {
         try {
-            getSilkTouchDrop = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", BlockState.class);
+            //TODO: Figure out what getSilkTouchDrop was replaced with if it was at all
+            //getSilkTouchDrop = ObfuscationReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", BlockState.class);
         } catch (UnableToFindMethodException e) {
             Mekanism.logger.error("Unable to find method Block.getSilkTouchDrop");
         }
@@ -45,7 +45,8 @@ public final class MinerUtils {
         }
 
         //TODO: I believe the shulker box is actually properly handled now, but if not we need to add back the specialized logic
-        if (silk && (block.canSilkHarvest(world, coord.getPos(), state, fakePlayer) || specialSilkIDs.contains(block))) {
+        //TODO: Fix silk touch support
+        if (silk && false) {//(block.canSilkHarvest(world, coord.getPos(), state, fakePlayer) || specialSilkIDs.contains(block))) {
             Object it = null;
             if (getSilkTouchDrop != null) {
                 try {
@@ -70,10 +71,11 @@ public final class MinerUtils {
                 return ret;
             }
         } else {
-            @SuppressWarnings("deprecation")//needed for backwards compatibility
-                  List<ItemStack> blockDrops = block.getDrops(world, coord.getPos(), state, 0);
+            //TODO: Check this call to getDrops
+            List<ItemStack> blockDrops = Block.getDrops(state, (ServerWorld) world, coord.getPos(), MekanismUtils.getTileEntity(world, coord.getPos()));
             if (blockDrops.size() > 0) {
-                ForgeEventFactory.fireBlockHarvesting(blockDrops, world, coord.getPos(), state, 0, 1.0F, false, fakePlayer);
+                ForgeEventFactory.fireBlockHarvesting(NonNullList.from(ItemStack.EMPTY, blockDrops.toArray(new ItemStack[0])),
+                      world, coord.getPos(), state, 0, 1.0F, false, fakePlayer);
             } else if (block == Blocks.CHORUS_FLOWER) {
                 //Chorus flower returns AIR for itemDropped... and for silkTouchDrop.
                 blockDrops.add(new ItemStack(Blocks.CHORUS_FLOWER));

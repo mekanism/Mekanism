@@ -31,13 +31,11 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.oredict.OreDictionary;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer, ChemicalCrystallizerContainer> {
@@ -151,7 +149,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
             iterStacks.clear();
         }
 
-        List<String> keys = new ArrayList<>();
+        //TODO: Implement with tags, I believe what the purpose of this was to let it use any ore with the same name
+        /*List<String> keys = new ArrayList<>();
         for (String s : OreDictionary.getOreNames()) {
             if (oreName.equals(s) || oreName.equals("*")) {
                 keys.add(s);
@@ -181,7 +180,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
                     iterStacks.add(stack.copy());
                 }
             }
-        }
+        }*/
         stackSwitch = 0;
         stackIndex = -1;
     }

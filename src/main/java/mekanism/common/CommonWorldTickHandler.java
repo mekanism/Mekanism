@@ -4,12 +4,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -63,7 +61,8 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             MultiblockManager.tick(world);
             FrequencyManager.tick(world);
-            if (chunkRegenMap == null) {
+            //TODO: Fix chunk regeneration at some point
+            /*if (chunkRegenMap == null) {
                 return;
             }
 
@@ -90,7 +89,7 @@ public class CommonWorldTickHandler {
                 if (chunksToGen.isEmpty()) {
                     chunkRegenMap.remove(dimensionId);
                 }
-            }
+            }*/
         }
     }
 }

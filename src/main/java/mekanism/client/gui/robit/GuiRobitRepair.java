@@ -1,19 +1,16 @@
 package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import io.netty.buffer.Unpooled;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.RepairContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CCustomPayloadPacket;
+import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -59,34 +56,25 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
         drawString(TextComponentUtil.translate("container.repair"), 60, 6, 0x404040);
 
         //func_216976_f = getMaximumCost
-        if (repairContainer.func_216976_f() > 0) {
-            int k = 8453920;
+        int maximumCost = repairContainer.func_216976_f();
+        if (maximumCost > 0) {
+            //TODO: Verify this works as intended
+            int k = 0x80FF20;
             boolean flag = true;
-            ITextComponent component = TextComponentUtil.translate("container.repair.cost", repairContainer.func_216976_f());
-
-            if (repairContainer.func_216976_f() >= 40 && !minecraft.player.isCreative()) {
+            ITextComponent component = TextComponentUtil.translate("container.repair.cost", maximumCost);
+            if (maximumCost >= 40 && !minecraft.player.isCreative()) {
                 component = TextComponentUtil.translate("container.repair.expensive");
-                k = 16736352;
+                k = 0xFF6060;
             } else if (!repairContainer.getSlot(2).getHasStack()) {
                 flag = false;
             } else if (!repairContainer.getSlot(2).canTakeStack(playerInventory.player)) {
-                k = 16736352;
+                k = 0xFF6060;
             }
 
             if (flag) {
-                int l = -16777216 | (k & 16579836) >> 2 | k & -16777216;
-                int i1 = xSize - 25 - 8 - getStringWidth(component);
-                byte b0 = 67;
-
-                if (font.getUnicodeFlag()) {
-                    fill(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
-                    fill(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
-                } else {
-                    drawString(component, i1, b0 + 1, l);
-                    drawString(component, i1 + 1, b0, l);
-                    drawString(component, i1 + 1, b0 + 1, l);
-                }
-                drawString(component, i1, b0, k);
+                int width = this.xSize - 8 - getStringWidth(component) - 2;
+                fill(width - 2, 67, this.xSize - 8, 79, 0x4F000000);
+                font.drawStringWithShadow(component.getFormattedText(), (float) width, 69.0F, k);
             }
         }
         GlStateManager.enableLighting();
@@ -97,7 +85,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     public boolean charTyped(char c, int i) {
         if (itemNameField.charTyped(c, i)) {
             repairContainer.updateItemName(itemNameField.getText());
-            minecraft.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+            minecraft.player.connection.sendPacket(new CRenameItemPacket(itemNameField.getText()));
             return true;
         }
         return super.charTyped(c, i);
@@ -146,20 +134,16 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     public void sendSlotContents(@Nonnull Container container, int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            itemNameField.setText(itemstack.isEmpty() ? "" : itemstack.getDisplayName());
+            itemNameField.setText(itemstack.isEmpty() ? "" : itemstack.getDisplayName().getFormattedText());
             itemNameField.setEnabled(!itemstack.isEmpty());
             if (!itemstack.isEmpty()) {
                 repairContainer.updateItemName(itemNameField.getText());
-                minecraft.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+                minecraft.player.connection.sendPacket(new CRenameItemPacket(itemNameField.getText()));
             }
         }
     }
 
     @Override
     public void sendWindowProperty(@Nonnull Container containerIn, int varToUpdate, int newValue) {
-    }
-
-    @Override
-    public void sendAllWindowProperties(@Nonnull Container containerIn, @Nonnull IInventory inventory) {
     }
 }

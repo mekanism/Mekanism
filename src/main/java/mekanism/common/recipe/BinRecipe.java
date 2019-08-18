@@ -1,4 +1,5 @@
-package mekanism.common.recipe;
+//TODO: Bin recipe
+/*package mekanism.common.recipe;
 
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismItem;
@@ -21,7 +22,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class BinRecipe extends IForgeRegistryEntry<IRecipe> implements IRecipe {
+public class BinRecipe implements IRecipe, IForgeRegistryEntry<IRecipe> {
 
     private static boolean registered;
 
@@ -157,4 +158,4 @@ public class BinRecipe extends IForgeRegistryEntry<IRecipe> implements IRecipe {
     public boolean canFit(int width, int height) {
         return width * height >= 1;
     }
-}
+}*/

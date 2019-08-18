@@ -268,18 +268,15 @@ public class TransmitterModel extends OBJBakedModelBase {
     @Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return Pair.of(this, transforms.get(cameraTransformType).getMatrix());
+        //TODO: Is north correct
+        return Pair.of(this, transforms.get(cameraTransformType).getMatrix(Direction.NORTH));
     }
 
     private class TransmitterOverride extends ItemOverrideList {
 
-        public TransmitterOverride() {
-            super(new ArrayList<>());
-        }
-
         @Nonnull
         @Override
-        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity) {
+        public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
                 for (Direction side : Direction.values()) {

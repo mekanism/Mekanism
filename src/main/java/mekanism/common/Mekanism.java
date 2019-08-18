@@ -47,7 +47,6 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
-import mekanism.common.recipe.BinRecipe;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -167,10 +166,6 @@ public class Mekanism {
      */
     public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
     /**
-     * The Mekanism world generation handler.
-     */
-    public static GenHandler genHandler = new GenHandler();
-    /**
      * The version of ore generation in this version of Mekanism. Increment this every time the default ore generation changes.
      */
     public static int baseWorldGenVersion = 0;
@@ -253,7 +248,8 @@ public class Mekanism {
 
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-        event.getRegistry().register(new BinRecipe());
+        //TODO: Bin recipe
+        //event.getRegistry().register(new BinRecipe());
         addRecipes();
         GasConversionHandler.addDefaultGasMappings();
     }
@@ -659,6 +655,7 @@ public class Mekanism {
     public void init(FMLInitializationEvent event) {
         //Register the mod's world generators
         GameRegistry.registerWorldGenerator(genHandler, 1);
+        GenHandler.setupWorldGeneration();
 
         //Register the mod's GUI handler
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
