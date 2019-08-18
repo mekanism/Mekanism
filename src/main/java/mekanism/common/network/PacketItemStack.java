@@ -34,7 +34,7 @@ public class PacketItemStack {
         if (player == null) {
             return;
         }
-        PacketHandler.handlePacket(() -> {
+        context.get().enqueueWork(() -> {
             ItemStack stack = player.getHeldItem(message.currentHand);
             if (!stack.isEmpty() && stack.getItem() instanceof IItemNetwork) {
                 IItemNetwork network = (IItemNetwork) stack.getItem();
@@ -45,7 +45,7 @@ public class PacketItemStack {
                 }
                 message.storedBuffer.release();
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketItemStack pkt, PacketBuffer buf) {

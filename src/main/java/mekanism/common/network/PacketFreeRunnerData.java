@@ -26,20 +26,22 @@ public class PacketFreeRunnerData {
     }
 
     public static void handle(PacketFreeRunnerData message, Supplier<Context> context) {
-        PlayerEntity entityPlayer = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() -> {
+        PlayerEntity player = PacketHandler.getPlayer(context);
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             if (message.packetType == FreeRunnerPacket.UPDATE) {
                 if (message.value) {
                     Mekanism.freeRunnerOn.add(message.uuid);
                 } else {
                     Mekanism.freeRunnerOn.remove(message.uuid);
                 }
-                if (!entityPlayer.world.isRemote) {
-                    Mekanism.packetHandler.sendToDimension(new PacketFreeRunnerData(FreeRunnerPacket.UPDATE, message.uuid, message.value), entityPlayer.world.getDimension().getType());
+                if (!player.world.isRemote) {
+                    Mekanism.packetHandler.sendToDimension(new PacketFreeRunnerData(FreeRunnerPacket.UPDATE, message.uuid, message.value), player.world.getDimension().getType());
                 }
             } else if (message.packetType == FreeRunnerPacket.MODE) {
-                ItemStack stack = entityPlayer.getItemStackFromSlot(EquipmentSlotType.FEET);
+                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
                     if (!message.value) {
                         ((ItemFreeRunners) stack.getItem()).incrementMode(stack);
@@ -48,7 +50,7 @@ public class PacketFreeRunnerData {
                     }
                 }
             }
-        }, entityPlayer);
+        });
     }
 
     public static void encode(PacketFreeRunnerData pkt, PacketBuffer buf) {

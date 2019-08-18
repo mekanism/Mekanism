@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -22,8 +21,11 @@ public class PacketRemoveUpgrade {
     }
 
     public static void handle(PacketRemoveUpgrade message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        PlayerEntity player = context.get().getSender();
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
             if (tileEntity instanceof IUpgradeTile && tileEntity instanceof TileEntityMekanism) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tileEntity;
@@ -33,7 +35,7 @@ public class PacketRemoveUpgrade {
                     }
                 }
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketRemoveUpgrade pkt, PacketBuffer buf) {

@@ -38,7 +38,10 @@ public class PacketNewFilter {
 
     public static void handle(PacketNewFilter message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             //TODO: Verify this
             World worldServer = player.world;
             if (message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
@@ -60,7 +63,7 @@ public class PacketNewFilter {
                     Mekanism.packetHandler.sendTo(new PacketTileEntity(oredictionificator, oredictionificator.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
                 }
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketNewFilter pkt, PacketBuffer buf) {

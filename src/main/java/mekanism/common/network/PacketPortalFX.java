@@ -19,7 +19,10 @@ public class PacketPortalFX {
 
     public static void handle(PacketPortalFX message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             Random random = new Random();
             for (int i = 0; i < 50; i++) {
                 player.world.addParticle(ParticleTypes.PORTAL, message.coord4D.x + random.nextFloat(), message.coord4D.y + random.nextFloat(),
@@ -27,7 +30,7 @@ public class PacketPortalFX {
                 player.world.addParticle(ParticleTypes.PORTAL, message.coord4D.x + random.nextFloat(), message.coord4D.y + 1 + random.nextFloat(),
                       message.coord4D.z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketPortalFX pkt, PacketBuffer buf) {

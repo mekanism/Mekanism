@@ -25,7 +25,10 @@ public class PacketDropperUse {
 
     public static void handle(PacketDropperUse message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
             if (tileEntity instanceof ITankManager) {
                 try {
@@ -37,7 +40,7 @@ public class PacketDropperUse {
                     Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketDropperUse pkt, PacketBuffer buf) {

@@ -47,7 +47,10 @@ public class PacketJetpackData {
     public static void handle(PacketJetpackData message, Supplier<Context> context) {
         // Queue up the processing on the central thread
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             if (message.packetType == JetpackPacket.UPDATE) {
                 Mekanism.playerState.setJetpackState(message.uuid, message.value, false);
                 // If we got this packet on the server, propagate it out to all players in the same
@@ -71,7 +74,7 @@ public class PacketJetpackData {
                 // This is a full sync; merge it into our player state
                 Mekanism.playerState.setActiveJetpacks(message.activeJetpacks);
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketJetpackData pkt, PacketBuffer buf) {

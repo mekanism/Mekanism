@@ -25,12 +25,15 @@ public class PacketEntityMove {
 
     public static void handle(PacketEntityMove message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             Entity entity = player.world.getEntityByID(message.entityId);
             if (entity != null) {
                 entity.setLocationAndAngles(message.pos.x, message.pos.y, message.pos.z, entity.rotationYaw, entity.rotationPitch);
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketEntityMove pkt, PacketBuffer buf) {

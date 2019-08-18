@@ -53,8 +53,10 @@ public class PacketConfigurationUpdate {
 
     public static void handle(PacketConfigurationUpdate message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             TileEntity tile = message.coord4D.getTileEntity(player.world);
             if (tile instanceof ISideConfiguration) {
                 LazyOptionalHelper<ITileNetwork> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
@@ -105,7 +107,7 @@ public class PacketConfigurationUpdate {
                     }
                 });
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketConfigurationUpdate pkt, PacketBuffer buf) {

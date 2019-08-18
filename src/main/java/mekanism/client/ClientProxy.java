@@ -190,14 +190,12 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -209,7 +207,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Client proxy for the Mekanism mod.
@@ -650,26 +647,6 @@ public class ClientProxy extends CommonProxy {
             return context.get().getSender();
         }
         return Minecraft.getInstance().player;
-    }
-
-    @Override
-    public void handlePacket(Runnable runnable, PlayerEntity player) {
-        if (player == null || player.world.isRemote) {
-            Minecraft.getInstance().addScheduledTask(runnable);
-        } else {
-            //Single player
-            if (player.world instanceof ServerWorld) {
-                ((ServerWorld) player.world).addScheduledTask(runnable);
-            } else {
-                MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-                if (server != null) {
-                    server.addScheduledTask(runnable);
-                } else {
-                    Mekanism.logger.error("Packet handler wanted to set a scheduled task, but we couldn't find a way to set one.");
-                    Mekanism.logger.error("Player = {}, World = {}", player, player.world);
-                }
-            }
-        }
     }
 
     @Override

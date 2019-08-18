@@ -22,12 +22,15 @@ public class PacketRedstoneControl {
 
     public static void handle(PacketRedstoneControl message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
             if (tileEntity instanceof IRedstoneControl) {
                 ((IRedstoneControl) tileEntity).setControlType(message.value);
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketRedstoneControl pkt, PacketBuffer buf) {

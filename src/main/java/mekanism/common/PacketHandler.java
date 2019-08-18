@@ -127,10 +127,6 @@ public class PacketHandler {
         return Mekanism.proxy.getPlayer(context);
     }
 
-    public static void handlePacket(Runnable runnable, PlayerEntity player) {
-        Mekanism.proxy.handlePacket(runnable, player);
-    }
-
     public void initialize() {
         int disc = 0;
 

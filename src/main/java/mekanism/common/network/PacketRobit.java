@@ -28,7 +28,10 @@ public class PacketRobit {
 
     public static void handle(PacketRobit message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
             if (robit != null) {
                 switch (message.activeType) {
@@ -46,7 +49,7 @@ public class PacketRobit {
                         break;
                 }
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketRobit pkt, PacketBuffer buf) {

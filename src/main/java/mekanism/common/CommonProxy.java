@@ -153,14 +153,6 @@ public class CommonProxy/* implements IGuiProvider*/ {
         return context.get().getSender();
     }
 
-    public void handlePacket(Runnable runnable, PlayerEntity player) {
-        if (player instanceof ServerPlayerEntity) {
-            //TODO
-            //player.world.getWorldInfo().getScheduledEvents().scheduleReplaceDuplicate();
-            ((ServerWorld) player.world).addScheduledTask(runnable);
-        }
-    }
-
     public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {
     }
 

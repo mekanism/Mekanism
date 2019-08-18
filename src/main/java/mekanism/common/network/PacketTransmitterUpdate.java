@@ -81,7 +81,7 @@ public class PacketTransmitterUpdate {
         if (player == null) {
             return;
         }
-        PacketHandler.handlePacket(() -> {
+        context.get().enqueueWork(() -> {
             if (message.coord4D == null) {
                 return;
             }
@@ -129,7 +129,7 @@ public class PacketTransmitterUpdate {
                     }
                 }
             });
-        }, player);
+        });
     }
 
     public static void encode(PacketTransmitterUpdate pkt, PacketBuffer buf) {

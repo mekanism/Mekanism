@@ -35,7 +35,10 @@ public class PacketSecurityMode {
 
     public static void handle(PacketSecurityMode message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             if (message.packetType == SecurityPacketType.BLOCK) {
                 TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
                 if (tileEntity instanceof ISecurityTile && ((ISecurityTile) tileEntity).hasSecurity()) {
@@ -51,7 +54,7 @@ public class PacketSecurityMode {
                     ((ISecurityItem) stack.getItem()).setSecurity(stack, message.value);
                 }
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketSecurityMode pkt, PacketBuffer buf) {

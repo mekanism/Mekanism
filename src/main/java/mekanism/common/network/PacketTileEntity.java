@@ -44,7 +44,7 @@ public class PacketTileEntity {
         if (player == null) {
             return;
         }
-        PacketHandler.handlePacket(() -> {
+        context.get().enqueueWork(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
             CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
                 try {
@@ -54,7 +54,7 @@ public class PacketTileEntity {
                 }
             });
             message.storedBuffer.release();
-        }, player);
+        });
     }
 
     public static void encode(PacketTileEntity pkt, PacketBuffer buf) {

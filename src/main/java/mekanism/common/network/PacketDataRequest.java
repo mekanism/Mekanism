@@ -23,7 +23,10 @@ public class PacketDataRequest {
 
     public static void handle(PacketDataRequest message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             //TODO: Verify this
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
             if (tileEntity instanceof TileEntityMultiblock) {
@@ -38,7 +41,7 @@ public class PacketDataRequest {
             CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
                   network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player)
             );
-        }, player);
+        });
     }
 
     public static void encode(PacketDataRequest pkt, PacketBuffer buf) {

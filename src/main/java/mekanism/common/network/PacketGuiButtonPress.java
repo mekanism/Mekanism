@@ -77,7 +77,10 @@ public class PacketGuiButtonPress {
 
     public static void handle(PacketGuiButtonPress message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             if (!player.world.isRemote) {
                 //If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
                 if (message.hasEntity) {
@@ -100,7 +103,7 @@ public class PacketGuiButtonPress {
                     }
                 }
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketGuiButtonPress pkt, PacketBuffer buf) {

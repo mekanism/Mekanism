@@ -22,12 +22,15 @@ public class PacketContainerEditMode {
 
     public static void handle(PacketContainerEditMode message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
             if (tileEntity instanceof IFluidContainerManager) {
                 ((IFluidContainerManager) tileEntity).setContainerEditMode(message.value);
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketContainerEditMode pkt, PacketBuffer buf) {

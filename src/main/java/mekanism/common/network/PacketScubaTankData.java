@@ -46,7 +46,10 @@ public class PacketScubaTankData {
     public static void handle(PacketScubaTankData message, Supplier<Context> context) {
         // Queue up processing on the central thread
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             if (message.packetType == ScubaTankPacket.UPDATE) {
                 Mekanism.playerState.setGasmaskState(message.uuid, message.value, false);
                 // If we got this on the server, relay out to all players in the same dimension
@@ -65,7 +68,7 @@ public class PacketScubaTankData {
                 // This is a full sync; merge into our player state
                 Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketScubaTankData pkt, PacketBuffer buf) {

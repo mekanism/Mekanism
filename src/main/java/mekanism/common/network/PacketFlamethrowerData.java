@@ -47,7 +47,10 @@ public class PacketFlamethrowerData {
     public static void handle(PacketFlamethrowerData message, Supplier<Context> context) {
         // Queue up the processing on the central thread
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             if (message.packetType == FlamethrowerPacket.UPDATE) {
                 Mekanism.playerState.setFlamethrowerState(message.uuid, message.value, false);
                 // If we got this packet on the server, resend out to all clients in same dimension
@@ -65,7 +68,7 @@ public class PacketFlamethrowerData {
                 // This is a full sync; merge into our player state
                 Mekanism.playerState.setActiveFlamethrowers(message.activeFlamethrowers);
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketFlamethrowerData pkt, PacketBuffer buf) {

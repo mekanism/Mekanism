@@ -75,7 +75,10 @@ public class PacketPortableTeleporter {
 
     public static void handle(PacketPortableTeleporter message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(() -> {
+        if (player == null) {
+            return;
+        }
+        context.get().enqueueWork(() -> {
             ItemStack itemstack = player.getHeldItem(message.currentHand);
             World world = player.world;
             if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemPortableTeleporter) {
@@ -147,7 +150,7 @@ public class PacketPortableTeleporter {
                         break;
                 }
             }
-        }, player);
+        });
     }
 
     public static void encode(PacketPortableTeleporter pkt, PacketBuffer buf) {
