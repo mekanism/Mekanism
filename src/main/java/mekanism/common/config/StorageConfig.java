@@ -6,7 +6,8 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class StorageConfig implements IMekanismConfig {
 
-    private final ForgeConfigSpec configSpec;
+    //TODO: final
+    private ForgeConfigSpec configSpec;
 
     public final ConfigValue<Double> enrichmentChamber;
     public final ConfigValue<Double> osmiumCompressor;
@@ -34,9 +35,9 @@ public class StorageConfig implements IMekanismConfig {
     public final ConfigValue<Double> formulaicAssemblicator;
     public final ConfigValue<Double> teleporter;
 
-    StorageConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Machine Energy Storage Config");
+    StorageConfig(ForgeConfigSpec.Builder builder) {
+        //ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        builder.comment("Machine Energy Storage Config").push("storage");
 
         enrichmentChamber = builder.comment("Base energy storage (Joules).").define("enrichmentChamber", 20_000D);
         osmiumCompressor = builder.comment("Base energy storage (Joules).").define("osmiumCompressor", 80_000D);
@@ -64,7 +65,9 @@ public class StorageConfig implements IMekanismConfig {
         formulaicAssemblicator = builder.comment("Base energy storage (Joules).").define("formulaicAssemblicator", 40_000D);
         teleporter = builder.comment("Base energy storage (Joules).").define("teleporter", 5_000_000D);
 
-        configSpec = builder.build();
+        //TODO
+        builder.pop();
+        //configSpec = builder.build();
     }
 
     @Override

@@ -31,16 +31,18 @@ public class FluidInput extends MachineInput<FluidInput> {
     }
 
     public boolean useFluid(FluidTank fluidTank, boolean deplete, int scale) {
-        if (fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient)) {
+        //TODO
+        /*if (fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient)) {
             fluidTank.drain(ingredient.amount * scale, deplete);
             return true;
-        }
+        }*/
         return false;
     }
 
     @Override
     public int hashIngredients() {
-        return ingredient.getFluid() != null ? ingredient.getFluid().hashCode() : 0;
+        //TODO: Fix this
+        return 0;//ingredient.getFluid() != null ? ingredient.getFluid().hashCode() : 0;
     }
 
     @Override
@@ -48,7 +50,8 @@ public class FluidInput extends MachineInput<FluidInput> {
         if (!isValid()) {
             return !other.isValid();
         }
-        return ingredient.equals(other.ingredient);
+        //TODO: Fix this
+        return false;//ingredient.equals(other.ingredient);
     }
 
     @Override

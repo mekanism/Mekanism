@@ -69,7 +69,8 @@ public class MekanismFluids {
         FluidRegistry.enableUniversalBucket();
 
         FluidRegistry.addBucketForFluid(HeavyWater);
-        FluidRegistry.addBucketForFluid(Brine.getFluid());
-        FluidRegistry.addBucketForFluid(Lithium.getFluid());
+        //TODO: Fluids
+        /*FluidRegistry.addBucketForFluid(Brine.getFluid());
+        FluidRegistry.addBucketForFluid(Lithium.getFluid());*/
     }
 }

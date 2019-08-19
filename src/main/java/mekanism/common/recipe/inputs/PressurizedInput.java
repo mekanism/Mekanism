@@ -79,7 +79,8 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-        return stack.isFluidEqual(theFluid);
+        //TODO
+        return false;//stack.isFluidEqual(theFluid);
     }
 
     /**
@@ -107,7 +108,8 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (input == null || !input.isValid()) {
             return false;
         }
-        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid) && input.theGas.isGasEqual(theGas))) {
+        //TODO
+        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && /*input.theFluid.isFluidEqual(theFluid) &&*/ input.theGas.isGasEqual(theGas))) {
             return false;
         }
         return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
@@ -132,7 +134,8 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
 
     @Override
     public int hashIngredients() {
-        return StackUtils.hashItemStack(theSolid) << 16 | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
+        //TODO
+        return StackUtils.hashItemStack(theSolid) << 16 | (/*theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : */0) << 8 | theGas.hashCode();
     }
 
     @Override

@@ -85,7 +85,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     double prev = getEnergy();
 
                     setActive(true);
-                    fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), operations), true);
+                    //TODO:
+                    //fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), operations), true);
                     gasTank.draw(operations, true);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
@@ -140,7 +141,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     public boolean gasEquals(GasStack gas, FluidStack fluid) {
-        return fluid != null && gas != null && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
+        //TODO: Fluids
+        return fluid != null && gas != null && gas.getGas().hasFluid();// && gas.getGas().getFluid() == fluid.getFluid();
 
     }
 

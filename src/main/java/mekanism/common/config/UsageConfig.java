@@ -8,7 +8,8 @@ public class UsageConfig implements IMekanismConfig {
 
     private static final String TELEPORTER_CATEGORY = "teleporter";
 
-    private final ForgeConfigSpec configSpec;
+    //TODO: final
+    private ForgeConfigSpec configSpec;
 
     public final ConfigValue<Double> enrichmentChamber;
     public final ConfigValue<Double> osmiumCompressor;
@@ -38,9 +39,9 @@ public class UsageConfig implements IMekanismConfig {
     public final ConfigValue<Integer> teleporterDistance;
     public final ConfigValue<Integer> teleporterDimensionPenalty;
 
-    UsageConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Machine Energy Usage Config");
+    UsageConfig(ForgeConfigSpec.Builder builder) {
+        //ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        builder.comment("Machine Energy Usage Config").push("usage");
 
         enrichmentChamber = builder.comment("Energy per operation tick (Joules).").define("enrichmentChamber", 50D);
         osmiumCompressor = builder.comment("Energy per operation tick (Joules).").define("osmiumCompressor", 100D);
@@ -74,7 +75,10 @@ public class UsageConfig implements IMekanismConfig {
         teleporterDimensionPenalty = builder.comment("Flat additional cost for interdimensional teleportation.").define("teleporterDimensionPenalty", 10_000);
 
         builder.pop();
-        configSpec = builder.build();
+
+        //TODO
+        builder.pop();
+        //configSpec = builder.build();
     }
 
     @Override

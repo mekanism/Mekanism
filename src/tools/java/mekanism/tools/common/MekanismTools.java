@@ -19,7 +19,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLModIdMappingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismTools.MODID)
@@ -42,7 +41,7 @@ public class MekanismTools implements IModule {
         MekanismToolsConfig.registerConfigs(ModLoadingContext.get());
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener((FMLModIdMappingEvent event) -> ToolsItem.remapItems());
+        //modEventBus.addListener((FMLModIdMappingEvent event) -> ToolsItem.remapItems());
         modEventBus.addListener((RegistryEvent.Register<Item> event) -> ToolsItem.registerItems(event.getRegistry()));
         modEventBus.addListener(this::onLivingSpecialSpawn);
         modEventBus.addListener(this::onLivingSpecialSpawn);

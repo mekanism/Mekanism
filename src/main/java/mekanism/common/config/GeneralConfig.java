@@ -21,7 +21,8 @@ public class GeneralConfig implements IMekanismConfig {
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
 
-    private final ForgeConfigSpec configSpec;
+    //TODO: final
+    private ForgeConfigSpec configSpec;
 
     public final BooleanValue logPackets;
     public final BooleanValue dynamicTankEasterEgg;
@@ -101,9 +102,8 @@ public class GeneralConfig implements IMekanismConfig {
     public EnumValue<EnergyType> energyUnit;
     public EnumValue<TempType> tempUnit;
 
-    GeneralConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("General Config");
+    GeneralConfig(ForgeConfigSpec.Builder builder) {
+        builder.comment("General Config").push("general");
         //TODO: Move things to different files where it makes more sense
         // Also make config options for the different gear types, where previously we didn't allow them to be configured
 
@@ -229,12 +229,19 @@ public class GeneralConfig implements IMekanismConfig {
         builder.comment("Enabled Machines").push(ENABLED_CATEGORY);
         MekanismConfig.addEnabledBlocksCategory(builder, MekanismBlock.values());
         builder.pop();
-        configSpec = builder.build();
+        //TODO
+        builder.pop();
+        //configSpec = builder.build();
     }
 
     @Override
     public String getFileName() {
         return "mekanism-general.toml";
+    }
+
+    //TODO: Remove
+    public void setConfigSpec(ForgeConfigSpec spec) {
+        configSpec = spec;
     }
 
     @Override

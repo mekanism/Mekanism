@@ -31,18 +31,22 @@ public class TierConfig implements IMekanismConfig {
     private static final String ITEMS_CATEGORY = "items";
     private static final String HEAT_CATEGORY = "heat";
 
-    private final ForgeConfigSpec configSpec;
+    //TODO: final
+    private ForgeConfigSpec configSpec;
 
-    TierConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Tier Config");
+    TierConfig(ForgeConfigSpec.Builder builder) {
+        //ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        builder.comment("Tier Config").push("tier");
         addEnergyCubeCategory(builder);
         addFluidTankCategory(builder);
         addGasTankCategory(builder);
         addBinCategory(builder);
         addInductionCategory(builder);
         addTransmittersCategory(builder);
-        configSpec = builder.build();
+
+        //TODO
+        builder.pop();
+        //configSpec = builder.build();
     }
 
     private void addEnergyCubeCategory(ForgeConfigSpec.Builder builder) {

@@ -525,8 +525,9 @@ public class Mekanism {
         if (MekanismBlock.PRESSURIZED_REACTION_CHAMBER.isEnabled()) {
             RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(2), new FluidStack(FluidRegistry.WATER, 10), new GasStack(MekanismFluids.Hydrogen, 100),
                   MekanismItem.SUBSTRATE.getItemStack(), new GasStack(MekanismFluids.Ethene, 100), 0, 100);
-            RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(MekanismFluids.Ethene.getFluid(), 50),
-                  new GasStack(MekanismFluids.Oxygen, 10), MekanismItem.HDPE_PELLET.getItemStack(), new GasStack(MekanismFluids.Oxygen, 5), 1000, 60);
+            //TODO: Fluids
+            /*RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(MekanismFluids.Ethene.getFluid(), 50),
+                  new GasStack(MekanismFluids.Oxygen, 10), MekanismItem.HDPE_PELLET.getItemStack(), new GasStack(MekanismFluids.Oxygen, 5), 1000, 60);*/
             RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(FluidRegistry.WATER, 200), new GasStack(MekanismFluids.Ethene, 100),
                   MekanismItem.SUBSTRATE.getItemStack(8), new GasStack(MekanismFluids.Oxygen, 10), 200, 400);
             RecipeHandler.addPRCRecipe(new ItemStack(Items.COAL), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
