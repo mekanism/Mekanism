@@ -11,7 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsItem implements IItemProvider {
@@ -38,9 +37,7 @@ public enum GeneratorsItem implements IItemProvider {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (GeneratorsItem generatorsItem : values()) {
-            //TODO: Figure out what the problem is here, I think it probably has to do with erasure
-            ForgeRegistries.ITEMS.register(generatorsItem.getItem());
-            //registry.register(generatorsItem.getItem());
+            registry.register(generatorsItem.getItem());
         }
     }
 }

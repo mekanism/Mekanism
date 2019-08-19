@@ -1,16 +1,8 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:nothing"
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
-    },
-    "inventory": [{}]
+    "facing=north": { "model": "mekanismgenerators:block/heat_generator" },
+    "facing=south": { "model": "mekanismgenerators:block/heat_generator", "y": 180 },
+    "facing=west": { "model": "mekanismgenerators:block/heat_generator", "y": -90 },
+    "facing=east": { "model": "mekanismgenerators:block/heat_generator", "y": 90 }
   }
 }
-

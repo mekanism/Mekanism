@@ -33,12 +33,10 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
@@ -47,36 +45,25 @@ import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.temporary.FluidRegistry;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
@@ -167,15 +154,7 @@ public class Mekanism {
     public Mekanism() {
         instance = this;
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::registerBlocks);
-        modEventBus.addListener(this::registerItems);
-        modEventBus.addListener(this::registerRecipeSerializers);
-        modEventBus.addListener(this::registerEntities);
-        modEventBus.addListener(this::registerTileEntities);
-        modEventBus.addListener(this::registerContainers);
-        modEventBus.addListener(this::registerModels);
-        modEventBus.addListener(this::registerSounds);
-
+        //TODO: Is this the proper way to register these listeners
         modEventBus.addListener(this::onEnergyTransferred);
         modEventBus.addListener(this::onGasTransferred);
         modEventBus.addListener(this::onLiquidTransferred);
@@ -185,57 +164,13 @@ public class Mekanism {
         modEventBus.addListener(this::onBlacklistUpdate);
         modEventBus.addListener(this::chunkSave);
         modEventBus.addListener(this::onChunkDataLoad);
-        modEventBus.addListener(this::onConfigChanged);
         modEventBus.addListener(this::onWorldLoad);
         modEventBus.addListener(this::onWorldUnload);
-
-
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::serverStarting);
         modEventBus.addListener(this::serverStopping);
         modEventBus.addListener(this::handleIMC);
         //TODO: Register other listeners and various stuff that is needed
-    }
-
-    private void registerBlocks(RegistryEvent.Register<Block> event) {
-        // Register blocks and tile entities
-        MekanismBlock.registerBlocks(event.getRegistry());
-    }
-
-    private void registerItems(RegistryEvent.Register<Item> event) {
-        // Register items and itemBlocks
-        MekanismItem.registerItems(event.getRegistry());
-        MekanismBlock.registerItemBlocks(event.getRegistry());
-    }
-
-    private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-        //TODO: Register recipe serializers
-        //event.getRegistry().register(ShapedMekanismRecipe.CRAFTING_SHAPED);
-    }
-
-    private void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        MekanismEntityTypes.registerEntities(event.getRegistry());
-    }
-
-    private void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        MekanismTileEntityTypes.registerTileEntities(event.getRegistry());
-        //Register the TESRs
-        proxy.registerTESRs();
-    }
-
-    private void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        MekanismContainerTypes.registerContainers(event.getRegistry());
-        proxy.registerScreenHandlers();
-    }
-
-    private void registerModels(ModelRegistryEvent event) {
-        // Register models
-        proxy.registerBlockRenders();
-        proxy.registerItemRenders();
-    }
-
-    public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
-        MekanismSounds.register(event.getRegistry());
     }
 
     /**
@@ -849,12 +784,13 @@ public class Mekanism {
         }
     }
 
-    private void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+    //TODO
+    /*private void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(Mekanism.MODID)) {
             proxy.loadConfiguration();
             proxy.onConfigSync(false);
         }
-    }
+    }*/
 
     private void onWorldLoad(WorldEvent.Load event) {
         playerState.init(event.getWorld());

@@ -36,7 +36,6 @@ import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsBlock implements IBlockProvider {
@@ -88,9 +87,7 @@ public enum GeneratorsBlock implements IBlockProvider {
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         for (GeneratorsBlock generatorsBlock : values()) {
-            //TODO: Figure out what the problem is here, I think it probably has to do with erasure
-            ForgeRegistries.ITEMS.register(generatorsBlock.getItem());
-            //registry.register(generatorsBlock.getItem());
+            registry.register(generatorsBlock.getItem());
         }
     }
 }

@@ -1,14 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:basic_cube",
-    "textures": {
-      "all": "mekanismgenerators:blocks/turbine_casing"
-    }
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": {
+      "model": "mekanismgenerators:block/turbine_casing",
+      "textures": {
+        "all": "mekanismgenerators:blocks/turbine_casing"
+      }
+    }
   }
 }
-

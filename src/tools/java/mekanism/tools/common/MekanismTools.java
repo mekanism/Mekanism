@@ -4,20 +4,15 @@ import java.util.Random;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
-import mekanism.tools.client.ToolsClientProxy;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -25,9 +20,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class MekanismTools implements IModule {
 
     public static final String MODID = "mekanismtools";
-
-    //Note: Do not replace with method reference: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#gistcomment-2876130
-    public static ToolsCommonProxy proxy = DistExecutor.runForDist(() -> () -> new ToolsClientProxy(), () -> () -> new ToolsCommonProxy());
 
     public static MekanismTools instance;
 
@@ -42,9 +34,7 @@ public class MekanismTools implements IModule {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         //modEventBus.addListener((FMLModIdMappingEvent event) -> ToolsItem.remapItems());
-        modEventBus.addListener((RegistryEvent.Register<Item> event) -> ToolsItem.registerItems(event.getRegistry()));
         modEventBus.addListener(this::onLivingSpecialSpawn);
-        modEventBus.addListener(this::onConfigChanged);
 
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         //TODO: Is the modEventBus stuff above used instead of this
@@ -130,9 +120,10 @@ public class MekanismTools implements IModule {
     public void resetClient() {
     }
 
-    private void onConfigChanged(OnConfigChangedEvent event) {
+    //TODO
+    /*private void onConfigChanged(OnConfigChangedEvent event) {
         if (event.getModID().equals(MekanismTools.MODID) || event.getModID().equalsIgnoreCase(Mekanism.MODID)) {
             proxy.loadConfiguration();
         }
-    }
+    }*/
 }

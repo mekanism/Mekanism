@@ -34,12 +34,6 @@ public class CommonProxy/* implements IGuiProvider*/ {
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
                                                     "please delete it from your mods folder and restart the game."};
 
-    /**
-     * Register tile entities that have special models. Overwritten in client to register TESRs.
-     */
-    public void registerTESRs() {
-    }
-
     public void handleTeleporterUpdate(PacketPortableTeleporter message) {
     }
 
@@ -98,9 +92,6 @@ public class CommonProxy/* implements IGuiProvider*/ {
      * Does the multiblock creation animation, starting from the rendering block.
      */
     public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
-    }
-
-    public void registerScreenHandlers() {
     }
 
     public void preInit() {

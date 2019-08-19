@@ -1,26 +1,13 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:machine",
-    "textures": {
-      "sides": "mekanismgenerators:blocks/reactor_frame",
-      "front": "mekanismgenerators:blocks/reactor_frame",
-      "up": "mekanismgenerators:blocks/reactor_controller"
-    }
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}],
-    "active": {
-      "false": {},
-      "true": {
-        "textures": {
-          "sides": "mekanismgenerators:blocks/reactor_frame",
-          "front": "mekanismgenerators:blocks/reactor_frame",
-          "up": "mekanismgenerators:blocks/reactor_controller_on"
-        }
+    "active=false": {
+      "model": "mekanismgenerators:block/reactor_controller"
+    },
+    "active=true": {
+      "model": "mekanismgenerators:block/reactor_controller",
+      "textures": {
+        "up": "mekanismgenerators:blocks/reactor_controller_on"
       }
     }
   }
 }
-

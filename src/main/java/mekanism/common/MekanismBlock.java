@@ -504,9 +504,11 @@ public enum MekanismBlock implements IBlockProvider {
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         for (MekanismBlock mekanismBlock : values()) {
-            registry.register(mekanismBlock.getBlock());
+            ForgeRegistries.BLOCKS.register(mekanismBlock.getBlock());
+            //registry.register(mekanismBlock.getBlock());
         }
-        registry.register(PortalHelper.BlockPortalOverride.instance);
+        ForgeRegistries.BLOCKS.register(PortalHelper.BlockPortalOverride.instance);
+        //registry.register(PortalHelper.BlockPortalOverride.instance);
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
