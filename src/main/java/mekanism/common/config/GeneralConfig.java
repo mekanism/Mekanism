@@ -1,5 +1,6 @@
 package mekanism.common.config;
 
+import mekanism.common.MekanismBlock;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
@@ -226,7 +227,7 @@ public class GeneralConfig implements IMekanismConfig {
 
         //TODO: Evaluate other mekanism blocks for if support should be added
         builder.comment("Enabled Machines").push(ENABLED_CATEGORY);
-        //MekanismConfig.addEnabledBlocksCategory(builder, MekanismBlock.values());
+        MekanismConfig.addEnabledBlocksCategory(builder, MekanismBlock.values());
         builder.pop();
         configSpec = builder.build();
     }

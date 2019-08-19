@@ -55,8 +55,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockRotaryCondensentrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityRotaryCondensentrator>, ISupportsUpgrades, IStateFacing, IHasInventory,
-      IHasSecurity, IHasTileEntity<TileEntityRotaryCondensentrator>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
+public class BlockRotaryCondensentrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityRotaryCondensentrator>, ISupportsUpgrades,
+      IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityRotaryCondensentrator>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.rotarycondensentrator"));
 

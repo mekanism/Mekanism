@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 //TODO: Set default state for different blocks if the default is not ideal
 public class BlockStateHelper {
 
-    public static final DirectionProperty facingProperty = DirectionProperty.create("facing");
+    public static final DirectionProperty facingProperty = DirectionProperty.create("facing", direction -> true);
     public static final DirectionProperty horizontalFacingProperty = DirectionProperty.create("facing", Plane.HORIZONTAL);
     public static final BooleanProperty activeProperty = BooleanProperty.create("active");
     //NOTE: This currently is only using the set of colors the transporter supports as it is the only thing that needs this

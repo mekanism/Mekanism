@@ -3,6 +3,8 @@ package mekanism.generators.common.config;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.config.IMekanismConfig;
+import mekanism.common.config.MekanismConfig;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -87,7 +89,7 @@ public class GeneratorsConfig implements IMekanismConfig {
         builder.pop();
 
         builder.comment("Enabled Generators").push(ENABLED_CATEGORY);
-        //MekanismConfig.addEnabledBlocksCategory(builder, GeneratorsBlock.values());
+        MekanismConfig.addEnabledBlocksCategory(builder, GeneratorsBlock.values());
         builder.pop();
         configSpec = builder.build();
     }

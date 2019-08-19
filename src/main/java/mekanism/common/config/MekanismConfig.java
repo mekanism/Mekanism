@@ -27,17 +27,18 @@ public class MekanismConfig {
     public static void loadFromFiles() {
         load(client);
         load(general);
-        load(storage);
-        load(tiers);
-        load(usage);
+        //load(storage);
+        //load(tiers);
+        //load(usage);
     }
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
         registerConfig(modLoadingContext, client);
         registerConfig(modLoadingContext, general);
-        registerConfig(modLoadingContext, storage);
-        registerConfig(modLoadingContext, tiers);
-        registerConfig(modLoadingContext, usage);
+        //TODO: Figure out why it won't let it have multiple "common" configs
+        //registerConfig(modLoadingContext, storage);
+        //registerConfig(modLoadingContext, tiers);
+        //registerConfig(modLoadingContext, usage);
     }
 
     public static void registerConfig(ModLoadingContext modLoadingContext, IMekanismConfig config) {
