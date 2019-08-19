@@ -73,7 +73,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -88,7 +87,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
-@Mod.EventBusSubscriber()
 public class Mekanism {
 
     public static final String MODID = "mekanism";
@@ -169,6 +167,29 @@ public class Mekanism {
     public Mekanism() {
         instance = this;
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::registerBlocks);
+        modEventBus.addListener(this::registerItems);
+        modEventBus.addListener(this::registerRecipeSerializers);
+        modEventBus.addListener(this::registerEntities);
+        modEventBus.addListener(this::registerTileEntities);
+        modEventBus.addListener(this::registerContainers);
+        modEventBus.addListener(this::registerModels);
+        modEventBus.addListener(this::registerSounds);
+
+        modEventBus.addListener(this::onEnergyTransferred);
+        modEventBus.addListener(this::onGasTransferred);
+        modEventBus.addListener(this::onLiquidTransferred);
+        modEventBus.addListener(this::onTransmittersAddedEvent);
+        modEventBus.addListener(this::onNetworkClientRequest);
+        modEventBus.addListener(this::onClientTickUpdate);
+        modEventBus.addListener(this::onBlacklistUpdate);
+        modEventBus.addListener(this::chunkSave);
+        modEventBus.addListener(this::onChunkDataLoad);
+        modEventBus.addListener(this::onConfigChanged);
+        modEventBus.addListener(this::onWorldLoad);
+        modEventBus.addListener(this::onWorldUnload);
+
+
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::serverStarting);
         modEventBus.addListener(this::serverStopping);
@@ -176,52 +197,44 @@ public class Mekanism {
         //TODO: Register other listeners and various stuff that is needed
     }
 
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+    private void registerBlocks(RegistryEvent.Register<Block> event) {
         // Register blocks and tile entities
         MekanismBlock.registerBlocks(event.getRegistry());
     }
 
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
+    private void registerItems(RegistryEvent.Register<Item> event) {
         // Register items and itemBlocks
         MekanismItem.registerItems(event.getRegistry());
         MekanismBlock.registerItemBlocks(event.getRegistry());
     }
 
-    @SubscribeEvent
-    public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+    private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         //TODO: Register recipe serializers
         //event.getRegistry().register(ShapedMekanismRecipe.CRAFTING_SHAPED);
     }
 
-    @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+    private void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         MekanismEntityTypes.registerEntities(event.getRegistry());
     }
 
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
+    private void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         MekanismTileEntityTypes.registerTileEntities(event.getRegistry());
         //Register the TESRs
         proxy.registerTESRs();
     }
 
-    @SubscribeEvent
-    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+    private void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
         MekanismContainerTypes.registerContainers(event.getRegistry());
         proxy.registerScreenHandlers();
     }
 
-    @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) {
+    private void registerModels(ModelRegistryEvent event) {
         // Register models
         proxy.registerBlockRenders();
         proxy.registerItemRenders();
     }
 
-    @SubscribeEvent
-    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+    public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         MekanismSounds.register(event.getRegistry());
     }
 
@@ -700,8 +713,7 @@ public class Mekanism {
         //TODO: Use FMLDedicatedServerSetupEvent and FMLClientSetupEvent
     }
 
-    @SubscribeEvent
-    public void onEnergyTransferred(EnergyTransferEvent event) {
+    private void onEnergyTransferred(EnergyTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.ENERGY, event.energyNetwork.firstTransmitter().coord(), event.power),
                   event.energyNetwork.getPacketRange());
@@ -709,8 +721,7 @@ public class Mekanism {
         }
     }
 
-    @SubscribeEvent
-    public void onGasTransferred(GasTransferEvent event) {
+    private void onGasTransferred(GasTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.GAS, event.gasNetwork.firstTransmitter().coord(), event.transferType, event.didTransfer),
                   event.gasNetwork.getPacketRange());
@@ -718,8 +729,7 @@ public class Mekanism {
         }
     }
 
-    @SubscribeEvent
-    public void onLiquidTransferred(FluidTransferEvent event) {
+    private void onLiquidTransferred(FluidTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.FLUID, event.fluidNetwork.firstTransmitter().coord(), event.fluidType, event.didTransfer),
                   event.fluidNetwork.getPacketRange());
@@ -727,8 +737,7 @@ public class Mekanism {
         }
     }
 
-    @SubscribeEvent
-    public void onTransmittersAddedEvent(TransmittersAddedEvent event) {
+    private void onTransmittersAddedEvent(TransmittersAddedEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.UPDATE, event.network.firstTransmitter().coord(), event.newNetwork, event.newTransmitters),
                   event.network.getPacketRange());
@@ -736,16 +745,14 @@ public class Mekanism {
         }
     }
 
-    @SubscribeEvent
-    public void onNetworkClientRequest(NetworkClientRequest event) {
+    private void onNetworkClientRequest(NetworkClientRequest event) {
         try {
             packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(event.tileEntity)));
         } catch (Exception ignored) {
         }
     }
 
-    @SubscribeEvent
-    public void onClientTickUpdate(ClientTickUpdate event) {
+    private void onClientTickUpdate(ClientTickUpdate event) {
         try {
             if (event.operation == 0) {
                 ClientTickHandler.tickingSet.remove(event.network);
@@ -756,8 +763,7 @@ public class Mekanism {
         }
     }
 
-    @SubscribeEvent
-    public void onBlacklistUpdate(BoxBlacklistEvent event) {
+    private void onBlacklistUpdate(BoxBlacklistEvent event) {
         event.blacklist(MekanismBlock.CARDBOARD_BOX);
 
         // Mekanism multiblock structures
@@ -819,8 +825,7 @@ public class Mekanism {
         BoxBlacklistParser.load();
     }
 
-    @SubscribeEvent
-    public void chunkSave(ChunkDataEvent.Save event) {
+    private void chunkSave(ChunkDataEvent.Save event) {
         if (!event.getWorld().isRemote()) {
             CompoundNBT nbtTags = event.getData();
 
@@ -829,8 +834,7 @@ public class Mekanism {
         }
     }
 
-    @SubscribeEvent
-    public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
+    private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (!event.getWorld().isRemote()) {
             if (MekanismConfig.general.enableWorldRegeneration.get()) {
                 CompoundNBT loadData = event.getData();
@@ -845,21 +849,18 @@ public class Mekanism {
         }
     }
 
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+    private void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(Mekanism.MODID)) {
             proxy.loadConfiguration();
             proxy.onConfigSync(false);
         }
     }
 
-    @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load event) {
+    private void onWorldLoad(WorldEvent.Load event) {
         playerState.init(event.getWorld());
     }
 
-    @SubscribeEvent
-    public void onWorldUnload(WorldEvent.Unload event) {
+    private void onWorldUnload(WorldEvent.Unload event) {
         // Make sure the global fake player drops its reference to the World
         // when the server shuts down
         if (event.getWorld() instanceof ServerWorld) {

@@ -22,7 +22,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
@@ -31,7 +30,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
-@Mod.EventBusSubscriber()
 public class MekanismGenerators implements IModule {
 
     public static final String MODID = "mekanismgenerators";
@@ -51,33 +49,36 @@ public class MekanismGenerators implements IModule {
     public MekanismGenerators() {
         Mekanism.modulesLoaded.add(instance = this);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::registerBlocks);
+        modEventBus.addListener(this::registerItems);
+        modEventBus.addListener(this::registerTileEntities);
+        modEventBus.addListener(this::registerModels);
+        modEventBus.addListener(this::registerContainers);
+        modEventBus.addListener(this::onConfigChanged);
+        modEventBus.addListener(this::onBlacklistUpdate);
         modEventBus.addListener(this::commonSetup);
         //TODO: Register other listeners and various stuff that is needed
     }
 
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+    private void registerBlocks(RegistryEvent.Register<Block> event) {
         // Register blocks and tile entities
         GeneratorsBlock.registerBlocks(event.getRegistry());
     }
 
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
+    private void registerItems(RegistryEvent.Register<Item> event) {
         // Register items and itemBlocks
         GeneratorsItem.registerItems(event.getRegistry());
         GeneratorsBlock.registerItemBlocks(event.getRegistry());
     }
 
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
+    private void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         GeneratorsTileEntityTypes.registerTileEntities(event.getRegistry());
 
         //Register the TESRs
         proxy.registerTESRs();
     }
 
-    @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) {
+    private void registerModels(ModelRegistryEvent event) {
         // Register models
         proxy.registerBlockRenders();
         proxy.registerItemRenders();
@@ -125,8 +126,7 @@ public class MekanismGenerators implements IModule {
         }
     }*/
 
-    @SubscribeEvent
-    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+    private void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
         GeneratorsContainerTypes.registerContainers(event.getRegistry());
         proxy.registerScreenHandlers();
     }
@@ -156,15 +156,13 @@ public class MekanismGenerators implements IModule {
         SynchronizedTurbineData.clientRotationMap.clear();
     }
 
-    @SubscribeEvent
-    public void onConfigChanged(OnConfigChangedEvent event) {
+    private void onConfigChanged(OnConfigChangedEvent event) {
         if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
             proxy.loadConfiguration();
         }
     }
 
-    @SubscribeEvent
-    public void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
+    private void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
         // Mekanism Generators multiblock structures
         MekanismAPI.addBoxBlacklist(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR);
         MekanismAPI.addBoxBlacklist(GeneratorsBlock.WIND_GENERATOR);

@@ -44,7 +44,6 @@ public class MekanismTools implements IModule {
         //modEventBus.addListener((FMLModIdMappingEvent event) -> ToolsItem.remapItems());
         modEventBus.addListener((RegistryEvent.Register<Item> event) -> ToolsItem.registerItems(event.getRegistry()));
         modEventBus.addListener(this::onLivingSpecialSpawn);
-        modEventBus.addListener(this::onLivingSpecialSpawn);
         modEventBus.addListener(this::onConfigChanged);
 
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)

@@ -157,6 +157,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Ensure all IBlockMekanism's set the required information
@@ -510,7 +511,9 @@ public enum MekanismBlock implements IBlockProvider {
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         for (MekanismBlock mekanismBlock : values()) {
-            registry.register(mekanismBlock.getItem());
+            //TODO: Figure out what the problem is here, I think it probably has to do with erasure
+            ForgeRegistries.ITEMS.register(mekanismBlock.getItem());
+            //registry.register(mekanismBlock.getItem());
         }
     }
 

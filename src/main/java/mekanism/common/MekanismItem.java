@@ -36,6 +36,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.AlloyTier;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.item.Item;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum MekanismItem implements IItemProvider {
@@ -207,7 +208,9 @@ public enum MekanismItem implements IItemProvider {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (MekanismItem mekanismItem : values()) {
-            registry.register(mekanismItem.getItem());
+            //TODO: Figure out what the problem is here, I think it probably has to do with erasure
+            ForgeRegistries.ITEMS.register(mekanismItem.getItem());
+            //registry.register(mekanismItem.getItem());
         }
     }
 }

@@ -9,9 +9,7 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
     displayURL="http://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
     credits="unpairedbracket, CyanideX and many others"
-    description='''
-Generators module for Mekanism
-'''
+    description='''Generators module for Mekanism'''
 
 [[dependencies.mekanism]]
     modId="mekanism"

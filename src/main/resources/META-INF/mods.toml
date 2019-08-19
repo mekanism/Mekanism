@@ -9,9 +9,7 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
     displayURL="http://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
     credits="unpairedbracket, CyanideX and many others"
-    description='''
-Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.
-'''
+    description='''Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'''
 
 [[dependencies.minecraft]]
     modId="minecraft"
