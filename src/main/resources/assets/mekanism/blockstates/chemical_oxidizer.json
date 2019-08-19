@@ -1,10 +1,9 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:chemical_oxidizer"
+    "model": "mekanism:block/chemical_oxidizer"
   },
   "variants": {
-    "normal": [{}],
     "facing": {
       "north": {},
       "south": {"y": 180},
@@ -14,8 +13,6 @@
     "active": {
       "true": {},
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

@@ -1,13 +1,12 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:glow_panel",
+    "model": "mekanism:block/glow_panel",
     "textures": {
       "all": "mekanism:blocks/glow_panel"
     }
   },
   "variants": {
-    "normal": [{}],
     "facing": {
       "up":    {"x": 180},
       "down":  {},
@@ -15,8 +14,6 @@
       "south": {"x": 90},
       "east":  {"x": 90, "y": -90},
       "west":  {"x": 90, "y":  90}
-      },
-    "inventory": [{}]
+      }
   }
 }
-

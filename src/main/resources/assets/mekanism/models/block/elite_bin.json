@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:blocks/bin/elite_side",
+    "front": "mekanism:blocks/bin/elite_front",
+    "west": "mekanism:blocks/bin/elite_side",
+    "east": "mekanism:blocks/bin/elite_side",
+    "south": "mekanism:blocks/bin/elite_side",
+    "up": "mekanism:blocks/bin/elite_top",
+    "down": "mekanism:blocks/bin/bottom"
+  }
+}

@@ -1,14 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:basic_cube",
-    "textures": {
-      "all": "mekanism:blocks/thermal_evaporation_valve"
-    }
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": {
+      "model": "mekanism:block/basic_cube",
+      "textures": {
+        "all": "mekanism:blocks/thermal_evaporation_valve"
+      }
+    }
   }
 }
-

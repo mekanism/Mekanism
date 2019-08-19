@@ -1,37 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:machine",
-    "textures": {
-      "sides": "mekanism:blocks/bin/bineliteside",
-      "front": "mekanism:blocks/bin/binelitefront",
-      "west": "mekanism:blocks/bin/bineliteside",
-      "east": "mekanism:blocks/bin/bineliteside",
-      "south": "mekanism:blocks/bin/bineliteside",
-      "up": "mekanism:blocks/bin/binelitetop",
-      "down": "mekanism:blocks/bin/binbottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/elite_bin"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/bin/binelitefronton",
-          "west": "mekanism:blocks/bin/binelitesideon",
-          "east": "mekanism:blocks/bin/binelitesideon",
-          "south": "mekanism:blocks/bin/binelitesideon",
-          "up": "mekanism:blocks/bin/binelitetopon"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/elite_bin",
+      "y": 180
     },
-    "inventory": [{}]
+    "facing=east,active=false": {
+      "model": "mekanism:block/elite_bin",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/elite_bin",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/elite_bin_on"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/elite_bin_on",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/elite_bin_on",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/elite_bin_on",
+      "y": -90
+    }
   }
 }
-

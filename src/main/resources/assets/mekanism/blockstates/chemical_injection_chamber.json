@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:machine",
+    "model": "mekanism:block/machine",
     "textures": {
       "sides": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRight",
       "front": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberFront",
@@ -30,8 +30,6 @@
         }
       },
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

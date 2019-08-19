@@ -1,14 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:basic_cube",
-    "textures": {
-      "all": "mekanism:blocks/CopperBlock"
-    }
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": {
+      "model": "mekanism:block/block_copper"
+    }
   }
 }
-

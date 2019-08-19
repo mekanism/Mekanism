@@ -68,7 +68,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
-        LazyOptional<FluidStack> fluidStack = FluidUtil.getFluidContained(itemstack);
+        //TODO: Fluids
+        LazyOptional<FluidStack> fluidStack = LazyOptional.empty();//FluidUtil.getFluidContained(itemstack);
         if (gasStack == null && !fluidStack.isPresent()) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.gui.empty"), "."));
         } else if (gasStack != null) {

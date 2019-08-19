@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:machine",
+    "model": "mekanism:block/machine",
     "textures": {
       "sides": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterRight",
       "front": "mekanism:blocks/fuelwood_heater/FuelwoodHeaterFront",
@@ -15,9 +15,15 @@
   "variants": {
     "facing": {
       "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": -90
+      }
     },
     "active": {
       "true": {
@@ -31,8 +37,6 @@
         }
       },
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

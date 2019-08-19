@@ -153,6 +153,9 @@ public class Mekanism {
 
     public Mekanism() {
         instance = this;
+        MekanismConfig.registerConfigs(ModLoadingContext.get());
+
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         //TODO: Is this the proper way to register these listeners
         modEventBus.addListener(this::onEnergyTransferred);
@@ -171,6 +174,8 @@ public class Mekanism {
         modEventBus.addListener(this::serverStopping);
         modEventBus.addListener(this::handleIMC);
         //TODO: Register other listeners and various stuff that is needed
+
+        MekanismConfig.loadFromFiles();
     }
 
     /**
@@ -530,8 +535,8 @@ public class Mekanism {
 
     public void preInit() {
         //TODO: Find proper stage for this
-        MekanismConfig.registerConfigs(ModLoadingContext.get());
-        MekanismConfig.loadFromFiles();
+        //MekanismConfig.registerConfigs(ModLoadingContext.get());
+        //MekanismConfig.loadFromFiles();
         //sanity check the api location if not deobf
         //TODO: Check API
         /*if (!((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {

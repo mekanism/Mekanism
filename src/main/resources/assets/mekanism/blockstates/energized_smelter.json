@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:machine",
+    "model": "mekanism:block/machine",
     "textures": {
       "sides": "mekanism:blocks/energized_smelter/energizedsmelterside",
       "front": "mekanism:blocks/energized_smelter/energizedsmelterfront",
@@ -27,8 +27,6 @@
         }
       },
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

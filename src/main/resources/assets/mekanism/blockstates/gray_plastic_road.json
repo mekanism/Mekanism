@@ -1,13 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:cube_colour",
-    "textures": {
-      "all": "mekanism:blocks/RoadPlasticBlock"
-    }
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": {
+      "model": "mekanism:block/plastic_road"
+    }
   }
 }

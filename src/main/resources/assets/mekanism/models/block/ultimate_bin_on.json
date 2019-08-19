@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/ultimate_bin",
+  "textures": {
+    "front": "mekanism:blocks/bin/ultimate_front_on",
+    "west": "mekanism:blocks/bin/ultimate_side_on",
+    "east": "mekanism:blocks/bin/ultimate_side_on",
+    "south": "mekanism:blocks/bin/ultimate_side_on",
+    "up": "mekanism:blocks/bin/ultimate_top_on"
+  }
+}

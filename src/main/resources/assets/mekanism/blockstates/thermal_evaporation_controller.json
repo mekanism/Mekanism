@@ -1,21 +1,19 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:machine",
+    "model": "mekanism:block/machine",
     "textures": {
       "sides": "mekanism:blocks/thermal_evaporation_block",
       "front": "mekanism:blocks/thermal_evaporation_controller"
     }
   },
   "variants": {
-    "normal": [{}],
     "facing": {
       "north": {},
       "south": {"y": 180},
       "east":  {"y": 90},
       "west":  {"y": -90}
     },
-    "inventory": [{}],
     "active": {
       "false": {},
       "true": {
@@ -27,4 +25,3 @@
     }
   }
 }
-

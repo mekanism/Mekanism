@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/cube_colour",
+  "textures": {
+    "all": "mekanism:blocks/plastic_glow_block"
+  }
+}

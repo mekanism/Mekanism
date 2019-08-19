@@ -1,14 +1,8 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:basic_cube",
-    "textures": {
-      "all": "mekanism:blocks/BronzeBlock"
-    }
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": {
+      "model": "mekanism:block/block_bronze"
+    }
   }
 }
 

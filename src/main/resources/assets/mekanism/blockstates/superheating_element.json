@@ -1,18 +1,15 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:basic_cube",
+    "model": "mekanism:block/basic_cube",
     "textures": {
       "all": "mekanism:blocks/superheating_element"
     }
   },
   "variants": {
-    "normal": [{}],
     "active": {
       "true": {},
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

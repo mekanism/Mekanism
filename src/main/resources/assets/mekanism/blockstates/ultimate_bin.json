@@ -1,37 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:machine",
-    "textures": {
-      "sides": "mekanism:blocks/bin/binultimateside",
-      "front": "mekanism:blocks/bin/binultimatefront",
-      "west": "mekanism:blocks/bin/binultimateside",
-      "east": "mekanism:blocks/bin/binultimateside",
-      "south": "mekanism:blocks/bin/binultimateside",
-      "up": "mekanism:blocks/bin/binultimatetop",
-      "down": "mekanism:blocks/bin/binbottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/ultimate_bin"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/bin/binultimatefronton",
-          "west": "mekanism:blocks/bin/binultimatesideon",
-          "east": "mekanism:blocks/bin/binultimatesideon",
-          "south": "mekanism:blocks/bin/binultimatesideon",
-          "up": "mekanism:blocks/bin/binultimatetopon"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/ultimate_bin",
+      "y": 180
     },
-    "inventory": [{}]
+    "facing=east,active=false": {
+      "model": "mekanism:block/ultimate_bin",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/ultimate_bin",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/ultimate_bin_on"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/ultimate_bin_on",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/ultimate_bin_on",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/ultimate_bin_on",
+      "y": -90
+    }
   }
 }
-

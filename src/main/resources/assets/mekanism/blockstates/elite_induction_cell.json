@@ -1,14 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:basic_cube",
-    "textures": {
-      "all": "mekanism:blocks/induction_cell_elite"
-    }
-  },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "": {
+      "model": "mekanism:block/basic_cube",
+      "textures": {
+        "all": "mekanism:blocks/induction_cell_elite"
+      }
+    }
   }
 }
-

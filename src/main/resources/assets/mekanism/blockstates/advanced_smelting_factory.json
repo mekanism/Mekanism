@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:machine",
+    "model": "mekanism:block/machine",
     "textures": {
       "sides": "mekanism:blocks/factory/advanced/smelting/AdvancedSmeltingFactoryRight",
       "front": "mekanism:blocks/factory/advanced/smelting/AdvancedSmeltingFactoryFront",
@@ -30,8 +30,6 @@
         }
       },
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:nothing"
+    "model": "mekanism:block/nothing"
   },
   "variants": {
     "facing": {
@@ -13,8 +13,6 @@
     "active": {
       "true": {},
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

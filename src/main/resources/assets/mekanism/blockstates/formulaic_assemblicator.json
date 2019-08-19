@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:machine",
+    "model": "mekanism:block/machine",
     "textures": {
       "sides": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorRight",
       "front": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorFront",
@@ -22,8 +22,6 @@
     "active": {
       "true": {},
       "false": {}
-    },
-    "inventory": [{}]
+    }
   }
 }
-

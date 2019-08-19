@@ -1,8 +1,5 @@
 {
-    "parent": "mekanism:block/cube_colour",
-    "textures": {
-        "all": "mekanism:blocks/PlasticBlock"
-    },
+    "parent": "mekanism:block/plastic_block",
     "display": {
         "thirdperson": {
             "rotation": [ 10, -45, 170 ],

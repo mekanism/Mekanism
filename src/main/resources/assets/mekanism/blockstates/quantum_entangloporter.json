@@ -1,10 +1,9 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:quantum_entangloporter"
+    "model": "mekanism:block/quantum_entangloporter"
   },
   "variants": {
-    "normal": [{}],
     "facing": {
       "up":    {},
       "down":  {"x": 180},
@@ -12,8 +11,6 @@
       "south": {"x": -90},
       "east":  {"x": -90, "y": -90},
       "west":  {"x": -90, "y":  90}
-      },
-    "inventory": [{}]
+      }
   }
 }
-

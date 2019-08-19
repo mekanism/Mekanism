@@ -1,17 +1,14 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:electric_pump"
+    "model": "mekanism:block/electric_pump"
   },
   "variants": {
-    "normal": [{}],
     "facing": {
       "north": {"y": 180},
       "south": {},
       "east":  {"y": -90},
       "west":  {"y": 90}
-      },
-    "inventory": [{"y": 180}]
+      }
   }
 }
-

@@ -1,14 +1,12 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:basic_cube",
+    "model": "mekanism:block/basic_cube",
     "textures": {
       "all": "mekanism:blocks/induction_port"
     }
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}],
     "active": {
       "false": {},
       "true": {
@@ -19,4 +17,3 @@
     }
   }
 }
-

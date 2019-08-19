@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/elite_bin",
+  "textures": {
+    "front": "mekanism:blocks/bin/elite_front_on",
+    "west": "mekanism:blocks/bin/elite_side_on",
+    "east": "mekanism:blocks/bin/elite_side_on",
+    "south": "mekanism:blocks/bin/elite_side_on",
+    "up": "mekanism:blocks/bin/elite_top_on"
+  }
+}
