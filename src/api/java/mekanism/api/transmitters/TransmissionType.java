@@ -4,11 +4,11 @@ import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.tileentity.TileEntity;
 
 public enum TransmissionType implements IHasTranslationKey {
-    ENERGY("EnergyNetwork", "Energy"),
-    FLUID("FluidNetwork", "Fluids"),
-    GAS("GasNetwork", "Gases"),
-    ITEM("InventoryNetwork", "Items"),
-    HEAT("HeatNetwork", "Heat");
+    ENERGY("EnergyNetwork", "energy"),
+    FLUID("FluidNetwork", "fluids"),
+    GAS("GasNetwork", "gases"),
+    ITEM("InventoryNetwork", "items"),
+    HEAT("HeatNetwork", "heat");
 
     private String name;
     private String transmission;

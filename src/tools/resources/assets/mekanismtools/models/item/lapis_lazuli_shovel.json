@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/LapisLazuliShovel"
+        "layer0": "mekanismtools:items/lapis_lazuli_shovel"
     }
 }
 

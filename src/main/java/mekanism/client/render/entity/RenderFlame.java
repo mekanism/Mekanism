@@ -84,6 +84,6 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
 
     @Override
     protected ResourceLocation getEntityTexture(@Nonnull EntityFlame entity) {
-        return new ResourceLocation(Mekanism.MODID, "render/Flame.png");
+        return new ResourceLocation(Mekanism.MODID, "render/flame.png");
     }
 }

@@ -144,21 +144,21 @@ public abstract class GuiGauge<T> extends GuiElement {
     }
 
     public enum Type {
-        STANDARD(null, 18, 60, 0, 0, 1, "GuiGaugeStandard.png"),
-        STANDARD_YELLOW(EnumColor.YELLOW, 18, 60, 0, 60, 1, "GuiGaugeStandard.png"),
-        STANDARD_RED(EnumColor.DARK_RED, 18, 60, 0, 120, 1, "GuiGaugeStandard.png"),
-        STANDARD_ORANGE(EnumColor.ORANGE, 18, 60, 0, 180, 1, "GuiGaugeStandard.png"),
-        STANDARD_BLUE(EnumColor.DARK_BLUE, 18, 60, 0, 240, 1, "GuiGaugeStandard.png"),
-        WIDE(null, 66, 50, 0, 0, 4, "GuiGaugeWide.png"),
-        WIDE_YELLOW(EnumColor.YELLOW, 66, 50, 0, 50, 4, "GuiGaugeWide.png"),
-        WIDE_RED(EnumColor.DARK_RED, 66, 50, 0, 100, 4, "GuiGaugeWide.png"),
-        WIDE_ORANGE(EnumColor.ORANGE, 66, 50, 0, 150, 4, "GuiGaugeWide.png"),
-        WIDE_BLUE(EnumColor.DARK_BLUE, 66, 50, 0, 200, 4, "GuiGaugeWide.png"),
-        SMALL(null, 18, 30, 0, 0, 1, "GuiGaugeSmall.png"),
-        SMALL_YELLOW(EnumColor.YELLOW, 18, 30, 0, 30, 1, "GuiGaugeSmall.png"),
-        SMALL_RED(EnumColor.DARK_RED, 18, 30, 0, 60, 1, "GuiGaugeSmall.png"),
-        SMALL_ORANGE(EnumColor.ORANGE, 18, 30, 0, 90, 1, "GuiGaugeSmall.png"),
-        SMALL_BLUE(EnumColor.DARK_BLUE, 18, 30, 0, 120, 1, "GuiGaugeSmall.png");
+        STANDARD(null, 18, 60, 0, 0, 1, "standard_gauge.png"),
+        STANDARD_YELLOW(EnumColor.YELLOW, 18, 60, 0, 60, 1, "standard_gauge.png"),
+        STANDARD_RED(EnumColor.DARK_RED, 18, 60, 0, 120, 1, "standard_gauge.png"),
+        STANDARD_ORANGE(EnumColor.ORANGE, 18, 60, 0, 180, 1, "standard_gauge.png"),
+        STANDARD_BLUE(EnumColor.DARK_BLUE, 18, 60, 0, 240, 1, "standard_gauge.png"),
+        WIDE(null, 66, 50, 0, 0, 4, "wide_gauge.png"),
+        WIDE_YELLOW(EnumColor.YELLOW, 66, 50, 0, 50, 4, "wide_gauge.png"),
+        WIDE_RED(EnumColor.DARK_RED, 66, 50, 0, 100, 4, "wide_gauge.png"),
+        WIDE_ORANGE(EnumColor.ORANGE, 66, 50, 0, 150, 4, "wide_gauge.png"),
+        WIDE_BLUE(EnumColor.DARK_BLUE, 66, 50, 0, 200, 4, "wide_gauge.png"),
+        SMALL(null, 18, 30, 0, 0, 1, "small_gauge.png"),
+        SMALL_YELLOW(EnumColor.YELLOW, 18, 30, 0, 30, 1, "small_gauge.png"),
+        SMALL_RED(EnumColor.DARK_RED, 18, 30, 0, 60, 1, "small_gauge.png"),
+        SMALL_ORANGE(EnumColor.ORANGE, 18, 30, 0, 90, 1, "small_gauge.png"),
+        SMALL_BLUE(EnumColor.DARK_BLUE, 18, 30, 0, 120, 1, "small_gauge.png");
 
         public final EnumColor color;
         public final int width;

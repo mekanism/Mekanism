@@ -27,7 +27,7 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
         GlStateManager.rotatef(160, 0, 0, 1);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Flamethrower.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png"));
         GlStateManager.translatef(0, -1.0F, 0);
         GlStateManager.rotatef(135, 0, 1, 0);
         GlStateManager.rotatef(-20, 0, 0, 1);

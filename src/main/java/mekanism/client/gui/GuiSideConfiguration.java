@@ -153,7 +153,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiConfiguration.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "configuration.png");
     }
 
     public static class GuiPos {

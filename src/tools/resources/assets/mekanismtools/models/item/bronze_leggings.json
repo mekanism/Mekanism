@@ -1,7 +1,7 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanismtools:items/BronzeLeggings"
+        "layer0": "mekanismtools:items/bronze_leggings"
     }
 }
 

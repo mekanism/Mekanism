@@ -24,7 +24,7 @@ public class RenderSolarGeneratorItem extends MekanismItemStackRenderer {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.rotatef(90, 0, -1, 0);
         GlStateManager.translatef(0, -1.0F, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarGenerator.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "solar_generator.png"));
         solarGenerator.render(0.0625F);
     }
 

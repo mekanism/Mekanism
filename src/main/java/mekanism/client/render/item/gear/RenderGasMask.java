@@ -29,7 +29,7 @@ public class RenderGasMask extends MekanismItemStackRenderer {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.rotatef(90, 0, -1, 0);
         GlStateManager.translatef(0.1F, 0.2F, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png"));
         gasMask.render(0.0625F);
         GlStateManager.popMatrix();
     }

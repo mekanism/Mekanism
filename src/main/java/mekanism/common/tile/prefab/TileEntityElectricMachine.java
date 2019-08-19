@@ -32,7 +32,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
      * @param ticksRequired - ticks required to operate -- or smelt an item.
      */
     public TileEntityElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
-        super(blockProvider, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
+        super(blockProvider, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));

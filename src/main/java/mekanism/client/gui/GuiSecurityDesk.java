@@ -146,7 +146,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiSecurityDesk.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "security_desk.png");
     }
 
     @Override

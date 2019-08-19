@@ -74,6 +74,6 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "wind_generator.png");
     }
 }

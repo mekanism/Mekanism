@@ -12,17 +12,17 @@ public class MekanismFluids {
 
     public static final Gas Hydrogen = new Gas("hydrogen", 0xFFFFFF);
     public static final Gas Oxygen = new Gas("oxygen", 0x6CE2FF);
-    public static final Gas Water = new Gas("water", "mekanism:blocks/liquid/LiquidSteam");
+    public static final Gas Water = new Gas("water", "mekanism:blocks/liquid/liquid_steam");
     public static final Gas Chlorine = new Gas("chlorine", 0xCFE800);
     public static final Gas SulfurDioxide = new Gas("sulfurdioxide", 0xA99D90);
     public static final Gas SulfurTrioxide = new Gas("sulfurtrioxide", 0xCE6C6C);
     public static final Gas SulfuricAcid = new Gas("sulfuricacid", 0x82802B);
     public static final Gas HydrogenChloride = new Gas("hydrogenchloride", 0xA8F1E9);
 
-    public static final Fluid HeavyWater = new Fluid("heavywater", new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeavyWater"),
-          new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeavyWater"));
-    public static final Fluid Steam = new Fluid("steam", new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidSteam"),
-          new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidSteam")).setGaseous(true);
+    public static final Fluid HeavyWater = new Fluid("heavywater", new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_heavy_water"),
+          new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_heavy_water"));
+    public static final Fluid Steam = new Fluid("steam", new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_steam"),
+          new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_steam")).setGaseous(true);
 
     //Internal gases
     public static final Gas LiquidOsmium = new Gas("liquidosmium", 0x52bdca);

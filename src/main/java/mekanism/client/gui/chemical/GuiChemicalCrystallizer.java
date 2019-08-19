@@ -94,7 +94,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "chemical_crystallizer.png");
     }
 
     private Gas getInputGas() {

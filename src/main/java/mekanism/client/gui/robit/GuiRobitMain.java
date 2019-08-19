@@ -175,6 +175,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "robit_main.png");
     }
 }

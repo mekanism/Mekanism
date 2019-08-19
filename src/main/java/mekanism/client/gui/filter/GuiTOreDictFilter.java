@@ -77,7 +77,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTOreDictFilter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "sorter_tag_filter.png");
     }
 
     @Override

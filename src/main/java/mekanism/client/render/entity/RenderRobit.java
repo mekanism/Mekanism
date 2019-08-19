@@ -27,6 +27,6 @@ public class RenderRobit extends MobRenderer<EntityRobit, ModelRobit> {
                 robit.texTick = !robit.texTick;
             }
         }
-        return MekanismUtils.getResource(ResourceType.RENDER, "Robit" + (robit.texTick ? "2" : "") + ".png");
+        return MekanismUtils.getResource(ResourceType.RENDER, "robit" + (robit.texTick ? "2" : "") + ".png");
     }
 }

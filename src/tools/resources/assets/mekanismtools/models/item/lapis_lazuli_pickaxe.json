@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/LapisLazuliPickaxe"
+        "layer0": "mekanismtools:items/lapis_lazuli_pickaxe"
     }
 }
 

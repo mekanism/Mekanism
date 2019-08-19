@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/SteelShovel"
+        "layer0": "mekanismtools:items/steel_shovel"
     }
 }
 

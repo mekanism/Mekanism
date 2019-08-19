@@ -84,6 +84,6 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "thermal_evaporation_controller.png");
     }
 }

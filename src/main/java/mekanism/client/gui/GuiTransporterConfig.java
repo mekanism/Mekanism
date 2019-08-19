@@ -138,6 +138,6 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTransporterConfig.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "transporter_config.png");
     }
 }

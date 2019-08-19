@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:fence_post",
     "textures": {
-      "texture": "mekanismgenerators:blocks/TurbineRotor"
+      "texture": "mekanismgenerators:blocks/turbine_rotor"
     }
   },
   "variants": {

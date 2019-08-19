@@ -168,16 +168,12 @@ public class Mekanism {
 
     public Mekanism() {
         instance = this;
-        MekanismConfig.registerConfigs(ModLoadingContext.get());
-
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::serverStarting);
         modEventBus.addListener(this::serverStopping);
         modEventBus.addListener(this::handleIMC);
         //TODO: Register other listeners and various stuff that is needed
-
-        MekanismConfig.loadFromFiles();
     }
 
     @SubscribeEvent
@@ -584,6 +580,9 @@ public class Mekanism {
     }
 
     public void preInit() {
+        //TODO: Find proper stage for this
+        MekanismConfig.registerConfigs(ModLoadingContext.get());
+        MekanismConfig.loadFromFiles();
         //sanity check the api location if not deobf
         //TODO: Check API
         /*if (!((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
@@ -613,13 +612,13 @@ public class Mekanism {
 
         //Register infuses
         //TODO: Let infuse types be registered via JSON and data packs
-        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Carbon")).setTranslationKey("carbon"));
-        InfuseRegistry.registerInfuseType(new InfuseType("TIN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Tin")).setTranslationKey("tin"));
-        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Diamond")).setTranslationKey("diamond"));
-        InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Redstone")).setTranslationKey("redstone"));
-        InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Fungi")).setTranslationKey("fungi"));
-        InfuseRegistry.registerInfuseType(new InfuseType("BIO", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Bio")).setTranslationKey("bio"));
-        InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/Obsidian")).setTranslationKey("obsidian"));
+        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", new ResourceLocation(Mekanism.MODID, "blocks/infuse/carbon")).setTranslationKey("carbon"));
+        InfuseRegistry.registerInfuseType(new InfuseType("TIN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/tin")).setTranslationKey("tin"));
+        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", new ResourceLocation(Mekanism.MODID, "blocks/infuse/diamond")).setTranslationKey("diamond"));
+        InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", new ResourceLocation(Mekanism.MODID, "blocks/infuse/redstone")).setTranslationKey("redstone"));
+        InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", new ResourceLocation(Mekanism.MODID, "blocks/infuse/fungi")).setTranslationKey("fungi"));
+        InfuseRegistry.registerInfuseType(new InfuseType("BIO", new ResourceLocation(Mekanism.MODID, "blocks/infuse/bio")).setTranslationKey("bio"));
+        InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/obsidian")).setTranslationKey("obsidian"));
 
         Capabilities.registerCapabilities();
     }

@@ -218,7 +218,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTeleporter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "portable_teleporter.png");
     }
 
     @Override

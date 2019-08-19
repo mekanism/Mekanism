@@ -89,6 +89,6 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTMaterialFilter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "sorter_material_filter.png");
     }
 }

@@ -18,8 +18,8 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelDigitalMiner extends Model {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner_overlay_on.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner_overlay_off.png");
 
     RendererModel keyboard;
     RendererModel keyboardBottom;

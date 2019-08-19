@@ -44,7 +44,7 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
             GlStateManager.translatef(0, 0.4F, 0);
         }
 
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "wind_generator.png"));
         //TODO: Only update angle if the player is not in a blacklisted dimension, one that has no "wind".
         //The best way to do this would be to add an event listener for dimension change.
         //The event is server side only so we would need to send a packet to clients to tell them if they are

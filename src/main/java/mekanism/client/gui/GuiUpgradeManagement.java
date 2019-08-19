@@ -209,7 +209,7 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiUpgradeManagement.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "upgrade_management.png");
     }
 
     @Override

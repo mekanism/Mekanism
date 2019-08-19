@@ -60,6 +60,6 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Bio
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiBioGenerator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "bio_generator.png");
     }
 }

@@ -20,7 +20,7 @@ public class GuiSlot extends GuiElement {
     private final int height;
 
     public GuiSlot(SlotType type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"), gui, def);
 
         xLocation = x;
         yLocation = y;

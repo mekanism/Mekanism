@@ -23,7 +23,7 @@ public class RenderChemicalDissolutionChamberItem extends MekanismItemStackRende
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.translatef(0.05F, -1.001F, 0.05F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "chemical_dissolution_chamber.png"));
         chemicalDissolutionChamber.render(0.0625F);
     }
 

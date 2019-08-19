@@ -26,7 +26,7 @@ public class RenderPersonalChestItem extends MekanismItemStackRenderer {
         GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
         GlStateManager.translatef(0, 1.0F, 1.0F);
         GlStateManager.translatef(1.0F, -1F, -1F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "personal_chest.png"));
         personalChest.renderAll();
         GlStateManager.popMatrix();
     }

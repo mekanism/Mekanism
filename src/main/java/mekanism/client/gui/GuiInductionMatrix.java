@@ -60,7 +60,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiInductionMatrix.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "induction_matrix.png");
     }
 
     public void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {

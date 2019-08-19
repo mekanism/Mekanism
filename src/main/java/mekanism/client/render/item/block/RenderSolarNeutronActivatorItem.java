@@ -24,7 +24,7 @@ public class RenderSolarNeutronActivatorItem extends MekanismItemStackRenderer {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.translatef(0.6F, 0.6F, 0.6F);
         GlStateManager.translatef(0, -0.55F, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "solar_neutron_activator.png"));
         solarNeutronActivator.render(0.0625F);
     }
 

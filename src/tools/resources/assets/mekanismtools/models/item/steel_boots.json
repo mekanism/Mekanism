@@ -1,7 +1,7 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanismtools:items/SteelBoots"
+        "layer0": "mekanismtools:items/steel_boots"
     }
 }
 

@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
 
     public GuiSortingTab(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSortingTab.png"), gui, def, tile);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "sorting.png"), gui, def, tile);
     }
 
     @Override

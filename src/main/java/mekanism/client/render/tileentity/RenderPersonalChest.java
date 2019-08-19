@@ -20,7 +20,7 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x, (float) y + 1F, (float) z);
         GlStateManager.rotatef(90, 0, 1, 0);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
+        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "personal_chest.png"));
 
         MekanismRenderer.rotate(tileEntity.getDirection(), 270, 90, 0, 180);
         switch (tileEntity.getDirection()) {

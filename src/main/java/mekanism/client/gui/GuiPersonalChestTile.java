@@ -31,6 +31,6 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "personal_chest.png");
     }
 }

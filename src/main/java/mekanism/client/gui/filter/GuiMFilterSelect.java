@@ -46,6 +46,6 @@ public class GuiMFilterSelect extends GuiFilterSelect<TileEntityDigitalMiner, DM
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiFilterSelect.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "filter_select.png");
     }
 }

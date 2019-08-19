@@ -114,7 +114,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     protected String getBackgroundImage() {
-        return "GuiRobitRepair.png";
+        return "robit_repair.png";
     }
 
     @Override

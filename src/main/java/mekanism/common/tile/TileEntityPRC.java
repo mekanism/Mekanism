@@ -56,7 +56,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     public GasTank outputGasTank = new GasTank(10000);
 
     public TileEntityPRC() {
-        super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 3, 100, new ResourceLocation(Mekanism.MODID, "gui/GuiPRC.png"));
+        super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 3, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));

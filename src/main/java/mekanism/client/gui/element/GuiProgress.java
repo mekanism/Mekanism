@@ -16,7 +16,7 @@ public class GuiProgress extends GuiElement {
     private final int yLocation;
 
     public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiProgress.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "progress.png"), gui, def);
         xLocation = x;
         yLocation = y;
 

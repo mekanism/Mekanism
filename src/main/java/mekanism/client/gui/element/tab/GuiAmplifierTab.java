@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifier> {
 
     public GuiAmplifierTab(IGuiWrapper gui, TileEntityLaserAmplifier tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiAmplifierTab.png"), gui, def, tile);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier.png"), gui, def, tile);
     }
 
     @Override

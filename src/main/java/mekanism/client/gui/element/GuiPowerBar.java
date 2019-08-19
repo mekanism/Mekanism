@@ -21,7 +21,7 @@ public class GuiPowerBar extends GuiElement {
     private final int height = 56;
 
     public GuiPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "power_bar.png"), gui, def);
         tileEntity = tile;
 
         handler = new IPowerInfoHandler() {
@@ -41,7 +41,7 @@ public class GuiPowerBar extends GuiElement {
     }
 
     public GuiPowerBar(IGuiWrapper gui, IPowerInfoHandler h, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "power_bar.png"), gui, def);
         tileEntity = null;
         handler = h;
 

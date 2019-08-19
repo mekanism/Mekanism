@@ -71,7 +71,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPRC, PressurizedReactionCh
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "blank.png");
     }
 
     public ProgressBar getProgressType() {

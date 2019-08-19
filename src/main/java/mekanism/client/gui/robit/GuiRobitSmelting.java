@@ -23,7 +23,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
 
     @Override
     protected String getBackgroundImage() {
-        return "GuiRobitSmelting.png";
+        return "robit_smelting.png";
     }
 
     @Override

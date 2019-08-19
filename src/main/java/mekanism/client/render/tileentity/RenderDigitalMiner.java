@@ -20,7 +20,7 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
     public void render(TileEntityDigitalMiner tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
+        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png"));
 
         MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
         GlStateManager.translatef(0, 0, -1.0F);

@@ -18,7 +18,7 @@ public class GuiRateBar extends GuiElement {
     private final IRateInfoHandler handler;
 
     public GuiRateBar(IGuiWrapper gui, IRateInfoHandler h, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRateBar.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "rate_bar.png"), gui, def);
         handler = h;
         xLocation = x;
         yLocation = y;

@@ -18,9 +18,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnergyCube extends Model {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOff.png");
-    public static ResourceLocation BASE_OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayBase.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_on.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_off.png");
+    public static ResourceLocation BASE_OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_base.png");
     public RendererModel[] leds1;
     public RendererModel[] leds2;
     public RendererModel[] ports;

@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelQuantumEntangloporter extends Model {
 
-    public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter_Overlay.png");
+    public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter_overlay.png");
 
     RendererModel portTop;
     RendererModel portBottom;

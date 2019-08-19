@@ -72,6 +72,6 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Tu
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "null.png");
     }
 }

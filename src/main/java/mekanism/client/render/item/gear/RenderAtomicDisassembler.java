@@ -50,7 +50,7 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
             GlStateManager.translatef(0, -0.7F, 0);
         }
 
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png"));
         atomicDisassembler.render(0.0625F);
         GlStateManager.popMatrix();
     }

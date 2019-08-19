@@ -29,6 +29,6 @@ public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorB
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiFullInv.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "full_inv.png");
     }
 }

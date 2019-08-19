@@ -50,6 +50,6 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiSolarGenerator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "solar_generator.png");
     }
 }

@@ -92,6 +92,6 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "gas_tank.png");
     }
 }

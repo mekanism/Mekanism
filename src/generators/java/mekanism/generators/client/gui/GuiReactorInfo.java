@@ -35,6 +35,6 @@ public abstract class GuiReactorInfo<CONTAINER extends ReactorInfoContainer> ext
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "tall.png");
     }
 }

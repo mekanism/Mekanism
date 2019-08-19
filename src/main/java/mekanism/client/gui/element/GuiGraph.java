@@ -29,7 +29,7 @@ public class GuiGraph extends GuiElement {
     private boolean fixedScale = false;
 
     public GuiGraph(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY, GraphDataHandler handler) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiGraph.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "graph.png"), gui, def);
         xPosition = x;
         yPosition = y;
         xSize = sizeX;

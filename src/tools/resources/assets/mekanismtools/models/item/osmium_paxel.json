@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/OsmiumPaxel"
+        "layer0": "mekanismtools:items/osmium_paxel"
     }
 }
 

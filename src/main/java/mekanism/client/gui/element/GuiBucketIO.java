@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiBucketIO extends GuiElement {
 
     public GuiBucketIO(IGuiWrapper gui, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiBucket.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bucket.png"), gui, def);
     }
 
     @Override

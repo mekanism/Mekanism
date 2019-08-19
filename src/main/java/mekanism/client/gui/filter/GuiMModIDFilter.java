@@ -34,7 +34,7 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiMModIDFilter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "miner_mod_id_filter.png");
     }
 
     @Override

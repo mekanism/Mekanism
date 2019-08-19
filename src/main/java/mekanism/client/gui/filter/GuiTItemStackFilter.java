@@ -179,6 +179,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTItemStackFilter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "sorter_itemstack_filter.png");
     }
 }

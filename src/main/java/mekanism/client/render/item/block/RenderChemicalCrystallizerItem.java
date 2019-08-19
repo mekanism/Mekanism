@@ -23,7 +23,7 @@ public class RenderChemicalCrystallizerItem extends MekanismItemStackRenderer {
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.translatef(0.05F, -1.001F, 0.05F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "chemical_crystallizer.png"));
         chemicalCrystallizer.render(0.0625F);
     }
 

@@ -17,14 +17,14 @@ public final class MekanismSounds {
     public static SoundEvent CJ_EASTER_EGG;
 
     public static void register(IForgeRegistry<SoundEvent> registry) {
-        BEEP = registerSound(registry, "etc.Beep");
-        CLICK = registerSound(registry, "etc.Click");
-        DING = registerSound(registry, "etc.Ding");
-        ERROR = registerSound(registry, "etc.Error");
-        GAS_MASK = registerSound(registry, "etc.GasMask");
-        HYDRAULIC = registerSound(registry, "etc.Hydraulic");
-        POP = registerSound(registry, "etc.Pop");
-        SUCCESS = registerSound(registry, "etc.Success");
+        BEEP = registerSound(registry, "etc.beep");
+        CLICK = registerSound(registry, "etc.click");
+        DING = registerSound(registry, "etc.ding");
+        ERROR = registerSound(registry, "etc.error");
+        GAS_MASK = registerSound(registry, "etc.gasmask");
+        HYDRAULIC = registerSound(registry, "etc.hydraulic");
+        POP = registerSound(registry, "etc.pop");
+        SUCCESS = registerSound(registry, "etc.success");
         CJ_EASTER_EGG = registerSound(registry, "etc.cj");
     }
 

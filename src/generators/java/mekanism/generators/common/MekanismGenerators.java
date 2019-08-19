@@ -52,14 +52,10 @@ public class MekanismGenerators implements IModule {
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
 
     public MekanismGenerators() {
-        instance = this;
-        MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
-
+        Mekanism.modulesLoaded.add(instance = this);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         //TODO: Register other listeners and various stuff that is needed
-
-        MekanismGeneratorsConfig.loadFromFiles();
     }
 
     @SubscribeEvent
@@ -91,6 +87,10 @@ public class MekanismGenerators implements IModule {
     }
 
     public void preInit() {
+        //TODO: Figure out where this goes
+        MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
+        MekanismGeneratorsConfig.loadFromFiles();
+
         proxy.preInit();
         proxy.loadConfiguration();
     }
@@ -98,8 +98,6 @@ public class MekanismGenerators implements IModule {
     public void commonSetup(FMLCommonSetupEvent event) {
         //TODO: Figure out where preinit stuff should be, potentially also move it directly into this method
         preInit();
-        //Add this module to the core list
-        Mekanism.modulesLoaded.add(this);
 
         //TODO: Move recipes to JSON
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus

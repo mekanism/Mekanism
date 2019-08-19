@@ -29,7 +29,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
         }
 
         GlStateManager.pushMatrix();
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Turbine.png"));
+        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "turbine.png"));
 
         int baseIndex = tileEntity.getPosition() * 2;
         float rotateSpeed = 0.0F;

@@ -41,7 +41,6 @@ public class ToolsConfig implements IMekanismConfig {
         refinedObsidian = new MaterialCreator(builder, new RefinedObsidianMaterialDefaults());
         steel = new MaterialCreator(builder, new SteelMaterialDefaults());
 
-        builder.pop();
         configSpec = builder.build();
     }
 

@@ -1,7 +1,7 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanismtools:items/GlowstoneBoots"
+        "layer0": "mekanismtools:items/refined_obsidian_leggings"
     }
 }
 

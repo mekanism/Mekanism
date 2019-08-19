@@ -130,6 +130,6 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "industrial_turbine.png");
     }
 }

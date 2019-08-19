@@ -18,8 +18,8 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelResistiveHeater extends Model {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater_overlay_on.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater_overlay_off.png");
 
     RendererModel wallLeft;
     RendererModel base;

@@ -23,7 +23,7 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
     @Override
     protected String getBackgroundImage() {
-        return "GuiRobitCrafting.png";
+        return "robit_crafting.png";
     }
 
     @Override

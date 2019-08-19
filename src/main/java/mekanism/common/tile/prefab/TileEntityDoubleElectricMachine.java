@@ -33,7 +33,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
      * @param ticksRequired - how many ticks it takes to smelt an item.
      */
     public TileEntityDoubleElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
-        super(blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
+        super(blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));

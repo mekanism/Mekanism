@@ -25,7 +25,7 @@ public class RenderGasGeneratorItem extends MekanismItemStackRenderer {
         GlStateManager.rotatef(90, -1, 0, 0);
         GlStateManager.translatef(0, -1.0F, 0);
         GlStateManager.rotatef(180, 0, 1, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "gas_burning_generator.png"));
         gasGenerator.render(0.0625F);
     }
 

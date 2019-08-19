@@ -48,7 +48,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
 
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
+        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "bio_generator.png"));
 
         MekanismRenderer.rotate(tileEntity.getDirection(), 180, 0, 270, 90);
 

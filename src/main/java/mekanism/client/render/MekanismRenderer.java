@@ -341,15 +341,15 @@ public class MekanismRenderer {
     public void onStitch(TextureStitchEvent.Pre event) {
         //TODO: Look at sprite uploader
         for (TransmissionType type : TransmissionType.values()) {
-            event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay"));
+            event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "_overlay"));
         }
 
         event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_white"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_energy"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_heat"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/laser"));
 
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeavyWater"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_heavy_water"));
 
         TransmitterModel.getIcons(event.getMap());
 
@@ -369,13 +369,13 @@ public class MekanismRenderer {
     public void onStitch(TextureStitchEvent.Post event) {
 
         for (TransmissionType type : TransmissionType.values()) {
-            overlays.put(type, event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
+            overlays.put(type, event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "_overlay")));
         }
 
         whiteIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_white"));
-        energyIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
-        heatIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
-        laserIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
+        energyIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_energy"));
+        heatIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_heat"));
+        laserIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/laser"));
 
         TransmitterModel.getIcons(event.getMap());
 

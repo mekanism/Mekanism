@@ -169,7 +169,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificatorFilter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "oredictionificator_filter.png");
     }
 
     private void updateRenderStack() {

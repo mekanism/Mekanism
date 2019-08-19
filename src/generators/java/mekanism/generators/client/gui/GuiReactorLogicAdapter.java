@@ -77,6 +77,6 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiReactorLogicAdapter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "reactor_logic_adapter.png");
     }
 }

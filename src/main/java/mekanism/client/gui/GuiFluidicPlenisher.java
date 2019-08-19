@@ -63,6 +63,6 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "energy_cube.png");
     }
 }

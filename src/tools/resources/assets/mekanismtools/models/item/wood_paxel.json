@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/WoodPaxel"
+        "layer0": "mekanismtools:items/wood_paxel"
     }
 }
 

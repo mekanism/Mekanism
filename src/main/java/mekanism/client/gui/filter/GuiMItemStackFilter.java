@@ -114,6 +114,6 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiMItemStackFilter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "miner_itemstack_filter.png");
     }
 }

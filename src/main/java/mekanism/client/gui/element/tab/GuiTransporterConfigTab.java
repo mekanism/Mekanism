@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiTransporterConfigTab extends GuiTabElement<TileEntity> {
 
     public GuiTransporterConfigTab(IGuiWrapper gui, int y, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTransporterConfigTab.png"), gui, def, tile, y);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "transporter_config.png"), gui, def, tile, y);
     }
 
     @Override

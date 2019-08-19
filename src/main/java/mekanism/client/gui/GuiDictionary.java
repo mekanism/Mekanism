@@ -100,6 +100,6 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiDictionary.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "dictionary.png");
     }
 }

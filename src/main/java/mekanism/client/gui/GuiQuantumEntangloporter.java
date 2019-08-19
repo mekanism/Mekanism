@@ -163,7 +163,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "teleporter.png");
     }
 
     @Override

@@ -28,9 +28,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCraftingFormula extends ItemMekanism {
 
-    public static ModelResourceLocation MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CraftingFormula"), "inventory");
-    public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CraftingFormulaInvalid"), "inventory");
-    public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CraftingFormulaEncoded"), "inventory");
+    public static ModelResourceLocation MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula"), "inventory");
+    public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula_invalid"), "inventory");
+    public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula_encoded"), "inventory");
 
     public ItemCraftingFormula() {
         super("crafting_formula");

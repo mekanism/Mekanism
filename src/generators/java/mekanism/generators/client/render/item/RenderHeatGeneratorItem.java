@@ -25,7 +25,7 @@ public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.translatef(0, -1.0F, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "heat_generator.png"));
         heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().textureManager);
     }
 

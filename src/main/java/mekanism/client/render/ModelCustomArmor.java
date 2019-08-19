@@ -124,11 +124,11 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
     }
 
     public enum ArmorModel {
-        JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
-        ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
-        SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
-        GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
-        FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
+        JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png")),
+        ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png")),
+        SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png")),
+        GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png")),
+        FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png"));
 
         public static ModelJetpack jetpackModel = new ModelJetpack();
         public static ModelArmoredJetpack armoredJetpackModel = new ModelArmoredJetpack();

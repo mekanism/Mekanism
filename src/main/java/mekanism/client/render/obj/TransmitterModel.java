@@ -86,27 +86,27 @@ public class TransmitterModel extends OBJBakedModelBase {
     }
 
     public static void addIcons(TextureStitchEvent.Pre event) {
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlass"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlassColored"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterVerticalGlass"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_glass"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_glass_colored"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_vertical_glass"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_vertical_glass_colored"));
 
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterGlass"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterGlassColored"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterVerticalGlass"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterVerticalGlassColored"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_glass"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_glass_colored"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_vertical_glass"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_vertical_glass_colored"));
     }
 
     public static void getIcons(AtlasTexture map) {
-        transporter_center[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlass"));
-        transporter_center_color[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlassColored"));
-        transporter_side[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterVerticalGlass"));
-        transporter_side_color[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
+        transporter_center[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_glass"));
+        transporter_center_color[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_glass_colored"));
+        transporter_side[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_vertical_glass"));
+        transporter_side_color[0] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/logistical_transporter_vertical_glass_colored"));
 
-        transporter_center[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterGlass"));
-        transporter_center_color[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterGlassColored"));
-        transporter_side[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterVerticalGlass"));
-        transporter_side_color[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterVerticalGlassColored"));
+        transporter_center[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_glass"));
+        transporter_center_color[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_glass_colored"));
+        transporter_side[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_vertical_glass"));
+        transporter_side_color[1] = map.getSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/logistical_transporter_vertical_glass_colored"));
     }
 
     public static void clearCache() {

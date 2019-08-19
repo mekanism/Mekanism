@@ -25,7 +25,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
     @Override
     protected ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
-        return MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png");
+        return MekanismUtils.getResource(ResourceType.RENDER, "balloon.png");
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x, (float) y, (float) z);
         GlStateManager.rotatef(180, 1, 0, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "balloon.png"));
         model.render(0.0625F, color);
         GlStateManager.popMatrix();
     }

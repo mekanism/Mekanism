@@ -53,7 +53,7 @@ public class GuiChemicalOxidizer extends GuiChemical<TileEntityChemicalOxidizer,
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "chemical_oxidizer.png");
     }
 
     @Override

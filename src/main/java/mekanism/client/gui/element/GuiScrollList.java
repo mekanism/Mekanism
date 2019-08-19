@@ -24,7 +24,7 @@ public class GuiScrollList extends GuiElement {
     private double scroll;
 
     public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiScrollList.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png"), gui, def);
 
         xPosition = x;
         yPosition = y;

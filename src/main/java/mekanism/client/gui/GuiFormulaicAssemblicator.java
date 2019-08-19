@@ -125,7 +125,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
             drawTexturedRect(guiLeft + 86, guiTop + 43, 176, 48, display, 16);
         }
 
-        minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
+        minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"));
         drawTexturedRect(guiLeft + 90, guiTop + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
 
         if (tileEntity.formula != null) {
@@ -154,6 +154,6 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiFormulaicAssemblicator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "formulaic_assemblicator.png");
     }
 }

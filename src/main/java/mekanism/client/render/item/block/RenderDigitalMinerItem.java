@@ -31,7 +31,7 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
             GlStateManager.rotatef(90, 0, 1, 0);
         }
         GlStateManager.translatef(0.35F, 0.1F, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png"));
         digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().textureManager, true);
         GlStateManager.popMatrix();
     }

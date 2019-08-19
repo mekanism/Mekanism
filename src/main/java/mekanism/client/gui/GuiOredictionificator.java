@@ -162,7 +162,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "oredictionificator.png");
     }
 
     public void updateRenderStacks() {

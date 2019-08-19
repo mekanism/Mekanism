@@ -29,7 +29,7 @@ public class RenderJetpack extends MekanismItemStackRenderer {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.rotatef(90, 0, -1, 0);
         GlStateManager.translatef(0.2F, -0.35F, 0);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png"));
         jetpack.render(0.0625F);
         GlStateManager.popMatrix();
     }

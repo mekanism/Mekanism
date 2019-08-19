@@ -42,7 +42,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
     private static Map<Direction, Map<Integer, DisplayInteger>> cachedOverlays = new EnumMap<>(Direction.class);
-    private final static ResourceLocation transporterBox = MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png");
+    private final static ResourceLocation transporterBox = MekanismUtils.getResource(ResourceType.RENDER, "transporter_box.png");
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;

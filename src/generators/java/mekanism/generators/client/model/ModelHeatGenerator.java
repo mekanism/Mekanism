@@ -18,8 +18,8 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelHeatGenerator extends Model {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_on.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_off.png");
 
     RendererModel drum;
     RendererModel ring1;

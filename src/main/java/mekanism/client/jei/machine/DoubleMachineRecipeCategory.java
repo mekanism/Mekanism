@@ -22,7 +22,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public abstract class DoubleMachineRecipeCategory<RECIPE extends DoubleMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public DoubleMachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
-        super(helper, "mekanism:gui/guibasicmachine.png", mekanismBlock, progress, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, progress, 28, 16, 144, 54);
     }
 
     @Override

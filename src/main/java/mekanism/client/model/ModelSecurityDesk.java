@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelSecurityDesk extends Model {
 
-    public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk_Overlay.png");
+    public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "security_desk_overlay.png");
 
     RendererModel deskTop;
     RendererModel deskBase;

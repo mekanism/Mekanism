@@ -39,20 +39,19 @@ public class MekanismTools implements IModule {
 
     public MekanismTools() {
         Mekanism.modulesLoaded.add(instance = this);
-
         MekanismToolsConfig.registerConfigs(ModLoadingContext.get());
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener((FMLModIdMappingEvent event) -> ToolsItem.remapItems());
         modEventBus.addListener((RegistryEvent.Register<Item> event) -> ToolsItem.registerItems(event.getRegistry()));
         modEventBus.addListener(this::onLivingSpecialSpawn);
+        modEventBus.addListener(this::onLivingSpecialSpawn);
         modEventBus.addListener(this::onConfigChanged);
-
-        MekanismToolsConfig.loadFromFiles();
 
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         //TODO: Is the modEventBus stuff above used instead of this
         //MinecraftForge.EVENT_BUS.register(this);
+        MekanismToolsConfig.loadFromFiles();
 
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }

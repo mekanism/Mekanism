@@ -15,7 +15,7 @@ public class RenderSolarGenerator extends TileEntityRenderer<TileEntitySolarGene
     public void render(TileEntitySolarGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarGenerator.png"));
+        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "solar_generator.png"));
         GlStateManager.rotatef(180, 0, 0, 1);
         model.render(0.0625F);
         GlStateManager.popMatrix();

@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
-    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "WalkieTalkie"), "inventory");
+    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "walkie_talkie"), "inventory");
 
     public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     }
 
     public static ModelResourceLocation getModel(int channel) {
-        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "WalkieTalkie_ch" + c), "inventory"));
+        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "walkie_talkie_ch" + c), "inventory"));
         return CHANNEL_MODELS.get(channel);
     }
 

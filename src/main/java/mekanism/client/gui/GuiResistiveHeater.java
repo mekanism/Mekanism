@@ -111,7 +111,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiResistiveHeater.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "resistive_heater.png");
     }
 
     @Override

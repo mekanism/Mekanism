@@ -30,7 +30,7 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
         GlStateManager.rotatef(90, 0, -1, 0);
         GlStateManager.translatef(2.0F, 2.0F, 2.0F);
         GlStateManager.translatef(0.2F, -1.43F, 0.12F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png"));
         freeRunners.render(0.0625F);
         GlStateManager.popMatrix();
     }

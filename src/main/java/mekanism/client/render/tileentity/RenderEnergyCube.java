@@ -22,8 +22,8 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
-    public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube.png");
-    public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png");
+    public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");
+    public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
 
     private ModelEnergyCube model = new ModelEnergyCube();
     private ModelEnergyCore core = new ModelEnergyCore();

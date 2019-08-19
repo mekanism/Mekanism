@@ -129,7 +129,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
             drawColorIcon(144, 27, EnumColor.DARK_RED, 0.8F);
             renderItem(tileEntity.missingStack, 144, 27);
         } else {
-            minecraft.getTextureManager().bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
+            minecraft.getTextureManager().bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"));
             drawTexturedRect(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
         }
 
@@ -164,6 +164,6 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "digital_miner.png");
     }
 }

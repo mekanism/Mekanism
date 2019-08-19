@@ -56,6 +56,6 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiFuelwoodHeater.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "fuelwood_heater.png");
     }
 }

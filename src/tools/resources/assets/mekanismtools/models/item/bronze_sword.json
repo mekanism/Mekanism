@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/BronzeSword"
+        "layer0": "mekanismtools:items/bronze_sword"
     }
 }
 

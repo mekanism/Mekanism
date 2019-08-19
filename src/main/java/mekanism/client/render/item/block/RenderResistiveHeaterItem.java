@@ -25,7 +25,7 @@ public class RenderResistiveHeaterItem extends MekanismItemStackRenderer {
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.rotatef(180, 0, 0, 1);
         GlStateManager.translatef(0.05F, -0.96F, 0.05F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater.png"));
         resistiveHeater.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().textureManager, true);
     }
 

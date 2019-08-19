@@ -81,7 +81,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
         GlStateManager.translatef(0, -0.9F, 0);
         GlStateManager.translatef(0.9F, 0.8F, 0.9F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png"));
         fluidTank.render(0.073F, tier);
         GlStateManager.popMatrix();
     }

@@ -23,7 +23,7 @@ public class GuiRobitInventory extends GuiRobit<InventoryRobitContainer> {
 
     @Override
     protected String getBackgroundImage() {
-        return "GuiRobitInventory.png";
+        return "robit_inventory.png";
     }
 
     @Override

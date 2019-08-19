@@ -167,6 +167,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "seismic_reader.png");
     }
 }

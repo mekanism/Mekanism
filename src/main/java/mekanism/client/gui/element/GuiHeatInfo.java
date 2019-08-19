@@ -20,7 +20,7 @@ public class GuiHeatInfo extends GuiElement {
     private final IInfoHandler infoHandler;
 
     public GuiHeatInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiHeatInfo.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "heat_info.png"), gui, def);
         infoHandler = handler;
     }
 

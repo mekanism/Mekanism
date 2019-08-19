@@ -49,6 +49,8 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         compileClasspath += sourceSets.main.output
         //TODO: Do the runtime paths need to be added
+        //runtimeClasspath += sourceSets.api.output
+        //runtimeClasspath += sourceSets.main.output
     }
     tools {
         java {
@@ -57,6 +59,8 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         compileClasspath += sourceSets.main.output
         //TODO: Do the runtime paths need to be added
+        //runtimeClasspath += sourceSets.api.output
+        //runtimeClasspath += sourceSets.main.output
     }
 }
 
@@ -177,7 +181,7 @@ dependencies {
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
     compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
-    runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
+    //runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
 

@@ -65,6 +65,6 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Boil
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "boiler_stats.png");
     }
 }

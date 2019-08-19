@@ -113,6 +113,6 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "rotary_condensentrator.png");
     }
 }

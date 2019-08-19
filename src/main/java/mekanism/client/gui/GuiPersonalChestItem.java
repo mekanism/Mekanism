@@ -28,6 +28,6 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiPersonalChest.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "personal_chest.png");
     }
 }

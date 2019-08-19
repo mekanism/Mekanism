@@ -116,7 +116,9 @@ public enum ToolsItem implements IItemProvider {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (ToolsItem toolsItem : values()) {
-            registry.register(toolsItem.getItem());
+            //TODO: Figure out what the problem is here, I think it probably has to do with erasure
+            ForgeRegistries.ITEMS.register(toolsItem.getItem());
+            //registry.register(toolsItem.getItem());
         }
     }
 

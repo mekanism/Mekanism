@@ -48,6 +48,6 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "seismic_vibrator.png");
     }
 }

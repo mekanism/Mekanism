@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiVisualsTab extends GuiTabElement<TileEntityDigitalMiner> {
 
     public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiVisualsTab.png"), gui, def, tile, 6);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "visuals.png"), gui, def, tile, 6);
     }
 
     @Override

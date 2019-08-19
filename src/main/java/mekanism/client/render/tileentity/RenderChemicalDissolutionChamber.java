@@ -19,7 +19,7 @@ public class RenderChemicalDissolutionChamber extends TileEntityRenderer<TileEnt
     public void render(TileEntityChemicalDissolutionChamber tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
+        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "chemical_dissolution_chamber.png"));
         MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
         GlStateManager.rotatef(180, 0, 0, 1);
         model.render(0.0625F);

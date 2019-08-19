@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityMekanism> {
 
     public GuiContainerEditMode(IGuiWrapper gui, TileEntityMekanism tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiContainerEditMode.png"), gui, def, tile);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "container_edit_mode.png"), gui, def, tile);
     }
 
     @Override

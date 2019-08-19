@@ -82,7 +82,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "electrolytic_separator.png");
     }
 
     @Override
