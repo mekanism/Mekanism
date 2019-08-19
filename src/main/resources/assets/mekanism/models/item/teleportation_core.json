@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/TeleportationCore"
+        "layer0": "mekanism:items/teleportation_core"
     }
 }
-

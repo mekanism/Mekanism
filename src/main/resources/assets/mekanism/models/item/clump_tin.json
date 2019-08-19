@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/TinClump"
+        "layer0": "mekanism:items/clump_tin"
     }
 }
-

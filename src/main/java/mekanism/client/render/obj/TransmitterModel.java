@@ -281,8 +281,7 @@ public class TransmitterModel extends OBJBakedModelBase {
     @Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        //TODO: Is north correct
-        return Pair.of(this, transforms.get(cameraTransformType).getMatrix(Direction.NORTH));
+        return Pair.of(this, transforms.get(cameraTransformType).getMatrixVec());
     }
 
     private class TransmitterOverride extends ItemOverrideList {

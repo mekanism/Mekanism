@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/SeismicReader"
+        "layer0": "mekanism:items/seismic_reader"
     }
 }
-

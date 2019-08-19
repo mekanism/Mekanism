@@ -1,12 +1,14 @@
 {
-    "elements": [
-        {   "from": [ 0, 0, 0 ],
-            "to": [ 0, 0, 0 ],
-            "faces": {
-                "down":  { "texture": "mekanism:blocks/steel_casing", "cullface": "down" }
+    "elements": [{
+        "from": [ 0, 0, 0 ],
+        "to": [ 0, 0, 0 ],
+        "faces": {
+            "down":  {
+                "texture": "mekanism:blocks/steel_casing",
+                "cullface": "down"
             }
         }
-    ],
+    }],
     "textures": {
         "particle": "mekanism:blocks/steel_casing"
     }

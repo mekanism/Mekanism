@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/WalkieTalkie_ch8"
+        "layer0": "mekanism:items/enriched_redstone"
     }
 }
-

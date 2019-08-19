@@ -46,7 +46,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         double gasRatio = (getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY;
-        LazyOptionalHelper<FluidStack> fluidContained = new LazyOptionalHelper<>(FluidUtil.getFluidContained(stack));
+        //TODO: Fluid
+        LazyOptionalHelper<FluidStack> fluidContained = new LazyOptionalHelper<>(LazyOptional.empty());//FluidUtil.getFluidContained(stack));
         double fluidRatio = fluidContained.getIfPresentElse(fluid -> (double) fluid.amount, 0D) / (double) CAPACITY;
         return 1D - Math.max(gasRatio, fluidRatio);
     }
@@ -68,7 +69,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
-        //TODO: Fluids
+        //TODO: Fluid
         LazyOptional<FluidStack> fluidStack = LazyOptional.empty();//FluidUtil.getFluidContained(itemstack);
         if (gasStack == null && !fluidStack.isPresent()) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.gui.empty"), "."));

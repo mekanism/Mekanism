@@ -1,6 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/SilverShard"
+        "layer0": "mekanism:items/shard_silver"
     }
 }

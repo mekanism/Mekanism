@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": {
-        "layer0": "mekanism:items/tinnugget"
+        "layer0": "mekanism:items/nugget_tin"
     }
 }
-

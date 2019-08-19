@@ -1,8 +1,7 @@
 {
     "parent": "item/bow",
     "textures": { 
-        "layer0": "mekanism:items/ElectricBow"
+        "layer0": "mekanism:items/electric_bow"
     },
     "overrides": []
 }
-

@@ -183,7 +183,7 @@ public class ClientRegistration {
         RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, RenderFlame::new);
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
         ScreenManager.registerFactory(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
         ScreenManager.registerFactory(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
@@ -255,7 +255,7 @@ public class ClientRegistration {
         ScreenManager.registerFactory(MekanismContainerTypes.OREDICTIONIFICATOR_FILTER, GuiOredictionificatorFilter::new);
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBin.class, new RenderBin());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerCasing.class, new RenderThermoelectricBoiler());

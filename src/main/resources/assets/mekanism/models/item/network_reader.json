@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/NetworkReader"
+        "layer0": "mekanism:items/network_reader"
     }
 }
-

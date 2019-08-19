@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/WalkieTalkie_ch1"
+        "layer0": "mekanism:items/walkie_talkie_ch8"
     }
 }
-

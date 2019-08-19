@@ -1,6 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/HDPERod"
+        "layer0": "mekanism:items/hdpe_rod"
     }
 }

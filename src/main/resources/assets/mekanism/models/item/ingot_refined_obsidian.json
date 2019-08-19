@@ -1,7 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/ObsidianIngot"
+        "layer0": "mekanism:items/ingot_refined_obsidian"
     }
 }
-
