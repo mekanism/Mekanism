@@ -1,10 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/basic_cube",
-      "textures": {
-        "all": "mekanism:blocks/CopperOre"
-      }
+      "model": "mekanism:block/copper_ore"
     }
   }
 }

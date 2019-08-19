@@ -1,10 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/basic_cube",
-      "textures": {
-        "all": "mekanism:blocks/boiler_casing"
-      }
+      "model": "mekanism:block/boiler_casing"
     }
   }
 }

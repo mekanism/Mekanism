@@ -1,10 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/basic_cube",
-      "textures": {
-        "all": "mekanism:blocks/thermal_evaporation_valve"
-      }
+      "model": "mekanism:block/thermal_evaporation_valve"
     }
   }
 }

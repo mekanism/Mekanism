@@ -18,7 +18,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registration {
 
-    //@SubscribeEvent
+    @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         MekanismBlock.registerBlocks(event.getRegistry());
     }
@@ -27,7 +27,7 @@ public class Registration {
     public static void registerItems(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
         MekanismItem.registerItems(registry);
-        //MekanismBlock.registerItemBlocks(registry);
+        MekanismBlock.registerItemBlocks(registry);
     }
 
     @SubscribeEvent
@@ -42,12 +42,12 @@ public class Registration {
         //event.getRegistry().register(ShapedMekanismRecipe.CRAFTING_SHAPED);
     }
 
-    //@SubscribeEvent
+    @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         MekanismTileEntityTypes.registerTileEntities(event.getRegistry());
     }
 
-    //@SubscribeEvent
+    @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
         MekanismContainerTypes.registerContainers(event.getRegistry());
     }

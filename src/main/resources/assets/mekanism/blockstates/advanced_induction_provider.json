@@ -1,10 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/basic_cube",
-      "textures": {
-        "all": "mekanism:blocks/induction_provider_advanced"
-      }
+      "model": "mekanism:block/advanced_induction_provider"
     }
   }
 }

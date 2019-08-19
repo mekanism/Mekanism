@@ -10,7 +10,7 @@ public class BlockSalt extends Block {
 
     public BlockSalt() {
         super(Block.Properties.create(Material.SAND).hardnessAndResistance(0.5F, 0).sound(SoundType.SAND));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "salt_block"));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "block_salt"));
     }
 
     //TODO: Put drops in loot table

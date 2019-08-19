@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanismgenerators:blocks/block_charcoal"
+    "all": "mekanism:blocks/block_charcoal"
   }
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
+import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -19,6 +20,7 @@ import mekanism.common.item.ItemBalloon;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
@@ -26,6 +28,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -197,7 +200,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         super.init();
-        /*registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
+        registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {
                       return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
@@ -253,7 +256,7 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL, MekanismBlock.BROWN_GLOW_PANEL,
               MekanismBlock.BLUE_GLOW_PANEL, MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL, MekanismBlock.LIGHT_GRAY_GLOW_PANEL,
               MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL, MekanismBlock.LIME_GLOW_PANEL, MekanismBlock.YELLOW_GLOW_PANEL,
-              MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL, MekanismBlock.WHITE_GLOW_PANEL);*/
+              MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL, MekanismBlock.WHITE_GLOW_PANEL);
         registerItemColorHandler((stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (item instanceof ItemBalloon) {

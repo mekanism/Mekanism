@@ -447,7 +447,7 @@ public enum MekanismBlock implements IBlockProvider {
     ORANGE_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.ORANGE), ItemBlockColoredName::new),
     WHITE_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.WHITE), ItemBlockColoredName::new),
 
-    //TODO: Tag Etnry
+    //TODO: Tag Entry
     SALT_BLOCK(new BlockSalt());
 
     @Nonnull

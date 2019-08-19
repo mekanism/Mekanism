@@ -1,18 +1,12 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/basic_cube",
-    "textures": {
-      "all": "mekanism:blocks/induction_port"
-    }
-  },
   "variants": {
-    "active": {
-      "false": {},
-      "true": {
-        "textures": {
-          "all": "mekanism:blocks/induction_port_output"
-        }
+    "active=false": {
+      "model": "mekanism:block/induction_port"
+    },
+    "active=true": {
+      "model": "mekanism:block/induction_port",
+      "textures": {
+        "all": "mekanism:blocks/induction_port_output"
       }
     }
   }
