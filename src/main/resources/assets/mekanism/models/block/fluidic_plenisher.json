@@ -186,6 +186,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/fluidic_plenisher",
-        "particle": "mekanism:blocks/SteelCasing"
+        "particle": "mekanism:blocks/steel_casing"
     }
 }

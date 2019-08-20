@@ -2,7 +2,7 @@
 	"parent": "block/cube_all",
 	"textures": {
 		"all": "mekanism:blocks/models/logistical_sorter",
-		"particle": "mekanism:blocks/SteelCasing"
+		"particle": "mekanism:blocks/steel_casing"
 	},
 	"elements": [
 		{

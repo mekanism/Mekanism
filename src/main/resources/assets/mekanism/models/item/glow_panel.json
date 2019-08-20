@@ -1,8 +1,5 @@
 {
     "parent": "mekanism:block/glow_panel",
-    "textures": {
-        "all": "mekanism:blocks/glow_panel"
-    },
     "display": {
         "thirdperson_righthand": {
             "rotation": [100, 45, 0],

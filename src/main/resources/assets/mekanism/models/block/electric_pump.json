@@ -134,6 +134,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/electric_pump",
-        "particle": "mekanism:blocks/SteelCasing"
+        "particle": "mekanism:blocks/steel_casing"
     }
 }

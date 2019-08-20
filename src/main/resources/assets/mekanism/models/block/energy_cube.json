@@ -263,6 +263,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/energy_cube",
-        "particle": "mekanism:blocks/SteelCasing"
+        "particle": "mekanism:blocks/steel_casing"
     }
 }

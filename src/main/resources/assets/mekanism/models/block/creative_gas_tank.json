@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/gas_tank",
+  "textures": {
+    "valve": "mekanism:blocks/models/gas_tank_creative_valve"
+  }
+}

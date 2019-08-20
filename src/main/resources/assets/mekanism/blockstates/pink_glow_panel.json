@@ -1,19 +1,30 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/glow_panel",
-    "textures": {
-      "all": "mekanism:blocks/glow_panel"
-    }
-  },
   "variants": {
-    "facing": {
-      "up":    {"x": 180},
-      "down":  {},
-      "north": {"x": 90, "y": 180},
-      "south": {"x": 90},
-      "east":  {"x": 90, "y": -90},
-      "west":  {"x": 90, "y":  90}
-      }
+    "facing=up": {
+      "model": "mekanism:block/glow_panel",
+      "x": 180
+    },
+    "facing=down": {
+      "model": "mekanism:block/glow_panel"
+    },
+    "facing=north": {
+      "model": "mekanism:block/glow_panel",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "mekanism:block/glow_panel",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "mekanism:block/glow_panel",
+      "x": 90,
+      "y": -90
+    },
+    "facing=west": {
+      "model": "mekanism:block/glow_panel",
+      "x": 90,
+      "y": 90
+    }
   }
 }

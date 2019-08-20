@@ -1,20 +1,27 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/gas_tank",
-    "textures": {
-      "body": "mekanism:blocks/models/gas_tank",
-      "valve": "mekanism:blocks/models/gas_tank_creative_valve"
-    }
-  },
   "variants": {
-    "facing": {
-      "up":    {"x": -90},
-      "down":  {"x":  90},
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y":  90},
-      "west":  {"y": -90}
+    "facing=up": {
+      "model": "mekanism:block/creative_gas_tank",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "mekanism:block/creative_gas_tank",
+      "x": 90
+    },
+    "facing=north": {
+      "model": "mekanism:block/creative_gas_tank"
+    },
+    "facing=south": {
+      "model": "mekanism:block/creative_gas_tank",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/creative_gas_tank",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/creative_gas_tank",
+      "y": -90
     }
   }
 }

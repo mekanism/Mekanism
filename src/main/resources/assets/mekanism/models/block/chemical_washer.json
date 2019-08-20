@@ -303,6 +303,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/chemical_washer",
-        "particle": "mekanism:blocks/SteelCasing"
+        "particle": "mekanism:blocks/steel_casing"
     }
 }

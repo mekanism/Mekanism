@@ -1,19 +1,27 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/energy_cube",
-    "textures": {
-      "all": "mekanism:blocks/models/energy_cube"
-    }
-  },
   "variants": {
-    "facing": {
-      "up":    {"x": -90},
-      "down":  {"x":  90},
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y":  90},
-      "west":  {"y": -90}
+    "facing=up": {
+      "model": "mekanism:block/energy_cube",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "mekanism:block/energy_cube",
+      "x": 90
+    },
+    "facing=north": {
+      "model": "mekanism:block/energy_cube"
+    },
+    "facing=south": {
+      "model": "mekanism:block/energy_cube",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/energy_cube",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/energy_cube",
+      "y": -90
     }
   }
 }

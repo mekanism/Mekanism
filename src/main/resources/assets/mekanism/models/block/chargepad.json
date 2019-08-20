@@ -104,6 +104,6 @@
     "textures": {
         "all": "mekanism:blocks/models/chargepad",
         "ring": "mekanism:blocks/models/chargepad_ring",
-        "particle": "mekanism:blocks/SteelCasing"
+        "particle": "mekanism:blocks/steel_casing"
     }
 }

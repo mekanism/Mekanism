@@ -1,6 +1,8 @@
 {
 	"textures": {
-		"particle": "#glass"
+		"particle": "#glass",
+		"frame": "mekanism:blocks/models/fluid_tank",
+		"glass": "mekanism:blocks/models/fluid_tank_side_off"
 	},
 	"elements": [
 		{

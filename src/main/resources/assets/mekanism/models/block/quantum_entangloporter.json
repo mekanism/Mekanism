@@ -497,6 +497,6 @@
     ],
     "textures": {
         "all": "mekanism:blocks/models/quantum_entangloporter",
-        "particle": "mekanism:blocks/SteelCasing"
+        "particle": "mekanism:blocks/steel_casing"
     }
 }
