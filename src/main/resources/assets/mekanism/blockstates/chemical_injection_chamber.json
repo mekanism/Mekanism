@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRight",
-      "front": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberFront",
-      "west": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRight",
-      "east": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberLeft",
-      "south": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberBack",
-      "up": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberTop",
-      "down": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/chemical_injection_chamber"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberFrontOn",
-          "west": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberRightOn",
-          "east": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberLeftOn",
-          "south": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberBackOn",
-          "up": "mekanism:blocks/chemical_injection_chamber/ChemicalInjectionChamberTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/chemical_injection_chamber",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/chemical_injection_chamber",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/chemical_injection_chamber",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/chemical_injection_chamber_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/chemical_injection_chamber_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/chemical_injection_chamber_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/chemical_injection_chamber_active",
+      "y": -90
     }
   }
 }

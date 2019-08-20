@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/osmium_compressor/OsmiumCompressorRight",
-      "front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFront",
-      "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorRight",
-      "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeft",
-      "south": "mekanism:blocks/osmium_compressor/OsmiumCompressorBack",
-      "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTop",
-      "down": "mekanism:blocks/osmium_compressor/OsmiumCompressorBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/osmium_compressor"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFrontOn",
-          "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorRightOn",
-          "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeftOn",
-          "south": "mekanism:blocks/osmium_compressor/OsmiumCompressorBackOn",
-          "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/osmium_compressor",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/osmium_compressor",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/osmium_compressor",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/osmium_compressor_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/osmium_compressor_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/osmium_compressor_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/osmium_compressor_active",
+      "y": -90
     }
   }
 }

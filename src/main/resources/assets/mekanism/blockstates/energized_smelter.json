@@ -1,32 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/energized_smelter/energizedsmelterside",
-      "front": "mekanism:blocks/energized_smelter/energizedsmelterfront",
-      "west": "mekanism:blocks/energized_smelter/energizedsmelterside",
-      "east": "mekanism:blocks/energized_smelter/energizedsmelterside",
-      "south": "mekanism:blocks/energized_smelter/energizedsmelterback",
-      "up": "mekanism:blocks/energized_smelter/energizedsmeltertop",
-      "down": "mekanism:blocks/energized_smelter/energizedsmelterbottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/energized_smelter"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/energized_smelter/energizedsmelterfronton",
-          "down": "mekanism:blocks/energized_smelter/energizedsmelterbottomon"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/energized_smelter",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/energized_smelter",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/energized_smelter",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/energized_smelter_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/energized_smelter_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/energized_smelter_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/energized_smelter_active",
+      "y": -90
     }
   }
 }

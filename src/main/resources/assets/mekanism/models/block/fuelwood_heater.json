@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:blocks/fuelwood_heater/right",
+    "front": "mekanism:blocks/fuelwood_heater/front",
+    "west": "mekanism:blocks/fuelwood_heater/right",
+    "east": "mekanism:blocks/fuelwood_heater/left",
+    "south": "mekanism:blocks/fuelwood_heater/back",
+    "up": "mekanism:blocks/fuelwood_heater/top",
+    "down": "mekanism:blocks/fuelwood_heater/bottom"
+  }
+}

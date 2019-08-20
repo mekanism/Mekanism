@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:blocks/formulaic_assemblicator/right",
+    "front": "mekanism:blocks/formulaic_assemblicator/front",
+    "west": "mekanism:blocks/formulaic_assemblicator/right",
+    "east": "mekanism:blocks/formulaic_assemblicator/left",
+    "south": "mekanism:blocks/formulaic_assemblicator/back",
+    "up": "mekanism:blocks/formulaic_assemblicator/top",
+    "down": "mekanism:blocks/formulaic_assemblicator/bottom"
+  }
+}

@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/purification_chamber/PurificationChamberRight",
-      "front": "mekanism:blocks/purification_chamber/PurificationChamberFront",
-      "west": "mekanism:blocks/purification_chamber/PurificationChamberRight",
-      "east": "mekanism:blocks/purification_chamber/PurificationChamberLeft",
-      "south": "mekanism:blocks/purification_chamber/PurificationChamberBack",
-      "up": "mekanism:blocks/purification_chamber/PurificationChamberTop",
-      "down": "mekanism:blocks/purification_chamber/PurificationChamberBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/purification_chamber"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/purification_chamber/PurificationChamberFrontOn",
-          "west": "mekanism:blocks/purification_chamber/PurificationChamberRightOn",
-          "east": "mekanism:blocks/purification_chamber/PurificationChamberLeftOn",
-          "south": "mekanism:blocks/purification_chamber/PurificationChamberBackOn",
-          "up": "mekanism:blocks/purification_chamber/PurificationChamberTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/purification_chamber",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/purification_chamber",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/purification_chamber",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/purification_chamber_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/purification_chamber_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/purification_chamber_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/purification_chamber_active",
+      "y": -90
     }
   }
 }

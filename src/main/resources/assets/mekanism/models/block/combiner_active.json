@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/combiner",
+  "textures": {
+    "front": "mekanism:blocks/combiner/front_active",
+    "west": "mekanism:blocks/combiner/right_active",
+    "east": "mekanism:blocks/combiner/left_active",
+    "south": "mekanism:blocks/combiner/back_active",
+    "up": "mekanism:blocks/combiner/top_active"
+  }
+}

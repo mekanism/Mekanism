@@ -1,23 +1,19 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorRight",
-      "front": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorFront",
-      "west": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorRight",
-      "east": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorLeft",
-      "south": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorBack",
-      "up": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorTop",
-      "down": "mekanism:blocks/formulaic_assemblicator/FormulaicAssemblicatorBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north": {
+      "model": "mekanism:block/formulaic_assemblicator"
+    },
+    "facing=south": {
+      "model": "mekanism:block/formulaic_assemblicator",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/formulaic_assemblicator",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/formulaic_assemblicator",
+      "y": -90
     }
   }
 }
