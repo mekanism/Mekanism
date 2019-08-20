@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory<WasherRecipe> {
 
     public ChemicalWasherRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiChemicalWasher.png", MekanismBlock.CHEMICAL_WASHER, null, 3, 3, 170, 70);
+        super(helper, "mekanism:gui/nei/chemical_washer.png", MekanismBlock.CHEMICAL_WASHER, null, 3, 3, 170, 70);
     }
 
     @Override

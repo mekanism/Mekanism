@@ -14,7 +14,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory<ChemicalInfuserRecipe> {
 
     public ChemicalInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiChemicalInfuser.png", MekanismBlock.CHEMICAL_INFUSER, null, 3, 3, 170, 80);
+        super(helper, "mekanism:gui/nei/chemical_infuser.png", MekanismBlock.CHEMICAL_INFUSER, null, 3, 3, 170, 80);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory<PressurizedRecipe> {
 
     public PRCRecipeCategory(IGuiHelper helper) {
         //TODO: Had a lang key for shorter name
-        super(helper, "mekanism:gui/nei/GuiPRC.png", MekanismBlock.PRESSURIZED_REACTION_CHAMBER, ProgressBar.MEDIUM, 3, 11, 170, 68);
+        super(helper, "mekanism:gui/nei/pressurized_reaction_chamber.png", MekanismBlock.PRESSURIZED_REACTION_CHAMBER, ProgressBar.MEDIUM, 3, 11, 170, 68);
     }
 
     @Override

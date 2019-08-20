@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "mekanism:block/nothing"
+      "model": "mekanism:block/resistive_heater"
     },
     "facing=south": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/resistive_heater",
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/resistive_heater",
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/resistive_heater",
       "y": -90
     }
   }

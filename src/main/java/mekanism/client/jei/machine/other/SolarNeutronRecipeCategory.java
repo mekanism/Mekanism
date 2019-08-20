@@ -13,7 +13,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class SolarNeutronRecipeCategory extends BaseRecipeCategory<SolarNeutronRecipe> {
 
     public SolarNeutronRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiSolarNeutronActivator.png", MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, null, 3, 12, 170, 70);
+        super(helper, "mekanism:gui/nei/solar_neutron_activator.png", MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, null, 3, 12, 170, 70);
     }
 
     @Override

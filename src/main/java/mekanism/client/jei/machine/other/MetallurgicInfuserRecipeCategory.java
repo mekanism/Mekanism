@@ -33,7 +33,7 @@ import net.minecraft.util.text.ITextComponent;
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/GuiMetallurgicInfuser.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
+        super(helper, "mekanism:gui/metallurgic_infuser.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
     }
 
     public static List<ItemStack> getInfuseStacks(InfuseType type) {

@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "mekanism:block/nothing"
+      "model": "mekanism:block/chemical_crystallizer"
     },
     "facing=south": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/chemical_crystallizer",
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/chemical_crystallizer",
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/chemical_crystallizer",
       "y": -90
     }
   }

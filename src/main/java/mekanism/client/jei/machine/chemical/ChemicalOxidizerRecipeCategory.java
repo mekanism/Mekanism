@@ -22,7 +22,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory<OxidationRecipe> {
 
     public ChemicalOxidizerRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/GuiChemicalOxidizer.png", MekanismBlock.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
+        super(helper, "mekanism:gui/chemical_oxidizer.png", MekanismBlock.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
     }
 
     @Override

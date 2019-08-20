@@ -28,7 +28,7 @@ import net.minecraft.item.ItemStack;
 public abstract class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public AdvancedMachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
-        super(helper, "mekanism:gui/GuiAdvancedMachine.png", mekanismBlock, progress, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/advanced_machine.png", mekanismBlock, progress, 28, 16, 144, 54);
     }
 
     @Override

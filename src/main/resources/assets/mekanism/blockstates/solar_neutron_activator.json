@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "mekanism:block/nothing"
+      "model": "mekanism:block/solar_neutron_activator"
     },
     "facing=south": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/solar_neutron_activator",
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/solar_neutron_activator",
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/nothing",
+      "model": "mekanism:block/solar_neutron_activator",
       "y": -90
     }
   }

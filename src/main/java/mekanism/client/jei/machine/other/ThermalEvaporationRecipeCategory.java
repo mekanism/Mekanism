@@ -12,7 +12,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory<ThermalEvaporationRecipe> {
 
     public ThermalEvaporationRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png", MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, null, 3, 12, 170, 62);
+        super(helper, "mekanism:gui/nei/thermal_evaporation_controller.png", MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, null, 3, 12, 170, 62);
     }
 
     @Override

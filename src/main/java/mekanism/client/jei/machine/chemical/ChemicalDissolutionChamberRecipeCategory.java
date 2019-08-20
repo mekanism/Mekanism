@@ -18,7 +18,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 
     public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper) {
         //TODO: previously had a lang entry for a shorter path
-        super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png", MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, null, 3, 3, 170, 79);
+        super(helper, "mekanism:gui/nei/chemical_dissolution_chamber.png", MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, null, 3, 3, 170, 79);
     }
 
     @Override

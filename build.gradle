@@ -180,8 +180,11 @@ dependencies {
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
-    compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
-    //runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
+    // compile against the JEI API but do not include it at runtime
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    // at runtime, use the full JEI jar
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
 

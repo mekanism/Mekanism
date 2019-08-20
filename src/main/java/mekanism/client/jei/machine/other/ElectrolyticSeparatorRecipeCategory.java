@@ -27,7 +27,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory<SeparatorRecipe> {
 
     public ElectrolyticSeparatorRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/GuiElectrolyticSeparator.png", MekanismBlock.ELECTROLYTIC_SEPARATOR, ProgressBar.BI, 4, 9, 167, 62);
+        super(helper, "mekanism:gui/electrolytic_separator.png", MekanismBlock.ELECTROLYTIC_SEPARATOR, ProgressBar.BI, 4, 9, 167, 62);
     }
 
     @Override

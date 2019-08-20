@@ -1,18 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:block/CardboardBoxSide",
-      "front": "mekanism:block/CardboardBoxSide",
-      "up": "mekanism:block/CardboardBoxTop",
-      "down": "mekanism:block/CardboardBoxTop"
-    }
-  },
   "variants": {
-    "storage": {
-      "true": {"textures": {"sides": "mekanism:block/CardboardBoxSideStorage", "front": "mekanism:block/CardboardBoxSideStorage"}},
-      "false": {}
+    "storage=false": {
+      "model": "mekanism:block/cardboard_box"
+    },
+    "storage=true": {
+      "model": "mekanism:block/cardboard_box_storage"
     }
   }
 }

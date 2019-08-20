@@ -15,7 +15,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<CrystallizerRecipe> {
 
     public ChemicalCrystallizerRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiChemicalCrystallizer.png", MekanismBlock.CHEMICAL_CRYSTALLIZER, null, 5, 3, 147, 79);
+        super(helper, "mekanism:gui/nei/chemical_crystallizer.png", MekanismBlock.CHEMICAL_CRYSTALLIZER, null, 5, 3, 147, 79);
     }
 
     @Override

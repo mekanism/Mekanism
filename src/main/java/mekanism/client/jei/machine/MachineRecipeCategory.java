@@ -20,7 +20,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public abstract class MachineRecipeCategory<RECIPE extends BasicMachineRecipe<RECIPE>> extends BaseRecipeCategory<RECIPE> {
 
     public MachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
-        super(helper, "mekanism:gui/GuiBasicMachine.png", mekanismBlock, progress, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, progress, 28, 16, 144, 54);
     }
 
     @Override
