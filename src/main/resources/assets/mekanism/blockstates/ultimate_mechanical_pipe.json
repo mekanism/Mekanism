@@ -1,53 +1,216 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/transmitter_large.obj.mek",
-    "textures": {
-      "#side": "mekanism:block/models/multipart/MechanicalPipeVerticalUltimate",
-      "#center": "mekanism:block/models/multipart/MechanicalPipeUltimate",
-      "#side_opaque": "mekanism:block/models/multipart/opaque/MechanicalPipeVerticalUltimate",
-      "#center_opaque": "mekanism:block/models/multipart/opaque/MechanicalPipeUltimate"
+  "multipart": [
+    {
+      "when": {
+        "up": "pull"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/pull",
+        "x": -90
+      }
     },
-    "custom": {
-      "flip-v": true
+    {
+      "when": {
+        "up": "push"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/push",
+        "x": -90
+      }
+    },
+    {
+      "when": {
+        "up": "normal"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/normal",
+        "x": -90
+      }
+    },
+    {
+      "when": {
+        "up": "none"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/none",
+        "x": -90
+      }
+    },
+    {
+      "when": {
+        "down": "pull"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/pull",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "down": "push"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/push",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "down": "normal"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/normal",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "down": "none"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/none",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "north": "pull"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/pull"
+      }
+    },
+    {
+      "when": {
+        "north": "push"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/push"
+      }
+    },
+    {
+      "when": {
+        "north": "normal"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/normal"
+      }
+    },
+    {
+      "when": {
+        "north": "none"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/none"
+      }
+    },
+    {
+      "when": {
+        "south": "pull"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/pull",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "push"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/push",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "normal"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/normal",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "none"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/none",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "east": "pull"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/pull",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "push"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/push",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "normal"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/normal",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "none"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/none",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "west": "pull"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/pull",
+        "y": -90
+      }
+    },
+    {
+      "when": {
+        "west": "push"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/push",
+        "y": -90
+      }
+    },
+    {
+      "when": {
+        "west": "normal"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/normal",
+        "y": -90
+      }
+    },
+    {
+      "when": {
+        "west": "none"
+      },
+      "apply": {
+        "model": "mekanism:block/transmitter/mechanical_pipe/ultimate/none",
+        "y": -90
+      }
     }
-  },
-  "variants": {
-    "down": {
-      "normal": {},
-      "push": {},
-      "pull": {},
-      "none": {}
-    },
-    "up": {
-      "normal": {},
-      "push": {},
-      "pull": {},
-      "none": {}
-    },
-    "north": {
-      "normal": {},
-      "push": {},
-      "pull": {},
-      "none": {}
-    },
-    "south": {
-      "normal": {},
-      "push": {},
-      "pull": {},
-      "none": {}
-    },
-    "west": {
-      "normal": {},
-      "push": {},
-      "pull": {},
-      "none": {}
-    },
-    "east": {
-      "normal": {},
-      "push": {},
-      "pull": {},
-      "none": {}
-    }
-  }
+  ]
 }
