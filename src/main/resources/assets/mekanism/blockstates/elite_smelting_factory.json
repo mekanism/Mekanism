@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryRight",
-      "front": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryFront",
-      "south": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryBack",
-      "west": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryRight",
-      "east": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryLeft",
-      "up": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryTop",
-      "down": "mekanism:blocks/factory/elite/EliteFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/smelting/elite"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryFrontOn",
-          "south": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryBackOn",
-          "west": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryRightOn",
-          "east": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryLeftOn",
-          "up": "mekanism:blocks/factory/elite/smelting/EliteSmeltingFactoryTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/smelting/elite",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/smelting/elite",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/smelting/elite",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/smelting/active/elite"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/smelting/active/elite",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/smelting/active/elite",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/smelting/active/elite",
+      "y": -90
     }
   }
 }

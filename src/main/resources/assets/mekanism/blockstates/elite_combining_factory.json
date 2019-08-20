@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRight",
-      "front": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryFront",
-      "south": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryBack",
-      "west": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRight",
-      "east": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryLeft",
-      "up": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryTop",
-      "down": "mekanism:blocks/factory/elite/EliteFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/combining/elite"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryFrontOn",
-          "south": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryBackOn",
-          "west": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRightOn",
-          "east": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryLeftOn",
-          "up": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/combining/elite",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/combining/elite",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/combining/elite",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/combining/active/elite"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/combining/active/elite",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/combining/active/elite",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/combining/active/elite",
+      "y": -90
     }
   }
 }

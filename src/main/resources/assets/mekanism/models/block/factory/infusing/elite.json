@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/factory/elite",
+  "textures": {
+    "sides": "mekanism:blocks/factory/elite/infusing/right",
+    "front": "mekanism:blocks/factory/elite/infusing/front",
+    "south": "mekanism:blocks/factory/elite/infusing/back",
+    "west": "mekanism:blocks/factory/elite/infusing/right",
+    "east": "mekanism:blocks/factory/elite/infusing/left",
+    "up": "mekanism:blocks/factory/elite/infusing/top"
+  }
+}

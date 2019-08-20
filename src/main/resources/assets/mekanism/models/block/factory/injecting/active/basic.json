@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/injecting/basic",
+  "textures": {
+    "front": "mekanism:blocks/factory/basic/injecting/front_active",
+    "south": "mekanism:blocks/factory/basic/injecting/back_active",
+    "west": "mekanism:blocks/factory/basic/injecting/right_active",
+    "east": "mekanism:blocks/factory/basic/injecting/left_active",
+    "up": "mekanism:blocks/factory/basic/injecting/top_active"
+  }
+}

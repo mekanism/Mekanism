@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryRight",
-      "front": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryFront",
-      "south": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryBack",
-      "west": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryRight",
-      "east": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryLeft",
-      "up": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryTop",
-      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/compressing/advanced"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryFrontOn",
-          "south": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryBackOn",
-          "west": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryRightOn",
-          "east": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryLeftOn",
-          "up": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/compressing/advanced",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/compressing/advanced",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/compressing/advanced",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/compressing/active/advanced"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/compressing/active/advanced",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/compressing/active/advanced",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/compressing/active/advanced",
+      "y": -90
     }
   }
 }

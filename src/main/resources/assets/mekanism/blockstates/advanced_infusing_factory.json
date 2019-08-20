@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryRight",
-      "front": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryFront",
-      "south": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryBack",
-      "west": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryRight",
-      "east": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryLeft",
-      "up": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryTop",
-      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/infusing/advanced"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryFrontOn",
-          "south": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryBackOn",
-          "west": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryRightOn",
-          "east": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryLeftOn",
-          "up": "mekanism:blocks/factory/advanced/infusing/AdvancedInfusingFactoryTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/infusing/advanced",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/infusing/advanced",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/infusing/advanced",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/infusing/active/advanced"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/infusing/active/advanced",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/infusing/active/advanced",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/infusing/active/advanced",
+      "y": -90
     }
   }
 }

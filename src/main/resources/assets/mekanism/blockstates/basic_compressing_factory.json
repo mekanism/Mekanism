@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryRight",
-      "front": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryFront",
-      "south": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryBack",
-      "west": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryRight",
-      "east": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryLeft",
-      "up": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryTop",
-      "down": "mekanism:blocks/factory/basic/BasicFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/compressing/basic"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryFrontOn",
-          "south": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryBackOn",
-          "west": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryRightOn",
-          "east": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryLeftOn",
-          "up": "mekanism:blocks/factory/basic/compressing/BasicCompressingFactoryTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/compressing/basic",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/compressing/basic",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/compressing/basic",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/compressing/active/basic"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/compressing/active/basic",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/compressing/active/basic",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/compressing/active/basic",
+      "y": -90
     }
   }
 }

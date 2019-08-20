@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryside",
-      "front": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryfront",
-      "south": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryback",
-      "west": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryside",
-      "east": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryside",
-      "up": "mekanism:blocks/factory/basic/sawing/basicsawingfactorytop",
-      "down": "mekanism:blocks/factory/basic/BasicFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/sawing/basic"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryfronton",
-          "south": "mekanism:blocks/factory/basic/sawing/basicsawingfactorybackon",
-          "west": "mekanism:blocks/factory/basic/sawing/basicsawingfactorysideon",
-          "east": "mekanism:blocks/factory/basic/sawing/basicsawingfactorysideon",
-          "up": "mekanism:blocks/factory/basic/sawing/basicsawingfactorytopon"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/sawing/basic",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/sawing/basic",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/sawing/basic",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/sawing/active/basic"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/sawing/active/basic",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/sawing/active/basic",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/sawing/active/basic",
+      "y": -90
     }
   }
 }

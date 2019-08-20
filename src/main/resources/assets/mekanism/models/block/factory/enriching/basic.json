@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/factory/basic",
+  "textures": {
+    "sides": "mekanism:blocks/factory/basic/enriching/right",
+    "front": "mekanism:blocks/factory/basic/enriching/front",
+    "south": "mekanism:blocks/factory/basic/enriching/back",
+    "west": "mekanism:blocks/factory/basic/enriching/right",
+    "east": "mekanism:blocks/factory/basic/enriching/left",
+    "up": "mekanism:blocks/factory/basic/enriching/top"
+  }
+}

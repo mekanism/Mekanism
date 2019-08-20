@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryRight",
-      "front": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryFront",
-      "south": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryBack",
-      "west": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryRight",
-      "east": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryLeft",
-      "up": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryTop",
-      "down": "mekanism:blocks/factory/elite/EliteFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/injecting/elite"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryFrontOn",
-          "south": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryBackOn",
-          "west": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryRightOn",
-          "east": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryLeftOn",
-          "up": "mekanism:blocks/factory/elite/injecting/EliteInjectingFactoryTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/injecting/elite",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/injecting/elite",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/injecting/elite",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/injecting/active/elite"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/injecting/active/elite",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/injecting/active/elite",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/injecting/active/elite",
+      "y": -90
     }
   }
 }

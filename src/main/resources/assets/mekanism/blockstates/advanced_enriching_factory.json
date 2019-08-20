@@ -1,35 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/machine",
-    "textures": {
-      "sides": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRight",
-      "front": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryFront",
-      "south": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryBack",
-      "west": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRight",
-      "east": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryLeft",
-      "up": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryTop",
-      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/factory/enriching/advanced"
     },
-    "active": {
-      "true": {
-        "textures": {
-          "front": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryFrontOn",
-          "south": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryBackOn",
-          "west": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRightOn",
-          "east": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryLeftOn",
-          "up": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryTopOn"
-        }
-      },
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/factory/enriching/advanced",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/factory/enriching/advanced",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/factory/enriching/advanced",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/factory/enriching/active/advanced"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/factory/enriching/active/advanced",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/factory/enriching/active/advanced",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/factory/enriching/active/advanced",
+      "y": -90
     }
   }
 }

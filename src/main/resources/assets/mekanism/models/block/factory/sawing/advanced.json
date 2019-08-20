@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/factory/advanced",
+  "textures": {
+    "sides": "mekanism:blocks/factory/advanced/sawing/side",
+    "front": "mekanism:blocks/factory/advanced/sawing/front",
+    "south": "mekanism:blocks/factory/advanced/sawing/back",
+    "west": "mekanism:blocks/factory/advanced/sawing/side",
+    "east": "mekanism:blocks/factory/advanced/sawing/side",
+    "up": "mekanism:blocks/factory/advanced/sawing/top"
+  }
+}
