@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/elite_bin",
+  "parent": "mekanism:block/bin/elite",
   "textures": {
     "front": "mekanism:blocks/bin/elite_front_on",
     "west": "mekanism:blocks/bin/elite_side_on",

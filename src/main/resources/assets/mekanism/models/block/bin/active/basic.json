@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/basic_bin",
+  "parent": "mekanism:block/bin/basic",
   "textures": {
     "front": "mekanism:blocks/bin/front_on",
     "west": "mekanism:blocks/bin/side_on",

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/block_copper"
+      "model": "mekanism:block/storage/copper"
     }
   }
 }

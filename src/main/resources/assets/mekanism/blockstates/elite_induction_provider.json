@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/elite_induction_provider"
+      "model": "mekanism:block/induction/provider/elite"
     }
   }
 }

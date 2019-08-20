@@ -1,26 +1,26 @@
 {
   "variants": {
     "facing=up": {
-      "model": "mekanism:block/elite_gas_tank",
+      "model": "mekanism:block/gas_tank/elite",
       "x": -90
     },
     "facing=down": {
-      "model": "mekanism:block/elite_gas_tank",
+      "model": "mekanism:block/gas_tank/elite",
       "x": 90
     },
     "facing=north": {
-      "model": "mekanism:block/elite_gas_tank"
+      "model": "mekanism:block/gas_tank/elite"
     },
     "facing=south": {
-      "model": "mekanism:block/elite_gas_tank",
+      "model": "mekanism:block/gas_tank/elite",
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/elite_gas_tank",
+      "model": "mekanism:block/gas_tank/elite",
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/elite_gas_tank",
+      "model": "mekanism:block/gas_tank/elite",
       "y": -90
     }
   }

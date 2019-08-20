@@ -2,7 +2,7 @@
   "multipart": [
     {
       "apply": {
-        "model": "mekanism:block/plastic_fence_post"
+        "model": "mekanism:block/plastic/fence_post"
       }
     },
     {
@@ -10,7 +10,7 @@
         "north": "true"
       },
       "apply": {
-        "model": "mekanism:block/plastic_fence_side",
+        "model": "mekanism:block/plastic/fence_side",
         "uvlock": true
       }
     },
@@ -19,7 +19,7 @@
         "east": "true"
       },
       "apply": {
-        "model": "mekanism:block/plastic_fence_side",
+        "model": "mekanism:block/plastic/fence_side",
         "y": 90,
         "uvlock": true
       }
@@ -29,7 +29,7 @@
         "south": "true"
       },
       "apply": {
-        "model": "mekanism:block/plastic_fence_side",
+        "model": "mekanism:block/plastic/fence_side",
         "y": 180,
         "uvlock": true
       }
@@ -39,7 +39,7 @@
         "west": "true"
       },
       "apply": {
-        "model": "mekanism:block/plastic_fence_side",
+        "model": "mekanism:block/plastic/fence_side",
         "y": 270,
         "uvlock": true
       }

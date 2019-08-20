@@ -122,7 +122,7 @@ version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "
 archivesBaseName = "MekanismAll"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
-//def explodedVersion = mod_version.split("\\.")
+def explodedVersion = mod_version.split("\\.")
 
 minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
@@ -212,19 +212,18 @@ processResources {
     inputs.property "version", project.version
     inputs.property "mc_version", minecraft_version
 
+    //TODO: Does this need to do all the sourcesets
     from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
+        include "META_INF/mods.toml"
 
         // replace version and mcversion
         expand "version": project.version, "mc_version": minecraft_version
     }
 
-    // copy everything else, thats not the mcmod.info
+    // copy everything else, thats not blender files. TODO: Remove the need for this
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
         exclude '**/*.blend*'
     }
-    //rename '(.+_at.cfg)', 'META-INF/$1'
 }
 /*
 def setMainManifestProps = { Manifest manifest->
@@ -259,17 +258,13 @@ task coreJar(type: Jar) {
     dependsOn 'reobfJar'
     classifier "core"
     from sourceSets.main.output
+    from(sourceSets.main.resources.srcDirs) {
+        include "META_INF/mods.toml"
 
-    /*from('etc/core') {
-        include '*.info'
-        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        // replace version and mcversion
+        expand "version": project.version, "mc_version": minecraft_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismtools/**', 'assets/mekanismgenerators/**', 'mcmod.info'
-    }
-
-    manifest(setMainManifestProps)*/
+    //manifest(setMainManifestProps)
 }
 
 task toolsJar(type: Jar) {
@@ -277,15 +272,12 @@ task toolsJar(type: Jar) {
     dependsOn 'reobfJar'
     classifier "tools"
     from sourceSets.tools.output
+    from(sourceSets.tools.resources.srcDirs) {
+        include "META_INF/mods.toml"
 
-    /*from('etc/tools') {
-        include '*.info'
-        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        // replace version and mcversion
+        expand "version": project.version, "mc_version": minecraft_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/tools/**', 'assets/mekanismtools/**'
-    }*/
 }
 
 task generatorsJar(type: Jar) {
@@ -293,15 +285,12 @@ task generatorsJar(type: Jar) {
     dependsOn 'reobfJar'
     classifier "generators"
     from sourceSets.generators.output
+    from(sourceSets.generators.resources.srcDirs) {
+        include "META_INF/mods.toml"
 
-    /*from('etc/generators') {
-        include '*.info'
-        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
+        // replace version and mcversion
+        expand "version": project.version, "mc_version": minecraft_version
     }
-
-    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/generators/**', 'assets/mekanismgenerators/**'
-    }*/
 }
 
 task apiJar(type: Jar) {

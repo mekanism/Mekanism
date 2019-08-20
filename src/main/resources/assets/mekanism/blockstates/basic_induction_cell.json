@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/basic_induction_cell"
+      "model": "mekanism:block/induction/cell/basic"
     }
   }
 }

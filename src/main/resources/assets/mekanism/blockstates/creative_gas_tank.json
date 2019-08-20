@@ -1,26 +1,26 @@
 {
   "variants": {
     "facing=up": {
-      "model": "mekanism:block/creative_gas_tank",
+      "model": "mekanism:block/gas_tank/creative",
       "x": -90
     },
     "facing=down": {
-      "model": "mekanism:block/creative_gas_tank",
+      "model": "mekanism:block/gas_tank/creative",
       "x": 90
     },
     "facing=north": {
-      "model": "mekanism:block/creative_gas_tank"
+      "model": "mekanism:block/gas_tank/creative"
     },
     "facing=south": {
-      "model": "mekanism:block/creative_gas_tank",
+      "model": "mekanism:block/gas_tank/creative",
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/creative_gas_tank",
+      "model": "mekanism:block/gas_tank/creative",
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/creative_gas_tank",
+      "model": "mekanism:block/gas_tank/creative",
       "y": -90
     }
   }

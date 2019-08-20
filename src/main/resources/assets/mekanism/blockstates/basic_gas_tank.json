@@ -1,26 +1,26 @@
 {
   "variants": {
     "facing=up": {
-      "model": "mekanism:block/basic_gas_tank",
+      "model": "mekanism:block/gas_tank/basic",
       "x": -90
     },
     "facing=down": {
-      "model": "mekanism:block/basic_gas_tank",
+      "model": "mekanism:block/gas_tank/basic",
       "x": 90
     },
     "facing=north": {
-      "model": "mekanism:block/basic_gas_tank"
+      "model": "mekanism:block/gas_tank/basic"
     },
     "facing=south": {
-      "model": "mekanism:block/basic_gas_tank",
+      "model": "mekanism:block/gas_tank/basic",
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/basic_gas_tank",
+      "model": "mekanism:block/gas_tank/basic",
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/basic_gas_tank",
+      "model": "mekanism:block/gas_tank/basic",
       "y": -90
     }
   }

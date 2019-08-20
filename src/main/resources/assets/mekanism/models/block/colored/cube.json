@@ -1,7 +1,8 @@
 {
     "parent": "block/cube_all",
     "elements": [
-        {   "from": [ 0, 0, 0 ],
+        {
+            "from": [ 0, 0, 0 ],
             "to": [ 16, 16, 16 ],
             "faces": {
                 "down":  { "texture": "#all", "tintindex": 0, "cullface": "down" },
@@ -14,4 +15,3 @@
         }
     ]
 }
-

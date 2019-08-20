@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/block_refined_obsidian"
+      "model": "mekanism:block/storage/refined_obsidian"
     }
   }
 }

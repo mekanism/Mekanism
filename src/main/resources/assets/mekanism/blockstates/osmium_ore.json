@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/osmium_ore"
+      "model": "mekanism:block/ore/osmium"
     }
   }
 }

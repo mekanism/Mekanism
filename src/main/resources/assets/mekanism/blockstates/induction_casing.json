@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/induction_casing"
+      "model": "mekanism:block/induction/casing"
     }
   }
 }

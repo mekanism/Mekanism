@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/ultimate_bin",
+  "parent": "mekanism:block/bin/ultimate",
   "textures": {
     "front": "mekanism:blocks/bin/ultimate_front_on",
     "west": "mekanism:blocks/bin/ultimate_side_on",

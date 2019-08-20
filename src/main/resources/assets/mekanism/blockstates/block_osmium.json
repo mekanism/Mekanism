@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/block_osmium"
+      "model": "mekanism:block/storage/osmium"
     }
   }
 }

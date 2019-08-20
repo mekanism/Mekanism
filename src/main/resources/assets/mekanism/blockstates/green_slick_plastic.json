@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/slick_plastic_block"
+      "model": "mekanism:block/plastic/slick"
     }
   }
 }

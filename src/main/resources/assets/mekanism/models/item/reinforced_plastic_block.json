@@ -1,5 +1,5 @@
 {
-    "parent": "mekanism:block/reinforced_plastic_block",
+    "parent": "mekanism:block/plastic/reinforced",
     "display": {
         "thirdperson": {
             "rotation": [ 10, -45, 170 ],

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/block_salt"
+      "model": "mekanism:block/storage/salt"
     }
   }
 }

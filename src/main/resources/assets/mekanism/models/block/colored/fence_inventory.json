@@ -16,7 +16,8 @@
         "particle": "#texture"
     },
     "elements": [
-        {   "from": [ 6, 0, 0 ],
+        {
+            "from": [ 6, 0, 0 ],
             "to": [ 10, 16, 4 ],
             "faces": {
                 "down":  { "uv": [ 6, 0, 10,  4 ], "texture": "#texture", "tintindex": 0, "cullface": "down" },
@@ -28,7 +29,8 @@
             },
             "__comment": "Left post"
         },
-        {   "from": [ 6, 0, 12 ],
+        {
+            "from": [ 6, 0, 12 ],
             "to": [ 10, 16, 16 ],
             "faces": {
                 "down":  { "uv": [  6, 12, 10, 16 ], "texture": "#texture", "tintindex": 0, "cullface": "down" },
@@ -40,7 +42,8 @@
             },
             "__comment": "Right post"
         },
-        {   "from": [ 7, 13, -2 ],
+        {
+            "from": [ 7, 13, -2 ],
             "to": [ 9, 15, 18 ],
             "faces": {
                 "down":  { "uv": [ 7, 0,  9, 16 ], "texture": "#texture", "tintindex": 0 },
@@ -52,7 +55,8 @@
             },
             "__comment": "Top bar"
         },
-        {   "from": [ 7, 5, -2 ],
+        {
+            "from": [ 7, 5, -2 ],
             "to": [ 9, 7, 18 ],
             "faces": {
                 "down":  { "uv": [ 7, 0,  9, 16 ], "texture": "#texture", "tintindex": 0 },

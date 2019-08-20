@@ -1,5 +1,5 @@
 {
-    "parent": "mekanism:block/slick_plastic_block",
+    "parent": "mekanism:block/plastic/slick",
     "display": {
         "thirdperson": {
             "rotation": [ 10, -45, 170 ],

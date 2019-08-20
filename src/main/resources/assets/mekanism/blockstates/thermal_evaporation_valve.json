@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/thermal_evaporation_valve"
+      "model": "mekanism:block/thermal_evaporation/valve"
     }
   }
 }

@@ -3,7 +3,8 @@
         "particle": "#texture"
     },
     "elements": [
-        {   "from": [ 7, 12, 0 ],
+        {
+            "from": [ 7, 12, 0 ],
             "to": [ 9, 15, 9 ],
             "faces": {
                 "down":  { "uv": [ 7, 0, 9, 9 ], "texture": "#texture", "tintindex": 0 },
@@ -14,7 +15,8 @@
             },
             "__comment": "top bar"
         },
-        {   "from": [ 7, 6, 0 ],
+        {
+            "from": [ 7, 6, 0 ],
             "to": [ 9, 9, 9 ],
             "faces": {
                 "down":  { "uv": [ 7, 0, 9,  9 ], "texture": "#texture", "tintindex": 0 },

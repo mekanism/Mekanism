@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/copper_ore"
+      "model": "mekanism:block/ore/copper"
     }
   }
 }

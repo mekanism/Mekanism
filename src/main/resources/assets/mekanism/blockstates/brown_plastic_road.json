@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/plastic_road"
+      "model": "mekanism:block/plastic/road"
     }
   }
 }

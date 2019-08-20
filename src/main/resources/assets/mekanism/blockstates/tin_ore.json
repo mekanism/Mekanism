@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/tin_ore"
+      "model": "mekanism:block/ore/tin"
     }
   }
 }
