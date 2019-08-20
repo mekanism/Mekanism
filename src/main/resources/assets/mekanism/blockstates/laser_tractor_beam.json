@@ -1,26 +1,56 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/laser_amplifier",
-    "textures": {
-      "frame": "mekanism:blocks/models/laser_device_frame",
-      "side_empty": "mekanism:blocks/models/laser_tractor_beam_side_empty",
-      "side_full": "mekanism:blocks/models/laser_tractor_beam_side_full",
-      "side_maybe": "mekanism:blocks/models/laser_tractor_beam_side_full"
-    }
-  },
   "variants": {
-    "facing": {
-      "up":    {},
-      "down":  {"x": 180},
-      "north": {"x": -90, "y": 180},
-      "south": {"x": -90},
-      "east":  {"x": -90, "y": -90},
-      "west":  {"x": -90, "y":  90}
+    "facing=up,active=false": {
+      "model": "mekanism:block/laser_tractor_beam"
     },
-    "active": {
-      "true": {},
-      "false": {}
+    "facing=down,active=false": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": 180
+    },
+    "facing=north,active=false": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south,active=false": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90,
+      "y": -90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90,
+      "y": 90
+    },
+    "facing=up,active=true": {
+      "model": "mekanism:block/laser_tractor_beam"
+    },
+    "facing=down,active=true": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": 180
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90,
+      "y": -90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/laser_tractor_beam",
+      "x": -90,
+      "y": 90
     }
   }
 }

@@ -39,13 +39,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
 
     public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
@@ -59,9 +60,9 @@ public class MekanismRenderer {
     public static TextureAtlasSprite missingIcon;
     private static AtlasTexture texMap = null;
 
-    public static void init() {
+    /*public static void init() {
         MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
-    }
+    }*/
 
     @SuppressWarnings("unchecked")
     public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {

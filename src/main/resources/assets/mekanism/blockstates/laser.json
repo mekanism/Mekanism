@@ -1,16 +1,30 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/laser"
-  },
   "variants": {
-    "facing": {
-      "up":    {},
-      "down":  {"x": 180},
-      "north": {"x": -90, "y": 180},
-      "south": {"x": -90},
-      "east":  {"x": -90, "y": -90},
-      "west":  {"x": -90, "y":  90}
-      }
+    "facing=up": {
+      "model": "mekanism:block/laser"
+    },
+    "facing=down": {
+      "model": "mekanism:block/laser",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "mekanism:block/laser",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "mekanism:block/laser",
+      "x": -90
+    },
+    "facing=east": {
+      "model": "mekanism:block/laser",
+      "x": -90,
+      "y": -90
+    },
+    "facing=west": {
+      "model": "mekanism:block/laser",
+      "x": -90,
+      "y": 90
+    }
   }
 }

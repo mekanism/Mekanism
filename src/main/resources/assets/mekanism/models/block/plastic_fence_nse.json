@@ -1,6 +1,0 @@
-{
-    "parent": "mekanism:block/fence_nse",
-    "textures": {
-        "texture": "mekanism:blocks/PlasticFence"
-    }
-}

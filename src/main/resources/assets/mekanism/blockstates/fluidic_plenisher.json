@@ -1,18 +1,34 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/fluidic_plenisher"
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/fluidic_plenisher"
     },
-    "active": {
-      "true": {},
-      "false": {}
+    "facing=south,active=false": {
+      "model": "mekanism:block/fluidic_plenisher",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/fluidic_plenisher",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/fluidic_plenisher",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/fluidic_plenisher"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/fluidic_plenisher",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/fluidic_plenisher",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/fluidic_plenisher",
+      "y": -90
     }
   }
 }

@@ -1,12 +1,12 @@
 {
-	"etc.Beep": {"category": "master", "sounds": [{"name": "mekanism:etc/beep", "stream": false}]},
-	"etc.Click": {"category": "master", "sounds": [{"name": "mekanism:etc/click", "stream": false}]},
-	"etc.Ding": {"category": "master", "sounds": [{"name": "mekanism:etc/ding", "stream": false}]},
-	"etc.Error": {"category": "master", "sounds": [{"name": "mekanism:etc/error", "stream": false}]},
-	"etc.GasMask": {"category": "master", "sounds": [{"name": "mekanism:etc/gasmask", "stream": false}]},
-	"etc.Hydraulic": {"category": "master", "sounds": [{"name": "mekanism:etc/hydraulic", "stream": false}]},
-	"etc.Pop": {"category": "master", "sounds": [{"name": "mekanism:etc/pop", "stream": false}]},
-	"etc.Success": {"category": "master", "sounds": [{"name": "mekanism:etc/success", "stream": false}]},
+	"etc.beep": {"category": "master", "sounds": [{"name": "mekanism:etc/beep", "stream": false}]},
+	"etc.click": {"category": "master", "sounds": [{"name": "mekanism:etc/click", "stream": false}]},
+	"etc.ding": {"category": "master", "sounds": [{"name": "mekanism:etc/ding", "stream": false}]},
+	"etc.error": {"category": "master", "sounds": [{"name": "mekanism:etc/error", "stream": false}]},
+	"etc.gasmask": {"category": "master", "sounds": [{"name": "mekanism:etc/gasmask", "stream": false}]},
+	"etc.hydraulic": {"category": "master", "sounds": [{"name": "mekanism:etc/hydraulic", "stream": false}]},
+	"etc.pop": {"category": "master", "sounds": [{"name": "mekanism:etc/pop", "stream": false}]},
+	"etc.success": {"category": "master", "sounds": [{"name": "mekanism:etc/success", "stream": false}]},
 	"etc.cj": {"category": "block", "sounds": [
 											{"name": "mekanism:cj/cj_1", "stream": false},
 											{"name": "mekanism:cj/cj_2", "stream": false},
@@ -56,6 +56,6 @@
 
 	"item.flamethrower.idle": {"category": "player", "sounds": [{"name": "mekanism:flamethroweridle", "stream": false}]},
 	"item.flamethrower.active": {"category": "player", "sounds": [{"name": "mekanism:flamethroweractive", "stream": false}]},
-	"item.gasMask": {"category": "player", "sounds": [{"name": "mekanism:gasmask", "stream": false}]},
+	"item.gasmask": {"category": "player", "sounds": [{"name": "mekanism:gasmask", "stream": false}]},
 	"item.jetpack": {"category": "player", "sounds": [{"name": "mekanism:jetpack", "stream": false}]}
 }

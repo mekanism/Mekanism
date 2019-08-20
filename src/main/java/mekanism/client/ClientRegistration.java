@@ -64,7 +64,6 @@ import mekanism.client.gui.robit.GuiRobitInventory;
 import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
@@ -148,6 +147,7 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -165,25 +165,18 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        MekanismRenderer.init();
+        //MekanismRenderer.init();
 
         //TODO: Remove need for this by using blockstate multipart tags to combine different possible positions
         // See how fences do it
         /*OBJLoader.INSTANCE.addDomain(Mekanism.MODID);
         ModelLoaderRegistry.registerLoader(MekanismOBJLoader.INSTANCE);
         MinecraftForge.EVENT_BUS.register(MekanismOBJLoader.INSTANCE);*/
-
-        //Register entity rendering handlers
-        RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, RenderObsidianTNTPrimed::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, RenderRobit::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, RenderBalloon::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, SkeletonRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, RenderFlame::new);
     }
 
-    //@SubscribeEvent
+    @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
         ScreenManager.registerFactory(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
         ScreenManager.registerFactory(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
@@ -255,7 +248,7 @@ public class ClientRegistration {
         ScreenManager.registerFactory(MekanismContainerTypes.OREDICTIONIFICATOR_FILTER, GuiOredictionificatorFilter::new);
     }
 
-    //@SubscribeEvent
+    @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBin.class, new RenderBin());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerCasing.class, new RenderThermoelectricBoiler());
@@ -334,5 +327,15 @@ public class ClientRegistration {
     private static void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
         ModelResourceLocation resourceLocation = getInventoryMRL(type);
         modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));
+    }
+
+    @SubscribeEvent
+    public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+        //Register entity rendering handlers
+        RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, RenderObsidianTNTPrimed::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, RenderRobit::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, RenderBalloon::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, SkeletonRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, RenderFlame::new);
     }
 }

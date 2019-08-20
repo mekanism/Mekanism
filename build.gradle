@@ -122,7 +122,7 @@ version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "
 archivesBaseName = "MekanismAll"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
-def explodedVersion = mod_version.split("\\.")
+//def explodedVersion = mod_version.split("\\.")
 
 minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
