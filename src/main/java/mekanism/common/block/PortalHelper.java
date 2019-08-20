@@ -102,11 +102,12 @@ public class PortalHelper {
 
     public static class BlockPortalOverride extends NetherPortalBlock {
 
+        //TODO: Does it make sense to store this in MekanismBlock
         public static final BlockPortalOverride instance = new BlockPortalOverride();
 
         public BlockPortalOverride() {
             super(Block.Properties.create(Material.PORTAL).doesNotBlockMovement().tickRandomly().hardnessAndResistance(-1.0F).sound(SoundType.GLASS).lightValue(11).noDrops());
-            setRegistryName(new ResourceLocation("minecraft", "portal"));
+            setRegistryName(new ResourceLocation("minecraft", "nether_portal"));
         }
 
         @Nonnull

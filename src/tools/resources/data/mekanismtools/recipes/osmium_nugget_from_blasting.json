@@ -32,7 +32,7 @@
       "item": "mekanismtools:osmium_boots"
     }
   ],
-  "result": "mekanism:osmium_nugget",
+  "result": "mekanism:nugget_osmium",
   "experience": 0.1,
   "cookingtime": 100
 }

@@ -32,7 +32,7 @@
       "item": "mekanismtools:bronze_boots"
     }
   ],
-  "result": "mekanism:bronze_nugget",
+  "result": "mekanism:nugget_bronze",
   "experience": 0.1,
   "cookingtime": 100
 }

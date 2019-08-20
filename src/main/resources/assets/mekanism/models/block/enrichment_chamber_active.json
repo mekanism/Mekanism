@@ -1,10 +1,6 @@
 {
   "parent": "mekanism:block/enrichment_chamber",
   "textures": {
-    "front": "mekanism:block/enrichment_chamber/front_active",
-    "west": "mekanism:block/enrichment_chamber/right_active",
-    "east": "mekanism:block/enrichment_chamber/left_active",
-    "south": "mekanism:block/enrichment_chamber/back_active",
-    "up": "mekanism:block/enrichment_chamber/top_active"
+    "front": "mekanism:block/enrichment_chamber/front_active"
   }
 }

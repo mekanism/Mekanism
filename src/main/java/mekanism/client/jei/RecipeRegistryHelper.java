@@ -1,13 +1,11 @@
 package mekanism.client.jei;
 
-import java.util.Collections;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
 import mezz.jei.api.registration.IRecipeRegistration;
 
@@ -37,7 +35,7 @@ public class RecipeRegistryHelper {
         MekanismBlock mekanismBlock = MekanismBlock.ENERGIZED_SMELTER;
         if (mekanismBlock.isEnabled()) {
             //TODO: Add all smelting recipes
-            registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
+            //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
             if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
                 registry.addRecipes(Recipe.ENERGIZED_SMELTER.get().values(), mekanismBlock.getJEICategory());
             } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed

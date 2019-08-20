@@ -32,7 +32,7 @@
       "item": "mekanismtools:steel_boots"
     }
   ],
-  "result": "mekanism:steel_nugget",
+  "result": "mekanism:nugget_steel",
   "experience": 0.1,
   "cookingtime": 100
 }
