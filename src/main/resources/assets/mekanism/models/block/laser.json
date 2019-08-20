@@ -263,7 +263,7 @@
         }
     ],
     "textures": {
-        "all": "mekanism:blocks/models/laser",
-        "particle": "mekanism:blocks/steel_casing"
+        "all": "mekanism:block/models/laser",
+        "particle": "mekanism:block/steel_casing"
     }
 }

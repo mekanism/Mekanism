@@ -1,6 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/advanced_control_circuit"
+        "layer0": "mekanism:item/advanced_control_circuit"
     }
 }

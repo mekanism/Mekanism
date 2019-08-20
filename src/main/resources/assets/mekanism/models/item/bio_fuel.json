@@ -1,6 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/bio_fuel"
+        "layer0": "mekanism:item/bio_fuel"
     }
 }

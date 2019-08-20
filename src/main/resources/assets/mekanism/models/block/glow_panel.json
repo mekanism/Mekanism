@@ -2,7 +2,7 @@
 	"parent": "block/cube_all",
 	"textures": {
 		"particle": "#all",
-		"all": "mekanism:blocks/glow_panel"
+		"all": "mekanism:block/glow_panel"
 	},
 	"elements": [
 		{

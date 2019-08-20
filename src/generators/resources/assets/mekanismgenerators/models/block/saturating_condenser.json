@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanismgenerators:blocks/saturating_condenser"
+    "all": "mekanismgenerators:block/saturating_condenser"
   }
 }

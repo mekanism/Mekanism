@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/advanced",
   "textures": {
-    "sides": "mekanism:blocks/factory/advanced/sawing/side",
-    "front": "mekanism:blocks/factory/advanced/sawing/front",
-    "south": "mekanism:blocks/factory/advanced/sawing/back",
-    "west": "mekanism:blocks/factory/advanced/sawing/side",
-    "east": "mekanism:blocks/factory/advanced/sawing/side",
-    "up": "mekanism:blocks/factory/advanced/sawing/top"
+    "sides": "mekanism:block/factory/advanced/sawing/side",
+    "front": "mekanism:block/factory/advanced/sawing/front",
+    "south": "mekanism:block/factory/advanced/sawing/back",
+    "west": "mekanism:block/factory/advanced/sawing/side",
+    "east": "mekanism:block/factory/advanced/sawing/side",
+    "up": "mekanism:block/factory/advanced/sawing/top"
   }
 }

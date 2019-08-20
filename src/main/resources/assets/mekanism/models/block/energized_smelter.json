@@ -1,12 +1,12 @@
 {
   "parent": "mekanism:block/machine",
   "textures": {
-    "sides": "mekanism:blocks/energized_smelter/side",
-    "front": "mekanism:blocks/energized_smelter/front",
-    "west": "mekanism:blocks/energized_smelter/side",
-    "east": "mekanism:blocks/energized_smelter/side",
-    "south": "mekanism:blocks/energized_smelter/back",
-    "up": "mekanism:blocks/energized_smelter/top",
-    "down": "mekanism:blocks/energized_smelter/bottom"
+    "sides": "mekanism:block/energized_smelter/side",
+    "front": "mekanism:block/energized_smelter/front",
+    "west": "mekanism:block/energized_smelter/side",
+    "east": "mekanism:block/energized_smelter/side",
+    "south": "mekanism:block/energized_smelter/back",
+    "up": "mekanism:block/energized_smelter/top",
+    "down": "mekanism:block/energized_smelter/bottom"
   }
 }

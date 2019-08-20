@@ -1,6 +1,6 @@
 {
 	"parent": "mekanism:block/logistical_sorter",
 	"textures": {
-		"led": "mekanism:blocks/models/logistical_sorter_led_on"
+		"led": "mekanism:block/models/logistical_sorter_led_on"
 	}
 }

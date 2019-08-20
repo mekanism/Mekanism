@@ -133,7 +133,7 @@
         }
     ],
     "textures": {
-        "all": "mekanism:blocks/models/chemical_oxidizer",
-        "particle": "mekanism:blocks/steel_casing"
+        "all": "mekanism:block/models/chemical_oxidizer",
+        "particle": "mekanism:block/steel_casing"
     }
 }

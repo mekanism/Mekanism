@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/advanced",
   "textures": {
-    "sides": "mekanism:blocks/factory/advanced/combining/right",
-    "front": "mekanism:blocks/factory/advanced/combining/front",
-    "south": "mekanism:blocks/factory/advanced/combining/back",
-    "west": "mekanism:blocks/factory/advanced/combining/right",
-    "east": "mekanism:blocks/factory/advanced/combining/left",
-    "up": "mekanism:blocks/factory/advanced/combining/top"
+    "sides": "mekanism:block/factory/advanced/combining/right",
+    "front": "mekanism:block/factory/advanced/combining/front",
+    "south": "mekanism:block/factory/advanced/combining/back",
+    "west": "mekanism:block/factory/advanced/combining/right",
+    "east": "mekanism:block/factory/advanced/combining/left",
+    "up": "mekanism:block/factory/advanced/combining/top"
   }
 }

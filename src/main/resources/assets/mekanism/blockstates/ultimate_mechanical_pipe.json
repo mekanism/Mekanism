@@ -3,10 +3,10 @@
   "defaults": {
     "model": "mekanism:block/transmitter_large.obj.mek",
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/MechanicalPipeVerticalUltimate",
-      "#center": "mekanism:blocks/models/multipart/MechanicalPipeUltimate",
-      "#side_opaque": "mekanism:blocks/models/multipart/opaque/MechanicalPipeVerticalUltimate",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/MechanicalPipeUltimate"
+      "#side": "mekanism:block/models/multipart/MechanicalPipeVerticalUltimate",
+      "#center": "mekanism:block/models/multipart/MechanicalPipeUltimate",
+      "#side_opaque": "mekanism:block/models/multipart/opaque/MechanicalPipeVerticalUltimate",
+      "#center_opaque": "mekanism:block/models/multipart/opaque/MechanicalPipeUltimate"
     },
     "custom": {
       "flip-v": true

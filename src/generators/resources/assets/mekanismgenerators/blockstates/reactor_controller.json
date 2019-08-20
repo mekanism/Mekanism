@@ -6,7 +6,7 @@
     "active=true": {
       "model": "mekanismgenerators:block/reactor_controller",
       "textures": {
-        "up": "mekanismgenerators:blocks/reactor_controller_on"
+        "up": "mekanismgenerators:block/reactor_controller_on"
       }
     }
   }

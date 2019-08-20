@@ -1,7 +1,7 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "mekanism:blocks/models/chemical_infuser"
+		"all": "mekanism:block/models/chemical_infuser"
 	},
 	"elements": [
 		{

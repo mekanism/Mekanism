@@ -224,7 +224,7 @@
         }
     ],
     "textures": {
-        "all": "mekanism:blocks/models/metallurgic_infuser",
-        "particle": "mekanism:blocks/steel_casing"
+        "all": "mekanism:block/models/metallurgic_infuser",
+        "particle": "mekanism:block/steel_casing"
     }
 }

@@ -224,7 +224,7 @@
         }
     ],
     "textures": {
-        "all": "mekanism:blocks/models/electrolytic_separator",
-        "particle": "mekanism:blocks/steel_casing"
+        "all": "mekanism:block/models/electrolytic_separator",
+        "particle": "mekanism:block/steel_casing"
     }
 }

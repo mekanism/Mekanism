@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanismgenerators:blocks/electromagnetic_coil"
+    "all": "mekanismgenerators:block/electromagnetic_coil"
   }
 }

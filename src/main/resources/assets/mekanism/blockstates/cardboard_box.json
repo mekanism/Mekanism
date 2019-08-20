@@ -3,15 +3,15 @@
   "defaults": {
     "model": "mekanism:block/machine",
     "textures": {
-      "sides": "mekanism:blocks/CardboardBoxSide",
-      "front": "mekanism:blocks/CardboardBoxSide",
-      "up": "mekanism:blocks/CardboardBoxTop",
-      "down": "mekanism:blocks/CardboardBoxTop"
+      "sides": "mekanism:block/CardboardBoxSide",
+      "front": "mekanism:block/CardboardBoxSide",
+      "up": "mekanism:block/CardboardBoxTop",
+      "down": "mekanism:block/CardboardBoxTop"
     }
   },
   "variants": {
     "storage": {
-      "true": {"textures": {"sides": "mekanism:blocks/CardboardBoxSideStorage", "front": "mekanism:blocks/CardboardBoxSideStorage"}},
+      "true": {"textures": {"sides": "mekanism:block/CardboardBoxSideStorage", "front": "mekanism:block/CardboardBoxSideStorage"}},
       "false": {}
     }
   }

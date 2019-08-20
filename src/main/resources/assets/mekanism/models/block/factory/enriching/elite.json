@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/elite",
   "textures": {
-    "sides": "mekanism:blocks/factory/elite/enriching/right",
-    "front": "mekanism:blocks/factory/elite/enriching/front",
-    "south": "mekanism:blocks/factory/elite/enriching/back",
-    "west": "mekanism:blocks/factory/elite/enriching/right",
-    "east": "mekanism:blocks/factory/elite/enriching/left",
-    "up": "mekanism:blocks/factory/elite/enriching/top"
+    "sides": "mekanism:block/factory/elite/enriching/right",
+    "front": "mekanism:block/factory/elite/enriching/front",
+    "south": "mekanism:block/factory/elite/enriching/back",
+    "west": "mekanism:block/factory/elite/enriching/right",
+    "east": "mekanism:block/factory/elite/enriching/left",
+    "up": "mekanism:block/factory/elite/enriching/top"
   }
 }

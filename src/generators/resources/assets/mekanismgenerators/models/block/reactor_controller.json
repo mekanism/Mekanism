@@ -1,8 +1,8 @@
 {
   "parent": "mekanism:block/machine",
   "textures": {
-    "sides": "mekanismgenerators:blocks/reactor_frame",
-    "front": "mekanismgenerators:blocks/reactor_frame",
-    "up": "mekanismgenerators:blocks/reactor_controller"
+    "sides": "mekanismgenerators:block/reactor_frame",
+    "front": "mekanismgenerators:block/reactor_frame",
+    "up": "mekanismgenerators:block/reactor_controller"
   }
 }

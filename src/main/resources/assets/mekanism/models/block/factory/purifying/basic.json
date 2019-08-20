@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/basic",
   "textures": {
-    "sides": "mekanism:blocks/factory/basic/purifying/right",
-    "front": "mekanism:blocks/factory/basic/purifying/front",
-    "south": "mekanism:blocks/factory/basic/purifying/back",
-    "west": "mekanism:blocks/factory/basic/purifying/right",
-    "east": "mekanism:blocks/factory/basic/purifying/left",
-    "up": "mekanism:blocks/factory/basic/purifying/top"
+    "sides": "mekanism:block/factory/basic/purifying/right",
+    "front": "mekanism:block/factory/basic/purifying/front",
+    "south": "mekanism:block/factory/basic/purifying/back",
+    "west": "mekanism:block/factory/basic/purifying/right",
+    "east": "mekanism:block/factory/basic/purifying/left",
+    "up": "mekanism:block/factory/basic/purifying/top"
   }
 }

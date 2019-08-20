@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/elite",
   "textures": {
-    "sides": "mekanism:blocks/factory/elite/injecting/right",
-    "front": "mekanism:blocks/factory/elite/injecting/front",
-    "south": "mekanism:blocks/factory/elite/injecting/back",
-    "west": "mekanism:blocks/factory/elite/injecting/right",
-    "east": "mekanism:blocks/factory/elite/injecting/left",
-    "up": "mekanism:blocks/factory/elite/injecting/top"
+    "sides": "mekanism:block/factory/elite/injecting/right",
+    "front": "mekanism:block/factory/elite/injecting/front",
+    "south": "mekanism:block/factory/elite/injecting/back",
+    "west": "mekanism:block/factory/elite/injecting/right",
+    "east": "mekanism:block/factory/elite/injecting/left",
+    "up": "mekanism:block/factory/elite/injecting/top"
   }
 }

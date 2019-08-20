@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/refined_obsidian_paxel"
+        "layer0": "mekanismtools:item/refined_obsidian_paxel"
     }
 }
 

@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/advanced",
   "textures": {
-    "sides": "mekanism:blocks/factory/advanced/infusing/right",
-    "front": "mekanism:blocks/factory/advanced/infusing/front",
-    "south": "mekanism:blocks/factory/advanced/infusing/back",
-    "west": "mekanism:blocks/factory/advanced/infusing/right",
-    "east": "mekanism:blocks/factory/advanced/infusing/left",
-    "up": "mekanism:blocks/factory/advanced/infusing/top"
+    "sides": "mekanism:block/factory/advanced/infusing/right",
+    "front": "mekanism:block/factory/advanced/infusing/front",
+    "south": "mekanism:block/factory/advanced/infusing/back",
+    "west": "mekanism:block/factory/advanced/infusing/right",
+    "east": "mekanism:block/factory/advanced/infusing/left",
+    "up": "mekanism:block/factory/advanced/infusing/top"
   }
 }

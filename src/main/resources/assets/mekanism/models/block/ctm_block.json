@@ -3,23 +3,23 @@
         {   "from": [ 0, 0, 0 ],
             "to": [ 16, 16, 16 ],
             "faces": {
-                "down":  { "texture": "mekanism:blocks/steel_casing", "cullface": "down" },
-                "up":    { "texture": "mekanism:blocks/steel_casing", "cullface": "up", "rotation": 180 },
-                "north": { "texture": "mekanism:blocks/steel_casing", "cullface": "north" },
-                "south": { "texture": "mekanism:blocks/steel_casing", "cullface": "south" },
-                "west":  { "texture": "mekanism:blocks/steel_casing", "cullface": "west" },
-                "east":  { "texture": "mekanism:blocks/steel_casing", "cullface": "east" }
+                "down":  { "texture": "mekanism:block/steel_casing", "cullface": "down" },
+                "up":    { "texture": "mekanism:block/steel_casing", "cullface": "up", "rotation": 180 },
+                "north": { "texture": "mekanism:block/steel_casing", "cullface": "north" },
+                "south": { "texture": "mekanism:block/steel_casing", "cullface": "south" },
+                "west":  { "texture": "mekanism:block/steel_casing", "cullface": "west" },
+                "east":  { "texture": "mekanism:block/steel_casing", "cullface": "east" }
             }
         }
     ],
     "textures": {
-        "particle": "mekanism:blocks/steel_casing",
-        "down": "mekanism:blocks/steel_casing",
-        "up": "mekanism:blocks/steel_casing",
-        "north": "mekanism:blocks/steel_casing",
-        "east": "mekanism:blocks/steel_casing",
-        "south": "mekanism:blocks/steel_casing",
-        "west": "mekanism:blocks/steel_casing"
+        "particle": "mekanism:block/steel_casing",
+        "down": "mekanism:block/steel_casing",
+        "up": "mekanism:block/steel_casing",
+        "north": "mekanism:block/steel_casing",
+        "east": "mekanism:block/steel_casing",
+        "south": "mekanism:block/steel_casing",
+        "west": "mekanism:block/steel_casing"
     }
 }
 

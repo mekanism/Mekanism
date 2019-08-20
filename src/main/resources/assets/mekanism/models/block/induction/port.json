@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanism:blocks/induction_port"
+    "all": "mekanism:block/induction_port"
   }
 }

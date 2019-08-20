@@ -1,10 +1,10 @@
 {
   "parent": "mekanism:block/factory/enriching/basic",
   "textures": {
-    "front": "mekanism:blocks/factory/basic/enriching/front_active",
-    "south": "mekanism:blocks/factory/basic/enriching/back_active",
-    "west": "mekanism:blocks/factory/basic/enriching/right_active",
-    "east": "mekanism:blocks/factory/basic/enriching/left_active",
-    "up": "mekanism:blocks/factory/basic/enriching/top_active"
+    "front": "mekanism:block/factory/basic/enriching/front_active",
+    "south": "mekanism:block/factory/basic/enriching/back_active",
+    "west": "mekanism:block/factory/basic/enriching/right_active",
+    "east": "mekanism:block/factory/basic/enriching/left_active",
+    "up": "mekanism:block/factory/basic/enriching/top_active"
   }
 }

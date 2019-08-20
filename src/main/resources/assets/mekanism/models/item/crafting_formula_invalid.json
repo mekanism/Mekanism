@@ -1,6 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/crafting_formula_invalid"
+        "layer0": "mekanism:item/crafting_formula_invalid"
     }
 }

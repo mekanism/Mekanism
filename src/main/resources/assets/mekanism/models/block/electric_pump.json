@@ -133,7 +133,7 @@
         }
     ],
     "textures": {
-        "all": "mekanism:blocks/models/electric_pump",
-        "particle": "mekanism:blocks/steel_casing"
+        "all": "mekanism:block/models/electric_pump",
+        "particle": "mekanism:block/steel_casing"
     }
 }

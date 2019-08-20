@@ -2,10 +2,10 @@
 	"parent": "block/cube_all",
 	"textures": {
 		"particle": "#frame",
-		"frame": "mekanism:blocks/models/laser_device_frame",
-		"side_empty": "mekanism:blocks/models/laser_amplifier_side_empty",
-		"side_full": "mekanism:blocks/models/laser_amplifier_side_full",
-		"side_maybe": "mekanism:blocks/models/laser_amplifier_side_empty"
+		"frame": "mekanism:block/models/laser_device_frame",
+		"side_empty": "mekanism:block/models/laser_amplifier_side_empty",
+		"side_full": "mekanism:block/models/laser_amplifier_side_full",
+		"side_maybe": "mekanism:block/models/laser_amplifier_side_empty"
 	},
 	"elements": [
 		{

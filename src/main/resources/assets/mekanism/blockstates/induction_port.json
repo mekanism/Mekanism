@@ -6,7 +6,7 @@
     "active=true": {
       "model": "mekanism:block/induction/port",
       "textures": {
-        "all": "mekanism:blocks/induction_port_output"
+        "all": "mekanism:block/induction_port_output"
       }
     }
   }

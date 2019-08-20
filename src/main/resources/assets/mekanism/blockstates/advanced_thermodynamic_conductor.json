@@ -3,10 +3,10 @@
   "defaults": {
     "model": "mekanism:block/transmitter_small.obj.mek",
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/ThermodynamicConductorVerticalAdvanced",
-      "#center": "mekanism:blocks/models/multipart/ThermodynamicConductorAdvanced",
-      "#side_opaque": "mekanism:blocks/models/multipart/opaque/ThermodynamicConductorVerticalAdvanced",
-      "#center_opaque": "mekanism:blocks/models/multipart/ThermodynamicConductorAdvanced"
+      "#side": "mekanism:block/models/multipart/ThermodynamicConductorVerticalAdvanced",
+      "#center": "mekanism:block/models/multipart/ThermodynamicConductorAdvanced",
+      "#side_opaque": "mekanism:block/models/multipart/opaque/ThermodynamicConductorVerticalAdvanced",
+      "#center_opaque": "mekanism:block/models/multipart/ThermodynamicConductorAdvanced"
     },
     "custom": {
       "flip-v": true

@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/colored/cube",
   "textures": {
-    "all": "mekanism:blocks/plastic_road"
+    "all": "mekanism:block/plastic_road"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanism:blocks/copper_ore"
+    "all": "mekanism:block/copper_ore"
   }
 }

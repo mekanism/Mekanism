@@ -1,12 +1,12 @@
 {
   "parent": "mekanism:block/machine",
   "textures": {
-    "sides": "mekanism:blocks/oredictionificator/right",
-    "front": "mekanism:blocks/oredictionificator/front",
-    "west": "mekanism:blocks/oredictionificator/right",
-    "east": "mekanism:blocks/oredictionificator/left",
-    "south": "mekanism:blocks/oredictionificator/back",
-    "up": "mekanism:blocks/oredictionificator/top",
-    "down": "mekanism:blocks/oredictionificator/bottom"
+    "sides": "mekanism:block/oredictionificator/right",
+    "front": "mekanism:block/oredictionificator/front",
+    "west": "mekanism:block/oredictionificator/right",
+    "east": "mekanism:block/oredictionificator/left",
+    "south": "mekanism:block/oredictionificator/back",
+    "up": "mekanism:block/oredictionificator/top",
+    "down": "mekanism:block/oredictionificator/bottom"
   }
 }

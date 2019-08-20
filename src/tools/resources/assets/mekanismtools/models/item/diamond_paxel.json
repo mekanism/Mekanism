@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/diamond_paxel"
+        "layer0": "mekanismtools:item/diamond_paxel"
     }
 }
 

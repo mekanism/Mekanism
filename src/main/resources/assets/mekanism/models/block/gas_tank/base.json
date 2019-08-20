@@ -133,7 +133,7 @@
         }
     ],
     "textures": {
-        "particle": "mekanism:blocks/steel_casing",
-        "body": "mekanism:blocks/models/gas_tank"
+        "particle": "mekanism:block/steel_casing",
+        "body": "mekanism:block/models/gas_tank"
     }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanism:blocks/pressure_disperser"
+    "all": "mekanism:block/pressure_disperser"
   }
 }

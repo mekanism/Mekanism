@@ -289,7 +289,7 @@
         }
     ],
     "textures": {
-        "all": "mekanism:blocks/models/rotary_condensentrator",
-        "particle": "mekanism:blocks/steel_casing"
+        "all": "mekanism:block/models/rotary_condensentrator",
+        "particle": "mekanism:block/steel_casing"
     }
 }

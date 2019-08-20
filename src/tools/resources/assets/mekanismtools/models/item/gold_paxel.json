@@ -1,7 +1,7 @@
 {
     "parent": "item/handheld",
     "textures": { 
-        "layer0": "mekanismtools:items/gold_paxel"
+        "layer0": "mekanismtools:item/gold_paxel"
     }
 }
 

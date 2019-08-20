@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/elite",
   "textures": {
-    "sides": "mekanism:blocks/factory/elite/combining/right",
-    "front": "mekanism:blocks/factory/elite/combining/front",
-    "south": "mekanism:blocks/factory/elite/combining/back",
-    "west": "mekanism:blocks/factory/elite/combining/right",
-    "east": "mekanism:blocks/factory/elite/combining/left",
-    "up": "mekanism:blocks/factory/elite/combining/top"
+    "sides": "mekanism:block/factory/elite/combining/right",
+    "front": "mekanism:block/factory/elite/combining/front",
+    "south": "mekanism:block/factory/elite/combining/back",
+    "west": "mekanism:block/factory/elite/combining/right",
+    "east": "mekanism:block/factory/elite/combining/left",
+    "up": "mekanism:block/factory/elite/combining/top"
   }
 }

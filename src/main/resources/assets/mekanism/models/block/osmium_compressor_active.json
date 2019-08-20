@@ -1,10 +1,10 @@
 {
   "parent": "mekanism:block/osmium_compressor",
   "textures": {
-    "front": "mekanism:blocks/osmium_compressor/front_active",
-    "west": "mekanism:blocks/osmium_compressor/right_active",
-    "east": "mekanism:blocks/osmium_compressor/left_active",
-    "south": "mekanism:blocks/osmium_compressor/back_active",
-    "up": "mekanism:blocks/osmium_compressor/top_active"
+    "front": "mekanism:block/osmium_compressor/front_active",
+    "west": "mekanism:block/osmium_compressor/right_active",
+    "east": "mekanism:block/osmium_compressor/left_active",
+    "south": "mekanism:block/osmium_compressor/back_active",
+    "up": "mekanism:block/osmium_compressor/top_active"
   }
 }

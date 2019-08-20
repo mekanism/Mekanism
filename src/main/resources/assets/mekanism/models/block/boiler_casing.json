@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanism:blocks/boiler_casing"
+    "all": "mekanism:block/boiler_casing"
   }
 }

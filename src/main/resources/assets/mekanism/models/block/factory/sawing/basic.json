@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/basic",
   "textures": {
-    "sides": "mekanism:blocks/factory/basic/sawing/side",
-    "front": "mekanism:blocks/factory/basic/sawing/front",
-    "south": "mekanism:blocks/factory/basic/sawing/back",
-    "west": "mekanism:blocks/factory/basic/sawing/side",
-    "east": "mekanism:blocks/factory/basic/sawing/side",
-    "up": "mekanism:blocks/factory/basic/sawing/top"
+    "sides": "mekanism:block/factory/basic/sawing/side",
+    "front": "mekanism:block/factory/basic/sawing/front",
+    "south": "mekanism:block/factory/basic/sawing/back",
+    "west": "mekanism:block/factory/basic/sawing/side",
+    "east": "mekanism:block/factory/basic/sawing/side",
+    "up": "mekanism:block/factory/basic/sawing/top"
   }
 }

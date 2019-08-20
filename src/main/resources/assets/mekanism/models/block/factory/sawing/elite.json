@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/elite",
   "textures": {
-    "sides": "mekanism:blocks/factory/elite/sawing/side",
-    "front": "mekanism:blocks/factory/elite/sawing/front",
-    "south": "mekanism:blocks/factory/elite/sawing/back",
-    "west": "mekanism:blocks/factory/elite/sawing/side",
-    "east": "mekanism:blocks/factory/elite/sawing/side",
-    "up": "mekanism:blocks/factory/elite/sawing/top"
+    "sides": "mekanism:block/factory/elite/sawing/side",
+    "front": "mekanism:block/factory/elite/sawing/front",
+    "south": "mekanism:block/factory/elite/sawing/back",
+    "west": "mekanism:block/factory/elite/sawing/side",
+    "east": "mekanism:block/factory/elite/sawing/side",
+    "up": "mekanism:block/factory/elite/sawing/top"
   }
 }

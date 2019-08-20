@@ -1,7 +1,7 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "mekanism:blocks/models/pressurized_reaction_chamber"
+		"all": "mekanism:block/models/pressurized_reaction_chamber"
 	},
 	"elements": [
 		{

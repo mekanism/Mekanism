@@ -1,12 +1,12 @@
 {
   "parent": "mekanism:block/machine",
   "textures": {
-    "sides": "mekanism:blocks/combiner/right",
-    "front": "mekanism:blocks/combiner/front",
-    "west": "mekanism:blocks/combiner/right",
-    "east": "mekanism:blocks/combiner/left",
-    "south": "mekanism:blocks/combiner/back",
-    "up": "mekanism:blocks/combiner/top",
-    "down": "mekanism:blocks/combiner/bottom"
+    "sides": "mekanism:block/combiner/right",
+    "front": "mekanism:block/combiner/front",
+    "west": "mekanism:block/combiner/right",
+    "east": "mekanism:block/combiner/left",
+    "south": "mekanism:block/combiner/back",
+    "up": "mekanism:block/combiner/top",
+    "down": "mekanism:block/combiner/bottom"
   }
 }

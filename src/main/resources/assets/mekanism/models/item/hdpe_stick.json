@@ -1,6 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/hdpe_stick"
+        "layer0": "mekanism:item/hdpe_stick"
     }
 }

@@ -1,6 +1,6 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:items/dust_silver"
+        "layer0": "mekanism:item/dust_silver"
     }
 }

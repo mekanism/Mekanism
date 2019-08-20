@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/colored/cube",
   "textures": {
-    "all": "mekanism:blocks/slick_plastic_block"
+    "all": "mekanism:block/slick_plastic_block"
   }
 }

@@ -3,10 +3,10 @@
   "defaults": {
     "model": "mekanism:block/transmitter_large.obj.mek",
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/LogisticalTransporterVerticalBasic",
-      "#center": "mekanism:blocks/models/multipart/LogisticalTransporterBasic",
-      "#side_opaque": "mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalBasic",
-      "#center_opaque": "mekanism:blocks/models/multipart/LogisticalTransporterBasic"
+      "#side": "mekanism:block/models/multipart/LogisticalTransporterVerticalBasic",
+      "#center": "mekanism:block/models/multipart/LogisticalTransporterBasic",
+      "#side_opaque": "mekanism:block/models/multipart/opaque/LogisticalTransporterVerticalBasic",
+      "#center_opaque": "mekanism:block/models/multipart/LogisticalTransporterBasic"
     },
     "custom": {
       "flip-v": true

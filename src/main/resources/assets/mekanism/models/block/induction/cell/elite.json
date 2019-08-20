@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanism:blocks/elite_induction_cell"
+    "all": "mekanism:block/elite_induction_cell"
   }
 }

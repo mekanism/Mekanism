@@ -1,6 +1,6 @@
 {
   "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanism:blocks/osmium_ore"
+    "all": "mekanism:block/osmium_ore"
   }
 }

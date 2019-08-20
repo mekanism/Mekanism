@@ -68,6 +68,6 @@
         }
     ],
     "textures": {
-        "all": "mekanism:entities/balloon"
+        "all": "mekanism:entity/balloon"
     }
 }

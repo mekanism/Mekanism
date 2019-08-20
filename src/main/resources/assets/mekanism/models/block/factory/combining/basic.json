@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/basic",
   "textures": {
-    "sides": "mekanism:blocks/factory/basic/combining/right",
-    "front": "mekanism:blocks/factory/basic/combining/front",
-    "south": "mekanism:blocks/factory/basic/combining/back",
-    "west": "mekanism:blocks/factory/basic/combining/right",
-    "east": "mekanism:blocks/factory/basic/combining/left",
-    "up": "mekanism:blocks/factory/basic/combining/top"
+    "sides": "mekanism:block/factory/basic/combining/right",
+    "front": "mekanism:block/factory/basic/combining/front",
+    "south": "mekanism:block/factory/basic/combining/back",
+    "west": "mekanism:block/factory/basic/combining/right",
+    "east": "mekanism:block/factory/basic/combining/left",
+    "up": "mekanism:block/factory/basic/combining/top"
   }
 }

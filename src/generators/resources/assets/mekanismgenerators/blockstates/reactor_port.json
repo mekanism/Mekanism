@@ -6,7 +6,7 @@
     "active=true": {
       "model": "mekanismgenerators:block/reactor_port",
       "textures": {
-        "all": "mekanismgenerators:blocks/reactor_port_output"
+        "all": "mekanismgenerators:block/reactor_port_output"
       }
     }
   }

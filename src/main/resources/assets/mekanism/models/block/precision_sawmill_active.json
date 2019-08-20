@@ -1,10 +1,10 @@
 {
   "parent": "mekanism:block/precision_sawmill",
   "textures": {
-    "front": "mekanism:blocks/precision_sawmill/front_active",
-    "west": "mekanism:blocks/precision_sawmill/right_active",
-    "east": "mekanism:blocks/precision_sawmill/left_active",
-    "south": "mekanism:blocks/precision_sawmill/back_active",
-    "up": "mekanism:blocks/precision_sawmill/top_active"
+    "front": "mekanism:block/precision_sawmill/front_active",
+    "west": "mekanism:block/precision_sawmill/right_active",
+    "east": "mekanism:block/precision_sawmill/left_active",
+    "south": "mekanism:block/precision_sawmill/back_active",
+    "up": "mekanism:block/precision_sawmill/top_active"
   }
 }

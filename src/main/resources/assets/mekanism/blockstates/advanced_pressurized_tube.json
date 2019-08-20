@@ -3,10 +3,10 @@
   "defaults": {
     "model": "mekanism:block/transmitter_small.obj.mek",
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/PressurizedTubeVerticalAdvanced",
-      "#center": "mekanism:blocks/models/multipart/PressurizedTubeAdvanced",
-      "#side_opaque": "mekanism:blocks/models/multipart/opaque/PressurizedTubeVerticalAdvanced",
-      "#center_opaque": "mekanism:blocks/models/multipart/PressurizedTubeAdvanced"
+      "#side": "mekanism:block/models/multipart/PressurizedTubeVerticalAdvanced",
+      "#center": "mekanism:block/models/multipart/PressurizedTubeAdvanced",
+      "#side_opaque": "mekanism:block/models/multipart/opaque/PressurizedTubeVerticalAdvanced",
+      "#center_opaque": "mekanism:block/models/multipart/PressurizedTubeAdvanced"
     },
     "custom": {
       "flip-v": true

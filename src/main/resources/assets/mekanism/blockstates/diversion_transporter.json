@@ -3,10 +3,10 @@
   "defaults": {
     "model": "mekanism:block/transmitter_large.obj.mek",
     "textures": {
-      "#side": "mekanism:blocks/models/multipart/DiversionTransporterVertical",
-      "#center": "mekanism:blocks/models/multipart/DiversionTransporter",
-      "#side_opaque": "mekanism:blocks/models/multipart/opaque/DiversionTransporterVertical",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/DiversionTransporter"
+      "#side": "mekanism:block/models/multipart/DiversionTransporterVertical",
+      "#center": "mekanism:block/models/multipart/DiversionTransporter",
+      "#side_opaque": "mekanism:block/models/multipart/opaque/DiversionTransporterVertical",
+      "#center_opaque": "mekanism:block/models/multipart/opaque/DiversionTransporter"
     },
     "custom": {
       "flip-v": true

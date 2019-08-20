@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:block/factory/basic",
   "textures": {
-    "sides": "mekanism:blocks/factory/basic/smelting/right",
-    "front": "mekanism:blocks/factory/basic/smelting/front",
-    "south": "mekanism:blocks/factory/basic/smelting/back",
-    "west": "mekanism:blocks/factory/basic/smelting/right",
-    "east": "mekanism:blocks/factory/basic/smelting/left",
-    "up": "mekanism:blocks/factory/basic/smelting/top"
+    "sides": "mekanism:block/factory/basic/smelting/right",
+    "front": "mekanism:block/factory/basic/smelting/front",
+    "south": "mekanism:block/factory/basic/smelting/back",
+    "west": "mekanism:block/factory/basic/smelting/right",
+    "east": "mekanism:block/factory/basic/smelting/left",
+    "up": "mekanism:block/factory/basic/smelting/top"
   }
 }
