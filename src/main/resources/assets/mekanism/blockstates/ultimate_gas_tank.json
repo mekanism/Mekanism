@@ -1,13 +1,5 @@
 {
   "variants": {
-    "facing=up": {
-      "model": "mekanism:block/gas_tank/ultimate",
-      "x": -90
-    },
-    "facing=down": {
-      "model": "mekanism:block/gas_tank/ultimate",
-      "x": 90
-    },
     "facing=north": {
       "model": "mekanism:block/gas_tank/ultimate"
     },

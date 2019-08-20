@@ -1,53 +1,27 @@
 {
   "variants": {
-    "facing=up,active=false": {
+    "facing=up": {
       "model": "mekanism:block/laser_amplifier"
     },
-    "facing=down,active=false": {
+    "facing=down": {
       "model": "mekanism:block/laser_amplifier",
       "x": 180
     },
-    "facing=north,active=false": {
+    "facing=north": {
       "model": "mekanism:block/laser_amplifier",
       "x": -90,
       "y": 180
     },
-    "facing=south,active=false": {
+    "facing=south": {
       "model": "mekanism:block/laser_amplifier",
       "x": -90
     },
-    "facing=east,active=false": {
+    "facing=east": {
       "model": "mekanism:block/laser_amplifier",
       "x": -90,
       "y": -90
     },
-    "facing=west,active=false": {
-      "model": "mekanism:block/laser_amplifier",
-      "x": -90,
-      "y": 90
-    },
-    "facing=up,active=true": {
-      "model": "mekanism:block/laser_amplifier"
-    },
-    "facing=down,active=true": {
-      "model": "mekanism:block/laser_amplifier",
-      "x": 180
-    },
-    "facing=north,active=true": {
-      "model": "mekanism:block/laser_amplifier",
-      "x": -90,
-      "y": 180
-    },
-    "facing=south,active=true": {
-      "model": "mekanism:block/laser_amplifier",
-      "x": -90
-    },
-    "facing=east,active=true": {
-      "model": "mekanism:block/laser_amplifier",
-      "x": -90,
-      "y": -90
-    },
-    "facing=west,active=true": {
+    "facing=west": {
       "model": "mekanism:block/laser_amplifier",
       "x": -90,
       "y": 90

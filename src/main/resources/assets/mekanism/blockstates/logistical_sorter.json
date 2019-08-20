@@ -1,24 +1,50 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/logistical_sorter",
-    "textures": {
-      "all": "mekanism:blocks/models/logistical_sorter",
-      "led": "mekanism:blocks/models/logistical_sorter_led_off"
-    }
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90},
-      "up":    {"x": -90},
-      "down":  {"x": 90}
+    "facing=north,active=false": {
+      "model": "mekanism:block/logistical_sorter"
     },
-    "active": {
-      "true": {"textures": {"led": "mekanism:blocks/models/logistical_sorter_led_on"}},
-      "false": {"textures": {"led": "mekanism:blocks/models/logistical_sorter_led_off"}}
+    "facing=south,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "y": -90
+    },
+    "facing=up,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "x": -90
+    },
+    "facing=down,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "x": 90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/logistical_sorter_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "y": -90
+    },
+    "facing=up,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "x": -90
+    },
+    "facing=down,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "x": 90
     }
   }
 }

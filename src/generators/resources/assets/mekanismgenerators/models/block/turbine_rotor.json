@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/fence_post",
+  "parent": "block/fence_post",
   "textures": {
     "texture": "mekanismgenerators:blocks/turbine_rotor"
   }

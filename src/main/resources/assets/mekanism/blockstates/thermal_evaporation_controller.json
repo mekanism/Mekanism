@@ -15,18 +15,18 @@
       "model": "mekanism:block/thermal_evaporation/controller",
       "y": -90
     },
-    "facing=north,active=true\"": {
+    "facing=north,active=true": {
       "model": "mekanism:block/thermal_evaporation/controller_active"
     },
-    "facing=south,active=true\"": {
+    "facing=south,active=true": {
       "model": "mekanism:block/thermal_evaporation/controller_active",
       "y": 180
     },
-    "facing=east,active=true\"": {
+    "facing=east,active=true": {
       "model": "mekanism:block/thermal_evaporation/controller_active",
       "y": 90
     },
-    "facing=west,active=true\"": {
+    "facing=west,active=true": {
       "model": "mekanism:block/thermal_evaporation/controller_active",
       "y": -90
     }

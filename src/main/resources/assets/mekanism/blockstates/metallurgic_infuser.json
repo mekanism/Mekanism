@@ -1,14 +1,19 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "mekanism:block/metallurgic_infuser"
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
-      }
+    "facing=north": {
+      "model": "mekanism:block/metallurgic_infuser"
+    },
+    "facing=south": {
+      "model": "mekanism:block/metallurgic_infuser",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/metallurgic_infuser",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/metallurgic_infuser",
+      "y": -90
+    }
   }
 }

@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "mekanismgenerators:block/solar_generator"}
+    "": {
+      "model": "mekanismgenerators:block/solar_generator"
+    }
   }
 }

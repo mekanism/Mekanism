@@ -4,10 +4,7 @@
       "model": "mekanism:block/fluid_tank"
     },
     "active=true": {
-      "model": "mekanism:block/fluid_tank",
-      "textures": {
-        "glass": "mekanism:blocks/models/fluid_tank_side_on"
-      }
+      "model": "mekanism:block/fluid_tank_active"
     }
   }
 }

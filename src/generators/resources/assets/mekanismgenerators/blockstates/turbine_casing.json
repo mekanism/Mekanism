@@ -1,10 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/turbine_casing",
-      "textures": {
-        "all": "mekanismgenerators:blocks/turbine_casing"
-      }
+      "model": "mekanismgenerators:block/turbine_casing"
     }
   }
 }
