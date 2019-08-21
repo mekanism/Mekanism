@@ -38,6 +38,8 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+
+        GlStateManager.pushMatrix();
         switch (tileEntity.getDirection()) {
             case DOWN:
                 GlStateManager.rotatef(90, -1, 0, 0);
@@ -60,22 +62,12 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
             bindTexture(baseTexture);
             model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, rendererDispatcher.textureManager);
         }
-
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
         GlStateManager.popMatrix();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
+            GlStateManager.translatef(0, -1.0F, 0);
             bindTexture(coreTexture);
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlphaTest();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-
-            //Begin core color
             float ticks = MekanismClient.ticksPassed + partialTick;
             GlStateManager.scalef(0.4F, 0.4F, 0.4F);
             MekanismRenderer.color(tileEntity.tier.getBaseTier());
@@ -84,14 +76,12 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
             GlStateManager.rotatef(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
-            //End core color
-
             MekanismRenderer.disableGlow(glowInfo);
-            GlStateManager.disableBlend();
-            GlStateManager.enableAlphaTest();
-            GlStateManager.popMatrix();
         }
 
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlphaTest();
+        GlStateManager.popMatrix();
         MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage);
     }
 }

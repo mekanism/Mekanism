@@ -339,7 +339,7 @@ public class MekanismRenderer {
     }
 
     @SubscribeEvent
-    public void onStitch(TextureStitchEvent.Pre event) {
+    public static void onStitch(TextureStitchEvent.Pre event) {
         for (TransmissionType type : TransmissionType.values()) {
             event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "_overlay"));
         }
@@ -366,7 +366,7 @@ public class MekanismRenderer {
     }
 
     @SubscribeEvent
-    public void onStitch(TextureStitchEvent.Post event) {
+    public static  void onStitch(TextureStitchEvent.Post event) {
         for (TransmissionType type : TransmissionType.values()) {
             overlays.put(type, event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "_overlay")));
         }
