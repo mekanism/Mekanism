@@ -372,7 +372,7 @@ public class ModelEnergyCube extends Model {
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(1.001F, 1.005F, 1.001F);
+        GlStateManager.scalef(1.001F, 1.005F, 1.001F);
         GlStateManager.translatef(0, -0.0061F, 0);
         manager.bindTexture(BASE_OVERLAY);
         MekanismRenderer.color(tier.getBaseTier().getColor());

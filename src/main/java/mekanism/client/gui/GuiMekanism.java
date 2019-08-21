@@ -105,7 +105,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
             GlStateManager.pushMatrix();
-            GlStateManager.translatef(scale, scale, scale);
+            GlStateManager.scalef(scale, scale, scale);
             drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }
@@ -252,7 +252,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 GlStateManager.enableDepthTest();
                 RenderHelper.enableGUIStandardItemLighting();
                 if (scale != 1) {
-                    GlStateManager.translatef(scale, scale, scale);
+                    GlStateManager.scalef(scale, scale, scale);
                 }
                 itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();

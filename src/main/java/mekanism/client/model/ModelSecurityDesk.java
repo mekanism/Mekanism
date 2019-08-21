@@ -107,7 +107,7 @@ public class ModelSecurityDesk extends Model {
         doRender(size);
 
         manager.bindTexture(OVERLAY);
-        GlStateManager.translatef(1.001F, 1.001F, 1.001F);
+        GlStateManager.scalef(1.001F, 1.001F, 1.001F);
         GlStateManager.translatef(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 

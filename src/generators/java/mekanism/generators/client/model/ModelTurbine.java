@@ -77,7 +77,7 @@ public class ModelTurbine extends Model {
     private void renderBlade(RendererModel blade, float size, float scaleX, float scaleZ, float transX, float transZ) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef(transX, 0, transZ);
-        GlStateManager.translatef(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
+        GlStateManager.scalef(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
         GlStateManager.translatef(-transX, 0, -transZ);
         blade.render(size);
         GlStateManager.popMatrix();

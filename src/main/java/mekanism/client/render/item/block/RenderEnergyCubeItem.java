@@ -66,15 +66,13 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
             //Begin core color
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef(0.4F, 0.4F, 0.4F);
+            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
             MekanismRenderer.color(tier.getBaseTier());
             GlStateManager.translatef(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
             GlStateManager.rotatef(4 * MekanismClient.ticksPassed, 0, 1, 0);
             GlStateManager.rotatef(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
-            GlStateManager.popMatrix();
             //End core color
 
             MekanismRenderer.disableGlow(glowInfo);

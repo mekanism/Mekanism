@@ -26,7 +26,7 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(1.4F, 1.4F, 1.4F);
+        GlStateManager.scalef(1.4F, 1.4F, 1.4F);
         GlStateManager.rotatef(180, 0, 0, 1);
 
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
@@ -35,12 +35,12 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
             }
             GlStateManager.rotatef(45, 0, 1, 0);
             GlStateManager.rotatef(50, 1, 0, 0);
-            GlStateManager.translatef(2.0F, 2.0F, 2.0F);
+            GlStateManager.scalef(2.0F, 2.0F, 2.0F);
             GlStateManager.translatef(0, -0.4F, 0.4F);
         } else if (transformType == TransformType.GUI) {
             GlStateManager.rotatef(225, 0, 1, 0);
             GlStateManager.rotatef(45, -1, 0, -1);
-            GlStateManager.translatef(0.6F, 0.6F, 0.6F);
+            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
             GlStateManager.translatef(0, -0.2F, 0);
         } else {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {

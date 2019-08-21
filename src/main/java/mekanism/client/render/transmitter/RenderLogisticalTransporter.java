@@ -87,7 +87,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translatef(xShifted, yShifted, zShifted);
-                GlStateManager.translatef(0.75F, 0.75F, 0.75F);
+                GlStateManager.scalef(0.75F, 0.75F, 0.75F);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
                 GlStateManager.popMatrix();
 
@@ -129,7 +129,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlStateManager.color4f(1, 1, 1, 0.8F);
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.translatef((float) x, (float) y, (float) z);
-                    GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+                    GlStateManager.scalef(0.5F, 0.5F, 0.5F);
                     GlStateManager.translatef(0.5F, 0.5F, 0.5F);
 
                     int display = getOverlayDisplay(pos.getFace(), mode).display;

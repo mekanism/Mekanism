@@ -84,7 +84,7 @@ public abstract class GuiElement {
             float yAdd = 4 - (scale * 8) / 2F;
 
             GlStateManager.pushMatrix();
-            GlStateManager.translatef(scale, scale, scale);
+            GlStateManager.scalef(scale, scale, scale);
             drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }

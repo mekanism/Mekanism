@@ -57,7 +57,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
 
             float scale = 0.03125F;
             float scaler = 0.9F;
-            GlStateManager.translatef(scale * scaler, scale * scaler, -0.0001F);
+            GlStateManager.scalef(scale * scaler, scale * scaler, -0.0001F);
             GlStateManager.rotatef(180, 0, 0, 1);
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
             GlStateManager.popMatrix();
@@ -113,7 +113,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             scale = Math.min(scale, maxScale);
         }
 
-        GlStateManager.translatef(scale, -scale, scale);
+        GlStateManager.scalef(scale, -scale, scale);
         GlStateManager.depthMask(false);
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);

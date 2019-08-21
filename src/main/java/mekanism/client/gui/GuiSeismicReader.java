@@ -87,7 +87,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
         if (currentLayer >= 100) {
             GlStateManager.translatef(0, 1, 0);
-            GlStateManager.translatef(0.7F, 0.7F, 0.7F);
+            GlStateManager.scalef(0.7F, 0.7F, 0.7F);
         }
 
         drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
@@ -107,7 +107,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 }
                 if (i != 4) {
                     GlStateManager.translatef(1.5F, 0, 0);
-                    GlStateManager.translatef(0.8F, 0.8F, 0.8F);
+                    GlStateManager.scalef(0.8F, 0.8F, 0.8F);
                 }
                 renderItem(stack, 0, 0);
                 GlStateManager.popMatrix();
@@ -125,7 +125,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
             GlStateManager.pushMatrix();
             GlStateManager.translatef(guiLeft + 72, guiTop + 16, 0);
-            GlStateManager.translatef(renderScale, renderScale, renderScale);
+            GlStateManager.scalef(renderScale, renderScale, renderScale);
             drawString(displayName, 0, 0, 0x919191);
             GlStateManager.popMatrix();
 
@@ -146,7 +146,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
         GlStateManager.pushMatrix();
         GlStateManager.translatef(guiLeft + 72, guiTop + 26, 0);
-        GlStateManager.translatef(0.7F, 0.7F, 0.7F);
+        GlStateManager.scalef(0.7F, 0.7F, 0.7F);
         drawString(TextComponentUtil.build(Translation.of("gui.abundancy"), ": " + frequency), 0, 0, 0x919191);
         GlStateManager.popMatrix();
         MekanismRenderer.resetColor();

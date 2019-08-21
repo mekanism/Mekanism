@@ -33,7 +33,7 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
                 GlStateManager.rotatef(45, 0, 1, 0);
             }
             GlStateManager.rotatef(50, 1, 0, 0);
-            GlStateManager.translatef(2.0F, 2.0F, 2.0F);
+            GlStateManager.scalef(2.0F, 2.0F, 2.0F);
             GlStateManager.translatef(0, -0.4F, 0);
         } else {
             if (transformType == TransformType.GUI) {

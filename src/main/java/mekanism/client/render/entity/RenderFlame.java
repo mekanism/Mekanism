@@ -60,7 +60,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.rotatef(45, 1, 0, 0);
-        GlStateManager.translatef(scale, scale, scale);
+        GlStateManager.scalef(scale, scale, scale);
         GlStateManager.translatef(-4F, 0, 0);
 
         for (int j = 0; j < 4; j++) {

@@ -16,8 +16,11 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -33,10 +36,26 @@ public class ItemLayerWrapper implements IBakedModel {
         this.internal = internal;
     }
 
+    @Override
+    public IBakedModel getBakedModel() {
+        return internal;
+    }
+
+    @Nonnull
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+        return internal.getQuads(state, side, rand, extraData);
+    }
+
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
         return internal.getQuads(state, side, rand);
+    }
+
+    @Override
+    public boolean isAmbientOcclusion(BlockState state) {
+        return internal.isAmbientOcclusion(state);
     }
 
     @Override
@@ -60,6 +79,12 @@ public class ItemLayerWrapper implements IBakedModel {
 
     @Nonnull
     @Override
+    public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
+        return internal.getParticleTexture(data);
+    }
+
+    @Nonnull
+    @Override
     public TextureAtlasSprite getParticleTexture() {
         return internal.getParticleTexture();
     }
@@ -73,6 +98,12 @@ public class ItemLayerWrapper implements IBakedModel {
 
     @Nonnull
     @Override
+    public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+        return internal.getModelData(world, pos, state, tileData);
+    }
+
+    @Nonnull
+    @Override
     public ItemOverrideList getOverrides() {
         return ItemOverrideList.EMPTY;
     }
@@ -82,7 +113,6 @@ public class ItemLayerWrapper implements IBakedModel {
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType type) {
         transform = type;
         //You can use a field on your TileEntityItemStackRenderer to store this TransformType for use in renderByItem, this method is always called before it.
-        //return Pair.of(this, internal.handlePerspective(type).getRight());
         return Pair.of(this, transforms.get(type).getMatrixVec());
     }
 

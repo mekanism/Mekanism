@@ -435,7 +435,7 @@ public class ModelDigitalMiner extends Model {
         }
 
         manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
-        GlStateManager.translatef(1.001F, 1.001F, 1.001F);
+        GlStateManager.scalef(1.001F, 1.001F, 1.001F);
         GlStateManager.translatef(-0.0011F, -0.0011F, -0.0011F);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 

@@ -56,7 +56,7 @@ public class ModelBalloon extends Model {
     public void render(float size, EnumColor color) {
         GlStateManager.pushMatrix();
         MekanismRenderer.color(color);
-        GlStateManager.translatef(1.5F, 1.5F, 1.5F);
+        GlStateManager.scalef(1.5F, 1.5F, 1.5F);
         GlStateManager.translatef(0, -0.07F, 0);
 
         Balloon2.render(size);
@@ -68,7 +68,7 @@ public class ModelBalloon extends Model {
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(0.2F, 1, 0.2F);
+        GlStateManager.scalef(0.2F, 1, 0.2F);
         String.render(size);
         GlStateManager.popMatrix();
     }

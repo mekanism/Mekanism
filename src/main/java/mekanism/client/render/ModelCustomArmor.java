@@ -192,7 +192,7 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
                         GlStateManager.translatef(0, 0, -0.05F);
                         ArmorModel.gasMaskModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
-                        GlStateManager.translatef(1.02F, 1.02F, 1.02F);
+                        GlStateManager.scalef(1.02F, 1.02F, 1.02F);
                         if (partRender == biped.bipedLeftLeg) {
                             GlStateManager.translatef(-0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderLeft(0.0625F);

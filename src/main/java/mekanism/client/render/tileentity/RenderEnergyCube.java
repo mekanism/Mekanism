@@ -30,6 +30,8 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
     @Override
     public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+        //TODO: Debate converting the energy cube to a normal baked model and then just have this draw the model AND then add the core in the middle
+        // Would this improve performance at all? We probably would have to put port state information into the blockstate
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
@@ -75,15 +77,13 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
             //Begin core color
             float ticks = MekanismClient.ticksPassed + partialTick;
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef(0.4F, 0.4F, 0.4F);
+            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
             MekanismRenderer.color(tileEntity.tier.getBaseTier());
             GlStateManager.translatef(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             GlStateManager.rotatef(4 * ticks, 0, 1, 0);
             GlStateManager.rotatef(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
-            GlStateManager.popMatrix();
             //End core color
 
             MekanismRenderer.disableGlow(glowInfo);

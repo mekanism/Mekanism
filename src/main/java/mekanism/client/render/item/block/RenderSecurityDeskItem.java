@@ -28,7 +28,7 @@ public class RenderSecurityDeskItem extends MekanismItemStackRenderer {
         } else {
             GlStateManager.rotatef(-90, 0, 1, 0);
         }
-        GlStateManager.translatef(0.8F, 0.8F, 0.8F);
+        GlStateManager.scalef(0.8F, 0.8F, 0.8F);
         GlStateManager.translatef(0, -0.8F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "security_desk.png"));
         securityDesk.render(0.0625F, Minecraft.getInstance().textureManager);

@@ -37,7 +37,7 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
             f = f * f;
             f = f * f;
             float scale = 1.0F + f * 0.3F;
-            GlStateManager.translatef(scale, scale, scale);
+            GlStateManager.scalef(scale, scale, scale);
         }
 
         float f3 = (1.0F - ((entityobsidiantnt.fuse - partialTicks) + 1.0F) / 100F) * 0.8F;
