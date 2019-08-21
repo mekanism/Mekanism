@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
+//TODO: Fix being able to see through the energy cube into the void if standing on top of one that is on the ground
 @OnlyIn(Dist.CLIENT)
 public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 

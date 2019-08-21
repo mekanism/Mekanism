@@ -53,7 +53,7 @@ public class Gas implements IHasTranslationKey {
      * @param t - tint of this Gas
      */
     public Gas(String s, int t) {
-        this(s, "mekanism:blocks/liquid/liquid");
+        this(s, "mekanism:block/liquid/liquid");
         setTint(t);
     }
 

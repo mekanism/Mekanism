@@ -340,6 +340,9 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
+        if (!event.getMap().getBasePath().equals("textures")) {
+            return;
+        }
         for (TransmissionType type : TransmissionType.values()) {
             event.addSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay"));
         }
@@ -367,28 +370,32 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static  void onStitch(TextureStitchEvent.Post event) {
+        AtlasTexture map = event.getMap();
+        if (!map.getBasePath().equals("textures")) {
+            return;
+        }
         for (TransmissionType type : TransmissionType.values()) {
-            overlays.put(type, event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay")));
+            overlays.put(type, map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay")));
         }
 
-        whiteIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
-        energyIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
-        heatIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
-        laserIcon = event.getMap().getSprite(new ResourceLocation(Mekanism.MODID, "block/laser"));
+        whiteIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
+        energyIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
+        heatIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
+        laserIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/laser"));
 
-        TransmitterModel.getIcons(event.getMap());
+        TransmitterModel.getIcons(map);
 
-        initFluidTextures(event.getMap());
+        initFluidTextures(map);
 
-        RenderLogisticalTransporter.onStitch(event.getMap());
+        RenderLogisticalTransporter.onStitch(map);
         RenderMechanicalPipe.onStitch();
 
         for (Gas gas : GasRegistry.getRegisteredGasses()) {
-            gas.updateIcon(event.getMap());
+            gas.updateIcon(map);
         }
 
         for (InfuseType type : InfuseRegistry.getInfuseMap().values()) {
-            type.setIcon(event.getMap().getSprite(type.iconResource));
+            type.setIcon(map.getSprite(type.iconResource));
         }
     }
 

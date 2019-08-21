@@ -6,7 +6,7 @@ public class OreGas extends Gas {
     private OreGas cleanGas;
 
     public OreGas(String s, String oreLangKey, int tint, boolean isClean) {
-        super(s, "mekanism:blocks/liquid/liquid" + (isClean ? "_clean" : "") + "_ore");
+        super(s, "mekanism:block/liquid/liquid" + (isClean ? "_clean" : "") + "_ore");
         this.oreLangKey = oreLangKey;
         setTint(tint);
         setVisible(false);
