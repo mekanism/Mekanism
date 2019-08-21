@@ -260,6 +260,18 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
+    public double getStorage() {
+        //TODO: Fix this
+        return tier.processes * 1000;// * Math.max(0.5D * type.getEnergyStorage(), type.getEnergyUsage());
+    }
+
+    @Override
+    public double getUsage() {
+        //TODO: Fix this
+        return 10;//type.getEnergyUsage();
+    }
+
+    @Override
     public TileEntityType<TileEntityFactory> getTileType() {
         switch (type) {
             case CRUSHING:

@@ -12,6 +12,7 @@ import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
+//TODO: FixME - forge really does not like using floats as config values
 public class GeneralConfig implements IMekanismConfig {
 
     private static final String ENABLED_CATEGORY = "enabled_machines";

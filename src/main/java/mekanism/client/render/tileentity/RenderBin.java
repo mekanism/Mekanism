@@ -25,12 +25,12 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
     }
 
     public void render(Direction facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
-        String amount = "";
         if (!itemType.isEmpty()) {
-            amount = Integer.toString(clientAmount);
+            String amount = Integer.toString(clientAmount);
             if (clientAmount == Integer.MAX_VALUE) {
                 amount = TextComponentUtil.translate("mekanism.gui.infinite").getFormattedText();
             }
+            setLightmapDisabled(true);
             GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
@@ -58,9 +58,10 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             GlStateManager.rotatef(180, 0, 0, 1);
             Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(itemType, 0, 0);
             GlStateManager.popMatrix();
-        }
-        if (text && !amount.equals("")) {
-            renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
+            if (text) {
+                renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
+            }
+            setLightmapDisabled(false);
         }
     }
 

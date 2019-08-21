@@ -335,16 +335,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         return recipeType;
     }
 
-    @Override
-    public double getBaseStorage() {
-        return tier.processes * Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage());
-    }
-
-    @Override
-    public double getBaseUsage() {
-        return recipeType.getEnergyUsage();
-    }
-
     public void setRecipeType(@Nonnull RecipeType type) {
         recipeType = Objects.requireNonNull(type);
         setMaxEnergy(getBaseStorage());

@@ -435,9 +435,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return false;
     }
 
+    @Nonnull
     @Override
     public NonNullList<ItemStack> getInventory() {
-        return hasFrequency() ? frequency.inventory : null;
+        //TODO: This was null before so we should check the things for being null now
+        return hasFrequency() ? frequency.inventory : NonNullList.create();
     }
 
     @Override

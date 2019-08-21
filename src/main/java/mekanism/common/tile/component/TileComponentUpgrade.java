@@ -12,8 +12,10 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.NonNullList;
 
 public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile> implements ITileComponent {
 
@@ -55,8 +57,10 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
     @Override
     public void tick() {
         if (!tileEntity.getWorld().isRemote) {
-            if (!tileEntity.getInventory().get(upgradeSlot).isEmpty() && tileEntity.getInventory().get(upgradeSlot).getItem() instanceof IUpgradeItem) {
-                Upgrade type = ((IUpgradeItem) tileEntity.getInventory().get(upgradeSlot).getItem()).getUpgradeType(tileEntity.getInventory().get(upgradeSlot));
+            NonNullList<ItemStack> inventory = tileEntity.getInventory();
+            //TODO: Check this, inventory can be empty with quantum entangloporter with no frequency
+            if (!inventory.isEmpty() && !inventory.get(upgradeSlot).isEmpty() && inventory.get(upgradeSlot).getItem() instanceof IUpgradeItem) {
+                Upgrade type = ((IUpgradeItem) inventory.get(upgradeSlot).getItem()).getUpgradeType(inventory.get(upgradeSlot));
 
                 if (supports(type) && getUpgrades(type) < type.getMax()) {
                     if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
@@ -64,7 +68,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
                     } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                         upgradeTicks = 0;
                         addUpgrade(type);
-                        tileEntity.getInventory().get(upgradeSlot).shrink(1);
+                        inventory.get(upgradeSlot).shrink(1);
                         Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                         tileEntity.markDirty();
                     }

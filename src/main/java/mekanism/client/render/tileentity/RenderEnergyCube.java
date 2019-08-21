@@ -58,10 +58,12 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         GlStateManager.rotatef(180, 0, 0, 1);
         model.render(0.0625F, tileEntity.tier, rendererDispatcher.textureManager, false);
 
+        setLightmapDisabled(true);
         for (Direction side : Direction.values()) {
             bindTexture(baseTexture);
             model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, rendererDispatcher.textureManager);
         }
+        setLightmapDisabled(false);
         GlStateManager.popMatrix();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
