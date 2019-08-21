@@ -65,7 +65,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             //Future!
         }
     }

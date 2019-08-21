@@ -72,7 +72,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
         double newHeatLost = 0;
         double newHeatTransferred = 0;
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
                     IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity().getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);

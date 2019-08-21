@@ -124,7 +124,7 @@ public class Coord4D {
      * @return the TileEntity of this Coord4D's block
      */
     public TileEntity getTileEntity(IWorldReader world) {
-        if (world instanceof World && !exists(world)) {
+        if (world == null || world instanceof World && !exists(world)) {
             return null;
         }
         return world.getTileEntity(getPos());

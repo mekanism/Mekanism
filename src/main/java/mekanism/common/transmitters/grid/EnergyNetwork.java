@@ -81,7 +81,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     public double getEnergyNeeded() {
-        if (world.isRemote) {
+        if (isRemote()) {
             return 0;
         }
         return getCapacityAsDouble() - buffer.amount;
@@ -134,7 +134,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         clearJoulesTransmitted();
 
         double currentPowerScale = getPowerScale();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (Math.abs(currentPowerScale - lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1))) {
                 needsUpdate = true;
             }

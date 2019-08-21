@@ -152,7 +152,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             prevTransferAmount = 0;
             if (transferDelay == 0) {
                 didTransfer = false;

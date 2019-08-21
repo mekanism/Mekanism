@@ -60,7 +60,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
-        if (world.isRemote) {
+        if (isRemote()) {
             if (net.refGas != null && net.gasScale > gasScale) {
                 gasScale = net.gasScale;
                 refGas = net.refGas;
@@ -170,7 +170,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             prevTransferAmount = 0;
             if (transferDelay == 0) {
                 didTransfer = false;

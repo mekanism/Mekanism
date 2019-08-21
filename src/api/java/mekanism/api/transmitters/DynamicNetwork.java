@@ -37,6 +37,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected boolean needsUpdate = false;
     protected int updateDelay = 0;
     protected boolean firstUpdate = true;
+    @Nullable
     protected World world = null;
     private Set<DelayQueue> updateQueue = new LinkedHashSet<>();
 
@@ -112,6 +113,12 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return null;
     }
 
+    public boolean isRemote() {
+        //TODO: Evaluate if this is the correct way to handle the fact that world can be null when register is being called
+        // Also check to make sure that the usage of this method is as expected in all places
+        return world != null && world.isRemote;
+    }
+
     public abstract void absorbBuffer(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);
 
     public abstract void clampBuffer();
@@ -138,7 +145,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void invalidateTransmitter(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
-        if (!world.isRemote && transmitter.isValid()) {
+        if (!isRemote() && transmitter.isValid()) {
             transmitter.takeShare();
             transmitter.setTransmitterNetwork(null);
             TransmitterNetworkRegistry.registerOrphanTransmitter(transmitter);
@@ -217,7 +224,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void register() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             TransmitterNetworkRegistry.getInstance().registerNetwork(this);
         } else {
             MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 1));
@@ -229,7 +236,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         transmittersToAdd.clear();
         transmittersAdded.clear();
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             TransmitterNetworkRegistry.getInstance().removeNetwork(this);
         } else {
             MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 0));
@@ -247,16 +254,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public synchronized void updateCapacity() {
         doubleCapacity = transmitters.stream().mapToDouble(IGridTransmitter::getCapacity).sum();
         capacity = doubleCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) doubleCapacity;
-        //TODO: Remove this at some point, but kept in for now in case something is using the API and requires the meanCapacity
-        updateMeanCapacity();
-    }
-
-    /**
-     * Override this if things can have variable capacity along the network. An 'average' value of capacity. Calculate it how you will.
-     */
-    @Deprecated
-    protected synchronized void updateMeanCapacity() {
-        meanCapacity = transmitters.size() > 0 ? doubleCapacity / transmitters.size() : 0;
     }
 
     public int getCapacity() {
@@ -267,6 +264,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return doubleCapacity;
     }
 
+    @Nullable
     public World getWorld() {
         return world;
     }
@@ -276,7 +274,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             Iterator<DelayQueue> i = updateQueue.iterator();
 
             try {
