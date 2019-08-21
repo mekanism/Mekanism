@@ -8,11 +8,10 @@
     "IGI",
     " I "
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
-      "ore": "blockGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:glass"
     },
     "I": {
       "tag": "forge:ingots/steel"

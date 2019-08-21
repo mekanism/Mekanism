@@ -7,7 +7,7 @@
     "IBI",
     "III"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
       "item": "minecraft:bucket"
@@ -16,8 +16,7 @@
       "tag": "forge:circuits/advanced"
     },
     "G": {
-      "ore": "paneGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:panes/glass"
     },
     "I": {
       "item": "mekanism:thermal_evaporation_block"

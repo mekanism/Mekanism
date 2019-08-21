@@ -7,7 +7,7 @@
     "tEI",
     "GCG"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
@@ -25,8 +25,7 @@
       "item": "mekanism:energy_tablet"
     },
     "G": {
-      "ore": "blockGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:glass"
     },
     "I": {
       "item": "mekanism:basic_fluid_tank"

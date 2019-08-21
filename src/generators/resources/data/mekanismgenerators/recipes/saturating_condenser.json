@@ -7,7 +7,7 @@
     "TBT",
     "STS"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
       "item": "minecraft:bucket"

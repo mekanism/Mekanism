@@ -7,7 +7,7 @@
     "ADA",
     " G "
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
       "tag": "mekanism:alloys/infused"
@@ -16,8 +16,7 @@
       "tag": "forge:dusts/tin"
     },
     "G": {
-      "ore": "blockGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:glass"
     }
   }
 }

@@ -7,7 +7,7 @@
     "CcC",
     "SSS"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",
@@ -25,8 +25,7 @@
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "ore": "blockGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:glass"
     }
   }
 }

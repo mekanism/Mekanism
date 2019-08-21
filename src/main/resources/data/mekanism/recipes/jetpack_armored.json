@@ -1,15 +1,13 @@
 {
   "result": {
-    "nbt": {},
-    "item": "mekanism:jetpack_armored",
-    "type": "mekanism:item_nbt"
+    "item": "mekanism:jetpack_armored"
   },
   "pattern": [
     "D D",
     "BSB",
     " J "
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
       "tag": "forge:ingots/bronze"
@@ -21,9 +19,7 @@
       "tag": "forge:dusts/diamond"
     },
     "J": {
-      "nbt": {},
-      "item": "mekanism:jetpack",
-      "type": "mekanism:item_nbt"
+      "item": "mekanism:jetpack"
     }
   }
 }

@@ -566,13 +566,13 @@ public class Mekanism {
 
         //Register infuses
         //TODO: Let infuse types be registered via JSON and data packs
-        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", new ResourceLocation(Mekanism.MODID, "blocks/infuse/carbon")).setTranslationKey("carbon"));
-        InfuseRegistry.registerInfuseType(new InfuseType("TIN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/tin")).setTranslationKey("tin"));
-        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", new ResourceLocation(Mekanism.MODID, "blocks/infuse/diamond")).setTranslationKey("diamond"));
-        InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", new ResourceLocation(Mekanism.MODID, "blocks/infuse/redstone")).setTranslationKey("redstone"));
-        InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", new ResourceLocation(Mekanism.MODID, "blocks/infuse/fungi")).setTranslationKey("fungi"));
-        InfuseRegistry.registerInfuseType(new InfuseType("BIO", new ResourceLocation(Mekanism.MODID, "blocks/infuse/bio")).setTranslationKey("bio"));
-        InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation(Mekanism.MODID, "blocks/infuse/obsidian")).setTranslationKey("obsidian"));
+        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", new ResourceLocation(Mekanism.MODID, "block/infuse/carbon")).setTranslationKey("carbon"));
+        InfuseRegistry.registerInfuseType(new InfuseType("TIN", new ResourceLocation(Mekanism.MODID, "block/infuse/tin")).setTranslationKey("tin"));
+        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", new ResourceLocation(Mekanism.MODID, "block/infuse/diamond")).setTranslationKey("diamond"));
+        InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", new ResourceLocation(Mekanism.MODID, "block/infuse/redstone")).setTranslationKey("redstone"));
+        InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", new ResourceLocation(Mekanism.MODID, "block/infuse/fungi")).setTranslationKey("fungi"));
+        InfuseRegistry.registerInfuseType(new InfuseType("BIO", new ResourceLocation(Mekanism.MODID, "block/infuse/bio")).setTranslationKey("bio"));
+        InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation(Mekanism.MODID, "block/infuse/obsidian")).setTranslationKey("obsidian"));
 
         Capabilities.registerCapabilities();
     }

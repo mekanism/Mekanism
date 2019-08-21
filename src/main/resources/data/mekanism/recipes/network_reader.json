@@ -7,7 +7,7 @@
     "AEA",
     " I "
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
       "tag": "mekanism:alloys/infused"
@@ -16,8 +16,7 @@
       "item": "mekanism:energy_tablet"
     },
     "G": {
-      "ore": "blockGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:glass"
     },
     "I": {
       "tag": "forge:ingots/steel"

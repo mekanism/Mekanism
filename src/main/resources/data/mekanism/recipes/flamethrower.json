@@ -1,15 +1,13 @@
 {
   "result": {
-    "nbt": {},
-    "item": "mekanism:flamethrower",
-    "type": "mekanism:item_nbt"
+    "item": "mekanism:flamethrower"
   },
   "pattern": [
     "TTT",
     "TGS",
     "BCB"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
       "tag": "forge:ingots/bronze"

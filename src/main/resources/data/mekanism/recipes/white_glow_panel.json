@@ -8,11 +8,10 @@
     "S S",
     "GSG"
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "ore": "paneGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:panes/glass"
     },
     "S": {
       "item": "mekanism:hdpe_sheet"

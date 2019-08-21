@@ -8,7 +8,7 @@
     "OGO",
     "OOO"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
       "tag": "forge:ingots/refined_glowstone"

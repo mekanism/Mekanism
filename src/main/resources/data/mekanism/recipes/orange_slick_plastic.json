@@ -8,14 +8,13 @@
     "PSP",
     " P "
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
       "item": "mekanism:orange_plastic"
     },
     "S": {
-      "ore": "slimeball",
-      "type": "forge:ore_dict"
+      "tag": "forge:balls/slime"
     }
   }
 }

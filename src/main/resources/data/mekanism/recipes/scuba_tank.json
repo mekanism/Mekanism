@@ -1,15 +1,13 @@
 {
   "result": {
-    "nbt": {},
-    "item": "mekanism:scuba_tank",
-    "type": "mekanism:item_nbt"
+    "item": "mekanism:scuba_tank"
   },
   "pattern": [
     " C ",
     "AGA",
     "SSS"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
       "tag": "mekanism:alloys/infused"

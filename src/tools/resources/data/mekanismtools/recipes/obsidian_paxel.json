@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanismtools:obsidian_paxel"
+    "item": "mekanismtools:refined_obsidian_paxel"
   },
   "pattern": [
     "XYZ",
@@ -13,13 +13,13 @@
       "tag": "forge:rods/wooden"
     },
     "X": {
-      "item": "mekanismtools:obsidian_axe"
+      "item": "mekanismtools:refined_obsidian_axe"
     },
     "Y": {
-      "item": "mekanismtools:obsidian_pickaxe"
+      "item": "mekanismtools:refined_obsidian_pickaxe"
     },
     "Z": {
-      "item": "mekanismtools:obsidian_shovel"
+      "item": "mekanismtools:refined_obsidian_shovel"
     }
   }
 }

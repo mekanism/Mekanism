@@ -7,7 +7,7 @@
     "ATA",
     "OCO"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "conditions": [
     {
       "type": "mekanism:recipe_enabled",

@@ -1,15 +1,13 @@
 {
   "result": {
-    "nbt": {},
-    "item": "mekanism:jetpack",
-    "type": "mekanism:item_nbt"
+    "item": "mekanism:jetpack"
   },
   "pattern": [
     "SCS",
     "TGT",
     " T "
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
       "tag": "forge:ingots/steel"

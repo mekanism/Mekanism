@@ -7,7 +7,7 @@
     "CEC",
     "TCT"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
       "item": "mekanism:elite_induction_cell"

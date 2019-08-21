@@ -7,7 +7,7 @@
     "CIC",
     "STS"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "S": {
       "tag": "forge:ingots/steel"
@@ -19,8 +19,7 @@
       "item": "mekanism:teleportation_core"
     },
     "G": {
-      "ore": "blockGlass",
-      "type": "forge:ore_dict"
+      "tag": "forge:glass"
     },
     "I": {
       "item": "mekanism:steel_casing"

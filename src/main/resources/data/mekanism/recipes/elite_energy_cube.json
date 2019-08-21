@@ -7,7 +7,7 @@
     "gAg",
     "RTR"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
       "item": "mekanism:advanced_energy_cube"

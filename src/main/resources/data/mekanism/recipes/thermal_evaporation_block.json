@@ -8,7 +8,7 @@
     "SCS",
     " S "
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
       "tag": "forge:ingots/copper"
