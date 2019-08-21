@@ -75,6 +75,7 @@ public class PacketJetpackData {
                 Mekanism.playerState.setActiveJetpacks(message.activeJetpacks);
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketJetpackData pkt, PacketBuffer buf) {

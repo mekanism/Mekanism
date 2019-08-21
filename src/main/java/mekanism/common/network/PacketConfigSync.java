@@ -22,6 +22,7 @@ public class PacketConfigSync {
     public static void handle(PacketConfigSync message, Supplier<Context> context) {
         MekanismConfigOld.setSyncedConfig(message.config);
         Mekanism.proxy.onConfigSync(true);
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketConfigSync pkt, PacketBuffer buf) {

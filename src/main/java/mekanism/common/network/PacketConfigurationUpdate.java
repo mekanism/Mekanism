@@ -108,6 +108,7 @@ public class PacketConfigurationUpdate {
                 });
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketConfigurationUpdate pkt, PacketBuffer buf) {

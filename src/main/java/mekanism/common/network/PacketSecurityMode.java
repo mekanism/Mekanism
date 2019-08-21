@@ -55,6 +55,7 @@ public class PacketSecurityMode {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketSecurityMode pkt, PacketBuffer buf) {

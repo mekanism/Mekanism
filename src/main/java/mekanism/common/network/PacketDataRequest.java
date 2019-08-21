@@ -42,6 +42,7 @@ public class PacketDataRequest {
                   network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player)
             );
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketDataRequest pkt, PacketBuffer buf) {

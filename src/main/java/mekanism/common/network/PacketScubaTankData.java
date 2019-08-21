@@ -69,6 +69,7 @@ public class PacketScubaTankData {
                 Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketScubaTankData pkt, PacketBuffer buf) {

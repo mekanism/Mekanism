@@ -151,6 +151,7 @@ public class PacketPortableTeleporter {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketPortableTeleporter pkt, PacketBuffer buf) {

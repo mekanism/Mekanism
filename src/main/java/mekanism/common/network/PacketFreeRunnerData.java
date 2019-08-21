@@ -51,6 +51,7 @@ public class PacketFreeRunnerData {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketFreeRunnerData pkt, PacketBuffer buf) {

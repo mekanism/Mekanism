@@ -34,6 +34,7 @@ public class PacketEntityMove {
                 entity.setLocationAndAngles(message.pos.x, message.pos.y, message.pos.z, entity.rotationYaw, entity.rotationPitch);
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketEntityMove pkt, PacketBuffer buf) {

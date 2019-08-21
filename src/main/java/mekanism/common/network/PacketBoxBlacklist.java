@@ -14,6 +14,7 @@ public class PacketBoxBlacklist {
     //TODO: Actually store the data in the Packet, so that it doesn't get handled until handle is called
 
     public static void handle(PacketBoxBlacklist message, Supplier<Context> context) {
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketBoxBlacklist pkt, PacketBuffer buf) {

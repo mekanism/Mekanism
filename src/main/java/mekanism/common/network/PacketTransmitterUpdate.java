@@ -130,6 +130,7 @@ public class PacketTransmitterUpdate {
                 }
             });
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketTransmitterUpdate pkt, PacketBuffer buf) {

@@ -64,6 +64,7 @@ public class PacketNewFilter {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketNewFilter pkt, PacketBuffer buf) {

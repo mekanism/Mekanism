@@ -39,6 +39,7 @@ public class PacketSecurityUpdate {
                 MekanismClient.clientSecurityMap.put(message.playerUUID, message.securityData);
             }
         }
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketSecurityUpdate pkt, PacketBuffer buf) {

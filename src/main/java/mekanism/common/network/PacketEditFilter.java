@@ -92,6 +92,7 @@ public class PacketEditFilter {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketEditFilter pkt, PacketBuffer buf) {

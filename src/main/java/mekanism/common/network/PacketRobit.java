@@ -50,6 +50,7 @@ public class PacketRobit {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketRobit pkt, PacketBuffer buf) {

@@ -31,6 +31,7 @@ public class PacketPortalFX {
                       message.coord4D.z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketPortalFX pkt, PacketBuffer buf) {

@@ -104,6 +104,7 @@ public class PacketGuiButtonPress {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketGuiButtonPress pkt, PacketBuffer buf) {

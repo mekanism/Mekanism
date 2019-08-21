@@ -69,6 +69,7 @@ public class PacketFlamethrowerData {
                 Mekanism.playerState.setActiveFlamethrowers(message.activeFlamethrowers);
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketFlamethrowerData pkt, PacketBuffer buf) {

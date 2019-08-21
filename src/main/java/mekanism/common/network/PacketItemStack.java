@@ -46,6 +46,7 @@ public class PacketItemStack {
                 message.storedBuffer.release();
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketItemStack pkt, PacketBuffer buf) {

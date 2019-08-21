@@ -31,6 +31,7 @@ public class PacketContainerEditMode {
                 ((IFluidContainerManager) tileEntity).setContainerEditMode(message.value);
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketContainerEditMode pkt, PacketBuffer buf) {

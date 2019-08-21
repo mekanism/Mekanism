@@ -36,6 +36,7 @@ public class PacketRemoveUpgrade {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketRemoveUpgrade pkt, PacketBuffer buf) {

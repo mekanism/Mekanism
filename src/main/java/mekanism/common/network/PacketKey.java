@@ -27,6 +27,7 @@ public class PacketKey {
         } else {
             Mekanism.keyMap.remove(player, message.key);
         }
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketKey pkt, PacketBuffer buf) {

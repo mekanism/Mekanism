@@ -31,6 +31,7 @@ public class PacketRedstoneControl {
                 ((IRedstoneControl) tileEntity).setControlType(message.value);
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketRedstoneControl pkt, PacketBuffer buf) {

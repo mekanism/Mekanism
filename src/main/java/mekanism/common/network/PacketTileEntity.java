@@ -55,6 +55,7 @@ public class PacketTileEntity {
             });
             message.storedBuffer.release();
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketTileEntity pkt, PacketBuffer buf) {

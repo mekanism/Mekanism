@@ -41,6 +41,7 @@ public class PacketDropperUse {
                 }
             }
         });
+        context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketDropperUse pkt, PacketBuffer buf) {
