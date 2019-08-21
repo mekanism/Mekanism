@@ -48,6 +48,15 @@ public class BlockStateHelper {
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
 
+    public static BlockState getDefaultState(@Nonnull BlockState state) {
+        Block block = state.getBlock();
+        if (block instanceof IStateActive) {
+            //Default things to not being active
+            state = state.with(activeProperty, false);
+        }
+        return state;
+    }
+
     public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
         List<IProperty> properties = new ArrayList<>();
         if (block instanceof IStateFacing) {
@@ -56,9 +65,10 @@ public class BlockStateHelper {
         if (block instanceof IStateActive) {
             properties.add(activeProperty);
         }
-        if (block instanceof IStateColor) {
+        //TODO: Make color be an extended state
+        /*if (block instanceof IStateColor) {
             properties.add(colorProperty);
-        }
+        }*/
         if (block instanceof IStateStorage) {
             properties.add(storageProperty);
         }

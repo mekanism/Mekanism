@@ -1,25 +1,16 @@
 package mekanism.common.block.states;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.IActiveState;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 
 //TODO: Should/Can IActiveSate be merged with this overriding this. (Will look at when moving some TileEntity stuff into blocks/block states more directly)
 public interface IStateActive {
 
-    default boolean isActive(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-        return tile != null && isActive(tile);
+    default boolean isActive(BlockState state) {
+        return state.get(BlockStateHelper.activeProperty);
     }
 
-    default boolean isActive(@Nonnull TileEntity tile) {
-        if (tile instanceof IActiveState) {
-            return ((IActiveState) tile).getActive();
-        }
-        return false;
+    default BlockState setActive(@Nonnull BlockState state, boolean active) {
+        return state.with(BlockStateHelper.activeProperty, active);
     }
 }

@@ -52,6 +52,7 @@ public abstract class BlockTileDrops extends Block {
 
     protected BlockTileDrops(Block.Properties properties) {
         super(properties);
+        setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }
 
     @Nonnull

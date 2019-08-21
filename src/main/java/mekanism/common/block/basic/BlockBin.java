@@ -7,7 +7,6 @@ import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateActive;
@@ -39,7 +38,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
 public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator {
@@ -66,17 +64,6 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
-        TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tileEntity instanceof IActiveState) {
-            if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
-                return 15;
-            }
-        }
-        return super.getLightValue(state, world, pos);
     }
 
     @Override

@@ -177,7 +177,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End variables ITileSecurity
 
     //Variables for handling ITileActive
-    private boolean isActive;
     private long lastActive = -1;
 
     // Number of ticks that the block can be inactive before it's considered not recently active
@@ -422,23 +421,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (isElectric()) {
                 setEnergy(dataStream.readDouble());
             }
-            if (isActivatable()) {
-                boolean newActive = dataStream.readBoolean();
-                boolean stateChange = newActive != getActive();
-                isActive = newActive;
-
-                if (stateChange && !getActive()) {
-                    // Switched off; note the time
-                    lastActive = world.getDayTime();
-                } else if (stateChange) { //&& getActive()
-                    // Switching on; if lastActive is not currently set, trigger a lighting update
-                    // and make sure lastActive is clear
-                    if (lastActive == -1) {
-                        MekanismUtils.updateBlock(world, getPos());
-                    }
-                    lastActive = -1;
-                }
-            }
         }
     }
 
@@ -455,9 +437,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (isElectric()) {
             data.add(getEnergy());
-        }
-        if (isActivatable()) {
-            data.add(getActive());
         }
         return data;
     }
@@ -521,9 +500,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isElectric()) {
             electricityStored = nbtTags.getDouble("electricityStored");
         }
-        if (isActivatable()) {
-            isActive = nbtTags.getBoolean("isActive");
-        }
     }
 
     @Nonnull
@@ -554,9 +530,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (isElectric()) {
             nbtTags.putDouble("electricityStored", getEnergy());
-        }
-        if (isActivatable()) {
-            nbtTags.putBoolean("isActive", getActive());
         }
         return nbtTags;
     }
@@ -645,10 +618,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     @Override
     public Direction getDirection() {
-        BlockState state = getBlockState();
-        Block block = state.getBlock();
-        if (block instanceof IStateFacing) {
-            return ((IStateFacing) block).getDirection(state);
+        if (isDirectional()) {
+            BlockState state = getBlockState();
+            Block block = state.getBlock();
+            if (block instanceof IStateFacing) {
+                return ((IStateFacing) block).getDirection(state);
+            }
         }
         //TODO: Remove, give it some better default, or allow it to be null
         return Direction.NORTH;
@@ -657,12 +632,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public void setFacing(@Nonnull Direction direction) {
         //TODO: Remove this method or cleanup how it is a wrapper for setting the blockstate direction
-        BlockState state = getBlockState();
-        Block block = state.getBlock();
-        if (block instanceof IStateFacing) {
-            state = ((IStateFacing) block).setDirection(state, direction);
-            ;
-            world.setBlockState(pos, state);
+        if (isDirectional()) {
+            BlockState state = getBlockState();
+            Block block = state.getBlock();
+            if (block instanceof IStateFacing) {
+                state = ((IStateFacing) block).setDirection(state, direction);
+                world.setBlockState(pos, state);
+            }
         }
     }
     //End methods ITileDirectional
@@ -937,7 +913,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Methods for implementing ITileActive
     @Override
     public boolean getActive() {
-        return isActivatable() && isActive;
+        if (isActivatable()) {
+            BlockState state = getBlockState();
+            Block block = state.getBlock();
+            if (block instanceof IStateActive) {
+                return ((IStateActive) block).isActive(state);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -945,8 +928,29 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isActivatable()) {
             boolean stateChange = getActive() != active;
             if (stateChange) {
-                isActive = active;
-                Mekanism.packetHandler.sendUpdatePacket(this);
+                BlockState state = getBlockState();
+                Block block = state.getBlock();
+                if (block instanceof IStateActive) {
+                    int flags = 3;
+                    //TODO: Check if this is done correctly
+                    if (!active) {
+                        //Switched off; note the time
+                        lastActive = world.getDayTime();
+                        //TODO: Is there any case we don't want a rendering update here?
+                    } else {
+                        //Switching on; if lastActive is not currently set, trigger a lighting update
+                        // and make sure lastActive is clear
+                        if (lastActive != -1 || !lightUpdate() || !MekanismConfig.client.machineEffects.get()) {
+                            //Mark that we don't want a rendering update
+                            flags |= 4;
+                        }
+                        lastActive = -1;
+                    }
+                    //TODO: Should we also check renderUpdate() for building flags
+                    //Set the state
+                    state = ((IStateActive) block).setActive(state, active);
+                    world.setBlockState(pos, state, flags);
+                }
             }
         }
     }

@@ -53,9 +53,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
 
-        gunpowderIcon = map.getAtlasSprite("minecraft:items/gunpowder");
-        torchOffIcon = map.getAtlasSprite("minecraft:blocks/redstone_torch_off");
-        torchOnIcon = map.getAtlasSprite("minecraft:blocks/redstone_torch_on");
+        gunpowderIcon = map.getAtlasSprite("minecraft:item/gunpowder");
+        torchOffIcon = map.getAtlasSprite("minecraft:block/redstone_torch_off");
+        torchOnIcon = map.getAtlasSprite("minecraft:block/redstone_torch_on");
     }
 
     @Override

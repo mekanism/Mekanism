@@ -53,6 +53,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
 
     protected BlockMekanismContainer(Block.Properties properties) {
         super(properties);
+        setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }
 
     @Nonnull

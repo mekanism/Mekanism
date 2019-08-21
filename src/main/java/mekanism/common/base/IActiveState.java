@@ -38,5 +38,6 @@ public interface IActiveState {
      */
     boolean renderUpdate();
 
+    //TODO: Name this better
     boolean lightUpdate();
 }

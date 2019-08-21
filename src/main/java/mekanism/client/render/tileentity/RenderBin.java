@@ -7,7 +7,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -16,8 +15,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderBin extends TileEntityRenderer<TileEntityBin> {
-
-    private final ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
 
     @Override
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
@@ -59,7 +56,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             float scaler = 0.9F;
             GlStateManager.scalef(scale * scaler, scale * scaler, -0.0001F);
             GlStateManager.rotatef(180, 0, 0, 1);
-            renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
+            Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(itemType, 0, 0);
             GlStateManager.popMatrix();
         }
         if (text && !amount.equals("")) {

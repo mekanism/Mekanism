@@ -1,12 +1,10 @@
 package mekanism.common.block.basic;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.states.IStateActive;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -40,10 +38,11 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IStateAc
 
     @Override
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
-        return isActive(state, world, pos) ? 15 : super.getLightValue(state, world, pos);
+        return isActive(state) ? 15 : super.getLightValue(state, world, pos);
     }
 
-    @Override
+    //TODO: Set active state when it changes
+    /*@Override
     public boolean isActive(@Nonnull TileEntity tile) {
         if (tile instanceof TileEntitySuperheatingElement) {
             //Should be true
@@ -53,7 +52,7 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IStateAc
             }
         }
         return false;
-    }
+    }*/
 
     @Override
     public TileEntityType<TileEntitySuperheatingElement> getTileType() {
