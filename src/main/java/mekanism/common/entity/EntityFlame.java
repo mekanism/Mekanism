@@ -159,7 +159,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
                 Coord4D sideCoord = new Coord4D(blockResult.getPos().offset(blockResult.getFace()), world);
 
-                if (MekanismConfig.general.aestheticWorldDamage.get() && !fluid && (sideCoord.isAirBlock(world) || sideCoord.isReplaceable(world))) {
+                if (MekanismConfig.general.aestheticWorldDamage.get() && !fluid && MekanismUtils.isValidReplaceableBlock(world, sideCoord.getPos())) {
                     if (mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(blockResult, world))) {
                         if (mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !world.isRemote) {
                             world.setBlockState(sideCoord.getPos(), Blocks.FIRE.getDefaultState());

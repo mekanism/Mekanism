@@ -358,17 +358,6 @@ public class Coord4D {
     }
 
     /**
-     * Whether or not this block this Coord4D represents is replaceable.
-     *
-     * @param world - world this Coord4D is in
-     *
-     * @return if this Coord4D is replaceable
-     */
-    public boolean isReplaceable(IWorldReader world) {
-        return world.getBlockState(getPos()).getMaterial().isReplaceable();
-    }
-
-    /**
      * Gets a bounding box that contains the area this Coord4D would take up in a world.
      *
      * @return this Coord4D's bounding box

@@ -396,6 +396,14 @@ public final class MekanismUtils {
     }
 
     /**
+     * Checks if a block is valid for a position and the current block there can be replaced.
+     * @return True if the block can be replaced and is within the world's bounds.
+     */
+    public static boolean isValidReplaceableBlock(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+        return World.isValid(pos) && world.getBlockState(pos).getMaterial().isReplaceable();
+    }
+
+    /**
      * Notifies neighboring blocks of a TileEntity change without loading chunks.
      *
      * @param world - world to perform the operation in
@@ -460,7 +468,13 @@ public final class MekanismUtils {
     public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote) {
-            ((TileEntityBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
+            //TODO: Figure out how to delay this so that the tile gets created before this code runs
+            TileEntity tile = getTileEntity(world, boundingLocation);
+            if (tile instanceof TileEntityBoundingBlock) {
+                ((TileEntityBoundingBlock) tile).setMainLocation(orig.getPos());
+            } else {
+                Mekanism.logger.warn("Unable to find Bounding Block Tile at: {}", boundingLocation);
+            }
         }
     }
 
@@ -474,7 +488,13 @@ public final class MekanismUtils {
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote) {
-            ((TileEntityAdvancedBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
+            //TODO: Figure out how to delay this so that the tile gets created before this code runs
+            TileEntity tile = getTileEntity(world, boundingLocation);
+            if (tile instanceof TileEntityAdvancedBoundingBlock) {
+                ((TileEntityAdvancedBoundingBlock) tile).setMainLocation(orig.getPos());
+            } else {
+                Mekanism.logger.warn("Unable to find Advanced Bounding Block Tile at: {}", boundingLocation);
+            }
         }
     }
 

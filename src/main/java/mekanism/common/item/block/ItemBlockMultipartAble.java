@@ -1,6 +1,7 @@
 package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -36,8 +37,6 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        BlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
         Hand hand = context.getHand();
         ItemStack itemstack = player.getHeldItem(hand);
         if (itemstack.isEmpty()) {
@@ -46,13 +45,14 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         Direction side = context.getFace();
         BlockItemUseContext blockItemUseContext = new BlockItemUseContext(context);
         //TODO: Multipart
+        boolean replaceable = MekanismUtils.isValidReplaceableBlock(world, pos);
         /*if (Mekanism.hooks.MCMPLoaded) {
-            if (!block.isReplaceable(state, blockItemUseContext) && !hasFreeMultiPartSpot(itemstack, world, pos, state, side)) {//free spot handles case of no container
+            if (!replaceable && !hasFreeMultiPartSpot(itemstack, world, pos, state, side)) {//free spot handles case of no container
                 pos = pos.offset(side);
                 state = world.getBlockState(pos);
             }
         } else*/
-        if (!block.isReplaceable(state, blockItemUseContext)) {
+        if (!replaceable) {
             pos = pos.offset(side);
         }
 
@@ -106,9 +106,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        if (!world.getBlockState(pos).getBlock().isReplaceable(state, context)) {
+        if (!MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos())) {
             return false;
         }
         return super.placeBlock(context, state);

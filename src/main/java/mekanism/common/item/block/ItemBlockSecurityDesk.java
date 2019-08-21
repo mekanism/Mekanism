@@ -3,11 +3,10 @@ package mekanism.common.item.block;
 import javax.annotation.Nonnull;
 import mekanism.client.render.item.block.RenderSecurityDeskItem;
 import mekanism.common.block.basic.BlockSecurityDesk;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> {
 
@@ -17,9 +16,7 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> {
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        if (World.isValid(pos.up()) || !world.getBlockState(pos.up()).getBlock().isReplaceable(world.getBlockState(pos.up()), context)) {
+        if (!MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
             //If there is not enough room, fail
             return false;
         }

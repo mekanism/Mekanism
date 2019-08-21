@@ -58,13 +58,13 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip<Bl
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (!world.getBlockState(pos).getMaterial().isReplaceable() || !world.isAirBlock(pos.up())) {
+        if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
             return false;
         }
         for (int xPos = -1; xPos <= 1; xPos++) {
             for (int zPos = -1; zPos <= 1; zPos++) {
                 BlockPos toCheck = pos.add(xPos, 2, zPos);
-                if (World.isValid(toCheck) || !world.getBlockState(toCheck).getMaterial().isReplaceable()) {
+                if (!MekanismUtils.isValidReplaceableBlock(world, toCheck)) {
                     //If there is not enough room, fail
                     return false;
                 }

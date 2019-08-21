@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.entity.EntityBalloon;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
@@ -79,13 +80,13 @@ public class ItemBalloon extends ItemMekanism {
                 return ActionResultType.FAIL;
             }
             World world = context.getWorld();
-            if (world.getBlockState(pos).getMaterial().isReplaceable()) {
+            if (MekanismUtils.isValidReplaceableBlock(world, pos)) {
                 pos = pos.down();
             }
             if (!Block.hasSolidSide(world.getBlockState(pos), world, pos, Direction.UP)) {
                 return ActionResultType.FAIL;
             }
-            if (canReplace(world, pos.up()) && canReplace(world, pos.up(2))) {
+            if (MekanismUtils.isValidReplaceableBlock(world, pos.up()) && MekanismUtils.isValidReplaceableBlock(world, pos.up(2))) {
                 world.removeBlock(pos.up(), false);
                 world.removeBlock(pos.up(2), false);
                 if (!world.isRemote) {
@@ -117,10 +118,6 @@ public class ItemBalloon extends ItemMekanism {
             return true;
         }
         return false;
-    }
-
-    private boolean canReplace(World world, BlockPos pos) {
-        return world.isAirBlock(pos) || world.getBlockState(pos).getMaterial().isReplaceable();
     }
 
     public class DispenserBehavior extends DefaultDispenseItemBehavior {

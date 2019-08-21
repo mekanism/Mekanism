@@ -73,8 +73,7 @@ public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip<BlockDigital
         Iterator<BlockPos> iterator = BlockPos.getAllInBox(-1, 0, -1, 1, 1, 1).iterator();
         while (iterator.hasNext()) {
             BlockPos pos = iterator.next();
-            BlockState blockState = world.getBlockState(pos);
-            if (!World.isValid(pos) || !world.isBlockLoaded(pos) || !blockState.getMaterial().isReplaceable()) {
+            if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
                 //If it won't fit then fail
                 return false;
             }

@@ -8,14 +8,13 @@
     "ILI",
     " I "
   ],
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "key": {
     "I": {
       "item": "mekanismgenerators:reactor_glass"
     },
     "L": {
-      "ore": "blockRedstone",
-      "type": "forge:ore_dict"
+      "item": "mekanism:redstone_block"
     }
   }
 }

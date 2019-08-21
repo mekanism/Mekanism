@@ -58,12 +58,12 @@ public class ItemBlockWindGenerator extends ItemBlockAdvancedTooltip<BlockWindGe
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (!world.getBlockState(pos).getMaterial().isReplaceable()) {
+        if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
             return false;
         }
         for (int yPos = 1; yPos <= 4; yPos++) {
             BlockPos toCheck = pos.up(yPos);
-            if (World.isValid(toCheck) || !world.getBlockState(toCheck).getMaterial().isReplaceable()) {
+            if (!MekanismUtils.isValidReplaceableBlock(world, toCheck)) {
                 //If there is not enough room, fail
                 return false;
             }

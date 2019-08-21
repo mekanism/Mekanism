@@ -351,7 +351,7 @@ public class MekanismRenderer {
 
         event.addSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid_heavy_water"));
 
-        TransmitterModel.getIcons(event.getMap());
+        TransmitterModel.addIcons(event);
 
         for (Gas gas : GasRegistry.getRegisteredGasses()) {
             gas.registerIcon(event);

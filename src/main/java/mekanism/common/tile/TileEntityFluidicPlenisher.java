@@ -174,7 +174,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (MekanismUtils.isFluid(world, coord)) {
             return isPathfinding;
         }
-        return world.getBlockState(coord.getPos()).getMaterial().isReplaceable();
+        return MekanismUtils.isValidReplaceableBlock(world, coord.getPos());
     }
 
     @Override

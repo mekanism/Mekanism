@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.recipe.MekanismRecipeEnabledCondition;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -9,7 +10,9 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +43,8 @@ public class Registration {
     public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         //TODO: Register recipe serializers
         //event.getRegistry().register(ShapedMekanismRecipe.CRAFTING_SHAPED);
+        //TODO: Is this the correct place to register this
+        CraftingHelper.register(new ResourceLocation(Mekanism.MODID, "recipe_enabled"), new MekanismRecipeEnabledCondition());
     }
 
     @SubscribeEvent

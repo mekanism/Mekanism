@@ -26,7 +26,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -56,10 +55,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeis
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        BlockPos abovePos = pos.up();
-        if (!World.isValid(abovePos) || !world.getBlockState(abovePos).getMaterial().isReplaceable()) {
+        if (!MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
             //If there isn't room then fail
             return false;
         }

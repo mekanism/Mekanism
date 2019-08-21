@@ -240,14 +240,17 @@ public class SoundHandler {
         }
 
         private float getMufflingFactor() {
+            if (minecraft.world == null) {
+                return 1.0F;
+            }
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
             TileEntity te = minecraft.world.getTileEntity(new BlockPos(original.getX(), original.getY(), original.getZ()));
             if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
-                return 1.0f - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
+                return 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
             }
-            return 1.0f;
+            return 1.0F;
         }
 
         @Override
