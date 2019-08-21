@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -290,13 +291,13 @@ public class MekanismRenderer {
 
     @Nonnull
     public static GlowInfo enableGlow(int glow) {
-        //TODO: Fix glow
-        /*if (!FMLClientHandler.instance().hasOptifine() && glow > 0) {
-            GlowInfo info = new GlowInfo(OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY, true);
+        //TODO: Do we need to make sure optifine is not loaded
+        if (/*!FMLClientHandler.instance().hasOptifine() && */glow > 0) {
+            GlowInfo info = new GlowInfo(GLX.lastBrightnessX, GLX.lastBrightnessY, true);
             float glowStrength = (glow / 15F) * 240F;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
+            GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
             return info;
-        }*/
+        }
         return NO_GLOW;
     }
 
@@ -311,10 +312,9 @@ public class MekanismRenderer {
     }
 
     public static void disableGlow(@Nonnull GlowInfo info) {
-        //TODO: Fix glow
-        /*if (info.glowEnabled) {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, info.lightmapLastX, info.lightmapLastY);
-        }*/
+        if (info.glowEnabled) {
+            GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, info.lightmapLastX, info.lightmapLastY);
+        }
     }
 
     public static float getPartialTick() {

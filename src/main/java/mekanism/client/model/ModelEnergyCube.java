@@ -392,7 +392,7 @@ public class ModelEnergyCube extends Model {
         GlStateManager.popMatrix();
     }
 
-    public void renderSide(float size, Direction side, IOState state, EnergyCubeTier tier, TextureManager renderer) {
+    public void renderSide(float size, Direction side, IOState state, TextureManager renderer) {
         if (state != IOState.OFF) { //input or output
             connectors[side.ordinal()].render(size);
             ports[side.ordinal()].render(size);

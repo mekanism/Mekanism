@@ -48,7 +48,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
         for (Direction side : Direction.values()) {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-            energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getInstance().textureManager);
+            energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, Minecraft.getInstance().textureManager);
         }
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();

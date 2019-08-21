@@ -56,7 +56,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
         for (Direction side : Direction.values()) {
             bindTexture(baseTexture);
-            model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, tileEntity.tier, rendererDispatcher.textureManager);
+            model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, rendererDispatcher.textureManager);
         }
 
         GlStateManager.disableBlend();
