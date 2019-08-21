@@ -1,5 +1,9 @@
 {
     "parent": "block/cube_all",
+    "textures": {
+        "all": "mekanism:block/models/laser",
+        "particle": "mekanism:block/steel_casing"
+    },
     "elements": [
         {
             "__comment": "rod1",
@@ -261,9 +265,5 @@
                 "east":  {"uv": [0, 2.5, 0.25, 3.75], "texture": "#all"}
             }
         }
-    ],
-    "textures": {
-        "all": "mekanism:block/models/laser",
-        "particle": "mekanism:block/steel_casing"
-    }
+    ]
 }
