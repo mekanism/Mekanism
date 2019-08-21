@@ -10,8 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "*": {
-      "item": "minecraft:coal",
-      "data": 1
+      "item": "minecraft:charcoal"
     }
   }
 }
