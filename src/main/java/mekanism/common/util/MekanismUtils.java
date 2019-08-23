@@ -732,11 +732,11 @@ public final class MekanismUtils {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
             case RF:
-                return UnitDisplayUtils.getDisplayShort(RFIntegration.toRF(energy), ElectricUnit.REDSTONE_FLUX);
+                return UnitDisplayUtils.getDisplayShort(RFIntegration.toRFAsDouble(energy), ElectricUnit.REDSTONE_FLUX);
             case EU:
                 return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
             case T:
-                return UnitDisplayUtils.getDisplayShort(TeslaIntegration.toTesla(energy), ElectricUnit.TESLA);
+                return UnitDisplayUtils.getDisplayShort(TeslaIntegration.toTeslaAsDouble(energy), ElectricUnit.TESLA);
         }
         return "error";
     }
@@ -784,7 +784,7 @@ public final class MekanismUtils {
             case EU:
                 return IC2Integration.toEU(energy);
             case T:
-                return TeslaIntegration.toTesla(energy);
+                return TeslaIntegration.toTeslaAsDouble(energy);
             default:
                 return energy;
         }

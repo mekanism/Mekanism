@@ -31,6 +31,10 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
         return Math.round(joules * MekanismConfig.current().general.TO_TESLA.val());
     }
 
+    public static double toTeslaAsDouble(double joules) {
+        return joules * MekanismConfig.current().general.TO_TESLA.val();
+    }
+
     public static double fromTesla(long tesla) {
         return tesla * MekanismConfig.current().general.FROM_TESLA.val();
     }
