@@ -291,12 +291,6 @@ upgrade.filter.desc=Et filer som separerer !ntungtvann fra vanlig vann.
 mekanism.key.mode=Endre modus
 mekanism.key.voice=Stemme
 
-# Config Gui
-mekanism.configgui.ctgy.general=Mekanism Generelle Innstillinger
-mekanism.configgui.ctgy.machines=Maskin Innstillinger
-mekanism.configgui.ctgy.usage=Bruk Innstillinger
-mekanism.configgui.ctgy.client=Klient Innstillinger
-
 # Gui text
 gui.power=Kraft
 gui.confirm=Bekreft
@@ -691,96 +685,3 @@ gui.maxPlasma=Maks. Plasma Temp
 gui.maxCasing=Maks. Kasse Temp
 gui.passiveGeneration=Passiv Generering
 gui.steamProduction=Dampproduksjon
-
-#########
-# TOOLS
-#########
-
-# Vanilla Paxels
-item.WoodPaxel.name=Tre Paxel
-item.StonePaxel.name=Stein Paxel
-item.IronPaxel.name=Jern Paxel
-item.DiamondPaxel.name=Diamant Paxel
-item.GoldPaxel.name=Gull Paxel
-
-# Obsidian
-item.ObsidianHelmet.name=Obsidian Hjelm
-item.ObsidianChestplate.name=Obsidian Brystplate
-item.ObsidianLeggings.name=Obsidian Benplater
-item.ObsidianBoots.name=Obsidian Støvler
-item.ObsidianPaxel.name=Obsidian Paxel
-item.ObsidianPickaxe.name=Obsidian Hakke
-item.ObsidianAxe.name=Obsidian Øks
-item.ObsidianShovel.name=Obsidian Spade
-item.ObsidianHoe.name=Obsidian Ljå
-item.ObsidianSword.name=Obsidian Sverd
-
-# Lapis Lazuli
-item.LapisLazuliHelmet.name=Lapis Lazuli Hjelm
-item.LapisLazuliChestplate.name=Lapis Lazuli Brystplate
-item.LapisLazuliLeggings.name=Lapis Lazuli Benplater
-item.LapisLazuliBoots.name=Lapis Lazuli Støvler
-item.LapisLazuliPaxel.name=Lapis Lazuli Paxel
-item.LapisLazuliPickaxe.name=Lapis Lazuli Hakke
-item.LapisLazuliAxe.name=Lapis Lazuli Øks
-item.LapisLazuliShovel.name=Lapis Lazuli Spade
-item.LapisLazuliHoe.name=Lapis Lazuli Ljå
-item.LapisLazuliSword.name=Lapis Lazuli Sverd
-
-# Osmium
-item.OsmiumHelmet.name=Osmium Hjelm
-item.OsmiumChestplate.name=Osmiumbrystplate
-item.OsmiumLeggings.name=Osmium Benplater
-item.OsmiumBoots.name=Osmium Støvler
-item.OsmiumPaxel.name=Osmium Paxel
-item.OsmiumPickaxe.name=Osmium Hakke
-item.OsmiumAxe.name=Osmium Øks
-item.OsmiumShovel.name=Osmium Spade
-item.OsmiumHoe.name=Osmium Ljå
-item.OsmiumSword.name=Osmium Sverd
-
-# Bronze
-item.BronzeHelmet.name=Bronse Hjelm
-item.BronzeChestplate.name=Bronse Brystplate
-item.BronzeLeggings.name=Bronse Benplater
-item.BronzeBoots.name=Bronse Støvler
-item.BronzePaxel.name=Bronse Paxel
-item.BronzePickaxe.name=Bronse Hakke
-item.BronzeAxe.name=Bronse Øks
-item.BronzeShovel.name=Bronse Spade
-item.BronzeHoe.name=Bronse Ljå
-item.BronzeSword.name=Bronse Sverd
-
-# Glow
-item.GlowstoneHelmet.name=Glødestein Hjelm
-item.GlowstoneChestplate.name=Glødestein Brystplate
-item.GlowstoneLeggings.name=Glødestein Benplater
-item.GlowstoneBoots.name=Glødestein Støvler
-item.GlowstonePaxel.name=Glødestein Paxel
-item.GlowstonePickaxe.name=Glødestein Hakke
-item.GlowstoneAxe.name=Glødestein Øks
-item.GlowstoneShovel.name=Glødestein Spade
-item.GlowstoneHoe.name=Glødestein Ljå
-item.GlowstoneSword.name=Glødestein Sverd
-
-# Steel
-item.SteelHelmet.name=Stål Hjelm
-item.SteelChestplate.name=Stål Brystplate
-item.SteelLeggings.name=Stål Benplater
-item.SteelBoots.name=Stål Støvler
-item.SteelPaxel.name=Stål Paxel
-item.SteelPickaxe.name=Stål Hakke
-item.SteelAxe.name=Stål Øks
-item.SteelShovel.name=Stål Spade
-item.SteelHoe.name=Stål Ljå
-item.SteelSword.name=Stål Sverd
-
-# Config Gui
-mekanism.configgui.ctgy.tools.general=Generelt
-mekanism.configgui.ctgy.tools.armor=Rustnings Balanse
-mekanism.configgui.ctgy.tools.tools=Verktøy Balanse
-
-# Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=Innstillinger vedrørende MekanismTools' generell konfigurasjon.
-mekanism.configgui.ctgy.tools.armor.tooltip=Innstillinger vedrørende beskyttelses verdier og balanse for MekanismTools rustninger.
-mekanism.configgui.ctgy.tools.tools.tooltip=Innstillinger vedrørende effektivitet verdier og balanse for MekanismTools verktøy.

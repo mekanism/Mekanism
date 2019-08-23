@@ -77,9 +77,9 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             rate = Math.min(rate, tileEntity.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
             renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.production"), ": ",
                   EnergyDisplay.of(tileEntity.structure.clientFlow * energyMultiplier)), 53, 26, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.flowRate"), ": " + tileEntity.structure.clientFlow + " mB/t"), 53, 35, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.capacity"), ": " + tileEntity.structure.getFluidCapacity() + " mB"), 53, 44, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.maxFlow"), ": " + rate + " mB/t"), 53, 53, 0x00CD00, 106);
+            renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.flow_rate"), ": " + tileEntity.structure.clientFlow + " mB/t"), 53, 35, 0x00CD00, 106);
+            renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.capacity"), ": " + tileEntity.structure.getFluidCapacity() + " mB"), 53, 44, 0x00CD00, 106);
+            renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.max_flow"), ": " + rate + " mB/t"), 53, 53, 0x00CD00, 106);
             ITextComponent component = TextComponentUtil.build(tileEntity.structure.dumpMode);
             renderScaledText(component, 156 - (int) (getStringWidth(component) * getNeededScale(component, 66)), 73, 0x404040, 66);
             int xAxis = mouseX - guiLeft;

@@ -270,8 +270,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int y = clientFreq == null ? 94 : clientStatus == 2 ? 22 : clientStatus == 3 ? 40 : clientStatus == 4 ? 58 : 76;
         drawTexturedRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
-        //TODO: Draw Text box
-        //frequencyField.drawTextBox();
+        //TODO: Figure out what the parameters do
+        frequencyField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
     }
 

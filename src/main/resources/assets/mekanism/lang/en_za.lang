@@ -21,6 +21,3 @@ tooltip.configurator.viewColor=Current colour
 tooltip.Chargepad=A universal chargepad that can charge !nany energised item from any mod.
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallisation.
 tooltip.ChemicalCrystallizer=An ultimate machine used to crystallise !npurified ore slurry into ore crystals.
-
-# Config Gui
-mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armour sets

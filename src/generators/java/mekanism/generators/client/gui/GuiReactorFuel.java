@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.EnergyDisplay;
@@ -61,18 +62,18 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         drawString(tileEntity.getName(), 46, 6, 0x404040);
         //TODO: Lang key for None
-        drawCenteredText(TextComponentUtil.build(Translation.of("gui.reactor.injectionRate"),
+        drawCenteredText(TextComponentUtil.build(Translation.of("mekanism.gui.reactor.injectionRate"),
               ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate())), 0, xSize, 35, 0x404040);
         drawString("Edit Rate" + ":", 50, 117, 0x404040);
     }
 
-    //TODO: Draw TextBox
-    /*@Override
+    @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        injectionRateField.drawTextBox();
+        //TODO: Figure out what the parameters do
+        injectionRateField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
-    }*/
+    }
 
     @Override
     public void tick() {

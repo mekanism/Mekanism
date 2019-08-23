@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.network.PacketEditFilter;
@@ -152,13 +153,13 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    //TODO: Draw Text box
-    /*@Override
+    @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        text.drawTextBox();
+        //TODO: Figure out what the parameters do
+        text.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
-    }*/
+    }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

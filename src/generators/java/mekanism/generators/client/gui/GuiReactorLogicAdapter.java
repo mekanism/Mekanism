@@ -56,8 +56,8 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
               36, 20, 0x404040, 117);
         renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.redstoneOutputMode"), ": ", EnumColor.RED, tileEntity.logicType),
               23, 123, 0x404040, 130);
-        drawCenteredText(TextComponentUtil.build(Translation.of("gui.status"), ": ", EnumColor.RED,
-              Translation.of("gui." + (tileEntity.checkMode() ? "outputting" : "idle"))), 0, xSize, 136, 0x404040);
+        drawCenteredText(TextComponentUtil.build(Translation.of("mekanism.gui.status"), ": ", EnumColor.RED,
+              Translation.of("mekanism.gui." + (tileEntity.checkMode() ? "outputting" : "idle"))), 0, xSize, 136, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiReactorLogicButton button : typeButtons) {

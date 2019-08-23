@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.block.basic.BlockBin;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -49,7 +50,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
 
     public int cacheCount;
 
-    public BinTier tier = BinTier.BASIC;
+    public BinTier tier;
 
     public ItemStack itemType = ItemStack.EMPTY;
 
@@ -65,6 +66,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     public TileEntityBin(IBlockProvider blockProvider) {
         super(blockProvider);
         myItemHandler = new BinItemHandler(this);
+        this.tier = ((BlockBin) blockProvider.getBlock()).getTier();
     }
 
     @Override

@@ -69,8 +69,8 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Draw Text box
-        //text.drawTextBox();
+        //TODO: Figure out what the parameters do
+        text.renderButton(0, 0, 0);
         if (tileEntity instanceof TileEntityDigitalMiner) {
             if (overReplaceOutput(xAxis, yAxis)) {
                 fill(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);

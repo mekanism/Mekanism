@@ -76,15 +76,15 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    //TODO: Draw Text box
-    /*@Override
+    @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        minField.drawTextBox();
-        maxField.drawTextBox();
-        timerField.drawTextBox();
+        //TODO: Figure out what the parameters do
+        minField.renderButton(0, 0, 0);
+        maxField.renderButton(0, 0, 0);
+        timerField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
-    }*/
+    }
 
     @Override
     public void tick() {

@@ -186,10 +186,11 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+        if (frequencyField.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         updateButtons();
-        frequencyField.mouseClicked(mouseX, mouseY, button);
-        return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -198,16 +199,35 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
+    public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_) {
+        //TODO: Figure out decent namings for the other spots
+        if (frequencyField.isFocused() && keyCode != GLFW.GLFW_KEY_ESCAPE) {
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                frequencyField.isFocused();
+                setFrequency(frequencyField.getText());
+                frequencyField.setText("");
+                //TODO: Is this updateButtons needed
+                updateButtons();
+                return true;
+            }
+            return frequencyField.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
+        }
+        return super.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        //TODO: Move some of this logic to keyPressed
         boolean returnValue = false;
-        if (!frequencyField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            returnValue = super.charTyped(c, i);
-        } else if (i == GLFW.GLFW_KEY_ENTER && frequencyField.isFocused()) {
-            setFrequency(frequencyField.getText());
-            frequencyField.setText("");
-            returnValue = true;
-        } else if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
-            returnValue = frequencyField.charTyped(c, i);
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            if (frequencyField.isFocused()) {
+                frequencyField.setFocused2(false);
+                returnValue = true;
+            } else {
+                returnValue = super.charTyped(c, keyCode);
+            }
+        } else if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, keyCode) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
+            returnValue = frequencyField.charTyped(c, keyCode);
         }
         updateButtons();
         return returnValue;
@@ -247,8 +267,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int y = getFrequency() == null ? 94 : getStatus() == 2 ? 22 : getStatus() == 3 ? 40 : getStatus() == 4 ? 58 : 76;
         drawTexturedRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
-        //TODO: Draw Text box
-        //frequencyField.drawTextBox();
+        //TODO: Figure out what the parameters do
+        frequencyField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
     }
 

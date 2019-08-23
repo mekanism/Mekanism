@@ -47,7 +47,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         //TODO
-        ITextComponent component = TextComponentUtil.build(Translation.of("gui.burnRate"), ": " + tileEntity.clientUsed);
+        ITextComponent component = TextComponentUtil.build(Translation.of("mekanism.gui.burn_rate"), ": " + tileEntity.clientUsed);
         drawString(component, xSize - 8 - getStringWidth(component), (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

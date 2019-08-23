@@ -409,22 +409,6 @@ mekanism.key.voice=Voz
 entity.Robit.name=Robit
 entity.BabySkeleton.name=Bebé esqueleto
 
-# Config Gui / Configuración interfaz
-mekanism.configgui.ctgy.general=Configuración general
-mekanism.configgui.ctgy.machines=Configuración de máquinas
-mekanism.configgui.ctgy.tier=Configuración de nivel (Tiers)
-mekanism.configgui.ctgy.usage=Configuración de consumo energético
-mekanism.configgui.ctgy.client=Configuración de cliente (Usuario)
-mekanism.configgui.ctgy.storage=Configuración de almacenamiento de energía
-
-# Config Tooltips / Conf. descripcciones
-mekanism.configgui.ctgy.general.tooltip=Configuración general de Mekanism y sus módulos.
-mekanism.configgui.ctgy.machines.tooltip=Configuración para activar o desactivar máquinas y objetos.
-mekanism.configgui.ctgy.tier.tooltip=Configuración de mejoras y sus valores.
-mekanism.configgui.ctgy.usage.tooltip=Configuración de uso energetico de las máquinas.
-mekanism.configgui.ctgy.client.tooltip=Configuración de cambios especificos de usuario offline de Mekanism y sus módulos.
-mekanism.configgui.ctgy.storage.tooltip= Configuración de maquinaría y su capacidad máxima de almacenamiento de enegía.
-
 # Gui text / Textos de Interfaz
 gui.condensentrating=Condensante
 gui.decondensentrating=Descondensante
@@ -1038,109 +1022,6 @@ gui.maxPlasma=Temperatura max. del plasma
 gui.maxCasing=Temperatura max. de la carcasa
 gui.passiveGeneration=Generación pasiva
 gui.steamProduction=Producción de vapor
-
-# Config Gui
-mekanism.configgui.ctgy.generators.general=Opciones generales
-mekanism.configgui.ctgy.generators.generators=Opciones de generadores
-mekanism.configgui.ctgy.generators.generation=Opciones de generación
-
-# Config Tooltips
-mekanism.configgui.ctgy.generators.general.tooltip=Ajustes de configuración general de generadores de Mekanism
-mekanism.configgui.ctgy.generators.generators.tooltip=Deshabilitar o habilitar generadores
-mekanism.configgui.ctgy.generators.generation.tooltip=Ajustes de la generación de energía
-
-#########
-# TOOLS
-#########
-
-# Vanilla Paxels
-item.WoodPaxel.name=Paxel de madera
-item.StonePaxel.name=Paxel de piedra
-item.IronPaxel.name=Paxel de hierro
-item.DiamondPaxel.name=Paxel de diamante
-item.GoldPaxel.name=Paxel de oro
-
-# Obsidian
-item.ObsidianHelmet.name=Casco de obsidiana
-item.ObsidianChestplate.name=Pechera de obsidiana
-item.ObsidianLeggings.name=Pantalones de obsidiana
-item.ObsidianBoots.name=Botas de obsidiana
-item.ObsidianPaxel.name=Paxel de obsidiana
-item.ObsidianPickaxe.name=Pico de obsidiana
-item.ObsidianAxe.name=Hacha de obsidiana
-item.ObsidianShovel.name=Pala de obsidiana
-item.ObsidianHoe.name=Azada de obsidiana
-item.ObsidianSword.name=Espada de obsidiana
-
-# Osmium
-item.OsmiumHelmet.name=Casco de osmio
-item.OsmiumChestplate.name=Pechera de osmio
-item.OsmiumLeggings.name=Pantalones de osmio
-item.OsmiumBoots.name=Botas de osmio
-item.OsmiumPaxel.name=Paxel de osmio
-item.OsmiumPickaxe.name=Pico de osmio
-item.OsmiumAxe.name=Hacha de osmio
-item.OsmiumShovel.name=Pala de osmio
-item.OsmiumHoe.name=Azada de osmio
-item.OsmiumSword.name=Espada de osmio
-
-# Bronze
-item.BronzeHelmet.name=Casco de bronce
-item.BronzeChestplate.name=Pechera de bronce
-item.BronzeLeggings.name=Pantalones de bronce
-item.BronzeBoots.name=Botas de bronce
-item.BronzePaxel.name=Paxel de bronce
-item.BronzePickaxe.name=Pico de bronce
-item.BronzeAxe.name=Hacha de bronce
-item.BronzeShovel.name=Pala de bronce
-item.BronzeHoe.name=Azada de bronce
-item.BronzeSword.name=Espada de bronce
-
-# Glow
-item.GlowstoneHelmet.name=Casco de piedra luminosa
-item.GlowstoneChestplate.name=Pechera de piedra luminosa
-item.GlowstoneLeggings.name=Pantalones de piedra luminosa
-item.GlowstoneBoots.name=Botas de piedra luminosa
-item.GlowstonePaxel.name=Paxel de piedra luminosa
-item.GlowstonePickaxe.name=Pico de piedra luminosa
-item.GlowstoneAxe.name=Hacha de piedra luminosa
-item.GlowstoneShovel.name=Pala de piedra luminosa
-item.GlowstoneHoe.name=Azada de piedra luminosa
-item.GlowstoneSword.name=Espada de piedra luminosa
-
-# Steel
-item.SteelHelmet.name=Casco de acero
-item.SteelChestplate.name=Pechera de acero
-item.SteelLeggings.name=Pantalones de acero
-item.SteelBoots.name=Botas de acero
-item.SteelPaxel.name=Paxel de acero
-item.SteelPickaxe.name=Pico de acero
-item.SteelAxe.name=Hacha de acero
-item.SteelShovel.name=Pala de acero
-item.SteelHoe.name=Azada de acero
-item.SteelSword.name=Espada de acero
-
-# Lapis Lazuli
-item.LapisLazuliHelmet.name=Casco de lapizlasuli
-item.LapisLazuliChestplate.name=Pechera de lapizlasuli
-item.LapisLazuliLeggings.name=Pantalones de lapizlasuli
-item.LapisLazuliBoots.name=Botas de lapizlasuli
-item.LapisLazuliPaxel.name=Paxel de lapizlasuli
-item.LapisLazuliPickaxe.name=Pico de lapizlasuli
-item.LapisLazuliAxe.name=Hacha de lapizlasuli
-item.LapisLazuliShovel.name=Pala de lapizlasuli
-item.LapisLazuliHoe.name=Azada de lapizlasuli
-item.LapisLazuliSword.name=Espada de lapizlasuli
-
-# Config Gui
-mekanism.configgui.ctgy.tools.general=Ajustes generales
-mekanism.configgui.ctgy.tools.armor=Balance de armaduras
-mekanism.configgui.ctgy.tools.tools=Balance de herramientas
-
-# Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=Opciones de ajustes generales de Mekanism Tools
-mekanism.configgui.ctgy.tools.armor.tooltip=Ajustes de los valores de protección de las armaduras
-mekanism.configgui.ctgy.tools.tools.tooltip=Ajustes de valores y balance de las herramientas
 
 # Commands
 cmd.mek.usage=

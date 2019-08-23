@@ -27,6 +27,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
     @Override
     public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+        //TODO: Figure out why it always renders in one direction even if the teleporter is assembled along the other axis
         if (tileEntity.shouldRender) {
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();

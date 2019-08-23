@@ -1,0 +1,31 @@
+{
+  "_comment": "###########",
+  "_comment": "GENERATORS",
+  "_comment": "###########",
+
+  "_comment": "Items",
+  "item.mekanismgenerators.solar_panel": "Solar Panel",
+  "item.mekanismgenerators.hohlraum": "Hohlraum",
+  "item.mekanismgenerators.turbine_blade": "Turbine Blade",
+
+  "block.mekanismgenerators.heat_generator": "Heat Generator",
+  "block.mekanismgenerators.solar_generator": "Solar Generator",
+  "block.mekanismgenerators.gas_burning_generator": "Gas-Burning Generator",
+  "block.mekanismgenerators.bio_generator": "Bio-Generator",
+  "block.mekanismgenerators.advanced_solar_generator": "Advanced Solar Generator",
+  "block.mekanismgenerators.wind_generator": "Wind Generator",
+  "block.mekanismgenerators.turbine_rotor": "Turbine Rotor",
+  "block.mekanismgenerators.rotational_complex": "Rotational Complex",
+  "block.mekanismgenerators.electromagnetic_coil": "Electromagnetic Coil",
+  "block.mekanismgenerators.turbine_casing": "Turbine Casing",
+  "block.mekanismgenerators.turbine_valve": "Turbine Valve",
+  "block.mekanismgenerators.turbine_vent": "Turbine Vent",
+  "block.mekanismgenerators.saturating_condenser": "Saturating Condenser",
+  "block.mekanismgenerators.reactor_controller": "Reactor Controller",
+  "block.mekanismgenerators.reactor_frame": "Reactor Frame",
+  "block.mekanismgenerators.reactor_neutron_capture_plate": "Neutron Capture Plate",
+  "block.mekanismgenerators.reactor_port": "Reactor Port",
+  "block.mekanismgenerators.reactor_logic_adapter": "Reactor Logic Adapter",
+  "block.mekanismgenerators.reactor_glass": "Reactor Glass",
+  "block.mekanismgenerators.laser_focus_matrix": "Laser Focus Matrix"
+}

@@ -11,6 +11,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -202,11 +203,11 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    //TODO: Draw Text box
-    /*@Override
+    @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        frequencyField.drawTextBox();
+        //TODO: Figure out what the parameters do
+        frequencyField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
-    }*/
+    }
 }

@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
@@ -79,13 +80,13 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    //TODO: Draw Text box
-    /*@Override
+    @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        energyUsageField.drawTextBox();
+        //TODO: Figure out what the parameters do
+        energyUsageField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
-    }*/
+    }
 
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {

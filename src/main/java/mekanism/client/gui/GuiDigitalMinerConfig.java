@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -210,16 +211,15 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    //TODO: Draw Text box
-    /*@Override
+    @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Draw Text box
-        radiusField.drawTextBox();
-        minField.drawTextBox();
-        maxField.drawTextBox();
+        //TODO: Figure out what the parameters do
+        radiusField.renderButton(0, 0, 0);
+        minField.renderButton(0, 0, 0);
+        maxField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
-    }*/
+    }
 
     @Override
     public boolean charTyped(char c, int i) {

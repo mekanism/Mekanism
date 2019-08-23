@@ -408,22 +408,6 @@ mekanism.key.voice=周波数
 entity.Robit.name=ロビット
 entity.BabySkeleton.name=ベビースケルトン
 
-# Config Gui
-mekanism.configgui.ctgy.general=Mekanism 基本設定
-mekanism.configgui.ctgy.machines=マシンの設定
-mekanism.configgui.ctgy.tier=ランクの設定
-mekanism.configgui.ctgy.usage=エネルギー使用率の設定
-mekanism.configgui.ctgy.client=クライアント設定
-mekanism.configgui.ctgy.storage=エネルギー容量設定
-
-# Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=Mekanismとそのモジュールに関する基本的な設定
-mekanism.configgui.ctgy.machines.tooltip=機械ごとの有効・無効化の設定
-mekanism.configgui.ctgy.tier.tooltip=Mekanismのランクされた機械に対応する値の設定
-mekanism.configgui.ctgy.usage.tooltip=機械に関する設定とエネルギー使用量
-mekanism.configgui.ctgy.client.tooltip=Mekanismとそのモジュールにおけるクライアント設定
-mekanism.configgui.ctgy.storage.tooltip=機械の保有出来るエネルギー量の設定
-
 # Gui text
 gui.condensentrating=凝縮
 gui.decondensentrating=気化
@@ -1032,109 +1016,6 @@ gui.maxPlasma=最高プラズマ温度
 gui.maxCasing=最高炉内温度
 gui.passiveGeneration=熱平衡状態時の発電量
 gui.steamProduction=蒸気の生成量
-
-# Config Gui
-mekanism.configgui.ctgy.generators.general=基本設定
-mekanism.configgui.ctgy.generators.generators=発電機の設定
-mekanism.configgui.ctgy.generators.generation=発電の設定
-
-# Config Tooltips
-mekanism.configgui.ctgy.generators.general.tooltip=MekanismGeneratorsの基本設定
-mekanism.configgui.ctgy.generators.generators.tooltip=機械ごとの有効・無効化の設定
-mekanism.configgui.ctgy.generators.generation.tooltip=機械のエネルギーに関する設定
-
-#########
-# TOOLS
-#########
-
-# Vanilla Paxels
-item.WoodPaxel.name=木のパクセル
-item.StonePaxel.name=石のパクセル
-item.IronPaxel.name=鉄のパクセル
-item.DiamondPaxel.name=ダイヤのパクセル
-item.GoldPaxel.name=金のパクセル
-
-# Obsidian
-item.ObsidianHelmet.name=黒曜石のヘルメット
-item.ObsidianChestplate.name=黒曜石のチェストプレート
-item.ObsidianLeggings.name=黒曜石のレギンス
-item.ObsidianBoots.name=黒曜石のブーツ
-item.ObsidianPaxel.name=黒曜石のパクセル
-item.ObsidianPickaxe.name=黒曜石のピッケル
-item.ObsidianAxe.name=黒曜石の斧
-item.ObsidianShovel.name=黒曜石のシャベル
-item.ObsidianHoe.name=黒曜石のクワ
-item.ObsidianSword.name=黒曜石の剣
-
-# Osmium
-item.OsmiumHelmet.name=オスミウムのヘルメット
-item.OsmiumChestplate.name=オスミウムのチェストプレート
-item.OsmiumLeggings.name=オスミウムのレギンス
-item.OsmiumBoots.name=オスミウムのブーツ
-item.OsmiumPaxel.name=オスミウムのパクセル
-item.OsmiumPickaxe.name=オスミウムのピッケル
-item.OsmiumAxe.name=オスミウムの斧
-item.OsmiumShovel.name=オスミウムのシャベル
-item.OsmiumHoe.name=オスミウムのクワ
-item.OsmiumSword.name=オスミウムの剣
-
-# Bronze
-item.BronzeHelmet.name=青銅のヘルメット
-item.BronzeChestplate.name=青銅のチェストプレート
-item.BronzeLeggings.name=青銅のレギンス
-item.BronzeBoots.name=青銅のブーツ
-item.BronzePaxel.name=青銅のパクセル
-item.BronzePickaxe.name=青銅のツルハシ
-item.BronzeAxe.name=青銅の斧
-item.BronzeShovel.name=青銅のシャベル
-item.BronzeHoe.name=青銅のクワ
-item.BronzeSword.name=青銅の剣
-
-# Glow
-item.GlowstoneHelmet.name=グロウストーンのヘルメット
-item.GlowstoneChestplate.name=グロウストーンのチェストプレート
-item.GlowstoneLeggings.name=グロウストーンのレギンス
-item.GlowstoneBoots.name=グロウストーンのブーツ
-item.GlowstonePaxel.name=グロウストーンのパクセル
-item.GlowstonePickaxe.name=グロウストーンのツルハシ
-item.GlowstoneAxe.name=グロウストーンの斧
-item.GlowstoneShovel.name=グロウストーンのシャベル
-item.GlowstoneHoe.name=グロウストーンのクワ
-item.GlowstoneSword.name=グロウストーンの剣
-
-# Steel
-item.SteelHelmet.name=鋼鉄のヘルメット
-item.SteelChestplate.name=鋼鉄のチェストプレート
-item.SteelLeggings.name=鋼鉄のレギンス
-item.SteelBoots.name=鋼鉄のブーツ
-item.SteelPaxel.name=鋼鉄のパクセル
-item.SteelPickaxe.name=鋼鉄のツルハシ
-item.SteelAxe.name=鋼鉄の斧
-item.SteelShovel.name=鋼鉄のシャベル
-item.SteelHoe.name=鋼鉄のクワ
-item.SteelSword.name=鋼鉄の剣
-
-# Lapis Lazuli
-item.LapisLazuliHelmet.name=ラピスラズリのヘルメット
-item.LapisLazuliChestplate.name=ラピスラズリのチェストプレート
-item.LapisLazuliLeggings.name=ラピスラズリのレギンス
-item.LapisLazuliBoots.name=ラピスラズリのブーツ
-item.LapisLazuliPaxel.name=ラピスラズリのパクセル
-item.LapisLazuliPickaxe.name=ラピスラズリのピッケル
-item.LapisLazuliAxe.name=ラピスラズリの斧
-item.LapisLazuliShovel.name=ラピスラズリのシャベル
-item.LapisLazuliHoe.name=ラピスラズリのクワ
-item.LapisLazuliSword.name=ラピスラズリの剣
-
-# Config Gui
-mekanism.configgui.ctgy.tools.general=基本設定
-mekanism.configgui.ctgy.tools.armor=防具のバランス
-mekanism.configgui.ctgy.tools.tools=道具のバランス
-
-# Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=MekanismToolsの基本設定
-mekanism.configgui.ctgy.tools.armor.tooltip=MekanismToolsの防具におけるパラメータの設定
-mekanism.configgui.ctgy.tools.tools.tooltip=MekanismToolsの道具におけるパラメータの設定
 
 cmd.mek.testrules.usage=ワールド設定をテスト用に設定します(Mobのスポーン・昼夜サイクル・天候の変化を無効にします)
 cmd.mek.testrules=モブのスポーン, 昼夜サイクル, 天候の変化を無効化しました

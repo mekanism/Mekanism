@@ -57,9 +57,9 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
         int size = 44;
         if (!tileEntity.getActive()) {
             size += 9;
-            String reason = "gui.skyBlocked";
+            String reason = "mekanism.gui.skyBlocked";
             if (tileEntity.isBlacklistDimension()) {
-                reason = "gui.noWind";
+                reason = "mekanism.gui.noWind";
             }
             drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of(reason)), 51, size, 0x00CD00);
         }

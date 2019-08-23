@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -35,10 +36,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         super(container, inv, title);
     }
 
-    public static boolean isTextboxKey(char c, int i) {
+    public static boolean isTextboxKey(char c, int keyCode) {
         //TODO: Support key combos again
-        return i == GLFW.GLFW_KEY_BACKSPACE || i == GLFW.GLFW_KEY_DELETE || i == GLFW.GLFW_KEY_LEFT || i == GLFW.GLFW_KEY_RIGHT || i == GLFW.GLFW_KEY_END ||
-               i == GLFW.GLFW_KEY_HOME;// || isKeyComboCtrlA(i) || isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
+        return keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_END ||
+               keyCode == GLFW.GLFW_KEY_HOME || Screen.isSelectAll(keyCode) || Screen.isCopy(keyCode) || Screen.isPaste(keyCode) || Screen.isCut(keyCode);
     }
 
     public Set<GuiElement> getGuiElements() {
@@ -149,15 +150,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         double xAxis = mouseX - guiLeft;
         double yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.preMouseClicked(xAxis, yAxis, button));
-        super.mouseClicked(mouseX, mouseY, button);
+        boolean returnValue = super.mouseClicked(mouseX, mouseY, button);
         for (GuiElement element : guiElements) {
             if (element.mouseClicked(xAxis, yAxis, button)) {
                 //TODO: I think this should return true?
                 //return true;
+                returnValue = true;
             }
         }
         //TODO: Figure out all of this mouseClicked stuff when it should return true and when it should return false
-        return true;
+        return returnValue;
     }
 
     @Override
@@ -192,17 +194,18 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
-        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        boolean returnValue = super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         double xAxis = mouseX - guiLeft;
         double yAxis = mouseY - guiTop;
         for (GuiElement element : guiElements) {
             if (element.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld)) {
                 //TODO: I think this should return true?
                 //return true;
+                returnValue = true;
             }
         }
         //TODO: Figure out all of this mouseDragged stuff when it should return true and when it should return false
-        return true;
+        return returnValue;
     }
 
     @Override

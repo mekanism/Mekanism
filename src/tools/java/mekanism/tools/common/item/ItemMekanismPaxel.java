@@ -24,6 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
+//TODO: Right click log support as axes do to strip them
 public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
 
     public ItemMekanismPaxel(IMekanismMaterial material) {

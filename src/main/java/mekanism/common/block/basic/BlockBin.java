@@ -83,7 +83,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
         if (!world.isRemote) {
             TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
             BlockRayTraceResult mop = MekanismUtils.rayTrace(world, player);
-
+            //TODO: Check to make sure it wasn't a miss?
             if (mop != null && mop.getFace() == bin.getDirection()) {
                 if (!bin.bottomStack.isEmpty()) {
                     ItemStack stack;
