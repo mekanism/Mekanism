@@ -27,12 +27,12 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
     }
 
     public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
-        String amount = "";
         if (!itemType.isEmpty()) {
-            amount = Integer.toString(clientAmount);
+            String amount = Integer.toString(clientAmount);
             if (clientAmount == Integer.MAX_VALUE) {
                 amount = LangUtils.localize("gui.infinite");
             }
+            setLightmapDisabled(true);
             GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
@@ -60,9 +60,10 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             GlStateManager.rotate(180, 0, 0, 1);
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
             GlStateManager.popMatrix();
-        }
-        if (text && !amount.equals("")) {
-            renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
+            if (text) {
+                renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
+            }
+            setLightmapDisabled(false);
         }
     }
 

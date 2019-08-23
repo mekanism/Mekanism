@@ -33,11 +33,13 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, -1.0F, 0);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, -1.0F, 0);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
@@ -45,23 +47,12 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
             energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getMinecraft().renderEngine);
         }
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
-
         if (energy / tier.getMaxEnergy() > 0.1) {
-            GlStateManager.pushMatrix();
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlpha();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-
-            //Begin core color
-            GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
             MekanismRenderer.color(tier.getBaseTier());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
@@ -69,14 +60,12 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             GlStateManager.rotate(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
-            GlStateManager.popMatrix();
-            //End core color
-
             MekanismRenderer.disableGlow(glowInfo);
-            GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
-            GlStateManager.popMatrix();
         }
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
     }
 
     @Override
