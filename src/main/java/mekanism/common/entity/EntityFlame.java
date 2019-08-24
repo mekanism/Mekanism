@@ -43,7 +43,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public EntityFlame(PlayerEntity player) {
-        this(MekanismEntityTypes.FLAME, player.world);
+        this(MekanismEntityTypes.FLAME.getEntityType(), player.world);
         Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
         Pos3D flameVec = new Pos3D(1, 1, 1);
 

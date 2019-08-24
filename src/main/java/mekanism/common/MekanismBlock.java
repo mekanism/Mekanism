@@ -3,9 +3,10 @@ package mekanism.common;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IBlockProvider;
 import mekanism.api.block.FactoryType;
 import mekanism.api.block.IHasFactoryType;
+import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -370,15 +371,15 @@ public enum MekanismBlock implements IBlockProvider {
     }
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {
-        for (MekanismBlock mekanismBlock : values()) {
-            registry.register(mekanismBlock.getBlock());
+        for (IBlockProvider blockProvider : values()) {
+            registry.register(blockProvider.getBlock());
         }
         registry.register(PortalHelper.BlockPortalOverride.instance);
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
-        for (MekanismBlock mekanismBlock : values()) {
-            registry.register(mekanismBlock.getItem());
+        for (IItemProvider itemProvider : values()) {
+            registry.register(itemProvider.getItem());
         }
     }
 

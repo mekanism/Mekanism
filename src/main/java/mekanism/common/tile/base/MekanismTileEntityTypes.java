@@ -3,7 +3,7 @@ package mekanism.common.tile.base;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.IBlockProvider;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBin;

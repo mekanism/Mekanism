@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IBlockDisableable;

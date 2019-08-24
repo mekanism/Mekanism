@@ -14,7 +14,8 @@ import mekanism.additions.common.block.plastic.BlockPlasticSlab;
 import mekanism.additions.common.block.plastic.BlockPlasticSlick;
 import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.item.block.ItemBlockGlowPanel;
-import mekanism.api.IBlockProvider;
+import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockColoredName;
@@ -222,14 +223,14 @@ public enum AdditionsBlock implements IBlockProvider {
     }
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {
-        for (AdditionsBlock additionsBlock : values()) {
-            registry.register(additionsBlock.getBlock());
+        for (IBlockProvider blockProvider : values()) {
+            registry.register(blockProvider.getBlock());
         }
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
-        for (AdditionsBlock additionsBlock : values()) {
-            registry.register(additionsBlock.getItem());
+        for (IItemProvider itemProvider : values()) {
+            registry.register(itemProvider.getItem());
         }
     }
 }

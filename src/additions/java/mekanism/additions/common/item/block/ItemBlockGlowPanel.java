@@ -1,11 +1,11 @@
 package mekanism.additions.common.item.block;
 
 import javax.annotation.Nonnull;
+import mekanism.additions.common.block.BlockGlowPanel;
+import mekanism.additions.common.tile.TileEntityGlowPanel;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.additions.common.block.BlockGlowPanel;
 import mekanism.common.item.block.ItemBlockMultipartAble;
-import mekanism.additions.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

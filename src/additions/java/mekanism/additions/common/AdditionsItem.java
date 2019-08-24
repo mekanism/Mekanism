@@ -3,7 +3,7 @@ package mekanism.additions.common;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.item.ItemBabySkeletonSpawnEgg;
 import mekanism.additions.common.item.ItemBalloon;
-import mekanism.api.IItemProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -41,8 +41,8 @@ public enum AdditionsItem implements IItemProvider {
     }
 
     public static void registerItems(IForgeRegistry<Item> registry) {
-        for (AdditionsItem additionsItem : values()) {
-            registry.register(additionsItem.getItem());
+        for (IItemProvider itemProvider : values()) {
+            registry.register(itemProvider.getItem());
         }
     }
 }

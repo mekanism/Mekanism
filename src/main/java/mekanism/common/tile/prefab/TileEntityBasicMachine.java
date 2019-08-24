@@ -2,8 +2,8 @@ package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IBlockProvider;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;

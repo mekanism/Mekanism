@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.IBlockProvider;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;

@@ -1,8 +1,8 @@
 package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IBlockProvider;
 import mekanism.api.TileNetworkList;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.util.MekanismUtils;

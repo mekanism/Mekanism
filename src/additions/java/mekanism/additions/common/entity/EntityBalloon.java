@@ -56,7 +56,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(World world, double x, double y, double z, EnumColor c) {
-        this(AdditionsEntityTypes.BALLOON, world);
+        this(AdditionsEntityType.BALLOON.getEntityType(), world);
         setPosition(x + 0.5F, y + 3F, z + 0.5F);
 
         prevPosX = posX;
@@ -66,7 +66,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(LivingEntity entity, EnumColor c) {
-        this(AdditionsEntityTypes.BALLOON, entity.world);
+        this(AdditionsEntityType.BALLOON.getEntityType(), entity.world);
         latchedEntity = entity;
         float height = latchedEntity.getSize(latchedEntity.getPose()).height;
         setPosition(latchedEntity.posX, latchedEntity.posY + height + 1.7F, latchedEntity.posZ);
@@ -81,7 +81,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(World world, Coord4D obj, EnumColor c) {
-        this(AdditionsEntityTypes.BALLOON, world);
+        this(AdditionsEntityType.BALLOON.getEntityType(), world);
         latched = obj;
         setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
 

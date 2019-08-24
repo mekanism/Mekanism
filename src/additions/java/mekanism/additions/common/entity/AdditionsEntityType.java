@@ -1,25 +1,25 @@
-package mekanism.common.entity;
+package mekanism.additions.common.entity;
 
 import javax.annotation.Nonnull;
+import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.providers.IEntityTypeProvider;
-import mekanism.common.Mekanism;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
-//TODO: Check the different settings. For example should robit be immune to fire
-public enum  MekanismEntityTypes implements IEntityTypeProvider {
-    FLAME("flame", EntityType.Builder.<EntityFlame>create(EntityFlame::new, EntityClassification.MISC).size(0.5F, 0.5F)),
-    ROBIT("robit", EntityType.Builder.<EntityRobit>create(EntityRobit::new, EntityClassification.MISC).size(0.5F, 0.5F));
+public enum AdditionsEntityType implements IEntityTypeProvider {
+    BABY_SKELETON("baby_skeleton", EntityType.Builder.create(EntityBabySkeleton::new, EntityClassification.MONSTER)),
+    BALLOON("balloon", EntityType.Builder.<EntityBalloon>create(EntityBalloon::new, EntityClassification.MISC).size(0.25F, 0.25F)),
+    OBSIDIAN_TNT("obsidian_tnt", EntityType.Builder.<EntityObsidianTNT>create(EntityObsidianTNT::new, EntityClassification.MISC).immuneToFire().size(0.98F, 0.98F));
 
     private final EntityType entityType;
 
-    <T extends Entity> MekanismEntityTypes(String name, EntityType.Builder<T> builder) {
+    <T extends Entity> AdditionsEntityType(String name, EntityType.Builder<T> builder) {
         builder.setCustomClientFactory((spawnEntity, world) -> (T) getEntityType().create(world));
         EntityType<T> type = builder.build(name);
-        type.setRegistryName(new ResourceLocation(Mekanism.MODID, name));
+        type.setRegistryName(new ResourceLocation(MekanismAdditions.MODID, name));
         entityType = type;
     }
 

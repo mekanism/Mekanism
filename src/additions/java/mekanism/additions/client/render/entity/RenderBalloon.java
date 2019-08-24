@@ -2,10 +2,10 @@ package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
+import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelBalloon;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.entity.EntityRenderer;

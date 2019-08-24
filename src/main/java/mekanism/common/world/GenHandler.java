@@ -2,7 +2,7 @@ package mekanism.common.world;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import mekanism.api.IBlockProvider;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.block.BlockState;

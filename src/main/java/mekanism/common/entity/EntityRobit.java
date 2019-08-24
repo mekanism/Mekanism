@@ -81,7 +81,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     public EntityRobit(World world, double x, double y, double z) {
-        this(MekanismEntityTypes.ROBIT, world);
+        this(MekanismEntityTypes.ROBIT.getEntityType(), world);
         setPosition(x, y, z);
         prevPosX = x;
         prevPosY = y;

@@ -1,6 +1,6 @@
 package mekanism.additions.common;
 
-import mekanism.additions.common.entity.AdditionsEntityTypes;
+import mekanism.additions.common.entity.AdditionsEntityType;
 import mekanism.additions.common.tile.AdditionsTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -33,6 +33,6 @@ public class AdditionsRegistration {
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        AdditionsEntityTypes.registerEntities(event.getRegistry());
+        AdditionsEntityType.registerEntities(event.getRegistry());
     }
 }

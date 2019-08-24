@@ -1,7 +1,7 @@
 package mekanism.common;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IItemProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
@@ -185,8 +185,8 @@ public enum MekanismItem implements IItemProvider {
     }
 
     public static void registerItems(IForgeRegistry<Item> registry) {
-        for (MekanismItem mekanismItem : values()) {
-            registry.register(mekanismItem.getItem());
+        for (IItemProvider itemProvider : values()) {
+            registry.register(itemProvider.getItem());
         }
     }
 }

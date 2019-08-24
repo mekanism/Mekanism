@@ -32,7 +32,7 @@ public class EntityObsidianTNT extends Entity {
     }
 
     public EntityObsidianTNT(World world, double x, double y, double z) {
-        this(AdditionsEntityTypes.OBSIDIAN_TNT, world);
+        this(AdditionsEntityType.OBSIDIAN_TNT.getEntityType(), world);
         setPosition(x, y, z);
         float randPi = (float) (Math.random() * Math.PI * 2);
 

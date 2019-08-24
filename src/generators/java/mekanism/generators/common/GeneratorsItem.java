@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IItemProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -36,8 +36,8 @@ public enum GeneratorsItem implements IItemProvider {
     }
 
     public static void registerItems(IForgeRegistry<Item> registry) {
-        for (GeneratorsItem generatorsItem : values()) {
-            registry.register(generatorsItem.getItem());
+        for (IItemProvider itemProvider : values()) {
+            registry.register(itemProvider.getItem());
         }
     }
 }

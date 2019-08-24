@@ -3,7 +3,7 @@ package mekanism.generators.common.tile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.IBlockProvider;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;

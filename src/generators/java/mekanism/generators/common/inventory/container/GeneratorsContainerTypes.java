@@ -2,7 +2,7 @@ package mekanism.generators.common.inventory.container;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.IItemProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.fuel.BioGeneratorContainer;

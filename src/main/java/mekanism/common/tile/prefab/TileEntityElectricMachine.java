@@ -1,7 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IBlockProvider;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;

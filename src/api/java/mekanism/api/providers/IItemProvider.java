@@ -1,11 +1,11 @@
-package mekanism.api;
+package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public interface IItemProvider extends net.minecraft.util.IItemProvider {
+public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemProvider {
 
     @Nonnull
     Item getItem();
@@ -34,14 +34,12 @@ public interface IItemProvider extends net.minecraft.util.IItemProvider {
         return getItem() == other;
     }
 
+    @Override
     default ResourceLocation getRegistryName() {
         return getItem().getRegistryName();
     }
 
-    default String getName() {
-        return getRegistryName().getPath();
-    }
-
+    @Override
     default String getTranslationKey() {
         return getItem().getTranslationKey();
     }

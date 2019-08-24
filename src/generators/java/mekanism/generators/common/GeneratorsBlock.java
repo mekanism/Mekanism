@@ -2,7 +2,8 @@ package mekanism.generators.common;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.api.IBlockProvider;
+import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
@@ -80,14 +81,14 @@ public enum GeneratorsBlock implements IBlockProvider {
     }
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {
-        for (GeneratorsBlock generatorsBlock : values()) {
-            registry.register(generatorsBlock.getBlock());
+        for (IBlockProvider blockProvider : values()) {
+            registry.register(blockProvider.getBlock());
         }
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
-        for (GeneratorsBlock generatorsBlock : values()) {
-            registry.register(generatorsBlock.getItem());
+        for (IItemProvider itemProvider : values()) {
+            registry.register(itemProvider.getItem());
         }
     }
 }

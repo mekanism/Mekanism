@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.IItemProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;

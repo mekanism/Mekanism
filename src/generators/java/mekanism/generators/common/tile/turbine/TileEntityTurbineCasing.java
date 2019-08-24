@@ -2,9 +2,9 @@ package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.IBlockProvider;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.config.MekanismConfig;
