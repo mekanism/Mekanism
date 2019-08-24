@@ -30,7 +30,6 @@ public class MekanismAdditions implements IModule {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         //TODO: Move voice server to MekanismAdditions
-        //TODO: Do we move colored
         modEventBus.addListener(this::commonSetup);
         MekanismAdditionsConfig.loadFromFiles();
 

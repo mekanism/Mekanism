@@ -10,7 +10,9 @@ import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
 import mekanism.additions.common.block.plastic.BlockPlasticGlow;
 import mekanism.additions.common.block.plastic.BlockPlasticReinforced;
 import mekanism.additions.common.block.plastic.BlockPlasticRoad;
+import mekanism.additions.common.block.plastic.BlockPlasticSlab;
 import mekanism.additions.common.block.plastic.BlockPlasticSlick;
+import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.item.block.ItemBlockGlowPanel;
 import mekanism.api.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -159,7 +161,41 @@ public enum AdditionsBlock implements IBlockProvider {
     LIGHT_BLUE_PLASTIC_FENCE_GATE(new BlockPlasticFenceGate(EnumColor.INDIGO), ItemBlockColoredName::new),
     MAGENTA_PLASTIC_FENCE_GATE(new BlockPlasticFenceGate(EnumColor.PINK), ItemBlockColoredName::new),
     ORANGE_PLASTIC_FENCE_GATE(new BlockPlasticFenceGate(EnumColor.ORANGE), ItemBlockColoredName::new),
-    WHITE_PLASTIC_FENCE_GATE(new BlockPlasticFenceGate(EnumColor.WHITE), ItemBlockColoredName::new);
+    WHITE_PLASTIC_FENCE_GATE(new BlockPlasticFenceGate(EnumColor.WHITE), ItemBlockColoredName::new),
+
+    BLACK_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.BLACK), ItemBlockColoredName::new),
+    RED_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.RED), ItemBlockColoredName::new),
+    GREEN_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.DARK_GREEN), ItemBlockColoredName::new),
+    BROWN_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.BROWN), ItemBlockColoredName::new),
+    BLUE_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.DARK_BLUE), ItemBlockColoredName::new),
+    PURPLE_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.PURPLE), ItemBlockColoredName::new),
+    CYAN_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.DARK_AQUA), ItemBlockColoredName::new),
+    LIGHT_GRAY_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.GRAY), ItemBlockColoredName::new),
+    GRAY_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.DARK_GRAY), ItemBlockColoredName::new),
+    PINK_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
+    LIME_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
+    YELLOW_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.YELLOW), ItemBlockColoredName::new),
+    LIGHT_BLUE_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.INDIGO), ItemBlockColoredName::new),
+    MAGENTA_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.PINK), ItemBlockColoredName::new),
+    ORANGE_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.ORANGE), ItemBlockColoredName::new),
+    WHITE_PLASTIC_SLAB(new BlockPlasticSlab(EnumColor.WHITE), ItemBlockColoredName::new),
+
+    BLACK_PLASTIC_STAIRS(new BlockPlasticStairs(BLACK_PLASTIC_BLOCK, EnumColor.BLACK), ItemBlockColoredName::new),
+    RED_PLASTIC_STAIRS(new BlockPlasticStairs(RED_PLASTIC_BLOCK, EnumColor.RED), ItemBlockColoredName::new),
+    GREEN_PLASTIC_STAIRS(new BlockPlasticStairs(GREEN_PLASTIC_BLOCK, EnumColor.DARK_GREEN), ItemBlockColoredName::new),
+    BROWN_PLASTIC_STAIRS(new BlockPlasticStairs(BROWN_PLASTIC_BLOCK, EnumColor.BROWN), ItemBlockColoredName::new),
+    BLUE_PLASTIC_STAIRS(new BlockPlasticStairs(BLUE_PLASTIC_BLOCK, EnumColor.DARK_BLUE), ItemBlockColoredName::new),
+    PURPLE_PLASTIC_STAIRS(new BlockPlasticStairs(PURPLE_PLASTIC_BLOCK, EnumColor.PURPLE), ItemBlockColoredName::new),
+    CYAN_PLASTIC_STAIRS(new BlockPlasticStairs(CYAN_PLASTIC_BLOCK, EnumColor.DARK_AQUA), ItemBlockColoredName::new),
+    LIGHT_GRAY_PLASTIC_STAIRS(new BlockPlasticStairs(LIGHT_GRAY_PLASTIC_BLOCK, EnumColor.GRAY), ItemBlockColoredName::new),
+    GRAY_PLASTIC_STAIRS(new BlockPlasticStairs(GRAY_PLASTIC_BLOCK, EnumColor.DARK_GRAY), ItemBlockColoredName::new),
+    PINK_PLASTIC_STAIRS(new BlockPlasticStairs(PINK_PLASTIC_BLOCK, EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
+    LIME_PLASTIC_STAIRS(new BlockPlasticStairs(LIME_PLASTIC_BLOCK, EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
+    YELLOW_PLASTIC_STAIRS(new BlockPlasticStairs(YELLOW_PLASTIC_BLOCK, EnumColor.YELLOW), ItemBlockColoredName::new),
+    LIGHT_BLUE_PLASTIC_STAIRS(new BlockPlasticStairs(LIGHT_BLUE_PLASTIC_BLOCK, EnumColor.INDIGO), ItemBlockColoredName::new),
+    MAGENTA_PLASTIC_STAIRS(new BlockPlasticStairs(MAGENTA_PLASTIC_BLOCK, EnumColor.PINK), ItemBlockColoredName::new),
+    ORANGE_PLASTIC_STAIRS(new BlockPlasticStairs(ORANGE_PLASTIC_BLOCK, EnumColor.ORANGE), ItemBlockColoredName::new),
+    WHITE_PLASTIC_STAIRS(new BlockPlasticStairs(WHITE_PLASTIC_BLOCK, EnumColor.WHITE), ItemBlockColoredName::new);
 
     private final BlockItem item;
     private final Block block;
