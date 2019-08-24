@@ -840,7 +840,7 @@ public abstract class BlockBasic extends BlockTileDrops {
                 return new PatternHelper(pos, EnumFacing.NORTH, EnumFacing.UP, loadingCache, 1, 1, 1);
             }
             int[] aint = new int[AxisDirection.values().length];
-            EnumFacing enumfacing = size.rightDir.rotateYCCW();
+            EnumFacing enumfacing = MekanismUtils.getRight(size.rightDir);
             BlockPos blockpos = size.bottomLeft.up(size.getHeight() - 1);
 
             for (AxisDirection direction : AxisDirection.values()) {

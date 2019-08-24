@@ -78,9 +78,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                     for (int z = zmin; z <= zmax; z++) {
                         int zPos = origZ + z;
                         if (x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax) {
-                            if (!isViableNode(xPos, yPos, zPos) ||
-                                isFrame(coord.translate(x, y, z), minX, maxX, minY, maxY, minZ, maxZ)
-                                && !isValidFrame(xPos, yPos, zPos)) {
+                            if (!isViableNode(xPos, yPos, zPos) || isFrame(coord.translate(x, y, z), minX, maxX, minY, maxY, minZ, maxZ) && !isValidFrame(xPos, yPos, zPos)) {
                                 //If it is not a valid node or if it is supposed to be a frame but is invalid
                                 // then we are not valid over all
                                 isValid = false;
