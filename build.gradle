@@ -67,9 +67,17 @@ sourceSets {
 
 configurations {
     apiCompile.extendsFrom(compile)
+    apiCompileOnly.extendsFrom(compileOnly)
+    apiRuntimeOnly.extendsFrom(runtimeOnly)
     additionsCompile.extendsFrom(compile)
+    additionsCompileOnly.extendsFrom(compileOnly)
+    additionsRuntimeOnly.extendsFrom(runtimeOnly)
     generatorsCompile.extendsFrom(compile)
+    generatorsCompileOnly.extendsFrom(compileOnly)
+    generatorsRuntimeOnly.extendsFrom(runtimeOnly)
     toolsCompile.extendsFrom(compile)
+    toolsCompileOnly.extendsFrom(compileOnly)
+    toolsRuntimeOnly.extendsFrom(runtimeOnly)
 }
 
 repositories {

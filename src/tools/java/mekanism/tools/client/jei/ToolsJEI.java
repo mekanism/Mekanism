@@ -1,5 +1,4 @@
-//TODO: Re-enable this after figuring out why the module doesn't have access to the JEI dependency
-/*package mekanism.tools.client.jei;
+package mekanism.tools.client.jei;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
@@ -29,7 +28,7 @@ public class ToolsJEI implements IModPlugin {
         IVanillaRecipeFactory factory = registry.getVanillaRecipeFactory();
         //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
         for (ToolsItem toolsItem : ToolsItem.values()) {
-            //Based off of how JEI adds for Vanilla items: https://github.com/mezz/JustEnoughItems/blob/1.12/src/main/java/mezz/jei/plugins/vanilla/anvil/AnvilRecipeMaker.java#L180
+            //Based off of how JEI adds for Vanilla items: https://github.com/mezz/JustEnoughItems/blob/1.14/src/main/java/mezz/jei/plugins/vanilla/anvil/AnvilRecipeMaker.java#L184
             ItemStack damaged2 = toolsItem.getItemStack();
             damaged2.setDamage(damaged2.getMaxDamage() * 3 / 4);
             ItemStack damaged3 = toolsItem.getItemStack();
@@ -48,4 +47,4 @@ public class ToolsJEI implements IModPlugin {
             }
         }
     }
-}*/
+}

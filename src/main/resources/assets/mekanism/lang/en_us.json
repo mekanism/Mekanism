@@ -4,7 +4,6 @@
   "_comment": "##########",
 
   "_comment": "Items",
-  "block.ObsidianTNT": "Obsidian TNT",
   "item.mekanism.alloy_infused": "Infused Alloy",
   "item.ReinforcedAlloy": "Reinforced Alloy",
   "item.AtomicAlloy": "Atomic Alloy",
@@ -27,7 +26,6 @@
   "item.TeleportationCore": "Teleportation Core",
   "item.Configurator": "Configurator",
   "item.NetworkReader": "Network Reader",
-  "item.WalkieTalkie": "Walkie-Talkie",
   "item.Jetpack": "Jetpack",
   "item.ScubaTank": "Scuba Tank",
   "item.GasMask": "Gas Mask",
@@ -164,15 +162,6 @@
   "block.MachineBlock3.FormulaicAssemblicator": "Formulaic Assemblicator",
   "block.MachineBlock3.FuelwoodHeater": "Fuelwood Heater",
 
-  "_comment": "Plastic",
-  "block.PlasticBlock": "Plastic Block",
-  "block.SlickPlasticBlock": "Slick Plastic Block",
-  "block.GlowPlasticBlock": "Plastic Glow Block",
-  "block.ReinforcedPlasticBlock": "Reinforced Plastic Block",
-  "block.RoadPlasticBlock": "Plastic Road",
-
-  "block.PlasticFence": "Plastic Barrier",
-
   "_comment": "Infuse types",
   "infuse.carbon": "Carbon",
   "infuse.tin": "Tin",
@@ -210,9 +199,6 @@
   "block.Transmitter.AdvancedThermodynamicConductor": "Advanced Thermodynamic Conductor",
   "block.Transmitter.EliteThermodynamicConductor": "Elite Thermodynamic Conductor",
   "block.Transmitter.UltimateThermodynamicConductor": "Ultimate Thermodynamic Conductor",
-
-  "_comment": "Glow Panel",
-  "block.GlowPanel": "Glow Panel",
 
   "_comment": "Energy Cubes",
   "block.EnergyCubeBasic": "Basic Energy Cube",
@@ -408,7 +394,6 @@
 
   "_comment": "Entities",
   "entity.Robit": "Robit",
-  "entity.BabySkeleton": "Baby Skeleton",
 
   "_comment": "Gui text",
   "gui.condensentrating": "Condensentrating",
@@ -751,7 +736,6 @@
   "tooltip.noGas": "No gas stored",
   "tooltip.stored": "Stored",
   "tooltip.channel": "Channel",
-  "tooltip.walkie_disabled": "Voice server disabled.",
   "tooltip.mode": "Mode",
   "tooltip.efficiency": "Efficiency",
   "tooltip.modeToggle": "Mode toggled to",
@@ -793,8 +777,6 @@
   "tooltip.configurationCard.got": "Retrieved configuration data from %s",
   "tooltip.configurationCard.set": "Injected configuration data of type %s",
   "tooltip.configurationCard.unequal": "Unequal configuration data formats",
-
-  "tooltip.balloon": "Balloon",
 
   "tooltip.jetpack.regular": "Regular",
   "tooltip.jetpack.hover": "Hover",

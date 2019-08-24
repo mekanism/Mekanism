@@ -13,7 +13,6 @@ public class AdditionsEntityTypes {
 
     private static final List<EntityType<?>> types = new ArrayList<>();
 
-    //TODO: Ensure baby skeleton has a spawn egg
     public static final EntityType<EntityBabySkeleton> BABY_SKELETON = create("baby_skeleton", EntityType.Builder.create(EntityBabySkeleton::new, EntityClassification.MONSTER));
     public static final EntityType<EntityObsidianTNT> OBSIDIAN_TNT = create("obsidian_tnt", EntityType.Builder.<EntityObsidianTNT>create(EntityObsidianTNT::new,
           EntityClassification.MISC).immuneToFire().size(0.98F, 0.98F));
