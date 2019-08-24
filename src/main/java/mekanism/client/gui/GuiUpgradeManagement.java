@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.render.MekanismRenderer;
@@ -29,6 +30,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     private GuiButton backButton;
     private GuiButton removeButton;
     private IUpgradeTile tileEntity;
+    @Nullable
     private Upgrade selectedType;
     private boolean isDragging = false;
     private int dragOffset = 0;
@@ -58,7 +60,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
             int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
             Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
         } else if (guibutton.id == removeButton.id) {
-            Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
+            if (selectedType != null) {
+                Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
+            }
         }
     }
 
