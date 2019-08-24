@@ -58,7 +58,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 public class BlockPurificationChamber extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityPurificationChamber>, IStateFacing, IStateActive, IHasFactoryType,
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPurificationChamber>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
 
-    public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.purification"));
+    public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.purifier"));
 
     private BooleanValue enabledReference;
 

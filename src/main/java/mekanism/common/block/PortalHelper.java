@@ -4,6 +4,7 @@ import com.google.common.cache.LoadingCache;
 import javax.annotation.Nonnull;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.resource.BlockResourceInfo;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -124,11 +125,11 @@ public class PortalHelper {
                 return new PatternHelper(pos, Direction.NORTH, Direction.UP, loadingCache, 1, 1, 1);
             }
             int[] aint = new int[AxisDirection.values().length];
-            Direction Direction = size.rightDir.rotateYCCW();
+            Direction dir = MekanismUtils.getRight(size.rightDir);
             BlockPos blockpos = size.bottomLeft.up(size.getHeight() - 1);
 
             for (AxisDirection direction : AxisDirection.values()) {
-                PatternHelper patternHelper = new PatternHelper(Direction.getAxisDirection() == direction ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
+                PatternHelper patternHelper = new PatternHelper(dir.getAxisDirection() == direction ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
                       Direction.getFacingFromAxis(direction, axis), Direction.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
 
                 for (int i = 0; i < size.getWidth(); ++i) {
@@ -146,7 +147,7 @@ public class PortalHelper {
                     axisDirection = direction;
                 }
             }
-            return new PatternHelper(Direction.getAxisDirection() == axisDirection ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
+            return new PatternHelper(dir.getAxisDirection() == axisDirection ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
                   Direction.getFacingFromAxis(axisDirection, axis), Direction.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
         }
 

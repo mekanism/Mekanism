@@ -36,6 +36,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                 GlStateManager.enableBlend();
                 GlStateManager.disableLighting();
                 GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                setLightmapDisabled(true);
                 FluidRenderer.translateToOrigin(data.location);
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
                 MekanismRenderer.color(data.fluidType, (float) data.fluidType.amount / (float) tileEntity.clientCapacity);
@@ -59,6 +60,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                     GlStateManager.popMatrix();
                 }
                 MekanismRenderer.resetColor();
+                setLightmapDisabled(false);
                 GlStateManager.enableLighting();
                 GlStateManager.disableBlend();
                 GlStateManager.disableCull();

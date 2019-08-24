@@ -137,7 +137,8 @@ def explodedVersion = mod_version.split("\\.")
 minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformers(file('src/main/resources/META-INF/accesstransformer.cfg'),
+            file('src/tools/resources/META-INF/accesstransformer.cfg'))
     /*version = "${minecraft_version}-${forge_version}"
     mappings = "${mappings_version}"
     runDir = "run"
@@ -369,10 +370,10 @@ task fullBuild(type: Delete) {
 }
 
 uploadArchives {
-    if(System.getenv("LOCAL_MAVEN") != null) {
+    if (System.getenv("LOCAL_MAVEN") != null) {
         repositories {
             mavenDeployer {
-                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
+                repository(url: "file://" + System.getenv("LOCAL_MAVEN"))
                 pom {
                     groupId = project.group
                     version = project.version
@@ -423,8 +424,9 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 range(prevCommit, currentCommit)
             }.reverse().each { commit ->
                 String message = commit.shortMessage
-                if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {//Ignore PRs and Merges
-                    message = message.replaceAll("#(\\d+)", {match->//turn issues/prs into links (github currently supports prs being linked as issues)
+                if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
+//Ignore PRs and Merges
+                    message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
                         return "<a href=\"https://github.com/mekanism-mod/Mekanism/issues/${match[1]}\">${match[0]}</a>"
                     })
                     generatedChangelog += "<a href=\"https://github.com/mekanism-mod/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
@@ -435,7 +437,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         }
 
         def releaseNotesFile = project.file("docs/release_${mod_version}.html")
-        if (releaseNotesFile.exists()){
+        if (releaseNotesFile.exists()) {
             def releaseNotes = releaseNotesFile.getText()
             generatedChangelog = "$releaseNotes<br> $generatedChangelog"
         }
@@ -447,7 +449,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelog = generatedChangelog
             // A file can also be set using: changelog = file('changelog.txt')
             releaseType = 'release'
-            mainArtifact (coreJar){
+            mainArtifact(coreJar) {
                 relations {
                     optionalDependency "jei"
                     optionalDependency "crafttweaker"
@@ -488,7 +490,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelogType = "html"
             changelog = generatedChangelog
             releaseType = 'release'
-            mainArtifact(toolsJar){
+            mainArtifact(toolsJar) {
                 relations {
                     requiredDependency "mekanism"
                 }

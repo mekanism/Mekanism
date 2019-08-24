@@ -403,11 +403,22 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             return null;
         }
         Direction right = getRightSide();
-        Coord4D startPoint = Coord4D.get(this).offset(right);
-        startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
-        startPoint = startPoint.offset(right.getOpposite()).offset(getOppositeDirection());
-        startPoint.y = renderY;
-        return startPoint;
+        Coord4D renderLocation = Coord4D.get(this).offset(right);
+        renderLocation = isLeftOnFace ? renderLocation.offset(right) : renderLocation;
+        renderLocation = renderLocation.offset(getLeftSide()).offset(getOppositeDirection());
+        renderLocation.y = renderY;
+        switch (getDirection()) {
+            case SOUTH:
+                renderLocation = renderLocation.offset(Direction.NORTH).offset(Direction.WEST);
+                break;
+            case WEST:
+                renderLocation = renderLocation.offset(Direction.NORTH);
+                break;
+            case EAST:
+                renderLocation = renderLocation.offset(Direction.WEST);
+                break;
+        }
+        return renderLocation;
     }
 
     @Override
@@ -434,8 +445,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 if (structured) {
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
-                    BlockPos corner1 = getRenderLocation().getPos().offset(getDirection()).offset(getRightSide()).down();
-                    BlockPos corner2 = corner1.offset(getOppositeDirection(), 3).offset(getLeftSide(), 3).up(height - 1);
+                    BlockPos corner1 = getRenderLocation().getPos().offset(Direction.WEST).offset(Direction.NORTH).down();
+                    BlockPos corner2 = corner1.offset(Direction.EAST, 3).offset(Direction.SOUTH, 3).up(height - 1);
                     // Use the corners to spin up the sparkle
                     Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
                 }

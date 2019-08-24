@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.render.MekanismRenderer;
@@ -31,6 +32,7 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
     private Button backButton;
     private Button removeButton;
     private TILE tileEntity;
+    @Nullable
     private Upgrade selectedType;
     private boolean isDragging = false;
     private double dragOffset = 0;
@@ -50,7 +52,11 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
         buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         buttons.add(removeButton = new GuiButtonDisableableImage(guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), selectedType))));
+              onPress -> {
+                  if (selectedType != null) {
+                      Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), selectedType));
+                  }
+              }));
         updateEnabledButtons();
     }
 

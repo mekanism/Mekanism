@@ -29,6 +29,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null &&
             tileEntity.structure.upperRenderLocation != null) {
             FluidStack waterStored = tileEntity.structure.waterStored;
+            boolean glChanged = false;
             if (waterStored != null && waterStored.amount != 0) {
                 RenderData data = new RenderData();
                 data.location = tileEntity.structure.renderLocation;
@@ -40,10 +41,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 if (data.height >= 1 && waterStored.getFluid() != null) {
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.pushMatrix();
-                    GlStateManager.enableCull();
-                    GlStateManager.enableBlend();
-                    GlStateManager.disableLighting();
-                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                    glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
                     MekanismRenderer.color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
@@ -58,16 +56,12 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
 
                     for (ValveData valveData : tileEntity.valveViewing) {
                         GlStateManager.pushMatrix();
-                        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                         FluidRenderer.translateToOrigin(valveData.location);
                         GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
                         MekanismRenderer.disableGlow(valveGlowInfo);
                         GlStateManager.popMatrix();
                     }
-                    GlStateManager.enableLighting();
-                    GlStateManager.disableBlend();
-                    GlStateManager.disableCull();
                 }
             }
 
@@ -82,10 +76,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.pushMatrix();
-                    GlStateManager.enableCull();
-                    GlStateManager.enableBlend();
-                    GlStateManager.disableLighting();
-                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                    glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.steamStored);
 
@@ -94,12 +85,26 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                     display.render();
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);
-                    GlStateManager.enableLighting();
-                    GlStateManager.disableBlend();
-                    GlStateManager.disableCull();
                     GlStateManager.popMatrix();
                 }
             }
+            if (glChanged) {
+                setLightmapDisabled(false);
+                GlStateManager.enableLighting();
+                GlStateManager.disableBlend();
+                GlStateManager.disableCull();
+            }
         }
+    }
+
+    private boolean makeGLChanges(boolean glChanged) {
+        if (!glChanged) {
+            GlStateManager.enableCull();
+            GlStateManager.enableBlend();
+            GlStateManager.disableLighting();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            setLightmapDisabled(true);
+        }
+        return true;
     }
 }

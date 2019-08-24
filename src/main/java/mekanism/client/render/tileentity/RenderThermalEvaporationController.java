@@ -32,6 +32,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            setLightmapDisabled(true);
             FluidRenderer.translateToOrigin(data.location);
             float fluidScale = (float) tileEntity.inputTank.getFluidAmount() / (float) tileEntity.getMaxFluid();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
@@ -44,6 +45,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             }
             MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
+            setLightmapDisabled(false);
             GlStateManager.enableLighting();
             GlStateManager.disableBlend();
             GlStateManager.disableCull();

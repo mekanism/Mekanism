@@ -697,7 +697,7 @@ public final class MekanismUtils {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
             case FE:
-                return UnitDisplayUtils.getDisplayShort(ForgeEnergyIntegration.toForge(energy), ElectricUnit.FORGE_ENERGY);
+                return UnitDisplayUtils.getDisplayShort(ForgeEnergyIntegration.toForgeAsDouble(energy), ElectricUnit.FORGE_ENERGY);
             case EU:
                 return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
         }
