@@ -3,6 +3,8 @@ package mekanism.api.text;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.IColor;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -14,25 +16,25 @@ import net.minecraft.util.text.TranslationTextComponent;
  * @author AidanBrady
  */
 public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
-    BLACK("\u00a70", "black", "Black", "black", new int[]{0, 0, 0}, 0, TextFormatting.BLACK),
-    DARK_BLUE("\u00a71", "darkBlue", "Blue", "blue", new int[]{0, 0, 170}, 4, TextFormatting.DARK_BLUE),
-    DARK_GREEN("\u00a72", "darkGreen", "Green", "green", new int[]{0, 170, 0}, 2, TextFormatting.DARK_GREEN),
-    DARK_AQUA("\u00a73", "darkAqua", "Cyan", "cyan", new int[]{0, 255, 255}, 6, TextFormatting.DARK_AQUA),
-    DARK_RED("\u00a74", "darkRed", null, "dark_red", new int[]{170, 0, 0}, -1, TextFormatting.DARK_RED),
-    PURPLE("\u00a75", "purple", "Purple", "purple", new int[]{170, 0, 170}, 5, TextFormatting.DARK_PURPLE),
-    ORANGE("\u00a76", "orange", "Orange", "orange", new int[]{255, 170, 0}, 14, TextFormatting.GOLD),
-    GRAY("\u00a77", "gray", "LightGray", "light_gray", new int[]{170, 170, 170}, 7, TextFormatting.GRAY),
-    DARK_GRAY("\u00a78", "darkGray", "Gray", "gray", new int[]{85, 85, 85}, 8, TextFormatting.DARK_GRAY),
-    INDIGO("\u00a79", "indigo", "LightBlue", "light_blue", new int[]{85, 85, 255}, 12, TextFormatting.BLUE),
-    BRIGHT_GREEN("\u00a7a", "brightGreen", "Lime", "lime", new int[]{85, 255, 85}, 10, TextFormatting.GREEN),
-    AQUA("\u00a7b", "aqua", null, "aqua", new int[]{85, 255, 255}, -1, TextFormatting.AQUA),
-    RED("\u00a7c", "red", "Red", "red", new int[]{255, 0, 0}, 1, TextFormatting.RED),
-    PINK("\u00a7d", "pink", "Magenta", "magenta", new int[]{255, 85, 255}, 13, TextFormatting.LIGHT_PURPLE),
-    YELLOW("\u00a7e", "yellow", "Yellow", "yellow", new int[]{255, 255, 85}, 11, TextFormatting.YELLOW),
-    WHITE("\u00a7f", "white", "White", "white", new int[]{255, 255, 255}, 15, TextFormatting.WHITE),
+    BLACK("\u00a70", "black", "Black", "black", new int[]{0, 0, 0}, TextFormatting.BLACK, DyeColor.BLACK),
+    DARK_BLUE("\u00a71", "darkBlue", "Blue", "blue", new int[]{0, 0, 170}, TextFormatting.DARK_BLUE, DyeColor.BLUE),
+    DARK_GREEN("\u00a72", "darkGreen", "Green", "green", new int[]{0, 170, 0}, TextFormatting.DARK_GREEN, DyeColor.GREEN),
+    DARK_AQUA("\u00a73", "darkAqua", "Cyan", "cyan", new int[]{0, 255, 255}, TextFormatting.DARK_AQUA, DyeColor.CYAN),
+    DARK_RED("\u00a74", "darkRed", null, "dark_red", new int[]{170, 0, 0}, TextFormatting.DARK_RED, MaterialColor.NETHERRACK),
+    PURPLE("\u00a75", "purple", "Purple", "purple", new int[]{170, 0, 170}, TextFormatting.DARK_PURPLE, DyeColor.PURPLE),
+    ORANGE("\u00a76", "orange", "Orange", "orange", new int[]{255, 170, 0}, TextFormatting.GOLD, DyeColor.ORANGE),
+    GRAY("\u00a77", "gray", "LightGray", "light_gray", new int[]{170, 170, 170}, TextFormatting.GRAY, DyeColor.LIGHT_GRAY),
+    DARK_GRAY("\u00a78", "darkGray", "Gray", "gray", new int[]{85, 85, 85}, TextFormatting.DARK_GRAY, DyeColor.GRAY),
+    INDIGO("\u00a79", "indigo", "LightBlue", "light_blue", new int[]{85, 85, 255}, TextFormatting.BLUE, DyeColor.LIGHT_BLUE),
+    BRIGHT_GREEN("\u00a7a", "brightGreen", "Lime", "lime", new int[]{85, 255, 85}, TextFormatting.GREEN, DyeColor.LIME),
+    AQUA("\u00a7b", "aqua", null, "aqua", new int[]{85, 255, 255}, TextFormatting.AQUA, MaterialColor.LIGHT_BLUE),
+    RED("\u00a7c", "red", "Red", "red", new int[]{255, 0, 0}, TextFormatting.RED, DyeColor.RED),
+    PINK("\u00a7d", "pink", "Magenta", "magenta", new int[]{255, 85, 255}, TextFormatting.LIGHT_PURPLE, DyeColor.MAGENTA),
+    YELLOW("\u00a7e", "yellow", "Yellow", "yellow", new int[]{255, 255, 85}, TextFormatting.YELLOW, DyeColor.YELLOW),
+    WHITE("\u00a7f", "white", "White", "white", new int[]{255, 255, 255}, TextFormatting.WHITE, DyeColor.WHITE),
     //Extras for dye-completeness
-    BROWN("\u00a76", "brown", "Brown", "brown", new int[]{150, 75, 0}, 3, TextFormatting.GOLD),
-    BRIGHT_PINK("\u00a7d", "brightPink", "Pink", "pink", new int[]{255, 192, 203}, 9, TextFormatting.LIGHT_PURPLE);
+    BROWN("\u00a76", "brown", "Brown", "brown", new int[]{150, 75, 0}, TextFormatting.GOLD, DyeColor.BROWN),
+    BRIGHT_PINK("\u00a7d", "brightPink", "Pink", "pink", new int[]{255, 192, 203}, TextFormatting.LIGHT_PURPLE, DyeColor.PINK);
 
     public static EnumColor[] DYES = new EnumColor[]{BLACK, RED, DARK_GREEN, BROWN, DARK_BLUE, PURPLE, DARK_AQUA, GRAY, DARK_GRAY, BRIGHT_PINK, BRIGHT_GREEN, YELLOW,
                                                      INDIGO, PINK, ORANGE, WHITE};
@@ -57,23 +59,28 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
 
     public final int[] rgbCode;
 
-    public final int mcMeta;
     public final TextFormatting textFormatting;
     /**
      * A friendly name of the color.
      */
-    public String unlocalizedName;
+    public final String unlocalizedName;
+    //TODO: changed unlocalized name to use registry prefix
     public final String registry_prefix;
-    public String dyeName;
+    public final String dyeName;
+    private final MaterialColor mapColor;
 
-    EnumColor(String s, String unlocalized, String dye, String registry_prefix, int[] rgb, int meta, TextFormatting tf) {
+    EnumColor(String s, String unlocalized, String dye, String registry_prefix, int[] rgb, TextFormatting tf, DyeColor dyeColor) {
+        this(s, unlocalized, dye, registry_prefix, rgb, tf, dyeColor.getMapColor());
+    }
+
+    EnumColor(String s, String unlocalized, String dye, String registry_prefix, int[] rgb, TextFormatting tf, MaterialColor mapColor) {
         code = s;
         unlocalizedName = unlocalized;
         dyeName = dye;
         this.registry_prefix = registry_prefix;
         rgbCode = rgb;
-        mcMeta = meta;
         textFormatting = tf;
+        this.mapColor = mapColor;
     }
 
     public static EnumColor getFromDyeName(String s) {
@@ -90,8 +97,8 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
         return "color." + unlocalizedName;
     }
 
-    public String getOreDictName() {
-        return dyeName;
+    public MaterialColor getMapColor() {
+        return mapColor;
     }
 
     /**
@@ -117,15 +124,6 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
      */
     public float getColor(int index) {
         return (float) rgbCode[index] / 255F;
-    }
-
-    /**
-     * Gets the value of this color mapped to MC in-game item colors present in dyes and wool.
-     *
-     * @return mc meta value
-     */
-    public int getMetaValue() {
-        return mcMeta;
     }
 
     @Override

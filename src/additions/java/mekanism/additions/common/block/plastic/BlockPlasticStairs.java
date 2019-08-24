@@ -13,7 +13,7 @@ public class BlockPlasticStairs extends StairsBlock implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlasticStairs(IBlockProvider blockProvider, EnumColor color) {
-        super(blockProvider.getBlock().getDefaultState(), Properties.create(Material.CLAY));
+        super(blockProvider.getBlock().getDefaultState(), Properties.create(Material.CLAY, color.getMapColor()));
         this.color = color;
         setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_plastic_stairs"));
     }

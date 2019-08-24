@@ -49,7 +49,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
     private final EnumColor color;
 
     public BlockGlowPanel(EnumColor color) {
-        super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F).lightValue(15));
+        super(Block.Properties.create(Material.PISTON, color.getMapColor()).hardnessAndResistance(1F, 10F).lightValue(15));
         this.color = color;
         setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_glow_panel"));
     }

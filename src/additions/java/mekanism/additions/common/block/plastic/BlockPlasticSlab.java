@@ -13,7 +13,7 @@ public class BlockPlasticSlab extends SlabBlock implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlasticSlab(EnumColor color) {
-        super(Block.Properties.create(Material.CLAY));
+        super(Block.Properties.create(Material.CLAY, color.getMapColor()));
         this.color = color;
         setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_plastic_slab"));
     }

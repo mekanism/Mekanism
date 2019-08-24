@@ -12,7 +12,7 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
     private final EnumColor color;
 
     public BlockPlasticFenceGate(EnumColor color) {
-        super(Properties.create(Material.CLAY));
+        super(Properties.create(Material.CLAY, color.getMapColor()));
         this.color = color;
         setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_plastic_fence_gate"));
     }

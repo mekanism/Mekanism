@@ -12,7 +12,7 @@ public class BlockPlasticGlow extends Block implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlasticGlow(EnumColor color) {
-        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(5F, 10F).lightValue(10));
+        super(Block.Properties.create(Material.WOOD, color.getMapColor()).hardnessAndResistance(5F, 10F).lightValue(10));
         this.color = color;
         setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_plastic_glow"));
     }

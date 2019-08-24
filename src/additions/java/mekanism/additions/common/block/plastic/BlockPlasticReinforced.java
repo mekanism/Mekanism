@@ -12,7 +12,7 @@ public class BlockPlasticReinforced extends Block implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlasticReinforced(EnumColor color) {
-        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(50F, 2000F));
+        super(Block.Properties.create(Material.WOOD, color.getMapColor()).hardnessAndResistance(50F, 2000F));
         this.color = color;
         setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_reinforced_plastic"));
     }
