@@ -1,13 +1,14 @@
-package mekanism.common.item;
+package mekanism.additions.common.item;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
@@ -30,16 +31,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
-    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "walkie_talkie"), "inventory");
+    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(new ResourceLocation(MekanismAdditions.MODID, "walkie_talkie"), "inventory");
 
     public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
     public ItemWalkieTalkie() {
-        super("walkie_talkie", new Item.Properties().maxStackSize(1));
+        super(MekanismAdditions.MODID, "walkie_talkie", new Item.Properties().maxStackSize(1));
     }
 
     public static ModelResourceLocation getModel(int channel) {
-        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "walkie_talkie_ch" + c), "inventory"));
+        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(new ResourceLocation(MekanismAdditions.MODID, "walkie_talkie_ch" + c), "inventory"));
         return CHANNEL_MODELS.get(channel);
     }
 
@@ -47,9 +48,9 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(OnOff.of(getOn(itemstack), true).getTextComponent());
-        tooltip.add(TextComponentUtil.build(EnumColor.DARK_AQUA, Translation.of("tooltip.channel"), ": ", EnumColor.GRAY, getChannel(itemstack)));
-        if (!MekanismConfig.general.voiceServerEnabled.get()) {
-            tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("tooltip.walkie_disabled")));
+        tooltip.add(TextComponentUtil.build(EnumColor.DARK_AQUA, Translation.of("tooltip.mekanismadditions.channel"), ": ", EnumColor.GRAY, getChannel(itemstack)));
+        if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("tooltip.mekanismadditions.walkie_disabled")));
         }
     }
 

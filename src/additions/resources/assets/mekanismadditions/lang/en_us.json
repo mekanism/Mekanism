@@ -1,6 +1,7 @@
 {
 
   "tooltip.mekanismadditions.walkie_disabled": "Voice server disabled.",
+  "tooltip.mekanismadditions.channel": "Channel",
 
   "entity.mekanismadditions.baby_skeleton": "Baby Skeleton",
   "entity.mekanismadditions.obsidian_tnt": "Obsidian TNT",

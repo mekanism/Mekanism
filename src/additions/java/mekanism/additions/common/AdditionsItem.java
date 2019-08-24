@@ -3,6 +3,7 @@ package mekanism.additions.common;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.item.ItemBabySkeletonSpawnEgg;
 import mekanism.additions.common.item.ItemBalloon;
+import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import net.minecraft.item.Item;
@@ -10,6 +11,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 public enum AdditionsItem implements IItemProvider {
     BABY_SKELETON_SPAWN_EGG(new ItemBabySkeletonSpawnEgg()),
+    WALKIE_TALKIE(new ItemWalkieTalkie()),
 
     BLACK_BALLOON(new ItemBalloon(EnumColor.BLACK)),
     RED_BALLOON(new ItemBalloon(EnumColor.RED)),

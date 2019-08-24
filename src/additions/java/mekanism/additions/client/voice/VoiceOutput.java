@@ -1,4 +1,4 @@
-package mekanism.client.voice;
+package mekanism.additions.client.voice;
 
 import java.io.EOFException;
 import javax.sound.sampled.AudioSystem;

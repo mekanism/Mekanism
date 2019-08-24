@@ -1,12 +1,12 @@
-package mekanism.common.voice;
+package mekanism.additions.common.voice;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
+import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
 
 public class VoiceServerManager {
 
@@ -20,7 +20,7 @@ public class VoiceServerManager {
         Mekanism.logger.info("VoiceServer: Starting up server...");
         try {
             running = true;
-            serverSocket = new ServerSocket(MekanismConfig.general.VOICE_PORT.get());
+            serverSocket = new ServerSocket(MekanismAdditionsConfig.additions.VOICE_PORT.get());
             (listenThread = new ListenThread()).start();
         } catch (Exception ignored) {
         }

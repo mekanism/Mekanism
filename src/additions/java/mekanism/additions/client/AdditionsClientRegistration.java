@@ -49,7 +49,8 @@ public class AdditionsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        //TODO: should model block/colored be moved to additions
+        new AdditionsKeyHandler();
+
         registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {

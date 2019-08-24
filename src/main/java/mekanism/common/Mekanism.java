@@ -48,7 +48,6 @@ import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
-import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
@@ -136,10 +135,6 @@ public class Mekanism {
      * The version of ore generation in this version of Mekanism. Increment this every time the default ore generation changes.
      */
     public static int baseWorldGenVersion = 0;
-    /**
-     * The VoiceServer manager for walkie talkies
-     */
-    public static VoiceServerManager voiceManager;
     /**
      * The GameProfile used by the dummy Mekanism player
      */
@@ -481,9 +476,6 @@ public class Mekanism {
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
-        if (MekanismConfig.general.voiceServerEnabled.get()) {
-            voiceManager.start();
-        }
         //TODO: Check this stuff
         //CommandMek.register(event);
         CommandMek.register();
@@ -491,10 +483,6 @@ public class Mekanism {
     }
 
     private void serverStopping(FMLServerStoppingEvent event) {
-        if (MekanismConfig.general.voiceServerEnabled.get()) {
-            voiceManager.stop();
-        }
-
         //Clear all cache data
         playerState.clear();
         activeVibrators.clear();
@@ -585,11 +573,6 @@ public class Mekanism {
 
         //Register to receive subscribed events
         MinecraftForge.EVENT_BUS.register(this);
-
-        //Set up VoiceServerManager
-        if (MekanismConfig.general.voiceServerEnabled.get()) {
-            voiceManager = new VoiceServerManager();
-        }
 
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();

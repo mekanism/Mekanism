@@ -9,7 +9,6 @@ import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketPortableTeleporter;
-import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -120,9 +119,10 @@ public class CommonProxy/* implements IGuiProvider*/ {
         } else {
             MekanismAPI.addBoxBlacklist(Blocks.SPAWNER);
         }
-        if (MekanismConfig.general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
+        //TODO: Move this to additions and fix. Currently there is no config sync so there isn't a great spot to put this
+        /*if (MekanismConfig.general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();
-        }
+        }*/
         if (fromPacket) {
             Mekanism.logger.info("Received config from server.");
         }

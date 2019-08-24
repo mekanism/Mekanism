@@ -735,7 +735,6 @@
   "tooltip.diversionDesc": "Controllable by redstone",
   "tooltip.noGas": "No gas stored",
   "tooltip.stored": "Stored",
-  "tooltip.channel": "Channel",
   "tooltip.mode": "Mode",
   "tooltip.efficiency": "Efficiency",
   "tooltip.modeToggle": "Mode toggled to",

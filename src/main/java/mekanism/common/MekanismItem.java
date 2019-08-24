@@ -20,7 +20,6 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.gear.ItemArmoredJetpack;
 import mekanism.common.item.gear.ItemAtomicDisassembler;
 import mekanism.common.item.gear.ItemElectricBow;
@@ -45,7 +44,6 @@ public enum MekanismItem implements IItemProvider {
     ENERGY_TABLET(new ItemEnergized("energy_tablet", 1_000_000)),
     CONFIGURATOR(new ItemConfigurator()),
     NETWORK_READER(new ItemNetworkReader()),
-    WALKIE_TALKIE(new ItemWalkieTalkie()),
     DICTIONARY(new ItemDictionary()),
     GAS_MASK(new ItemGasMask()),
     SCUBA_TANK(new ItemScubaTank()),

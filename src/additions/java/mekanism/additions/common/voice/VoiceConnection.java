@@ -1,4 +1,4 @@
-package mekanism.common.voice;
+package mekanism.additions.common.voice;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.common.Mekanism;
-import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -34,7 +35,7 @@ public class VoiceConnection extends Thread {
         try {
             input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
             output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            synchronized (Mekanism.voiceManager) {
+            synchronized (MekanismAdditions.voiceManager) {
                 int retryCount = 0;
                 while (uuid == null && retryCount <= 100) {
                     try {
@@ -42,8 +43,8 @@ public class VoiceConnection extends Thread {
 
                         for (ServerPlayerEntity playerMP : l) {
                             String playerIP = playerMP.getPlayerIP();
-                            if (!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.isFoundLocal()) {
-                                Mekanism.voiceManager.setFoundLocal(true);
+                            if (!server.isDedicatedServer() && playerIP.equals("local") && !MekanismAdditions.voiceManager.isFoundLocal()) {
+                                MekanismAdditions.voiceManager.setFoundLocal(true);
                                 uuid = playerMP.getUniqueID();
                                 break;
                             } else if (playerIP.equals(socket.getInetAddress().getHostAddress())) {
@@ -78,7 +79,7 @@ public class VoiceConnection extends Thread {
                     byte[] audioData = new byte[byteCount];
                     VoiceConnection.this.input.readFully(audioData);
                     if (byteCount > 0) {
-                        Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
+                        MekanismAdditions.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
                     }
                 } catch (Exception e) {
                     open = false;
@@ -101,7 +102,7 @@ public class VoiceConnection extends Thread {
             if (socket != null) {
                 socket.close();
             }
-            Mekanism.voiceManager.removeConnection(this);
+            MekanismAdditions.voiceManager.removeConnection(this);
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while stopping server-based connection.", e);
         }

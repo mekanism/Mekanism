@@ -1,10 +1,10 @@
-package mekanism.client.voice;
+package mekanism.additions.client.voice;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
-import mekanism.client.MekanismKeyHandler;
+import mekanism.additions.client.AdditionsKeyHandler;
 import mekanism.common.Mekanism;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,10 +39,10 @@ public class VoiceInput extends Thread {
             boolean doFlush = false;
 
             while (voiceClient.isRunning()) {
-                if (MekanismKeyHandler.voiceKey.isPressed()) {
+                if (AdditionsKeyHandler.voiceKey.isPressed()) {
                     targetLine.flush();
 
-                    while (voiceClient.isRunning() && MekanismKeyHandler.voiceKey.isPressed()) {
+                    while (voiceClient.isRunning() && AdditionsKeyHandler.voiceKey.isPressed()) {
                         try {
                             int availableBytes = audioInput.available();
                             byte[] audioData = new byte[Math.min(availableBytes, 2200)];

@@ -27,7 +27,6 @@ public class GeneralConfig implements IMekanismConfig {
 
     public final BooleanValue logPackets;
     public final BooleanValue dynamicTankEasterEgg;
-    public final BooleanValue voiceServerEnabled;
     public final BooleanValue cardboardSpawners;
     public final BooleanValue enableWorldRegeneration;
     public final ConfigValue<Integer> UPDATE_DELAY;
@@ -59,7 +58,6 @@ public class GeneralConfig implements IMekanismConfig {
     public final ConfigValue<Integer> disassemblerDamageMin;
     public final ConfigValue<Integer> disassemblerDamageMax;
     public final DoubleValue disassemblerBatteryCapacity;
-    public final IntValue VOICE_PORT;
     public final IntValue maxUpgradeMultiplier;
     public final ConfigValue<Integer> minerSilkMultiplier;
     public final BooleanValue prefilledGasTanks;
@@ -107,8 +105,6 @@ public class GeneralConfig implements IMekanismConfig {
 
         logPackets = builder.comment("Log Mekanism packet names. Debug setting.").define("logPackets", false);
         dynamicTankEasterEgg = builder.comment("Audible sparkles.").define("dynamicTankEasterEgg", false);
-        voiceServerEnabled = builder.comment("Enables the voice server for Walkie Talkies.").define("voiceServerEnabled", false);
-        VOICE_PORT = builder.comment("TCP port for the Voice server to listen on.").defineInRange("VoicePort", 36123, 1, 65535);
         cardboardSpawners = builder.comment("Allows vanilla spawners to be moved with a Cardboard Box.").define("cardboardSpawners", true);
         enableWorldRegeneration = builder.comment("Allows chunks to retrogen Mekanism ore blocks.").define("enableWorldRegeneration", false);
         //TODO: Unused

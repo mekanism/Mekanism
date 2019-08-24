@@ -73,7 +73,7 @@ public abstract class MekKeyHandler {
 
     public abstract void keyUp(KeyBinding kb);
 
-    protected static class Builder {
+    public static class Builder {
 
         private List<KeyBinding> bindings = new ArrayList<>(4);
         private BitSet repeatFlags = new BitSet();
@@ -84,7 +84,7 @@ public abstract class MekKeyHandler {
          * @param k          the KeyBinding to add
          * @param repeatFlag true if keyDown pseudo-events continue to be sent while key is held
          */
-        protected Builder addBinding(KeyBinding k, boolean repeatFlag) {
+        public Builder addBinding(KeyBinding k, boolean repeatFlag) {
             repeatFlags.set(bindings.size(), repeatFlag);
             bindings.add(k);
             return this;
