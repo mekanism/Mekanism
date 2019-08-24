@@ -6,13 +6,10 @@ import javax.annotation.Nullable;
 import mekanism.api.IBlockProvider;
 import mekanism.api.block.FactoryType;
 import mekanism.api.block.IHasFactoryType;
-import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
-import mekanism.common.block.BlockGlowPanel;
-import mekanism.common.block.BlockObsidianTNT;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.PortalHelper;
@@ -71,12 +68,6 @@ import mekanism.common.block.machine.BlockSeismicVibrator;
 import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.block.machine.factory.BlockFactory;
-import mekanism.common.block.plastic.BlockPlastic;
-import mekanism.common.block.plastic.BlockPlasticFence;
-import mekanism.common.block.plastic.BlockPlasticGlow;
-import mekanism.common.block.plastic.BlockPlasticReinforced;
-import mekanism.common.block.plastic.BlockPlasticRoad;
-import mekanism.common.block.plastic.BlockPlasticSlick;
 import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.block.transmitter.BlockMechanicalPipe;
@@ -87,10 +78,8 @@ import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockCardboardBox;
-import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.ItemBlockGasTank;
-import mekanism.common.item.block.ItemBlockGlowPanel;
 import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
 import mekanism.common.item.block.ItemBlockMekanism;
@@ -315,7 +304,6 @@ public enum MekanismBlock implements IBlockProvider {
     ELITE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ELITE), ItemBlockThermodynamicConductor::new),
     ULTIMATE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ULTIMATE), ItemBlockThermodynamicConductor::new),
 
-    OBSIDIAN_TNT(new BlockObsidianTNT()),
     BOUNDING_BLOCK(new BlockBounding(false)),
     ADVANCED_BOUNDING_BLOCK(new BlockBounding(true)),
 
@@ -326,126 +314,6 @@ public enum MekanismBlock implements IBlockProvider {
     CREATIVE_GAS_TANK(new BlockGasTank(GasTankTier.CREATIVE), ItemBlockGasTank::new),
 
     CARDBOARD_BOX(new BlockCardboardBox(), ItemBlockCardboardBox::new),
-
-    BLACK_GLOW_PANEL(new BlockGlowPanel(EnumColor.BLACK), ItemBlockGlowPanel::new),
-    RED_GLOW_PANEL(new BlockGlowPanel(EnumColor.RED), ItemBlockGlowPanel::new),
-    GREEN_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_GREEN), ItemBlockGlowPanel::new),
-    BROWN_GLOW_PANEL(new BlockGlowPanel(EnumColor.BROWN), ItemBlockGlowPanel::new),
-    BLUE_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_BLUE), ItemBlockGlowPanel::new),
-    PURPLE_GLOW_PANEL(new BlockGlowPanel(EnumColor.PURPLE), ItemBlockGlowPanel::new),
-    CYAN_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_AQUA), ItemBlockGlowPanel::new),
-    LIGHT_GRAY_GLOW_PANEL(new BlockGlowPanel(EnumColor.GRAY), ItemBlockGlowPanel::new),
-    GRAY_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_GRAY), ItemBlockGlowPanel::new),
-    PINK_GLOW_PANEL(new BlockGlowPanel(EnumColor.BRIGHT_PINK), ItemBlockGlowPanel::new),
-    LIME_GLOW_PANEL(new BlockGlowPanel(EnumColor.BRIGHT_GREEN), ItemBlockGlowPanel::new),
-    YELLOW_GLOW_PANEL(new BlockGlowPanel(EnumColor.YELLOW), ItemBlockGlowPanel::new),
-    LIGHT_BLUE_GLOW_PANEL(new BlockGlowPanel(EnumColor.INDIGO), ItemBlockGlowPanel::new),
-    MAGENTA_GLOW_PANEL(new BlockGlowPanel(EnumColor.PINK), ItemBlockGlowPanel::new),
-    ORANGE_GLOW_PANEL(new BlockGlowPanel(EnumColor.ORANGE), ItemBlockGlowPanel::new),
-    WHITE_GLOW_PANEL(new BlockGlowPanel(EnumColor.WHITE), ItemBlockGlowPanel::new),
-
-    BLACK_PLASTIC_BLOCK(new BlockPlastic(EnumColor.BLACK), ItemBlockColoredName::new),
-    RED_PLASTIC_BLOCK(new BlockPlastic(EnumColor.RED), ItemBlockColoredName::new),
-    GREEN_PLASTIC_BLOCK(new BlockPlastic(EnumColor.DARK_GREEN), ItemBlockColoredName::new),
-    BROWN_PLASTIC_BLOCK(new BlockPlastic(EnumColor.BROWN), ItemBlockColoredName::new),
-    BLUE_PLASTIC_BLOCK(new BlockPlastic(EnumColor.DARK_BLUE), ItemBlockColoredName::new),
-    PURPLE_PLASTIC_BLOCK(new BlockPlastic(EnumColor.PURPLE), ItemBlockColoredName::new),
-    CYAN_PLASTIC_BLOCK(new BlockPlastic(EnumColor.DARK_AQUA), ItemBlockColoredName::new),
-    LIGHT_GRAY_PLASTIC_BLOCK(new BlockPlastic(EnumColor.GRAY), ItemBlockColoredName::new),
-    GRAY_PLASTIC_BLOCK(new BlockPlastic(EnumColor.DARK_GRAY), ItemBlockColoredName::new),
-    PINK_PLASTIC_BLOCK(new BlockPlastic(EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
-    LIME_PLASTIC_BLOCK(new BlockPlastic(EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
-    YELLOW_PLASTIC_BLOCK(new BlockPlastic(EnumColor.YELLOW), ItemBlockColoredName::new),
-    LIGHT_BLUE_PLASTIC_BLOCK(new BlockPlastic(EnumColor.INDIGO), ItemBlockColoredName::new),
-    MAGENTA_PLASTIC_BLOCK(new BlockPlastic(EnumColor.PINK), ItemBlockColoredName::new),
-    ORANGE_PLASTIC_BLOCK(new BlockPlastic(EnumColor.ORANGE), ItemBlockColoredName::new),
-    WHITE_PLASTIC_BLOCK(new BlockPlastic(EnumColor.WHITE), ItemBlockColoredName::new),
-
-    BLACK_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.BLACK), ItemBlockColoredName::new),
-    RED_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.RED), ItemBlockColoredName::new),
-    GREEN_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.DARK_GREEN), ItemBlockColoredName::new),
-    BROWN_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.BROWN), ItemBlockColoredName::new),
-    BLUE_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.DARK_BLUE), ItemBlockColoredName::new),
-    PURPLE_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.PURPLE), ItemBlockColoredName::new),
-    CYAN_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.DARK_AQUA), ItemBlockColoredName::new),
-    LIGHT_GRAY_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.GRAY), ItemBlockColoredName::new),
-    GRAY_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.DARK_GRAY), ItemBlockColoredName::new),
-    PINK_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
-    LIME_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
-    YELLOW_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.YELLOW), ItemBlockColoredName::new),
-    LIGHT_BLUE_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.INDIGO), ItemBlockColoredName::new),
-    MAGENTA_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.PINK), ItemBlockColoredName::new),
-    ORANGE_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.ORANGE), ItemBlockColoredName::new),
-    WHITE_SLICK_PLASTIC_BLOCK(new BlockPlasticSlick(EnumColor.WHITE), ItemBlockColoredName::new),
-
-    BLACK_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.BLACK), ItemBlockColoredName::new),
-    RED_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.RED), ItemBlockColoredName::new),
-    GREEN_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.DARK_GREEN), ItemBlockColoredName::new),
-    BROWN_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.BROWN), ItemBlockColoredName::new),
-    BLUE_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.DARK_BLUE), ItemBlockColoredName::new),
-    PURPLE_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.PURPLE), ItemBlockColoredName::new),
-    CYAN_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.DARK_AQUA), ItemBlockColoredName::new),
-    LIGHT_GRAY_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.GRAY), ItemBlockColoredName::new),
-    GRAY_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.DARK_GRAY), ItemBlockColoredName::new),
-    PINK_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
-    LIME_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
-    YELLOW_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.YELLOW), ItemBlockColoredName::new),
-    LIGHT_BLUE_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.INDIGO), ItemBlockColoredName::new),
-    MAGENTA_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.PINK), ItemBlockColoredName::new),
-    ORANGE_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.ORANGE), ItemBlockColoredName::new),
-    WHITE_PLASTIC_GLOW_BLOCK(new BlockPlasticGlow(EnumColor.WHITE), ItemBlockColoredName::new),
-
-    BLACK_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.BLACK), ItemBlockColoredName::new),
-    RED_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.RED), ItemBlockColoredName::new),
-    GREEN_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.DARK_GREEN), ItemBlockColoredName::new),
-    BROWN_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.BROWN), ItemBlockColoredName::new),
-    BLUE_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.DARK_BLUE), ItemBlockColoredName::new),
-    PURPLE_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.PURPLE), ItemBlockColoredName::new),
-    CYAN_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.DARK_AQUA), ItemBlockColoredName::new),
-    LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.GRAY), ItemBlockColoredName::new),
-    GRAY_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.DARK_GRAY), ItemBlockColoredName::new),
-    PINK_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
-    LIME_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
-    YELLOW_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.YELLOW), ItemBlockColoredName::new),
-    LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.INDIGO), ItemBlockColoredName::new),
-    MAGENTA_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.PINK), ItemBlockColoredName::new),
-    ORANGE_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.ORANGE), ItemBlockColoredName::new),
-    WHITE_REINFORCED_PLASTIC_BLOCK(new BlockPlasticReinforced(EnumColor.WHITE), ItemBlockColoredName::new),
-
-    BLACK_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.BLACK), ItemBlockColoredName::new),
-    RED_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.RED), ItemBlockColoredName::new),
-    GREEN_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.DARK_GREEN), ItemBlockColoredName::new),
-    BROWN_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.BROWN), ItemBlockColoredName::new),
-    BLUE_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.DARK_BLUE), ItemBlockColoredName::new),
-    PURPLE_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.PURPLE), ItemBlockColoredName::new),
-    CYAN_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.DARK_AQUA), ItemBlockColoredName::new),
-    LIGHT_GRAY_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.GRAY), ItemBlockColoredName::new),
-    GRAY_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.DARK_GRAY), ItemBlockColoredName::new),
-    PINK_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
-    LIME_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
-    YELLOW_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.YELLOW), ItemBlockColoredName::new),
-    LIGHT_BLUE_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.INDIGO), ItemBlockColoredName::new),
-    MAGENTA_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.PINK), ItemBlockColoredName::new),
-    ORANGE_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.ORANGE), ItemBlockColoredName::new),
-    WHITE_PLASTIC_ROAD(new BlockPlasticRoad(EnumColor.WHITE), ItemBlockColoredName::new),
-
-    BLACK_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.BLACK), ItemBlockColoredName::new),
-    RED_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.RED), ItemBlockColoredName::new),
-    GREEN_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.DARK_GREEN), ItemBlockColoredName::new),
-    BROWN_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.BROWN), ItemBlockColoredName::new),
-    BLUE_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.DARK_BLUE), ItemBlockColoredName::new),
-    PURPLE_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.PURPLE), ItemBlockColoredName::new),
-    CYAN_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.DARK_AQUA), ItemBlockColoredName::new),
-    LIGHT_GRAY_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.GRAY), ItemBlockColoredName::new),
-    GRAY_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.DARK_GRAY), ItemBlockColoredName::new),
-    PINK_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.BRIGHT_PINK), ItemBlockColoredName::new),
-    LIME_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.BRIGHT_GREEN), ItemBlockColoredName::new),
-    YELLOW_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.YELLOW), ItemBlockColoredName::new),
-    LIGHT_BLUE_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.INDIGO), ItemBlockColoredName::new),
-    MAGENTA_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.PINK), ItemBlockColoredName::new),
-    ORANGE_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.ORANGE), ItemBlockColoredName::new),
-    WHITE_PLASTIC_FENCE(new BlockPlasticFence(EnumColor.WHITE), ItemBlockColoredName::new),
-
     //TODO: Tag Entry
     SALT_BLOCK(new BlockSalt());
 

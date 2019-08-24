@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanismadditions:lime_glow_panel",
+    "count": 2
+  },
+  "pattern": [
+    "PSP",
+    "SDS",
+    "GSG"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:panes/glass"
+    },
+    "S": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "D": {
+      "tag": "forge:dyes/lime"
+    },
+    "G": {
+      "tag": "forge:dusts/glowstone"
+    }
+  }
+}

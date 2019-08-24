@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:magenta_plastic",
+    "count": 4
+  },
+  "pattern": [
+    "SSS",
+    "SDS",
+    "SSS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "D": {
+      "tag": "forge:dyes/magenta"
+    }
+  }
+}

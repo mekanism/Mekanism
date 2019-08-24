@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "mekanismadditions:magenta_balloon"
+  },
+  "ingredients": [
+    {
+      "tag": "mekanismadditions:balloons"
+    },
+    {
+      "tag": "forge:dyes/magenta"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:orange_plastic_road",
+    "count": 3
+  },
+  "pattern": [
+    "SSS",
+    "PPP",
+    "SSS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanismadditions:orange_slick_plastic"
+    },
+    "S": {
+      "tag": "minecraft:sand"
+    }
+  }
+}

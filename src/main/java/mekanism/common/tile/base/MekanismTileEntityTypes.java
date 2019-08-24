@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.IBlockProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBin;
@@ -34,7 +33,6 @@ import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.tile.TileEntityGasTank;
-import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
@@ -134,13 +132,6 @@ public class MekanismTileEntityTypes {
     public static final TileEntityType<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = create(MekanismBlock.THERMAL_EVAPORATION_BLOCK, TileEntityThermalEvaporationBlock::new);
     public static final TileEntityType<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = create(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, TileEntityThermalEvaporationController::new);
     public static final TileEntityType<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = create(MekanismBlock.THERMAL_EVAPORATION_VALVE, TileEntityThermalEvaporationValve::new);
-
-    //One tile for many blocks
-    public static final TileEntityType<TileEntityGlowPanel> GLOW_PANEL = create("glow_panel", TileEntityType.Builder.create(TileEntityGlowPanel::new,
-          MekanismBlock.BLACK_GLOW_PANEL.getBlock(), MekanismBlock.RED_GLOW_PANEL.getBlock(), MekanismBlock.GREEN_GLOW_PANEL.getBlock(), MekanismBlock.BROWN_GLOW_PANEL.getBlock(),
-          MekanismBlock.BLUE_GLOW_PANEL.getBlock(), MekanismBlock.PURPLE_GLOW_PANEL.getBlock(), MekanismBlock.CYAN_GLOW_PANEL.getBlock(), MekanismBlock.LIGHT_GRAY_GLOW_PANEL.getBlock(),
-          MekanismBlock.GRAY_GLOW_PANEL.getBlock(), MekanismBlock.PINK_GLOW_PANEL.getBlock(), MekanismBlock.LIME_GLOW_PANEL.getBlock(), MekanismBlock.YELLOW_GLOW_PANEL.getBlock(),
-          MekanismBlock.LIGHT_BLUE_GLOW_PANEL.getBlock(), MekanismBlock.MAGENTA_GLOW_PANEL.getBlock(), MekanismBlock.ORANGE_GLOW_PANEL.getBlock(), MekanismBlock.WHITE_GLOW_PANEL.getBlock()));
 
     //Transmitters
     public static final TileEntityType<TileEntityDiversionTransporter> DIVERSION_TRANSPORTER = create(MekanismBlock.DIVERSION_TRANSPORTER, TileEntityDiversionTransporter::new);
@@ -247,10 +238,6 @@ public class MekanismTileEntityTypes {
 
     private static <T extends TileEntity> TileEntityType<T> create(IBlockProvider provider, Supplier<? extends T> factory) {
         return create(provider.getRegistryName(), TileEntityType.Builder.create(factory, provider.getBlock()));
-    }
-
-    private static <T extends TileEntity> TileEntityType<T> create(String name, TileEntityType.Builder<T> builder) {
-        return create(new ResourceLocation(Mekanism.MODID, name), builder);
     }
 
     private static <T extends TileEntity> TileEntityType<T> create(ResourceLocation registryName, TileEntityType.Builder<T> builder) {

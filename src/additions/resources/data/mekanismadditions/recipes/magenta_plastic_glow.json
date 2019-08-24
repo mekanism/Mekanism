@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanismadditions:magenta_plastic_glow",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "item": "mekanismadditions:magenta_plastic"
+    },
+    {
+      "item": "mekanismadditions:magenta_plastic"
+    },
+    {
+      "item": "mekanismadditions:magenta_plastic"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

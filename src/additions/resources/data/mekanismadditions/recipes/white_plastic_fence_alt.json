@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:white_plastic_fence",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:fences/plastic"
+    },
+    "D": {
+      "tag": "forge:dyes/white"
+    }
+  }
+}

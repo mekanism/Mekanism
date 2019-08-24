@@ -2,10 +2,8 @@ package mekanism.common;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IItemProvider;
-import mekanism.api.text.EnumColor;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
-import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemControlCircuit;
@@ -93,23 +91,6 @@ public enum MekanismItem implements IItemProvider {
 
     JETPACK(new ItemJetpack()),
     ARMORED_JETPACK(new ItemArmoredJetpack()),
-
-    BLACK_BALLOON(new ItemBalloon(EnumColor.BLACK)),
-    RED_BALLOON(new ItemBalloon(EnumColor.RED)),
-    GREEN_BALLOON(new ItemBalloon(EnumColor.DARK_GREEN)),
-    BROWN_BALLOON(new ItemBalloon(EnumColor.BROWN)),
-    BLUE_BALLOON(new ItemBalloon(EnumColor.DARK_BLUE)),
-    PURPLE_BALLOON(new ItemBalloon(EnumColor.PURPLE)),
-    CYAN_BALLOON(new ItemBalloon(EnumColor.DARK_AQUA)),
-    LIGHT_GRAY_BALLOON(new ItemBalloon(EnumColor.GRAY)),
-    GRAY_BALLOON(new ItemBalloon(EnumColor.DARK_GRAY)),
-    PINK_BALLOON(new ItemBalloon(EnumColor.BRIGHT_PINK)),
-    LIME_BALLOON(new ItemBalloon(EnumColor.BRIGHT_GREEN)),
-    YELLOW_BALLOON(new ItemBalloon(EnumColor.YELLOW)),
-    LIGHT_BLUE_BALLOON(new ItemBalloon(EnumColor.INDIGO)),
-    MAGENTA_BALLOON(new ItemBalloon(EnumColor.PINK)),
-    ORANGE_BALLOON(new ItemBalloon(EnumColor.ORANGE)),
-    WHITE_BALLOON(new ItemBalloon(EnumColor.WHITE)),
 
     HDPE_PELLET("hdpe_pellet"),
     HDPE_ROD("hdpe_rod"),

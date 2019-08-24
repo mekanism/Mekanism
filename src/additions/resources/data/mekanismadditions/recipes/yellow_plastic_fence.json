@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismadditions:yellow_plastic_fence",
+    "count": 3
+  },
+  "pattern": [
+    "BSB",
+    "BSB"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "mekanismadditions:yellow_plastic"
+    },
+    "S": {
+      "tag": "forge:rods/plastic"
+    }
+  }
+}

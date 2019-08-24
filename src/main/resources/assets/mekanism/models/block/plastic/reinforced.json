@@ -1,6 +1,0 @@
-{
-  "parent": "mekanism:block/colored/cube",
-  "textures": {
-    "all": "mekanism:block/reinforced_plastic_block"
-  }
-}

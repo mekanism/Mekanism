@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:orange_reinforced_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "POP",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanismadditions:orange_plastic"
+    },
+    "O": {
+      "tag": "forge:dusts/osmium"
+    }
+  }
+}

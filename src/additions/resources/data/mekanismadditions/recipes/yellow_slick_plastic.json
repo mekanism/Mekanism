@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:yellow_slick_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PSP",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanismadditions:yellow_plastic"
+    },
+    "S": {
+      "tag": "forge:balls/slime"
+    }
+  }
+}

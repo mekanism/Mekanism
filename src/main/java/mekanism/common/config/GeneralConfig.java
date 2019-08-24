@@ -30,9 +30,6 @@ public class GeneralConfig implements IMekanismConfig {
     public final BooleanValue voiceServerEnabled;
     public final BooleanValue cardboardSpawners;
     public final BooleanValue enableWorldRegeneration;
-    public final BooleanValue spawnBabySkeletons;
-    public final ConfigValue<Integer> obsidianTNTDelay;
-    public final ConfigValue<Integer> obsidianTNTBlastRadius;
     public final ConfigValue<Integer> UPDATE_DELAY;
     public final IntValue osmiumPerChunk;
     public final IntValue osmiumMaxVeinSize;
@@ -114,9 +111,6 @@ public class GeneralConfig implements IMekanismConfig {
         VOICE_PORT = builder.comment("TCP port for the Voice server to listen on.").defineInRange("VoicePort", 36123, 1, 65535);
         cardboardSpawners = builder.comment("Allows vanilla spawners to be moved with a Cardboard Box.").define("cardboardSpawners", true);
         enableWorldRegeneration = builder.comment("Allows chunks to retrogen Mekanism ore blocks.").define("enableWorldRegeneration", false);
-        spawnBabySkeletons = builder.comment("Enable the spawning of baby skeletons. Think baby zombies but skeletons.").define("spawnBabySkeletons", true);
-        obsidianTNTDelay = builder.comment("Fuse time for Obsidian TNT.").define("obsidianTNTDelay", 100);
-        obsidianTNTBlastRadius = builder.comment("Radius of the explosion of Obsidian TNT.").define("obsidianTNTBlastRadius", 12);
         //TODO: Unused
         UPDATE_DELAY = builder.comment("How many ticks must pass until a block's active state can sync with the client.").define("UPDATE_DELAY", 10);
 

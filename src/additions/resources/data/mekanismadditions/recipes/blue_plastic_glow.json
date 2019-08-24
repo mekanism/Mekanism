@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanismadditions:blue_plastic_glow",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "item": "mekanismadditions:blue_plastic"
+    },
+    {
+      "item": "mekanismadditions:blue_plastic"
+    },
+    {
+      "item": "mekanismadditions:blue_plastic"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

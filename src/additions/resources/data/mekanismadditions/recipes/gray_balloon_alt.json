@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "mekanismadditions:gray_balloon"
+  },
+  "ingredients": [
+    {
+      "tag": "mekanismadditions:balloons"
+    },
+    {
+      "tag": "forge:dyes/gray"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "mekanismadditions:cyan_balloon"
+  },
+  "ingredients": [
+    {
+      "tag": "mekanismadditions:balloons"
+    },
+    {
+      "tag": "forge:dyes/cyan"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

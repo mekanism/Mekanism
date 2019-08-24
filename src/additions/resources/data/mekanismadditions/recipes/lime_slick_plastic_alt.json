@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:lime_slick_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "mekanismadditions:plastic_blocks/slick"
+    },
+    "D": {
+      "tag": "forge:dyes/lime"
+    }
+  }
+}

@@ -201,24 +201,6 @@ public class Mekanism {
             RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.SALT_BLOCK.getItemStack(), MekanismItem.SALT.getItemStack(4));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.DIAMOND), MekanismItem.ENRICHED_DIAMOND.getItemStack());
             RecipeHandler.addEnrichmentChamberRecipe(MekanismItem.HDPE_PELLET.getItemStack(3), MekanismItem.HDPE_SHEET.getItemStack());
-
-            //Plastic to Slick Plastic
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.BLACK_PLASTIC_BLOCK.getItemStack(), MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.RED_PLASTIC_BLOCK.getItemStack(), MekanismBlock.RED_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.GREEN_PLASTIC_BLOCK.getItemStack(), MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.BROWN_PLASTIC_BLOCK.getItemStack(), MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.BLUE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.PURPLE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.CYAN_PLASTIC_BLOCK.getItemStack(), MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK.getItemStack(), MekanismBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.GRAY_PLASTIC_BLOCK.getItemStack(), MekanismBlock.GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.PINK_PLASTIC_BLOCK.getItemStack(), MekanismBlock.PINK_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.LIME_PLASTIC_BLOCK.getItemStack(), MekanismBlock.LIME_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.YELLOW_PLASTIC_BLOCK.getItemStack(), MekanismBlock.YELLOW_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.LIGHT_BLUE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.MAGENTA_PLASTIC_BLOCK.getItemStack(), MekanismBlock.MAGENTA_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.ORANGE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.ORANGE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.WHITE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.WHITE_SLICK_PLASTIC_BLOCK.getItemStack());
         }
 
         //Combiner recipes
@@ -577,7 +559,7 @@ public class Mekanism {
         Capabilities.registerCapabilities();
     }
 
-    public void commonSetup(FMLCommonSetupEvent event) {
+    private void commonSetup(FMLCommonSetupEvent event) {
         //TODO: Figure out where preinit stuff should be, potentially also move it directly into this method
         preInit();
 

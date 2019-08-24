@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "mekanismadditions:green_balloon"
+  },
+  "ingredients": [
+    {
+      "tag": "mekanismadditions:balloons"
+    },
+    {
+      "tag": "forge:dyes/green"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

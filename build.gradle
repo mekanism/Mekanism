@@ -42,15 +42,19 @@ sourceSets {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
+    additions {
+        java {
+            srcDir 'src/additions/java'
+        }
+        compileClasspath += sourceSets.api.output
+        compileClasspath += sourceSets.main.output
+    }
     generators {
         java {
             srcDir 'src/generators/java'
         }
         compileClasspath += sourceSets.api.output
         compileClasspath += sourceSets.main.output
-        //TODO: Do the runtime paths need to be added
-        //runtimeClasspath += sourceSets.api.output
-        //runtimeClasspath += sourceSets.main.output
     }
     tools {
         java {
@@ -58,14 +62,12 @@ sourceSets {
         }
         compileClasspath += sourceSets.api.output
         compileClasspath += sourceSets.main.output
-        //TODO: Do the runtime paths need to be added
-        //runtimeClasspath += sourceSets.api.output
-        //runtimeClasspath += sourceSets.main.output
     }
 }
 
 configurations {
     apiCompile.extendsFrom(compile)
+    additionsCompile.extendsFrom(compile)
     generatorsCompile.extendsFrom(compile)
     toolsCompile.extendsFrom(compile)
 }
@@ -147,6 +149,9 @@ minecraft {
                     source sourceSets.main
                     source sourceSets.api
                 }
+                mekanismadditions {
+                    source sourceSets.additions
+                }
                 mekanismgenerators {
                     source sourceSets.generators
                 }
@@ -163,6 +168,29 @@ minecraft {
                 mekanism {
                     source sourceSets.main
                     source sourceSets.api
+                }
+                mekanismadditions {
+                    source sourceSets.additions
+                }
+                mekanismgenerators {
+                    source sourceSets.generators
+                }
+                mekanismtools {
+                    source sourceSets.tools
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file("run")
+
+            mods {
+                mekanism {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+                mekanismadditions {
+                    source sourceSets.additions
                 }
                 mekanismgenerators {
                     source sourceSets.generators
@@ -270,12 +298,12 @@ task coreJar(type: Jar) {
     //manifest(setMainManifestProps)
 }
 
-task toolsJar(type: Jar) {
-    archiveName = "MekanismTools-${project.version}.jar"
+task additionsJar(type: Jar) {
+    archiveName = "MekanismAdditions-${project.version}.jar"
     dependsOn 'reobfJar'
-    classifier "tools"
-    from sourceSets.tools.output
-    from(sourceSets.tools.resources.srcDirs) {
+    classifier "additions"
+    from sourceSets.additions.output
+    from(sourceSets.additions.resources.srcDirs) {
         include "META_INF/mods.toml"
 
         // replace version and mcversion
@@ -296,6 +324,19 @@ task generatorsJar(type: Jar) {
     }
 }
 
+task toolsJar(type: Jar) {
+    archiveName = "MekanismTools-${project.version}.jar"
+    dependsOn 'reobfJar'
+    classifier "tools"
+    from sourceSets.tools.output
+    from(sourceSets.tools.resources.srcDirs) {
+        include "META_INF/mods.toml"
+
+        // replace version and mcversion
+        expand "version": project.version, "mc_version": minecraft_version
+    }
+}
+
 task apiJar(type: Jar) {
     from sourceSets.api.output
     classifier "api"
@@ -309,6 +350,7 @@ task apiJar(type: Jar) {
 artifacts {
     archives apiJar
     archives coreJar
+    archives additionsJar
     archives generatorsJar
     archives toolsJar
 }

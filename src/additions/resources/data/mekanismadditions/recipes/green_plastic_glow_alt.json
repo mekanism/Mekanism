@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:green_plastic_glow",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "mekanismadditions:plastic_blocks/glow"
+    },
+    "D": {
+      "tag": "forge:dyes/green"
+    }
+  }
+}

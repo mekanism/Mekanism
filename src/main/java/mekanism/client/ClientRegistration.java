@@ -64,9 +64,7 @@ import mekanism.client.gui.robit.GuiRobitInventory;
 import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
-import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
-import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.block.RenderChemicalCrystallizerItem;
@@ -106,10 +104,7 @@ import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.common.Mekanism;
-import mekanism.common.entity.EntityBabySkeleton;
-import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
-import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityBin;
@@ -144,7 +139,6 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.factory.TileEntityFactory;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
@@ -341,10 +335,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         //Register entity rendering handlers
-        RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, RenderObsidianTNTPrimed::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, RenderRobit::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, RenderBalloon::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, SkeletonRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, RenderFlame::new);
     }
 }

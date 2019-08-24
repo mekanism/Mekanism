@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanismadditions:red_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "forge:dyes/red"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}
