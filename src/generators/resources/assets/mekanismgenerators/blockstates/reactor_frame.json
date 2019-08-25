@@ -1,7 +1,19 @@
 {
-  "variants": {
-    "": {
-      "model": "mekanismgenerators:block/reactor_frame"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mekanismgenerators:reactor_frame"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
-  }
+  ]
 }

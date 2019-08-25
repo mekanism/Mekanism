@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanismgenerators:block/wind_generator"
+    },
+    "facing=south": {
+      "model": "mekanismgenerators:block/wind_generator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mekanismgenerators:block/wind_generator",
+      "y": -90
+    },
+    "facing=east": {
+      "model": "mekanismgenerators:block/wind_generator",
+      "y": 90
+    }
+  }
+}

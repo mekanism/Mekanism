@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mekanismgenerators:block/reactor_port"
+    },
+    "active=true": {
+      "model": "mekanismgenerators:block/reactor_port",
+      "textures": {
+        "all": "mekanismgenerators:block/reactor_port_output"
+      }
+    }
+  }
+}

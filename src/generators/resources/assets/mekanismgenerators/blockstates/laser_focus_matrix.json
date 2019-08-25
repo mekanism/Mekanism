@@ -1,7 +1,19 @@
 {
-  "variants": {
-    "": {
-      "model": "mekanismgenerators:block/laser_focus_matrix"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mekanismgenerators:laser_focus_matrix"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
-  }
+  ]
 }

@@ -336,6 +336,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     public void drop() {
+        //TODO: Move this to loot table?
         ItemEntity entityItem = new ItemEntity(world, posX, posY + 0.3, posZ, MekanismItem.ROBIT.getItemStack());
         ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
         item.setEnergy(entityItem.getItem(), getEnergy());
