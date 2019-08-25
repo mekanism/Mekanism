@@ -21,13 +21,14 @@ public class LazyOptionalHelper<T> {
     }
 
     /**
-     * Used to not have null warnings everywhere, {@link LazyOptional#orElse(Object)} does not error when passed a null value though it is annotated Nonnull
-     *
      * @return The value of the optional or null if there is none.
      */
     @Nullable
     public T getValue() {
-        return lazyOptional.orElse(null);
+        if (lazyOptional.isPresent()) {
+            return lazyOptional.orElseThrow(() -> new RuntimeException("Failed to retrieve value of lazy optional when it said it was present"));
+        }
+        return null;
     }
 
     public void ifPresent(@Nonnull NonNullConsumer<? super T> consumer) {
@@ -50,7 +51,7 @@ public class LazyOptionalHelper<T> {
         return null;
     }
 
-    //For when the result is not a constant so we don't want to evaluate it if our lazyoptional is present
+    //For when the result is not a constant so we don't want to evaluate it if our LazyOptional is present
     public <RESULT> RESULT getIfPresentElseDo(Function<? super T, RESULT> presentFunction, Supplier<RESULT> elseResult) {
         if (isPresent()) {
             return presentFunction.apply(getValue());
