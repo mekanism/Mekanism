@@ -38,16 +38,16 @@ item.BrineBucket.name=塩水バケツ
 item.LithiumBucket.name=リチウムバケツ
 item.HeavyWaterBucket.name=重水バケツ
 item.FreeRunners.name=フリーランナー
-item.ArmoredJetpack.name=装甲ジェットパック
+item.ArmoredJetpack.name=アーマードジェットパック
 item.ConfigurationCard.name=設定カード
 item.SeismicReader.name=弾性波解析器
-item.HDPEPellet.name=高密度ポリエチレンペレット
-item.HDPERod.name=高密度ポリエチレンロッド
-item.HDPESheet.name=高密度ポリエチレンシート
+item.HDPEPellet.name=高密度ポリエチレンのペレット
+item.HDPERod.name=高密度ポリエチレンの棒
+item.HDPESheet.name=高密度ポリエチレンのシート
 item.PlaStick.name=プラスチック
 item.Substrate.name=基質
 item.Flamethrower.name=火炎放射器
-item.GaugeDropper.name=ゲージドロッパー
+item.GaugeDropper.name=計量スポイト
 item.BioFuel.name=バイオ燃料
 item.CraftingFormula.name=クラフトレシピ
 
@@ -83,7 +83,7 @@ tile.SaltBlock.name=塩ブロック
 # Basic Block
 tile.BasicBlock.OsmiumBlock.name=オスミウムブロック
 tile.BasicBlock.BronzeBlock.name=青銅ブロック
-tile.BasicBlock.RefinedObsidian.name=精錬された黒曜石
+tile.BasicBlock.RefinedObsidian.name=洗練された黒曜石
 tile.BasicBlock.CharcoalBlock.name=木炭ブロック
 tile.BasicBlock.RefinedGlowstone.name=精錬されたグロウストーン
 tile.BasicBlock.SteelBlock.name=鋼鉄ブロック
@@ -99,12 +99,12 @@ tile.BasicBlock.StructuralGlass.name=構造用ガラス
 tile.BasicBlock.DynamicValve.name=ダイナミックバルブ
 tile.BasicBlock.CopperBlock.name=銅ブロック
 tile.BasicBlock.TinBlock.name=錫ブロック
-tile.BasicBlock.ThermalEvaporationController.name=加温蒸発濃縮コントローラ
+tile.BasicBlock.ThermalEvaporationController.name=加温蒸発濃縮コントローラー
 tile.BasicBlock.ThermalEvaporationValve.name=加温蒸発濃縮バルブ
 
 # Basic Block 2 (second ID iteration)
 tile.BasicBlock2.ThermalEvaporationBlock.name=加温蒸発濃縮ブロック
-tile.BasicBlock2.InductionCasing.name=インダクションケーシング
+tile.BasicBlock2.InductionCasing.name=インダクションケース
 tile.BasicBlock2.InductionPort.name=インダクションポート
 tile.BasicBlock2.InductionCellBasic.name=基本インダクションセル
 tile.BasicBlock2.InductionCellAdvanced.name=発展インダクションセル
@@ -127,8 +127,8 @@ tile.MachineBlock.Combiner.name=結合機
 tile.MachineBlock.Crusher.name=粉砕機
 tile.MachineBlock.Factory.name=ファクトリー
 tile.MachineBlock.MetallurgicInfuser.name=冶金注入機
-tile.MachineBlock.PurificationChamber.name=純化チャンバー
-tile.MachineBlock.EnergizedSmelter.name=電動かまど
+tile.MachineBlock.PurificationChamber.name=浄化チャンバー
+tile.MachineBlock.EnergizedSmelter.name=電動製錬炉
 tile.MachineBlock.Teleporter.name=テレポーター
 tile.MachineBlock.ElectricPump.name=電動ポンプ
 tile.MachineBlock.PersonalChest.name=パーソナルチェスト
@@ -141,15 +141,15 @@ tile.MachineBlock2.RotaryCondensentrator.name=回転式流体凝縮器
 tile.MachineBlock2.ChemicalOxidizer.name=化学酸化機
 tile.MachineBlock2.ChemicalInfuser.name=化学混成機
 tile.MachineBlock2.ChemicalCombiner.name=化学結合機
-tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入チャンバー
+tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入室
 tile.MachineBlock2.ElectrolyticSeparator.name=電解分離機
 tile.MachineBlock2.PrecisionSawmill.name=精密製材機
-tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解チャンバー
+tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解機
 tile.MachineBlock2.ChemicalWasher.name=化学洗浄機
 tile.MachineBlock2.ChemicalCrystallizer.name=化学結晶化装置
-tile.MachineBlock2.SeismicVibrator.name=弾性波発振器
-tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応チャンバー
-tile.MachineBlock2.PressurizedReactionChamber.short.name=加圧反応チャンバー
+tile.MachineBlock2.SeismicVibrator.name=弾性波発振装置
+tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応室
+tile.MachineBlock2.PressurizedReactionChamber.short.name=加圧反応室
 tile.MachineBlock2.FluidicPlenisher.name=流体再供給機
 tile.MachineBlock2.Laser.name=レーザー
 tile.MachineBlock2.LaserAmplifier.name=レーザー増幅器
@@ -168,7 +168,7 @@ tile.PlasticBlock.name=プラスチックブロック
 tile.SlickPlasticBlock.name=滑らかなプラスチックブロック
 tile.GlowPlasticBlock.name=輝くプラスチックブロック
 tile.ReinforcedPlasticBlock.name=強化プラスチックブロック
-tile.RoadPlasticBlock.name=プラスチックの歩道
+tile.RoadPlasticBlock.name=プラスチックロード
 
 tile.PlasticFence.name=プラスチックの柵
 
@@ -205,10 +205,10 @@ tile.Transmitter.EliteLogisticalTransporter.name=精鋭物流トランスポー�
 tile.Transmitter.UltimateLogisticalTransporter.name=究極物流トランスポーター
 tile.Transmitter.RestrictiveTransporter.name=制限トランスポーター
 tile.Transmitter.DiversionTransporter.name=迂回トランスポーター
-tile.Transmitter.BasicThermodynamicConductor.name=基本熱力学伝導管
-tile.Transmitter.AdvancedThermodynamicConductor.name=発展熱力学伝導管
-tile.Transmitter.EliteThermodynamicConductor.name=精鋭熱力学伝導管
-tile.Transmitter.UltimateThermodynamicConductor.name=究極熱力学伝導管
+tile.Transmitter.BasicThermodynamicConductor.name=基本熱力学的伝導体
+tile.Transmitter.AdvancedThermodynamicConductor.name=発展熱力学的伝導体
+tile.Transmitter.EliteThermodynamicConductor.name=精鋭熱力学的伝導体
+tile.Transmitter.UltimateThermodynamicConductor.name=究極熱力学的伝導体
 
 # Glow Panel
 tile.GlowPanel.name=発光パネル
@@ -304,14 +304,14 @@ gas.sulfurdioxide=二酸化硫黄
 gas.sulfurtrioxide=三酸化硫黄
 gas.sulfuricacid=硫酸
 gas.hydrogenchloride=塩化水素
-gas.liquidosmium=オスミウム
-gas.ethene=エチレン
-gas.sodium=ナトリウム
-gas.brine=気化した鹹水
+gas.liquidosmium=オスミウムガス
+gas.ethene=エチレンガス
+gas.sodium=ナトリウムガス
+gas.brine=気化した塩水
 gas.deuterium=重水素
 gas.tritium=三重水素
-gas.lithium=リチウム
-gas.fusionfuel=D-T 燃料
+gas.lithium=リチウムガス
+gas.fusionfuel=D-T燃料ガス
 
 gas.iron=鉄の懸濁液
 gas.gold=金の懸濁液
@@ -350,7 +350,7 @@ fluid.heavywater=重水
 fluid.liquidlithium=液体リチウム
 fluid.liquiddeuterium=液体重水素
 fluid.liquidtritium=液体三重水素
-fluid.liquidfusionfuel=液体 D-T 燃料
+fluid.liquidfusionfuel=液体D-T燃料
 fluid.steam=蒸気
 
 # OreGas names
@@ -467,7 +467,9 @@ gui.energy=エネルギー
 gui.gas=ガス
 gui.dumping=廃棄
 gui.dumping_excess=余剰分を廃棄
+gui.modID=Mod ID
 gui.key=キー
+gui.id=ID
 gui.finished=完了
 gui.well=状態良好
 gui.upgrade=アップグレード
@@ -490,7 +492,7 @@ gui.receiving=インプット
 gui.dimensions=体積
 gui.constituents=内容
 gui.cells=セル
-gui.providers=プロバイダ
+gui.providers=プロバイダー
 gui.structure=構造
 gui.dynamicTank=ダイナミックタンク
 gui.industrialTurbine=工業用タービン
@@ -535,12 +537,12 @@ gui.flowRate=流量
 gui.maxFlow=最大流量
 gui.tankVolume=タンクの容量
 gui.steamFlow=蒸気の流れ
-gui.production=発電量
+gui.production=生成量
 gui.blades=タービンの羽
 gui.coils=コイル数
 gui.dispersers=圧力分散器
 gui.vents=蒸気排出口
-gui.maxProduction=最大発電量
+gui.maxProduction=最大生成量
 gui.limiting=限定的
 gui.steamInput=蒸気搬入量
 gui.capacity=容量
@@ -548,7 +550,7 @@ gui.unit=単位
 gui.temp=温度
 gui.usage=使用
 gui.transferred=移動済み
-gui.dissipated=温度変化
+gui.dissipated=発散
 gui.boilRate=沸騰量
 gui.maxBoil=蒸気生成量
 gui.maxWater=水の最大容量
@@ -594,8 +596,8 @@ gui.upgrades.max=最大
 gui.upgrades.effect=効果
 
 gui.chemicalInfuser.short=化学混成機
-gui.chemicalDissolutionChamber.short=化学溶解チャンバー
-gui.thermalEvaporationController.short=加温蒸縮ｺﾝﾄﾛｰﾗ
+gui.chemicalDissolutionChamber.short=化学溶解機
+gui.thermalEvaporationController.short=加温蒸発濃縮コントローラー
 
 gui.dictionary.noKey=対応する鉱石辞書名がありません。
 
@@ -610,13 +612,13 @@ gui.factory.secondaryEnergy=二次エネルギー
 gui.factory.autoSort=自動分配
 
 # Recipe types
-gui.factory.Smelting=製錬
+gui.factory.Smelting=精錬
 gui.factory.Enriching=品質向上
 gui.factory.Crushing=粉砕
 gui.factory.Compressing=オスミウム圧縮
 gui.factory.Combining=結合
-gui.factory.Purifying=純化
-gui.factory.Injecting=化学注入
+gui.factory.Purifying=浄化
+gui.factory.Injecting=薬液注入
 gui.factory.Infusing=冶金注入
 gui.factory.Sawing=製材
 
@@ -694,8 +696,8 @@ gui.digitalMiner.autoPull=自動搬入
 gui.digitalMiner.replaceBlock=ブロックの置換
 gui.digitalMiner.reset=初期化
 gui.digitalMiner.silkTouch=シルクタッチ
-gui.digitalMiner.pull=自動搬入
-gui.digitalMiner.silk=ｼﾙｸﾀｯﾁ
+gui.digitalMiner.pull=搬入
+gui.digitalMiner.silk=シルク
 gui.digitalMiner.toMine=残り埋蔵量
 gui.digitalMiner.running=稼働中
 gui.digitalMiner.inverse=反転モード
@@ -736,7 +738,7 @@ tooltip.configurator.modeChange=接続タイプを次に設定しました
 mekanism.pipe.connectiontype.normal=通常
 mekanism.pipe.connectiontype.push=搬入
 mekanism.pipe.connectiontype.pull=搬出
-mekanism.pipe.connectiontype.none=断絶
+mekanism.pipe.connectiontype.none=遮断
 
 tooltip.upgrade.speed=スピード
 tooltip.upgrade.energy=エネルギー
@@ -777,6 +779,7 @@ tooltip.meta=メタデータ
 tooltip.tile=タイル
 tooltip.keysFound=割り当てられている鉱石辞書名
 tooltip.noKey=該当なし
+tooltip.hp=HP
 mekanism.tooltip.configureState=コンフィグの設定: %s
 tooltip.outputRate=出力量
 tooltip.insufficientFuel=燃料不足
@@ -797,7 +800,8 @@ mekanism.tooltip.portableTank.bucketMode=バケツモード: %s
 mekanism.tooltip.disassembler.normal=通常
 mekanism.tooltip.disassembler.slow=遅い
 mekanism.tooltip.disassembler.fast=早い
-mekanism.tooltip.disassembler.vein=鉱脈
+mekanism.tooltip.disassembler.vein=鉱脈採掘
+mekanism.tooltip.disassembler.extended_vein=広範囲鉱脈採掘
 mekanism.tooltip.disassembler.off=オフ
 
 tooltip.configurationCard.got=%sから設定データを読み取りました
@@ -828,9 +832,9 @@ tooltip.SteelCasing=頑丈な鋼鉄製の筐体です。マシンの作成に使
 tooltip.DynamicTank=ダイナミックタンクの組み立てに使います。沢山の液体を貯蔵します。
 tooltip.StructuralGlass=強化されたガラスで破壊してもアイテム化します。マルチブロックの窓として使用することが出来ます。
 tooltip.DynamicValve=ダイナミックタンクの組み立てに使います。パイプからの液体の搬入出をサポートします。
-tooltip.ThermalEvaporationController=加温蒸発濃縮装置の根幹となるブロックです。加温蒸発濃縮装置につき一つだけ置くことが出来ます。
-tooltip.ThermalEvaporationValve=加温蒸発濃縮装置のバルブです。サーモダイナミックコンダクターからの導熱、パイプからの液体の搬入出をサポートします。
-tooltip.ThermalEvaporationBlock=加温蒸発濃縮装置の組み立てに使う銅合金製の筐体です。処理に必要な沢山の熱を素材が伝導します。
+tooltip.ThermalEvaporationController=加温蒸発濃縮プラントの根幹となるブロックです。加温蒸発濃縮プラントにつき一つだけ置くことが出来ます。
+tooltip.ThermalEvaporationValve=加温蒸発濃縮プラントのバルブです。熱力学的伝導体からの導熱、パイプからの液体の搬入出をサポートします。
+tooltip.ThermalEvaporationBlock=加温蒸発濃縮プラントの組み立てに使う銅合金製の筐体です。処理に必要な沢山の熱を素材が伝導します。
 tooltip.InductionCasing=莫大なエネルギーに耐えられる筐体です。インダクションマトリックスの組み立てに使います。
 tooltip.InductionPort=インダクションマトリックスの組み立てに用い、インダクションマトリックスにおけるエネルギーの搬入出を担います。
 tooltip.InductionCell=甚大なエネルギーを蓄えることが出来る、高伝導性のキャパシタです。 インダクションマトリックスの内部に組み込み、蓄電容量を増やします。
@@ -841,7 +845,7 @@ tooltip.BoilerCasing=耐圧性の高密な筐体です。ボイラー室の組�
 tooltip.BoilerValve=ボイラー室の組み立てに使用し、水と熱の搬入、そして蒸気の搬出を行います。
 tooltip.SecurityDesk=あなたの保有するマシンのセキュリティ管理の中心となる機械です。
 
-tooltip.EnrichmentChamber=鉱石を品質向上し2つの粉にする簡単な機械です。他の類似する処理も行います。
+tooltip.EnrichmentChamber=鉱石をリッチに2つの粉にする簡単な機械です。他の類似する処理も行います。
 tooltip.OsmiumCompressor=オスミウムを様々な粉に詰め込み、新たなインゴットへと加工する先進的な機械です。
 tooltip.Combiner=鉱石などの粉を対応する鉱石などに加工する機械です。
 tooltip.Crusher=インゴットを砕いて粉にする機械です。他の類似する処理も行います。
@@ -853,7 +857,7 @@ tooltip.Teleporter=設定したいろいろな別のテレポーターへとプ�
 tooltip.ElectricPump=溶岩湖全部を組み上げることが出来る良いポンプです。
 tooltip.PersonalChest=54スロットを有し、いたるところで開けられるあなただけのチェストです。
 tooltip.Chargepad=どのModのどんなアイテムも充電することが出来るユニーバーサルなチャージパッドです
-tooltip.LogisticalSorter=フィルターによる的確な仕分けができる機械です。 隣接するインベントリからロジスティカルトランスポーターへと仕分けて搬出します。
+tooltip.LogisticalSorter=フィルターによる的確な仕分けができる機械です。 隣接するインベントリから物流トランスポーターへと仕分けて搬出します。
 tooltip.RotaryCondensentrator=ガスを液体にしたり液体をガスにしたりする機械です。
 tooltip.ChemicalInjectionChamber=鉱石を4つの欠片にする精鋭的な機械です。あなたを鉱石4倍加へと導いてくれるでしょう。
 tooltip.ElectrolyticSeparator=液体を2つの別のガスに電解する機械です。
@@ -984,6 +988,7 @@ reactor.depleted=燃料不足時
 reactor.depleted.desc=反応に十分な量の燃料が不足している時
 
 # Creative tab
+itemGroup.tabMekanism=Mekanism
 
 #############
 # GENERATORS
@@ -1137,6 +1142,10 @@ mekanism.configgui.ctgy.tools.general.tooltip=MekanismToolsの基本設定
 mekanism.configgui.ctgy.tools.armor.tooltip=MekanismToolsの防具におけるパラメータの設定
 mekanism.configgui.ctgy.tools.tools.tooltip=MekanismToolsの道具におけるパラメータの設定
 
+# Commands
+cmd.mek.usage=
+cmd.mek.debug.usage=
+cmd.mek.debug=
 cmd.mek.testrules.usage=ワールド設定をテスト用に設定します(Mobのスポーン・昼夜サイクル・天候の変化を無効にします)
 cmd.mek.testrules=モブのスポーン, 昼夜サイクル, 天候の変化を無効化しました
 cmd.mek.tp.usage=新規座標にテレポートし, 直前の座標をスタックリストに保存します
@@ -1145,6 +1154,8 @@ cmd.mek.tp.missing.args=テレポートするには座標を指定する(x, y, z
 cmd.mek.tpop.usage=スタックリストからに最後に保存された座標に戻ります
 cmd.mek.tpop=(%d, %d, %d)に戻りました. %d個の位置情報がスタックリストに保存されています
 cmd.mek.tpop.empty.stack=スタックリストに保存された位置情報はありません
+
+cmd.mek.chunk.usage=
 cmd.mek.chunk.watch.usage=チャンクのロード・アンロードイベントのウォッチリストに呼び出し元チャンクを登録します
 cmd.mek.chunk.watch=チャンク(%d, %d)をウォッチリストに登録しました
 cmd.mek.chunk.unwatch.usage=チャンクのロード・アンロードイベントのウォッチリストから呼び出し元チャンクを削除します
@@ -1152,4 +1163,6 @@ cmd.mek.chunk.unwatch=チャンク(%d, %d)をウォッチリストから削除�
 cmd.mek.chunk.clear.usage=チャンクのロード・アンロードイベントのウォッチリストに登録されたすべてのチャンクを削除します
 cmd.mek.chunk.clear=%d個のチャンクをウォッチリストから削除しました
 cmd.mek.chunk.flush=%d個のチャンクをアンロードしました
+
+#chat messages
 chat.mek.multiblockformed=マルチブロックが構築されました
