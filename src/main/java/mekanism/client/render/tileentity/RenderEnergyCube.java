@@ -67,13 +67,14 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         setLightmapDisabled(false);
         GlStateManager.popMatrix();
 
-        if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
+        double energyPercentage = tileEntity.getEnergy() / tileEntity.getMaxEnergy();
+        if (energyPercentage > 0.1) {
             GlStateManager.translatef(0, -1.0F, 0);
             bindTexture(coreTexture);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             float ticks = MekanismClient.ticksPassed + partialTick;
             GlStateManager.scalef(0.4F, 0.4F, 0.4F);
-            MekanismRenderer.color(tileEntity.tier.getBaseTier());
+            MekanismRenderer.color(tileEntity.tier.getBaseTier().getColor(), (float) energyPercentage);
             GlStateManager.translatef(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             GlStateManager.rotatef(4 * ticks, 0, 1, 0);
             GlStateManager.rotatef(36F + 4 * ticks, 0, 1, 1);
