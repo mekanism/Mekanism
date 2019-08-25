@@ -50,11 +50,12 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         GlStateManager.popMatrix();
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
-        if (energy / tier.getMaxEnergy() > 0.1) {
+        double energyPercentage = energy / tier.getMaxEnergy();
+        if (energyPercentage > 0.1) {
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            MekanismRenderer.color(tier.getBaseTier());
+            MekanismRenderer.color(tier.getBaseTier().getColor(), (float) energyPercentage);
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
             GlStateManager.rotate(4 * MekanismClient.ticksPassed, 0, 1, 0);
             GlStateManager.rotate(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
