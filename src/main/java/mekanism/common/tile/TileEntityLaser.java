@@ -64,7 +64,8 @@ public class TileEntityLaser extends TileEntityMekanism {
                     BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()).matches(ILaserReceptor::canLasersDig)) {
+                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace())
+                          .matches(receptor -> !receptor.canLasersDig())) {
                         diggingProgress += MekanismConfig.usage.laser.get();
                         if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
                             LaserManager.breakBlock(hitCoord, true, world, pos);

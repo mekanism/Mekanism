@@ -78,7 +78,8 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
-                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).matches(ILaserReceptor::canLasersDig)) {
+                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace())
+                          .matches(receptor -> !receptor.canLasersDig())) {
                         diggingProgress += lastFired;
                         if (diggingProgress < hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
@@ -116,7 +117,8 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                     BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()).matches(ILaserReceptor::canLasersDig)) {
+                    if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace())
+                          .matches(receptor -> !receptor.canLasersDig())) {
                         diggingProgress += firing;
                         if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
                             LaserManager.breakBlock(hitCoord, true, world, pos);

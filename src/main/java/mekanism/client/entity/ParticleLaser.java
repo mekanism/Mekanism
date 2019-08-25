@@ -36,11 +36,15 @@ public class ParticleLaser extends SpriteTexturedParticle {
         sprite = MekanismRenderer.laserIcon;
     }
 
+    //TODO: Fix the rendering, currently is partially disabled to not cause crashes
     @Override
     public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull ActiveRenderInfo renderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ,
           float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.draw();
+        if (tessellator.getBuffer().isDrawing) {
+            //TODO: Should state be cached
+            tessellator.draw();
+        }
 
         GlStateManager.pushMatrix();
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
@@ -63,7 +67,8 @@ public class ParticleLaser extends SpriteTexturedParticle {
         }
         drawLaser(buffer, tessellator);
         GlStateManager.popMatrix();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        //buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        //TODO: Restart the rendering if they were rendering when we started
     }
 
     private void drawLaser(BufferBuilder buffer, Tessellator tessellator) {

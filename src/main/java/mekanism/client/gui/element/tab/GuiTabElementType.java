@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.tab;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,6 +24,6 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
 
     @Override
     public void displayForegroundTooltip(int xAxis, int yAxis) {
-        displayTooltip(TextComponentUtil.build(tabType), xAxis, yAxis);
+        displayTooltip(tabType.getDescription(), xAxis, yAxis);
     }
 }
