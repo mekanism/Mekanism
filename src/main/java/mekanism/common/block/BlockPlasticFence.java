@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import net.minecraft.block.BlockFence;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -20,7 +19,9 @@ import net.minecraft.util.ResourceLocation;
 public class BlockPlasticFence extends BlockFence {
 
     public BlockPlasticFence() {
-        super(Material.CLAY, Material.CLAY.getMaterialMapColor());
+        super(BlockPlastic.PLASTIC, BlockPlastic.PLASTIC.getMaterialMapColor());
+        setHardness(5F);
+        setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
     }
 

@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStatePlastic;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -20,10 +21,12 @@ import net.minecraft.world.World;
 
 public class BlockPlastic extends Block {
 
+    public static final Material PLASTIC = new Material(MapColor.CLAY);
+
     public PlasticBlockType type;
 
     public BlockPlastic(PlasticBlockType blockType) {
-        super(Material.WOOD);
+        super(PLASTIC);
         type = blockType;
         setHardness(type == PlasticBlockType.REINFORCED ? 50F : 5F);
         setResistance(type == PlasticBlockType.REINFORCED ? 2000F : 10F);
