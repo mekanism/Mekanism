@@ -14,6 +14,8 @@ import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -131,6 +133,10 @@ public class BlockStateHelper {
                 }
             }
             state = blockFacing.setDirection(state, newDirection);
+        }
+        if (block instanceof IStateWaterLogged) {
+            IFluidState fluidState = context.getWorld().getFluidState(context.getPos());
+            state = state.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
         }
         //TODO: Set the proper defaults for the below ones, maybe do it by setting property defaults of everything
         // Also ensure that when the state changes from the tile the state is actually updated

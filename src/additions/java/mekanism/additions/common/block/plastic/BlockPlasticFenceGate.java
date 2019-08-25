@@ -16,7 +16,6 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
 public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlock, IStateWaterLogged {
@@ -37,13 +36,7 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        IFluidState fluidState = context.getWorld().getFluidState(context.getPos());
-        return super.getStateForPlacement(context).with(BlockStateHelper.WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
-    }
-
-    @Override
-    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
-        return !state.get(BlockStateHelper.WATERLOGGED);
+        return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
     @Nonnull
@@ -53,12 +46,6 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
         return state.get(BlockStateHelper.WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
 
-    /**
-     * Update the provided state given the provided neighbor facing and neighbor state, returning a new state.
-     * For example, fences make their connections to the passed in state if possible, and wet concrete powder immediately
-     * returns its solidified counterpart.
-     * Note that this method should ideally consider only the specific face passed in.
-     */
     @Nonnull
     @Override
     public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,

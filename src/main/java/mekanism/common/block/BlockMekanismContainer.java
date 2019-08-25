@@ -16,6 +16,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
@@ -30,6 +31,7 @@ import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -38,6 +40,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.INameable;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.NonNullList;
@@ -221,6 +224,26 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public IFluidState getFluidState(BlockState state) {
+        if (state.getBlock() instanceof IStateWaterLogged && state.get(BlockStateHelper.WATERLOGGED)) {
+            return Fluids.WATER.getStillFluidState(false);
+        }
+        return super.getFluidState(state);
+    }
+
+    @Nonnull
+    @Override
+    public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
+          @Nonnull BlockPos facingPos) {
+        if (state.getBlock() instanceof IStateWaterLogged && state.get(BlockStateHelper.WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Override
