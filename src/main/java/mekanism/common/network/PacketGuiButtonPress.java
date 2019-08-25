@@ -1,12 +1,9 @@
 package mekanism.common.network;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.IGuiProvider;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -50,8 +47,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
  */
 public class PacketGuiButtonPress {
 
-    public static List<IGuiProvider> handlers = new ArrayList<>();
-
+    //TODO: Make a tab button pressed? and have a registry that encodes a resource location as a "key" so that the server and client can know
+    // what one is being talked about without worrying about potential index mismatches
+    // Decide if it makes sense to do this in a separate packet or as part of this
     private ClickedTileButton tileButton;
     private ClickedEntityButton entityButton;
     private boolean hasEntity;

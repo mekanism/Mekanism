@@ -66,9 +66,9 @@ public class LazyOptionalHelper<T> {
         return elseResult;
     }
 
-    public <TYPE extends T> boolean matches(Predicate<TYPE> predicate) {
+    public boolean matches(Predicate<? super T> predicate) {
         if (isPresent()) {
-            return predicate.test((TYPE) getValue());
+            return predicate.test(getValue());
         }
         return false;
     }
