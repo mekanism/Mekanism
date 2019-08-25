@@ -22,7 +22,6 @@ public class ItemBlockColoredName<BLOCK extends Block & IColoredBlock> extends I
     @Nonnull
     @Override
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        //TODO: Can this be removed? Or is this what is getting it to be colored
         EnumColor color = getColor(stack);
         if (color == EnumColor.BLACK) {
             color = EnumColor.DARK_GRAY;

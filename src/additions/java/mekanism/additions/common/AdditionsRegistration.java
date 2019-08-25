@@ -1,11 +1,9 @@
 package mekanism.additions.common;
 
 import mekanism.additions.common.entity.AdditionsEntityType;
-import mekanism.additions.common.tile.AdditionsTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,11 +22,6 @@ public class AdditionsRegistration {
         IForgeRegistry<Item> registry = event.getRegistry();
         AdditionsItem.registerItems(registry);
         AdditionsBlock.registerItemBlocks(registry);
-    }
-
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        AdditionsTileEntityTypes.registerTileEntities(event.getRegistry());
     }
 
     @SubscribeEvent
