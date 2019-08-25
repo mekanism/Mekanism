@@ -1,7 +1,19 @@
 {
-  "variants": {
-    "": {
-      "model": "mekanismgenerators:block/solar_generator"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mekanismgenerators:solar_generator"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
-  }
+  ]
 }

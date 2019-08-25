@@ -1,7 +1,19 @@
 {
-  "variants": {
-    "": {
-      "model": "mekanismgenerators:block/reactor_logic_adapter"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mekanismgenerators:reactor_logic_adapter"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
-  }
+  ]
 }

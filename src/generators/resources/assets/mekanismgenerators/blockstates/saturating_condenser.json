@@ -1,19 +1,7 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "mekanismgenerators:saturating_condenser"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+  "variants": {
+    "": {
+      "model": "mekanismgenerators:block/saturating_condenser"
     }
-  ]
+  }
 }

@@ -1,19 +1,13 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "mekanismgenerators:reactor_controller"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+  "variants": {
+    "active=false": {
+      "model": "mekanismgenerators:block/reactor_controller"
+    },
+    "active=true": {
+      "model": "mekanismgenerators:block/reactor_controller",
+      "textures": {
+        "up": "mekanismgenerators:block/reactor_controller_on"
+      }
     }
-  ]
+  }
 }

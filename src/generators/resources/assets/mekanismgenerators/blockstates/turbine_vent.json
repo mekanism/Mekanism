@@ -1,19 +1,7 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "mekanismgenerators:turbine_vent"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+  "variants": {
+    "": {
+      "model": "mekanismgenerators:block/turbine_vent"
     }
-  ]
+  }
 }

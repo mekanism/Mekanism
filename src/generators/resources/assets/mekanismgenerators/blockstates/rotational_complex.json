@@ -1,19 +1,7 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "mekanismgenerators:rotational_complex"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+  "variants": {
+    "": {
+      "model": "mekanismgenerators:block/rotational_complex"
     }
-  ]
+  }
 }

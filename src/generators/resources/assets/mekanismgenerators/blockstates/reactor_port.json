@@ -1,19 +1,13 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "mekanismgenerators:reactor_port"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+  "variants": {
+    "active=false": {
+      "model": "mekanismgenerators:block/reactor_port"
+    },
+    "active=true": {
+      "model": "mekanismgenerators:block/reactor_port",
+      "textures": {
+        "all": "mekanismgenerators:block/reactor_port_output"
+      }
     }
-  ]
+  }
 }

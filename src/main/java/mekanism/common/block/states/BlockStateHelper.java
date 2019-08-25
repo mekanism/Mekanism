@@ -19,9 +19,9 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Plane;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -32,8 +32,8 @@ import net.minecraft.world.World;
 //TODO: Set default state for different blocks if the default is not ideal
 public class BlockStateHelper {
 
-    public static final DirectionProperty facingProperty = DirectionProperty.create("facing", direction -> true);
-    public static final DirectionProperty horizontalFacingProperty = DirectionProperty.create("facing", Plane.HORIZONTAL);
+    public static final DirectionProperty facingProperty = BlockStateProperties.FACING;
+    public static final DirectionProperty horizontalFacingProperty = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty activeProperty = BooleanProperty.create("active");
     //NOTE: This currently is only using the set of colors the transporter supports as it is the only thing that needs this
     // There is a method to create this supporting all colors but it is currently unused
@@ -47,6 +47,8 @@ public class BlockStateHelper {
     public static final PropertyConnection eastConnectionProperty = PropertyConnection.create("east");
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
+    //Water Logged: TODO should we add some generic fluid logging property? Evaluate once fluids are in forge again
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public static BlockState getDefaultState(@Nonnull BlockState state) {
         Block block = state.getBlock();
@@ -79,6 +81,9 @@ public class BlockStateHelper {
             properties.add(southConnectionProperty);
             properties.add(westConnectionProperty);
             properties.add(eastConnectionProperty);
+        }
+        if (block instanceof IStateWaterLogged) {
+            properties.add(WATERLOGGED);
         }
         if (!properties.isEmpty()) {
             builder.add(properties.toArray(new IProperty[0]));
