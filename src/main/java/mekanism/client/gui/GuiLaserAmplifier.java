@@ -77,30 +77,11 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Figure out what the parameters do
-        minField.renderButton(0, 0, 0);
-        maxField.renderButton(0, 0, 0);
-        timerField.renderButton(0, 0, 0);
-        MekanismRenderer.resetColor();
-    }
-
-    @Override
     public void tick() {
         super.tick();
         minField.tick();
         maxField.tick();
         timerField.tick();
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        minField.mouseClicked(mouseX, mouseY, button);
-        maxField.mouseClicked(mouseX, mouseY, button);
-        timerField.mouseClicked(mouseX, mouseY, button);
-        return true;
     }
 
     @Override
@@ -184,15 +165,15 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     public void init() {
         super.init();
         String prevTime = timerField != null ? timerField.getText() : "";
-        timerField = new TextFieldWidget(font, guiLeft + 96, guiTop + 28, 36, 11, prevTime);
+        addButton(timerField = new TextFieldWidget(font, guiLeft + 96, guiTop + 28, 36, 11, prevTime));
         timerField.setMaxStringLength(4);
 
         String prevMin = minField != null ? minField.getText() : "";
-        minField = new TextFieldWidget(font, guiLeft + 96, guiTop + 43, 72, 11, prevMin);
+        addButton(minField = new TextFieldWidget(font, guiLeft + 96, guiTop + 43, 72, 11, prevMin));
         minField.setMaxStringLength(10);
 
         String prevMax = maxField != null ? maxField.getText() : "";
-        maxField = new TextFieldWidget(font, guiLeft + 96, guiTop + 58, 72, 11, prevMax);
+        addButton(maxField = new TextFieldWidget(font, guiLeft + 96, guiTop + 58, 72, 11, prevMax));
         maxField.setMaxStringLength(10);
     }
 }

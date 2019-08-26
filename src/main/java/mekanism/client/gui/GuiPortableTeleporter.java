@@ -124,7 +124,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
+        addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
         addButton(new DisableableImageButton(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(), onPress -> {
@@ -207,10 +207,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
-        frequencyField.mouseClicked(mouseX, mouseY, button);
-        return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -267,8 +265,6 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int y = clientFreq == null ? 94 : clientStatus == 2 ? 22 : clientStatus == 3 ? 40 : clientStatus == 4 ? 58 : 76;
         drawTexturedRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
-        //TODO: Figure out what the parameters do
-        frequencyField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
     }
 

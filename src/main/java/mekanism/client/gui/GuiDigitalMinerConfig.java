@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.TranslationButton;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -54,11 +53,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
-
-        radiusField.mouseClicked(mouseX, mouseY, button);
-        minField.mouseClicked(mouseX, mouseY, button);
-        maxField.mouseClicked(mouseX, mouseY, button);
-
         if (button == 0) {
             double xAxis = mouseX - guiLeft;
             double yAxis = mouseY - guiTop;
@@ -139,15 +133,15 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
         String prevMin = minField != null ? minField.getText() : "";
         String prevMax = maxField != null ? maxField.getText() : "";
 
-        radiusField = new TextFieldWidget(font, guiLeft + 12, guiTop + 67, 26, 11, "");
+        addButton(radiusField = new TextFieldWidget(font, guiLeft + 12, guiTop + 67, 26, 11, ""));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.digitalMinerMaxRadius.get()).length());
         radiusField.setText(prevRad);
 
-        minField = new TextFieldWidget(font, guiLeft + 12, guiTop + 92, 26, 11, "");
+        addButton(minField = new TextFieldWidget(font, guiLeft + 12, guiTop + 92, 26, 11, ""));
         minField.setMaxStringLength(3);
         minField.setText(prevMin);
 
-        maxField = new TextFieldWidget(font, guiLeft + 12, guiTop + 117, 26, 11, "");
+        addButton(maxField = new TextFieldWidget(font, guiLeft + 12, guiTop + 117, 26, 11, ""));
         maxField.setMaxStringLength(3);
         maxField.setText(prevMax);
     }
@@ -192,16 +186,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Figure out what the parameters do
-        radiusField.renderButton(0, 0, 0);
-        minField.renderButton(0, 0, 0);
-        maxField.renderButton(0, 0, 0);
-        MekanismRenderer.resetColor();
     }
 
     @Override

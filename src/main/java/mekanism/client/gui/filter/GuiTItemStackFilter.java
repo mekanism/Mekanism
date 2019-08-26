@@ -20,7 +20,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -36,7 +35,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     private TextFieldWidget minField;
     private TextFieldWidget maxField;
-    private Button sizeButton;
 
     public GuiTItemStackFilter(LSItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -87,7 +85,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         addButton(new ColorButton(guiLeft + 12, guiTop + 44, 16, 16, this, () -> filter.color,
               onPress -> filter.color = InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               onRightClick -> filter.color = TransporterUtils.decrement(filter.color)));
-        addButton(sizeButton = new DisableableImageButton(guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation(),
               onPress -> filter.sizeMode = !filter.sizeMode,
               (onHover, xAxis, yAxis) -> {
                   if (tileEntity.singleItem && filter.sizeMode) {
@@ -101,10 +99,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     @Override
     public void init() {
         super.init();
-        minField = new TextFieldWidget(font, guiLeft + 149, guiTop + 19, 20, 11, "");
+        addButton(minField = new TextFieldWidget(font, guiLeft + 149, guiTop + 19, 20, 11, ""));
         minField.setMaxStringLength(2);
         minField.setText("" + filter.min);
-        maxField = new TextFieldWidget(font, guiLeft + 149, guiTop + 31, 20, 11, "");
+        addButton(maxField = new TextFieldWidget(font, guiLeft + 149, guiTop + 31, 20, 11, ""));
         maxField.setMaxStringLength(2);
         maxField.setText("" + filter.max);
     }
@@ -143,17 +141,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     }
 
     @Override
-    protected void drawItemStackBackground(int xAxis, int yAxis) {
-        //TODO: Figure out what the parameters do
-        minField.renderButton(0, 0, 0);
-        maxField.renderButton(0, 0, 0);
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
-        minField.mouseClicked(mouseX, mouseY, button);
-        maxField.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && overTypeInput(mouseX - guiLeft, mouseY - guiTop)) {
             ItemStack stack = minecraft.player.inventory.getItemStack();
             if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {

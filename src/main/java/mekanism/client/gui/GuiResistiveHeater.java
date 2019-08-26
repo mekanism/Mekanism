@@ -12,7 +12,6 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
@@ -60,7 +59,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public void init() {
         super.init();
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
-        energyUsageField = new TextFieldWidget(font, guiLeft + 49, guiTop + 52, 66, 11, prevEnergyUsage);
+        addButton(energyUsageField = new TextFieldWidget(font, guiLeft + 49, guiTop + 52, 66, 11, prevEnergyUsage));
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
         addButton(new DisableableImageButton(guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation(), onPress -> setEnergyUsage()));
@@ -76,14 +75,6 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Figure out what the parameters do
-        energyUsageField.renderButton(0, 0, 0);
-        MekanismRenderer.resetColor();
-    }
-
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {
             int toUse = Integer.parseInt(energyUsageField.getText());
@@ -97,13 +88,6 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public void tick() {
         super.tick();
         energyUsageField.tick();
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        energyUsageField.mouseClicked(mouseX, mouseY, button);
-        return true;
     }
 
     @Override

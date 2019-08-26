@@ -11,7 +11,6 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -86,7 +85,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             }
             updateButtons();
         }));
-        frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
+        addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
         addButton(new DisableableImageButton(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(), onPress -> {
@@ -153,10 +152,8 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
-        frequencyField.mouseClicked(mouseX, mouseY, button);
-        return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -198,13 +195,5 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         }
         renderScaledText(TextComponentUtil.build(Translation.of("gui.set"), ":"), 27, 104, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Figure out what the parameters do
-        frequencyField.renderButton(0, 0, 0);
-        MekanismRenderer.resetColor();
     }
 }

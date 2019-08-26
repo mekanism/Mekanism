@@ -61,7 +61,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
             }
             updateButtons();
         }));
-        trustedField = new TextFieldWidget(font, guiLeft + 35, guiTop + 69, 86, 11, "");
+        addButton(trustedField = new TextFieldWidget(font, guiLeft + 35, guiTop + 69, 86, 11, ""));
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
         addButton(publicButton = new DisableableImageButton(guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation(),
@@ -145,10 +145,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
-        trustedField.mouseClicked(mouseX, mouseY, button);
-        return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -196,8 +194,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         } else {
             drawTexturedRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
         }
-        //TODO: Figure out what the parameters do
-        trustedField.renderButton(0, 0, 0);
         MekanismRenderer.resetColor();
     }
 }

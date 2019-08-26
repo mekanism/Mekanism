@@ -60,7 +60,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addButton(confirmName = new TranslationButton(guiLeft + 58, guiTop + 47, 60, 20, "gui.confirm", onPress -> changeName()));
         confirmName.visible = displayNameChange;
 
-        nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, "");
+        addButton(nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, ""));
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused2(true);
 
@@ -132,8 +132,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         drawTexturedRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
         if (displayNameChange) {
             drawTexturedRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
-            //TODO: Figure out what the parameters do
-            nameChangeField.renderButton(0, 0, 0);
             MekanismRenderer.resetColor();
         }
     }
@@ -146,13 +144,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     public void tick() {
         super.tick();
         nameChangeField.tick();
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        nameChangeField.mouseClicked(mouseX, mouseY, button);
-        return true;
     }
 
     @Override
