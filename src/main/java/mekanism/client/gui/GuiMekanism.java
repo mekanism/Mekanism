@@ -40,7 +40,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     public static boolean isTextboxKey(char c, int keyCode) {
-        //TODO: Support key combos again
         return keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_END ||
                keyCode == GLFW.GLFW_KEY_HOME || Screen.isSelectAll(keyCode) || Screen.isCopy(keyCode) || Screen.isPaste(keyCode) || Screen.isCut(keyCode);
     }

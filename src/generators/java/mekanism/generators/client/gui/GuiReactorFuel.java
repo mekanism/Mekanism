@@ -9,7 +9,6 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.EnergyDisplay;
@@ -68,24 +67,9 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Figure out what the parameters do
-        injectionRateField.renderButton(0, 0, 0);
-        MekanismRenderer.resetColor();
-    }
-
-    @Override
     public void tick() {
         super.tick();
         injectionRateField.tick();
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        injectionRateField.mouseClicked(mouseX, mouseY, button);
-        return true;
     }
 
     @Override
@@ -117,7 +101,7 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     public void init() {
         super.init();
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
-        injectionRateField = new TextFieldWidget(font, guiLeft + 98, guiTop + 115, 26, 11, "");
+        addButton(injectionRateField = new TextFieldWidget(font, guiLeft + 98, guiTop + 115, 26, 11, ""));
         injectionRateField.setMaxStringLength(2);
         injectionRateField.setText(prevRad);
     }

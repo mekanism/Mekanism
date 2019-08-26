@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiElement {
+    //TODO: Make this extend Widget?
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
