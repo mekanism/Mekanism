@@ -83,9 +83,9 @@ tile.SaltBlock.name=塩ブロック
 # Basic Block
 tile.BasicBlock.OsmiumBlock.name=オスミウムブロック
 tile.BasicBlock.BronzeBlock.name=青銅ブロック
-tile.BasicBlock.RefinedObsidian.name=洗練された黒曜石
+tile.BasicBlock.RefinedObsidian.name=精製黒曜石
 tile.BasicBlock.CharcoalBlock.name=木炭ブロック
-tile.BasicBlock.RefinedGlowstone.name=精錬されたグロウストーン
+tile.BasicBlock.RefinedGlowstone.name=精製グロウストーン
 tile.BasicBlock.SteelBlock.name=鋼鉄ブロック
 tile.BasicBlock.BinBasic.name=基本ビン
 tile.BasicBlock.BinAdvanced.name=発展ビン
@@ -612,7 +612,7 @@ gui.factory.secondaryEnergy=二次エネルギー
 gui.factory.autoSort=自動分配
 
 # Recipe types
-gui.factory.Smelting=精錬
+gui.factory.Smelting=製錬
 gui.factory.Enriching=品質向上
 gui.factory.Crushing=粉砕
 gui.factory.Compressing=オスミウム圧縮
@@ -651,7 +651,7 @@ gui.materialFilter.details=指定した素材を含む
 gui.portableTeleporter=ポータブルテレポーター
 
 gui.robit=ロビット
-gui.robit.smelting=ロビット 精錬中
+gui.robit.smelting=ロビット 製錬中
 gui.robit.inventory=ロビット インベントリ
 gui.robit.crafting=ロビット クラフト中
 gui.robit.greeting=こんにちは！私は
