@@ -112,26 +112,24 @@ public class PacketConfigurationUpdate {
     }
 
     public static void encode(PacketConfigurationUpdate pkt, PacketBuffer buf) {
-        buf.writeInt(pkt.packetType.ordinal());
+        buf.writeEnumValue(pkt.packetType);
         pkt.coord4D.write(buf);
-
-        if (pkt.packetType != ConfigurationPacket.EJECT && pkt.packetType != ConfigurationPacket.STRICT_INPUT) {
-            buf.writeInt(pkt.clickType);
-        }
         if (pkt.packetType == ConfigurationPacket.EJECT) {
             buf.writeEnumValue(pkt.transmission);
-        }
-        if (pkt.packetType == ConfigurationPacket.SIDE_DATA) {
+        } else if (pkt.packetType == ConfigurationPacket.SIDE_DATA) {
+            buf.writeInt(pkt.clickType);
             buf.writeEnumValue(pkt.configIndex);
             buf.writeEnumValue(pkt.transmission);
-        }
-        if (pkt.packetType == ConfigurationPacket.INPUT_COLOR) {
+        } else if (pkt.packetType == ConfigurationPacket.EJECT_COLOR) {
+            buf.writeInt(pkt.clickType);
+        } else if (pkt.packetType == ConfigurationPacket.INPUT_COLOR) {
+            buf.writeInt(pkt.clickType);
             buf.writeInt(pkt.inputSide);
         }
     }
 
     public static PacketConfigurationUpdate decode(PacketBuffer buf) {
-        ConfigurationPacket packetType = ConfigurationPacket.values()[buf.readInt()];
+        ConfigurationPacket packetType = buf.readEnumValue(ConfigurationPacket.class);
         Coord4D coord4D = Coord4D.read(buf);
         int clickType = 0;
         int extra = 0;

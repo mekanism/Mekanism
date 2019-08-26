@@ -38,10 +38,13 @@ import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSecurityDesk;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
+import mekanism.client.gui.GuiSideConfiguration;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiThermoelectricBoiler;
+import mekanism.client.gui.GuiTransporterConfig;
+import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.gui.chemical.GuiChemicalCrystallizer;
 import mekanism.client.gui.chemical.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.chemical.GuiChemicalInfuser;
@@ -222,8 +225,6 @@ public class ClientRegistration {
         ScreenManager.registerFactory(MekanismContainerTypes.ENERGY_CUBE, GuiEnergyCube::new);
         ScreenManager.registerFactory(MekanismContainerTypes.INDUCTION_MATRIX, GuiInductionMatrix::new);
         ScreenManager.registerFactory(MekanismContainerTypes.THERMOELECTRIC_BOILER, GuiThermoelectricBoiler::new);
-        //TODO: Fix UpgradeManagement gui registration and add any missing ones like side configuration
-        //ScreenManager.registerFactory(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
         ScreenManager.registerFactory(MekanismContainerTypes.PERSONAL_CHEST_ITEM, GuiPersonalChestItem::new);
         ScreenManager.registerFactory(MekanismContainerTypes.PERSONAL_CHEST_BLOCK, GuiPersonalChestTile::new);
 
@@ -240,6 +241,11 @@ public class ClientRegistration {
         ScreenManager.registerFactory(MekanismContainerTypes.DM_ITEMSTACK_FILTER, GuiMItemStackFilter::new);
         ScreenManager.registerFactory(MekanismContainerTypes.LS_ITEMSTACK_FILTER, GuiTItemStackFilter::new);
         ScreenManager.registerFactory(MekanismContainerTypes.OREDICTIONIFICATOR_FILTER, GuiOredictionificatorFilter::new);
+
+        //TODO: Add any missing ones like side configuration
+        ScreenManager.registerFactory(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
+        ScreenManager.registerFactory(MekanismContainerTypes.SIDE_CONFIGURATION, GuiSideConfiguration::new);
+        ScreenManager.registerFactory(MekanismContainerTypes.TRANSPORTER_CONFIGURATION, GuiTransporterConfig::new);
     }
 
     @SubscribeEvent

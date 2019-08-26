@@ -27,10 +27,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Switch this to being GuiMekanismTile??
 @OnlyIn(Dist.CLIENT)
-public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile> extends GuiMekanism<UpgradeManagementContainer<TILE>> {
+public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, UpgradeManagementContainer> {
 
     private Button removeButton;
-    private TILE tileEntity;
     @Nullable
     private Upgrade selectedType;
     private boolean isDragging = false;
@@ -39,9 +38,8 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
     private int delay;
     private double scroll;
 
-    public GuiUpgradeManagement(UpgradeManagementContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
+    public GuiUpgradeManagement(UpgradeManagementContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        tileEntity = container.getTileEntity();
     }
 
     @Override
@@ -58,6 +56,10 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
         updateEnabledButtons();
     }
 
+    public <TILE extends TileEntityMekanism & IUpgradeTile> TILE getTile() {
+        return (TILE) tileEntity;
+    }
+
     private boolean overUpgradeType(double xAxis, double yAxis, int xPos, int yPos) {
         return xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12;
     }
@@ -69,7 +71,7 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
             delay++;
         } else {
             delay = 0;
-            supportedIndex = ++supportedIndex % tileEntity.getComponent().getSupportedTypes().size();
+            supportedIndex = ++supportedIndex % getTile().getComponent().getSupportedTypes().size();
         }
         updateEnabledButtons();
     }
@@ -87,7 +89,7 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
         if (selectedType == null) {
             renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.noSelection"), "."), 92, 8, 0.8F, true);
         } else {
-            int amount = tileEntity.getComponent().getUpgrades(selectedType);
+            int amount = getTile().getComponent().getUpgrades(selectedType);
             renderText(TextComponentUtil.build(selectedType, " ", Translation.of("mekanism.gui.upgrade")), 92, 8, 0.6F, true);
             renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
             int text = 0;
@@ -95,7 +97,7 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
                 renderText(component, 92, 22 + (6 * text++), 0.6F, true);
             }
         }
-        Set<Upgrade> supportedTypes = tileEntity.getComponent().getSupportedTypes();
+        Set<Upgrade> supportedTypes = getTile().getComponent().getSupportedTypes();
         if (!supportedTypes.isEmpty()) {
             Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
@@ -147,9 +149,9 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
+        int displayInt = getTile().getComponent().getScaledUpgradeProgress(14);
         drawTexturedRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
-        if (selectedType != null && tileEntity.getComponent().getUpgrades(selectedType) == 0) {
+        if (selectedType != null && getTile().getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
@@ -176,7 +178,7 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
     }
 
     private Set<Upgrade> getCurrentUpgrades() {
-        return tileEntity.getComponent().getInstalledTypes();
+        return getTile().getComponent().getInstalledTypes();
     }
 
     public int getScroll() {

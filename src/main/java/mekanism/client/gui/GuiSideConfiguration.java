@@ -33,17 +33,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiMekanismTile<TILE, SideConfigurationContainer<TILE>> {
+public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, SideConfigurationContainer> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
 
-    public GuiSideConfiguration(SideConfigurationContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
+    public GuiSideConfiguration(SideConfigurationContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize = 95;
         ResourceLocation resource = getGuiLocation();
-        for (TransmissionType type : tileEntity.getConfig().getTransmissions()) {
+        for (TransmissionType type : getTile().getConfig().getTransmissions()) {
             GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource);
             addGuiElement(tab);
             configTabs.add(tab);
@@ -58,6 +58,10 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         slotPosMap.put(5, new GuiPos(96, 49));
     }
 
+    public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
+        return (TILE) tileEntity;
+    }
+
     @Override
     public void init() {
         super.init();
@@ -70,16 +74,15 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
-                  () -> tileEntity.getConfig().getOutput(currentType, facing), () -> tileEntity.getConfig().getOutput(currentType, facing).color, () -> tileEntity,
-                  () -> currentType, getOnHover()));
+                  () -> getTile().getConfig().getOutput(currentType, facing), () -> getTile().getConfig().getOutput(currentType, facing).color, tileEntity, currentType,
+                  ConfigurationPacket.SIDE_DATA, getOnHover()));
         }
     }
 
     private IHoverable getOnHover() {
         return (onHover, xAxis, yAxis) -> {
             if (onHover instanceof SideDataButton) {
-                SideDataButton button = (SideDataButton) onHover;
-                SideData data = button.getSideData();
+                SideData data = ((SideDataButton) onHover).getSideData();
                 if (data != TileComponentConfig.EMPTY) {
                     displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getColoredName(), ")"), xAxis, yAxis);
                 }
@@ -88,7 +91,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     public TransmissionType getTopTransmission() {
-        return tileEntity.getConfig().getTransmissions().get(0);
+        return getTile().getConfig().getTransmissions().get(0);
     }
 
     public void setCurrentType(TransmissionType type) {
@@ -110,8 +113,8 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config")), 0, xSize, 5, 0x404040);
-        if (tileEntity.getConfig().canEject(currentType)) {
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(tileEntity.getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
+        if (getTile().getConfig().canEject(currentType)) {
+            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(getTile().getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
         } else {
             drawString(TextComponentUtil.translate("mekanism.gui.noEject"), 53, 17, 0x00CD00);
         }

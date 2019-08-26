@@ -12,9 +12,9 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
-public class UpgradeManagementContainer<TILE extends TileEntityMekanism & IUpgradeTile> extends MekanismTileContainer<TILE> {
+public class UpgradeManagementContainer extends MekanismTileContainer<TileEntityMekanism> {
 
-    public UpgradeManagementContainer(int id, PlayerInventory inv, TILE tile) {
+    public UpgradeManagementContainer(int id, PlayerInventory inv, TileEntityMekanism tile) {
         super(MekanismContainerTypes.UPGRADE_MANAGEMENT, id, inv, tile);
         //TODO: Figure out if something like this is needed
         //Bit of a hack I guess, but we need to give it access to the inventory list, not the Frequency
@@ -27,8 +27,7 @@ public class UpgradeManagementContainer<TILE extends TileEntityMekanism & IUpgra
     }
 
     public UpgradeManagementContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        //TODO
-        this(id, inv, (TILE) getTileFromBuf(buf, TileEntityMekanism.class));
+        this(id, inv, getTileFromBuf(buf, TileEntityMekanism.class));
     }
 
     @Nonnull
@@ -73,6 +72,6 @@ public class UpgradeManagementContainer<TILE extends TileEntityMekanism & IUpgra
 
     @Override
     protected void addSlots() {
-        addSlot(new SlotMachineUpgrade(tile, tile.getComponent().getUpgradeSlot(), 154, 7));
+        addSlot(new SlotMachineUpgrade(tile, ((IUpgradeTile) tile).getComponent().getUpgradeSlot(), 154, 7));
     }
 }

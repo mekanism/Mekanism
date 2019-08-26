@@ -35,11 +35,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiMekanismTile<TILE, TransporterConfigurationContainer<TILE>> {
+public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, TransporterConfigurationContainer> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
 
-    public GuiTransporterConfig(TransporterConfigurationContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
+    public GuiTransporterConfig(TransporterConfigurationContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize = 95;
         slotPosMap.put(0, new GuiPos(54, 64));
@@ -58,7 +58,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
               getOnHover("mekanism.gui.configuration.strictInput")));
-        addButton(new ColorButton(guiLeft + 122, guiTop + 49, 16, 16, this, () -> tileEntity.getEjector().getOutputColor(),
+        addButton(new ColorButton(guiLeft + 122, guiTop + 49, 16, 16, this, () -> getTile().getEjector().getOutputColor(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
                     InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
               onRightClick -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null))));
@@ -66,9 +66,13 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
-                  () -> tileEntity.getConfig().getOutput(TransmissionType.ITEM, facing), () -> tileEntity.getEjector().getInputColor(facing), () -> tileEntity, () -> null,
-                  getOnHover()));
+                  () -> getTile().getConfig().getOutput(TransmissionType.ITEM, facing), () -> getTile().getEjector().getInputColor(facing), tileEntity, null,
+                  ConfigurationPacket.INPUT_COLOR, getOnHover()));
         }
+    }
+
+    public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
+        return (TILE) tileEntity;
     }
 
     private IHoverable getOnHover() {
@@ -91,7 +95,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(TextComponentUtil.translate("gui.configuration.transporter"), 0, xSize, 5, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(tileEntity.getEjector().hasStrictInput()), ")"),
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(getTile().getEjector().hasStrictInput()), ")"),
               53, 17, 0x00CD00, 70);
         drawString(TextComponentUtil.translate("mekanism.gui.input"), 48, 81, 0x787878);
         drawString(TextComponentUtil.translate("gui.output"), 114, 68, 0x787878);

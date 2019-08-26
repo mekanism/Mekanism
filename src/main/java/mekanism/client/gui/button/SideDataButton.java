@@ -21,25 +21,20 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class SideDataButton extends MekanismButton {
 
-    private final Supplier<TransmissionType> typeSupplier;
     private final Supplier<SideData> sideDataSupplier;
     private final Supplier<EnumColor> colorSupplier;
     private final ResourceLocation resourceLocation;
-    private final int slotPosMapIndex;
 
     public SideDataButton(int x, int y, ResourceLocation resource, int slotPosMapIndex, Supplier<SideData> sideDataSupplier, Supplier<EnumColor> colorSupplier,
-          Supplier<TileEntity> tileSupplier, Supplier<TransmissionType> typeSupplier, IHoverable onHover) {
+          TileEntity tile, TransmissionType transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
         super(x, y, 14, 14, "",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tileSupplier.get()),
-                    InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, slotPosMapIndex, typeSupplier.get())),
-              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tileSupplier.get()),
-                    1, slotPosMapIndex, typeSupplier.get())),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile),
+                    InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, slotPosMapIndex, transmissionType)),
+              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), 1, slotPosMapIndex, transmissionType)),
               onHover);
         this.resourceLocation = resource;
-        this.slotPosMapIndex = slotPosMapIndex;
         this.sideDataSupplier = sideDataSupplier;
         this.colorSupplier = colorSupplier;
-        this.typeSupplier = typeSupplier;
     }
 
     @Override
@@ -61,19 +56,11 @@ public class SideDataButton extends MekanismButton {
         }
     }
 
-    public int getSlotPosMapIndex() {
-        return this.slotPosMapIndex;
-    }
-
     public SideData getSideData() {
         return this.sideDataSupplier.get();
     }
 
     public EnumColor getColor() {
         return this.colorSupplier.get();
-    }
-
-    public TransmissionType getTransmissionType() {
-        return this.typeSupplier.get();
     }
 }
