@@ -27,11 +27,11 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void addButtons() {
-        buttons.add(itemStackButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 32, 128, 20, "gui.itemstack", onItemStackButton()));
-        buttons.add(oredictButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 52, 128, 20, "gui.oredict", onTagButton()));
-        buttons.add(materialButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 72, 128, 20, "gui.material", onMaterialButton()));
-        buttons.add(modIDButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 92, 128, 20, "gui.modID", onModIDButton()));
-        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(), onBackButton()));
+        addButton(itemStackButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 32, 128, 20, "gui.itemstack", onItemStackButton()));
+        addButton(oredictButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 52, 128, 20, "gui.oredict", onTagButton()));
+        addButton(materialButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 72, 128, 20, "gui.material", onMaterialButton()));
+        addButton(modIDButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 92, 128, 20, "gui.modID", onModIDButton()));
+        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(), onBackButton()));
     }
 
     protected abstract IPressable onItemStackButton();

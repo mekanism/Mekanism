@@ -52,8 +52,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(removeButton = new GuiButtonTranslation(guiLeft + 13, guiTop + 81, 122, 20, "gui.remove", onPress -> {
+        addButton(removeButton = new GuiButtonTranslation(guiLeft + 13, guiTop + 81, 122, 20, "gui.remove", onPress -> {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {
                 TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
@@ -65,28 +64,28 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         trustedField = new TextFieldWidget(font, guiLeft + 35, guiTop + 69, 86, 11, "");
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
-        buttons.add(publicButton = new GuiButtonDisableableImage(guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation(),
+        addButton(publicButton = new GuiButtonDisableableImage(guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 0)));
                   updateButtons();
               }));
-        buttons.add(privateButton = new GuiButtonDisableableImage(guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation(),
+        addButton(privateButton = new GuiButtonDisableableImage(guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 1)));
                   updateButtons();
               }));
-        buttons.add(trustedButton = new GuiButtonDisableableImage(guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation(),
+        addButton(trustedButton = new GuiButtonDisableableImage(guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 2)));
                   updateButtons();
               }));
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation(),
+        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation(),
               onPress -> {
                   addTrusted(trustedField.getText());
                   trustedField.setText("");
                   updateButtons();
               }));
-        buttons.add(overrideButton = new GuiButtonDisableableImage(guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation(),
+        addButton(overrideButton = new GuiButtonDisableableImage(guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
                   updateButtons();

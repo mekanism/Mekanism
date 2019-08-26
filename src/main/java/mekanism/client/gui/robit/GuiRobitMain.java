@@ -66,36 +66,35 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(confirmName = new GuiButtonTranslation(guiLeft + 58, guiTop + 47, 60, 20, "gui.confirm", onPress -> changeName()));
+        addButton(confirmName = new GuiButtonTranslation(guiLeft + 58, guiTop + 47, 60, 20, "gui.confirm", onPress -> changeName()));
         confirmName.visible = displayNameChange;
 
         nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, "");
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused2(true);
 
-        buttons.add(teleportHomeButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation(),
+        addButton(teleportHomeButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
                   minecraft.displayGuiScreen(null);
               }));
-        buttons.add(pickupButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation(),
+        addButton(pickupButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId()))));
-        buttons.add(renameButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation(),
+        addButton(renameButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation(),
               onPress -> toggleNameChange()));
-        buttons.add(followButton = new GuiButtonDisableableImage(guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation(),
+        addButton(followButton = new GuiButtonDisableableImage(guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId()))));
-        buttons.add(mainButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation(),
+        addButton(mainButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation(),
               onPress -> {
                   //Clicking main button doesn't do anything while already on the main GUI
               }));
-        buttons.add(craftingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation(),
+        addButton(craftingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getEntityId()))));
-        buttons.add(inventoryButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation(),
+        addButton(inventoryButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getEntityId()))));
-        buttons.add(smeltingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation(),
+        addButton(smeltingButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getEntityId()))));
-        buttons.add(repairButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation(),
+        addButton(repairButton = new GuiButtonDisableableImage(guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getEntityId()))));
     }
 

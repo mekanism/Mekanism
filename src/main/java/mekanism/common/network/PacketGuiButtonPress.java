@@ -96,7 +96,10 @@ public class PacketGuiButtonPress {
                         INamedContainerProvider provider = message.tileButton.getProvider((TileEntityMekanism) tile, message.extra);
                         if (provider != null) {
                             //Ensure valid data
-                            NetworkHooks.openGui((ServerPlayerEntity) player, provider, message.tilePosition);
+                            NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
+                                buf.writeBlockPos(message.tilePosition);
+                                buf.writeInt(message.extra);
+                            });
                         }
                     }
                 }

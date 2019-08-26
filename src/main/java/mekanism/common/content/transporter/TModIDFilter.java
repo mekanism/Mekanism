@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class TModIDFilter extends TransporterFilter implements IModIDFilter {
+public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IModIDFilter<TModIDFilter> {
 
     private String modID;
 

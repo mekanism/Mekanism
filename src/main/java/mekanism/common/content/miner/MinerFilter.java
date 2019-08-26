@@ -7,11 +7,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public abstract class MinerFilter implements IFilter {
+public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements IFilter<FILTER> {
 
     public ItemStack replaceStack = ItemStack.EMPTY;
 
     public boolean requireStack;
+
+    //Mark it as abstract so it does not think clone is being implemented by Object
+    @Override
+    public abstract FILTER clone();
 
     public static MinerFilter readFromNBT(CompoundNBT nbtTags) {
         MinerFilter filter = getType(nbtTags.getInt("type"));

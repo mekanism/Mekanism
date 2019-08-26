@@ -45,7 +45,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        buttons.add(saveButton = new GuiButtonTranslation(guiLeft + 31, guiTop + 62, 54, 20, "gui.save", onPress -> {
+        addButton(saveButton = new GuiButtonTranslation(guiLeft + 31, guiTop + 62, 54, 20, "gui.save", onPress -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -58,13 +58,13 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             }
         }));
-        buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 54, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 54, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
-        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
+        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
-        buttons.add(prevButton = new GuiButtonDisableableImage(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(),
+        addButton(prevButton = new GuiButtonDisableableImage(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(),
               onPress -> {
                   if (filter.hasFilter()) {
                       List<Item> matchingItems = filter.getMatchingItems();
@@ -76,7 +76,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                       updateRenderStack();
                   }
               }));
-        buttons.add(nextButton = new GuiButtonDisableableImage(guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation(),
+        addButton(nextButton = new GuiButtonDisableableImage(guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation(),
               onPress -> {
                   if (filter.hasFilter()) {
                       List<Item> matchingItems = filter.getMatchingItems();
@@ -88,7 +88,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                       updateRenderStack();
                   }
               }));
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation(),
+        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation(),
               onPress -> setText()));
     }
 

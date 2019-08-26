@@ -28,8 +28,7 @@ public abstract class GuiReactorInfo<CONTAINER extends ReactorInfoContainer> ext
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
+        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
     }
 

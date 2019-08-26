@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class MModIDFilter extends MinerFilter implements IModIDFilter {
+public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFilter<MModIDFilter> {
 
     private String modID;
 

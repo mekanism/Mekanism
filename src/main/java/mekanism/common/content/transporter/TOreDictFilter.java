@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class TOreDictFilter extends TransporterFilter implements IOreDictFilter {
+public class TOreDictFilter extends TransporterFilter<TOreDictFilter> implements IOreDictFilter<TOreDictFilter> {
 
     private String oreDictName;
 

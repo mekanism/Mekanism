@@ -81,8 +81,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(toggleButton = new GuiButtonDisableableImage(guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation(),
+        addButton(toggleButton = new GuiButtonDisableableImage(guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
     }
 

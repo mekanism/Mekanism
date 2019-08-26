@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
+public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements IItemStackFilter<MItemStackFilter> {
 
     private ItemStack itemType = ItemStack.EMPTY;
     public boolean fuzzy;

@@ -27,6 +27,7 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -47,9 +48,10 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IUpgradeTile, IComparatorSupport {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IUpgradeTile, IComparatorSupport,
+      ITileFilterHolder<TransporterFilter> {
 
-    public HashList<TransporterFilter> filters = new HashList<>();
+    private HashList<TransporterFilter> filters = new HashList<>();
     public EnumColor color;
     public boolean autoEject;
     public boolean roundRobin;
@@ -323,6 +325,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         return data;
     }
 
+    @Override
     public TileNetworkList getFilterPacket(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(2);
@@ -613,6 +616,11 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public int getRedstoneLevel() {
         return getActive() ? 15 : 0;
+    }
+
+    @Override
+    public HashList<TransporterFilter> getFilters() {
+        return filters;
     }
 
     private class StrictFilterFinder extends Finder {

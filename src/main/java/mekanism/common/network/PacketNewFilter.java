@@ -12,10 +12,12 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketNewFilter {
@@ -43,28 +45,23 @@ public class PacketNewFilter {
         }
         context.get().enqueueWork(() -> {
             //TODO: Verify this
-            World worldServer = player.world;
-            if (message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
-                TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) message.coord4D.getTileEntity(worldServer);
-                sorter.filters.add((TransporterFilter) message.filter);
-                for (PlayerEntity iterPlayer : sorter.playersUsing) {
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(sorter, sorter.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
-                }
-            } else if (message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
-                TileEntityDigitalMiner miner = (TileEntityDigitalMiner) message.coord4D.getTileEntity(worldServer);
-                miner.filters.add((MinerFilter) message.filter);
-                for (PlayerEntity iterPlayer : miner.playersUsing) {
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(miner, miner.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
-                }
-            } else if (message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator) {
-                TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator) message.coord4D.getTileEntity(worldServer);
-                oredictionificator.filters.add((OredictionificatorFilter) message.filter);
-                for (PlayerEntity iterPlayer : oredictionificator.playersUsing) {
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(oredictionificator, oredictionificator.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
-                }
+            TileEntity tile = message.coord4D.getTileEntity(player.world);
+            if (message.type == 0 && tile instanceof TileEntityLogisticalSorter) {
+                handleFilter((TileEntityLogisticalSorter) tile, message);
+            } else if (message.type == 1 && tile instanceof TileEntityDigitalMiner) {
+                handleFilter((TileEntityDigitalMiner) tile, message);
+            } else if (message.type == 2 && tile instanceof TileEntityOredictionificator) {
+                handleFilter((TileEntityOredictionificator) tile, message);
             }
         });
         context.get().setPacketHandled(true);
+    }
+
+    private static <FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>> void handleFilter(TILE tile, PacketNewFilter message) {
+        tile.getFilters().add((FILTER) message.filter);
+        for (PlayerEntity iterPlayer : tile.playersUsing) {
+            Mekanism.packetHandler.sendTo(new PacketTileEntity(tile, tile.getFilterPacket()), (ServerPlayerEntity) iterPlayer);
+        }
     }
 
     public static void encode(PacketNewFilter pkt, PacketBuffer buf) {

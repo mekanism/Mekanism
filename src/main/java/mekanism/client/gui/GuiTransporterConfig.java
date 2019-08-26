@@ -42,6 +42,7 @@ import org.lwjgl.glfw.GLFW;
 public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiMekanismTile<TILE, TransporterConfigurationContainer<TILE>> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
+    //TODO: Instead of storing this would it make more sense to loop over "buttons" and check if the instance is of GuiSideDataButton
     private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
     private Button backButton;
     private Button strictInputButton;
@@ -61,12 +62,11 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
+        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        buttons.add(strictInputButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
+        addButton(strictInputButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null))));
-        buttons.add(colorButton = new GuiColorButton(guiLeft + 122, guiTop + 49, 16, 16, () -> tileEntity.getEjector().getOutputColor(),
+        addButton(colorButton = new GuiColorButton(guiLeft + 122, guiTop + 49, 16, 16, () -> tileEntity.getEjector().getOutputColor(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
                     InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null))));
         for (int i = 0; i < slotPosMap.size(); i++) {
@@ -74,7 +74,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
             Direction facing = Direction.byIndex(i);
             GuiSideDataButton button = new GuiSideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
                   () -> tileEntity.getConfig().getOutput(TransmissionType.ITEM, facing), () -> tileEntity.getEjector().getInputColor(facing), () -> tileEntity);
-            buttons.add(button);
+            addButton(button);
             sideDataButtons.add(button);
         }
     }

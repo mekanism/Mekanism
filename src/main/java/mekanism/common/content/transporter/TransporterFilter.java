@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public abstract class TransporterFilter implements IFilter {
+public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>> implements IFilter<FILTER> {
 
     public static final int MAX_LENGTH = 24;
 
@@ -20,6 +20,10 @@ public abstract class TransporterFilter implements IFilter {
     public EnumColor color;
 
     public boolean allowDefault;
+
+    //Mark it as abstract so it does not think clone is being implemented by Object
+    @Override
+    public abstract FILTER clone();
 
     public static TransporterFilter readFromNBT(CompoundNBT nbtTags) {
         TransporterFilter filter = getType(nbtTags.getInt("type"));

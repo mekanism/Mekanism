@@ -40,6 +40,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
+    //TODO: Instead of storing this would it make more sense to loop over "buttons" and check if the instance is of GuiSideDataButton
     private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
     private Button backButton;
     private Button autoEjectButton;
@@ -66,17 +67,16 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
+        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        buttons.add(autoEjectButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
+        addButton(autoEjectButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType))));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             GuiSideDataButton button = new GuiSideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
                   () -> tileEntity.getConfig().getOutput(currentType, facing), () -> tileEntity.getConfig().getOutput(currentType, facing).color, () -> tileEntity);
-            buttons.add(button);
+            addButton(button);
             sideDataButtons.add(button);
         }
     }

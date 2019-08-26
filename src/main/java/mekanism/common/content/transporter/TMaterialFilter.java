@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class TMaterialFilter extends TransporterFilter implements IMaterialFilter {
+public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implements IMaterialFilter<TMaterialFilter> {
 
     private ItemStack materialItem = ItemStack.EMPTY;
 

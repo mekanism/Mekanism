@@ -3,7 +3,7 @@ package mekanism.common.content.filter;
 import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 
-public interface IMaterialFilter extends IFilter {
+public interface IMaterialFilter<FILTER extends IMaterialFilter<FILTER>> extends IFilter<FILTER> {
 
     @Nonnull
     ItemStack getMaterialItem();

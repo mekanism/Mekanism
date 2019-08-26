@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.common.HashList;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -35,7 +36,8 @@ public class ThreadMinerSearch extends Thread {
     @Override
     public void run() {
         state = State.SEARCHING;
-        if (!tileEntity.inverse && tileEntity.filters.isEmpty()) {
+        HashList<MinerFilter> filters = tileEntity.getFilters();
+        if (!tileEntity.inverse && filters.isEmpty()) {
             state = State.FINISHED;
             return;
         }
@@ -82,7 +84,7 @@ public class ThreadMinerSearch extends Thread {
                     if (tileEntity.isReplaceStack(stack)) {
                         continue;
                     }
-                    for (MinerFilter filter : tileEntity.filters) {
+                    for (MinerFilter filter : filters) {
                         if (filter.canFilter(stack)) {
                             filterFound = filter;
                             break;

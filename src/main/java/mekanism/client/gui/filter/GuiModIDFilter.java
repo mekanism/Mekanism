@@ -4,6 +4,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
@@ -12,7 +13,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends TileEntityMekanism, CONTAINER extends FilterContainer<TILE, FILTER>> extends GuiTextFilter<FILTER, TILE, CONTAINER> {
+public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
+      FilterContainer<FILTER, TILE>> extends GuiTextFilter<FILTER, TILE, CONTAINER> {
 
     protected GuiModIDFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

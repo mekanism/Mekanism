@@ -7,19 +7,18 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
 //TODO: Should this be FilterEmptyContainer
-public class DMModIDFilterContainer extends FilterContainer<TileEntityDigitalMiner, MModIDFilter> {
+public class DMModIDFilterContainer extends FilterContainer<MModIDFilter, TileEntityDigitalMiner> {
 
     public DMModIDFilterContainer(int id, PlayerInventory inv, TileEntityDigitalMiner tile, int index) {
-        super(MekanismContainerTypes.DM_MOD_ID_FILTER, id, inv, tile);
-        if (index >= 0) {
-            origFilter = (MModIDFilter) tile.filters.get(index);
-            filter = origFilter.clone();
-        } else {
-            filter = new MModIDFilter();
-        }
+        super(MekanismContainerTypes.DM_MOD_ID_FILTER, id, inv, tile, index);
     }
 
     public DMModIDFilterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
         this(id, inv, getTileFromBuf(buf, TileEntityDigitalMiner.class), buf.readInt());
+    }
+
+    @Override
+    public MModIDFilter createNewFilter() {
+        return new MModIDFilter();
     }
 }

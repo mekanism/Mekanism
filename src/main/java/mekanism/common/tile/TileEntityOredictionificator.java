@@ -18,7 +18,9 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -38,19 +40,16 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData {
+public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
 
     private static final int[] SLOTS = {0, 1};
-    //TODO: Improve on this and make it be a map of mod id to start of resource
     public static final Map<String, List<String>> possibleFilters = new HashMap<>();
 
     static {
         possibleFilters.put("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/"));
     }
 
-    public HashList<OredictionificatorFilter> filters = new HashList<>();
-
-
+    private HashList<OredictionificatorFilter> filters = new HashList<>();
     public boolean didProcess;
 
     public TileEntityOredictionificator() {
@@ -219,6 +218,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         return data;
     }
 
+    @Override
     public TileNetworkList getFilterPacket(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(2);
@@ -319,7 +319,12 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         return super.isCapabilityDisabled(capability, side);
     }
 
-    public static class OredictionificatorFilter implements IFilter {
+    @Override
+    public HashList<OredictionificatorFilter> getFilters() {
+        return filters;
+    }
+
+    public static class OredictionificatorFilter implements IFilter<OredictionificatorFilter> {
 
         private ResourceLocation filterLocation;
         public int index;

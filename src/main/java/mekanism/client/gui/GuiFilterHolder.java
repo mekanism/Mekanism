@@ -21,6 +21,7 @@ import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
@@ -29,7 +30,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER extends IFilter, CONTAINER extends FilterEmptyContainer<TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
+public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends FilterEmptyContainer<TILE>>
+      extends GuiMekanismTile<TILE, CONTAINER> {
 
     // Filter dimensions
     protected final int filterX = 56;
@@ -54,8 +56,6 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
         super(container, inv, title);
     }
 
-    protected abstract HashList<FILTER> getFilters();
-
     public int getScroll() {
         // Calculate thumb position along scrollbar
         return Math.max(Math.min((int) (scroll * 123), 123), 0);
@@ -64,7 +64,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     // Get index to displayed filters
     public int getFilterIndex() {
         if (needsScrollBars()) {
-            int scrollSize = getFilters().size() - 4;
+            int scrollSize = tileEntity.getFilters().size() - 4;
             return (int) ((scrollSize + 0.5) * scroll);
         }
         return 0;
@@ -106,7 +106,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
         Set<IOreDictFilter> oreDictFilters = new HashSet<>();
         Set<IModIDFilter> modIDFilters = new HashSet<>();
 
-        HashList<FILTER> filters = getFilters();
+        HashList<FILTER> filters = tileEntity.getFilters();
 
         for (int i = 0; i < 4; i++) {
             FILTER filter = filters.get(getFilterIndex() + i);
@@ -132,7 +132,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
         // Draw scrollbar
         drawTexturedRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
-        HashList<FILTER> filters = getFilters();
+        HashList<FILTER> filters = tileEntity.getFilters();
         // Draw filter backgrounds
         for (int i = 0; i < 4; i++) {
             IFilter filter = filters.get(getFilterIndex() + i);
@@ -253,7 +253,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
      * returns true if there are more filters than can fit in the gui
      */
     protected boolean needsScrollBars() {
-        return getFilters().size() > 4;
+        return tileEntity.getFilters().size() > 4;
     }
 
     public static class StackData {

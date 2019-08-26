@@ -83,16 +83,15 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(publicButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
+        addButton(publicButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
             privateMode = false;
             updateButtons();
         }));
-        buttons.add(privateButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 14, 60, 20, "gui.private", onPress -> {
+        addButton(privateButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 14, 60, 20, "gui.private", onPress -> {
             privateMode = true;
             updateButtons();
         }));
-        buttons.add(setButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 116, 60, 20, "gui.set", onPress -> {
+        addButton(setButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 116, 60, 20, "gui.set", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
@@ -100,7 +99,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
             }
             updateButtons();
         }));
-        buttons.add(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 116, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 116, 60, 20, "gui.delete", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
@@ -113,7 +112,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(),
+        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(),
               onPress -> {
                   setFrequency(frequencyField.getText());
                   frequencyField.setText("");

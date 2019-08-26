@@ -61,12 +61,11 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     public void init() {
         super.init();
-        buttons.clear();
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
         energyUsageField = new TextFieldWidget(font, guiLeft + 49, guiTop + 52, 66, 11, prevEnergyUsage);
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
-        buttons.add(checkboxButton = new GuiButtonDisableableImage(guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation(),
+        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation(),
               onPress -> setEnergyUsage()));
     }
 

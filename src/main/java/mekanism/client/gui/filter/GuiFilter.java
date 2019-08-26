@@ -31,7 +31,6 @@ public abstract class GuiFilter<TILE extends TileEntityMekanism, CONTAINER exten
     @Override
     public void init() {
         super.init();
-        buttons.clear();
         addButtons();
     }
 }

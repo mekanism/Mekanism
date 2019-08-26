@@ -2,11 +2,12 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 public class HashList<T> implements Iterable<T> {
 
-    private ArrayList<T> list = new ArrayList<>(256);
+    private List<T> list = new ArrayList<>(256);
 
     private HashList(ArrayList<T> newList) {
         list = newList;

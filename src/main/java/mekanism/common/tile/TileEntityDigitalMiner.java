@@ -41,6 +41,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -81,13 +82,14 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgradeTile, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
+public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgradeTile, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock,
+      ITileFilterHolder<MinerFilter> {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
-    public HashList<MinerFilter> filters = new HashList<>();
+    private HashList<MinerFilter> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
     private int radius;
@@ -685,6 +687,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         return data;
     }
 
+    @Override
     public TileNetworkList getFilterPacket(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(2);
@@ -1111,5 +1114,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             chunkSet = new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(Chunk3D::getPos).collect(Collectors.toSet());
         }
         return chunkSet;
+    }
+
+    @Override
+    public HashList<MinerFilter> getFilters() {
+        return filters;
     }
 }

@@ -73,20 +73,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(this.startButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 17, 60, 20, "gui.start",
+        addButton(this.startButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 17, 60, 20, "gui.start",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
-        buttons.add(this.stopButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",
+        addButton(this.stopButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
-        buttons.add(this.configButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 57, 60, 20, "gui.config",
+        addButton(this.configButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 57, 60, 20, "gui.config",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
-        buttons.add(this.resetButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
+        addButton(this.resetButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
-        buttons.add(this.silkTouchButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation(),
+        addButton(this.silkTouchButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(9)))));
-        buttons.add(this.autoEjectButton = new GuiButtonDisableableImage(guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation(),
+        addButton(this.autoEjectButton = new GuiButtonDisableableImage(guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
-        buttons.add(this.autoPullButton = new GuiButtonDisableableImage(guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation(),
+        addButton(this.autoPullButton = new GuiButtonDisableableImage(guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)))));
         updateEnabledButtons();
     }

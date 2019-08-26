@@ -7,19 +7,18 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
 //TODO: Should this be FilterEmptyContainer
-public class LSModIDFilterContainer extends FilterContainer<TileEntityLogisticalSorter, TModIDFilter> {
+public class LSModIDFilterContainer extends FilterContainer<TModIDFilter, TileEntityLogisticalSorter> {
 
     public LSModIDFilterContainer(int id, PlayerInventory inv, TileEntityLogisticalSorter tile, int index) {
-        super(MekanismContainerTypes.LS_MOD_ID_FILTER, id, inv, tile);
-        if (index >= 0) {
-            origFilter = (TModIDFilter) tile.filters.get(index);
-            filter = origFilter.clone();
-        } else {
-            filter = new TModIDFilter();
-        }
+        super(MekanismContainerTypes.LS_MOD_ID_FILTER, id, inv, tile, index);
     }
 
     public LSModIDFilterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
         this(id, inv, getTileFromBuf(buf, TileEntityLogisticalSorter.class), buf.readInt());
+    }
+
+    @Override
+    public TModIDFilter createNewFilter() {
+        return new TModIDFilter();
     }
 }

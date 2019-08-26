@@ -8,7 +8,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
@@ -35,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMiner, MinerFilter, DigitalMinerConfigContainer> {
+public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEntityDigitalMiner, DigitalMinerConfigContainer> {
 
     private TextFieldWidget radiusField;
     private TextFieldWidget minField;
@@ -49,11 +48,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
 
     public GuiDigitalMinerConfig(DigitalMinerConfigContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-    }
-
-    @Override
-    protected HashList<MinerFilter> getFilters() {
-        return tileEntity.filters;
     }
 
     @Override
@@ -85,10 +79,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                 }
             }
 
+            HashList<MinerFilter> filters = tileEntity.getFilters();
             //Check for filter interaction
             for (int i = 0; i < 4; i++) {
                 int index = getFilterIndex() + i;
-                IFilter filter = tileEntity.filters.get(index);
+                MinerFilter filter = filters.get(index);
                 if (filter != null) {
                     int yStart = i * filterH + filterY;
                     if (xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH) {
@@ -101,7 +96,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                                 return true;
                             }
                         }
-                        if (index < tileEntity.filters.size() - 1) {
+                        if (index < filters.size() - 1) {
                             if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
                                 //Process down button click
                                 sendDataFromClick(TileNetworkList.withContents(12, index));
@@ -136,18 +131,17 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(newFilterButton = new GuiButtonTranslation(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
+        addButton(newFilterButton = new GuiButtonTranslation(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
-        buttons.add(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        buttons.add(setRadiButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation(),
+        addButton(setRadiButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation(),
               onPress -> setRadius()));
-        buttons.add(setMinButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation(),
+        addButton(setMinButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation(),
               onPress -> setMinY()));
-        buttons.add(setMaxButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation(),
+        addButton(setMaxButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation(),
               onPress -> setMaxY()));
-        buttons.add(inverseButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation(),
+        addButton(inverseButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(10)))));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
@@ -169,17 +163,18 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        HashList<MinerFilter> filters = tileEntity.getFilters();
         //TODO: Lang Keys
         drawString(TextComponentUtil.translate("gui.digitalMinerConfig"), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.filters"), ":"), 11, 19, 0x00CD00);
-        drawString(TextComponentUtil.build("T: " + tileEntity.filters.size()), 11, 28, 0x00CD00);
+        drawString(TextComponentUtil.build("T: " + filters.size()), 11, 28, 0x00CD00);
         drawString(TextComponentUtil.build("I: ", OnOff.of(tileEntity.inverse)), 11, 131, 0x00CD00);
         drawString(TextComponentUtil.build("Radi: " + tileEntity.getRadius()), 11, 58, 0x00CD00);
         drawString(TextComponentUtil.build("Min: " + tileEntity.minY), 11, 83, 0x00CD00);
         drawString(TextComponentUtil.build("Max: " + tileEntity.maxY), 11, 108, 0x00CD00);
 
         for (int i = 0; i < 4; i++) {
-            IFilter filter = tileEntity.filters.get(getFilterIndex() + i);
+            MinerFilter filter = filters.get(getFilterIndex() + i);
             if (filter != null) {
                 int yStart = i * filterH + filterY;
                 if (filter instanceof IItemStackFilter) {

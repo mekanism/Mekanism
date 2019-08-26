@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter, ReactorLogicAdapterContainer> {
 
+    //TODO: Instead of storing this would it make more sense to loop over "buttons" and check if the instance is of GuiReactorLogicButton
     private List<GuiReactorLogicButton> typeButtons = new ArrayList<>();
     private Button coolingButton;
 
@@ -37,14 +38,13 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     @Override
     public void init() {
         super.init();
-        buttons.clear();
-        buttons.add(coolingButton = new GuiButtonDisableableImage(guiLeft + 23, guiTop + 19, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(coolingButton = new GuiButtonDisableableImage(guiLeft + 23, guiTop + 19, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
             GuiReactorLogicButton button = new GuiReactorLogicButton(guiLeft + 24, guiTop + 32 + typeShift, type, tileEntity, getGuiLocation(),
                   onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1, type.ordinal()))));
-            buttons.add(button);
+            addButton(button);
             typeButtons.add(button);
         }
     }
