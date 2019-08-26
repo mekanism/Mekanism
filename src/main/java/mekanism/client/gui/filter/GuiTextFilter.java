@@ -85,9 +85,9 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         if (tileEntity instanceof TileEntityDigitalMiner) {
-            drawMinerForegroundLayer(mouseX, mouseY, renderStack);
+            drawMinerForegroundLayer(renderStack);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
-            drawTransporterForegroundLayer(mouseX, mouseY, renderStack);
+            drawTransporterForegroundLayer(renderStack);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -98,8 +98,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         text.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
             minerFilterClickCommon(mouseX - guiLeft, mouseY - guiTop, (MinerFilter) filter);
-        } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
-            transporterMouseClicked(mouseX, mouseY, button, (TransporterFilter) filter);
         }
         return true;
     }

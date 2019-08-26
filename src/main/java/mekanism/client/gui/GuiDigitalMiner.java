@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -41,10 +41,6 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
     private Button startButton;
     private Button stopButton;
     private Button configButton;
-    private Button resetButton;
-    private Button silkTouchButton;
-    private Button autoEjectButton;
-    private Button autoPullButton;
 
     public GuiDigitalMiner(DigitalMinerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -73,20 +69,24 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
     @Override
     public void init() {
         super.init();
-        addButton(this.startButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 17, 60, 20, "gui.start",
+        addButton(startButton = new TranslationButton(guiLeft + 69, guiTop + 17, 60, 20, "gui.start",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
-        addButton(this.stopButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",
+        addButton(stopButton = new TranslationButton(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
-        addButton(this.configButton = new GuiButtonTranslation(guiLeft + 69, guiTop + 57, 60, 20, "gui.config",
+        addButton(configButton = new TranslationButton(guiLeft + 69, guiTop + 57, 60, 20, "gui.config",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
-        addButton(this.resetButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
-        addButton(this.silkTouchButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(9)))));
-        addButton(this.autoEjectButton = new GuiButtonDisableableImage(guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
-        addButton(this.autoPullButton = new GuiButtonDisableableImage(guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)))));
+        addButton(new DisableableImageButton(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              getOnHover("mekanism.gui.digitalMiner.reset")));
+        addButton(new DisableableImageButton(guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(9))),
+              getOnHover("mekanism.gui.digitalMiner.silkTouch")));
+        addButton(new DisableableImageButton(guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              getOnHover("mekanism.gui.autoEject")));
+        addButton(new DisableableImageButton(guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              getOnHover("mekanism.gui.digitalMiner.autoPull")));
         updateEnabledButtons();
     }
 
@@ -134,15 +134,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
 
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.autoEject"), xAxis, yAxis);
-        } else if (autoPullButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.autoPull"), xAxis, yAxis);
-        } else if (resetButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.reset"), xAxis, yAxis);
-        } else if (silkTouchButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.silkTouch"), xAxis, yAxis);
-        } else if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
+        if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
             displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         } else if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
             if (!tileEntity.missingStack.isEmpty()) {

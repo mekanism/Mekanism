@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -45,8 +45,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     private Button privateButton;
     private Button setButton;
     private Button deleteButton;
-    private Button teleportButton;
-    private Button checkboxButton;
     private GuiScrollList scrollList;
     private TextFieldWidget frequencyField;
     private boolean privateMode;
@@ -83,15 +81,15 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     @Override
     public void init() {
         super.init();
-        addButton(publicButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
+        addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 14, 60, 20, "gui.private", onPress -> {
+        addButton(privateButton = new TranslationButton(guiLeft + 89, guiTop + 14, 60, 20, "gui.private", onPress -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 116, 60, 20, "gui.set", onPress -> {
+        addButton(setButton = new TranslationButton(guiLeft + 27, guiTop + 116, 60, 20, "gui.set", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
@@ -99,7 +97,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
             }
             updateButtons();
         }));
-        addButton(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 116, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 116, 60, 20, "gui.delete", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
@@ -112,7 +110,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, "");
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(),
               onPress -> {
                   setFrequency(frequencyField.getText());
                   frequencyField.setText("");

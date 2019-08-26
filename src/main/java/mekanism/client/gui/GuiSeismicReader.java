@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.button.GuiButtonSeismicReader;
+import mekanism.client.gui.button.SeismicReaderButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
@@ -54,9 +54,9 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(upButton = new GuiButtonSeismicReader(guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation(),
+        addButton(upButton = new SeismicReaderButton(guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation(),
               onPress -> currentLayer++));
-        addButton(downButton = new GuiButtonSeismicReader(guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
+        addButton(downButton = new SeismicReaderButton(guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
               onPress -> currentLayer--));
         //tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
         updateEnabledButtons();

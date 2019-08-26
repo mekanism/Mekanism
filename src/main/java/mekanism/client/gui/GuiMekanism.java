@@ -8,12 +8,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
@@ -53,6 +56,14 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     protected void addGuiElement(GuiElement element) {
         guiElements.add(element);
+    }
+
+    protected IHoverable getOnHover(String translationKey) {
+        return getOnHover(TextComponentUtil.translate(translationKey));
+    }
+
+    protected IHoverable getOnHover(ITextComponent component) {
+        return (onHover, xAxis, yAxis) -> displayTooltip(component, xAxis, yAxis);
     }
 
     public int getStringWidth(ITextComponent component) {
@@ -116,6 +127,14 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
+        //TODO: Does color need to be reset before this
+        for (Widget widget : this.buttons) {
+            if (widget.isHovered()) {
+                widget.renderToolTip(xAxis, yAxis);
+                //TODO: Evaluate this break statement
+                break;
+            }
+        }
         //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.

@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
-import mekanism.client.gui.button.GuiColorButton;
+import mekanism.client.gui.button.ColorButton;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
@@ -25,7 +25,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -37,11 +36,6 @@ import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, TileEntityLogisticalSorter, LogisticalSorterContainer> {
-
-    private Button singleItemButton;
-    private Button roundRobinButton;
-    private Button autoEjectButton;
-    private Button colorButton;
 
     public GuiLogisticalSorter(LogisticalSorterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -116,11 +110,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                 }
             }
         }
-
-        // Check for default colour button
-        if (colorButton.isMouseOver(mouseX, mouseY) && button == 1) {
-            sendDataFromClick(TileNetworkList.withContents(0, 1));
-        }
         return true;
     }
 
@@ -133,17 +122,21 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
     public void init() {
         super.init();
         // Add buttons to gui
-        addButton(new GuiButtonTranslation(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
+        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
-        addButton(singleItemButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
-        addButton(roundRobinButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)))));
-        addButton(autoEjectButton = new GuiButtonDisableableImage(guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)))));
-        addButton(colorButton = new GuiColorButton(guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color,
+        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              getOnHover("mekanism.gui.logisticalSorter.singleItem.tooltip")));
+        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
+              getOnHover("mekanism.gui.logisticalSorter.roundRobin.tooltip")));
+        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              getOnHover("mekanism.gui.logisticalSorter.autoEject.tooltip")));
+        addButton(new ColorButton(guiLeft + 13, guiTop + 137, 16, 16, this, () -> tileEntity.color,
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
-                    GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0)))));
+                    GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
+              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, 1)))));
     }
 
     @Override
@@ -165,6 +158,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
         drawString(OnOff.of(tileEntity.autoEject).getTextComponent(), 27, 112, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.logisticalSorter.default"), ":"), 12, 126, 0x00CD00);
 
+        //TODO: Convert filters into "proper" buttons/widgets
         // Draw filters
         for (int i = 0; i < 4; i++) {
             TransporterFilter filter = filters.get(getFilterIndex() + i);
@@ -224,21 +218,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                     displayTooltip(TextComponentUtil.translate("mekanism.gui.moveDown"), xAxis, yAxis);
                 }
             }
-        }
-
-        // Draw tooltips for buttons
-        if (colorButton.isMouseOver(mouseX, mouseY)) {
-            if (tileEntity.color != null) {
-                displayTooltip(tileEntity.color.getColoredName(), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
-            }
-        } else if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.logisticalSorter.autoEject.tooltip"), xAxis, yAxis);
-        } else if (roundRobinButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.logisticalSorter.roundRobin.tooltip"), xAxis, yAxis);
-        } else if (singleItemButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.logisticalSorter.singleItem.tooltip"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

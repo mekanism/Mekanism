@@ -2,8 +2,8 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MItemStackFilter;
@@ -45,7 +45,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 62, 60, 20, "gui.save", onPress -> {
+        addButton(saveButton = new TranslationButton(guiLeft + 27, guiTop + 62, 60, 20, "gui.save", onPress -> {
             if (!filter.getItemStack().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
@@ -58,16 +58,18 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 62, 60, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
-        addButton(replaceButton = new GuiButtonDisableableImage(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
-              onPress -> filter.requireStack = !filter.requireStack));
-        addButton(fuzzyButton = new GuiButtonDisableableImage(guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation(),
-              onPress -> filter.fuzzy = !filter.fuzzy));
+        addButton(new DisableableImageButton(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
+              onPress -> filter.requireStack = !filter.requireStack,
+              getOnHoverReplace(filter)));
+        addButton(fuzzyButton = new DisableableImageButton(guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation(),
+              onPress -> filter.fuzzy = !filter.fuzzy,
+              getOnHover(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.fuzzyMode"), ": ", YesNo.of(filter.fuzzy)))));
     }
 
     @Override
@@ -77,13 +79,6 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         }
         renderItem(filter.getItemStack(), 12, 19);
         renderItem(filter.replaceStack, 149, 19);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (replaceButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.requireReplace"), ": ", YesNo.of(filter.requireStack)), xAxis, yAxis);
-        } else if (fuzzyButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.fuzzyMode"), ": ", YesNo.of(filter.fuzzy)), xAxis, yAxis);
-        }
     }
 
     @Override

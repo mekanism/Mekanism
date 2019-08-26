@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -25,7 +25,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -34,8 +33,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, RotaryCondensentratorContainer> {
-
-    private Button toggleButton;
 
     public GuiRotaryCondensentrator(RotaryCondensentratorContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -81,8 +78,9 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     @Override
     public void init() {
         super.init();
-        addButton(toggleButton = new GuiButtonDisableableImage(guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
+        addButton(new DisableableImageButton(guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              getOnHover("mekanism.gui.rotaryCondensentrator.toggleOperation")));
     }
 
     @Override
@@ -95,9 +93,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         }
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (toggleButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
-        } else if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
+        if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
             displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

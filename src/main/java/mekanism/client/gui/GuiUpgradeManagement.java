@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -29,7 +29,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile> extends GuiMekanism<UpgradeManagementContainer<TILE>> {
 
-    private Button backButton;
     private Button removeButton;
     private TILE tileEntity;
     @Nullable
@@ -48,9 +47,9 @@ public class GuiUpgradeManagement<TILE extends TileEntityMekanism & IUpgradeTile
     @Override
     public void init() {
         super.init();
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(removeButton = new GuiButtonDisableableImage(guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation(),
+        addButton(removeButton = new DisableableImageButton(guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation(),
               onPress -> {
                   if (selectedType != null) {
                       Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), selectedType));

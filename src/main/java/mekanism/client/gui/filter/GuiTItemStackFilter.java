@@ -2,9 +2,9 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
-import mekanism.client.gui.button.GuiColorButton;
+import mekanism.client.gui.button.ColorButton;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TItemStackFilter;
@@ -47,7 +47,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new GuiButtonTranslation(guiLeft + 47, guiTop + 62, 60, 20, "gui.save", onPress -> {
+        addButton(saveButton = new TranslationButton(guiLeft + 47, guiTop + 62, 60, 20, "gui.save", onPress -> {
             if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
                 int min = Integer.parseInt(minField.getText());
                 int max = Integer.parseInt(maxField.getText());
@@ -76,24 +76,26 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new GuiButtonTranslation(guiLeft + 109, guiTop + 62, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 109, guiTop + 62, 60, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
-        addButton(defaultButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation(),
-              onPress -> filter.allowDefault = !filter.allowDefault));
-        addButton(colorButton = new GuiColorButton(guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color,
-              onPress -> {
-                  if (InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                      filter.color = null;
+        addButton(new DisableableImageButton(guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation(),
+              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("mekanism.gui.allowDefault")));
+        addButton(new ColorButton(guiLeft + 12, guiTop + 44, 16, 16, this, () -> filter.color,
+              onPress -> filter.color = InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
+              onRightClick -> filter.color = TransporterUtils.decrement(filter.color)));
+        addButton(sizeButton = new DisableableImageButton(guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation(),
+              onPress -> filter.sizeMode = !filter.sizeMode,
+              (onHover, xAxis, yAxis) -> {
+                  if (tileEntity.singleItem && filter.sizeMode) {
+                      displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.sizeMode"), " - ", Translation.of("mekanism.gui.sizeModeConflict")), xAxis, yAxis);
                   } else {
-                      filter.color = TransporterUtils.increment(filter.color);
+                      displayTooltip(TextComponentUtil.translate("mekanism.gui.sizeMode"), xAxis, yAxis);
                   }
               }));
-        addButton(sizeButton = new GuiButtonDisableableImage(guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation(),
-              onPress -> filter.sizeMode = !filter.sizeMode));
     }
 
     @Override
@@ -127,19 +129,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         } else {
             drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, 0x404040);
         }
-        drawTransporterForegroundLayer(mouseX, mouseY, filter.getItemStack());
+        drawTransporterForegroundLayer(filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
             renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 89);
-        }
-
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (sizeButton.isMouseOver(mouseX, mouseY)) {
-            if (tileEntity.singleItem && filter.sizeMode) {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.sizeMode"), " - ", Translation.of("mekanism.gui.sizeModeConflict")), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.sizeMode"), xAxis, yAxis);
-            }
         }
     }
 
@@ -171,8 +163,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                 filter.setItemStack(ItemStack.EMPTY);
             }
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-        } else {
-            transporterMouseClicked(mouseX, mouseY, button, filter);
         }
         return true;
     }

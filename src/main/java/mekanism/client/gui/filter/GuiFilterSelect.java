@@ -1,7 +1,7 @@
 package mekanism.client.gui.filter;
 
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
@@ -27,11 +27,11 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void addButtons() {
-        addButton(itemStackButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 32, 128, 20, "gui.itemstack", onItemStackButton()));
-        addButton(oredictButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 52, 128, 20, "gui.oredict", onTagButton()));
-        addButton(materialButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 72, 128, 20, "gui.material", onMaterialButton()));
-        addButton(modIDButton = new GuiButtonTranslation(guiLeft + 24, guiTop + 92, 128, 20, "gui.modID", onModIDButton()));
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(), onBackButton()));
+        addButton(itemStackButton = new TranslationButton(guiLeft + 24, guiTop + 32, 128, 20, "gui.itemstack", onItemStackButton()));
+        addButton(oredictButton = new TranslationButton(guiLeft + 24, guiTop + 52, 128, 20, "gui.oredict", onTagButton()));
+        addButton(materialButton = new TranslationButton(guiLeft + 24, guiTop + 72, 128, 20, "gui.material", onMaterialButton()));
+        addButton(modIDButton = new TranslationButton(guiLeft + 24, guiTop + 92, 128, 20, "gui.modID", onModIDButton()));
+        addButton(backButton = new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(), onBackButton()));
     }
 
     protected abstract IPressable onItemStackButton();

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiSideDataButton;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.button.SideDataButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -25,11 +25,9 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,10 +38,6 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
-    //TODO: Instead of storing this would it make more sense to loop over "buttons" and check if the instance is of GuiSideDataButton
-    private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
-    private Button backButton;
-    private Button autoEjectButton;
 
     public GuiSideConfiguration(SideConfigurationContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -67,18 +61,30 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     public void init() {
         super.init();
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(autoEjectButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType))));
+        addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType)),
+              getOnHover("mekanism.gui.autoEject")));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
-            GuiSideDataButton button = new GuiSideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
-                  () -> tileEntity.getConfig().getOutput(currentType, facing), () -> tileEntity.getConfig().getOutput(currentType, facing).color, () -> tileEntity);
-            addButton(button);
-            sideDataButtons.add(button);
+            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+                  () -> tileEntity.getConfig().getOutput(currentType, facing), () -> tileEntity.getConfig().getOutput(currentType, facing).color, () -> tileEntity,
+                  () -> currentType, getOnHover()));
         }
+    }
+
+    private IHoverable getOnHover() {
+        return (onHover, xAxis, yAxis) -> {
+            if (onHover instanceof SideDataButton) {
+                SideDataButton button = (SideDataButton) onHover;
+                SideData data = button.getSideData();
+                if (data != TileComponentConfig.EMPTY) {
+                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getColoredName(), ")"), xAxis, yAxis);
+                }
+            }
+        };
     }
 
     public TransmissionType getTopTransmission() {
@@ -110,20 +116,6 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             drawString(TextComponentUtil.translate("mekanism.gui.noEject"), 53, 17, 0x00CD00);
         }
         drawString(TextComponentUtil.translate("mekanism.gui.slots"), 77, 81, 0x787878);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        for (GuiSideDataButton button : sideDataButtons) {
-            if (button.isMouseOver(mouseX, mouseY)) {
-                SideData data = button.getSideData();
-                if (data != TileComponentConfig.EMPTY) {
-                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getColoredName(), ")"), xAxis, yAxis);
-                }
-                break;
-            }
-        }
-        if (autoEjectButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.autoEject"), xAxis, yAxis);
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -133,22 +125,6 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         if (tileEntity == null || minecraft.world.getTileEntity(tileEntity.getPos()) == null) {
             minecraft.displayGuiScreen(null);
         }
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (button == 1) {
-            //Handle right clicking the side data buttons
-            for (GuiSideDataButton sideDataButton : sideDataButtons) {
-                if (sideDataButton.isMouseOver(mouseX, mouseY)) {
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.SIDE_DATA, Coord4D.get(tileEntity), 1, sideDataButton.getSlotPosMapIndex(), currentType));
-                    break;
-                }
-            }
-        }
-        return true;
     }
 
     @Override

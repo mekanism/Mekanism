@@ -2,8 +2,8 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.miner.MOreDictFilter;
@@ -34,7 +34,7 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new GuiButtonTranslation(guiLeft + 27, guiTop + 62, 60, 20, "gui.save", onPress -> {
+        addButton(saveButton = new TranslationButton(guiLeft + 27, guiTop + 62, 60, 20, "gui.save", onPress -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -50,15 +50,15 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 62, 60, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
-        addButton(replaceButton = new GuiButtonDisableableImage(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
-              onPress -> filter.requireStack = !filter.requireStack));
-        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
+              onPress -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
+        addButton(checkboxButton = new DisableableImageButton(guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation(),
               onPress -> setText()));
     }
 

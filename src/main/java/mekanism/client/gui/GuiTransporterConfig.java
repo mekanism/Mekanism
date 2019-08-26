@@ -1,17 +1,15 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiColorButton;
-import mekanism.client.gui.button.GuiSideDataButton;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.button.ColorButton;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.button.SideDataButton;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -27,12 +25,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,11 +38,6 @@ import org.lwjgl.glfw.GLFW;
 public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiMekanismTile<TILE, TransporterConfigurationContainer<TILE>> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
-    //TODO: Instead of storing this would it make more sense to loop over "buttons" and check if the instance is of GuiSideDataButton
-    private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
-    private Button backButton;
-    private Button strictInputButton;
-    private Button colorButton;
 
     public GuiTransporterConfig(TransporterConfigurationContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -62,34 +53,28 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     public void init() {
         super.init();
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(strictInputButton = new GuiButtonDisableableImage(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null))));
-        addButton(colorButton = new GuiColorButton(guiLeft + 122, guiTop + 49, 16, 16, () -> tileEntity.getEjector().getOutputColor(),
+        addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
+              getOnHover("mekanism.gui.configuration.strictInput")));
+        addButton(new ColorButton(guiLeft + 122, guiTop + 49, 16, 16, this, () -> tileEntity.getEjector().getOutputColor(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
-                    InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null))));
+                    InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
+              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null))));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
-            GuiSideDataButton button = new GuiSideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
-                  () -> tileEntity.getConfig().getOutput(TransmissionType.ITEM, facing), () -> tileEntity.getEjector().getInputColor(facing), () -> tileEntity);
-            addButton(button);
-            sideDataButtons.add(button);
+            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+                  () -> tileEntity.getConfig().getOutput(TransmissionType.ITEM, facing), () -> tileEntity.getEjector().getInputColor(facing), () -> tileEntity, () -> null,
+                  getOnHover()));
         }
     }
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.translate("gui.configuration.transporter"), 0, xSize, 5, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(tileEntity.getEjector().hasStrictInput()), ")"),
-              53, 17, 0x00CD00, 70);
-        drawString(TextComponentUtil.translate("mekanism.gui.input"), 48, 81, 0x787878);
-        drawString(TextComponentUtil.translate("gui.output"), 114, 68, 0x787878);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        for (GuiSideDataButton button : sideDataButtons) {
-            if (button.isMouseOver(mouseX, mouseY)) {
+    private IHoverable getOnHover() {
+        return (onHover, xAxis, yAxis) -> {
+            if (onHover instanceof SideDataButton) {
+                SideDataButton button = (SideDataButton) onHover;
                 SideData data = button.getSideData();
                 if (data != TileComponentConfig.EMPTY) {
                     EnumColor color = button.getColor();
@@ -99,41 +84,18 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
                         displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
                     }
                 }
-                break;
             }
-        }
-        if (strictInputButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.configuration.strictInput"), xAxis, yAxis);
-        } else if (colorButton.isMouseOver(mouseX, mouseY)) {
-            if (tileEntity.getEjector().getOutputColor() != null) {
-                displayTooltip(tileEntity.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
-            }
-        }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        };
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (button == 1) {
-            if (colorButton.isMouseOver(mouseX, mouseY)) {
-                //Allow going backwards
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null));
-            } else {
-                //Handle right clicking the side data buttons
-                for (GuiSideDataButton sideDataButton : sideDataButtons) {
-                    if (sideDataButton.isMouseOver(mouseX, mouseY)) {
-                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tileEntity), 1, sideDataButton.getSlotPosMapIndex(), null));
-                        break;
-                    }
-                }
-            }
-        }
-        return true;
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        drawCenteredText(TextComponentUtil.translate("gui.configuration.transporter"), 0, xSize, 5, 0x404040);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(tileEntity.getEjector().hasStrictInput()), ")"),
+              53, 17, 0x00CD00, 70);
+        drawString(TextComponentUtil.translate("mekanism.gui.input"), 48, 81, 0x787878);
+        drawString(TextComponentUtil.translate("gui.output"), 114, 68, 0x787878);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override

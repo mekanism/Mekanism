@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
@@ -24,7 +24,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -39,12 +38,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
     private TextFieldWidget radiusField;
     private TextFieldWidget minField;
     private TextFieldWidget maxField;
-    private Button newFilterButton;
-    private Button backButton;
-    private Button setRadiButton;
-    private Button setMinButton;
-    private Button setMaxButton;
-    private Button inverseButton;
 
     public GuiDigitalMinerConfig(DigitalMinerConfigContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -131,18 +124,16 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
     @Override
     public void init() {
         super.init();
-        addButton(newFilterButton = new GuiButtonTranslation(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
+        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(setRadiButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation(),
-              onPress -> setRadius()));
-        addButton(setMinButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation(),
-              onPress -> setMinY()));
-        addButton(setMaxButton = new GuiButtonDisableableImage(guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation(),
-              onPress -> setMaxY()));
-        addButton(inverseButton = new GuiButtonDisableableImage(guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(10)))));
+        addButton(new DisableableImageButton(guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setRadius()));
+        addButton(new DisableableImageButton(guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setMinY()));
+        addButton(new DisableableImageButton(guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setMaxY()));
+        addButton(new DisableableImageButton(guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(10))),
+              getOnHover("mekanism.gui.digitalMiner.inverse")));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
         String prevMin = minField != null ? minField.getText() : "";
@@ -199,9 +190,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
                     drawString(TextComponentUtil.translate("gui.modIDFilter"), 78, yStart + 2, 0x404040);
                 }
             }
-        }
-        if (inverseButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.inverse"), mouseX - guiLeft, mouseY - guiTop);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

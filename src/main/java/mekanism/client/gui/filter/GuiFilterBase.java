@@ -2,6 +2,7 @@ package mekanism.client.gui.filter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -9,7 +10,6 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
@@ -39,10 +39,6 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
 
     protected Button saveButton;
     protected Button deleteButton;
-    protected Button backButton;
-    protected Button replaceButton;
-    protected Button defaultButton;
-    protected Button colorButton;
 
     protected GuiFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -57,41 +53,24 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
         }
     }
 
-    protected void transporterMouseClicked(double mouseX, double mouseY, int button, TransporterFilter filter) {
-        if (button == 1 && colorButton.isMouseOver(mouseX, mouseY)) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            filter.color = TransporterUtils.decrement(filter.color);
-        }
+    protected IHoverable getOnHoverReplace(MinerFilter filter) {
+        return getOnHover(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.requireReplace"), ": ",
+              YesNo.of(filter.requireStack)));
     }
 
-    protected void drawMinerForegroundLayer(int mouseX, int mouseY, ItemStack stack) {
+    protected void drawMinerForegroundLayer(ItemStack stack) {
         if (filter instanceof MinerFilter) {
             MinerFilter mFilter = (MinerFilter) filter;
             renderItem(stack, 12, 19);
             renderItem(mFilter.replaceStack, 149, 19);
-            if (replaceButton.isMouseOver(mouseX, mouseY)) {
-                displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.requireReplace"), ": ",
-                      YesNo.of(mFilter.requireStack)), mouseX - guiLeft, mouseY - guiTop);
-            }
         }
     }
 
-    protected void drawTransporterForegroundLayer(int mouseX, int mouseY, @Nonnull ItemStack stack) {
+    protected void drawTransporterForegroundLayer(@Nonnull ItemStack stack) {
         if (filter instanceof TransporterFilter) {
             TransporterFilter tFilter = (TransporterFilter) filter;
             drawString(OnOff.of(tFilter.allowDefault).getTextComponent(), 24, 66, 0x404040);
             renderItem(stack, 12, 19);
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-            if (defaultButton.isMouseOver(mouseX, mouseY)) {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.allowDefault"), xAxis, yAxis);
-            } else if (colorButton.isMouseOver(mouseX, mouseY)) {
-                if (tFilter.color != null) {
-                    displayTooltip(tFilter.color.getColoredName(), xAxis, yAxis);
-                } else {
-                    displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
-                }
-            }
         }
     }
 

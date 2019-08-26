@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -52,7 +52,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
     @Override
     public void init() {
         super.init();
-        addButton(removeButton = new GuiButtonTranslation(guiLeft + 13, guiTop + 81, 122, 20, "gui.remove", onPress -> {
+        addButton(removeButton = new TranslationButton(guiLeft + 13, guiTop + 81, 122, 20, "gui.remove", onPress -> {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {
                 TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
@@ -64,31 +64,39 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         trustedField = new TextFieldWidget(font, guiLeft + 35, guiTop + 69, 86, 11, "");
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
-        addButton(publicButton = new GuiButtonDisableableImage(guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation(),
+        addButton(publicButton = new DisableableImageButton(guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 0)));
                   updateButtons();
-              }));
-        addButton(privateButton = new GuiButtonDisableableImage(guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation(),
+              },
+              getOnHover("mekanism.gui.publicMode")));
+        addButton(privateButton = new DisableableImageButton(guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 1)));
                   updateButtons();
-              }));
-        addButton(trustedButton = new GuiButtonDisableableImage(guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation(),
+              },
+              getOnHover("mekanism.gui.privateMode")));
+        addButton(trustedButton = new DisableableImageButton(guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 2)));
                   updateButtons();
-              }));
-        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation(),
+              },
+              getOnHover("mekanism.gui.trustedMode")));
+        addButton(checkboxButton = new DisableableImageButton(guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation(),
               onPress -> {
                   addTrusted(trustedField.getText());
                   trustedField.setText("");
                   updateButtons();
               }));
-        addButton(overrideButton = new GuiButtonDisableableImage(guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation(),
+        addButton(overrideButton = new DisableableImageButton(guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
                   updateButtons();
+              },
+              (onHover, xAxis, yAxis) -> {
+                  if (tileEntity.frequency != null) {
+                      displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.securityOverride"), ": ", OnOff.of(tileEntity.frequency.override)), xAxis, yAxis);
+                  }
               }));
         updateButtons();
     }
@@ -177,17 +185,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
             drawString(TextComponentUtil.build(EnumColor.RED, Translation.of("gui.securityOffline")), 13, 103, 0x404040);
         }
         renderScaledText(TextComponentUtil.build(Translation.of("gui.add"), ":"), 13, 70, 0x404040, 20);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (tileEntity.frequency != null && overrideButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.securityOverride"), ": ", OnOff.of(tileEntity.frequency.override)), xAxis, yAxis);
-        } else if (publicButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.publicMode"), xAxis, yAxis);
-        } else if (privateButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.privateMode"), xAxis, yAxis);
-        } else if (trustedButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.trustedMode"), xAxis, yAxis);
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

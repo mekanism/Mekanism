@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -73,7 +73,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     public void init() {
         super.init();
-        addButton(new GuiButtonTranslation(guiLeft + 10, guiTop + 86, 142, 20, "gui.newFilter",
+        addButton(new TranslationButton(guiLeft + 10, guiTop + 86, 142, 20, "gui.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
     }
 

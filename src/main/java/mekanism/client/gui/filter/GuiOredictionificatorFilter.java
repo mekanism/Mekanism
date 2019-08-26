@@ -3,8 +3,8 @@ package mekanism.client.gui.filter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.gui.button.GuiButtonTranslation;
+import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
@@ -19,7 +19,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,10 +30,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator, OredictionificatorFilterContainer> {
 
-    private Button prevButton;
-    private Button nextButton;
-    private Button checkboxButton;
-
     public GuiOredictionificatorFilter(OredictionificatorFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         origFilter = container.getFilter();
@@ -45,7 +40,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new GuiButtonTranslation(guiLeft + 31, guiTop + 62, 54, 20, "gui.save", onPress -> {
+        addButton(saveButton = new TranslationButton(guiLeft + 31, guiTop + 62, 54, 20, "gui.save", onPress -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -58,38 +53,35 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             }
         }));
-        addButton(deleteButton = new GuiButtonTranslation(guiLeft + 89, guiTop + 62, 54, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 62, 54, 20, "gui.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
-        addButton(backButton = new GuiButtonDisableableImage(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
+        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
-        addButton(prevButton = new GuiButtonDisableableImage(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(),
-              onPress -> {
-                  if (filter.hasFilter()) {
-                      List<Item> matchingItems = filter.getMatchingItems();
-                      if (filter.index > 0) {
-                          filter.index--;
-                      } else {
-                          filter.index = matchingItems.size() - 1;
-                      }
-                      updateRenderStack();
-                  }
-              }));
-        addButton(nextButton = new GuiButtonDisableableImage(guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation(),
-              onPress -> {
-                  if (filter.hasFilter()) {
-                      List<Item> matchingItems = filter.getMatchingItems();
-                      if (filter.index < matchingItems.size() - 1) {
-                          filter.index++;
-                      } else {
-                          filter.index = 0;
-                      }
-                      updateRenderStack();
-                  }
-              }));
-        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation(),
-              onPress -> setText()));
+        addButton(new DisableableImageButton(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(), onPress -> {
+            if (filter.hasFilter()) {
+                List<Item> matchingItems = filter.getMatchingItems();
+                if (filter.index > 0) {
+                    filter.index--;
+                } else {
+                    filter.index = matchingItems.size() - 1;
+                }
+                updateRenderStack();
+            }
+        }));
+        addButton(new DisableableImageButton(guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation(), onPress -> {
+            if (filter.hasFilter()) {
+                List<Item> matchingItems = filter.getMatchingItems();
+                if (filter.index < matchingItems.size() - 1) {
+                    filter.index++;
+                } else {
+                    filter.index = 0;
+                }
+                updateRenderStack();
+            }
+        }));
+        addButton(new DisableableImageButton(guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation(), onPress -> setText()));
     }
 
     @Override

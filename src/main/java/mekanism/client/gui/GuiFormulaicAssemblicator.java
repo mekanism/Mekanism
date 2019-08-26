@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -64,18 +64,24 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     public void init() {
         super.init();
-        addButton(encodeFormulaButton = new GuiButtonDisableableImage(guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)))));
-        addButton(stockControlButton = new GuiButtonDisableableImage(guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5)))));
-        addButton(fillEmptyButton = new GuiButtonDisableableImage(guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
-        addButton(craftSingleButton = new GuiButtonDisableableImage(guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)))));
-        addButton(craftAvailableButton = new GuiButtonDisableableImage(guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
-        addButton(autoModeButton = new GuiButtonDisableableImage(guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
+        addButton(encodeFormulaButton = new DisableableImageButton(guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              getOnHover("mekanism.gui.encodeFormula")));
+        addButton(stockControlButton = new DisableableImageButton(guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              getOnHover(TextComponentUtil.build(Translation.of("mekanism.gui.stockControl"), ": ", OnOff.of(tileEntity.stockControl)))));
+        addButton(fillEmptyButton = new DisableableImageButton(guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4))),
+              getOnHover("mekanism.gui.fillEmpty")));
+        addButton(craftSingleButton = new DisableableImageButton(guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
+              getOnHover("mekanism.gui.craftSingle")));
+        addButton(craftAvailableButton = new DisableableImageButton(guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3))),
+              getOnHover("mekanism.gui.craftAvailable")));
+        addButton(autoModeButton = new DisableableImageButton(guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              getOnHover(TextComponentUtil.build(Translation.of("mekanism.gui.autoModeToggle"), ": ", OnOff.of(tileEntity.autoMode)))));
         updateEnabledButtons();
     }
 
@@ -98,21 +104,6 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (fillEmptyButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.fillEmpty"), xAxis, yAxis);
-        } else if (encodeFormulaButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.encodeFormula"), xAxis, yAxis);
-        } else if (craftSingleButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.craftSingle"), xAxis, yAxis);
-        } else if (craftAvailableButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.craftAvailable"), xAxis, yAxis);
-        } else if (autoModeButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.autoModeToggle"), ": ", OnOff.of(tileEntity.autoMode)), xAxis, yAxis);
-        } else if (stockControlButton.isMouseOver(mouseX, mouseY)) {
-            displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.stockControl"), ": ", OnOff.of(tileEntity.stockControl)), xAxis, yAxis);
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

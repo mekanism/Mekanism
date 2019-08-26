@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -26,7 +26,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -38,7 +37,6 @@ import org.lwjgl.glfw.GLFW;
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater, ResistiveHeaterContainer> {
 
     private TextFieldWidget energyUsageField;
-    private Button checkboxButton;
 
     public GuiResistiveHeater(ResistiveHeaterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -65,8 +63,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         energyUsageField = new TextFieldWidget(font, guiLeft + 49, guiTop + 52, 66, 11, prevEnergyUsage);
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
-        addButton(checkboxButton = new GuiButtonDisableableImage(guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation(),
-              onPress -> setEnergyUsage()));
+        addButton(new DisableableImageButton(guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation(), onPress -> setEnergyUsage()));
     }
 
     @Override
