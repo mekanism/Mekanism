@@ -33,18 +33,23 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, H
 
     public GuiHeatGenerator(HeatGeneratorContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ", EnergyDisplay.of(tileEntity.producingEnergy), "/t"),
               TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
-        addGuiElement(new GuiFluidGauge(() -> tileEntity.lavaTank, Type.WIDE, this, resource, 55, 18));
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
-        addGuiElement(new GuiHeatInfo(() -> {
+        addButton(new GuiFluidGauge(() -> tileEntity.lavaTank, Type.WIDE, this, resource, 55, 18));
+        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34));
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
+        addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, false, unit);
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, false, unit);

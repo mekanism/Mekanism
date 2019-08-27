@@ -25,28 +25,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class GuiGauge<T> extends GuiElement {
 
     protected EnumColor color;
-    protected final int xLocation;
-    protected final int yLocation;
     protected final int texX;
     protected final int texY;
-    protected final int width;
-    protected final int height;
     protected final int number;
     protected boolean dummy;
 
     protected T dummyType;
 
     public GuiGauge(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, def);
-        xLocation = x;
-        yLocation = y;
-
-        width = type.width;
-        height = type.height;
-
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, def, x, y, type.width, type.height);
         texX = type.texX;
         texY = type.texY;
-
         color = type.color;
         number = type.number;
     }
@@ -61,18 +50,18 @@ public abstract class GuiGauge<T> extends GuiElement {
     }
 
     @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, texX, texY, width, height);
+        guiObj.drawTexturedRect(x, y, texX, texY, width, height);
         if (!dummy) {
-            renderScale(guiWidth, guiHeight);
+            renderScale();
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
-    public void renderScale(int guiWidth, int guiHeight) {
+    public void renderScale() {
         if (getScaledLevel() == 0 || getIcon() == null) {
-            guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
+            guiObj.drawTexturedRect(x, y, width, 0, width, height);
             return;
         }
 
@@ -92,7 +81,7 @@ public abstract class GuiGauge<T> extends GuiElement {
 
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             for (int i = 0; i < number; i++) {
-                guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
+                guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }
             start += 16;
             if (scale == 0) {
@@ -101,34 +90,32 @@ public abstract class GuiGauge<T> extends GuiElement {
         }
         MekanismRenderer.resetColor();
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
+        guiObj.drawTexturedRect(x, y, width, 0, width, height);
     }
 
     @Override
-    public void renderForeground(int xAxis, int yAxis) {
-        if (xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1) {
-            ItemStack stack = minecraft.player.inventory.getItemStack();
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
-                if (guiObj instanceof GuiMekanismTile) {
-                    TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
-                    if (tile instanceof ISideConfiguration && getTransmission() != null) {
-                        SideData data = null;
-                        for (SideData iterData : ((ISideConfiguration) tile).getConfig().getOutputs(getTransmission())) {
-                            if (iterData.color == color) {
-                                data = iterData;
-                                break;
-                            }
-                        }
-                        if (data == null) {
-                            guiObj.displayTooltip(TextComponentUtil.build(color, "(", color.getColoredName(), ")"), xAxis, yAxis);
-                        } else {
-                            guiObj.displayTooltip(TextComponentUtil.build(color, data, " (", color.getColoredName(), ")"), xAxis, yAxis);
+    public void renderToolTip(int mouseX, int mouseY) {
+        ItemStack stack = minecraft.player.inventory.getItemStack();
+        if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
+            if (guiObj instanceof GuiMekanismTile) {
+                TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
+                if (tile instanceof ISideConfiguration && getTransmission() != null) {
+                    SideData data = null;
+                    for (SideData iterData : ((ISideConfiguration) tile).getConfig().getOutputs(getTransmission())) {
+                        if (iterData.color == color) {
+                            data = iterData;
+                            break;
                         }
                     }
+                    if (data == null) {
+                        guiObj.displayTooltip(TextComponentUtil.build(color, "(", color.getColoredName(), ")"), mouseX, mouseY);
+                    } else {
+                        guiObj.displayTooltip(TextComponentUtil.build(color, data, " (", color.getColoredName(), ")"), mouseX, mouseY);
+                    }
                 }
-            } else {
-                guiObj.displayTooltip(getTooltipText(), xAxis, yAxis);
             }
+        } else {
+            guiObj.displayTooltip(getTooltipText(), mouseX, mouseY);
         }
     }
 
@@ -136,11 +123,6 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     public void setDummyType(T type) {
         dummyType = type;
-    }
-
-    @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
     }
 
     public enum Type {

@@ -32,16 +32,21 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
 
     public GuiWindGenerator(WindGeneratorContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier() : 0), "/t"),
               TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
+        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override

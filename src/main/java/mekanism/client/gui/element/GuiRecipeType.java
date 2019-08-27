@@ -12,33 +12,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
 
     public GuiRecipeType(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "recipe_type.png"), gui, def, tile);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "recipe_type.png"), gui, def, tile, 176, 70, 26, 63);
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + 176, guiHeight + 70, 26, 63);
-    }
-
-    @Override
-    protected boolean inBounds(double xAxis, double yAxis) {
-        return xAxis >= 180 && xAxis <= 196 && (yAxis >= 75 && yAxis <= 91 || yAxis >= 112 && yAxis <= 128);
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
+        guiObj.drawTexturedRect(x, y, 0, 0, width, height);
         int displayInt = tileEntity.getScaledRecipeProgress(15);
-        guiObj.drawTexturedRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
+        guiObj.drawTexturedRect(width + 5, height + 24, width, 0, 10, displayInt);
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
-    @Override
-    public void renderForeground(int xAxis, int yAxis) {
-    }
-
-    @Override
+    //TODO: Figure out what the point of the below was
+    /*@Override
     public void preMouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && inBounds(mouseX, mouseY)) {
             offsetX(26);
@@ -52,5 +39,5 @@ public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
-    }
+    }*/
 }

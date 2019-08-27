@@ -27,9 +27,14 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Tu
 
     public GuiTurbineStats(TurbineStatsContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, resource));
-        addGuiElement(new GuiEnergyInfo(() -> {
+        addButton(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, resource));
+        addButton(new GuiEnergyInfo(() -> {
             double producing = tileEntity.structure == null ? 0 : tileEntity.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                                   Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             return Arrays.asList(TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),

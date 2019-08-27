@@ -20,42 +20,27 @@ public class GuiHeatInfo extends GuiElement {
     private final IInfoHandler infoHandler;
 
     public GuiHeatInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "heat_info.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "heat_info.png"), gui, def, -26, 138, 26, 26);
         infoHandler = handler;
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
-    }
-
-    @Override
-    protected boolean inBounds(double xAxis, double yAxis) {
-        return xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134;
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 112, 0, 0, 26, 26);
+        //TODO: Double check this
+        guiObj.drawTexturedRect(x - width, y - height, 0, 0, width, height);
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
-    public void renderForeground(int xAxis, int yAxis) {
-        if (inBounds(xAxis, yAxis)) {
-            List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
-            info.add(TextComponentUtil.build(Translation.of("mekanism.gui.unit"), ": ", MekanismConfig.general.tempUnit.get()));
-            displayTooltips(info, xAxis, yAxis);
-        }
+    public void renderToolTip(int mouseX, int mouseY) {
+        List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
+        info.add(TextComponentUtil.build(Translation.of("mekanism.gui.unit"), ": ", MekanismConfig.general.tempUnit.get()));
+        displayTooltips(info, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0 && inBounds(mouseX, mouseY)) {
-            MekanismConfig.general.tempUnit.set(TempType.values()[(MekanismConfig.general.tempUnit.get().ordinal() + 1) % TempType.values().length]);
-            return true;
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
+    public void onClick(double mouseX, double mouseY) {
+        MekanismConfig.general.tempUnit.set(TempType.values()[(MekanismConfig.general.tempUnit.get().ordinal() + 1) % TempType.values().length]);
     }
 }

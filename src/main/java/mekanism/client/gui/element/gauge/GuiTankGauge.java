@@ -28,13 +28,8 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
     }
 
     @Override
-    protected boolean inBounds(double xAxis, double yAxis) {
-        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1;
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (inBounds(mouseX, mouseY)) {
+        if (isMouseOver(mouseX, mouseY)) {
             ItemStack stack = GuiElement.minecraft.player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();

@@ -24,21 +24,26 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, BoilerStatsContainer> {
 
-    private final GuiGraph boilGraph;
-    private final GuiGraph maxGraph;
+    private GuiGraph boilGraph;
+    private GuiGraph maxGraph;
 
     public GuiBoilerStats(BoilerStatsContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, resource));
-        addGuiElement(new GuiHeatInfo(() -> {
+        addButton(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, resource));
+        addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
             return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
         }, this, resource));
-        addGuiElement(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, data ->
+        addButton(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, data ->
               TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + data + " mB/t")));
-        addGuiElement(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, data ->
+        addButton(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, data ->
               TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + data + " mB/t")));
         maxGraph.enableFixedScale((int) ((tileEntity.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get()) /
                                          SynchronizedBoilerData.getHeatEnthalpy()));

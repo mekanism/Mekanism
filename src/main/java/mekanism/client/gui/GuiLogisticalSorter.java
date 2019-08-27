@@ -39,11 +39,31 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
 
     public GuiLogisticalSorter(LogisticalSorterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        // Add common Mekanism gui elements
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+
+        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
+        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              getOnHover("mekanism.gui.logisticalSorter.singleItem.tooltip")));
+        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
+              getOnHover("mekanism.gui.logisticalSorter.roundRobin.tooltip")));
+        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation(),
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              getOnHover("mekanism.gui.logisticalSorter.autoEject.tooltip")));
+        addButton(new ColorButton(guiLeft + 13, guiTop + 137, 16, 16, this, () -> tileEntity.color,
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
+                    GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
+              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, 1)))));
     }
 
     private boolean overUpArrow(double xAxis, double yAxis, int arrowX, int yStart) {
@@ -116,27 +136,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
     @Override
     protected ResourceLocation getGuiLocation() {
         return MekanismUtils.getResource(ResourceType.GUI, "logistical_sorter.png");
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        // Add buttons to gui
-        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
-        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
-              getOnHover("mekanism.gui.logisticalSorter.singleItem.tooltip")));
-        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
-              getOnHover("mekanism.gui.logisticalSorter.roundRobin.tooltip")));
-        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
-              getOnHover("mekanism.gui.logisticalSorter.autoEject.tooltip")));
-        addButton(new ColorButton(guiLeft + 13, guiTop + 137, 16, 16, this, () -> tileEntity.color,
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
-                    GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
-              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, 1)))));
     }
 
     @Override

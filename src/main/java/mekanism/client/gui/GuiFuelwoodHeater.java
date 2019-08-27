@@ -25,10 +25,15 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
 
     public GuiFuelwoodHeater(FuelwoodHeaterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiHeatInfo(() -> {
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));

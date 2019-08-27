@@ -11,6 +11,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
+//TODO: Figure out what the use of this is
 public class SecurityFrequency extends Frequency {
 
     public static final String SECURITY = "Security";

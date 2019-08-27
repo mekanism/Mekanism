@@ -35,8 +35,13 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     public GuiLaserAmplifier(LaserAmplifierContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
+        addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.energyIcon;
@@ -57,9 +62,21 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
                 return TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(level, tileEntity.getMaxEnergy()));
             }
         }, Type.STANDARD, this, resource, 6, 10));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiAmplifierTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiAmplifierTab(this, tileEntity, resource));
+
+        String prevTime = timerField != null ? timerField.getText() : "";
+        addButton(timerField = new TextFieldWidget(font, guiLeft + 96, guiTop + 28, 36, 11, prevTime));
+        timerField.setMaxStringLength(4);
+
+        String prevMin = minField != null ? minField.getText() : "";
+        addButton(minField = new TextFieldWidget(font, guiLeft + 96, guiTop + 43, 72, 11, prevMin));
+        minField.setMaxStringLength(10);
+
+        String prevMax = maxField != null ? maxField.getText() : "";
+        addButton(maxField = new TextFieldWidget(font, guiLeft + 96, guiTop + 58, 72, 11, prevMax));
+        maxField.setMaxStringLength(10);
     }
 
     @Override
@@ -159,21 +176,5 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             timerField.setText("");
         }
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        String prevTime = timerField != null ? timerField.getText() : "";
-        addButton(timerField = new TextFieldWidget(font, guiLeft + 96, guiTop + 28, 36, 11, prevTime));
-        timerField.setMaxStringLength(4);
-
-        String prevMin = minField != null ? minField.getText() : "";
-        addButton(minField = new TextFieldWidget(font, guiLeft + 96, guiTop + 43, 72, 11, prevMin));
-        minField.setMaxStringLength(10);
-
-        String prevMax = maxField != null ? maxField.getText() : "";
-        addButton(maxField = new TextFieldWidget(font, guiLeft + 96, guiTop + 58, 72, 11, prevMax));
-        maxField.setMaxStringLength(10);
     }
 }

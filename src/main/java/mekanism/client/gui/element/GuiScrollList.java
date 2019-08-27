@@ -12,25 +12,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiScrollList extends GuiElement {
 
-    private final int xPosition;
-    private final int yPosition;
-    private final int xSize;
-    private final int size;
-
     private List<String> textEntries = new ArrayList<>();
     private boolean isDragging;
     private double dragOffset = 0;
     private int selected = -1;
     private double scroll;
 
-    public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png"), gui, def);
-
-        xPosition = x;
-        yPosition = y;
-
-        xSize = sizeX;
-        size = sizeY;
+    public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int width, int height) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png"), gui, def, x, y, width, height);
     }
 
     public boolean hasSelection() {
@@ -57,64 +46,59 @@ public class GuiScrollList extends GuiElement {
 
         textEntries = text;
 
-        if (textEntries.size() <= size) {
+        if (textEntries.size() <= height) {
             scroll = 0;
         }
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + xPosition, guiHeight + yPosition, xSize, size * 10);
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        drawBlack(guiWidth, guiHeight);
-        drawSelected(guiWidth, guiHeight, selected);
+        drawBlack();
+        drawSelected(selected);
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
-    public void drawBlack(int guiWidth, int guiHeight) {
-        int xDisplays = xSize / 10 + (xSize % 10 > 0 ? 1 : 0);
+    public void drawBlack() {
+        int xDisplays = width / 10 + (width % 10 > 0 ? 1 : 0);
 
-        for (int yIter = 0; yIter < size; yIter++) {
+        for (int yIter = 0; yIter < height; yIter++) {
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
-                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (yIter * 10), 0, 0, width, 10);
+                int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
+                guiObj.drawTexturedRect(x + (xIter * 10), y + (yIter * 10), 0, 0, widthCalculated, 10);
             }
         }
     }
 
-    public void drawSelected(int guiWidth, int guiHeight, int index) {
+    public void drawSelected(int index) {
         int scroll = getScrollIndex();
 
-        if (selected != -1 && index >= scroll && index <= scroll + size - 1) {
-            int xDisplays = xSize / 10 + (xSize % 10 > 0 ? 1 : 0);
+        if (selected != -1 && index >= scroll && index <= scroll + height - 1) {
+            int xDisplays = width / 10 + (width % 10 > 0 ? 1 : 0);
 
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
-                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (index - scroll) * 10, 0, 10, width, 10);
+                int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
+                guiObj.drawTexturedRect(x + (xIter * 10), y + (index - scroll) * 10, 0, 10, widthCalculated, 10);
             }
         }
     }
 
     public void drawScroll() {
-        int xStart = xPosition + xSize - 6;
-        int yStart = yPosition;
+        int xStart = x + width - 6;
+        int yStart = y;
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < height; i++) {
             guiObj.drawTexturedRect(xStart, yStart + (i * 10), 10, 1, 6, 10);
         }
 
         guiObj.drawTexturedRect(xStart, yStart, 10, 0, 6, 1);
-        guiObj.drawTexturedRect(xStart, yStart + (size * 10) - 1, 10, 0, 6, 1);
+        guiObj.drawTexturedRect(xStart, yStart + (height * 10) - 1, 10, 0, 6, 1);
 
         guiObj.drawTexturedRect(xStart + 1, yStart + 1 + getScroll(), 16, 0, 4, 4);
     }
 
     public int getMaxScroll() {
-        return (size * 10) - 2;
+        return (height * 10) - 2;
     }
 
     public int getScroll() {
@@ -122,19 +106,20 @@ public class GuiScrollList extends GuiElement {
     }
 
     public int getScrollIndex() {
-        if (textEntries.size() <= size) {
+        if (textEntries.size() <= height) {
             return 0;
         }
-        return (int) ((textEntries.size() * scroll) - ((float) size / (float) textEntries.size()) * scroll);
+        return (int) ((textEntries.size() * scroll) - ((float) height / (float) textEntries.size()) * scroll);
     }
 
     @Override
-    public void renderForeground(int xAxis, int yAxis) {
+    public void renderToolTip(int mouseX, int mouseY) {
+        //TODO: Some of this should be in renderButton
         if (!textEntries.isEmpty()) {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < height; i++) {
                 int index = getScrollIndex() + i;
                 if (index <= textEntries.size() - 1) {
-                    renderScaledText(textEntries.get(index), xPosition + 1, yPosition + 1 + (10 * i), 0x00CD00, xSize - 6);
+                    renderScaledText(textEntries.get(index), x + 1, y + 1 + (10 * i), 0x00CD00, width - 6);
                 }
             }
         }
@@ -147,20 +132,20 @@ public class GuiScrollList extends GuiElement {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            int xStart = xPosition + xSize - 5;
+            int xStart = x + width - 5;
 
-            if (mouseX >= xStart && mouseX <= xStart + 4 && mouseY >= getScroll() + yPosition + 1 && mouseY <= getScroll() + 4 + yPosition + 1) {
-                if (textEntries.size() > size) {
-                    dragOffset = mouseY - (getScroll() + yPosition + 1);
+            if (mouseX >= xStart && mouseX <= xStart + 4 && mouseY >= getScroll() + y + 1 && mouseY <= getScroll() + 4 + y + 1) {
+                if (textEntries.size() > height) {
+                    dragOffset = mouseY - (getScroll() + y + 1);
                     isDragging = true;
                     return true;
                 }
-            } else if (mouseX >= xPosition && mouseX <= xPosition + xSize - 6 && mouseY >= yPosition && mouseY <= yPosition + size * 10) {
+            } else if (mouseX >= x && mouseX <= x + width - 6 && mouseY >= y && mouseY <= y + height * 10) {
                 int index = getScrollIndex();
                 clearSelection();
-                for (int i = 0; i < size; i++) {
+                for (int i = 0; i < height; i++) {
                     if (index + i <= textEntries.size() - 1) {
-                        if (mouseY >= (yPosition + i * 10) && mouseY <= (yPosition + i * 10 + 10)) {
+                        if (mouseY >= (y + i * 10) && mouseY <= (y + i * 10 + 10)) {
                             selected = index + i;
                             break;
                         }
@@ -177,7 +162,7 @@ public class GuiScrollList extends GuiElement {
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
-            scroll = Math.min(Math.max((mouseY - (yPosition + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
+            scroll = Math.min(Math.max((mouseY - (y + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
         }
         return true;
     }
@@ -195,12 +180,13 @@ public class GuiScrollList extends GuiElement {
     }
 
     @Override
-    public void mouseWheel(int x, int y, int delta) {
-        super.mouseWheel(x, y, delta);
-        if (x > xPosition && x < xPosition + xSize && y > yPosition && y < yPosition + size * 10) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height * 10) {
             // 120 = DirectInput factor for one notch. Linux/OSX LWGL scale accordingly
             scroll = Math.min(Math.max(scroll - (delta / 120F) * (1F / textEntries.size()), 0), 1);
             drawScroll();
+            return true;
         }
+        return false;
     }
 }

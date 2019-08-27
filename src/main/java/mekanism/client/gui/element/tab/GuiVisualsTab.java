@@ -3,6 +3,7 @@ package mekanism.client.gui.element.tab;
 import java.util.Arrays;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -15,24 +16,24 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiVisualsTab extends GuiTabElement<TileEntityDigitalMiner> {
+public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "visuals.png"), gui, def, tile, 6);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "visuals.png"), gui, def, tile, -26, 6, 26, 18);
     }
 
     @Override
-    public void displayForegroundTooltip(int xAxis, int yAxis) {
+    public void renderToolTip(int mouseX, int mouseY) {
         ITextComponent visualsComponent = TextComponentUtil.build(Translation.of("mekanism.gui.visuals"), ": ", BooleanStateDisplay.OnOff.of(tileEntity.clientRendering));
         if (tileEntity.getRadius() <= 64) {
-            displayTooltip(visualsComponent, xAxis, yAxis);
+            displayTooltip(visualsComponent, mouseX, mouseY);
         } else {
-            displayTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("mekanism.gui.visuals.toobig"))), xAxis, yAxis);
+            displayTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("mekanism.gui.visuals.toobig"))), mouseX, mouseY);
         }
     }
 
     @Override
-    public void buttonClicked() {
+    public void onClick(double mouseX, double mouseY) {
         tileEntity.clientRendering = !tileEntity.clientRendering;
     }
 }

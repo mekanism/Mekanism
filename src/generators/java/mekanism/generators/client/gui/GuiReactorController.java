@@ -26,16 +26,21 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
 
     public GuiReactorController(ReactorControllerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         if (tileEntity.isFormed()) {
             ResourceLocation resource = getGuiLocation();
-            addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
+            addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
                   TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
                   TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
                         EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
-            addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 79, 38));
-            addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
-            addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
-            addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
+            addButton(new GuiSlot(SlotType.NORMAL, this, resource, 79, 38));
+            addButton(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
+            addButton(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
+            addButton(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
         }
     }
 

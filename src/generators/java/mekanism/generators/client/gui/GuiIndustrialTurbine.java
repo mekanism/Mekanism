@@ -35,10 +35,15 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     public GuiIndustrialTurbine(TurbineContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 16));
-        addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));
+        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 16));
+        addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("mekanism.gui.steamInput"),
@@ -58,7 +63,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
                 return (double) tileEntity.structure.lastSteamInput / rate;
             }
         }, resource, 40, 13));
-        addGuiElement(new GuiEnergyInfo(() -> {
+        addButton(new GuiEnergyInfo(() -> {
             double producing = tileEntity.structure == null ? 0 : tileEntity.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                                   Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             return Arrays.asList(TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),

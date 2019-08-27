@@ -11,33 +11,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiBucketIO extends GuiElement {
 
     public GuiBucketIO(IGuiWrapper gui, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bucket.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bucket.png"), gui, def, 176, 66, 26, 57);
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + 176, guiHeight + 66, 26, 57);
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 66, 0, 0, 26, 57);
+        guiObj.drawTexturedRect(x, y, 0, 0, width, height);
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
-    @Override
-    public void renderForeground(int xAxis, int yAxis) {
-        minecraft.textureManager.bindTexture(RESOURCE);
-        minecraft.textureManager.bindTexture(defaultLocation);
-    }
-
-    @Override
-    protected boolean inBounds(double xAxis, double yAxis) {
-        return xAxis >= 180 && xAxis <= 196 && yAxis >= 71 && yAxis <= 87 || xAxis >= 180 && xAxis <= 196 && yAxis >= 102 && yAxis <= 118;
-    }
-
-    @Override
+    //TODO: Figure out what the point of the below was
+    /*@Override
     public void preMouseClicked(double mouseX, double mouseY, int button) {
         if (inBounds(mouseX, mouseY)) {
             offsetX(26);
@@ -51,5 +36,5 @@ public class GuiBucketIO extends GuiElement {
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
-    }
+    }*/
 }

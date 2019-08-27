@@ -64,8 +64,21 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         currentHand = container.getHand();
         itemStack = container.getStack();
         player = inv.player;
+        ySize = 175;
+        ItemPortableTeleporter item = (ItemPortableTeleporter) itemStack.getItem();
+        if (item.getFrequency(itemStack) != null) {
+            privateMode = !item.getFrequency(itemStack).publicFreq;
+            setFrequency(item.getFrequency(itemStack).name);
+        } else {
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
+        }
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
+        addButton(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();
@@ -76,20 +89,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return getEnergy() / getMaxEnergy();
             }
         }, resource, 158, 26));
-        addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
-        ItemPortableTeleporter item = (ItemPortableTeleporter) itemStack.getItem();
-        if (item.getFrequency(itemStack) != null) {
-            privateMode = !item.getFrequency(itemStack).publicFreq;
-            setFrequency(item.getFrequency(itemStack).name);
-        } else {
-            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
-        }
-        ySize = 175;
-    }
+        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 
-    @Override
-    public void init() {
-        super.init();
         addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
             privateMode = false;
             updateButtons();

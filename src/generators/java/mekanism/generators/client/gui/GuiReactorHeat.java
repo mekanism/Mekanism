@@ -34,12 +34,17 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
 
     public GuiReactorHeat(ReactorHeatContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
+        addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
               TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
-        addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
+        addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.getBaseFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
@@ -61,13 +66,13 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
                 return TextComponentUtil.build("Plasma: ", MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, Type.STANDARD, this, resource, 7, 50));
-        addGuiElement(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tileEntity.getPlasmaTemp() > tileEntity.getCaseTemp() ? 1 : 0;
             }
         }, ProgressBar.SMALL_RIGHT, this, resource, 27, 75));
-        addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
+        addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.getBaseFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
@@ -89,23 +94,23 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
                 return TextComponentUtil.build("Case: ", MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, Type.STANDARD, this, resource, 61, 50));
-        addGuiElement(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tileEntity.getCaseTemp() > 0 ? 1 : 0;
             }
         }, ProgressBar.SMALL_RIGHT, this, resource, 81, 60));
-        addGuiElement(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return (tileEntity.getCaseTemp() > 0 && tileEntity.waterTank.getFluidAmount() > 0 && tileEntity.steamTank.getFluidAmount() < tileEntity.steamTank.getCapacity()) ? 1 : 0;
             }
         }, ProgressBar.SMALL_RIGHT, this, resource, 81, 90));
-        addGuiElement(new GuiFluidGauge(() -> tileEntity.waterTank, Type.SMALL, this, resource, 115, 84));
-        addGuiElement(new GuiFluidGauge(() -> tileEntity.steamTank, Type.SMALL, this, resource, 151, 84));
-        addGuiElement(new GuiEnergyGauge(() -> tileEntity, Type.SMALL, this, resource, 115, 46));
-        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
-        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
+        addButton(new GuiFluidGauge(() -> tileEntity.waterTank, Type.SMALL, this, resource, 115, 84));
+        addButton(new GuiFluidGauge(() -> tileEntity.steamTank, Type.SMALL, this, resource, 151, 84));
+        addButton(new GuiEnergyGauge(() -> tileEntity, Type.SMALL, this, resource, 115, 46));
+        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
+        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
     }
 
     @Override

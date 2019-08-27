@@ -55,11 +55,20 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
 
     public GuiTeleporter(TeleporterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        if (tileEntity.frequency != null) {
+            privateMode = !tileEntity.frequency.publicFreq;
+        }
+        ySize += 64;
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();
@@ -70,17 +79,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
                 return getEnergy() / getMaxEnergy();
             }
         }, resource, 158, 26));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 152, 6).with(SlotOverlay.POWER));
-        addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
-        if (tileEntity.frequency != null) {
-            privateMode = !tileEntity.frequency.publicFreq;
-        }
-        ySize += 64;
-    }
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 152, 6).with(SlotOverlay.POWER));
+        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 
-    @Override
-    public void init() {
-        super.init();
         addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
             privateMode = false;
             updateButtons();

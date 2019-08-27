@@ -19,7 +19,12 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
         super(container, inv, title);
         xSize += 26;
         ySize += 64;
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, getGuiLocation()));
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        addButton(new GuiSecurityTab<>(this, tileEntity, getGuiLocation()));
     }
 
     @Override

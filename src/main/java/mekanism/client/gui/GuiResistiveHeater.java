@@ -39,25 +39,26 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     public GuiResistiveHeater(ResistiveHeaterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
-        addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 14, 34).with(SlotOverlay.POWER));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.energyUsage), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
-        ), this, resource));
-        addGuiElement(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
-            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
-            return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
-        }, this, resource));
     }
 
     @Override
     public void init() {
         super.init();
+        ResourceLocation resource = getGuiLocation();
+        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiSlot(SlotType.POWER, this, resource, 14, 34).with(SlotOverlay.POWER));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
+              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.energyUsage), "/t"),
+              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+        ), this, resource));
+        addButton(new GuiHeatInfo(() -> {
+            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
+            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
+            return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
+        }, this, resource));
+
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
         addButton(energyUsageField = new TextFieldWidget(font, guiLeft + 49, guiTop + 52, 66, 11, prevEnergyUsage));
         energyUsageField.setMaxStringLength(7);

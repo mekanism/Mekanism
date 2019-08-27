@@ -31,19 +31,24 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Ele
 
     public GuiElectricPump(ElectricPumpContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 50));
-        addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 142, 34).with(SlotOverlay.POWER));
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
-        addGuiElement(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 27, 50));
+        addButton(new GuiSlot(SlotType.POWER, this, resource, 142, 34).with(SlotOverlay.POWER));
+        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
               TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiUpgradeTab(this, tileEntity, resource));
     }
 
     @Override

@@ -28,9 +28,14 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
 
     public GuiThermoelectricBoiler(ThermoelectricBoilerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));
-        addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));
+        addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t");
@@ -41,7 +46,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
                 return tileEntity.structure == null ? 0 : (double) tileEntity.getLastBoilRate() / (double) tileEntity.structure.lastMaxBoil;
             }
         }, resource, 24, 13));
-        addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t");
@@ -53,7 +58,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
                                                           (tileEntity.structure.superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, resource, 144, 13));
-        addGuiElement(new GuiHeatInfo(() -> {
+        addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
             return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));

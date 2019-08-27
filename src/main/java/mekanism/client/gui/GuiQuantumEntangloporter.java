@@ -44,12 +44,6 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     public GuiQuantumEntangloporter(QuantumEntangloporterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ResourceLocation resource = getGuiLocation();
-        addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
-        addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
-        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
         if (tileEntity.frequency != null) {
             privateMode = !tileEntity.frequency.publicFreq;
         }
@@ -59,6 +53,13 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     @Override
     public void init() {
         super.init();
+        ResourceLocation resource = getGuiLocation();
+        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
+        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
+        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
+        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+
         addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
             privateMode = false;
             updateButtons();

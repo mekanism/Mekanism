@@ -45,13 +45,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
 
     public GuiSecurityDesk(SecurityDeskContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 4));
         ySize += 64;
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 4));
+
         addButton(removeButton = new TranslationButton(guiLeft + 13, guiTop + 81, 122, 20, "gui.remove", onPress -> {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {

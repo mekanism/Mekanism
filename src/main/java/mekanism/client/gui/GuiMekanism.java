@@ -2,14 +2,11 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.util.text.TextComponentUtil;
@@ -33,8 +30,6 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
 
-    private Set<GuiElement> guiElements = new HashSet<>();
-
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
@@ -44,17 +39,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                keyCode == GLFW.GLFW_KEY_HOME || Screen.isSelectAll(keyCode) || Screen.isCopy(keyCode) || Screen.isPaste(keyCode) || Screen.isCut(keyCode);
     }
 
-    public Set<GuiElement> getGuiElements() {
-        return guiElements;
-    }
-
     protected float getNeededScale(ITextComponent text, int maxX) {
         int length = getStringWidth(text);
         return length <= maxX ? 1 : (float) maxX / length;
-    }
-
-    protected void addGuiElement(GuiElement element) {
-        guiElements.add(element);
     }
 
     protected IHoverable getOnHover(String translationKey) {
@@ -129,18 +116,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         //TODO: Does color need to be reset before this
         for (Widget widget : this.buttons) {
             if (widget.isHovered()) {
+                //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
                 widget.renderToolTip(xAxis, yAxis);
-                //TODO: Evaluate this break statement
                 break;
             }
         }
-        //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
-        // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
-        // GL changes only get ran if it is not already the color we are assuming it is.
-        // This is called here as, all extenders of GuiMekanism that overwrite this method call super on it at the end of their
-        // implementation, and almost all have the color get changed at one point or another due to drawing text
-        MekanismRenderer.resetColor();
-        guiElements.forEach(element -> element.renderForeground(xAxis, yAxis));
     }
 
     protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
@@ -160,14 +140,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiLeft, guiTop));
     }
 
-    @Override
+    /*@Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         double xAxis = mouseX - guiLeft;
         double yAxis = mouseY - guiTop;
-        guiElements.forEach(element -> element.preMouseClicked(xAxis, yAxis, button));
         boolean returnValue = super.mouseClicked(mouseX, mouseY, button);
         for (GuiElement element : guiElements) {
             if (element.mouseClicked(xAxis, yAxis, button)) {
@@ -178,7 +156,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
         //TODO: Figure out all of this mouseClicked stuff when it should return true and when it should return false
         return returnValue;
-    }
+    }*/
 
     @Override
     public void drawTexturedRect(int x, int y, int u, int v, int w, int h) {
@@ -209,7 +187,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return font;
     }
 
-    @Override
+    /*@Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
         boolean returnValue = super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
@@ -233,7 +211,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         double yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.mouseReleased(xAxis, yAxis, type));
         return true;
-    }
+    }*/
 
     //TODO: Mouse scrolling
     /*@Override

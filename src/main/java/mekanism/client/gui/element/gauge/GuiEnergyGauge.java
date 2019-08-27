@@ -23,11 +23,6 @@ public class GuiEnergyGauge extends GuiGauge {
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
-    }
-
-    @Override
     public TransmissionType getTransmission() {
         return TransmissionType.ENERGY;
     }

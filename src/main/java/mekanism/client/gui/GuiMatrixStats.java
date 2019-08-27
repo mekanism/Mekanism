@@ -25,10 +25,15 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
 
     public GuiMatrixStats(MatrixStatsContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, resource));
-        addGuiElement(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.STANDARD, this, resource, 6, 13));
-        addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, resource));
+        addButton(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.STANDARD, this, resource, 6, 13));
+        addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("mekanism.gui.receiving"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t");
@@ -39,7 +44,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
                 return tileEntity.structure == null ? 0 : tileEntity.getLastInput() / tileEntity.structure.getTransferCap();
             }
         }, resource, 30, 13));
-        addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("mekanism.gui.outputting"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t");
@@ -50,7 +55,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
                 return tileEntity.structure == null ? 0 : tileEntity.getLastOutput() / tileEntity.structure.getTransferCap();
             }
         }, resource, 38, 13));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
               TextComponentUtil.build(Translation.of("mekanism.gui.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
               TextComponentUtil.build(Translation.of("mekanism.gui.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")),

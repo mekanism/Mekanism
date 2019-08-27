@@ -42,14 +42,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     public GuiSideConfiguration(SideConfigurationContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize = 95;
-        ResourceLocation resource = getGuiLocation();
-        for (TransmissionType type : getTile().getConfig().getTransmissions()) {
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource);
-            addGuiElement(tab);
-            configTabs.add(tab);
-        }
         currentType = getTopTransmission();
-        updateTabs();
         slotPosMap.put(0, new GuiPos(81, 64));
         slotPosMap.put(1, new GuiPos(81, 34));
         slotPosMap.put(2, new GuiPos(81, 49));
@@ -65,6 +58,14 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     @Override
     public void init() {
         super.init();
+        ResourceLocation resource = getGuiLocation();
+        for (TransmissionType type : getTile().getConfig().getTransmissions()) {
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource);
+            addButton(tab);
+            configTabs.add(tab);
+        }
+        updateTabs();
+
         addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
@@ -104,7 +105,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
             tab.setVisible(currentType != tab.getTransmissionType());
             if (tab.isVisible()) {
                 tab.setLeft(rendered >= 0 && rendered <= 2);
-                tab.setY(2 + ((rendered % 3) * (26 + 2)));
+                tab.setYOffset(2 + ((rendered % 3) * (26 + 2)));
             }
             rendered++;
         }

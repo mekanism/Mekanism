@@ -2,6 +2,7 @@ package mekanism.client;
 
 import java.util.Map;
 import java.util.function.Function;
+import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDictionary;
@@ -23,6 +24,7 @@ import mekanism.client.gui.GuiInductionMatrix;
 import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiLaserTractorBeam;
 import mekanism.client.gui.GuiLogisticalSorter;
+import mekanism.client.gui.GuiMatrixStats;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.GuiOsmiumCompressor;
@@ -246,6 +248,9 @@ public class ClientRegistration {
         ScreenManager.registerFactory(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
         ScreenManager.registerFactory(MekanismContainerTypes.SIDE_CONFIGURATION, GuiSideConfiguration::new);
         ScreenManager.registerFactory(MekanismContainerTypes.TRANSPORTER_CONFIGURATION, GuiTransporterConfig::new);
+
+        ScreenManager.registerFactory(MekanismContainerTypes.BOILER_STATS, GuiBoilerStats::new);
+        ScreenManager.registerFactory(MekanismContainerTypes.MATRIX_STATS, GuiMatrixStats::new);
     }
 
     @SubscribeEvent

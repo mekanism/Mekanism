@@ -11,50 +11,31 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiRateBar extends GuiElement {
 
-    private final int xLocation;
-    private final int yLocation;
-    private final int width = 8;
-    private final int height = 60;
     private final IRateInfoHandler handler;
 
     public GuiRateBar(IGuiWrapper gui, IRateInfoHandler h, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "rate_bar.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "rate_bar.png"), gui, def, x, y, 8, 60);
         handler = h;
-        xLocation = x;
-        yLocation = y;
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
-    }
-
-    @Override
-    protected boolean inBounds(double xAxis, double yAxis) {
-        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1;
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
+        guiObj.drawTexturedRect(x, y, 0, 0, width, height);
         if (handler.getLevel() > 0) {
             int displayInt = (int) (handler.getLevel() * 58);
-            guiObj.drawTexturedRect(guiWidth + xLocation + 1, guiHeight + yLocation + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt);
+            //TODO: Check this
+            guiObj.drawTexturedRect(x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
-    public void renderForeground(int xAxis, int yAxis) {
-        minecraft.textureManager.bindTexture(RESOURCE);
-        if (inBounds(xAxis, yAxis)) {
-            ITextComponent tooltip = handler.getTooltip();
-            if (tooltip != null) {
-                displayTooltip(tooltip, xAxis, yAxis);
-            }
+    public void renderToolTip(int mouseX, int mouseY) {
+        ITextComponent tooltip = handler.getTooltip();
+        if (tooltip != null) {
+            displayTooltip(tooltip, mouseX, mouseY);
         }
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     public static abstract class IRateInfoHandler {

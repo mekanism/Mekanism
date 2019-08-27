@@ -26,13 +26,18 @@ public class GuiReactorStats extends GuiReactorInfo<ReactorStatsContainer> {
 
     public GuiReactorStats(ReactorStatsContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
+        addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
               TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
-        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
-        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
+        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
+        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
     }
 
     @Override

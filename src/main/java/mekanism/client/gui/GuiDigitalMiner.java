@@ -44,13 +44,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
 
     public GuiDigitalMiner(DigitalMinerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        ySize += 64;
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 163, 23));
-        addGuiElement(new GuiVisualsTab(this, tileEntity, resource));
-        addGuiElement(new GuiEnergyInfo(() -> {
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiPowerBar(this, tileEntity, resource, 163, 23));
+        addButton(new GuiVisualsTab(this, tileEntity, resource));
+        addButton(new GuiEnergyInfo(() -> {
             double perTick = tileEntity.getPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
             ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.capacity"), ": ", EnergyDisplay.of(tileEntity.getMaxEnergy())));
@@ -61,14 +67,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
             ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.bufferfree"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));
             return ret;
         }, this, resource));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
-        ySize += 64;
-    }
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
 
-    @Override
-    public void init() {
-        super.init();
         addButton(startButton = new TranslationButton(guiLeft + 69, guiTop + 17, 60, 20, "gui.start",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
         addButton(stopButton = new TranslationButton(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",

@@ -24,9 +24,14 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     public GuiInductionMatrix(InductionMatrixContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+        addButton(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
               TextComponentUtil.build(Translation.of("mekanism.gui.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
               TextComponentUtil.build(Translation.of("mekanism.gui.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")

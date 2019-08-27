@@ -13,7 +13,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -87,8 +86,9 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void draw(RECIPE recipe, double mouseX, double mouseY) {
-        MekanismRenderer.bindTexture(guiLocation);
-        guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
+        //TODO: Replace the
+        //MekanismRenderer.bindTexture(guiLocation);
+        //guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }
 
     @Override

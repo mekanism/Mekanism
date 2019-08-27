@@ -28,17 +28,22 @@ public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, EnergyC
 
     public GuiEnergyCube(EnergyCubeContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
-        addGuiElement(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.WIDE, this, resource, 55, 18));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
+        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
+        addButton(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.WIDE, this, resource, 55, 18));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
               TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t")), this, resource));
-        addGuiElement(new GuiSlot(SlotType.INPUT, this, resource, 16, 34).with(SlotOverlay.MINUS));
-        addGuiElement(new GuiSlot(SlotType.OUTPUT, this, resource, 142, 34).with(SlotOverlay.PLUS));
+        addButton(new GuiSlot(SlotType.INPUT, this, resource, 16, 34).with(SlotOverlay.MINUS));
+        addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 142, 34).with(SlotOverlay.PLUS));
     }
 
     @Override

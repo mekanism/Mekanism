@@ -1,20 +1,19 @@
 package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import java.awt.Rectangle;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiElement {
+public abstract class GuiElement extends Widget {
     //TODO: Make this extend Widget?
 
     public static final Minecraft minecraft = Minecraft.getInstance();
@@ -23,7 +22,8 @@ public abstract class GuiElement {
     protected final IGuiWrapper guiObj;
     protected final ResourceLocation defaultLocation;
 
-    public GuiElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def) {
+    public GuiElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, int x, int y, int width, int height) {
+        super(gui.getLeft() + x, gui.getTop() + y, width, height, "");
         RESOURCE = resource;
         guiObj = gui;
         defaultLocation = def;
@@ -35,30 +35,6 @@ public abstract class GuiElement {
 
     public void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis) {
         guiObj.displayTooltips(list, xAxis, yAxis);
-    }
-
-    public void offsetX(int xSize) {
-        if (guiObj instanceof ContainerScreen) {
-            ((ContainerScreen) guiObj).xSize += xSize;
-        }
-    }
-
-    public void offsetY(int ySize) {
-        if (guiObj instanceof ContainerScreen) {
-            ((ContainerScreen) guiObj).ySize += ySize;
-        }
-    }
-
-    public void offsetLeft(int guiLeft) {
-        if (guiObj instanceof ContainerScreen) {
-            ((ContainerScreen) guiObj).guiLeft += guiLeft;
-        }
-    }
-
-    public void offsetTop(int guiTop) {
-        if (guiObj instanceof ContainerScreen) {
-            ((ContainerScreen) guiObj).guiTop += guiTop;
-        }
     }
 
     public int drawString(ITextComponent component, int x, int y, int color) {
@@ -97,55 +73,8 @@ public abstract class GuiElement {
         return guiObj.getFont();
     }
 
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        return true;
-    }
-
-    public boolean mouseReleased(double mouseX, double mouseY, int type) {
-        return true;
-    }
-
-    public void mouseWheel(int x, int y, int delta) {
-    }
-
-    public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
-
-    public abstract void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight);
-
-    public abstract void renderForeground(int xAxis, int yAxis);
-
-    public void preMouseClicked(double xAxis, double yAxis, int button) {
-    }
-
-    public boolean mouseClicked(double xAxis, double yAxis, int button) {
-        return false;
-    }
-
     public interface IInfoHandler {
 
         List<ITextComponent> getInfo();
-    }
-
-    public static class Rectangle4i {
-
-        public final int x;
-        public final int y;
-        public final int width;
-        public final int height;
-
-        public Rectangle4i(int x, int y, int width, int height) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
-
-        public Rectangle toRectangle() {
-            return new Rectangle(x, y, width, height);
-        }
-    }
-
-    protected boolean inBounds(double xAxis, double yAxis) {
-        return false;
     }
 }

@@ -32,28 +32,38 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
 
     public GuiReactorFuel(ReactorFuelContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
+        addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
               TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
-        addGuiElement(new GuiGasGauge(() -> tileEntity.deuteriumTank, Type.SMALL, this, resource, 25, 64));
-        addGuiElement(new GuiGasGauge(() -> tileEntity.fuelTank, Type.STANDARD, this, resource, 79, 50));
-        addGuiElement(new GuiGasGauge(() -> tileEntity.tritiumTank, Type.SMALL, this, resource, 133, 64));
-        addGuiElement(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiGasGauge(() -> tileEntity.deuteriumTank, Type.SMALL, this, resource, 25, 64));
+        addButton(new GuiGasGauge(() -> tileEntity.fuelTank, Type.STANDARD, this, resource, 79, 50));
+        addButton(new GuiGasGauge(() -> tileEntity.tritiumTank, Type.SMALL, this, resource, 133, 64));
+        addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_RIGHT, this, resource, 45, 75));
-        addGuiElement(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_LEFT, this, resource, 99, 75));
-        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
-        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
+        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
+        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
+
+        String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
+        addButton(injectionRateField = new TextFieldWidget(font, guiLeft + 98, guiTop + 115, 26, 11, ""));
+        injectionRateField.setMaxStringLength(2);
+        injectionRateField.setText(prevRad);
     }
 
     @Override
@@ -95,14 +105,5 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             injectionRateField.setText("");
         }
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
-        addButton(injectionRateField = new TextFieldWidget(font, guiLeft + 98, guiTop + 115, 26, 11, ""));
-        injectionRateField.setMaxStringLength(2);
-        injectionRateField.setText(prevRad);
     }
 }

@@ -12,37 +12,23 @@ public class GuiProgress extends GuiElement {
 
     private final IProgressInfoHandler handler;
     private final ProgressBar type;
-    private final int xLocation;
-    private final int yLocation;
 
     public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "progress.png"), gui, def);
-        xLocation = x;
-        yLocation = y;
-
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "progress.png"), gui, def, x, y, type.width, type.height);
         this.type = type;
         this.handler = handler;
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, type.width, type.height);
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
         if (handler.isActive()) {
-            guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
+            guiObj.drawTexturedRect(x, y, type.textureX, type.textureY, width, height);
             int innerOffsetX = 2;
-            int displayInt = (int) (handler.getProgress() * (type.width - 2 * innerOffsetX));
-            guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
+            int displayInt = (int) (handler.getProgress() * (width - 2 * innerOffsetX));
+            guiObj.drawTexturedRect(x + innerOffsetX, y, type.textureX + width + innerOffsetX, type.textureY, displayInt, height);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
-    }
-
-    @Override
-    public void renderForeground(int xAxis, int yAxis) {
     }
 
     public enum ProgressBar {

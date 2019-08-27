@@ -15,15 +15,11 @@ public class GuiPowerBar extends GuiElement {
 
     private final IStrictEnergyStorage tileEntity;
     private final IPowerInfoHandler handler;
-    private final int xLocation;
-    private final int yLocation;
-    private final int width = 6;
-    private final int height = 56;
 
+    //TODO: For this and elements like it we should not allow clicking them even if the on click does nothing (we don't want a click sound to be made)
     public GuiPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "power_bar.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "power_bar.png"), gui, def, x, y, 6, 56);
         tileEntity = tile;
-
         handler = new IPowerInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -35,51 +31,31 @@ public class GuiPowerBar extends GuiElement {
                 return tileEntity.getEnergy() / tileEntity.getMaxEnergy();
             }
         };
-
-        xLocation = x;
-        yLocation = y;
     }
 
     public GuiPowerBar(IGuiWrapper gui, IPowerInfoHandler h, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "power_bar.png"), gui, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "power_bar.png"), gui, def, x, y, 6, 56);
         tileEntity = null;
         handler = h;
-
-        xLocation = x;
-        yLocation = y;
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
-    }
-
-    @Override
-    protected boolean inBounds(double xAxis, double yAxis) {
-        return xAxis >= xLocation && xAxis <= xLocation + width && yAxis >= yLocation && yAxis <= yLocation + height;
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
+        guiObj.drawTexturedRect(x, y, 0, 0, width, height);
         if (handler.getLevel() > 0) {
             int displayInt = (int) (handler.getLevel() * 52) + 2;
-            guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6, height - displayInt, width, displayInt);
+            guiObj.drawTexturedRect(x, y + height - displayInt, 6, height - displayInt, width, displayInt);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
-    public void renderForeground(int xAxis, int yAxis) {
-        minecraft.textureManager.bindTexture(RESOURCE);
-        if (inBounds(xAxis, yAxis)) {
-            ITextComponent tooltip = handler.getTooltip();
-            if (tooltip != null) {
-                displayTooltip(tooltip, xAxis, yAxis);
-            }
+    public void renderToolTip(int mouseX, int mouseY) {
+        ITextComponent tooltip = handler.getTooltip();
+        if (tooltip != null) {
+            displayTooltip(tooltip, mouseX, mouseY);
         }
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     public static abstract class IPowerInfoHandler {

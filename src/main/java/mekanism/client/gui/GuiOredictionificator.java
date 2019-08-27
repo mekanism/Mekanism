@@ -43,18 +43,26 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     public GuiOredictionificator(OredictionificatorContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        ySize += 64;
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tileEntity.didProcess ? 1 : 0;
             }
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 118));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 25, 114));
-        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
-        ySize += 64;
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 114));
+        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
+
+        addButton(new TranslationButton(guiLeft + 10, guiTop + 86, 142, 20, "gui.newFilter",
+              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
     }
 
     private boolean overFilter(double xAxis, double yAxis, int yStart) {
@@ -68,13 +76,6 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     private int getFilterIndex() {
         int size = tileEntity.getFilters().size();
         return size <= 3 ? 0 : (int) (size * scroll - (3F / (float) size) * scroll);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        addButton(new TranslationButton(guiLeft + 10, guiTop + 86, 142, 20, "gui.newFilter",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
     }
 
     @Override

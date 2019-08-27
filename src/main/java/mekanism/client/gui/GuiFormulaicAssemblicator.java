@@ -46,24 +46,25 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
 
     public GuiFormulaicAssemblicator(FormulaicAssemblicatorContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 159, 15));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
-        ), this, resource));
-        addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
         ySize += 64;
     }
 
     @Override
     public void init() {
         super.init();
+        ResourceLocation resource = getGuiLocation();
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
+        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
+        addButton(new GuiPowerBar(this, tileEntity, resource, 159, 15));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
+              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+        ), this, resource));
+        addButton(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
+
         addButton(encodeFormulaButton = new DisableableImageButton(guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
               getOnHover("mekanism.gui.encodeFormula")));

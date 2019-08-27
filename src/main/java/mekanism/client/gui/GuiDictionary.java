@@ -24,11 +24,16 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     public ItemStack itemType = ItemStack.EMPTY;
 
-    private final GuiScrollList scrollList;
+    private GuiScrollList scrollList;
 
     public GuiDictionary(DictionaryContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        addButton(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
     }
 
     @Override

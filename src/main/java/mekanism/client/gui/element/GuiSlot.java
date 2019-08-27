@@ -10,24 +10,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiSlot extends GuiElement {
 
-    private final int xLocation;
-    private final int yLocation;
     private final int textureX;
     private final int textureY;
 
     private SlotOverlay overlay = null;
-    private final int width;
-    private final int height;
 
     public GuiSlot(SlotType type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"), gui, def);
-
-        xLocation = x;
-        yLocation = y;
-
-        width = type.width;
-        height = type.height;
-
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"), gui, def, x, y, type.width, type.height);
         textureX = type.textureX;
         textureY = type.textureY;
     }
@@ -38,26 +27,13 @@ public class GuiSlot extends GuiElement {
     }
 
     @Override
-    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
-        return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
-    }
-
-    @Override
-    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, textureX, textureY, width, height);
+        guiObj.drawTexturedRect(x, y, textureX, textureY, width, height);
         if (overlay != null) {
-            int w = overlay.width;
-            int h = overlay.height;
-            int xLocationOverlay = xLocation + (width - w) / 2;
-            int yLocationOverlay = yLocation + (height - h) / 2;
-            guiObj.drawTexturedRect(guiWidth + xLocationOverlay, guiHeight + yLocationOverlay, overlay.textureX, overlay.textureY, w, h);
+            guiObj.drawTexturedRect(x + (width - overlay.width) / 2, y + (height - overlay.height) / 2, overlay.textureX, overlay.textureY, overlay.width, overlay.height);
         }
         minecraft.textureManager.bindTexture(defaultLocation);
-    }
-
-    @Override
-    public void renderForeground(int xAxis, int yAxis) {
     }
 
     public enum SlotType {

@@ -43,15 +43,20 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
     public GuiFactory(FactoryContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 11;
+    }
+
+    @Override
+    public void init() {
+        super.init();
         ResourceLocation resource = tileEntity.tier.guiLocation;
-        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
-        addGuiElement(new GuiSecurityTab<>(this, tileEntity, resource));
-        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
-        addGuiElement(new GuiRecipeType(this, tileEntity, resource));
-        addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
-        addGuiElement(new GuiSortingTab(this, tileEntity, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
+        addButton(new GuiRedstoneControl(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiRecipeType(this, tileEntity, resource));
+        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
+        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
+        addButton(new GuiSortingTab(this, tileEntity, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.lastUsage), "/t"),
               TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
@@ -131,8 +136,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
             if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-                    TileNetworkList data = TileNetworkList.withContents(1);
-                    Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                    Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)));
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 }
             }
