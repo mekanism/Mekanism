@@ -543,7 +543,7 @@ public final class MekanismUtils {
      * @return if the block is a fluid
      */
     public static boolean isFluid(World world, Coord4D pos) {
-        return getFluid(world, pos, false) != null;
+        return !getFluid(world, pos, false).isEmpty();
     }
 
     /**
@@ -554,6 +554,7 @@ public final class MekanismUtils {
      *
      * @return the fluid at the certain location, null if it doesn't exist
      */
+    @Nonnull
     public static FluidStack getFluid(World world, Coord4D pos, boolean filter) {
         BlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
@@ -570,7 +571,7 @@ public final class MekanismUtils {
                 return fluid.drain(world, pos.getPos(), FluidAction.SIMULATE);
             }
         }
-        return null;
+        return FluidStack.EMPTY;
     }
 
     /**

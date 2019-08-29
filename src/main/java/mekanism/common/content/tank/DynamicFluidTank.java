@@ -13,8 +13,8 @@ public class DynamicFluidTank extends MultiblockFluidTank<TileEntityDynamicTank>
         super(tileEntity);
     }
 
-    @Override
     @Nonnull
+    @Override
     public FluidStack getFluid() {
         return multiblock.structure != null ? multiblock.structure.fluidStored : FluidStack.EMPTY;
     }
@@ -32,7 +32,7 @@ public class DynamicFluidTank extends MultiblockFluidTank<TileEntityDynamicTank>
     }
 
     @Override
-    public boolean isFluidValid(FluidStack stack) {
+    public boolean isFluidValid(@Nonnull FluidStack stack) {
         if (multiblock.structure == null) {
             return false;
         }

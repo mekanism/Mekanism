@@ -3,6 +3,7 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -19,7 +20,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -42,17 +42,14 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         float targetScale;
-        Fluid fluid;
         FluidStack fluidStack;
         if (pipe.getTransmitter().hasTransmitterNetwork()) {
             FluidNetwork network = pipe.getTransmitter().getTransmitterNetwork();
             targetScale = network.fluidScale;
-            fluid = network.refFluid;
             fluidStack = network.buffer;
         } else {
             targetScale = (float) pipe.buffer.getFluidAmount() / (float) pipe.buffer.getCapacity();
             fluidStack = pipe.getBuffer();
-            fluid = fluidStack == null ? null : fluidStack.getFluid();
         }
 
         if (Math.abs(pipe.currentScale - targetScale) > 0.01) {
@@ -62,23 +59,17 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         float scale = Math.min(pipe.currentScale, 1);
-        if (scale > 0.01 && fluid != null) {
+        if (scale > 0.01 && !fluidStack.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
             GlStateManager.disableLighting();
-            GlowInfo glowInfo;
-            if (fluidStack != null) {
-                glowInfo = MekanismRenderer.enableGlow(fluidStack);
-                MekanismRenderer.color(fluidStack);
-            } else {
-                glowInfo = MekanismRenderer.enableGlow(fluid);
-                MekanismRenderer.color(fluid);
-            }
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluidStack);
+            MekanismRenderer.color(fluidStack);
 
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translatef((float) x, (float) y, (float) z);
 
-            boolean gas = fluidStack == null ? fluid.getAttributes().isGaseous() : fluid.getAttributes().isGaseous(fluidStack);
+            boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
             for (Direction side : Direction.values()) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
@@ -113,8 +104,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
     }
 
-    private DisplayInteger[] getListAndRender(Direction side, FluidStack fluid) {
-        if (fluid == null) {
+    private DisplayInteger[] getListAndRender(Direction side, @Nonnull FluidStack fluid) {
+        if (fluid.isEmpty()) {
             return null;
         }
 
@@ -223,13 +214,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null) {
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
-            TextureAtlasSprite tex;
-            if (fn.buffer != null) {
-                tex = MekanismRenderer.getFluidTexture(fn.buffer, FluidType.STILL);
-            } else {
-                tex = MekanismRenderer.getBaseFluidTexture(fn.refFluid, FluidType.STILL);
-            }
-            int color = fn.buffer != null ? fn.buffer.getFluid().getAttributes().getColor(fn.buffer) : fn.refFluid.getAttributes().getColor();
+            TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(fn.buffer, FluidType.STILL);
+            int color =  fn.buffer.getFluid().getAttributes().getColor(fn.buffer);
             ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale);
             if (color != 0xFFFFFFFF) {
                 c.setRGBFromInt(color);

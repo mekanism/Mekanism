@@ -1,5 +1,6 @@
 package mekanism.common.recipe.outputs;
 
+import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -7,9 +8,10 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FluidOutput extends MachineOutput<FluidOutput> {
 
-    public FluidStack output;
+    @Nonnull
+    public FluidStack output = FluidStack.EMPTY;
 
-    public FluidOutput(FluidStack stack) {
+    public FluidOutput(@Nonnull FluidStack stack) {
         output = stack;
     }
 

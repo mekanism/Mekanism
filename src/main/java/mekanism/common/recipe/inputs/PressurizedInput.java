@@ -1,5 +1,6 @@
 package mekanism.common.recipe.inputs;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.util.StackUtils;
@@ -16,10 +17,11 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class PressurizedInput extends MachineInput<PressurizedInput> {
 
     private ItemStack theSolid = ItemStack.EMPTY;
-    private FluidStack theFluid;
+    @Nonnull
+    private FluidStack theFluid = FluidStack.EMPTY;
     private GasStack theGas;
 
-    public PressurizedInput(ItemStack solid, FluidStack fluid, GasStack gas) {
+    public PressurizedInput(ItemStack solid, @Nonnull FluidStack fluid, GasStack gas) {
         theSolid = solid;
         theFluid = fluid;
         theGas = gas;
@@ -40,7 +42,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
      */
     @Override
     public boolean isValid() {
-        return !theSolid.isEmpty() && theFluid != null && theGas != null;
+        return !theSolid.isEmpty() && !theFluid.isEmpty() && theGas != null;
     }
 
     public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete) {
@@ -76,8 +78,8 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
      *
      * @return if the stack's fluid type is contained in this PressurizedReactants
      */
-    public boolean containsType(FluidStack stack) {
-        if (stack == null || stack.getAmount() == 0) {
+    public boolean containsType(@Nonnull FluidStack stack) {
+        if (stack.isEmpty()) {
             return false;
         }
         return stack.isFluidEqual(theFluid);
@@ -123,6 +125,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         return theSolid;
     }
 
+    @Nonnull
     public FluidStack getFluid() {
         return theFluid;
     }
@@ -134,7 +137,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
     @Override
     public int hashIngredients() {
         //TODO
-        return StackUtils.hashItemStack(theSolid) << 16 | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
+        return StackUtils.hashItemStack(theSolid) << 16 | theFluid.getFluid().hashCode() << 8 | theGas.hashCode();
     }
 
     @Override

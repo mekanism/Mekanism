@@ -57,10 +57,10 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Ele
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         drawString(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         FluidStack fluidStack = tileEntity.fluidTank.getFluid();
-        if (fluidStack != null) {
-            renderScaledText(TextComponentUtil.build(fluidStack, ": " + fluidStack.getAmount()), 51, 35, 0x00CD00, 74);
-        } else {
+        if (fluidStack.isEmpty()) {
             renderScaledText(TextComponentUtil.translate("mekanism.gui.noFluid"), 51, 35, 0x00CD00, 74);
+        } else {
+            renderScaledText(TextComponentUtil.build(fluidStack, ": " + fluidStack.getAmount()), 51, 35, 0x00CD00, 74);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

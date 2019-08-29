@@ -100,7 +100,7 @@ public abstract class BlockTileDrops extends Block {
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
             FluidStack fluidStack = ((ISustainedTank) tile).getFluidStack();
-            if (fluidStack != null) {
+            if (!fluidStack.isEmpty()) {
                 ISustainedTank sustainedTank = (ISustainedTank) item;
                 if (sustainedTank.hasTank(itemStack)) {
                     sustainedTank.setFluidStack(fluidStack, itemStack);
@@ -124,7 +124,7 @@ public abstract class BlockTileDrops extends Block {
      * @see FlowerPotBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
      */
     @Override
-    public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, ItemStack stack) {
+    public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.removeBlock(pos, false);
     }
@@ -282,7 +282,7 @@ public abstract class BlockTileDrops extends Block {
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank && ((ISustainedTank) item).hasTank(stack)) {
             FluidStack fluid = ((ISustainedTank) item).getFluidStack(stack);
-            if (fluid != null) {
+            if (!fluid.isEmpty()) {
                 ((ISustainedTank) tile).setFluidStack(fluid);
             }
         }

@@ -2,7 +2,7 @@ package mekanism.generators.common.content.turbine;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
@@ -13,11 +13,11 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Map<String, Float> clientRotationMap = new HashMap<>();
 
-    @Nullable
-    public FluidStack fluidStored;
+    @Nonnull
+    public FluidStack fluidStored = FluidStack.EMPTY;
 
-    @Nullable
-    public FluidStack prevFluid;
+    @Nonnull
+    public FluidStack prevFluid = FluidStack.EMPTY;
 
     public double electricityStored;
 
@@ -54,10 +54,10 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     }
 
     public boolean needsRenderUpdate() {
-        if ((fluidStored == null && prevFluid != null) || (fluidStored != null && prevFluid == null)) {
+        if ((fluidStored.isEmpty() && !prevFluid.isEmpty()) || (!fluidStored.isEmpty() && prevFluid.isEmpty())) {
             return true;
         }
-        if (fluidStored != null) {
+        if (!fluidStored.isEmpty()) {
             return (fluidStored.getFluid() != prevFluid.getFluid()) || (fluidStored.getAmount() != prevFluid.getAmount());
         }
         return false;

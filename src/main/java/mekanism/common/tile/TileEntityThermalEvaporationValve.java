@@ -56,11 +56,11 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         return controller == null ? 0 : controller.inputTank.fill(resource, fluidAction);
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller == null ? null : controller.outputTank.drain(maxDrain, fluidAction);
+        return controller == null ? FluidStack.EMPTY : controller.outputTank.drain(maxDrain, fluidAction);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
         return controller != null && controller.outputTank.getFluidAmount() > 0 && FluidContainerUtils.canDrain(controller.outputTank.getFluid(), fluid);
     }

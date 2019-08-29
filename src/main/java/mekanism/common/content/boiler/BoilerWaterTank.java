@@ -11,8 +11,8 @@ public class BoilerWaterTank extends BoilerTank {
         super(tileEntity);
     }
 
-    @Override
     @Nonnull
+    @Override
     public FluidStack getFluid() {
         return multiblock.structure != null ? multiblock.structure.waterStored : FluidStack.EMPTY;
     }
@@ -30,7 +30,7 @@ public class BoilerWaterTank extends BoilerTank {
     }
 
     @Override
-    public boolean isFluidValid(FluidStack stack) {
+    public boolean isFluidValid(@Nonnull FluidStack stack) {
         return stack.getFluid().getTags().contains(FluidTags.WATER.getId());
     }
 }

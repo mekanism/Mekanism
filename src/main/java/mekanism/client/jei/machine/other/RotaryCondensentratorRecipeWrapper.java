@@ -18,6 +18,7 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
 
     public static final int GAS_AMOUNT = 1;
     public static final int FLUID_AMOUNT = 1;
+    @Nonnull
     private Fluid fluidType;
     private Gas gasType;
     private boolean condensentrating;
@@ -54,6 +55,7 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
         return gasType;
     }
 
+    @Nonnull
     public Fluid getFluidType() {
         return fluidType;
     }

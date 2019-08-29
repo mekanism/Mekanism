@@ -58,8 +58,8 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
         return fluidTank.fill(resource, fluidAction);
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         return fluidTank.drain(maxDrain, fluidAction);
     }
@@ -70,7 +70,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidStored, fluid);
     }
 

@@ -3,6 +3,7 @@ package mekanism.client.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -186,7 +187,8 @@ public final class FluidRenderer {
         public int length;
         public int width;
 
-        public FluidStack fluidType;
+        @Nonnull
+        public FluidStack fluidType = FluidStack.EMPTY;
 
         @Override
         public int hashCode() {

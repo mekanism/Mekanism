@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.config.MekanismConfig;
@@ -23,11 +24,14 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
     public static double BASE_BOIL_TEMP = 100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset);
 
-    public FluidStack waterStored;
-    public FluidStack prevWater;
-
-    public FluidStack steamStored;
-    public FluidStack prevSteam;
+    @Nonnull
+    public FluidStack waterStored = FluidStack.EMPTY;
+    @Nonnull
+    public FluidStack prevWater = FluidStack.EMPTY;
+    @Nonnull
+    public FluidStack steamStored = FluidStack.EMPTY;
+    @Nonnull
+    public FluidStack prevSteam = FluidStack.EMPTY;
 
     public double lastEnvironmentLoss;
     public int lastBoilRate;
@@ -66,18 +70,18 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     }
 
     public boolean needsRenderUpdate() {
-        if ((waterStored == null && prevWater != null) || (waterStored != null && prevWater == null)) {
+        if ((waterStored.isEmpty() && !prevWater.isEmpty()) || (!waterStored.isEmpty() && prevWater.isEmpty())) {
             return true;
         }
-        if (waterStored != null) {
+        if (!waterStored.isEmpty()) {
             if ((waterStored.getFluid() != prevWater.getFluid()) || (waterStored.getAmount() != prevWater.getAmount())) {
                 return true;
             }
         }
-        if ((steamStored == null && prevSteam != null) || (steamStored != null && prevSteam == null)) {
+        if ((steamStored.isEmpty() && !prevSteam.isEmpty()) || (!steamStored.isEmpty() && prevSteam.isEmpty())) {
             return true;
         }
-        if (steamStored != null) {
+        if (!steamStored.isEmpty()) {
             return (steamStored.getFluid() != prevSteam.getFluid()) || (steamStored.getAmount() != prevSteam.getAmount());
         }
         return false;

@@ -48,9 +48,9 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache, MultiblockCache<SynchronizedTankData> merge) {
         TankCache tankCache = (TankCache) cache;
         TankCache mergeCache = (TankCache) merge;
-        if (tankCache.fluid == null) {
+        if (tankCache.fluid.isEmpty()) {
             tankCache.fluid = mergeCache.fluid;
-        } else if (mergeCache.fluid != null && tankCache.fluid.isFluidEqual(mergeCache.fluid)) {
+        } else if (!mergeCache.fluid.isEmpty() && tankCache.fluid.isFluidEqual(mergeCache.fluid)) {
             tankCache.fluid.setAmount(tankCache.fluid.getAmount() + mergeCache.fluid.getAmount());
         }
         tankCache.editMode = mergeCache.editMode;
@@ -64,7 +64,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     @Override
     protected void onFormed() {
         super.onFormed();
-        if (structureFound.fluidStored != null) {
+        if (!structureFound.fluidStored.isEmpty()) {
             structureFound.fluidStored.setAmount(Math.min(structureFound.fluidStored.getAmount(), structureFound.volume * FLUID_PER_TANK));
         }
     }

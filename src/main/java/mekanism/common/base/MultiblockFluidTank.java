@@ -1,7 +1,6 @@
 package mekanism.common.base;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,9 +20,9 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
     protected abstract void updateValveData();
 
     @Override
-    public int fill(@Nullable FluidStack resource, FluidAction fluidAction) {
+    public int fill(@Nonnull FluidStack resource, FluidAction fluidAction) {
         if (multiblock.structure != null && !multiblock.getWorld().isRemote) {
-            if (resource == null) {
+            if (resource.isEmpty()) {
                 return 0;
             }
             FluidStack fluidStack = getFluid();
@@ -88,7 +87,7 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
 
     @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, FluidAction fluidAction) {
+    public FluidStack drain(@Nonnull FluidStack resource, FluidAction fluidAction) {
         if (multiblock.structure != null && !multiblock.getWorld().isRemote) {
             FluidStack fluidStack = getFluid();
             if (fluidStack.isEmpty()) {

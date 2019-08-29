@@ -315,7 +315,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (inputFluidTank.getFluid() != null) {
+        if (!inputFluidTank.getFluid().isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputFluidTank", inputFluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (inputGasTank.getGas() != null) {

@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import javax.annotation.Nonnull;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -15,7 +16,7 @@ public interface ISustainedTank {
      * @param fluidStack - Fluidstack to apply to
      * @param data       - ItemStack parameter if using on item
      */
-    void setFluidStack(FluidStack fluidStack, Object... data);
+    void setFluidStack(@Nonnull FluidStack fluidStack, Object... data);
 
     /**
      * Gets the tank tag list from an item or block.
@@ -24,6 +25,7 @@ public interface ISustainedTank {
      *
      * @return inventory tag list
      */
+    @Nonnull
     FluidStack getFluidStack(Object... data);
 
     /**

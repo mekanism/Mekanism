@@ -200,7 +200,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         } catch (Exception e) {
             return false;
         }
-        if (!recipe.isPresent()) {
+        if (recipe.isPresent()) {
             if (!world.isRemote) {
                 BlockState state = block.getBlockState(world);
                 ItemStack result = recipe.get().getRecipeOutput();

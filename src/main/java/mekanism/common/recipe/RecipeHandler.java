@@ -183,7 +183,7 @@ public final class RecipeHandler {
      * @param leftOutput  - left gas to produce when the fluid is electrolyzed
      * @param rightOutput - right gas to produce when the fluid is electrolyzed
      */
-    public static void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
+    public static void addElectrolyticSeparatorRecipe(@Nonnull FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
         addRecipe(Recipe.ELECTROLYTIC_SEPARATOR, new SeparatorRecipe(fluid, energy, leftOutput, rightOutput));
     }
 
@@ -250,11 +250,11 @@ public final class RecipeHandler {
      * @param extraEnergy - extra energy needed by the recipe
      * @param ticks       - amount of ticks it takes for this recipe to complete
      */
-    public static void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
+    public static void addPRCRecipe(ItemStack inputSolid, @Nonnull FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
         addRecipe(Recipe.PRESSURIZED_REACTION_CHAMBER, new PressurizedRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks));
     }
 
-    public static void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid) {
+    public static void addThermalEvaporationRecipe(@Nonnull FluidStack inputFluid, @Nonnull FluidStack outputFluid) {
         addRecipe(Recipe.THERMAL_EVAPORATION_PLANT, new ThermalEvaporationRecipe(inputFluid, outputFluid));
     }
 
@@ -580,8 +580,8 @@ public final class RecipeHandler {
             return false;
         }
 
-        public boolean containsRecipe(Fluid input) {
-            //TODO: Support other input types
+        public boolean containsRecipe(@Nonnull Fluid input) {
+            //TODO: Support other input types, also check tags
             for (Entry<INPUT, RECIPE> entry : recipes.entrySet()) {
                 if (entry.getKey() instanceof FluidInput) {
                     if (((FluidInput) entry.getKey()).ingredient.getFluid() == input) {

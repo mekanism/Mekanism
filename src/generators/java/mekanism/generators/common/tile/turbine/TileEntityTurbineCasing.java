@@ -29,6 +29,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -48,16 +49,11 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
         if (!world.isRemote) {
             if (structure != null) {
-                if (structure.fluidStored != null && structure.fluidStored.getAmount() <= 0) {
-                    structure.fluidStored = null;
-                    markDirty();
-                }
-
                 if (isRendering) {
                     structure.lastSteamInput = structure.newSteamInput;
                     structure.newSteamInput = 0;
 
-                    int stored = structure.fluidStored != null ? structure.fluidStored.getAmount() : 0;
+                    int stored = structure.fluidStored.getAmount();
                     double proportion = (double) stored / (double) structure.getFluidCapacity();
                     double flowRate = 0;
 
@@ -77,7 +73,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                         structure.clientFlow = (int) rate;
                         structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
                         if (structure.fluidStored.getAmount() == 0) {
-                            structure.fluidStored = null;
+                            structure.fluidStored = FluidStack.EMPTY;
                         }
                     } else {
                         structure.clientFlow = 0;
@@ -87,7 +83,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                         structure.fluidStored.setAmount(structure.fluidStored.getAmount() - Math.min(structure.fluidStored.getAmount(),
                               Math.max(structure.fluidStored.getAmount() / 50, structure.lastSteamInput * 2)));
                         if (structure.fluidStored.getAmount() == 0) {
-                            structure.fluidStored = null;
+                            structure.fluidStored = FluidStack.EMPTY;
                         }
                     }
 
@@ -102,7 +98,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                     if (structure.needsRenderUpdate() || needsRotationUpdate) {
                         sendPacketToRenderer();
                     }
-                    structure.prevFluid = structure.fluidStored != null ? structure.fluidStored.copy() : null;
+                    structure.prevFluid = structure.fluidStored.isEmpty() ? FluidStack.EMPTY : structure.fluidStored.copy();
                 }
             }
         }
@@ -137,7 +133,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     }
 
     public int getScaledFluidLevel(long i) {
-        if (structure == null || structure.getFluidCapacity() == 0 || structure.fluidStored == null) {
+        if (structure == null || structure.getFluidCapacity() == 0 || structure.fluidStored.isEmpty()) {
             return 0;
         }
         return (int) (structure.fluidStored.getAmount() * i / structure.getFluidCapacity());

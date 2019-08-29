@@ -81,7 +81,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 }
 
                 if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
-                    (fluidTank.getFluid() == null || (fluidTank.getFluid().getAmount() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
+                    (fluidTank.getFluid().isEmpty() || (fluidTank.getFluid().getAmount() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
@@ -140,16 +140,16 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     }
 
-    public boolean gasEquals(GasStack gas, FluidStack fluid) {
-        return fluid != null && gas != null && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
+    public boolean gasEquals(GasStack gas, @Nonnull FluidStack fluid) {
+        return !fluid.isEmpty() && gas != null && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
     }
 
     public boolean isValidFluid(@Nonnull Fluid f) {
         return GasRegistry.getGas(f) != null;
     }
 
-    public boolean isValidFluid(FluidStack f) {
-        return f != null && isValidFluid(f.getFluid());
+    public boolean isValidFluid(@Nonnull FluidStack f) {
+        return isValidFluid(f.getFluid());
     }
 
     @Override
@@ -200,7 +200,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         super.write(nbtTags);
         nbtTags.putInt("mode", mode);
         nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
@@ -257,7 +257,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (gasTank.getGas() != null) {
@@ -276,19 +276,19 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         return fluidTank.fill(resource, fluidAction);
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         return fluidTank.drain(maxDrain, fluidAction);
     }
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return mode == 1 && from == getLeftSide() && (fluidTank.getFluid() == null ? isValidFluid(fluid) : fluidTank.getFluid().isFluidEqual(fluid));
+        return mode == 1 && from == getLeftSide() && (fluidTank.getFluid().isEmpty() ? isValidFluid(fluid) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         return mode == 0 && from == getRightSide() && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 

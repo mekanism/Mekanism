@@ -1,5 +1,6 @@
 package mekanism.common.recipe.machines;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.PressurizedInput;
@@ -16,7 +17,7 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
 
     public int ticks;
 
-    public PressurizedRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double energy, int duration) {
+    public PressurizedRecipe(ItemStack inputSolid, @Nonnull FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double energy, int duration) {
         this(new PressurizedInput(inputSolid, inputFluid, inputGas), new PressurizedOutput(outputSolid, outputGas), energy, duration);
     }
 

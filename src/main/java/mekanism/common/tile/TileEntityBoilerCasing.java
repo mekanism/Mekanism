@@ -63,7 +63,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         super.onUpdate();
         if (world.isRemote) {
             if (structure != null && clientHasStructure && isRendering) {
-                float targetScale = (float) (structure.waterStored != null ? structure.waterStored.getAmount() : 0) / clientWaterCapacity;
+                float targetScale = (float) structure.waterStored.getAmount() / clientWaterCapacity;
                 if (Math.abs(prevWaterScale - targetScale) > 0.01) {
                     prevWaterScale = (9 * prevWaterScale + targetScale) / 10;
                 }
@@ -81,14 +81,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
         if (!world.isRemote) {
             if (structure != null) {
-                if (structure.waterStored != null && structure.waterStored.getAmount() <= 0) {
-                    structure.waterStored = null;
-                    markDirty();
-                }
-                if (structure.steamStored != null && structure.steamStored.getAmount() <= 0) {
-                    structure.steamStored = null;
-                    markDirty();
-                }
                 if (isRendering) {
                     boolean needsValveUpdate = false;
                     for (ValveData data : structure.valves) {
@@ -111,8 +103,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     double[] d = structure.simulateHeat();
                     structure.applyTemperatureChange();
                     structure.lastEnvironmentLoss = d[1];
-                    if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && structure.waterStored != null) {
-                        int steamAmount = structure.steamStored != null ? structure.steamStored.getAmount() : 0;
+                    if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterStored.isEmpty()) {
+                        int steamAmount = structure.steamStored.getAmount();
                         double heatAvailable = structure.getHeatAvailable();
 
                         structure.lastMaxBoil = (int) Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
@@ -120,7 +112,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                         int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterStored.getAmount());
                         amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
                         structure.waterStored.setAmount(structure.waterStored.getAmount() - amountToBoil);
-                        if (structure.steamStored == null) {
+                        if (structure.steamStored.isEmpty()) {
                             structure.steamStored = new FluidStack(MekanismFluids.STEAM.getFluid(), amountToBoil);
                         } else {
                             structure.steamStored.setAmount(structure.steamStored.getAmount() + amountToBoil);
@@ -135,8 +127,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     if (needsValveUpdate || structure.needsRenderUpdate() || needsHotUpdate) {
                         sendPacketToRenderer();
                     }
-                    structure.prevWater = structure.waterStored != null ? structure.waterStored.copy() : null;
-                    structure.prevSteam = structure.steamStored != null ? structure.steamStored.copy() : null;
+                    structure.prevWater = structure.waterStored.isEmpty() ? FluidStack.EMPTY: structure.waterStored.copy();
+                    structure.prevSteam = structure.steamStored.isEmpty() ? FluidStack.EMPTY : structure.steamStored.copy();
                     MekanismUtils.saveChunk(this);
                 }
             }
@@ -210,14 +202,14 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     }
 
     public int getScaledWaterLevel(int i) {
-        if (clientWaterCapacity == 0 || structure.waterStored == null) {
+        if (clientWaterCapacity == 0 || structure.waterStored.isEmpty()) {
             return 0;
         }
         return structure.waterStored.getAmount() * i / clientWaterCapacity;
     }
 
     public int getScaledSteamLevel(int i) {
-        if (clientSteamCapacity == 0 || structure.steamStored == null) {
+        if (clientSteamCapacity == 0 || structure.steamStored.isEmpty()) {
             return 0;
         }
         return structure.steamStored.getAmount() * i / clientSteamCapacity;

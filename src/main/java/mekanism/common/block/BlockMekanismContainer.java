@@ -103,7 +103,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
             FluidStack fluidStack = ((ISustainedTank) tile).getFluidStack();
-            if (fluidStack != null) {
+            if (!fluidStack.isEmpty()) {
                 ISustainedTank sustainedTank = (ISustainedTank) item;
                 if (sustainedTank.hasTank(itemStack)) {
                     sustainedTank.setFluidStack(fluidStack, itemStack);
@@ -314,7 +314,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank && ((ISustainedTank) item).hasTank(stack)) {
             FluidStack fluid = ((ISustainedTank) item).getFluidStack(stack);
-            if (fluid != null) {
+            if (!fluid.isEmpty()) {
                 ((ISustainedTank) tile).setFluidStack(fluid);
             }
         }

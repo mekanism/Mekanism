@@ -80,7 +80,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             if (type == 0) {
                 activeCooled = !activeCooled;
             } else if (type == 1) {
-                logicType = ReactorLogic.values()[dataStream.readInt()];
+                logicType = dataStream.readEnumValue(ReactorLogic.class);
             }
             return;
         }
@@ -88,7 +88,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         super.handlePacketData(dataStream);
 
         if (world.isRemote) {
-            logicType = ReactorLogic.values()[dataStream.readInt()];
+            logicType = dataStream.readEnumValue(ReactorLogic.class);
             activeCooled = dataStream.readBoolean();
             prevOutputting = dataStream.readBoolean();
         }
@@ -97,7 +97,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(logicType.ordinal());
+        data.add(logicType);
         data.add(activeCooled);
         data.add(prevOutputting);
         return data;

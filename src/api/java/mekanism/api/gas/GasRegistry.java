@@ -3,8 +3,11 @@ package mekanism.api.gas;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.logging.log4j.LogManager;
@@ -64,13 +67,16 @@ public class GasRegistry {
      *
      * @return the gas associated with the fluid
      */
-    public static Gas getGas(Fluid f) {
+    @Nullable
+    public static Gas getGas(@Nonnull Fluid f) {
+        if ( f == Fluids.EMPTY) {
+            return null;
+        }
         for (Gas gas : getRegisteredGasses()) {
             if (gas.hasFluid() && gas.getFluid() == f) {
                 return gas;
             }
         }
-
         return null;
     }
 

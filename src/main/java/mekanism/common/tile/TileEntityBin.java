@@ -402,7 +402,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     }
 
     @Override
-    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nullable Direction side) {
         return isItemValidForSlot(i, itemstack);
     }
 

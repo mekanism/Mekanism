@@ -11,8 +11,8 @@ public class BoilerSteamTank extends BoilerTank {
         super(tileEntity);
     }
 
-    @Override
     @Nonnull
+    @Override
     public FluidStack getFluid() {
         return multiblock.structure != null ? multiblock.structure.steamStored : FluidStack.EMPTY;
     }
@@ -30,7 +30,7 @@ public class BoilerSteamTank extends BoilerTank {
     }
 
     @Override
-    public boolean isFluidValid(FluidStack stack) {
+    public boolean isFluidValid(@Nonnull FluidStack stack) {
         return stack.getFluid().getTags().contains(new ResourceLocation("forge", "steam"));
     }
 }

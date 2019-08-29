@@ -31,7 +31,7 @@ public class SmeltingRobitContainer extends RobitContainer {
     }
 
     @Override
-    public void addListener(IContainerListener listener) {
+    public void addListener(@Nonnull IContainerListener listener) {
         super.addListener(listener);
         listener.sendWindowProperty(this, 0, entity.furnaceCookTime);
         listener.sendWindowProperty(this, 1, entity.furnaceBurnTime);

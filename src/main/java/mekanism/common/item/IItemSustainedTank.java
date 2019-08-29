@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import javax.annotation.Nonnull;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
@@ -9,10 +10,10 @@ import net.minecraftforge.fluids.FluidStack;
 public interface IItemSustainedTank extends ISustainedTank {
 
     @Override
-    default void setFluidStack(FluidStack fluidStack, Object... data) {
+    default void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
         if (data[0] instanceof ItemStack) {
             ItemStack itemStack = (ItemStack) data[0];
-            if (fluidStack == null || fluidStack.getAmount() == 0) {
+            if (fluidStack.isEmpty()) {
                 ItemDataUtils.removeData(itemStack, "fluidTank");
             } else {
                 ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new CompoundNBT()));
@@ -20,16 +21,17 @@ public interface IItemSustainedTank extends ISustainedTank {
         }
     }
 
+    @Nonnull
     @Override
     default FluidStack getFluidStack(Object... data) {
         if (data[0] instanceof ItemStack) {
             ItemStack itemStack = (ItemStack) data[0];
             if (!ItemDataUtils.hasData(itemStack, "fluidTank")) {
-                return null;
+                return FluidStack.EMPTY;
             }
             return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
         }
-        return null;
+        return FluidStack.EMPTY;
     }
 
     @Override

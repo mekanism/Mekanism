@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import java.util.EnumSet;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -32,8 +33,8 @@ public class TileUtils {
         addFluidStack(data, tank.getFluid());
     }
 
-    public static void addFluidStack(TileNetworkList data, FluidStack stack) {
-        if (stack != null) {
+    public static void addFluidStack(TileNetworkList data, @Nonnull FluidStack stack) {
+        if (!stack.isEmpty()) {
             data.add(stack.writeToNBT(new CompoundNBT()));
         } else {
             data.add(EMPTY_TAG_COMPOUND);

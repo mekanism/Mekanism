@@ -108,7 +108,7 @@ public class RecipeUtils {
         }
 
         if (FluidContainerUtils.isFluidContainer(toReturn)) {
-            FluidStack fluidFound = null;
+            FluidStack fluidFound = FluidStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
                 if (FluidContainerUtils.isFluidContainer(itemstack)) {
@@ -118,7 +118,7 @@ public class RecipeUtils {
                         if (new LazyOptionalHelper<>(FluidUtil.getFluidHandler(itemstack)).matches(handler -> handler.fill(stored, FluidAction.SIMULATE) == 0)) {
                             return ItemStack.EMPTY;
                         }
-                        if (fluidFound == null) {
+                        if (fluidFound.isEmpty()) {
                             fluidFound = stored;
                         } else {
                             if (fluidFound.getFluid() != stored.getFluid()) {

@@ -1,5 +1,6 @@
 package mekanism.common.recipe.inputs;
 
+import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -7,9 +8,10 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FluidInput extends MachineInput<FluidInput> {
 
+    @Nonnull
     public FluidStack ingredient;
 
-    public FluidInput(FluidStack stack) {
+    public FluidInput(@Nonnull FluidStack stack) {
         ingredient = stack;
     }
 
@@ -28,11 +30,11 @@ public class FluidInput extends MachineInput<FluidInput> {
 
     @Override
     public boolean isValid() {
-        return ingredient != null;
+        return !ingredient.isEmpty();
     }
 
     public boolean useFluid(FluidTank fluidTank, FluidAction fluidAction, int scale) {
-        if (fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient)) {
+        if (!fluidTank.getFluid().isEmpty() && fluidTank.getFluid().containsFluid(ingredient)) {
             fluidTank.drain(ingredient.getAmount() * scale, fluidAction);
             return true;
         }
@@ -41,7 +43,7 @@ public class FluidInput extends MachineInput<FluidInput> {
 
     @Override
     public int hashIngredients() {
-        return ingredient.getFluid() != null ? ingredient.getFluid().hashCode() : 0;
+        return ingredient.getFluid().hashCode();
     }
 
     @Override

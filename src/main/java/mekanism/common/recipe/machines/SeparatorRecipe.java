@@ -1,5 +1,6 @@
 package mekanism.common.recipe.machines;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.FluidInput;
@@ -23,7 +24,7 @@ public class SeparatorRecipe extends MachineRecipe<FluidInput, ChemicalPairOutpu
         energyUsage = extraNBT.getDouble("energyUsage");
     }
 
-    public SeparatorRecipe(FluidStack input, double energy, GasStack left, GasStack right) {
+    public SeparatorRecipe(@Nonnull FluidStack input, double energy, GasStack left, GasStack right) {
         this(new FluidInput(input), energy, new ChemicalPairOutput(left, right));
     }
 

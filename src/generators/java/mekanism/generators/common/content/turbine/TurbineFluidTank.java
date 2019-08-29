@@ -30,7 +30,7 @@ public class TurbineFluidTank extends MultiblockFluidTank<TileEntityTurbineCasin
     }
 
     @Override
-    public boolean isFluidValid(FluidStack stack) {
+    public boolean isFluidValid(@Nonnull FluidStack stack) {
         return getFluid().isEmpty() || getFluid().isFluidEqual(stack);
     }
 

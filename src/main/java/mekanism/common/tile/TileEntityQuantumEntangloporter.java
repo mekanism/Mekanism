@@ -362,8 +362,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return frequency.storedFluid.fill(resource, fluidAction);
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         return frequency.storedFluid.drain(maxDrain, fluidAction);
     }
@@ -377,7 +377,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState == IOState.OUTPUT) {
             return FluidContainerUtils.canDrain(frequency.storedFluid.getFluid(), fluid);
         }
@@ -493,7 +493,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nullable Direction side) {
         return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.INPUT;
     }
 

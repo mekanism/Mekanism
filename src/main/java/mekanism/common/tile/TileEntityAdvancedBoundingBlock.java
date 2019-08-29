@@ -146,7 +146,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nullable Direction side) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;

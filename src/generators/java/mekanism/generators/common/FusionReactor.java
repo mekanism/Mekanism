@@ -3,6 +3,7 @@ package mekanism.generators.common;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasStack;
@@ -178,12 +179,14 @@ public class FusionReactor {
         setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
     }
 
+    @Nullable
     public FluidTank getWaterTank() {
-        return controller != null ? controller.waterTank : null;
+        return controller == null ? null : controller.waterTank;
     }
 
+    @Nullable
     public FluidTank getSteamTank() {
-        return controller.steamTank;
+        return controller == null ? null : controller.steamTank;
     }
 
     public GasTank getDeuteriumTank() {
@@ -352,11 +355,13 @@ public class FusionReactor {
         controller.waterTank.setCapacity(TileEntityReactorController.MAX_WATER * capRate);
         controller.steamTank.setCapacity(TileEntityReactorController.MAX_STEAM * capRate);
 
-        if (controller.waterTank.getFluid() != null) {
-            controller.waterTank.getFluid().setAmount(Math.min(controller.waterTank.getFluid().getAmount(), controller.waterTank.getCapacity()));
+        FluidStack waterTankFluid = controller.waterTank.getFluid();
+        if (!waterTankFluid.isEmpty()) {
+            waterTankFluid.setAmount(Math.min(waterTankFluid.getAmount(), controller.waterTank.getCapacity()));
         }
-        if (controller.steamTank.getFluid() != null) {
-            controller.steamTank.getFluid().setAmount(Math.min(controller.steamTank.getFluid().getAmount(), controller.steamTank.getCapacity()));
+        FluidStack steamTankFluid = controller.steamTank.getFluid();
+        if (!steamTankFluid.isEmpty()) {
+            steamTankFluid.setAmount(Math.min(steamTankFluid.getAmount(), controller.steamTank.getCapacity()));
         }
     }
 

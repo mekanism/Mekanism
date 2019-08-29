@@ -541,7 +541,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nullable Direction side) {
         if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (isInputSlot(slotID)) {

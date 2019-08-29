@@ -18,7 +18,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
 
     @Override
     public void render(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.structured && tileEntity.inputTank.getFluid() != null && tileEntity.height - 2 >= 1 && tileEntity.inputTank.getFluidAmount() > 0) {
+        if (tileEntity.structured && !tileEntity.inputTank.getFluid().isEmpty() && tileEntity.height - 2 >= 1 && tileEntity.inputTank.getFluidAmount() > 0) {
             RenderData data = new RenderData();
             data.location = tileEntity.getRenderLocation();
             data.height = tileEntity.height - 2;

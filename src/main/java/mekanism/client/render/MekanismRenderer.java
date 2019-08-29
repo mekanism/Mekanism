@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -83,8 +84,8 @@ public class MekanismRenderer {
      *
      * @return the sprite, or missing sprite if not found
      */
-    public static TextureAtlasSprite getBaseFluidTexture(Fluid fluid, FluidType type) {
-        if (fluid == null || type == null) {
+    public static TextureAtlasSprite getBaseFluidTexture(@Nonnull Fluid fluid, @Nonnull FluidType type) {
+        if (fluid == Fluids.EMPTY) {
             return missingIcon;
         }
 
@@ -98,8 +99,8 @@ public class MekanismRenderer {
         return getTextureAtlasSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getFluidTexture(FluidStack fluidStack, FluidType type) {
-        if (fluidStack == null || type == null) {
+    public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidType type) {
+        if (fluidStack.isEmpty()) {
             return missingIcon;
         }
 
@@ -174,7 +175,7 @@ public class MekanismRenderer {
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
     }
 
-    public static void prepFlowing(Model3D model, FluidStack fluid) {
+    public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
         TextureAtlasSprite still = getFluidTexture(fluid, FluidType.STILL);
         TextureAtlasSprite flowing = getFluidTexture(fluid, FluidType.FLOWING);
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
@@ -217,8 +218,8 @@ public class MekanismRenderer {
         GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
     }
 
-    public static void color(@Nullable FluidStack fluid, float fluidScale) {
-        if (fluid != null) {
+    public static void color(@Nonnull FluidStack fluid, float fluidScale) {
+        if (!fluid.isEmpty()) {
             int color = fluid.getFluid().getAttributes().getColor(fluid);
             if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
                 GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
@@ -228,14 +229,14 @@ public class MekanismRenderer {
         }
     }
 
-    public static void color(@Nullable FluidStack fluid) {
-        if (fluid != null && fluid.getFluid() != null) {
+    public static void color(@Nonnull FluidStack fluid) {
+        if (!fluid.isEmpty()) {
             color(fluid.getFluid().getAttributes().getColor(fluid));
         }
     }
 
-    public static void color(@Nullable Fluid fluid) {
-        if (fluid != null) {
+    public static void color(@Nonnull Fluid fluid) {
+        if (fluid != Fluids.EMPTY) {
             color(fluid.getAttributes().getColor());
         }
     }
@@ -302,13 +303,13 @@ public class MekanismRenderer {
     }
 
     @Nonnull
-    public static GlowInfo enableGlow(@Nullable FluidStack fluid) {
-        return fluid == null ? NO_GLOW : enableGlow(fluid.getFluid().getAttributes().getLuminosity(fluid));
+    public static GlowInfo enableGlow(@Nonnull FluidStack fluid) {
+        return fluid.isEmpty() ? NO_GLOW : enableGlow(fluid.getFluid().getAttributes().getLuminosity(fluid));
     }
 
     @Nonnull
-    public static GlowInfo enableGlow(@Nullable Fluid fluid) {
-        return fluid == null ? NO_GLOW : enableGlow(fluid.getAttributes().getLuminosity());
+    public static GlowInfo enableGlow(@Nonnull Fluid fluid) {
+        return fluid == Fluids.EMPTY ? NO_GLOW : enableGlow(fluid.getAttributes().getLuminosity());
     }
 
     public static void disableGlow(@Nonnull GlowInfo info) {
@@ -369,7 +370,7 @@ public class MekanismRenderer {
     }
 
     @SubscribeEvent
-    public static  void onStitch(TextureStitchEvent.Post event) {
+    public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
         if (!map.getBasePath().equals("textures")) {
             return;

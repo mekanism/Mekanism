@@ -72,7 +72,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     /**
      * The type of fluid this pump is pumping
      */
-    public Fluid activeType;
+    @Nonnull
+    public Fluid activeType = Fluids.EMPTY;
     public boolean suckedLastOperation;
     /**
      * How many ticks it takes to run an operation.
@@ -100,7 +101,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     public void onUpdate() {
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
-            if (fluidTank.getFluid() != null) {
+            if (!fluidTank.getFluid().isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
                 }
@@ -112,7 +113,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
-                    if (fluidTank.getFluid() == null || fluidTank.getFluid().getAmount() + FluidAttributes.BUCKET_VOLUME <= fluidTank.getCapacity()) {
+                    if (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().getAmount() + FluidAttributes.BUCKET_VOLUME <= fluidTank.getCapacity()) {
                         if (!suck(true)) {
                             suckedLastOperation = false;
                             reset();
@@ -128,7 +129,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 suckedLastOperation = false;
             }
 
-            if (fluidTank.getFluid() != null) {
+            if (!fluidTank.getFluid().isEmpty()) {
                 TileEntity tileEntity = Coord4D.get(this).offset(Direction.UP).getTileEntity(world);
                 CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
@@ -155,7 +156,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         for (Direction orientation : Direction.values()) {
             Coord4D wrapper = Coord4D.get(this).offset(orientation);
             FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
-            if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid))) {
+            if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
                 if (take) {
                     activeType = fluid.getFluid();
                     recurringNodes.add(wrapper);
@@ -172,7 +173,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         //and then add the adjacent block to the recurring list
         for (Coord4D wrapper : tempPumpList) {
             FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
-            if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid))) {
+            if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
                 if (take) {
                     activeType = fluid.getFluid();
                     fluidTank.fill(fluid, FluidAction.EXECUTE);
@@ -188,7 +189,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 Coord4D side = wrapper.offset(orientation);
                 if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.general.maxPumpRange.get()) {
                     fluid = MekanismUtils.getFluid(world, side, hasFilter());
-                    if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid))) {
+                    if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
                         if (take) {
                             activeType = fluid.getFluid();
                             recurringNodes.add(side);
@@ -207,11 +208,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     public void reset() {
-        activeType = null;
+        activeType = Fluids.EMPTY;
         recurringNodes.clear();
     }
 
-    private boolean shouldTake(FluidStack fluid, Coord4D coord) {
+    private boolean shouldTake(@Nonnull FluidStack fluid, Coord4D coord) {
         if (fluid.getFluid() == Fluids.WATER || fluid.getFluid() == MekanismFluids.HEAVY_WATER) {
             return MekanismConfig.general.pumpWaterSources.get();
         }
@@ -240,12 +241,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         nbtTags.putInt("operatingTicks", operatingTicks);
         nbtTags.putBoolean("suckedLastOperation", suckedLastOperation);
 
-        if (activeType != null) {
+        if (activeType != Fluids.EMPTY) {
             //TODO: If active type is empty handle things?
             nbtTags.putString("activeType", ForgeRegistries.FLUIDS.getKey(activeType).toString());
         }
 
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
@@ -268,7 +269,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         suckedLastOperation = nbtTags.getBoolean("suckedLastOperation");
         if (nbtTags.contains("activeType")) {
             //TODO: Can this return null? If so set it to empty instead
-            activeType = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbtTags.getString("activeType")));
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbtTags.getString("activeType")));
+            activeType = fluid == null ? Fluids.EMPTY : fluid;
         }
         if (nbtTags.contains("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
@@ -330,10 +332,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public void setFluidStack(FluidStack fluidStack, Object... data) {
+    public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
         fluidTank.setFluid(fluidStack);
     }
 
+    @Nonnull
     @Override
     public FluidStack getFluidStack(Object... data) {
         return fluidTank.getFluid();
@@ -344,14 +347,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         return true;
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         return fluidTank.drain(maxDrain, fluidAction);
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         return from == Direction.byIndex(1) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 

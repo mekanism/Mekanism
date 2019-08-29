@@ -32,13 +32,12 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
         super.onUpdate();
         if (!world.isRemote && structure != null && structure.flowRemaining > 0) {
             FluidStack fluidStack = new FluidStack(Fluids.WATER, structure.flowRemaining);
-            EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
-                CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
-                    if (PipeUtils.canFill(handler, fluidStack)) {
-                        structure.flowRemaining -= handler.fill(fluidStack, FluidAction.EXECUTE);
-                    }
-                });
-            });
+            EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class),
+                  (tile, side) -> CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                      if (PipeUtils.canFill(handler, fluidStack)) {
+                          structure.flowRemaining -= handler.fill(fluidStack, FluidAction.EXECUTE);
+                      }
+                  }));
         }
     }
 
@@ -52,12 +51,12 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
         return getTankInfo(null);
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         int amount = Math.min(maxDrain, structure.flowRemaining);
         if (amount <= 0) {
-            return null;
+            return FluidStack.EMPTY;
         }
         FluidStack fluidStack = new FluidStack(Fluids.WATER, amount);
         if (fluidAction.execute()) {
@@ -67,8 +66,8 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
-        return structure != null && (fluid == null || fluid.getFluid() == Fluids.WATER);
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
+        return structure != null && (fluid.isEmpty() || fluid.getFluid() == Fluids.WATER);
     }
 
     @Nonnull

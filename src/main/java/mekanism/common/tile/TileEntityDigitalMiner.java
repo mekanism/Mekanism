@@ -785,7 +785,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nullable Direction side) {
         if (side == Direction.UP) {
             if (slotID == 27) {
                 return ChargeUtils.canBeDischarged(itemstack);

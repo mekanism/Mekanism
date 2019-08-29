@@ -36,13 +36,14 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         if (dummy) {
             return height - 2;
         }
-        if (infoHandler.getTank().getFluid() == null || infoHandler.getTank().getCapacity() == 0) {
+        FluidTank tank = infoHandler.getTank();
+        if (tank.getFluid().isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
-        if (infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE) {
+        if (tank.getFluidAmount() == Integer.MAX_VALUE) {
             return height - 2;
         }
-        return infoHandler.getTank().getFluidAmount() * (height - 2) / infoHandler.getTank().getCapacity();
+        return tank.getFluidAmount() * (height - 2) / tank.getCapacity();
     }
 
     @Override
@@ -51,7 +52,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
             return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
         }
         FluidStack fluid = infoHandler.getTank().getFluid();
-        return MekanismRenderer.getFluidTexture(fluid == null ? dummyType : fluid, FluidType.STILL);
+        return MekanismRenderer.getFluidTexture(fluid.isEmpty() ? dummyType : fluid, FluidType.STILL);
     }
 
     @Override
@@ -60,14 +61,14 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
             return TextComponentUtil.build(dummyType);
         }
         FluidStack fluidStack = infoHandler.getTank().getFluid();
-        if (fluidStack != null) {
-            int amount = infoHandler.getTank().getFluidAmount();
-            if (amount == Integer.MAX_VALUE) {
-                return TextComponentUtil.translate("mekanism.gui.infinite");
-            }
-            return TextComponentUtil.build(fluidStack, ": " + amount);
+        if (fluidStack.isEmpty()) {
+            return TextComponentUtil.translate("mekanism.gui.empty");
         }
-        return TextComponentUtil.translate("mekanism.gui.empty");
+        int amount = infoHandler.getTank().getFluidAmount();
+        if (amount == Integer.MAX_VALUE) {
+            return TextComponentUtil.translate("mekanism.gui.infinite");
+        }
+        return TextComponentUtil.build(fluidStack, ": " + amount);
     }
 
     @Override

@@ -57,7 +57,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     public int prevAmount;
 
     public int valve;
-    public FluidStack valveFluid;
+    @Nonnull
+    public FluidStack valveFluid = FluidStack.EMPTY;
 
     public float prevScale;
 
@@ -86,7 +87,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public void onUpdate() {
         if (world.isRemote) {
-            float targetScale = (float) (fluidTank.getFluid() != null ? fluidTank.getFluid().getAmount() : 0) / fluidTank.getCapacity();
+            float targetScale = (float) fluidTank.getFluid().getAmount() / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
             }
@@ -94,7 +95,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             if (valve > 0) {
                 valve--;
                 if (valve == 0) {
-                    valveFluid = null;
+                    valveFluid = FluidStack.EMPTY;
                     needsPacket = true;
                 }
             }
@@ -125,7 +126,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     private void activeEmit() {
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             TileEntity tileEntity = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
             CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
@@ -142,7 +143,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
                 fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.getAmount())));
                 if (tier == FluidTankTier.CREATIVE) {
                     FluidStack fluid = fluidTank.getFluid();
-                    if (fluid != null) {
+                    if (!fluid.isEmpty()) {
                         fluid.setAmount(Integer.MAX_VALUE);
                     }
                 } else {
@@ -157,7 +158,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         }
     }
 
-    public int pushUp(FluidStack fluid, FluidAction fluidAction) {
+    public int pushUp(@Nonnull FluidStack fluid, FluidAction fluidAction) {
         Coord4D up = Coord4D.get(this).offset(Direction.UP);
         TileEntity tileEntity = up.getTileEntity(world);
         if (tileEntity instanceof TileEntityFluidTank) {
@@ -199,7 +200,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         super.write(nbtTags);
         nbtTags.putInt("tier", tier.ordinal());
         nbtTags.putInt("editMode", editMode.ordinal());
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
@@ -230,7 +231,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             if (valve > 0) {
                 valveFluid = TileUtils.readFluidStack(dataStream);
             } else {
-                valveFluid = null;
+                valveFluid = FluidStack.EMPTY;
             }
 
             TileUtils.readTankData(dataStream, fluidTank);
@@ -255,7 +256,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         TileEntity topTile = top.getTileEntity(world);
         if (topTile instanceof TileEntityFluidTank) {
             TileEntityFluidTank topTank = (TileEntityFluidTank) topTile;
-            if (fluidTank.getFluid() != null && topTank.fluidTank.getFluid() != null) {
+            if (!fluidTank.getFluid().isEmpty() && !topTank.fluidTank.getFluid().isEmpty()) {
                 if (fluidTank.getFluid().getFluid() != topTank.fluidTank.getFluid().getFluid()) {
                     return needed;
                 }
@@ -344,8 +345,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         return filled;
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         return fluidTank.drain(maxDrain, tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : fluidAction);
     }
@@ -360,13 +361,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             return true;
         }
         if (getActive() && tile instanceof TileEntityFluidTank) { // Only fill if tanks underneath have same fluid.
-            return fluidTank.getFluid() == null ? ((TileEntityFluidTank) tile).canFill(Direction.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
+            return fluidTank.getFluid().isEmpty() ? ((TileEntityFluidTank) tile).canFill(Direction.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
         }
         return FluidContainerUtils.canFill(fluidTank.getFluid(), fluid);
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         return fluidTank != null && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid) && !getActive() || from != Direction.DOWN;
     }
 
@@ -381,10 +382,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     @Override
-    public void setFluidStack(FluidStack fluidStack, Object... data) {
+    public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
         fluidTank.setFluid(fluidStack);
     }
 
+    @Nonnull
     @Override
     public FluidStack getFluidStack(Object... data) {
         return fluidTank.getFluid();

@@ -304,7 +304,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         nbtTags.put("leftTank", leftTank.write(new CompoundNBT()));
@@ -331,9 +331,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             case 3:
                 return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
-                return new Object[]{fluidTank.getFluid() != null ? fluidTank.getFluid().getAmount() : 0};
+                return new Object[]{fluidTank.getFluid().getAmount()};
             case 5:
-                return new Object[]{fluidTank.getFluid() != null ? (fluidTank.getCapacity() - fluidTank.getFluid().getAmount()) : 0};
+                return new Object[]{fluidTank.getCapacity() - fluidTank.getFluid().getAmount()};
             case 6:
                 return new Object[]{leftTank.getStored()};
             case 7:
@@ -349,7 +349,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (leftTank.getGas() != null) {

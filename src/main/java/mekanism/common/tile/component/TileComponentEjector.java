@@ -99,7 +99,7 @@ public class TileComponentEjector implements ITileComponent {
     }
 
     private void ejectFluid(Set<Direction> outputSides, FluidTank tank) {
-        if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
+        if (!tank.getFluid().isEmpty() && tank.getFluidAmount() > 0) {
             FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
             int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
             tank.drain(emit, FluidAction.EXECUTE);

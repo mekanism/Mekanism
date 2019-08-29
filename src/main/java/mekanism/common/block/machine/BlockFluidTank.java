@@ -144,7 +144,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
               handler -> new LazyOptionalHelper<>(FluidUtil.getFluidContained(copyStack)).getIfPresentElseDo(
                     itemFluid -> {
                         int needed = tileEntity.getCurrentNeeded();
-                        if (tileEntity.fluidTank.getFluid() != null && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid)) {
+                        if (!tileEntity.fluidTank.getFluid().isEmpty() && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid)) {
                             return false;
                         }
                         boolean filled = false;
@@ -153,7 +153,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                         if (container.getCount() == 0) {
                             container = ItemStack.EMPTY;
                         }
-                        if (drained != null) {
+                        if (!drained.isEmpty()) {
                             if (player.isCreative()) {
                                 filled = true;
                             } else if (!container.isEmpty()) {
@@ -188,7 +188,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                         return false;
                     },
                     () -> {
-                        if (tileEntity.fluidTank.getFluid() != null) {
+                        if (!tileEntity.fluidTank.getFluid().isEmpty()) {
                             int filled = handler.fill(tileEntity.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                             ItemStack container = handler.getContainer();
                             if (filled > 0) {

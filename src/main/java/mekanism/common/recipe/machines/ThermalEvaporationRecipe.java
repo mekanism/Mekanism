@@ -1,5 +1,6 @@
 package mekanism.common.recipe.machines;
 
+import javax.annotation.Nonnull;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.outputs.FluidOutput;
 import net.minecraftforge.fluids.FluidStack;
@@ -8,7 +9,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class ThermalEvaporationRecipe extends MachineRecipe<FluidInput, FluidOutput, ThermalEvaporationRecipe> {
 
-    public ThermalEvaporationRecipe(FluidStack input, FluidStack output) {
+    public ThermalEvaporationRecipe(@Nonnull FluidStack input, @Nonnull FluidStack output) {
         super(new FluidInput(input), new FluidOutput(output));
     }
 

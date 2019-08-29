@@ -26,6 +26,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -155,8 +156,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         refresh();
     }
 
-    public boolean hasRecipe(Fluid fluid) {
-        if (fluid == null) {
+    public boolean hasRecipe(@Nonnull Fluid fluid) {
+        if ( fluid == Fluids.EMPTY) {
             return false;
         }
         return Recipe.THERMAL_EVAPORATION_PLANT.containsRecipe(fluid);
@@ -175,7 +176,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 if (structured) {
                     inputTank.setCapacity(getMaxFluid());
 
-                    if (inputTank.getFluid() != null) {
+                    if (!inputTank.getFluid().isEmpty()) {
                         inputTank.getFluid().setAmount(Math.min(inputTank.getFluid().getAmount(), getMaxFluid()));
                     }
                 } else {
@@ -186,7 +187,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean canOperate(ThermalEvaporationRecipe recipe) {
-        if (!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid() == null) {
+        if (!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid().isEmpty()) {
             return false;
         }
         return recipe != null && recipe.canOperate(inputTank, outputTank);
@@ -194,7 +195,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     private void manageBuckets() {
-        if (outputTank.getFluid() != null) {
+        if (!outputTank.getFluid().isEmpty()) {
             if (FluidContainerUtils.isFluidContainer(getInventory().get(2))) {
                 FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
             }
@@ -204,7 +205,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
                     @Override
-                    public boolean isValid(Fluid f) {
+                    public boolean isValid(@Nonnull Fluid f) {
                         return hasRecipe(f);
                     }
                 });

@@ -3,6 +3,7 @@ package mekanism.common.network;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -19,7 +20,6 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -38,8 +38,8 @@ public class PacketTransmitterUpdate {
     private Gas gasType;
     private boolean didGasTransfer;
 
-    private FluidStack fluidStack;
-    private Fluid fluidType;
+    @Nonnull
+    private FluidStack fluidStack = FluidStack.EMPTY;
     private boolean didFluidTransfer;
 
     private int amount;
@@ -121,9 +121,6 @@ public class PacketTransmitterUpdate {
                 } else if (message.packetType == PacketType.FLUID) {
                     if (transmissionType == TransmissionType.FLUID) {
                         FluidNetwork net = (FluidNetwork) transmitter.getTransmitterNetwork();
-                        if (message.fluidType != null) {
-                            net.refFluid = message.fluidType;
-                        }
                         net.buffer = message.fluidStack;
                         net.didTransfer = message.didFluidTransfer;
                     }
@@ -154,7 +151,7 @@ public class PacketTransmitterUpdate {
                 buf.writeBoolean(pkt.didGasTransfer);
                 break;
             case FLUID:
-                if (pkt.fluidStack != null) {
+                if (!pkt.fluidStack.isEmpty()) {
                     buf.writeBoolean(true);
                     buf.writeCompoundTag(pkt.fluidStack.writeToNBT(new CompoundNBT()));
                 } else {
@@ -190,11 +187,8 @@ public class PacketTransmitterUpdate {
         } else if (packet.packetType == PacketType.FLUID) {
             if (buf.readBoolean()) {
                 packet.fluidStack = FluidStack.loadFluidStackFromNBT(buf.readCompoundTag());
-                packet.fluidType = packet.fluidStack != null ? packet.fluidStack.getFluid() : null;
             } else {
-                packet.fluidType = null;
-                packet.amount = 0;
-                packet.fluidStack = null;
+                packet.fluidStack = FluidStack.EMPTY;
             }
 
             packet.didFluidTransfer = buf.readBoolean();

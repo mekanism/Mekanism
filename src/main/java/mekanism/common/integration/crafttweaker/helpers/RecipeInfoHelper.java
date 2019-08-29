@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.helpers;
 
 import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import java.util.Map.Entry;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.inputs.MachineInput;
@@ -50,11 +51,11 @@ public class RecipeInfoHelper {
         return String.format("<gas:%s>", gas.getName());
     }
 
-    public static String getFluidName(FluidStack stack) {
+    public static String getFluidName(@Nonnull FluidStack stack) {
         return stack.getAmount() > 1 ? String.format("<liquid:%s> * %s", stack.getFluid().getAttributes().getName(), stack.getAmount()) : getFluidName(stack.getFluid());
     }
 
-    public static String getFluidName(Fluid fluid) {
+    public static String getFluidName(@Nonnull Fluid fluid) {
         return String.format("<liquid:%s>", fluid.getAttributes().getName());
     }
 

@@ -20,8 +20,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
 
     @Override
     public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null &&
-            tileEntity.structure.fluidStored.getAmount() != 0) {
+        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored.getAmount() > 0) {
             RenderData data = new RenderData();
             data.location = tileEntity.structure.renderLocation;
             data.height = tileEntity.structure.volHeight - 2;

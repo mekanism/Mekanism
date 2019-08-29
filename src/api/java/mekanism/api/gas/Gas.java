@@ -1,10 +1,12 @@
 package mekanism.api.gas;
 
+import javax.annotation.Nonnull;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -21,7 +23,8 @@ public class Gas implements IHasTranslationKey {
 
     private String unlocalizedName;
 
-    private Fluid fluid;
+    @Nonnull
+    private Fluid fluid = Fluids.EMPTY;
 
     private ResourceLocation iconLocation;
 
@@ -61,12 +64,12 @@ public class Gas implements IHasTranslationKey {
     /**
      * Creates a new Gas object that corresponds to the given Fluid
      */
-    public Gas(Fluid f) {
-        unlocalizedName = name = f.getAttributes().getName();
-        iconLocation = f.getAttributes().getStillTexture();
-        fluid = f;
+    public Gas(@Nonnull Fluid fluid) {
+        unlocalizedName = name = fluid.getAttributes().getName();
+        iconLocation = fluid.getAttributes().getStillTexture();
+        this.fluid = fluid;
         from_fluid = true;
-        setTint(f.getAttributes().getColor() & 0xFFFFFF);
+        setTint(fluid.getAttributes().getColor() & 0xFFFFFF);
     }
 
     /**
@@ -216,7 +219,7 @@ public class Gas implements IHasTranslationKey {
      * @return if this gas has a fluid
      */
     public boolean hasFluid() {
-        return fluid != null;
+        return fluid != Fluids.EMPTY;
     }
 
     /**
@@ -224,6 +227,7 @@ public class Gas implements IHasTranslationKey {
      *
      * @return fluid associated with this gas
      */
+    @Nonnull
     public Fluid getFluid() {
         return fluid;
     }
@@ -234,7 +238,7 @@ public class Gas implements IHasTranslationKey {
      * @return this Gas object
      */
     public Gas registerFluid() {
-        if (fluid == null) {
+        if (!hasFluid()) {
             Fluid fromRegistry = ForgeRegistries.FLUIDS.getValue(getRegistryName());
             if (fromRegistry == null) {
                 ForgeRegistries.FLUIDS.register(fluid = new GaseousFluid(this));

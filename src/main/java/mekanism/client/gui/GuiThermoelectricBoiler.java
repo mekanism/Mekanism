@@ -76,18 +76,18 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
-            FluidStack waterStored = tileEntity.structure != null ? tileEntity.structure.waterStored : null;
-            if (waterStored != null) {
-                displayTooltip(TextComponentUtil.build(waterStored, ": " + waterStored.getAmount() + "mB"), xAxis, yAxis);
-            } else {
+            FluidStack waterStored = tileEntity.structure != null ? tileEntity.structure.waterStored : FluidStack.EMPTY;
+            if (waterStored.isEmpty()) {
                 displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(waterStored, ": " + waterStored.getAmount() + "mB"), xAxis, yAxis);
             }
         } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
-            FluidStack steamStored = tileEntity.structure != null ? tileEntity.structure.steamStored : null;
-            if (steamStored != null) {
-                displayTooltip(TextComponentUtil.build(steamStored, ": " + steamStored.getAmount() + "mB"), xAxis, yAxis);
-            } else {
+            FluidStack steamStored = tileEntity.structure != null ? tileEntity.structure.steamStored : FluidStack.EMPTY;
+            if (steamStored.isEmpty()) {
                 displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(steamStored, ": " + steamStored.getAmount() + "mB"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -54,17 +54,17 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.inputTank.getFluid();
-            if (fluid != null) {
-                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.inputTank.getFluidAmount() + "mB"), xAxis, yAxis);
-            } else {
+            if (fluid.isEmpty()) {
                 displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.inputTank.getFluidAmount() + "mB"), xAxis, yAxis);
             }
         } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.outputTank.getFluid();
-            if (fluid != null) {
-                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.outputTank.getFluidAmount() + "mB"), xAxis, yAxis);
-            } else {
+            if (fluid.isEmpty()) {
                 displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.outputTank.getFluidAmount() + "mB"), xAxis, yAxis);
             }
         } else if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
             displayTooltip(MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT), xAxis, yAxis);

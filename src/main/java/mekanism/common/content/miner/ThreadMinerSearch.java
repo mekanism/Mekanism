@@ -70,7 +70,7 @@ public class ThreadMinerSearch extends Thread {
             BlockState state = world.getBlockState(testPos);
             info = state.getBlock();
 
-            if (info == null || info instanceof FlowingFluidBlock || info instanceof IFluidBlock || info.isAir(state, world, testPos)) {
+            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock || info.isAir(state, world, testPos)) {
                 //Skip air and liquids
                 continue;
             }

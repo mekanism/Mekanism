@@ -160,14 +160,14 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedBoilerData> cache, MultiblockCache<SynchronizedBoilerData> merge) {
         BoilerCache boilerCache = (BoilerCache) cache;
         BoilerCache mergeCache = (BoilerCache) merge;
-        if (boilerCache.water == null) {
+        if (boilerCache.water.isEmpty()) {
             boilerCache.water = mergeCache.water;
-        } else if (mergeCache.water != null && boilerCache.water.isFluidEqual(mergeCache.water)) {
+        } else if (!mergeCache.water.isEmpty() && boilerCache.water.isFluidEqual(mergeCache.water)) {
             boilerCache.water.setAmount(boilerCache.water.getAmount() + mergeCache.water.getAmount());
         }
-        if (boilerCache.steam == null) {
+        if (boilerCache.steam.isEmpty()) {
             boilerCache.steam = mergeCache.steam;
-        } else if (mergeCache.steam != null && boilerCache.steam.isFluidEqual(mergeCache.steam)) {
+        } else if (!mergeCache.steam.isEmpty() && boilerCache.steam.isFluidEqual(mergeCache.steam)) {
             boilerCache.steam.setAmount(boilerCache.steam.getAmount() + mergeCache.steam.getAmount());
         }
         boilerCache.temperature = Math.max(boilerCache.temperature, mergeCache.temperature);
@@ -176,10 +176,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     @Override
     protected void onFormed() {
         super.onFormed();
-        if (structureFound.waterStored != null) {
+        if (!structureFound.waterStored.isEmpty()) {
             structureFound.waterStored.setAmount(Math.min(structureFound.waterStored.getAmount(), structureFound.waterVolume * WATER_PER_TANK));
         }
-        if (structureFound.steamStored != null) {
+        if (!structureFound.steamStored.isEmpty()) {
             structureFound.steamStored.setAmount(Math.min(structureFound.steamStored.getAmount(), structureFound.steamVolume * STEAM_PER_TANK));
         }
     }

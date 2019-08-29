@@ -58,8 +58,8 @@ public final class PipeUtils {
      *
      * @return the amount of gas emitted
      */
-    public static int emit(Set<Direction> sides, FluidStack stack, TileEntity from) {
-        if (stack == null || stack.getAmount() == 0) {
+    public static int emit(Set<Direction> sides, @Nonnull FluidStack stack, TileEntity from) {
+        if (stack.isEmpty()) {
             return 0;
         }
         //Fake that we have one target given we know that no sides will overlap
@@ -87,7 +87,7 @@ public final class PipeUtils {
         return 0;
     }
 
-    public static FluidStack copy(FluidStack fluid, int amount) {
+    public static FluidStack copy(@Nonnull FluidStack fluid, int amount) {
         FluidStack ret = fluid.copy();
         ret.setAmount(amount);
         return ret;

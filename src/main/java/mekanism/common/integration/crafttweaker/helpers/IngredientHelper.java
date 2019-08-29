@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
@@ -159,7 +160,7 @@ public class IngredientHelper {
         return FluidStack.EMPTY;//fluid == null ? FluidStack.EMPTY : FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount());
     }
 
-    public static ILiquidStack getILiquidStack(FluidStack fluidStack) {
+    public static ILiquidStack getILiquidStack(@Nonnull FluidStack fluidStack) {
         return new MCLiquidStack(fluidStack);
     }
 

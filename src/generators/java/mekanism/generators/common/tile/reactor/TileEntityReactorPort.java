@@ -81,7 +81,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         super.onUpdate();
         if (!world.isRemote) {
             CableUtils.emit(this);
-            if (fluidEject && getReactor() != null && getReactor().getSteamTank().getFluid() != null) {
+            if (fluidEject && getReactor() != null && !getReactor().getSteamTank().getFluid().isEmpty()) {
                 IFluidTank tank = getReactor().getSteamTank();
                 EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                     if (!(tile instanceof TileEntityReactorPort)) {
@@ -101,8 +101,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         return getReactor().getWaterTank().fill(resource, fluidAction);
     }
 
+    @Nonnull
     @Override
-    @Nullable
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         return getReactor().getSteamTank().drain(maxDrain, fluidAction);
     }
@@ -113,8 +113,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
-        return getReactor() != null && (fluid == null || fluid.getFluid() == MekanismFluids.STEAM.getFluid());
+    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
+        return getReactor() != null && (fluid.isEmpty() || fluid.getFluid() == MekanismFluids.STEAM.getFluid());
     }
 
     @Override

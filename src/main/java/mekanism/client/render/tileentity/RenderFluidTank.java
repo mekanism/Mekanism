@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -37,12 +38,12 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
     @Override
     public void render(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         FluidStack fluid = tileEntity.fluidTank.getFluid();
-        render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);
+        render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.valve > 0 ? tileEntity.valveFluid : FluidStack.EMPTY, x, y, z);
     }
 
-    public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, FluidStack valveFluid, double x, double y, double z) {
+    public void render(FluidTankTier tier, @Nonnull FluidStack fluid, float fluidScale, @Nonnull FluidStack valveFluid, double x, double y, double z) {
         boolean glChanged = false;
-        if (fluid != null && fluidScale > 0) {
+        if (!fluid.isEmpty() && fluidScale > 0) {
             GlStateManager.pushMatrix();
             glChanged = enableGL();
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
@@ -64,7 +65,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             GlStateManager.popMatrix();
         }
 
-        if (valveFluid != null && !valveFluid.getFluid().getAttributes().isGaseous(valveFluid)) {
+        if (!valveFluid.isEmpty() && !valveFluid.getFluid().getAttributes().isGaseous(valveFluid)) {
             GlStateManager.pushMatrix();
             glChanged = enableGL();
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
@@ -96,7 +97,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         return true;
     }
 
-    private DisplayInteger[] getValveRender(FluidStack fluid) {
+    private DisplayInteger[] getValveRender(@Nonnull FluidStack fluid) {
         if (cachedValveFluids.containsKey(fluid)) {
             return cachedValveFluids.get(fluid);
         }
@@ -129,7 +130,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         return displays;
     }
 
-    private DisplayInteger[] getListAndRender(FluidStack fluid) {
+    private DisplayInteger[] getListAndRender(@Nonnull FluidStack fluid) {
         if (cachedCenterFluids.containsKey(fluid)) {
             return cachedCenterFluids.get(fluid);
         }

@@ -38,7 +38,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     public FluidTank buffer;
 
-    public FluidStack lastWrite;
+    @Nonnull
+    public FluidStack lastWrite = FluidStack.EMPTY;
     public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
@@ -67,7 +68,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
                 IFluidHandler container = connectedAcceptors[side.ordinal()];
                 if (container != null) {
                     FluidStack received = container.drain(getAvailablePull(), FluidAction.SIMULATE);
-                    if (received != null && received.getAmount() != 0 && takeFluid(received, FluidAction.SIMULATE) == received.getAmount()) {
+                    if (received.getAmount() > 0 && takeFluid(received, FluidAction.SIMULATE) == received.getAmount()) {
                         container.drain(takeFluid(received, FluidAction.EXECUTE), FluidAction.EXECUTE);
                     }
                 }
@@ -80,16 +81,18 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public void updateShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
             FluidStack last = getSaveShare();
-            if ((last != null && !(lastWrite != null && lastWrite.getAmount() == last.getAmount() && lastWrite.getFluid() == last.getFluid())) || (last == null && lastWrite != null)) {
+            if ((!last.isEmpty() && !(!lastWrite.isEmpty() && lastWrite.getAmount() == last.getAmount() && lastWrite.getFluid() == last.getFluid())) ||
+                (last.isEmpty() && !lastWrite.isEmpty())) {
                 lastWrite = last;
                 markDirty();
             }
         }
     }
 
+    @Nonnull
     private FluidStack getSaveShare() {
         FluidNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
-        if (getTransmitter().hasTransmitterNetwork() && transmitterNetwork.buffer != null) {
+        if (getTransmitter().hasTransmitterNetwork() && !transmitterNetwork.buffer.isEmpty()) {
             int remain = transmitterNetwork.buffer.getAmount() % transmitterNetwork.transmittersSize();
             int toSave = transmitterNetwork.buffer.getAmount() / transmitterNetwork.transmittersSize();
             if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
@@ -97,18 +100,18 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             }
             return PipeUtils.copy(transmitterNetwork.buffer, toSave);
         }
-        return null;
+        return FluidStack.EMPTY;
     }
 
     @Override
     public void onChunkUnloaded() {
-        if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork() && lastWrite != null) {
+        if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork() && !lastWrite.isEmpty()) {
             FluidStack buffer = getTransmitter().getTransmitterNetwork().buffer;
-            if (buffer != null) {
+            if (!buffer.isEmpty()) {
                 buffer.setAmount(buffer.getAmount() - lastWrite.getAmount());
-                if (buffer.getAmount() <= 0) {
+                if (buffer.isEmpty()) {
                     //TODO: Evaluate
-                    getTransmitter().getTransmitterNetwork().buffer = null;
+                    getTransmitter().getTransmitterNetwork().buffer = FluidStack.EMPTY;
                 }
             }
         }
@@ -133,7 +136,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (lastWrite != null && lastWrite.getAmount() > 0) {
+        if (lastWrite.getAmount() > 0) {
             nbtTags.put("cacheFluid", lastWrite.writeToNBT(new CompoundNBT()));
         } else {
             nbtTags.remove("cacheFluid");
@@ -190,16 +193,16 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         return tier.getPipeCapacity();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public FluidStack getBuffer() {
-        return buffer == null ? null : buffer.getFluid();
+        return buffer == null ? FluidStack.EMPTY : buffer.getFluid();
     }
 
     @Override
     public void takeShare() {
         FluidNetwork network = getTransmitter().getTransmitterNetwork();
-        if (getTransmitter().hasTransmitterNetwork() && network.buffer != null && lastWrite != null) {
+        if (getTransmitter().hasTransmitterNetwork() && !network.buffer.isEmpty() && !lastWrite.isEmpty()) {
             network.buffer.setAmount(network.buffer.getAmount() - lastWrite.getAmount());
             buffer.setFluid(lastWrite);
         }
@@ -252,7 +255,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         return Math.min(getPullAmount(), buffer.getCapacity() - buffer.getFluidAmount());
     }
 
-    public int takeFluid(FluidStack fluid, FluidAction fluidAction) {
+    public int takeFluid(@Nonnull FluidStack fluid, FluidAction fluidAction) {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(fluid, FluidAction.SIMULATE);
         }

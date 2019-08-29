@@ -1,5 +1,6 @@
 package mekanism.common.content.tank;
 
+import javax.annotation.Nonnull;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,8 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
-    public FluidStack fluid;
+    @Nonnull
+    public FluidStack fluid = FluidStack.EMPTY;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
@@ -62,7 +64,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
             }
         }
         nbtTags.put("Items", tagList);
-        if (fluid != null) {
+        if (!fluid.isEmpty()) {
             nbtTags.put("cachedFluid", fluid.writeToNBT(new CompoundNBT()));
         }
     }

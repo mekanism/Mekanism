@@ -66,7 +66,7 @@ public class MekanismGenerators implements IModule {
     public void postInit(FMLPostInitializationEvent event) {
         if (FuelHandler.BCPresent() && BuildcraftFuelRegistry.fuel != null) {
             for (IFuel s : BuildcraftFuelRegistry.fuel.getFuels()) {
-                if (s.getFluid() != null && !GasRegistry.containsGas(s.getFluid().getFluid().getName())) {
+                if (!s.getFluid().isEmpty() && !GasRegistry.containsGas(s.getFluid().getFluid().getName())) {
                     GasRegistry.register(new Gas(s.getFluid().getFluid()));
                 }
             }

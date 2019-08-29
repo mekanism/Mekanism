@@ -3,6 +3,7 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
@@ -14,6 +15,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,7 +25,8 @@ import net.minecraftforge.fluids.FluidStack;
 @OnlyIn(Dist.CLIENT)
 public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
 
-    private FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
+    @Nonnull
+    private static final FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
 
     @Override
     public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
@@ -46,7 +49,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
 
             RenderTurbineRotor.internalRender = false;
 
-            if (tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.getAmount() != 0 && tileEntity.structure.volLength > 0) {
+            if (tileEntity.structure.fluidStored.getAmount() > 0 && tileEntity.structure.volLength > 0) {
                 RenderData data = new RenderData();
 
                 data.location = tileEntity.structure.renderLocation;
@@ -57,7 +60,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
 
                 bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
-                if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
+                if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != Fluids.EMPTY) {
                     GlStateManager.pushMatrix();
                     GlStateManager.enableCull();
                     GlStateManager.enableBlend();

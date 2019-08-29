@@ -1,5 +1,6 @@
 package mekanism.common.recipe;
 
+import javax.annotation.Nonnull;
 import mekanism.api.MekanismRecipeHelper;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -77,7 +78,7 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
+    public void addElectrolyticSeparatorRecipe(@Nonnull FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
         checkPhase();
         RecipeHandler.addElectrolyticSeparatorRecipe(fluid, energy, leftOutput, rightOutput);
     }
@@ -113,13 +114,13 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
+    public void addPRCRecipe(ItemStack inputSolid, @Nonnull FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
         checkPhase();
         RecipeHandler.addPRCRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks);
     }
 
     @Override
-    public void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid) {
+    public void addThermalEvaporationRecipe(@Nonnull FluidStack inputFluid, @Nonnull FluidStack outputFluid) {
         checkPhase();
         RecipeHandler.addThermalEvaporationRecipe(inputFluid, outputFluid);
     }

@@ -149,7 +149,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
     }
 
     @Override
-    public boolean canInsertItem(int i, @Nonnull ItemStack itemStack, @Nonnull Direction side) {
+    public boolean canInsertItem(int i, @Nonnull ItemStack itemStack, @Nullable Direction side) {
         return false;
     }
 

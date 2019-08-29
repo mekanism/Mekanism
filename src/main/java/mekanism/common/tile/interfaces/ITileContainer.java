@@ -1,6 +1,7 @@
 package mekanism.common.tile.interfaces;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.base.ISustainedInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
@@ -65,7 +66,7 @@ public interface ITileContainer extends ISidedInventory, ISustainedInventory {
     }
 
     @Override
-    default boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+    default boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nullable Direction side) {
         return isItemValidForSlot(slotID, itemstack);
     }
 

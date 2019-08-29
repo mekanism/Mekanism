@@ -85,14 +85,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
                     @Override
-                    public boolean isValid(Fluid f) {
+                    public boolean isValid(@Nonnull Fluid f) {
                         //TODO: Is there a better position to use
                         return f.getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, f.getDefaultState());
                     }
                 });
             }
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && fluidTank.getFluid() != null &&
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.getFluid().isEmpty() &&
                 fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidTank.getFluid())) {
                 //TODO: Is there a better position to use
                 if (!finishedCalc) {
@@ -149,7 +149,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         for (Coord4D coord : activeNodes) {
             if (coord.exists(world)) {
                 FluidStack fluid = fluidTank.getFluid();
-                if (canReplace(coord, true, false) && fluid != null) {
+                if (canReplace(coord, true, false) && !fluid.isEmpty()) {
                     world.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlockState(fluid));
                     fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
                 }
@@ -207,7 +207,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         nbtTags.putInt("operatingTicks", operatingTicks);
         nbtTags.putBoolean("finishedCalc", finishedCalc);
 
-        if (fluidTank.getFluid() != null) {
+        if (!fluidTank.getFluid().isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
@@ -309,10 +309,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public void setFluidStack(FluidStack fluidStack, Object... data) {
+    public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
         fluidTank.setFluid(fluidStack);
     }
 
+    @Nonnull
     @Override
     public FluidStack getFluidStack(Object... data) {
         return fluidTank.getFluid();

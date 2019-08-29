@@ -218,7 +218,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
             switch (method) {
                 case 1:
-                    return new Object[]{structure.fluidStored != null ? structure.fluidStored.getAmount() : 0};
+                    return new Object[]{structure.fluidStored.getAmount()};
                 case 2:
                     return new Object[]{structure.clientFlow};
                 case 3:

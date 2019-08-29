@@ -2,6 +2,7 @@ package mekanism.common.content.tank;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -12,12 +13,14 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> {
 
-    public FluidStack fluidStored;
+    @Nonnull
+    public FluidStack fluidStored = FluidStack.EMPTY;
 
     /**
      * For use by rendering segment
      */
-    public FluidStack prevFluid;
+    @Nonnull
+    public FluidStack prevFluid = FluidStack.EMPTY;
     public int prevFluidStage = 0;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -27,17 +30,17 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public Set<ValveData> valves = new HashSet<>();
 
     public boolean needsRenderUpdate() {
-        if ((fluidStored == null && prevFluid != null) || (fluidStored != null && prevFluid == null)) {
+        if ((fluidStored.isEmpty() && !prevFluid.isEmpty()) || (!fluidStored.isEmpty() && prevFluid.isEmpty())) {
             return true;
         }
-        if (fluidStored != null) {
-            int totalStage = (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
-            int currentStage = (int) ((fluidStored.getAmount() / (float) (volume * TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
-            boolean stageChanged = currentStage != prevFluidStage;
-            prevFluidStage = currentStage;
-            return (fluidStored.getFluid() != prevFluid.getFluid()) || stageChanged;
+        if (fluidStored.isEmpty()) {
+            return false;
         }
-        return false;
+        int totalStage = (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
+        int currentStage = (int) ((fluidStored.getAmount() / (float) (volume * TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
+        boolean stageChanged = currentStage != prevFluidStage;
+        prevFluidStage = currentStage;
+        return (fluidStored.getFluid() != prevFluid.getFluid()) || stageChanged;
     }
 
     @Override

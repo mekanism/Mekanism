@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
@@ -100,7 +101,7 @@ public interface MekanismRecipeHelper {
      * @param leftOutput  - left gas to produce when the fluid is electrolyzed
      * @param rightOutput - right gas to produce when the fluid is electrolyzed
      */
-    void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput);
+    void addElectrolyticSeparatorRecipe(@Nonnull FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput);
 
     /**
      * Add a Precision Sawmill recipe.
@@ -155,10 +156,10 @@ public interface MekanismRecipeHelper {
      * @param extraEnergy - extra energy needed by the recipe
      * @param ticks       - amount of ticks it takes for this recipe to complete
      */
-    void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid,
+    void addPRCRecipe(ItemStack inputSolid, @Nonnull FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid,
           GasStack outputGas, double extraEnergy, int ticks);
 
-    void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid);
+    void addThermalEvaporationRecipe(@Nonnull FluidStack inputFluid, @Nonnull FluidStack outputFluid);
 
     void addSolarNeutronRecipe(GasStack inputGas, GasStack outputGas);
 }

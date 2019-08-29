@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
@@ -22,8 +23,10 @@ import net.minecraftforge.fluids.FluidStack;
 @OnlyIn(Dist.CLIENT)
 public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
 
-    private FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
-    private FluidStack WATER = new FluidStack(Fluids.WATER, 1);
+    @Nonnull
+    private static final FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
+    @Nonnull
+    private static final FluidStack WATER = new FluidStack(Fluids.WATER, 1);
 
     @Override
     public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
@@ -31,7 +34,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
             tileEntity.structure.upperRenderLocation != null) {
             FluidStack waterStored = tileEntity.structure.waterStored;
             boolean glChanged = false;
-            if (waterStored != null && waterStored.getAmount() != 0) {
+            if (waterStored.getAmount() > 0) {
                 RenderData data = new RenderData();
                 data.location = tileEntity.structure.renderLocation;
                 data.height = tileEntity.structure.upperRenderLocation.y - 1 - tileEntity.structure.renderLocation.y;
@@ -39,7 +42,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = WATER;
 
-                if (data.height >= 1 && waterStored.getFluid() != null) {
+                if (data.height >= 1 && waterStored.getFluid() != Fluids.EMPTY) {
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.pushMatrix();
                     glChanged = makeGLChanges(glChanged);
@@ -66,7 +69,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 }
             }
 
-            if (tileEntity.structure.steamStored != null && tileEntity.structure.steamStored.getAmount() > 0) {
+            if (tileEntity.structure.steamStored.getAmount() > 0) {
                 RenderData data = new RenderData();
                 data.location = tileEntity.structure.upperRenderLocation;
                 data.height = tileEntity.structure.renderLocation.y + tileEntity.structure.volHeight - 2 - tileEntity.structure.upperRenderLocation.y;
@@ -74,7 +77,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
 
-                if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
+                if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != Fluids.EMPTY) {
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.pushMatrix();
                     glChanged = makeGLChanges(glChanged);

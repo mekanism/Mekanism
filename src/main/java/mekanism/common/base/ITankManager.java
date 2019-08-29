@@ -61,14 +61,14 @@ public interface ITankManager {
                 } else if (tank instanceof FluidTank) {
                     FluidTank fluidTank = (FluidTank) tank;
                     LazyOptionalHelper<FluidStack> fluidStack = new LazyOptionalHelper<>(FluidUtil.getFluidContained(stack));
-                    int dropperStored = fluidStack.getIfPresentElse(fluid -> fluid.getAmount(), 0);
+                    int dropperStored = fluidStack.getIfPresentElse(FluidStack::getAmount, 0);
 
-                    if (fluidStack.matches(fluid -> fluidTank.getFluid() != null && !fluid.isFluidEqual(fluidTank.getFluid()))) {
+                    if (fluidStack.matches(fluid -> !fluidTank.getFluid().isEmpty() && !fluid.isFluidEqual(fluidTank.getFluid()))) {
                         return;
                     }
 
                     if (button == 0) { //Insert fluid into dropper
-                        if (dropper.getGas(stack) != null || fluidTank.getFluid() == null) {
+                        if (dropper.getGas(stack) != null || fluidTank.getFluid().isEmpty()) {
                             return;
                         }
 

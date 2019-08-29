@@ -191,9 +191,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTurbineData> cache, MultiblockCache<SynchronizedTurbineData> merge) {
         TurbineCache turbineCache = (TurbineCache) cache;
         TurbineCache mergeCache = (TurbineCache) merge;
-        if (turbineCache.fluid == null) {
+        if (turbineCache.fluid.isEmpty()) {
             turbineCache.fluid = mergeCache.fluid;
-        } else if (mergeCache.fluid != null && turbineCache.fluid.isFluidEqual(mergeCache.fluid)) {
+        } else if (!mergeCache.fluid.isEmpty() && turbineCache.fluid.isFluidEqual(mergeCache.fluid)) {
             turbineCache.fluid.setAmount(turbineCache.fluid.getAmount() + mergeCache.fluid.getAmount());
         }
         turbineCache.electricity += mergeCache.electricity;
@@ -203,7 +203,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     @Override
     protected void onFormed() {
         super.onFormed();
-        if (structureFound.fluidStored != null) {
+        if (!structureFound.fluidStored.isEmpty()) {
             structureFound.fluidStored.setAmount(Math.min(structureFound.fluidStored.getAmount(), structureFound.getFluidCapacity()));
         }
         structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());

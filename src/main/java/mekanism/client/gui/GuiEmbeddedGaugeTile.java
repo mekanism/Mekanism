@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -22,12 +23,12 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
 
     protected abstract ResourceLocation getGaugeResource();
 
-    protected void displayGauge(int xPos, int yPos, int scale, FluidStack fluid) {
+    protected void displayGauge(int xPos, int yPos, int scale, @Nonnull FluidStack fluid) {
         displayGauge(xPos, yPos, scale, fluid, 0);
     }
 
-    protected void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/) {
-        if (fluid == null) {
+    protected void displayGauge(int xPos, int yPos, int scale, @Nonnull FluidStack fluid, int side /*0-left, 1-right*/) {
+        if (fluid.isEmpty()) {
             return;
         }
         int start = 0;

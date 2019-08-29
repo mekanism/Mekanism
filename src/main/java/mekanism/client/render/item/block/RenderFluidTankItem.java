@@ -42,11 +42,11 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         if (tier == null) {
             return;
         }
-        float fluidScale = (float) (itemFluidTank.getFluidStack(stack) != null ? itemFluidTank.getFluidStack(stack).getAmount() : 0) / itemFluidTank.getCapacity(stack);
         FluidStack fluid = itemFluidTank.getFluidStack(stack);
+        float fluidScale = (float) fluid.getAmount() / itemFluidTank.getCapacity(stack);
 
         GlStateManager.pushMatrix();
-        if (fluid != null && fluidScale > 0) {
+        if (!fluid.isEmpty() && fluidScale > 0) {
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
             GlStateManager.disableLighting();
@@ -86,7 +86,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         GlStateManager.popMatrix();
     }
 
-    private static DisplayInteger[] getListAndRender(FluidStack fluid) {
+    private static DisplayInteger[] getListAndRender(@Nonnull FluidStack fluid) {
         if (cachedCenterFluids.containsKey(fluid)) {
             return cachedCenterFluids.get(fluid);
         }
