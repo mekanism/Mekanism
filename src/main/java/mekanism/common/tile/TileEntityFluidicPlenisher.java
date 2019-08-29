@@ -33,21 +33,24 @@ import mekanism.common.util.TileUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
       IUpgradeTile, IComparatorSupport {
@@ -83,12 +86,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
                     @Override
                     public boolean isValid(Fluid f) {
-                        return f.canBePlacedInWorld();
+                        //TODO: Is there a better position to use
+                        return f.getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, f.getDefaultState());
                     }
                 });
             }
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && fluidTank.getFluid() != null &&
+                fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidTank.getFluid())) {
+                //TODO: Is there a better position to use
                 if (!finishedCalc) {
                     setEnergy(getEnergy() - getEnergyPerTick());
                 }
@@ -100,11 +106,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     } else {
                         Coord4D below = Coord4D.get(this).offset(Direction.DOWN);
 
-                        if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= Fluid.BUCKET_VOLUME) {
-                            if (fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
-                                world.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+                        if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME) {
+                            if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below.getPos(), fluidTank.getFluid())) {
+                                world.setBlockState(below.getPos(), MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
                                 setEnergy(getEnergy() - getEnergyPerTick());
-                                fluidTank.drain(Fluid.BUCKET_VOLUME, true);
+                                fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
                             }
                         }
                     }
@@ -144,8 +150,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             if (coord.exists(world)) {
                 FluidStack fluid = fluidTank.getFluid();
                 if (canReplace(coord, true, false) && fluid != null) {
-                    world.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlock(fluid.getFluid()).getDefaultState(), 3);
-                    fluidTank.drain(Fluid.BUCKET_VOLUME, true);
+                    world.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlockState(fluid));
+                    fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
                 }
 
                 for (Direction dir : dirs) {
@@ -256,7 +262,9 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (slotID == 1) {
             return false;
         } else if (slotID == 0) {
-            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluidStack -> fluidStack.getFluid().canBePlacedInWorld());
+            //TODO: Is there a better position to use
+            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluidStack ->
+                  fluidStack.getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidStack));
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -288,15 +296,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction direction) {
+    public IFluidTank[] getTankInfo(Direction direction) {
         if (direction == Direction.UP) {
-            return new FluidTankInfo[]{fluidTank.getInfo()};
+            return new IFluidTank[]{fluidTank};
         }
         return PipeUtils.EMPTY;
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(Direction.UP);
     }
 
@@ -316,13 +324,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return fluidTank.fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return fluidTank.fill(resource, fluidAction);
     }
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return from == Direction.UP && fluid.getFluid().canBePlacedInWorld();
+        //TODO: Is there a better position to use
+        return from == Direction.UP && fluid.getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluid);
     }
 
     @Override

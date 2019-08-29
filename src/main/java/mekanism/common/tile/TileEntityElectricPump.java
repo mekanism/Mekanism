@@ -24,7 +24,6 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
@@ -36,6 +35,8 @@ import mekanism.common.util.TileUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -43,15 +44,18 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IUpgradeTile, ITankManager,
       IComputerIntegration, IComparatorSupport {
@@ -108,7 +112,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
-                    if (fluidTank.getFluid() == null || fluidTank.getFluid().amount + Fluid.BUCKET_VOLUME <= fluidTank.getCapacity()) {
+                    if (fluidTank.getFluid() == null || fluidTank.getFluid().getAmount() + FluidAttributes.BUCKET_VOLUME <= fluidTank.getCapacity()) {
                         if (!suck(true)) {
                             suckedLastOperation = false;
                             reset();
@@ -128,7 +132,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 TileEntity tileEntity = Coord4D.get(this).offset(Direction.UP).getTileEntity(world);
                 CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
-                    fluidTank.drain(handler.fill(toDrain, true), true);
+                    fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), FluidAction.EXECUTE);
                 });
             }
             int newRedstoneLevel = getRedstoneLevel();
@@ -155,7 +159,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 if (take) {
                     activeType = fluid.getFluid();
                     recurringNodes.add(wrapper);
-                    fluidTank.fill(fluid, true);
+                    fluidTank.fill(fluid, FluidAction.EXECUTE);
                     if (shouldTake(fluid, wrapper)) {
                         world.removeBlock(wrapper.getPos(), false);
                     }
@@ -171,7 +175,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid))) {
                 if (take) {
                     activeType = fluid.getFluid();
-                    fluidTank.fill(fluid, true);
+                    fluidTank.fill(fluid, FluidAction.EXECUTE);
                     if (shouldTake(fluid, wrapper)) {
                         world.removeBlock(wrapper.getPos(), false);
                     }
@@ -188,7 +192,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                         if (take) {
                             activeType = fluid.getFluid();
                             recurringNodes.add(side);
-                            fluidTank.fill(fluid, true);
+                            fluidTank.fill(fluid, FluidAction.EXECUTE);
                             if (shouldTake(fluid, side)) {
                                 world.removeBlock(side.getPos(), false);
                             }
@@ -208,7 +212,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     private boolean shouldTake(FluidStack fluid, Coord4D coord) {
-        if (fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater) {
+        if (fluid.getFluid() == Fluids.WATER || fluid.getFluid() == MekanismFluids.HEAVY_WATER) {
             return MekanismConfig.general.pumpWaterSources.get();
         }
         return true;
@@ -237,7 +241,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         nbtTags.putBoolean("suckedLastOperation", suckedLastOperation);
 
         if (activeType != null) {
-            nbtTags.putString("activeType", FluidRegistry.getFluidName(activeType));
+            //TODO: If active type is empty handle things?
+            nbtTags.putString("activeType", ForgeRegistries.FLUIDS.getKey(activeType).toString());
         }
 
         if (fluidTank.getFluid() != null) {
@@ -262,7 +267,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         operatingTicks = nbtTags.getInt("operatingTicks");
         suckedLastOperation = nbtTags.getBoolean("suckedLastOperation");
         if (nbtTags.contains("activeType")) {
-            activeType = FluidRegistry.getFluid(nbtTags.getString("activeType"));
+            //TODO: Can this return null? If so set it to empty instead
+            activeType = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbtTags.getString("activeType")));
         }
         if (nbtTags.contains("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
@@ -311,15 +317,15 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction direction) {
+    public IFluidTank[] getTankInfo(Direction direction) {
         if (direction == Direction.UP) {
-            return new FluidTankInfo[]{fluidTank.getInfo()};
+            return new IFluidTank[]{fluidTank};
         }
         return PipeUtils.EMPTY;
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(Direction.UP);
     }
 
@@ -340,8 +346,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     @Override
     @Nullable
-    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
-        return fluidTank.drain(maxDrain, doDrain);
+    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
+        return fluidTank.drain(maxDrain, fluidAction);
     }
 
     @Override

@@ -9,11 +9,12 @@ import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.common.MekanismFluids;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.fluid.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,8 +22,8 @@ import net.minecraftforge.fluids.FluidStack;
 @OnlyIn(Dist.CLIENT)
 public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
 
-    private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
-    private FluidStack WATER = new FluidStack(FluidRegistry.WATER, 1);
+    private FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
+    private FluidStack WATER = new FluidStack(Fluids.WATER, 1);
 
     @Override
     public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
@@ -30,7 +31,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
             tileEntity.structure.upperRenderLocation != null) {
             FluidStack waterStored = tileEntity.structure.waterStored;
             boolean glChanged = false;
-            if (waterStored != null && waterStored.amount != 0) {
+            if (waterStored != null && waterStored.getAmount() != 0) {
                 RenderData data = new RenderData();
                 data.location = tileEntity.structure.renderLocation;
                 data.height = tileEntity.structure.upperRenderLocation.y - 1 - tileEntity.structure.renderLocation.y;
@@ -44,8 +45,8 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                     glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
-                    MekanismRenderer.color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
-                    if (waterStored.getFluid().isGaseous(waterStored)) {
+                    MekanismRenderer.color(waterStored, (float) waterStored.getAmount() / (float) tileEntity.clientWaterCapacity);
+                    if (waterStored.getFluid().getAttributes().isGaseous(waterStored)) {
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
@@ -65,7 +66,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 }
             }
 
-            if (tileEntity.structure.steamStored != null && tileEntity.structure.steamStored.amount > 0) {
+            if (tileEntity.structure.steamStored != null && tileEntity.structure.steamStored.getAmount() > 0) {
                 RenderData data = new RenderData();
                 data.location = tileEntity.structure.upperRenderLocation;
                 data.height = tileEntity.structure.renderLocation.y + tileEntity.structure.volHeight - 2 - tileEntity.structure.upperRenderLocation.y;
@@ -81,7 +82,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
-                    MekanismRenderer.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity);
+                    MekanismRenderer.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.getAmount() / (float) tileEntity.clientSteamCapacity);
                     display.render();
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);

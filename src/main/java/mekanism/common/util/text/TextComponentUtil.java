@@ -5,12 +5,12 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
@@ -49,9 +49,9 @@ public class TextComponentUtil {
             } else if (component instanceof Item) {
                 current = translate(((Item) component).getTranslationKey());
             } else if (component instanceof FluidStack) {
-                current = translate(((FluidStack) component).getUnlocalizedName());
+                current = translate(((FluidStack) component).getTranslationKey());
             } else if (component instanceof Fluid) {
-                current = translate(((Fluid) component).getUnlocalizedName());
+                current = translate(((Fluid) component).getAttributes().getTranslationKey());
             } else if (component instanceof Boolean || component instanceof Number) {
                 //Put actual boolean or integer/double, etc value
                 current = getString(component.toString());

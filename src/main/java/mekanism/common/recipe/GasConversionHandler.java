@@ -38,11 +38,11 @@ public class GasConversionHandler {
         ItemTags.Wrapper salt = new ItemTags.Wrapper(new ResourceLocation("forge", "dusts/salt"));
         ItemTags.Wrapper osmiumIngot = new ItemTags.Wrapper(new ResourceLocation("forge", "ingots/osmium"));
         ItemTags.Wrapper osmiumBlock = new ItemTags.Wrapper(new ResourceLocation("forge", "storage_blocks/osmium"));
-        addGasMapping(new ItemStack(Items.FLINT), MekanismFluids.Oxygen, 10);
-        addGasMapping(sulfur, MekanismFluids.SulfuricAcid, 2);
-        addGasMapping(salt, MekanismFluids.HydrogenChloride, 2);
-        addGasMapping(osmiumIngot, MekanismFluids.LiquidOsmium, 200);
-        addGasMapping(osmiumBlock, MekanismFluids.LiquidOsmium, 1_800);
+        addGasMapping(new ItemStack(Items.FLINT), MekanismFluids.OXYGEN, 10);
+        addGasMapping(sulfur, MekanismFluids.SULFURIC_ACID, 2);
+        addGasMapping(salt, MekanismFluids.HYDROGEN_CHLORIDE, 2);
+        addGasMapping(osmiumIngot, MekanismFluids.LIQUID_OSMIUM, 200);
+        addGasMapping(osmiumBlock, MekanismFluids.LIQUID_OSMIUM, 1_800);
     }
 
     public static boolean addGasMapping(@Nonnull ItemStack stack, @Nonnull Gas gas, int amount) {

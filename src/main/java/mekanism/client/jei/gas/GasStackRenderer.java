@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import org.lwjgl.opengl.GL11;
 
 public class GasStackRenderer implements IIngredientRenderer<GasStack> {
@@ -39,7 +39,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     private final IDrawable overlay;
 
     public GasStackRenderer() {
-        this(Fluid.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEX_WIDTH, TEX_HEIGHT, null);
+        this(FluidAttributes.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEX_WIDTH, TEX_HEIGHT, null);
     }
 
     public GasStackRenderer(int capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay) {

@@ -31,12 +31,11 @@ import mekanism.common.recipe.outputs.GasOutput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.temporary.ILiquidStack;
 import mekanism.common.temporary.IngredientAny;
 import mekanism.common.temporary.MCLiquidStack;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class IngredientHelper {
@@ -156,7 +155,8 @@ public class IngredientHelper {
     }
 
     public static FluidStack toFluid(ILiquidStack fluid) {
-        return fluid == null ? null : FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount());
+        //TODO: Fluids CrT
+        return FluidStack.EMPTY;//fluid == null ? FluidStack.EMPTY : FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount());
     }
 
     public static ILiquidStack getILiquidStack(FluidStack fluidStack) {

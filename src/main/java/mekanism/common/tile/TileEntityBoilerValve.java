@@ -11,18 +11,19 @@ import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration, IComparatorSupport {
 
@@ -42,13 +43,13 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
         super.onUpdate();
         if (!world.isRemote) {
             if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
-                if (structure.steamStored != null && structure.steamStored.amount > 0) {
+                if (structure.steamStored != null && structure.steamStored.getAmount() > 0) {
                     EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                         if (!(tile instanceof TileEntityBoilerValve)) {
                             CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                                 if (PipeUtils.canFill(handler, structure.steamStored)) {
-                                    structure.steamStored.amount -= handler.fill(structure.steamStored, true);
-                                    if (structure.steamStored.amount <= 0) {
+                                    structure.steamStored.setAmount(structure.steamStored.getAmount() - handler.fill(structure.steamStored, FluidAction.EXECUTE));
+                                    if (structure.steamStored.getAmount() <= 0) {
                                         structure.steamStored = null;
                                     }
                                 }
@@ -66,36 +67,36 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
-                return new FluidTankInfo[]{steamTank.getInfo()};
+                return new IFluidTank[]{steamTank};
             }
-            return new FluidTankInfo[]{waterTank.getInfo()};
+            return new IFluidTank[]{waterTank};
         }
         return PipeUtils.EMPTY;
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
-        return new FluidTankInfo[]{steamTank.getInfo(), waterTank.getInfo()};
+    public IFluidTank[] getAllTanks() {
+        return new IFluidTank[]{steamTank, waterTank};
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return waterTank.fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return waterTank.fill(resource, fluidAction);
     }
 
     @Override
     @Nullable
-    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
-        return steamTank.drain(maxDrain, doDrain);
+    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
+        return steamTank.drain(maxDrain, fluidAction);
     }
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1 && fluid.getFluid() == FluidRegistry.WATER;
+            return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1 && fluid.getFluid() == Fluids.WATER;
         }
         return false;
     }
@@ -123,9 +124,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
             }
             switch (method) {
                 case 1:
-                    return new Object[]{structure.steamStored != null ? structure.steamStored.amount : 0};
+                    return new Object[]{structure.steamStored != null ? structure.steamStored.getAmount() : 0};
                 case 2:
-                    return new Object[]{structure.waterStored != null ? structure.waterStored.amount : 0};
+                    return new Object[]{structure.waterStored != null ? structure.waterStored.getAmount() : 0};
                 case 3:
                     return new Object[]{structure.lastBoilRate};
                 case 4:

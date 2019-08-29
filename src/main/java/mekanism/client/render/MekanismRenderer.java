@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -41,7 +42,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
@@ -90,9 +90,9 @@ public class MekanismRenderer {
 
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
-            spriteLocation = fluid.getStill();
+            spriteLocation = fluid.getAttributes().getStillTexture();
         } else {
-            spriteLocation = fluid.getFlowing();
+            spriteLocation = fluid.getAttributes().getFlowingTexture();
         }
 
         return getTextureAtlasSprite(spriteLocation);
@@ -106,9 +106,9 @@ public class MekanismRenderer {
         Fluid fluid = fluidStack.getFluid();
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
-            spriteLocation = fluid.getStill(fluidStack);
+            spriteLocation = fluid.getAttributes().getStill(fluidStack);
         } else {
-            spriteLocation = fluid.getFlowing(fluidStack);
+            spriteLocation = fluid.getAttributes().getFlowing(fluidStack);
         }
         return getTextureAtlasSprite(spriteLocation);
     }
@@ -219,8 +219,8 @@ public class MekanismRenderer {
 
     public static void color(@Nullable FluidStack fluid, float fluidScale) {
         if (fluid != null) {
-            int color = fluid.getFluid().getColor(fluid);
-            if (fluid.getFluid().isGaseous(fluid)) {
+            int color = fluid.getFluid().getAttributes().getColor(fluid);
+            if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
                 GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
             } else {
                 color(color);
@@ -230,13 +230,13 @@ public class MekanismRenderer {
 
     public static void color(@Nullable FluidStack fluid) {
         if (fluid != null && fluid.getFluid() != null) {
-            color(fluid.getFluid().getColor(fluid));
+            color(fluid.getFluid().getAttributes().getColor(fluid));
         }
     }
 
     public static void color(@Nullable Fluid fluid) {
         if (fluid != null) {
-            color(fluid.getColor());
+            color(fluid.getAttributes().getColor());
         }
     }
 
@@ -303,12 +303,12 @@ public class MekanismRenderer {
 
     @Nonnull
     public static GlowInfo enableGlow(@Nullable FluidStack fluid) {
-        return fluid == null ? NO_GLOW : enableGlow(fluid.getFluid().getLuminosity(fluid));
+        return fluid == null ? NO_GLOW : enableGlow(fluid.getFluid().getAttributes().getLuminosity(fluid));
     }
 
     @Nonnull
     public static GlowInfo enableGlow(@Nullable Fluid fluid) {
-        return fluid == null ? NO_GLOW : enableGlow(fluid.getLuminosity());
+        return fluid == null ? NO_GLOW : enableGlow(fluid.getAttributes().getLuminosity());
     }
 
     public static void disableGlow(@Nonnull GlowInfo info) {

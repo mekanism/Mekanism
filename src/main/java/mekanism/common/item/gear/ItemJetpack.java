@@ -117,7 +117,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-        if (stack.getGas() != MekanismFluids.Hydrogen) {
+        if (stack.getGas() != MekanismFluids.HYDROGEN) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
@@ -136,7 +136,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public boolean canReceiveGas(ItemStack itemstack, Gas type) {
-        return type == MekanismFluids.Hydrogen;
+        return type == MekanismFluids.HYDROGEN;
     }
 
     @Override
@@ -175,7 +175,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismFluids.Hydrogen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, new GasStack(MekanismFluids.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

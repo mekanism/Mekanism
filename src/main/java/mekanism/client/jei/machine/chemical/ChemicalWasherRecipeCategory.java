@@ -5,7 +5,6 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.WasherRecipe;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -13,6 +12,7 @@ import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.fluid.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory<WasherRecipe> {
@@ -34,7 +34,7 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory<WasherRecip
 
     @Override
     public void setIngredients(WasherRecipe recipe, IIngredients ingredients) {
-        ingredients.setInput(VanillaTypes.FLUID, new FluidStack(FluidRegistry.WATER, TileEntityChemicalWasher.WATER_USAGE));
+        ingredients.setInput(VanillaTypes.FLUID, new FluidStack(Fluids.WATER, TileEntityChemicalWasher.WATER_USAGE));
         ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.ingredient);
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
     }

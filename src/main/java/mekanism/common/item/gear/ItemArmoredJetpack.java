@@ -43,7 +43,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismFluids.Hydrogen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, new GasStack(MekanismFluids.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

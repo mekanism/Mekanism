@@ -5,16 +5,17 @@ import javax.annotation.Nullable;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class FluidContainerUtils {
@@ -47,21 +48,21 @@ public final class FluidContainerUtils {
         if (handler == null) {
             return null;
         }
-        FluidStack fluidStack = handler.drain(Integer.MAX_VALUE, false);
+        FluidStack fluidStack = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
         if (fluidStack == null) {
             return null;
         }
         if (checker != null && !checker.isValid(fluidStack.getFluid())) {
             return null;
         }
-        return handler.drain(needed, true);
+        return handler.drain(needed, FluidAction.EXECUTE);
     }
 
     public static int insertFluid(FluidStack fluid, IFluidHandler handler) {
         if (fluid == null || handler == null) {
             return 0;
         }
-        return handler.fill(fluid, true);
+        return handler.fill(fluid, FluidAction.EXECUTE);
     }
 
     public static void handleContainerItemFill(TileEntityMekanism tileEntity, FluidTank tank, int inSlot, int outSlot) {
@@ -82,7 +83,7 @@ public final class FluidContainerUtils {
                                                       inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize())) {
                 return stack;
             }
-            stack.amount -= drained;
+            stack.setAmount(stack.getAmount() - drained);
             if (inventory.get(outSlot).isEmpty()) {
                 inventory.set(outSlot, inputCopy);
             } else if (ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy)) {
@@ -131,9 +132,9 @@ public final class FluidContainerUtils {
             if (stored == null) {
                 stored = ret;
             } else {
-                stored.amount += ret.amount;
+                stored.setAmount(stored.getAmount() + ret.getAmount());
             }
-            needed -= ret.amount;
+            needed -= ret.getAmount();
             tileEntity.markDirty();
         }
 

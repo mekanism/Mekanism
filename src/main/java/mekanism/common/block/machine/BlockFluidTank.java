@@ -57,6 +57,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>, IHasInventory,
       IHasTileEntity<TileEntityFluidTank>, IBlockDisableable, ISupportsComparator {
@@ -147,7 +148,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                             return false;
                         }
                         boolean filled = false;
-                        FluidStack drained = handler.drain(needed, !player.isCreative());
+                        FluidStack drained = handler.drain(needed, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                         ItemStack container = handler.getContainer();
                         if (container.getCount() == 0) {
                             container = ItemStack.EMPTY;
@@ -175,11 +176,11 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                             if (filled) {
                                 int toFill = tileEntity.fluidTank.getCapacity() - tileEntity.fluidTank.getFluidAmount();
                                 if (tileEntity.tier != FluidTankTier.CREATIVE) {
-                                    toFill = Math.min(toFill, drained.amount);
+                                    toFill = Math.min(toFill, drained.getAmount());
                                 }
-                                tileEntity.fluidTank.fill(PipeUtils.copy(drained, toFill), true);
-                                if (drained.amount - toFill > 0) {
-                                    tileEntity.pushUp(PipeUtils.copy(itemFluid, drained.amount - toFill), true);
+                                tileEntity.fluidTank.fill(PipeUtils.copy(drained, toFill), FluidAction.EXECUTE);
+                                if (drained.getAmount() - toFill > 0) {
+                                    tileEntity.pushUp(PipeUtils.copy(itemFluid, drained.getAmount() - toFill), FluidAction.EXECUTE);
                                 }
                                 return true;
                             }
@@ -188,7 +189,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                     },
                     () -> {
                         if (tileEntity.fluidTank.getFluid() != null) {
-                            int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.isCreative());
+                            int filled = handler.fill(tileEntity.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                             ItemStack container = handler.getContainer();
                             if (filled > 0) {
                                 if (itemStack.getCount() == 1) {
@@ -200,7 +201,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                                     itemStack.shrink(1);
                                 }
                                 if (tileEntity.tier != FluidTankTier.CREATIVE) {
-                                    tileEntity.fluidTank.drain(filled, true);
+                                    tileEntity.fluidTank.drain(filled, FluidAction.EXECUTE);
                                 }
                                 return true;
                             }

@@ -31,6 +31,7 @@ import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -38,11 +39,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, IUpgradeInfoHandler, ITankManager,
       IComparatorSupport {
@@ -80,13 +81,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 }
 
                 if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
-                    (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
+                    (fluidTank.getFluid() == null || (fluidTank.getFluid().getAmount() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
                     setActive(true);
-                    //TODO:
-                    //fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), operations), true);
+                    fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), operations), FluidAction.EXECUTE);
                     gasTank.draw(operations, true);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
@@ -108,7 +108,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
                     setActive(true);
                     gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
-                    fluidTank.drain(operations, true);
+                    fluidTank.drain(operations, FluidAction.EXECUTE);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
                 } else if (prevEnergy >= getEnergy()) {
@@ -141,9 +141,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     public boolean gasEquals(GasStack gas, FluidStack fluid) {
-        //TODO: Fluids
-        return fluid != null && gas != null && gas.getGas().hasFluid();// && gas.getGas().getFluid() == fluid.getFluid();
-
+        return fluid != null && gas != null && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
     }
 
     public boolean isValidFluid(@Nonnull Fluid f) {
@@ -274,14 +272,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return fluidTank.fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return fluidTank.fill(resource, fluidAction);
     }
 
     @Override
     @Nullable
-    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
-        return fluidTank.drain(maxDrain, doDrain);
+    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
+        return fluidTank.drain(maxDrain, fluidAction);
     }
 
     @Override
@@ -295,16 +293,16 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         if (from == getRightSide()) {
-            return new FluidTankInfo[]{fluidTank.getInfo()};
+            return getAllTanks();
         }
         return PipeUtils.EMPTY;
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
-        return new FluidTankInfo[]{fluidTank.getInfo()};
+    public IFluidTank[] getAllTanks() {
+        return new IFluidTank[]{fluidTank};
     }
 
     @Override

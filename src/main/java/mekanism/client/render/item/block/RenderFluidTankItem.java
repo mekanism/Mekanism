@@ -42,7 +42,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         if (tier == null) {
             return;
         }
-        float fluidScale = (float) (itemFluidTank.getFluidStack(stack) != null ? itemFluidTank.getFluidStack(stack).amount : 0) / itemFluidTank.getCapacity(stack);
+        float fluidScale = (float) (itemFluidTank.getFluidStack(stack) != null ? itemFluidTank.getFluidStack(stack).getAmount() : 0) / itemFluidTank.getCapacity(stack);
         FluidStack fluid = itemFluidTank.getFluidStack(stack);
 
         GlStateManager.pushMatrix();
@@ -65,7 +65,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             }
 
             MekanismRenderer.color(fluid, fluidScale);
-            if (fluid.getFluid().isGaseous(fluid)) {
+            if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
@@ -101,7 +101,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         for (int i = 0; i < stages; i++) {
             displays[i] = DisplayInteger.createAndStart();
 
-            if (fluid.getFluid().getStill(fluid) != null) {
+            if (fluid.getFluid().getAttributes().getStill(fluid) != null) {
                 toReturn.minX = 0.125 + .01;
                 toReturn.minY = 0.0625 + .01;
                 toReturn.minZ = 0.125 + .01;

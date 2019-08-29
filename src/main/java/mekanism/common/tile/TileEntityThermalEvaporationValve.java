@@ -16,8 +16,9 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandlerWrapper, IHeatTransfer, IComparatorSupport {
 
@@ -50,16 +51,16 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
+        return controller == null ? 0 : controller.inputTank.fill(resource, fluidAction);
     }
 
     @Override
     @Nullable
-    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller == null ? null : controller.outputTank.drain(maxDrain, doDrain);
+        return controller == null ? null : controller.outputTank.drain(maxDrain, fluidAction);
     }
 
     @Override
@@ -75,16 +76,16 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         TileEntityThermalEvaporationController controller = getController();
         if (controller == null) {
             return PipeUtils.EMPTY;
         }
-        return new FluidTankInfo[]{new FluidTankInfo(controller.inputTank), new FluidTankInfo(controller.outputTank)};
+        return new IFluidTank[]{controller.inputTank, controller.outputTank};
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(null);
     }
 

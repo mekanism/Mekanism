@@ -6,44 +6,62 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class FluidItemWrapper extends ItemCapability implements IFluidHandlerItem {
 
     @Override
-    public FluidTankProperties[] getTankProperties() {
-        return new FluidTankProperties[]{new FluidTankProperties(getItem().getFluid(getStack()), getItem().getCapacity(getStack()))};
+    public int getTanks() {
+        return 1;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack getFluidInTank(int tank) {
+        //TODO: Multiple tanks/check the tank
+        return getItem().getFluid(getStack());
     }
 
     @Override
-    public int fill(FluidStack resource, boolean doFill) {
+    public int getTankCapacity(int tank) {
+        return getItem().getCapacity(getStack());
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+        FluidStack fluidInTank = getFluidInTank(tank);
+        //TODO: Better check?
+        return fluidInTank.isEmpty() || fluidInTank.isFluidEqual(stack);
+    }
+
+    @Override
+    public int fill(@Nonnull FluidStack resource, FluidAction fluidAction) {
         if (getStack().getCount() != 1) {
             return 0;
         }
-        return getItem().fill(getStack(), resource, doFill);
+        return getItem().fill(getStack(), resource, fluidAction);
     }
 
+    @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
-        if (getStack().getCount() != 1 || resource == null) {
-            return null;
+    public FluidStack drain(@Nonnull FluidStack resource, FluidAction fluidAction) {
+        if (getStack().getCount() != 1 || resource.isEmpty()) {
+            return FluidStack.EMPTY;
         }
-        FluidStack canDrain = drain(resource.amount, false);
-        if (canDrain != null) {
-            if (canDrain.isFluidEqual(resource)) {
-                return drain(resource.amount, doDrain);
-            }
+        FluidStack canDrain = drain(resource.getAmount(), FluidAction.SIMULATE);
+        if (!canDrain.isEmpty() && canDrain.isFluidEqual(resource)) {
+            return drain(resource.getAmount(), fluidAction);
         }
-        return null;
+        return FluidStack.EMPTY;
     }
 
+    @Nonnull
     @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
+    public FluidStack drain(int maxDrain, FluidAction fluidAction) {
         if (getStack().getCount() != 1) {
-            return null;
+            return FluidStack.EMPTY;
         }
-        return getItem().drain(getStack(), maxDrain, doDrain);
+        return getItem().drain(getStack(), maxDrain, fluidAction);
     }
 
     @Nonnull

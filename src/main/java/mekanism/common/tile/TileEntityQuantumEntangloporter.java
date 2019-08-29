@@ -56,8 +56,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
       IGasHandler, IHeatTransfer, IComputerIntegration, IChunkLoader, IUpgradeTile {
@@ -357,14 +358,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return frequency.storedFluid.fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return frequency.storedFluid.fill(resource, fluidAction);
     }
 
     @Override
     @Nullable
-    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
-        return frequency.storedFluid.drain(maxDrain, doDrain);
+    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
+        return frequency.storedFluid.drain(maxDrain, fluidAction);
     }
 
     @Override
@@ -384,18 +385,18 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         if (hasFrequency()) {
             if (configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState != IOState.OFF) {
-                return new FluidTankInfo[]{frequency.storedFluid.getInfo()};
+                return new IFluidTank[]{frequency.storedFluid};
             }
         }
         return PipeUtils.EMPTY;
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
-        return hasFrequency() ? new FluidTankInfo[]{frequency.storedFluid.getInfo()} : PipeUtils.EMPTY;
+    public IFluidTank[] getAllTanks() {
+        return hasFrequency() ? new IFluidTank[]{frequency.storedFluid} : PipeUtils.EMPTY;
     }
 
     @Override

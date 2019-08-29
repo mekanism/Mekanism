@@ -16,7 +16,6 @@ import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
@@ -31,6 +30,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -53,8 +53,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem,
       IItemNetwork, ITieredItem<FluidTankTier> {
@@ -78,7 +79,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         FluidStack fluidStack = getFluidStack(itemstack);
         if (fluidStack != null) {
-            int amount = fluidStack.amount;
+            int amount = fluidStack.getAmount();
             if (amount == Integer.MAX_VALUE) {
                 tooltip.add(TextComponentUtil.build(EnumColor.PINK, fluidStack, ": ", EnumColor.GRAY, amount + "mB"));
             } else {
@@ -128,7 +129,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     }
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, BlockPos pos) {
-        if (getFluidStack(itemstack) == null || !getFluidStack(itemstack).getFluid().canBePlacedInWorld()) {
+        FluidStack fluidStack = getFluidStack(itemstack);
+        if (fluidStack == null || !fluidStack.getFluid().getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
             return false;
         }
         Material material = world.getBlockState(pos).getMaterial();
@@ -136,7 +138,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (!world.isAirBlock(pos) && !flag) {
             return false;
         }
-        if (world.getDimension().doesWaterVaporize() && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER) {
+        if (world.getDimension().doesWaterVaporize() && fluidStack.getFluid() == Fluids.WATER) {
             world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
                   2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
             for (int l = 0; l < 8; l++) {
@@ -147,7 +149,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
             if (!world.isRemote && flag && !material.isLiquid()) {
                 world.destroyBlock(pos, true);
             }
-            world.setBlockState(pos, MekanismUtils.getFlowingBlock(getFluidStack(itemstack).getFluid()).getDefaultState(), 3);
+            world.setBlockState(pos, MekanismUtils.getFlowingBlockState(fluidStack));
         }
         return true;
     }
@@ -173,22 +175,22 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                         }
                         FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
                         if (fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid))) {
-                            int needed = getCapacity(itemstack) - (getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0);
-                            if (fluid.amount > needed) {
+                            int needed = getCapacity(itemstack) - (getFluidStack(itemstack) != null ? getFluidStack(itemstack).getAmount() : 0);
+                            if (fluid.getAmount() > needed) {
                                 return new ActionResult<>(ActionResultType.FAIL, itemstack);
                             }
                             if (getFluidStack(itemstack) == null) {
                                 setFluidStack(fluid, itemstack);
                             } else {
                                 FluidStack newStack = getFluidStack(itemstack);
-                                newStack.amount += fluid.amount;
+                                newStack.setAmount(newStack.getAmount() + fluid.getAmount());
                                 setFluidStack(newStack, itemstack);
                             }
                             world.removeBlock(coord.getPos(), false);
                         }
                     } else {
                         FluidStack stored = getFluidStack(itemstack);
-                        if (stored == null || stored.amount < Fluid.BUCKET_VOLUME) {
+                        if (stored == null || stored.getAmount() < FluidAttributes.BUCKET_VOLUME) {
                             return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
                         Coord4D trans = coord.offset(pos.getFace());
@@ -198,8 +200,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                         if (tryPlaceContainedLiquid(world, itemstack, trans.getPos())
                             && !entityplayer.isCreative()) {
                             FluidStack newStack = stored.copy();
-                            newStack.amount -= Fluid.BUCKET_VOLUME;
-                            setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
+                            newStack.setAmount(newStack.getAmount() - FluidAttributes.BUCKET_VOLUME);
+                            setFluidStack(newStack.getAmount() > 0 ? newStack : null, itemstack);
                         }
                     }
                 }
@@ -231,11 +233,11 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     }
 
     @Override
-    public int fill(ItemStack container, FluidStack resource, boolean doFill) {
+    public int fill(ItemStack container, FluidStack resource, FluidAction fluidAction) {
         if (resource != null) {
             if (getBaseTier(container) == BaseTier.CREATIVE) {
                 setFluidStack(PipeUtils.copy(resource, Integer.MAX_VALUE), container);
-                return resource.amount;
+                return resource.getAmount();
             }
             FluidStack stored = getFluidStack(container);
             int toFill;
@@ -243,12 +245,12 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                 return 0;
             }
             if (stored == null) {
-                toFill = Math.min(resource.amount, getCapacity(container));
+                toFill = Math.min(resource.getAmount(), getCapacity(container));
             } else {
-                toFill = Math.min(resource.amount, getCapacity(container) - stored.amount);
+                toFill = Math.min(resource.getAmount(), getCapacity(container) - stored.getAmount());
             }
-            if (doFill) {
-                int fillAmount = toFill + (stored == null ? 0 : stored.amount);
+            if (fluidAction.execute()) {
+                int fillAmount = toFill + (stored == null ? 0 : stored.getAmount());
                 setFluidStack(PipeUtils.copy(resource, fillAmount), container);
             }
             return toFill;
@@ -257,13 +259,13 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     }
 
     @Override
-    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
+    public FluidStack drain(ItemStack container, int maxDrain, FluidAction fluidAction) {
         FluidStack stored = getFluidStack(container);
         if (stored != null) {
-            FluidStack toDrain = PipeUtils.copy(stored, Math.min(stored.amount, maxDrain));
-            if (doDrain && getBaseTier(container) != BaseTier.CREATIVE) {
-                stored.amount -= toDrain.amount;
-                setFluidStack(stored.amount > 0 ? stored : null, container);
+            FluidStack toDrain = PipeUtils.copy(stored, Math.min(stored.getAmount(), maxDrain));
+            if (fluidAction.execute() && getBaseTier(container) != BaseTier.CREATIVE) {
+                stored.setAmount(stored.getAmount() - toDrain.getAmount());
+                setFluidStack(stored.getAmount() > 0 ? stored : null, container);
             }
             return toDrain;
         }

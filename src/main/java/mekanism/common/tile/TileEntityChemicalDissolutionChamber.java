@@ -217,7 +217,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     private boolean isValidGas(Gas gas) {
         //TODO: Replace with commented version once this becomes an AdvancedMachine
-        return gas == MekanismFluids.SulfuricAcid;//Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(gas);
+        return gas == MekanismFluids.SULFURIC_ACID;//Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(gas);
     }
 
     @Override

@@ -42,9 +42,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedOutput, PressurizedRecipe> implements IFluidHandlerWrapper, IGasHandler,
       ISustainedData, ITankManager {
@@ -236,8 +237,8 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return inputFluidTank.fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return inputFluidTank.fill(resource, fluidAction);
     }
 
     @Override
@@ -250,14 +251,14 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         SideData data = configComponent.getOutput(TransmissionType.FLUID, from, getDirection());
         return data.getFluidTankInfo(this);
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
-        return new FluidTankInfo[]{inputFluidTank.getInfo()};
+    public IFluidTank[] getAllTanks() {
+        return new IFluidTank[]{inputFluidTank};
     }
 
     @Override

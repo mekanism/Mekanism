@@ -12,7 +12,7 @@ public class PurificationRecipe extends AdvancedMachineRecipe<PurificationRecipe
     }
 
     public PurificationRecipe(ItemStack input, ItemStack output) {
-        super(input, MekanismFluids.Oxygen, output);
+        super(input, MekanismFluids.OXYGEN, output);
     }
 
     @Override

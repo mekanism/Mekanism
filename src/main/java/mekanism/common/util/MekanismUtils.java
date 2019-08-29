@@ -27,7 +27,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.item.block.ItemBlockGasTank;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -41,6 +40,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -63,9 +64,10 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.UsernameCache;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -557,15 +559,15 @@ public final class MekanismUtils {
         Block block = state.getBlock();
         if (block == Blocks.WATER && state.get(FlowingFluidBlock.LEVEL) == 0) {
             if (!filter) {
-                return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
+                return new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
             }
-            return new FluidStack(MekanismFluids.HeavyWater, 10);
+            return new FluidStack(MekanismFluids.HEAVY_WATER, 10);
         } else if (block == Blocks.LAVA && state.get(FlowingFluidBlock.LEVEL) == 0) {
-            return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
+            return new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME);
         } else if (block instanceof IFluidBlock) {
             IFluidBlock fluid = (IFluidBlock) block;
             if (state.getProperties().contains(FlowingFluidBlock.LEVEL) && state.get(FlowingFluidBlock.LEVEL) == 0) {
-                return fluid.drain(world, pos.getPos(), false);
+                return fluid.drain(world, pos.getPos(), FluidAction.SIMULATE);
             }
         }
         return null;
@@ -589,19 +591,28 @@ public final class MekanismUtils {
     /**
      * Gets the flowing block type from a Forge-based fluid. Incorporates the MC system of fliuds as well.
      *
-     * @param fluid - the fluid type
+     * @param fluidStack - the fluid type
      *
      * @return the block corresponding to the given fluid
      */
-    public static Block getFlowingBlock(Fluid fluid) {
-        if (fluid == null) {
-            return null;
-        } else if (fluid == FluidRegistry.WATER) {
-            return Blocks.WATER;
-        } else if (fluid == FluidRegistry.LAVA) {
-            return Blocks.LAVA;
+    public static BlockState getFlowingBlockState(@Nonnull FluidStack fluidStack) {
+        if (fluidStack.isEmpty()) {
+            return Blocks.AIR.getDefaultState();
         }
-        return fluid.getBlock();
+        Fluid fluid = fluidStack.getFluid();
+        if (fluid == Fluids.WATER) {
+            //TODO: Is this needed
+            return Blocks.WATER.getDefaultState();
+        } else if (fluid == Fluids.LAVA) {
+            //TODO: Is this needed
+            return Blocks.LAVA.getDefaultState();
+        }
+        //TODO: Do we want to check the flowing one
+        /*if (fluid instanceof FlowingFluid) {
+            //TODO: Is this correct
+            fluid = ((FlowingFluid) fluid).getFlowingFluid();
+        }*/
+        return fluid.getDefaultState().getBlockState();
     }
 
     /**

@@ -6,7 +6,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ITankManager;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class SideData implements IHasTranslationKey {
@@ -59,18 +58,18 @@ public class SideData implements IHasTranslationKey {
         return false;
     }
 
-    public FluidTankInfo[] getFluidTankInfo(ITankManager manager) {
+    public IFluidTank[] getFluidTankInfo(ITankManager manager) {
         Object[] tanks = manager.getTanks();
-        List<FluidTankInfo> infos = new ArrayList<>();
+        List<IFluidTank> infos = new ArrayList<>();
         if (tanks == null) {
-            return infos.toArray(new FluidTankInfo[]{});
+            return infos.toArray(new IFluidTank[]{});
         }
         for (int slot : availableSlots) {
             if (slot <= tanks.length - 1 && tanks[slot] instanceof IFluidTank) {
-                infos.add(((IFluidTank) tanks[slot]).getInfo());
+                infos.add(((IFluidTank) tanks[slot]));
             }
         }
-        return infos.toArray(new FluidTankInfo[]{});
+        return infos.toArray(new IFluidTank[]{});
     }
 
     public GasTank getGasTank(ITankManager manager) {

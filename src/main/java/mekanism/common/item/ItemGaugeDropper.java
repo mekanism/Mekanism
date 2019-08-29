@@ -24,15 +24,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     public static final int TRANSFER_RATE = 16;
-    public static int CAPACITY = Fluid.BUCKET_VOLUME;
+    public static int CAPACITY = FluidAttributes.BUCKET_VOLUME;
 
     public ItemGaugeDropper() {
         super("gauge_dropper", new Item.Properties().maxStackSize(1));
@@ -46,9 +48,9 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         double gasRatio = (getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY;
-        //TODO: Fluid
-        LazyOptionalHelper<FluidStack> fluidContained = new LazyOptionalHelper<>(LazyOptional.empty());//FluidUtil.getFluidContained(stack));
-        double fluidRatio = fluidContained.getIfPresentElse(fluid -> (double) fluid.amount, 0D) / (double) CAPACITY;
+        //TODO: Better way of doing this?
+        LazyOptionalHelper<FluidStack> fluidContained = new LazyOptionalHelper<>(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? LazyOptional.empty() : FluidUtil.getFluidContained(stack));
+        double fluidRatio = fluidContained.getIfPresentElse(fluid -> (double) fluid.getAmount(), 0D) / (double) CAPACITY;
         return 1D - Math.max(gasRatio, fluidRatio);
     }
 
@@ -58,7 +60,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking() && !world.isRemote) {
             setGas(stack, null);
-            FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(CAPACITY, true));
+            FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(CAPACITY, FluidAction.EXECUTE));
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
@@ -69,14 +71,14 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
-        //TODO: Fluid
-        LazyOptional<FluidStack> fluidStack = LazyOptional.empty();//FluidUtil.getFluidContained(itemstack);
+        //TODO: Better way of doing this?
+        LazyOptional<FluidStack> fluidStack = CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? LazyOptional.empty() : FluidUtil.getFluidContained(itemstack);
         if (gasStack == null && !fluidStack.isPresent()) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.gui.empty"), "."));
         } else if (gasStack != null) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
         } else {
-            fluidStack.ifPresent(fluid -> tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", fluid, ": " + fluid.amount)));
+            fluidStack.ifPresent(fluid -> tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", fluid, ": " + fluid.getAmount())));
         }
     }
 

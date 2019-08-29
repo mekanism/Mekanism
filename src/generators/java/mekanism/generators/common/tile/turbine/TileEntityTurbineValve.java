@@ -3,6 +3,7 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
@@ -11,7 +12,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -24,8 +24,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration, IComparatorSupport {
 
@@ -173,30 +174,30 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{fluidTank.getInfo()} : PipeUtils.EMPTY;
+    public IFluidTank[] getTankInfo(Direction from) {
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new IFluidTank[]{fluidTank} : PipeUtils.EMPTY;
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(null);
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        int filled = fluidTank.fill(resource, doFill);
-        if (doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        int filled = fluidTank.fill(resource, fluidAction);
+        if (fluidAction.execute()) {
             structure.newSteamInput += filled;
         }
         if (filled < structure.getFluidCapacity() && structure.dumpMode != GasMode.IDLE) {
-            filled = Math.min(structure.getFluidCapacity(), resource.amount);
+            filled = Math.min(structure.getFluidCapacity(), resource.getAmount());
         }
         return filled;
     }
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        if (fluid.getFluid() == FluidRegistry.getFluid("steam")) {
+        if (fluid.getFluid() == MekanismFluids.STEAM.getFluid()) {
             return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
         }
         return false;
@@ -217,7 +218,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
             switch (method) {
                 case 1:
-                    return new Object[]{structure.fluidStored != null ? structure.fluidStored.amount : 0};
+                    return new Object[]{structure.fluidStored != null ? structure.fluidStored.getAmount() : 0};
                 case 2:
                     return new Object[]{structure.clientFlow};
                 case 3:

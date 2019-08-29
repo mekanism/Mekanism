@@ -37,7 +37,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
         if (fluidStored != null) {
             //TODO: Can these two be combined
             renderScaledText(TextComponentUtil.build(fluidStored, ":"), 53, 44, 0x00CD00, 74);
-            drawString(fluidStored.amount + "mB", 53, 53, 0x00CD00);
+            drawString(fluidStored.getAmount() + "mB", 53, 53, 0x00CD00);
         } else {
             renderScaledText(TextComponentUtil.translate("mekanism.gui.noFluid"), 53, 44, 0x00CD00, 74);
         }
@@ -45,7 +45,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
             if (fluidStored != null) {
-                displayTooltip(TextComponentUtil.build(fluidStored, ": " + fluidStored.amount + "mB"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(fluidStored, ": " + fluidStored.getAmount() + "mB"), xAxis, yAxis);
             } else {
                 displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
             }

@@ -1,6 +1,6 @@
 package mekanism.common.content.tank;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.base.MultiblockFluidTank;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -14,13 +14,13 @@ public class DynamicFluidTank extends MultiblockFluidTank<TileEntityDynamicTank>
     }
 
     @Override
-    @Nullable
+    @Nonnull
     public FluidStack getFluid() {
-        return multiblock.structure != null ? multiblock.structure.fluidStored : null;
+        return multiblock.structure != null ? multiblock.structure.fluidStored : FluidStack.EMPTY;
     }
 
     @Override
-    public void setFluid(FluidStack stack) {
+    public void setFluid(@Nonnull FluidStack stack) {
         if (multiblock.structure != null) {
             multiblock.structure.fluidStored = stack;
         }
@@ -29,6 +29,14 @@ public class DynamicFluidTank extends MultiblockFluidTank<TileEntityDynamicTank>
     @Override
     public int getCapacity() {
         return multiblock.structure != null ? multiblock.structure.volume * TankUpdateProtocol.FLUID_PER_TANK : 0;
+    }
+
+    @Override
+    public boolean isFluidValid(FluidStack stack) {
+        if (multiblock.structure == null) {
+            return false;
+        }
+        return multiblock.structure.fluidStored.isEmpty() || multiblock.structure.fluidStored.isFluidEqual(stack);
     }
 
     @Override

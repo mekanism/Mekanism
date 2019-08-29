@@ -12,7 +12,7 @@ public class OsmiumCompressorRecipe extends AdvancedMachineRecipe<OsmiumCompress
     }
 
     public OsmiumCompressorRecipe(ItemStack input, ItemStack output) {
-        super(input, MekanismFluids.LiquidOsmium, output);
+        super(input, MekanismFluids.LIQUID_OSMIUM, output);
     }
 
     @Override

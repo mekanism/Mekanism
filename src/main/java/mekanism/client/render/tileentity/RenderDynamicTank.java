@@ -21,7 +21,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
     @Override
     public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null &&
-            tileEntity.structure.fluidStored.amount != 0) {
+            tileEntity.structure.fluidStored.getAmount() != 0) {
             RenderData data = new RenderData();
             data.location = tileEntity.structure.renderLocation;
             data.height = tileEntity.structure.volHeight - 2;
@@ -39,8 +39,8 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                 setLightmapDisabled(true);
                 FluidRenderer.translateToOrigin(data.location);
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
-                MekanismRenderer.color(data.fluidType, (float) data.fluidType.amount / (float) tileEntity.clientCapacity);
-                if (data.fluidType.getFluid().isGaseous(data.fluidType)) {
+                MekanismRenderer.color(data.fluidType, (float) data.fluidType.getAmount() / (float) tileEntity.clientCapacity);
+                if (data.fluidType.getFluid().getAttributes().isGaseous(data.fluidType)) {
                     FluidRenderer.getTankDisplay(data).render();
                 } else {
                     FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();

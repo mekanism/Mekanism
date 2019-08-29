@@ -8,7 +8,8 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.temporary.FluidRegistry;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
@@ -51,16 +52,15 @@ public final class FluidRenderer {
         }
 
         Model3D toReturn = new Model3D();
-        toReturn.baseBlock = data.fluidType.getFluid().getBlock();
-        if (toReturn.baseBlock == null) {
-            toReturn.baseBlock = FluidRegistry.WATER.getBlock();
-        }
+        BlockState state = MekanismUtils.getFlowingBlockState(data.fluidType);
+        //TODO: Check air better?
+        toReturn.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         toReturn.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
 
         DisplayInteger display = DisplayInteger.createAndStart();
         cachedCenter[stage] = display;
 
-        if (data.fluidType.getFluid().getStill(data.fluidType) != null) {
+        if (data.fluidType.getFluid().getAttributes().getStill(data.fluidType) != null) {
             toReturn.minX = 0.01;
             toReturn.minY = 0.01;
             toReturn.minZ = 0.01;
@@ -148,7 +148,7 @@ public final class FluidRenderer {
                 break;
         }
 
-        if (data.fluidType.getFluid().getFlowing(data.fluidType) != null) {
+        if (data.fluidType.getFluid().getAttributes().getFlowing(data.fluidType) != null) {
             MekanismRenderer.renderObject(toReturn);
         }
 
@@ -195,8 +195,8 @@ public final class FluidRenderer {
             code = 31 * code + height;
             code = 31 * code + length;
             code = 31 * code + width;
-            code = 31 * code + fluidType.getFluid().getName().hashCode();
-            code = 31 * code + (fluidType.tag != null ? fluidType.tag.hashCode() : 0);
+            code = 31 * code + fluidType.getFluid().getAttributes().getName().hashCode();
+            code = 31 * code + (fluidType.hasTag() ? fluidType.getTag().hashCode() : 0);
             return code;
         }
 

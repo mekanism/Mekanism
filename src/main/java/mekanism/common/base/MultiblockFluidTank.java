@@ -1,11 +1,12 @@
 package mekanism.common.base;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock> implements IFluidTank {
 
@@ -15,34 +16,34 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
         this.multiblock = multiblock;
     }
 
-    public abstract void setFluid(FluidStack stack);
+    public abstract void setFluid(@Nonnull FluidStack stack);
 
     protected abstract void updateValveData();
 
     @Override
-    public int fill(@Nullable FluidStack resource, boolean doFill) {
+    public int fill(@Nullable FluidStack resource, FluidAction fluidAction) {
         if (multiblock.structure != null && !multiblock.getWorld().isRemote) {
             if (resource == null) {
                 return 0;
             }
             FluidStack fluidStack = getFluid();
-            if (fluidStack != null && !fluidStack.isFluidEqual(resource)) {
+            if (!fluidStack.isEmpty() && !fluidStack.isFluidEqual(resource)) {
                 return 0;
             }
-            if (fluidStack == null) {
-                if (resource.amount <= getCapacity()) {
-                    if (doFill) {
+            if (fluidStack.isEmpty()) {
+                if (resource.getAmount() <= getCapacity()) {
+                    if (fluidAction.execute()) {
                         setFluid(fluidStack = resource.copy());
-                        if (resource.amount > 0) {
+                        if (resource.getAmount() > 0) {
                             MekanismUtils.saveChunk(multiblock);
                             updateValveData();
                         }
                     }
-                    return resource.amount;
+                    return resource.getAmount();
                 }
-                if (doFill) {
+                if (fluidAction.execute()) {
                     setFluid(fluidStack = resource.copy());
-                    fluidStack.amount = getCapacity();
+                    fluidStack.setAmount(getCapacity());
                     if (getCapacity() > 0) {
                         MekanismUtils.saveChunk(multiblock);
                         updateValveData();
@@ -50,19 +51,19 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
                 }
                 return getCapacity();
             }
-            int needed = getCapacity() - fluidStack.amount;
-            if (resource.amount <= needed) {
-                if (doFill) {
-                    fluidStack.amount += resource.amount;
-                    if (resource.amount > 0) {
+            int needed = getCapacity() - fluidStack.getAmount();
+            if (resource.getAmount() <= needed) {
+                if (fluidAction.execute()) {
+                    fluidStack.setAmount(fluidStack.getAmount() + resource.getAmount());
+                    if (resource.getAmount() > 0) {
                         MekanismUtils.saveChunk(multiblock);
                         updateValveData();
                     }
                 }
-                return resource.amount;
+                return resource.getAmount();
             }
-            if (doFill) {
-                fluidStack.amount = getCapacity();
+            if (fluidAction.execute()) {
+                fluidStack.setAmount(fluidStack.getAmount() + getCapacity());
                 if (needed > 0) {
                     MekanismUtils.saveChunk(multiblock);
                     updateValveData();
@@ -73,44 +74,51 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
         return 0;
     }
 
+    @Nonnull
     @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
+    public FluidStack drain(int maxDrain, FluidAction fluidAction) {
+        FluidStack fluid = getFluid();
+        if (fluid.isEmpty()) {
+            return FluidStack.EMPTY;
+        }
+        FluidStack copy = fluid.copy();
+        copy.setAmount(maxDrain);
+        return drain(copy, fluidAction);
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(FluidStack resource, FluidAction fluidAction) {
         if (multiblock.structure != null && !multiblock.getWorld().isRemote) {
             FluidStack fluidStack = getFluid();
-            if (fluidStack == null || fluidStack.amount <= 0) {
-                return null;
+            if (fluidStack.isEmpty()) {
+                return FluidStack.EMPTY;
             }
-            int used = maxDrain;
-            if (fluidStack.amount < used) {
-                used = fluidStack.amount;
+            int used = resource.getAmount();
+            if (fluidStack.getAmount() < used) {
+                used = fluidStack.getAmount();
             }
-            if (doDrain) {
-                fluidStack.amount -= used;
+            if (fluidAction.execute()) {
+                fluidStack.setAmount(fluidStack.getAmount() - used);
             }
             FluidStack drained = new FluidStack(fluidStack, used);
-            if (fluidStack.amount <= 0) {
-                setFluid(null);
+            if (fluidStack.isEmpty()) {
+                setFluid(FluidStack.EMPTY);
             }
-            if (drained.amount > 0 && doDrain) {
+            if (drained.getAmount() > 0 && fluidAction.execute()) {
                 MekanismUtils.saveChunk(multiblock);
                 multiblock.sendPacketToRenderer();
             }
             return drained;
         }
-        return null;
+        return FluidStack.EMPTY;
     }
 
     @Override
     public int getFluidAmount() {
         if (multiblock.structure != null) {
-            FluidStack fluid = getFluid();
-            return fluid == null ? 0 : fluid.amount;
+            return getFluid().getAmount();
         }
         return 0;
-    }
-
-    @Override
-    public FluidTankInfo getInfo() {
-        return new FluidTankInfo(this);
     }
 }

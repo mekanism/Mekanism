@@ -11,7 +11,6 @@ import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -27,7 +26,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FusionReactor {
 
@@ -76,7 +76,7 @@ public class FusionReactor {
             ItemStack hohlraum = controller.getInventory().get(0);
             if (!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
-                return gasStack != null && gasStack.getGas() == MekanismFluids.FusionFuel && gasStack.amount == ItemHohlraum.MAX_GAS;
+                return gasStack != null && gasStack.getGas() == MekanismFluids.FUSION_FUEL && gasStack.amount == ItemHohlraum.MAX_GAS;
             }
         }
         return false;
@@ -138,7 +138,7 @@ public class FusionReactor {
         amountToInject -= amountToInject % 2;
         getDeuteriumTank().draw(amountToInject / 2, true);
         getTritiumTank().draw(amountToInject / 2, true);
-        getFuelTank().receive(new GasStack(MekanismFluids.FusionFuel, amountToInject), true);
+        getFuelTank().receive(new GasStack(MekanismFluids.FUSION_FUEL, amountToInject), true);
     }
 
     public int burnFuel() {
@@ -160,8 +160,8 @@ public class FusionReactor {
             int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
             waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
             if (waterToVaporize > 0) {
-                getWaterTank().drain(waterToVaporize, true);
-                getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
+                getWaterTank().drain(waterToVaporize, FluidAction.EXECUTE);
+                getSteamTank().fill(new FluidStack(MekanismFluids.STEAM.getFluid(), waterToVaporize), FluidAction.EXECUTE);
             }
 
             caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
@@ -353,10 +353,10 @@ public class FusionReactor {
         controller.steamTank.setCapacity(TileEntityReactorController.MAX_STEAM * capRate);
 
         if (controller.waterTank.getFluid() != null) {
-            controller.waterTank.getFluid().amount = Math.min(controller.waterTank.getFluid().amount, controller.waterTank.getCapacity());
+            controller.waterTank.getFluid().setAmount(Math.min(controller.waterTank.getFluid().getAmount(), controller.waterTank.getCapacity()));
         }
         if (controller.steamTank.getFluid() != null) {
-            controller.steamTank.getFluid().amount = Math.min(controller.steamTank.getFluid().amount, controller.steamTank.getCapacity());
+            controller.steamTank.getFluid().setAmount(Math.min(controller.steamTank.getFluid().getAmount(), controller.steamTank.getCapacity()));
         }
     }
 

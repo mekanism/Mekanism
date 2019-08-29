@@ -113,7 +113,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         }
 
         world.removeBlock(getPos(), false);
-        world.setBlockState(getPos(), MekanismBlock.BASIC_INFUSING_FACTORY.getBlock().getDefaultState(), 3);
+        world.setBlockState(getPos(), MekanismBlock.BASIC_INFUSING_FACTORY.getBlock().getDefaultState());
 
         //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)
         /*TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));

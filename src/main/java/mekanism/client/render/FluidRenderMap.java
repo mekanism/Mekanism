@@ -28,8 +28,8 @@ public class FluidRenderMap<V> extends Object2ObjectOpenCustomHashMap<FluidStack
             }
             int code = 1;
             code = 31 * code + stack.getFluid().hashCode();
-            if (stack.tag != null) {
-                code = 31 * code + stack.tag.hashCode();
+            if (stack.hasTag()) {
+                code = 31 * code + stack.getTag().hashCode();
             }
             return code;
         }

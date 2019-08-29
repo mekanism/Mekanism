@@ -10,7 +10,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
@@ -44,7 +43,7 @@ public class Registration {
         //TODO: Register recipe serializers
         //event.getRegistry().register(ShapedMekanismRecipe.CRAFTING_SHAPED);
         //TODO: Is this the correct place to register this
-        CraftingHelper.register(new ResourceLocation(Mekanism.MODID, "recipe_enabled"), new MekanismRecipeEnabledCondition());
+        CraftingHelper.register(MekanismRecipeEnabledCondition.Serializer.INSTANCE);
     }
 
     @SubscribeEvent

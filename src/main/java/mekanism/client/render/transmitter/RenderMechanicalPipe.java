@@ -19,8 +19,8 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
@@ -78,7 +78,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translatef((float) x, (float) y, (float) z);
 
-            boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
+            boolean gas = fluidStack == null ? fluid.getAttributes().isGaseous() : fluid.getAttributes().isGaseous(fluidStack);
             for (Direction side : Direction.values()) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
@@ -229,7 +229,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             } else {
                 tex = MekanismRenderer.getBaseFluidTexture(fn.refFluid, FluidType.STILL);
             }
-            int color = fn.buffer != null ? fn.buffer.getFluid().getColor(fn.buffer) : fn.refFluid.getColor();
+            int color = fn.buffer != null ? fn.buffer.getFluid().getAttributes().getColor(fn.buffer) : fn.refFluid.getAttributes().getColor();
             ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale);
             if (color != 0xFFFFFFFF) {
                 c.setRGBFromInt(color);

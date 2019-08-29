@@ -13,8 +13,8 @@ import mekanism.common.recipe.outputs.GasOutput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RecipeInfoHelper {
@@ -51,11 +51,11 @@ public class RecipeInfoHelper {
     }
 
     public static String getFluidName(FluidStack stack) {
-        return stack.amount > 1 ? String.format("<liquid:%s> * %s", stack.getFluid().getName(), stack.amount) : getFluidName(stack.getFluid());
+        return stack.getAmount() > 1 ? String.format("<liquid:%s> * %s", stack.getFluid().getAttributes().getName(), stack.getAmount()) : getFluidName(stack.getFluid());
     }
 
     public static String getFluidName(Fluid fluid) {
-        return String.format("<liquid:%s>", fluid.getName());
+        return String.format("<liquid:%s>", fluid.getAttributes().getName());
     }
 
     public static String getItemName(ItemStack stack) {

@@ -12,7 +12,7 @@ public interface IItemSustainedTank extends ISustainedTank {
     default void setFluidStack(FluidStack fluidStack, Object... data) {
         if (data[0] instanceof ItemStack) {
             ItemStack itemStack = (ItemStack) data[0];
-            if (fluidStack == null || fluidStack.amount == 0) {
+            if (fluidStack == null || fluidStack.getAmount() == 0) {
                 ItemDataUtils.removeData(itemStack, "fluidTank");
             } else {
                 ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new CompoundNBT()));

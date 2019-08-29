@@ -40,7 +40,7 @@ public class FuelHandler {
 
         //TODO: BuildCraft
         /*public FuelGas(IFuel bcFuel) {
-            burnTicks = bcFuel.getTotalBurningTime() / Fluid.BUCKET_VOLUME;
+            burnTicks = bcFuel.getTotalBurningTime() / FluidAttributes.BUCKET_VOLUME;
 
             // getPowerPerCycle returns value in 1 BuildCraft micro MJ
             // 1 BuildCraft MJ equals 20 RF

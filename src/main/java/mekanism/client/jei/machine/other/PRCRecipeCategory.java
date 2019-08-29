@@ -75,7 +75,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory<PressurizedRecipe> {
         itemStacks.set(0, recipe.recipeInput.getSolid());
         itemStacks.set(1, recipe.recipeOutput.getItemOutput());
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, true, 3, 0, 16, 58, recipe.getInput().getFluid().amount, false, fluidOverlayLarge);
+        fluidStacks.init(0, true, 3, 0, 16, 58, recipe.getInput().getFluid().getAmount(), false, fluidOverlayLarge);
         fluidStacks.set(0, recipe.recipeInput.getFluid());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.recipeInput.getGas(), true);

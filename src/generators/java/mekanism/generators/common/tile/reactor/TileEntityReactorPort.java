@@ -17,7 +17,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -31,6 +30,7 @@ import mekanism.common.util.text.Translation;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -40,9 +40,9 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, IHeatTransfer, IConfigurable {
@@ -87,7 +87,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
                     if (!(tile instanceof TileEntityReactorPort)) {
                         CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                             if (PipeUtils.canFill(handler, tank.getFluid())) {
-                                tank.drain(handler.fill(tank.getFluid(), true), true);
+                                tank.drain(handler.fill(tank.getFluid(), FluidAction.EXECUTE), FluidAction.EXECUTE);
                             }
                         });
                     }
@@ -97,47 +97,47 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return getReactor().getWaterTank().fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return getReactor().getWaterTank().fill(resource, fluidAction);
     }
 
     @Override
     @Nullable
-    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
-        return getReactor().getSteamTank().drain(maxDrain, doDrain);
+    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
+        return getReactor().getSteamTank().drain(maxDrain, fluidAction);
     }
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return getReactor() != null && !fluidEject && fluid.getFluid() == FluidRegistry.WATER;
+        return getReactor() != null && !fluidEject && fluid.getFluid() == Fluids.WATER;
     }
 
     @Override
     public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
-        return getReactor() != null && (fluid == null || fluid.getFluid() == FluidRegistry.getFluid("steam"));
+        return getReactor() != null && (fluid == null || fluid.getFluid() == MekanismFluids.STEAM.getFluid());
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         if (getReactor() == null) {
             return PipeUtils.EMPTY;
         }
-        return new FluidTankInfo[]{getReactor().getWaterTank().getInfo(), getReactor().getSteamTank().getInfo()};
+        return new IFluidTank[]{getReactor().getWaterTank(), getReactor().getSteamTank()};
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(null);
     }
 
     @Override
     public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (getReactor() != null) {
-            if (stack.getGas() == MekanismFluids.Deuterium) {
+            if (stack.getGas() == MekanismFluids.DEUTERIUM) {
                 return getReactor().getDeuteriumTank().receive(stack, doTransfer);
-            } else if (stack.getGas() == MekanismFluids.Tritium) {
+            } else if (stack.getGas() == MekanismFluids.TRITIUM) {
                 return getReactor().getTritiumTank().receive(stack, doTransfer);
-            } else if (stack.getGas() == MekanismFluids.FusionFuel) {
+            } else if (stack.getGas() == MekanismFluids.FUSION_FUEL) {
                 return getReactor().getFuelTank().receive(stack, doTransfer);
             }
         }
@@ -151,7 +151,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canReceiveGas(Direction side, Gas type) {
-        return type == MekanismFluids.Deuterium || type == MekanismFluids.Tritium || type == MekanismFluids.FusionFuel;
+        return type == MekanismFluids.DEUTERIUM || type == MekanismFluids.TRITIUM || type == MekanismFluids.FUSION_FUEL;
     }
 
     @Override

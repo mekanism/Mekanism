@@ -39,9 +39,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
@@ -85,7 +86,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public void onUpdate() {
         if (world.isRemote) {
-            float targetScale = (float) (fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0) / fluidTank.getCapacity();
+            float targetScale = (float) (fluidTank.getFluid() != null ? fluidTank.getFluid().getAmount() : 0) / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
             }
@@ -128,7 +129,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             TileEntity tileEntity = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
             CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
-                fluidTank.drain(handler.fill(toDrain, true), tier != FluidTankTier.CREATIVE);
+                fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : FluidAction.EXECUTE);
             });
         }
     }
@@ -138,16 +139,16 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             FluidStack ret = FluidContainerUtils.handleContainerItem(this, getInventory(), editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 
             if (ret != null) {
-                fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
+                fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.getAmount())));
                 if (tier == FluidTankTier.CREATIVE) {
                     FluidStack fluid = fluidTank.getFluid();
                     if (fluid != null) {
-                        fluid.amount = Integer.MAX_VALUE;
+                        fluid.setAmount(Integer.MAX_VALUE);
                     }
                 } else {
-                    int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
+                    int rejects = Math.max(0, ret.getAmount() - fluidTank.getCapacity());
                     if (rejects > 0) {
-                        pushUp(PipeUtils.copy(ret, rejects), true);
+                        pushUp(PipeUtils.copy(ret, rejects), FluidAction.EXECUTE);
                     }
                 }
             } else if (tier != FluidTankTier.CREATIVE) {
@@ -156,12 +157,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         }
     }
 
-    public int pushUp(FluidStack fluid, boolean doFill) {
+    public int pushUp(FluidStack fluid, FluidAction fluidAction) {
         Coord4D up = Coord4D.get(this).offset(Direction.UP);
         TileEntity tileEntity = up.getTileEntity(world);
         if (tileEntity instanceof TileEntityFluidTank) {
             return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).getIfPresentElse(
-                  handler -> PipeUtils.canFill(handler, fluid) ? handler.fill(fluid, doFill) : 0,
+                  handler -> PipeUtils.canFill(handler, fluid) ? handler.fill(fluid, fluidAction) : 0,
                   0
             );
         }
@@ -325,13 +326,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
         if (tier == FluidTankTier.CREATIVE) {
-            return resource.amount;
+            return resource.getAmount();
         }
-        int filled = fluidTank.fill(resource, doFill);
-        if (filled < resource.amount && !getActive()) {
-            filled += pushUp(PipeUtils.copy(resource, resource.amount - filled), doFill);
+        int filled = fluidTank.fill(resource, fluidAction);
+        if (filled < resource.getAmount() && !getActive()) {
+            filled += pushUp(PipeUtils.copy(resource, resource.getAmount() - filled), fluidAction);
         }
         if (filled > 0 && from == Direction.UP) {
             if (valve == 0) {
@@ -345,8 +346,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     @Override
     @Nullable
-    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
-        return fluidTank.drain(maxDrain, tier != FluidTankTier.CREATIVE && doDrain);
+    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
+        return fluidTank.drain(maxDrain, tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : fluidAction);
     }
 
     @Override
@@ -370,12 +371,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
-        return new FluidTankInfo[]{fluidTank.getInfo()};
+    public IFluidTank[] getTankInfo(Direction from) {
+        return new IFluidTank[]{fluidTank};
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(null);
     }
 

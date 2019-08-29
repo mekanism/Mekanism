@@ -48,7 +48,7 @@ public class MekanismGenerators implements IModule {
     public void commonSetup(FMLCommonSetupEvent event) {
         //TODO: Move recipes to JSON
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.general.ETHENE_BURN_TIME.get(),
+        FuelHandler.addGas(MekanismFluids.ETHENE, MekanismConfig.general.ETHENE_BURN_TIME.get(),
               MekanismConfig.general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfig.general.ETHENE_BURN_TIME.get());
 
         for (Item dust : MekanismTags.GOLD_DUST.getAllElements()) {
@@ -71,7 +71,7 @@ public class MekanismGenerators implements IModule {
                 }
             }
 
-            BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (ForgeEnergyIntegration.toForgeAsLong(12 * MjAPI.MJ)), 40 * Fluid.BUCKET_VOLUME);
+            BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (ForgeEnergyIntegration.toForgeAsLong(12 * MjAPI.MJ)), 40 * FluidAttributes.BUCKET_VOLUME);
         }
     }*/
 

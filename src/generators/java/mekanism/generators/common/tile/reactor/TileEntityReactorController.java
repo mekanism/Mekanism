@@ -29,15 +29,15 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState {
 
-    public static final int MAX_WATER = 100 * Fluid.BUCKET_VOLUME;
+    public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
     public static final int MAX_STEAM = MAX_WATER * 100;
-    public static final int MAX_FUEL = Fluid.BUCKET_VOLUME;
+    public static final int MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
     public FluidTank waterTank = new FluidTank(MAX_WATER);
     public FluidTank steamTank = new FluidTank(MAX_STEAM);
@@ -241,9 +241,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 getReactor().setCaseTemp(dataStream.readDouble());
                 getReactor().setInjectionRate(dataStream.readInt());
                 getReactor().setBurning(dataStream.readBoolean());
-                fuelTank.setGas(new GasStack(MekanismFluids.FusionFuel, dataStream.readInt()));
-                deuteriumTank.setGas(new GasStack(MekanismFluids.Deuterium, dataStream.readInt()));
-                tritiumTank.setGas(new GasStack(MekanismFluids.Tritium, dataStream.readInt()));
+                fuelTank.setGas(new GasStack(MekanismFluids.FUSION_FUEL, dataStream.readInt()));
+                deuteriumTank.setGas(new GasStack(MekanismFluids.DEUTERIUM, dataStream.readInt()));
+                tritiumTank.setGas(new GasStack(MekanismFluids.TRITIUM, dataStream.readInt()));
                 TileUtils.readTankData(dataStream, waterTank);
                 TileUtils.readTankData(dataStream, steamTank);
             } else if (getReactor() != null) {

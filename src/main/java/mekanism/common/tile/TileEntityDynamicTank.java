@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -63,7 +64,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (world.isRemote) {
             if (clientHasStructure && isRendering) {
                 if (structure != null) {
-                    float targetScale = (float) (structure.fluidStored != null ? structure.fluidStored.amount : 0) / clientCapacity;
+                    float targetScale = (float) (structure.fluidStored != null ? structure.fluidStored.getAmount() : 0) / clientCapacity;
                     if (Math.abs(prevScale - targetScale) > 0.01) {
                         prevScale = (9 * prevScale + targetScale) / 10;
                     }
@@ -78,7 +79,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 valveViewing.clear();
             }
         } else if (structure != null) {
-            if (structure.fluidStored != null && structure.fluidStored.amount <= 0) {
+            if (structure.fluidStored != null && structure.fluidStored.getAmount() <= 0) {
                 structure.fluidStored = null;
                 markDirty();
             }
@@ -103,7 +104,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     public void manageInventory() {
-        int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - (structure.fluidStored != null ? structure.fluidStored.amount : 0);
+        int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - (structure.fluidStored != null ? structure.fluidStored.getAmount() : 0);
         if (FluidContainerUtils.isFluidContainer(structure.inventory.get(0))) {
             structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
             Mekanism.packetHandler.sendUpdatePacket(this);
@@ -202,7 +203,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (clientCapacity == 0 || structure.fluidStored == null) {
             return 0;
         }
-        return (int) (structure.fluidStored.amount * i / clientCapacity);
+        return (int) (structure.fluidStored.getAmount() * i / clientCapacity);
     }
 
     @Override
@@ -244,13 +245,13 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(copyStack)).getIfPresentElse(
               handler -> new LazyOptionalHelper<>(FluidUtil.getFluidContained(copyStack)).getIfPresentElseDo(
                     itemFluid -> {
-                        int stored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
+                        int stored = structure.fluidStored != null ? structure.fluidStored.getAmount() : 0;
                         int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - stored;
                         if (structure.fluidStored != null && !structure.fluidStored.isFluidEqual(itemFluid)) {
                             return false;
                         }
                         boolean filled = false;
-                        FluidStack drained = handler.drain(needed, !player.isCreative());
+                        FluidStack drained = handler.drain(needed, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                         ItemStack container = handler.getContainer();
 
                         if (container.getCount() == 0) {
@@ -279,7 +280,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                                 if (structure.fluidStored == null) {
                                     structure.fluidStored = drained;
                                 } else {
-                                    structure.fluidStored.amount += drained.amount;
+                                    structure.fluidStored.setAmount(structure.fluidStored.getAmount() + drained.getAmount());
                                 }
                                 return true;
                             }
@@ -288,19 +289,19 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                     },
                     () -> {
                         if (structure.fluidStored != null) {
-                            int filled = handler.fill(structure.fluidStored, !player.isCreative());
+                            int filled = handler.fill(structure.fluidStored, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                             ItemStack container = handler.getContainer();
                             if (filled > 0) {
                                 if (player.isCreative()) {
-                                    structure.fluidStored.amount -= filled;
+                                    structure.fluidStored.setAmount(structure.fluidStored.getAmount() - filled);
                                 } else if (itemStack.getCount() == 1) {
-                                    structure.fluidStored.amount -= filled;
+                                    structure.fluidStored.setAmount(structure.fluidStored.getAmount() - filled);
                                     player.setHeldItem(hand, container);
                                 } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
-                                    structure.fluidStored.amount -= filled;
+                                    structure.fluidStored.setAmount(structure.fluidStored.getAmount() - filled);
                                     itemStack.shrink(1);
                                 }
-                                if (structure.fluidStored.amount == 0) {
+                                if (structure.fluidStored.getAmount() == 0) {
                                     structure.fluidStored = null;
                                 }
                                 return true;

@@ -1,7 +1,8 @@
 package mekanism.common.content.boiler;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraft.tags.FluidTags;
 import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerWaterTank extends BoilerTank {
@@ -11,13 +12,13 @@ public class BoilerWaterTank extends BoilerTank {
     }
 
     @Override
-    @Nullable
+    @Nonnull
     public FluidStack getFluid() {
-        return multiblock.structure != null ? multiblock.structure.waterStored : null;
+        return multiblock.structure != null ? multiblock.structure.waterStored : FluidStack.EMPTY;
     }
 
     @Override
-    public void setFluid(FluidStack stack) {
+    public void setFluid(@Nonnull FluidStack stack) {
         if (multiblock.structure != null) {
             multiblock.structure.waterStored = stack;
         }
@@ -26,5 +27,10 @@ public class BoilerWaterTank extends BoilerTank {
     @Override
     public int getCapacity() {
         return multiblock.structure != null ? multiblock.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK : 0;
+    }
+
+    @Override
+    public boolean isFluidValid(FluidStack stack) {
+        return stack.getFluid().getTags().contains(FluidTags.WATER.getId());
     }
 }

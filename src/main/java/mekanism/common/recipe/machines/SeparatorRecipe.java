@@ -6,7 +6,8 @@ import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class SeparatorRecipe extends MachineRecipe<FluidInput, ChemicalPairOutput, SeparatorRecipe> {
 
@@ -32,11 +33,11 @@ public class SeparatorRecipe extends MachineRecipe<FluidInput, ChemicalPairOutpu
     }
 
     public boolean canOperate(FluidTank fluidTank, GasTank leftTank, GasTank rightTank) {
-        return getInput().useFluid(fluidTank, false, 1) && getOutput().applyOutputs(leftTank, rightTank, false, 1);
+        return getInput().useFluid(fluidTank, FluidAction.SIMULATE, 1) && getOutput().applyOutputs(leftTank, rightTank, false, 1);
     }
 
     public void operate(FluidTank fluidTank, GasTank leftTank, GasTank rightTank, int scale) {
-        if (getInput().useFluid(fluidTank, true, scale)) {
+        if (getInput().useFluid(fluidTank, FluidAction.EXECUTE, scale)) {
             getOutput().applyOutputs(leftTank, rightTank, true, scale);
         }
     }

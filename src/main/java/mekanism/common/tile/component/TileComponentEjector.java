@@ -30,7 +30,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileComponentEjector implements ITileComponent {
 
@@ -101,7 +102,7 @@ public class TileComponentEjector implements ITileComponent {
         if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
             FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
             int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
-            tank.drain(emit, true);
+            tank.drain(emit, FluidAction.EXECUTE);
         }
     }
 

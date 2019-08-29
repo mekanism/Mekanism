@@ -25,7 +25,7 @@ public class MCLiquidStack implements ILiquidStack {
 
     @Override
     public String getCommandString() {
-        return stack.amount > 1 ? String.format("<gas:%s> * %s", getName(), stack.amount) : String.format("<gas:%s>", getName());
+        return stack.getAmount() > 1 ? String.format("<liquid:%s> * %s", getName(), stack.getAmount()) : String.format("<liquid:%s>", getName());
     }
 
     @Override
@@ -35,11 +35,11 @@ public class MCLiquidStack implements ILiquidStack {
 
     @Override
     public String getName() {
-        return stack.getFluid().getName();
+        return stack.getFluid().getAttributes().getName();
     }
 
     @Override
     public int getAmount() {
-        return stack.amount;
+        return stack.getAmount();
     }
 }

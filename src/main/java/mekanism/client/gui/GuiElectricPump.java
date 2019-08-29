@@ -58,7 +58,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Ele
         drawString(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         FluidStack fluidStack = tileEntity.fluidTank.getFluid();
         if (fluidStack != null) {
-            renderScaledText(TextComponentUtil.build(fluidStack, ": " + fluidStack.amount), 51, 35, 0x00CD00, 74);
+            renderScaledText(TextComponentUtil.build(fluidStack, ": " + fluidStack.getAmount()), 51, 35, 0x00CD00, 74);
         } else {
             renderScaledText(TextComponentUtil.translate("mekanism.gui.noFluid"), 51, 35, 0x00CD00, 74);
         }

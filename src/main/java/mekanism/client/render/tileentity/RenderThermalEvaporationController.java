@@ -37,7 +37,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             float fluidScale = (float) tileEntity.inputTank.getFluidAmount() / (float) tileEntity.getMaxFluid();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
             MekanismRenderer.color(data.fluidType, fluidScale);
-            if (data.fluidType.getFluid().isGaseous(data.fluidType)) {
+            if (data.fluidType.getFluid().getAttributes().isGaseous(data.fluidType)) {
                 FluidRenderer.getTankDisplay(data).render();
             } else {
                 //Render the proper height

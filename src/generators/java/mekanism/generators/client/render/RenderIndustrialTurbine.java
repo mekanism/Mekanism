@@ -8,7 +8,7 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.temporary.FluidRegistry;
+import mekanism.common.MekanismFluids;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -23,7 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 @OnlyIn(Dist.CLIENT)
 public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
 
-    private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
+    private FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
 
     @Override
     public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
@@ -46,7 +46,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
 
             RenderTurbineRotor.internalRender = false;
 
-            if (tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0 && tileEntity.structure.volLength > 0) {
+            if (tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.getAmount() != 0 && tileEntity.structure.volLength > 0) {
                 RenderData data = new RenderData();
 
                 data.location = tileEntity.structure.renderLocation;
@@ -65,7 +65,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.fluidStored);
-                    MekanismRenderer.color(tileEntity.structure.fluidStored, (float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity());
+                    MekanismRenderer.color(tileEntity.structure.fluidStored, (float) tileEntity.structure.fluidStored.getAmount() / (float) tileEntity.structure.getFluidCapacity());
                     FluidRenderer.getTankDisplay(data).render();
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);

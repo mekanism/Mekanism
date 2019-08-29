@@ -4,10 +4,11 @@ import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Gas - a class used to set specific properties of gasses when used or seen in-game.
@@ -61,11 +62,11 @@ public class Gas implements IHasTranslationKey {
      * Creates a new Gas object that corresponds to the given Fluid
      */
     public Gas(Fluid f) {
-        unlocalizedName = name = f.getName();
-        iconLocation = f.getStill();
+        unlocalizedName = name = f.getAttributes().getName();
+        iconLocation = f.getAttributes().getStillTexture();
         fluid = f;
         from_fluid = true;
-        setTint(f.getColor() & 0xFFFFFF);
+        setTint(f.getAttributes().getColor() & 0xFFFFFF);
     }
 
     /**
@@ -144,7 +145,7 @@ public class Gas implements IHasTranslationKey {
      */
     public ResourceLocation getIcon() {
         if (from_fluid) {
-            return this.getFluid().getStill();
+            return this.getFluid().getAttributes().getStillTexture();
         }
 
         return iconLocation;
@@ -158,7 +159,7 @@ public class Gas implements IHasTranslationKey {
     public TextureAtlasSprite getSprite() {
         AtlasTexture texMap = Minecraft.getInstance().getTextureMap();
         if (from_fluid) {
-            return texMap.getAtlasSprite(fluid.getStill().toString());
+            return texMap.getAtlasSprite(fluid.getAttributes().getStillTexture().toString());
         }
 
         if (sprite == null) {
@@ -228,36 +229,25 @@ public class Gas implements IHasTranslationKey {
     }
 
     /**
-     * Registers a new fluid out of this Gas or gets one from the FluidRegistry.
-     *
-     * @return this Gas object
-     */
-    public Gas registerFluid(String name) {
-        if (fluid == null) {
-            //TODO: Fluids
-            /*Fluid fromRegistry = FluidRegistry.getFluid(name);
-            if (fromRegistry == null) {
-                int tint = getTint();
-                //Fluids use ARGB so make sure that we are not using a fully transparent tint.
-                // This fixes issues with some mods rendering our fluids as invisible
-                if ((tint & 0xFF000000) == 0) {
-                    tint = 0xFF000000 | tint;
-                }
-                FluidRegistry.registerFluid(fluid = new Fluid(name, getIcon(), getIcon(), tint));
-            } else {
-                fluid = fromRegistry;
-            }*/
-        }
-        return this;
-    }
-
-    /**
-     * Registers a new fluid out of this Gas or gets one from the FluidRegistry. Uses default gas name.
+     * Registers a new fluid out of this Gas or gets one from the FluidRegistry. Uses same registry name as this.
      *
      * @return this Gas object
      */
     public Gas registerFluid() {
-        return registerFluid(getName());
+        if (fluid == null) {
+            Fluid fromRegistry = ForgeRegistries.FLUIDS.getValue(getRegistryName());
+            if (fromRegistry == null) {
+                ForgeRegistries.FLUIDS.register(fluid = new GaseousFluid(this));
+            } else {
+                fluid = fromRegistry;
+            }
+        }
+        return this;
+    }
+
+    public ResourceLocation getRegistryName() {
+        //TODO: Do registry name more properly
+        return new ResourceLocation("mekanism", name);
     }
 
     @Override

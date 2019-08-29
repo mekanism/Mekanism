@@ -5,14 +5,15 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.outputs.GasOutput;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.tile.TileEntityChemicalWasher;
+import net.minecraft.fluid.Fluids;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class WasherRecipe extends MachineRecipe<GasInput, GasOutput, WasherRecipe> {
 
-    public FluidInput waterInput = new FluidInput(new FluidStack(FluidRegistry.WATER, TileEntityChemicalWasher.WATER_USAGE));
+    public FluidInput waterInput = new FluidInput(new FluidStack(Fluids.WATER, TileEntityChemicalWasher.WATER_USAGE));
 
     public WasherRecipe(GasInput input, GasOutput output) {
         super(input, output);
@@ -28,11 +29,11 @@ public class WasherRecipe extends MachineRecipe<GasInput, GasOutput, WasherRecip
     }
 
     public boolean canOperate(GasTank inputTank, FluidTank fluidTank, GasTank outputTank) {
-        return getInput().useGas(inputTank, false, 1) && waterInput.useFluid(fluidTank, false, 1) && getOutput().applyOutputs(outputTank, false, 1);
+        return getInput().useGas(inputTank, false, 1) && waterInput.useFluid(fluidTank, FluidAction.SIMULATE, 1) && getOutput().applyOutputs(outputTank, false, 1);
     }
 
     public void operate(GasTank inputTank, FluidTank fluidTank, GasTank outputTank, int scale) {
-        if (getInput().useGas(inputTank, true, scale) && waterInput.useFluid(fluidTank, true, scale)) {
+        if (getInput().useGas(inputTank, true, scale) && waterInput.useFluid(fluidTank, FluidAction.EXECUTE, scale)) {
             getOutput().applyOutputs(outputTank, true, scale);
         }
     }

@@ -44,12 +44,12 @@ import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -267,10 +267,10 @@ public class Mekanism {
 
         //Chemical Injection Chamber Recipes
         if (MekanismBlock.CHEMICAL_INJECTION_CHAMBER.isEnabled()) {
-            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.DIRT), MekanismFluids.Water, new ItemStack(Blocks.CLAY));
-            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.TERRACOTTA), MekanismFluids.Water, new ItemStack(Blocks.CLAY));
-            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.BRICK), MekanismFluids.Water, new ItemStack(Items.CLAY_BALL));
-            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.GUNPOWDER), MekanismFluids.HydrogenChloride, MekanismItem.SULFUR_DUST.getItemStack());
+            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.DIRT), MekanismFluids.STEAM, new ItemStack(Blocks.CLAY));
+            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.TERRACOTTA), MekanismFluids.STEAM, new ItemStack(Blocks.CLAY));
+            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.BRICK), MekanismFluids.STEAM, new ItemStack(Items.CLAY_BALL));
+            RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.GUNPOWDER), MekanismFluids.HYDROGEN_CHLORIDE, MekanismItem.SULFUR_DUST.getItemStack());
         }
 
         //Precision Sawmill Recipes
@@ -382,30 +382,30 @@ public class Mekanism {
 
         //Chemical Infuser Recipes
         if (MekanismBlock.CHEMICAL_INFUSER.isEnabled()) {
-            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.Oxygen, 1), new GasStack(MekanismFluids.SulfurDioxide, 2), new GasStack(MekanismFluids.SulfurTrioxide, 2));
-            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.SulfurTrioxide, 1), new GasStack(MekanismFluids.Water, 1), new GasStack(MekanismFluids.SulfuricAcid, 1));
-            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.Hydrogen, 1), new GasStack(MekanismFluids.Chlorine, 1), new GasStack(MekanismFluids.HydrogenChloride, 1));
-            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.Deuterium, 1), new GasStack(MekanismFluids.Tritium, 1), new GasStack(MekanismFluids.FusionFuel, 2));
+            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.OXYGEN, 1), new GasStack(MekanismFluids.SULFUR_DIOXIDE, 2), new GasStack(MekanismFluids.SULFUR_TRIOXIDE, 2));
+            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.SULFUR_TRIOXIDE, 1), new GasStack(MekanismFluids.STEAM, 1), new GasStack(MekanismFluids.SULFURIC_ACID, 1));
+            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.HYDROGEN, 1), new GasStack(MekanismFluids.CHLORINE, 1), new GasStack(MekanismFluids.HYDROGEN_CHLORIDE, 1));
+            RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.DEUTERIUM, 1), new GasStack(MekanismFluids.TRITIUM, 1), new GasStack(MekanismFluids.FUSION_FUEL, 2));
         }
 
         //Electrolytic Separator Recipes
         if (MekanismBlock.ELECTROLYTIC_SEPARATOR.isEnabled()) {
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * MekanismConfig.general.FROM_H2.get(),
-                  new GasStack(MekanismFluids.Hydrogen, 2), new GasStack(MekanismFluids.Oxygen, 1));
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * MekanismConfig.general.FROM_H2.get(),
-                  new GasStack(MekanismFluids.Sodium, 1), new GasStack(MekanismFluids.Chlorine, 1));
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2), MekanismConfig.usage.heavyWaterElectrolysis.get(),
-                  new GasStack(MekanismFluids.Deuterium, 2), new GasStack(MekanismFluids.Oxygen, 1));
+            RecipeHandler.addElectrolyticSeparatorRecipe(new FluidStack(Fluids.WATER, 2), 2 * MekanismConfig.general.FROM_H2.get(),
+                  new GasStack(MekanismFluids.HYDROGEN, 2), new GasStack(MekanismFluids.OXYGEN, 1));
+            RecipeHandler.addElectrolyticSeparatorRecipe(new FluidStack(MekanismFluids.BRINE.getFluid(), 10), 2 * MekanismConfig.general.FROM_H2.get(),
+                  new GasStack(MekanismFluids.SODIUM, 1), new GasStack(MekanismFluids.CHLORINE, 1));
+            RecipeHandler.addElectrolyticSeparatorRecipe(new FluidStack(MekanismFluids.HEAVY_WATER, 2), MekanismConfig.usage.heavyWaterElectrolysis.get(),
+                  new GasStack(MekanismFluids.DEUTERIUM, 2), new GasStack(MekanismFluids.OXYGEN, 1));
         }
 
         //Thermal Evaporation Plant Recipes
-        RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("brine", 1));
-        RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("brine", 10), FluidRegistry.getFluidStack("liquidlithium", 1));
+        RecipeHandler.addThermalEvaporationRecipe(new FluidStack(Fluids.WATER, 10), new FluidStack(MekanismFluids.BRINE.getFluid(), 1));
+        RecipeHandler.addThermalEvaporationRecipe(new FluidStack(MekanismFluids.BRINE.getFluid(), 10), new FluidStack(MekanismFluids.LITHIUM.getFluid(), 1));
 
         //Chemical Crystallizer Recipes
         if (MekanismBlock.CHEMICAL_CRYSTALLIZER.isEnabled()) {
-            RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.Lithium, 100), MekanismItem.SULFUR_DUST.getItemStack());
-            RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.Brine, 15), MekanismItem.SALT.getItemStack());
+            RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.LITHIUM, 100), MekanismItem.SULFUR_DUST.getItemStack());
+            RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.BRINE, 15), MekanismItem.SALT.getItemStack());
         }
 
         //T4 Processing Recipes
@@ -453,26 +453,25 @@ public class Mekanism {
 
         //Pressurized Reaction Chamber Recipes
         if (MekanismBlock.PRESSURIZED_REACTION_CHAMBER.isEnabled()) {
-            RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(2), new FluidStack(FluidRegistry.WATER, 10), new GasStack(MekanismFluids.Hydrogen, 100),
-                  MekanismItem.SUBSTRATE.getItemStack(), new GasStack(MekanismFluids.Ethene, 100), 0, 100);
-            //TODO: Fluids
-            /*RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(MekanismFluids.Ethene.getFluid(), 50),
-                  new GasStack(MekanismFluids.Oxygen, 10), MekanismItem.HDPE_PELLET.getItemStack(), new GasStack(MekanismFluids.Oxygen, 5), 1000, 60);*/
-            RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(FluidRegistry.WATER, 200), new GasStack(MekanismFluids.Ethene, 100),
-                  MekanismItem.SUBSTRATE.getItemStack(8), new GasStack(MekanismFluids.Oxygen, 10), 200, 400);
-            RecipeHandler.addPRCRecipe(new ItemStack(Items.COAL), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
-                  MekanismItem.SULFUR_DUST.getItemStack(), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
-            RecipeHandler.addPRCRecipe(new ItemStack(Items.CHARCOAL), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
-                  MekanismItem.SULFUR_DUST.getItemStack(), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
+            RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(2), new FluidStack(Fluids.WATER, 10), new GasStack(MekanismFluids.HYDROGEN, 100),
+                  MekanismItem.SUBSTRATE.getItemStack(), new GasStack(MekanismFluids.ETHENE, 100), 0, 100);
+            RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(MekanismFluids.ETHENE.getFluid(), 50),
+                  new GasStack(MekanismFluids.OXYGEN, 10), MekanismItem.HDPE_PELLET.getItemStack(), new GasStack(MekanismFluids.OXYGEN, 5), 1000, 60);
+            RecipeHandler.addPRCRecipe(MekanismItem.SUBSTRATE.getItemStack(), new FluidStack(Fluids.WATER, 200), new GasStack(MekanismFluids.ETHENE, 100),
+                  MekanismItem.SUBSTRATE.getItemStack(8), new GasStack(MekanismFluids.OXYGEN, 10), 200, 400);
+            RecipeHandler.addPRCRecipe(new ItemStack(Items.COAL), new FluidStack(Fluids.WATER, 100), new GasStack(MekanismFluids.OXYGEN, 100),
+                  MekanismItem.SULFUR_DUST.getItemStack(), new GasStack(MekanismFluids.HYDROGEN, 100), 0, 100);
+            RecipeHandler.addPRCRecipe(new ItemStack(Items.CHARCOAL), new FluidStack(Fluids.WATER, 100), new GasStack(MekanismFluids.OXYGEN, 100),
+                  MekanismItem.SULFUR_DUST.getItemStack(), new GasStack(MekanismFluids.HYDROGEN, 100), 0, 100);
         }
 
         //Solar Neutron Activator Recipes
         if (MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.isEnabled()) {
-            RecipeHandler.addSolarNeutronRecipe(new GasStack(MekanismFluids.Lithium, 1), new GasStack(MekanismFluids.Tritium, 1));
+            RecipeHandler.addSolarNeutronRecipe(new GasStack(MekanismFluids.LITHIUM, 1), new GasStack(MekanismFluids.TRITIUM, 1));
         }
 
         //Fuel Gases
-        FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.general.FROM_H2.get());
+        FuelHandler.addGas(MekanismFluids.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
     }
 
     private void serverStarting(FMLServerStartingEvent event) {

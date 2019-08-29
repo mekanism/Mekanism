@@ -25,6 +25,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -35,10 +36,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager {
@@ -105,25 +106,25 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (canOperate(recipe)) {
                 int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
                 int inputStored = inputTank.getFluidAmount();
-                double outputRatio = (double) recipe.recipeOutput.output.amount / (double) recipe.recipeInput.ingredient.amount;
+                double outputRatio = (double) recipe.recipeOutput.output.getAmount() / (double) recipe.recipeInput.ingredient.getAmount();
                 double tempMult = Math.max(0, getTemperature()) * MekanismConfig.general.evaporationTempMultiplier.get();
-                double inputToUse = tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
+                double inputToUse = tempMult * recipe.recipeInput.ingredient.getAmount() * ((float) height / (float) MAX_HEIGHT);
                 inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
                 inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
 
-                lastGain = (float) inputToUse / (float) recipe.recipeInput.ingredient.amount;
+                lastGain = (float) inputToUse / (float) recipe.recipeInput.ingredient.getAmount();
                 partialInput += inputToUse;
 
                 if (partialInput >= 1) {
                     int inputInt = (int) Math.floor(partialInput);
-                    inputTank.drain(inputInt, true);
+                    inputTank.drain(inputInt, FluidAction.EXECUTE);
                     partialInput %= 1;
-                    partialOutput += (double) inputInt / recipe.recipeInput.ingredient.amount;
+                    partialOutput += (double) inputInt / recipe.recipeInput.ingredient.getAmount();
                 }
 
                 if (partialOutput >= 1) {
                     int outputInt = (int) Math.floor(partialOutput);
-                    outputTank.fill(new FluidStack(recipe.recipeOutput.output.getFluid(), outputInt), true);
+                    outputTank.fill(new FluidStack(recipe.recipeOutput.output.getFluid(), outputInt), FluidAction.EXECUTE);
                     partialOutput %= 1;
                 }
             } else {
@@ -175,7 +176,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                     inputTank.setCapacity(getMaxFluid());
 
                     if (inputTank.getFluid() != null) {
-                        inputTank.getFluid().amount = Math.min(inputTank.getFluid().amount, getMaxFluid());
+                        inputTank.getFluid().setAmount(Math.min(inputTank.getFluid().getAmount(), getMaxFluid()));
                     }
                 } else {
                     clearStructure();

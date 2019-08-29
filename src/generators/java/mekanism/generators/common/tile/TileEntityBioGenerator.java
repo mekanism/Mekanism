@@ -10,11 +10,11 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.LazyOptionalHelper;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.inventory.container.Container;
@@ -25,14 +25,15 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
-    private static FluidTankInfo[] ALL_TANKS = new FluidTankInfo[0];
+    private static IFluidTank[] ALL_TANKS = new IFluidTank[0];
     /**
      * The FluidSlot biofuel instance for this generator.
      */
@@ -51,13 +52,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         if (!getInventory().get(0).isEmpty()) {
             ChargeUtils.charge(1, this);
             LazyOptionalHelper<FluidStack> fluidHelper = new LazyOptionalHelper<>(FluidUtil.getFluidContained(getInventory().get(0)));
-            //TODO: Maybe do this differently
-            if (fluidHelper.isPresent() && FluidRegistry.isFluidRegistered("bioethanol")) {
-                if (fluidHelper.getValue().getFluid() == FluidRegistry.getFluid("bioethanol")) {
+            //TODO: Maybe do this differently, such as uses matches
+            if (fluidHelper.isPresent()) {
+                if (fluidHelper.getValue().getFluid().getTags().contains(GeneratorTags.BIO_ETHANOL)) {
                     FluidUtil.getFluidHandler(getInventory().get(0)).ifPresent(handler -> {
-                        FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, true);
-                        if (drained != null) {
-                            bioFuelSlot.fluidStored += drained.amount;
+                        FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, FluidAction.EXECUTE);
+                        if (!drained.isEmpty()) {
+                            bioFuelSlot.fluidStored += drained.getAmount();
                         }
                     });
                 }
@@ -99,10 +100,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         if (slotID == 0) {
             if (getFuel(itemstack) > 0) {
                 return true;
-            } else if (FluidRegistry.isFluidRegistered("bioethanol")) {
-                return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluid -> fluid.getFluid() == FluidRegistry.getFluid("bioethanol"));
             }
-            return false;
+            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluid -> fluid.getFluid().getTags().contains(GeneratorTags.BIO_ETHANOL));
         } else if (slotID == 1) {
             return ChargeUtils.canBeCharged(itemstack);
         }
@@ -190,10 +189,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
         int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
-        int fuelTransfer = Math.min(resource.amount, fuelNeeded);
-        if (doFill) {
+        int fuelTransfer = Math.min(resource.getAmount(), fuelNeeded);
+        if (fluidAction.execute()) {
             bioFuelSlot.setFluid(bioFuelSlot.fluidStored + fuelTransfer);
         }
         return fuelTransfer;
@@ -201,11 +200,11 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return from != getDirection() && fluid.getFluid() == FluidRegistry.getFluid("bioethanol");
+        return from != getDirection() && fluid.getFluid().getTags().contains(GeneratorTags.BIO_ETHANOL);
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         return PipeUtils.EMPTY;
     }
 
@@ -229,7 +228,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return ALL_TANKS;
     }
 

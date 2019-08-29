@@ -1,6 +1,6 @@
 package mekanism.generators.common.content.turbine;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import mekanism.common.base.MultiblockFluidTank;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraftforge.fluids.FluidStack;
@@ -12,13 +12,13 @@ public class TurbineFluidTank extends MultiblockFluidTank<TileEntityTurbineCasin
     }
 
     @Override
-    @Nullable
+    @Nonnull
     public FluidStack getFluid() {
-        return multiblock.structure != null ? multiblock.structure.fluidStored : null;
+        return multiblock.structure != null ? multiblock.structure.fluidStored : FluidStack.EMPTY;
     }
 
     @Override
-    public void setFluid(FluidStack stack) {
+    public void setFluid(@Nonnull FluidStack stack) {
         if (multiblock.structure != null) {
             multiblock.structure.fluidStored = stack;
         }
@@ -27,6 +27,11 @@ public class TurbineFluidTank extends MultiblockFluidTank<TileEntityTurbineCasin
     @Override
     public int getCapacity() {
         return multiblock.structure != null ? multiblock.structure.getFluidCapacity() : 0;
+    }
+
+    @Override
+    public boolean isFluidValid(FluidStack stack) {
+        return getFluid().isEmpty() || getFluid().isFluidEqual(stack);
     }
 
     @Override

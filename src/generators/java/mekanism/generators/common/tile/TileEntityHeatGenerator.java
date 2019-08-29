@@ -11,7 +11,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -24,6 +23,7 @@ import mekanism.common.util.TileUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -33,10 +33,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer, IComparatorSupport {
 
@@ -66,13 +67,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             ChargeUtils.charge(1, this);
             if (!getInventory().get(0).isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
-                    lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
+                    lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(Fluids.LAVA)), FluidAction.EXECUTE);
                 } else {
                     int fuel = getFuel(getInventory().get(0));
                     if (fuel > 0) {
-                        int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0);
+                        int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().getAmount() : 0);
                         if (fuel <= fuelNeeded) {
-                            lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
+                            lavaTank.fill(new FluidStack(Fluids.LAVA, fuel), FluidAction.EXECUTE);
                             if (!getInventory().get(0).getItem().getContainerItem(getInventory().get(0)).isEmpty()) {
                                 getInventory().set(0, getInventory().get(0).getItem().getContainerItem(getInventory().get(0)));
                             } else {
@@ -87,7 +88,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             transferHeatTo(getBoost());
             if (canOperate()) {
                 setActive(true);
-                lavaTank.drain(10, true);
+                lavaTank.drain(10, FluidAction.EXECUTE);
                 transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
             } else {
                 setActive(false);
@@ -113,7 +114,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             if (getFuel(itemstack) > 0) {
                 return true;
             }
-            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluid -> fluid.getFluid() == FluidRegistry.LAVA);
+            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluid -> fluid.getFluid() == Fluids.LAVA);
         } else if (slotID == 1) {
             return ChargeUtils.canBeCharged(itemstack);
         }
@@ -122,7 +123,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public boolean canOperate() {
-        return getEnergy() < getBaseStorage() && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
+        return getEnergy() < getBaseStorage() && lavaTank.getFluid() != null && lavaTank.getFluid().getAmount() >= 10 && MekanismUtils.canFunction(this);
     }
 
     @Override
@@ -190,7 +191,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
      * @return Scaled fuel level
      */
     public int getScaledFuelLevel(int i) {
-        return (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0) * i / lavaTank.getCapacity();
+        return (lavaTank.getFluid() != null ? lavaTank.getFluid().getAmount() : 0) * i / lavaTank.getCapacity();
     }
 
     @Override
@@ -234,34 +235,34 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             case 3:
                 return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
-                return new Object[]{lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0};
+                return new Object[]{lavaTank.getFluid() != null ? lavaTank.getFluid().getAmount() : 0};
             case 5:
-                return new Object[]{lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)};
+                return new Object[]{lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().getAmount() : 0)};
             default:
                 throw new NoSuchMethodException();
         }
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return lavaTank.fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return lavaTank.fill(resource, fluidAction);
     }
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return fluid.getFluid().equals(FluidRegistry.LAVA) && from != getDirection();
+        return fluid.getFluid().equals(Fluids.LAVA) && from != getDirection();
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
+    public IFluidTank[] getTankInfo(Direction from) {
         if (from == getDirection()) {
             return PipeUtils.EMPTY;
         }
-        return new FluidTankInfo[]{lavaTank.getInfo()};
+        return new IFluidTank[]{lavaTank};
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(null);
     }
 

@@ -1,12 +1,9 @@
 package mekanism.common.base;
 
-import java.util.Arrays;
+import javax.annotation.Nonnull;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class FluidHandlerWrapper implements IFluidHandler {
 
@@ -19,48 +16,62 @@ public class FluidHandlerWrapper implements IFluidHandler {
         side = s;
     }
 
-    private static IFluidTankProperties[] convertReadOnly(FluidTankInfo[] fluidTankInfos) {
-        return Arrays.stream(fluidTankInfos).map(t -> new FluidTankProperties(t.fluid, t.capacity, false, false)).toArray(IFluidTankProperties[]::new);
+    @Override
+    public int getTanks() {
+        //TODO: Is this correct
+        return wrapper.getAllTanks().length;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack getFluidInTank(int tank) {
+        //TODO: Is tank zero indexed or 1 indexed
+        //TODO: Decide if we should clone the stack before returning
+        return wrapper.getAllTanks()[tank].getFluid();
     }
 
     @Override
-    public IFluidTankProperties[] getTankProperties() {
-        if (side == null) {
-            return convertReadOnly(wrapper.getAllTanks());
-        }
-        return wrapper.getTankInfo(side) != null ? FluidTankProperties.convert(wrapper.getTankInfo(side)) : new IFluidTankProperties[]{};
+    public int getTankCapacity(int tank) {
+        return wrapper.getAllTanks()[tank].getCapacity();
     }
 
     @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        if (side == null || resource == null) {
+    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+        return wrapper.getAllTanks()[tank].isFluidValid(stack);
+    }
+
+    @Override
+    public int fill(@Nonnull FluidStack resource, FluidAction fluidAction) {
+        if (side == null || resource.isEmpty()) {
             return 0;
         }
         if (wrapper.canFill(side, resource)) {
-            return wrapper.fill(side, resource, doFill);
+            return wrapper.fill(side, resource, fluidAction);
         }
         return 0;
     }
 
+    @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
-        if (side == null || resource == null) {
-            return null;
+    public FluidStack drain(@Nonnull FluidStack resource, FluidAction fluidAction) {
+        if (side == null || resource.isEmpty()) {
+            return FluidStack.EMPTY;
         }
         if (wrapper.canDrain(side, resource)) {
-            return wrapper.drain(side, resource, doDrain);
+            return wrapper.drain(side, resource, fluidAction);
         }
-        return null;
+        return FluidStack.EMPTY;
     }
 
+    @Nonnull
     @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
+    public FluidStack drain(int maxDrain, FluidAction fluidAction) {
         if (side == null) {
-            return null;
+            return FluidStack.EMPTY;
         }
-        if (wrapper.canDrain(side, null)) {
-            return wrapper.drain(side, maxDrain, doDrain);
+        if (wrapper.canDrain(side, FluidStack.EMPTY)) {
+            return wrapper.drain(side, maxDrain, fluidAction);
         }
-        return null;
+        return FluidStack.EMPTY;
     }
 }

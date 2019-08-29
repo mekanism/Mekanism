@@ -163,12 +163,12 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         if (boilerCache.water == null) {
             boilerCache.water = mergeCache.water;
         } else if (mergeCache.water != null && boilerCache.water.isFluidEqual(mergeCache.water)) {
-            boilerCache.water.amount += mergeCache.water.amount;
+            boilerCache.water.setAmount(boilerCache.water.getAmount() + mergeCache.water.getAmount());
         }
         if (boilerCache.steam == null) {
             boilerCache.steam = mergeCache.steam;
         } else if (mergeCache.steam != null && boilerCache.steam.isFluidEqual(mergeCache.steam)) {
-            boilerCache.steam.amount += mergeCache.steam.amount;
+            boilerCache.steam.setAmount(boilerCache.steam.getAmount() + mergeCache.steam.getAmount());
         }
         boilerCache.temperature = Math.max(boilerCache.temperature, mergeCache.temperature);
     }
@@ -177,10 +177,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     protected void onFormed() {
         super.onFormed();
         if (structureFound.waterStored != null) {
-            structureFound.waterStored.amount = Math.min(structureFound.waterStored.amount, structureFound.waterVolume * WATER_PER_TANK);
+            structureFound.waterStored.setAmount(Math.min(structureFound.waterStored.getAmount(), structureFound.waterVolume * WATER_PER_TANK));
         }
         if (structureFound.steamStored != null) {
-            structureFound.steamStored.amount = Math.min(structureFound.steamStored.amount, structureFound.steamVolume * STEAM_PER_TANK);
+            structureFound.steamStored.setAmount(Math.min(structureFound.steamStored.getAmount(), structureFound.steamVolume * STEAM_PER_TANK));
         }
     }
 

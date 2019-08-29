@@ -54,7 +54,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
                 fluidScale = 1;
             }
             MekanismRenderer.color(fluid, fluidScale);
-            if (fluid.getFluid().isGaseous(fluid)) {
+            if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
@@ -64,7 +64,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             GlStateManager.popMatrix();
         }
 
-        if (valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid)) {
+        if (valveFluid != null && !valveFluid.getFluid().getAttributes().isGaseous(valveFluid)) {
             GlStateManager.pushMatrix();
             glChanged = enableGL();
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
@@ -111,7 +111,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         for (int i = 0; i < stages; i++) {
             displays[i] = DisplayInteger.createAndStart();
 
-            if (fluid.getFluid().getStill(fluid) != null) {
+            if (fluid.getFluid().getAttributes().getStill(fluid) != null) {
                 toReturn.minX = 0.3125 + .01;
                 toReturn.minY = 0.0625 + ((float) i / (float) stages) * 0.875;
                 toReturn.minZ = 0.3125 + .01;
@@ -144,7 +144,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         for (int i = 0; i < stages; i++) {
             displays[i] = DisplayInteger.createAndStart();
 
-            if (fluid.getFluid().getStill(fluid) != null) {
+            if (fluid.getFluid().getAttributes().getStill(fluid) != null) {
                 toReturn.minX = 0.125 + .01;
                 toReturn.minY = 0.0625 + .01;
                 toReturn.minZ = 0.125 + .01;

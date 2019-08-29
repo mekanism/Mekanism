@@ -10,6 +10,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.MekanismFluids;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
@@ -17,7 +18,6 @@ import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.temporary.FluidRegistry;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -63,7 +63,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         super.onUpdate();
         if (world.isRemote) {
             if (structure != null && clientHasStructure && isRendering) {
-                float targetScale = (float) (structure.waterStored != null ? structure.waterStored.amount : 0) / clientWaterCapacity;
+                float targetScale = (float) (structure.waterStored != null ? structure.waterStored.getAmount() : 0) / clientWaterCapacity;
                 if (Math.abs(prevWaterScale - targetScale) > 0.01) {
                     prevWaterScale = (9 * prevWaterScale + targetScale) / 10;
                 }
@@ -81,11 +81,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
         if (!world.isRemote) {
             if (structure != null) {
-                if (structure.waterStored != null && structure.waterStored.amount <= 0) {
+                if (structure.waterStored != null && structure.waterStored.getAmount() <= 0) {
                     structure.waterStored = null;
                     markDirty();
                 }
-                if (structure.steamStored != null && structure.steamStored.amount <= 0) {
+                if (structure.steamStored != null && structure.steamStored.getAmount() <= 0) {
                     structure.steamStored = null;
                     markDirty();
                 }
@@ -112,18 +112,18 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     structure.applyTemperatureChange();
                     structure.lastEnvironmentLoss = d[1];
                     if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && structure.waterStored != null) {
-                        int steamAmount = structure.steamStored != null ? structure.steamStored.amount : 0;
+                        int steamAmount = structure.steamStored != null ? structure.steamStored.getAmount() : 0;
                         double heatAvailable = structure.getHeatAvailable();
 
                         structure.lastMaxBoil = (int) Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
 
-                        int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterStored.amount);
+                        int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterStored.getAmount());
                         amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
-                        structure.waterStored.amount -= amountToBoil;
+                        structure.waterStored.setAmount(structure.waterStored.getAmount() - amountToBoil);
                         if (structure.steamStored == null) {
-                            structure.steamStored = new FluidStack(FluidRegistry.getFluid("steam"), amountToBoil);
+                            structure.steamStored = new FluidStack(MekanismFluids.STEAM.getFluid(), amountToBoil);
                         } else {
-                            structure.steamStored.amount += amountToBoil;
+                            structure.steamStored.setAmount(structure.steamStored.getAmount() + amountToBoil);
                         }
 
                         structure.temperature -= (amountToBoil * SynchronizedBoilerData.getHeatEnthalpy()) / structure.locations.size();
@@ -213,14 +213,14 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         if (clientWaterCapacity == 0 || structure.waterStored == null) {
             return 0;
         }
-        return structure.waterStored.amount * i / clientWaterCapacity;
+        return structure.waterStored.getAmount() * i / clientWaterCapacity;
     }
 
     public int getScaledSteamLevel(int i) {
         if (clientSteamCapacity == 0 || structure.steamStored == null) {
             return 0;
         }
-        return structure.steamStored.amount * i / clientSteamCapacity;
+        return structure.steamStored.getAmount() * i / clientSteamCapacity;
     }
 
     public double getLastEnvironmentLoss() {

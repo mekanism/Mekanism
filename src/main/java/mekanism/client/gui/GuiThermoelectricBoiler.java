@@ -78,14 +78,14 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             FluidStack waterStored = tileEntity.structure != null ? tileEntity.structure.waterStored : null;
             if (waterStored != null) {
-                displayTooltip(TextComponentUtil.build(waterStored, ": " + waterStored.amount + "mB"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(waterStored, ": " + waterStored.getAmount() + "mB"), xAxis, yAxis);
             } else {
                 displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
             }
         } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack steamStored = tileEntity.structure != null ? tileEntity.structure.steamStored : null;
             if (steamStored != null) {
-                displayTooltip(TextComponentUtil.build(steamStored, ": " + steamStored.amount + "mB"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(steamStored, ": " + steamStored.getAmount() + "mB"), xAxis, yAxis);
             } else {
                 displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
             }

@@ -66,7 +66,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-        if (stack.getGas() != MekanismFluids.FusionFuel) {
+        if (stack.getGas() != MekanismFluids.FUSION_FUEL) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
@@ -85,7 +85,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
 
     @Override
     public boolean canReceiveGas(ItemStack itemstack, Gas type) {
-        return type == MekanismFluids.FusionFuel;
+        return type == MekanismFluids.FUSION_FUEL;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, new GasStack(MekanismFluids.FUSION_FUEL, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 }

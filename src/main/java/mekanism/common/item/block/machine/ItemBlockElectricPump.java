@@ -55,7 +55,7 @@ public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip<BlockElectri
         if (hasTank(itemstack)) {
             FluidStack fluidStack = getFluidStack(itemstack);
             if (fluidStack != null) {
-                tooltip.add(TextComponentUtil.build(EnumColor.PINK, fluidStack, ": ", EnumColor.GRAY, fluidStack.amount + "mB"));
+                tooltip.add(TextComponentUtil.build(EnumColor.PINK, fluidStack, ": ", EnumColor.GRAY, fluidStack.getAmount() + "mB"));
             }
         }
         ListNBT inventory = getInventory(itemstack);

@@ -2,7 +2,8 @@ package mekanism.common.recipe.inputs;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FluidInput extends MachineInput<FluidInput> {
 
@@ -30,19 +31,17 @@ public class FluidInput extends MachineInput<FluidInput> {
         return ingredient != null;
     }
 
-    public boolean useFluid(FluidTank fluidTank, boolean deplete, int scale) {
-        //TODO
-        /*if (fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient)) {
-            fluidTank.drain(ingredient.amount * scale, deplete);
+    public boolean useFluid(FluidTank fluidTank, FluidAction fluidAction, int scale) {
+        if (fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient)) {
+            fluidTank.drain(ingredient.getAmount() * scale, fluidAction);
             return true;
-        }*/
+        }
         return false;
     }
 
     @Override
     public int hashIngredients() {
-        //TODO: Fix this
-        return 0;//ingredient.getFluid() != null ? ingredient.getFluid().hashCode() : 0;
+        return ingredient.getFluid() != null ? ingredient.getFluid().hashCode() : 0;
     }
 
     @Override
@@ -50,8 +49,7 @@ public class FluidInput extends MachineInput<FluidInput> {
         if (!isValid()) {
             return !other.isValid();
         }
-        //TODO: Fix this
-        return false;//ingredient.equals(other.ingredient);
+        return ingredient.equals(other.ingredient);
     }
 
     @Override

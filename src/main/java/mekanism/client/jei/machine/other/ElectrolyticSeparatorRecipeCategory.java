@@ -67,7 +67,7 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory<Sepa
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, SeparatorRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, true, 2, 2, 16, 58, recipe.getInput().ingredient.amount, false, fluidOverlayLarge);
+        fluidStacks.init(0, true, 2, 2, 16, 58, recipe.getInput().ingredient.getAmount(), false, fluidOverlayLarge);
         fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, false, 59 - xOffset, 19 - yOffset, 16, 28, recipe.recipeOutput.leftGas, true);

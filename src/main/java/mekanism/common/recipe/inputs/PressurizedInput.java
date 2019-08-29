@@ -7,7 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 /**
  * An input of a gas, a fluid and an item for the pressurized reaction chamber
@@ -46,7 +47,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (meets(new PressurizedInput(inventory.get(index), fluidTank.getFluid(), gasTank.getGas()))) {
             if (deplete) {
                 inventory.set(index, StackUtils.subtract(inventory.get(index), theSolid));
-                fluidTank.drain(theFluid.amount, true);
+                fluidTank.drain(theFluid.getAmount(), FluidAction.EXECUTE);
                 gasTank.draw(theGas.amount, true);
             }
             return true;
@@ -76,11 +77,10 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
      * @return if the stack's fluid type is contained in this PressurizedReactants
      */
     public boolean containsType(FluidStack stack) {
-        if (stack == null || stack.amount == 0) {
+        if (stack == null || stack.getAmount() == 0) {
             return false;
         }
-        //TODO
-        return false;//stack.isFluidEqual(theFluid);
+        return stack.isFluidEqual(theFluid);
     }
 
     /**
@@ -108,11 +108,10 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (input == null || !input.isValid()) {
             return false;
         }
-        //TODO
-        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && /*input.theFluid.isFluidEqual(theFluid) &&*/ input.theGas.isGasEqual(theGas))) {
+        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid) && input.theGas.isGasEqual(theGas))) {
             return false;
         }
-        return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
+        return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.getAmount() >= theFluid.getAmount() && input.theGas.amount >= theGas.amount;
     }
 
     @Override
@@ -135,7 +134,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
     @Override
     public int hashIngredients() {
         //TODO
-        return StackUtils.hashItemStack(theSolid) << 16 | (/*theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : */0) << 8 | theGas.hashCode();
+        return StackUtils.hashItemStack(theSolid) << 16 | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class FluidicPlenisherContainer extends MekanismTileContainer<TileEntityFluidicPlenisher> {
@@ -40,7 +41,9 @@ public class FluidicPlenisherContainer extends MekanismTileContainer<TileEntityF
                 } else if (!mergeItemStack(slotStack, 3, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (new LazyOptionalHelper<>(FluidUtil.getFluidContained(slotStack)).matches(fluidStack -> fluidStack.getFluid().canBePlacedInWorld())) {
+            } else if (new LazyOptionalHelper<>(FluidUtil.getFluidContained(slotStack)).matches(fluidStack ->
+                  fluidStack.getFluid().getAttributes().canBePlacedInWorld(player.world, BlockPos.ZERO, fluidStack))) {
+                //TODO: Is there a better position to use
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

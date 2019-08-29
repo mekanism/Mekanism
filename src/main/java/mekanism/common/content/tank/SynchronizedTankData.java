@@ -32,7 +32,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
         }
         if (fluidStored != null) {
             int totalStage = (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
-            int currentStage = (int) ((fluidStored.amount / (float) (volume * TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
+            int currentStage = (int) ((fluidStored.getAmount() / (float) (volume * TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
             boolean stageChanged = currentStage != prevFluidStage;
             prevFluidStage = currentStage;
             return (fluidStored.getFluid() != prevFluid.getFluid()) || stageChanged;

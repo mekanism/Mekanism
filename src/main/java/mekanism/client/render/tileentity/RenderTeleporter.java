@@ -68,7 +68,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
         Model3D toReturn = new Model3D();
         toReturn.baseBlock = Blocks.STONE;
-        toReturn.setTexture(MekanismFluids.Oxygen.getSprite());
+        toReturn.setTexture(MekanismFluids.OXYGEN.getSprite());
 
         DisplayInteger display = DisplayInteger.createAndStart();
         //We already know it does not contain type, so add it

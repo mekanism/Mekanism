@@ -23,6 +23,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class RecipeUtils {
 
@@ -114,7 +115,7 @@ public class RecipeUtils {
                     LazyOptionalHelper<FluidStack> fluidStackHelper = new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack));
                     if (fluidStackHelper.isPresent()) {
                         FluidStack stored = fluidStackHelper.getValue();
-                        if (new LazyOptionalHelper<>(FluidUtil.getFluidHandler(itemstack)).matches(handler -> handler.fill(stored, false) == 0)) {
+                        if (new LazyOptionalHelper<>(FluidUtil.getFluidHandler(itemstack)).matches(handler -> handler.fill(stored, FluidAction.SIMULATE) == 0)) {
                             return ItemStack.EMPTY;
                         }
                         if (fluidFound == null) {
@@ -123,7 +124,7 @@ public class RecipeUtils {
                             if (fluidFound.getFluid() != stored.getFluid()) {
                                 return ItemStack.EMPTY;
                             }
-                            fluidFound.amount += stored.amount;
+                            fluidFound.setAmount(fluidFound.getAmount() + stored.getAmount());
                         }
                     }
                 }
@@ -131,7 +132,7 @@ public class RecipeUtils {
 
             if (fluidFound != null) {
                 FluidStack finalFluidFound = fluidFound;
-                FluidUtil.getFluidHandler(toReturn).ifPresent(handler -> handler.fill(finalFluidFound, true));
+                FluidUtil.getFluidHandler(toReturn).ifPresent(handler -> handler.fill(finalFluidFound, FluidAction.EXECUTE));
             }
         }
 

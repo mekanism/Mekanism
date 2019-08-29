@@ -4,57 +4,55 @@ import java.util.Locale;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
-import mekanism.common.temporary.FluidRegistry;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 
 public class MekanismFluids {
 
-    public static final Gas Hydrogen = new Gas("hydrogen", 0xFFFFFF);
-    public static final Gas Oxygen = new Gas("oxygen", 0x6CE2FF);
-    public static final Gas Water = new Gas("water", "mekanism:block/liquid/liquid_steam");
-    public static final Gas Chlorine = new Gas("chlorine", 0xCFE800);
-    public static final Gas SulfurDioxide = new Gas("sulfurdioxide", 0xA99D90);
-    public static final Gas SulfurTrioxide = new Gas("sulfurtrioxide", 0xCE6C6C);
-    public static final Gas SulfuricAcid = new Gas("sulfuricacid", 0x82802B);
-    public static final Gas HydrogenChloride = new Gas("hydrogenchloride", 0xA8F1E9);
+    public static final Gas HYDROGEN = new Gas("hydrogen", 0xFFFFFF);
+    public static final Gas OXYGEN = new Gas("oxygen", 0x6CE2FF);
+    public static final Gas STEAM = new Gas("steam", "mekanism:block/liquid/liquid_steam");
+    public static final Gas CHLORINE = new Gas("chlorine", 0xCFE800);
+    public static final Gas SULFUR_DIOXIDE = new Gas("sulfur_dioxide", 0xA99D90);
+    public static final Gas SULFUR_TRIOXIDE = new Gas("sulfur_trioxide", 0xCE6C6C);
+    public static final Gas SULFURIC_ACID = new Gas("sulfuric_acid", 0x82802B);
+    public static final Gas HYDROGEN_CHLORIDE = new Gas("hydrogen_chloride", 0xA8F1E9);
 
-    public static final Fluid HeavyWater = new Fluid("heavywater", new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"),
-          new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
-    public static final Fluid Steam = new Fluid("steam", new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_steam"),
-          new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_steam")).setGaseous(true);
+    //TODO: Fix
+    public static final Fluid HEAVY_WATER = Fluids.WATER;//new Fluid("heavy_water", new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"), new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
 
     //Internal gases
-    public static final Gas LiquidOsmium = new Gas("liquidosmium", 0x52bdca);
-    public static final Gas Ethene = new Gas("ethene", 0xEACCF9);
-    public static final Gas Sodium = new Gas("sodium", 0xE9FEF4);
-    public static final Gas Brine = new Gas("brine", 0xFEEF9C);
-    public static final Gas Deuterium = new Gas("deuterium", 0xFF3232);
-    public static final Gas Tritium = new Gas("tritium", 0x64FF70);
-    public static final Gas FusionFuel = new Gas("fusionfuel", 0x7E007D);
-    public static final Gas Lithium = new Gas("lithium", 0xEBA400);
+    //TODO: Rename liquid osmium?
+    public static final Gas LIQUID_OSMIUM = new Gas("liquid_osmium", 0x52bdca);
+    public static final Gas ETHENE = new Gas("ethene", 0xEACCF9);
+    public static final Gas SODIUM = new Gas("sodium", 0xE9FEF4);
+    public static final Gas BRINE = new Gas("brine", 0xFEEF9C);
+    public static final Gas DEUTERIUM = new Gas("deuterium", 0xFF3232);
+    public static final Gas TRITIUM = new Gas("tritium", 0x64FF70);
+    public static final Gas FUSION_FUEL = new Gas("fusion_fuel", 0x7E007D);
+    public static final Gas LITHIUM = new Gas("lithium", 0xEBA400);
 
     public static void register() {
-        GasRegistry.register(Hydrogen).registerFluid("liquidhydrogen");
-        GasRegistry.register(Oxygen).registerFluid("liquidoxygen");
-        GasRegistry.register(Water).registerFluid();
-        GasRegistry.register(Chlorine).registerFluid("liquidchlorine");
-        GasRegistry.register(SulfurDioxide).registerFluid("liquidsulfurdioxide");
-        GasRegistry.register(SulfurTrioxide).registerFluid("liquidsulfurtrioxide");
-        GasRegistry.register(SulfuricAcid).registerFluid();
-        GasRegistry.register(HydrogenChloride).registerFluid("liquidhydrogenchloride");
-        GasRegistry.register(Ethene).registerFluid("liquidethene");
-        GasRegistry.register(Sodium).registerFluid("liquidsodium");
-        GasRegistry.register(Brine).registerFluid();
-        GasRegistry.register(Deuterium).registerFluid("liquiddeuterium");
-        GasRegistry.register(Tritium).registerFluid("liquidtritium");
-        GasRegistry.register(FusionFuel).registerFluid("liquidfusionfuel");
-        GasRegistry.register(Lithium).registerFluid("liquidlithium");
+        GasRegistry.register(HYDROGEN).registerFluid();
+        GasRegistry.register(OXYGEN).registerFluid();
+        GasRegistry.register(STEAM).registerFluid();
+        GasRegistry.register(CHLORINE).registerFluid();
+        GasRegistry.register(SULFUR_DIOXIDE).registerFluid();
+        GasRegistry.register(SULFUR_TRIOXIDE).registerFluid();
+        GasRegistry.register(SULFURIC_ACID).registerFluid();
+        GasRegistry.register(HYDROGEN_CHLORIDE).registerFluid();
+        GasRegistry.register(ETHENE).registerFluid();
+        GasRegistry.register(SODIUM).registerFluid();
+        GasRegistry.register(BRINE).registerFluid();
+        GasRegistry.register(DEUTERIUM).registerFluid();
+        GasRegistry.register(TRITIUM).registerFluid();
+        GasRegistry.register(FUSION_FUEL).registerFluid();
+        GasRegistry.register(LITHIUM).registerFluid();
 
-        GasRegistry.register(LiquidOsmium).setVisible(false);
+        GasRegistry.register(LIQUID_OSMIUM).setVisible(false);
 
-        FluidRegistry.registerFluid(HeavyWater);
-        FluidRegistry.registerFluid(Steam);
+        //TODO: Fix
+        //ForgeRegistries.FLUIDS.register(HEAVY_WATER);
 
         for (Resource resource : Resource.values()) {
             String name = resource.getName();
@@ -66,11 +64,10 @@ public class MekanismFluids {
             GasRegistry.register(new OreGas(nameLower, "oregas." + nameLower, resource.tint, clean));
         }
 
-        FluidRegistry.enableUniversalBucket();
-
-        FluidRegistry.addBucketForFluid(HeavyWater);
-        //TODO: Fluids
-        /*FluidRegistry.addBucketForFluid(Brine.getFluid());
-        FluidRegistry.addBucketForFluid(Lithium.getFluid());*/
+        //TODO: Buckets
+        /*FluidRegistry.enableUniversalBucket();
+        FluidRegistry.addBucketForFluid(HEAVY_WATER);
+        FluidRegistry.addBucketForFluid(BRINE.getFluid());
+        FluidRegistry.addBucketForFluid(LITHIUM.getFluid());*/
     }
 }

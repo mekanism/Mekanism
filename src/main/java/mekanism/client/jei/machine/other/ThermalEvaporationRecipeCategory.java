@@ -35,9 +35,9 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory<Thermal
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ThermalEvaporationRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().ingredient.amount, false,
+        fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().ingredient.getAmount(), false,
               fluidOverlayLarge);
-        fluidStacks.init(1, false, 153 - xOffset, 14 - yOffset, 16, 58, recipe.getOutput().output.amount, false,
+        fluidStacks.init(1, false, 153 - xOffset, 14 - yOffset, 16, 58, recipe.getOutput().output.getAmount(), false,
               fluidOverlayLarge);
         fluidStacks.set(0, recipe.recipeInput.ingredient);
         fluidStacks.set(1, recipe.recipeOutput.output);

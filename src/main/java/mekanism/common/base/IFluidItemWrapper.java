@@ -2,6 +2,7 @@ package mekanism.common.base;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public interface IFluidItemWrapper {
 
@@ -9,7 +10,7 @@ public interface IFluidItemWrapper {
 
     int getCapacity(ItemStack container);
 
-    int fill(ItemStack container, FluidStack resource, boolean doFill);
+    int fill(ItemStack container, FluidStack resource, FluidAction fluidAction);
 
-    FluidStack drain(ItemStack container, int maxDrain, boolean doDrain);
+    FluidStack drain(ItemStack container, int maxDrain, FluidAction fluidAction);
 }

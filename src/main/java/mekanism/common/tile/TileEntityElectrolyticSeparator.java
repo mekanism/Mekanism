@@ -45,10 +45,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
@@ -114,7 +115,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             if (!getInventory().get(0).isEmpty()) {
                 if (Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(getInventory().get(0))) {
                     if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
-                        fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), true);
+                        fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
                     }
                 }
             }
@@ -181,7 +182,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         }
         possibleProcess = Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
         possibleProcess = Math.min((int) (getEnergy() / getEnergyPerTick()), possibleProcess);
-        return Math.min(fluidTank.getFluidAmount() / recipe.recipeInput.ingredient.amount, possibleProcess);
+        return Math.min(fluidTank.getFluidAmount() / recipe.recipeInput.ingredient.getAmount(), possibleProcess);
     }
 
     public SeparatorRecipe getRecipe() {
@@ -230,10 +231,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemstack);
         } else if (slotID == 1) {
             return itemstack.getItem() instanceof IGasItem &&
-                   (((IGasItem) itemstack.getItem()).getGas(itemstack) == null || ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Hydrogen);
+                   (((IGasItem) itemstack.getItem()).getGas(itemstack) == null || ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.HYDROGEN);
         } else if (slotID == 2) {
             return itemstack.getItem() instanceof IGasItem &&
-                   (((IGasItem) itemstack.getItem()).getGas(itemstack) == null || ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Oxygen);
+                   (((IGasItem) itemstack.getItem()).getGas(itemstack) == null || ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.OXYGEN);
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -330,9 +331,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             case 3:
                 return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
-                return new Object[]{fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0};
+                return new Object[]{fluidTank.getFluid() != null ? fluidTank.getFluid().getAmount() : 0};
             case 5:
-                return new Object[]{fluidTank.getFluid() != null ? (fluidTank.getCapacity() - fluidTank.getFluid().amount) : 0};
+                return new Object[]{fluidTank.getFluid() != null ? (fluidTank.getCapacity() - fluidTank.getFluid().getAmount()) : 0};
             case 6:
                 return new Object[]{leftTank.getStored()};
             case 7:
@@ -372,17 +373,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
-        return fluidTank.fill(resource, doFill);
+    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+        return fluidTank.fill(resource, fluidAction);
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(Direction from) {
-        return new FluidTankInfo[]{fluidTank.getInfo()};
+    public IFluidTank[] getTankInfo(Direction from) {
+        return new IFluidTank[]{fluidTank};
     }
 
     @Override
-    public FluidTankInfo[] getAllTanks() {
+    public IFluidTank[] getAllTanks() {
         return getTankInfo(null);
     }
 
