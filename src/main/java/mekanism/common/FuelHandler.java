@@ -3,18 +3,23 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.gas.Gas;
+import mekanism.api.providers.IGasProvider;
+import net.minecraft.util.ResourceLocation;
 
 public class FuelHandler {
 
-    public static Map<String, FuelGas> fuels = new HashMap<>();
+    //TODO: Tags
+    public static Map<ResourceLocation, FuelGas> fuels = new HashMap<>();
 
-    public static void addGas(Gas gas, int burnTicks, double energyPerMilliBucket) {
-        fuels.put(gas.getName(), new FuelGas(burnTicks, energyPerMilliBucket));
+    public static void addGas(IGasProvider gasProvider, int burnTicks, double energyPerMilliBucket) {
+        //TODO: use tag instead
+        fuels.put(gasProvider.getRegistryName(), new FuelGas(burnTicks, energyPerMilliBucket));
     }
 
     public static FuelGas getFuel(Gas gas) {
-        if (fuels.containsKey(gas.getName())) {
-            return fuels.get(gas.getName());
+        //TODO: use tag instead
+        if (fuels.containsKey(gas.getRegistryName())) {
+            return fuels.get(gas.getRegistryName());
         }
         //TODO: BuildCraft
         /*if (BCPresent() && gas.hasFluid() && BuildcraftFuelRegistry.fuel != null) {

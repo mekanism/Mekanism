@@ -66,6 +66,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
+        //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69) {

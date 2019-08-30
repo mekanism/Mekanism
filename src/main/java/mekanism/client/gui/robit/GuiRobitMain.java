@@ -117,7 +117,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit.dropPickup"), ": " + robit.getDropPickup()), 29, 54 - 4, 0x00CD00);
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit.owner"), ": " + owner), 29, 63 - 4, 0x00CD00);
         }
-
+        //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {

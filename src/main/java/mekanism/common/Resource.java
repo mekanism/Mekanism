@@ -4,13 +4,13 @@ import java.util.Locale;
 import mekanism.common.resource.INamedResource;
 
 public enum Resource implements INamedResource {
-    IRON("Iron", 0xaf8e77),
-    GOLD("Gold", 0xf2cd67),
-    OSMIUM("Osmium", 0x1e79c3),
-    COPPER("Copper", 0xaa4b19),
-    TIN("Tin", 0xccccd9),
-    SILVER("Silver", 0xbfc9cd),
-    LEAD("Lead", 0x3d3d41);
+    IRON("iron", 0xaf8e77),
+    GOLD("gold", 0xf2cd67),
+    OSMIUM("osmium", 0x1e79c3),
+    COPPER("copper", 0xaa4b19),
+    TIN("tin", 0xccccd9),
+    SILVER("silver", 0xbfc9cd),
+    LEAD("lead", 0x3d3d41);
 
     public final int tint;
     private final String name;
@@ -30,12 +30,8 @@ public enum Resource implements INamedResource {
         return null;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public String getRegistrySuffix() {
-        return name.toLowerCase(Locale.ROOT);
+        return name;
     }
 }

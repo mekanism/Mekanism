@@ -114,6 +114,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config")), 0, xSize, 5, 0x404040);
+        //TODO: 1.14 Convert to GuiElement
         if (getTile().getConfig().canEject(currentType)) {
             drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(getTile().getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
         } else {

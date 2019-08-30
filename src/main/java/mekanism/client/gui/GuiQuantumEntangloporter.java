@@ -186,6 +186,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         drawString(frequencyComponent, 32, 81, 0x404040);
         ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.security"), ": ");
         drawString(securityComponent, 32, 91, 0x404040);
+        //TODO: 1.14 Convert to GuiElement
         Frequency frequency = tileEntity.getFrequency(null);
         if (frequency != null) {
             drawString(frequency.name, 32 + getStringWidth(frequencyComponent), 81, 0x797979);

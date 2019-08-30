@@ -5,11 +5,13 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.gas.Gas;
 import mekanism.api.providers.IBlockProvider;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 
 //TODO: Refactor what packages various things are in
@@ -22,6 +24,9 @@ public class MekanismAPI {
      * The version of the api classes - may not always match the mod's version
      */
     public static final String API_VERSION = "9.8.1";
+    public static final String MEKANISM_MODID = "mekanism";
+
+    public static IForgeRegistry<Gas> GAS_REGISTRY;
 
     /**
      * Mekanism debug mode

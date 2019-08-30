@@ -13,6 +13,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IGasProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
@@ -172,8 +173,8 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output) {
-        addRecipe(Recipe.CHEMICAL_INJECTION_CHAMBER, new InjectionRecipe(input, gas, output));
+    public static void addChemicalInjectionChamberRecipe(ItemStack input, IGasProvider gasProvider, ItemStack output) {
+        addRecipe(Recipe.CHEMICAL_INJECTION_CHAMBER, new InjectionRecipe(input, gasProvider, output));
     }
 
     /**

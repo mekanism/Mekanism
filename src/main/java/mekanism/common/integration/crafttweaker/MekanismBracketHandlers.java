@@ -4,11 +4,12 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.BracketResolver;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import java.util.Locale;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
+import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -20,7 +21,8 @@ public class MekanismBracketHandlers {
         if (!tokens.toLowerCase(Locale.ENGLISH).equals(tokens)) {
             CraftTweakerAPI.logWarning("Gas BEP <item:%s> does not seem to be lower-cased!", tokens);
         }
-        Gas gas = GasRegistry.getGas(tokens);
+        //TODO: Make this have both parts of the registry name rather than just being one part
+        Gas gas = MekanismAPI.GAS_REGISTRY.getValue(new ResourceLocation(tokens));
         if (gas == null) {
             throw new IllegalArgumentException("Could not get gas with name: <gas:" + tokens + ">! Gas does not appear to exist!");
         }

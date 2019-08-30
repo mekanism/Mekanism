@@ -92,6 +92,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         } else {
             drawString(TextComponentUtil.translate("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
         }
+        //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {

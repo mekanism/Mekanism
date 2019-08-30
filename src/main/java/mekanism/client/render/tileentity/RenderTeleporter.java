@@ -11,7 +11,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.BlockState;
@@ -68,7 +68,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
         Model3D toReturn = new Model3D();
         toReturn.baseBlock = Blocks.STONE;
-        toReturn.setTexture(MekanismFluids.OXYGEN.getSprite());
+        toReturn.setTexture(MekanismGases.OXYGEN.getGas().getSprite());
 
         DisplayInteger display = DisplayInteger.createAndStart();
         //We already know it does not contain type, so add it

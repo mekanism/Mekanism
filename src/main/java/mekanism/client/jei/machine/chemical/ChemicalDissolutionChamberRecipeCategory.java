@@ -4,7 +4,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.constants.VanillaTypes;
@@ -34,7 +34,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 
     @Override
     public void setIngredients(DissolutionRecipe recipe, IIngredients ingredients) {
-        ingredients.setInput(MekanismJEI.TYPE_GAS, new GasStack(MekanismFluids.SULFURIC_ACID, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED));
+        ingredients.setInput(MekanismJEI.TYPE_GAS, new GasStack(MekanismGases.SULFURIC_ACID, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED));
         ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.ingredient);
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
     }
@@ -46,7 +46,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
         itemStacks.set(0, recipe.getInput().ingredient);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58,
-              new GasStack(MekanismFluids.SULFURIC_ACID, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED),
+              new GasStack(MekanismGases.SULFURIC_ACID, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED),
               true);
         initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutput().output, true);
     }

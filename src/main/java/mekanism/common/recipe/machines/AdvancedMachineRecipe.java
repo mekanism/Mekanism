@@ -1,7 +1,7 @@
 package mekanism.common.recipe.machines;
 
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
+import mekanism.api.providers.IGasProvider;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
@@ -13,8 +13,8 @@ public abstract class AdvancedMachineRecipe<RECIPE extends AdvancedMachineRecipe
         super(input, output);
     }
 
-    public AdvancedMachineRecipe(ItemStack input, Gas gas, ItemStack output) {
-        this(new AdvancedMachineInput(input, gas), new ItemStackOutput(output));
+    public AdvancedMachineRecipe(ItemStack input, IGasProvider gasProvider, ItemStack output) {
+        this(new AdvancedMachineInput(input, gasProvider), new ItemStackOutput(output));
     }
 
     public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, GasTank gasTank, int amount) {

@@ -2,9 +2,9 @@ package mekanism.common.integration.crafttweaker.commands;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.impl.commands.CTCommands.CommandImpl;
-import java.util.List;
+import java.util.Collection;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.text.EnumColor;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
@@ -14,7 +14,7 @@ public class GasesCommand extends CommandImpl {
     public GasesCommand() {
         super("gases", "Outputs a list of all registered gases to the crafttweaker.log", context -> {
             CraftTweakerAPI.logInfo("Gases:");
-            List<Gas> gases = GasRegistry.getRegisteredGasses();
+            Collection<Gas> gases = MekanismAPI.GAS_REGISTRY.getValues();
             //TODO: Should this be something other than translation key
             gases.forEach(gas -> CraftTweakerAPI.logInfo(String.format("<gas:%s>, %s", gas.getName(), gas.getTranslationKey())));
 

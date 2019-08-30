@@ -9,7 +9,7 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -26,7 +26,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
 
     @Nonnull
-    private static final FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
+    private static final FluidStack STEAM = new FluidStack(MekanismGases.STEAM.getFluid(), 1);
 
     @Override
     public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {

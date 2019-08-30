@@ -2,8 +2,8 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
@@ -110,7 +110,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
         }
         BlockGasTank gasTank = getBlock();
         if (gasTank.getTier() == GasTankTier.CREATIVE && MekanismConfig.general.prefilledGasTanks.get()) {
-            for (Gas type : GasRegistry.getRegisteredGasses()) {
+            for (Gas type : MekanismAPI.GAS_REGISTRY.getValues()) {
                 if (type.isVisible()) {
                     ItemStack filled = new ItemStack(this);
                     setGas(filled, new GasStack(type, ((IGasItem) filled.getItem()).getMaxGas(filled)));

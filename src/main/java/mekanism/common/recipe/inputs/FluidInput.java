@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class FluidInput extends MachineInput<FluidInput> {
 
     @Nonnull
-    public FluidStack ingredient;
+    public FluidStack ingredient = FluidStack.EMPTY;
 
     public FluidInput(@Nonnull FluidStack stack) {
         ingredient = stack;

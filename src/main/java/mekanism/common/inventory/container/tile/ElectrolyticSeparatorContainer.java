@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
@@ -40,11 +40,12 @@ public class ElectrolyticSeparatorContainer extends MekanismTileContainer<TileEn
                     }
                 } else if (slotStack.getItem() instanceof IGasItem) {
                     if (((IGasItem) slotStack.getItem()).getGas(slotStack) != null) {
-                        if (((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.HYDROGEN) {
+                        //TODO: Tags
+                        if (((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismGases.HYDROGEN.getGas()) {
                             if (!mergeItemStack(slotStack, 1, 2, false)) {
                                 return ItemStack.EMPTY;
                             }
-                        } else if (((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.OXYGEN) {
+                        } else if (((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismGases.OXYGEN.getGas()) {
                             if (!mergeItemStack(slotStack, 2, 3, false)) {
                                 return ItemStack.EMPTY;
                             }

@@ -10,7 +10,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedData;
@@ -217,7 +217,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     private boolean isValidGas(Gas gas) {
         //TODO: Replace with commented version once this becomes an AdvancedMachine
-        return gas == MekanismFluids.SULFURIC_ACID;//Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(gas);
+        return gas == MekanismGases.SULFURIC_ACID.getGas();//Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(gas);
     }
 
     @Override

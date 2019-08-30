@@ -14,7 +14,8 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.MekanismFluids;
+import mekanism.api.providers.IGasProvider;
+import mekanism.common.MekanismGases;
 import mekanism.common.recipe.ingredients.IMekanismIngredient;
 import mekanism.common.recipe.ingredients.ItemStackMekIngredient;
 import mekanism.common.recipe.ingredients.TagMekIngredient;
@@ -38,19 +39,19 @@ public class GasConversionHandler {
         ItemTags.Wrapper salt = new ItemTags.Wrapper(new ResourceLocation("forge", "dusts/salt"));
         ItemTags.Wrapper osmiumIngot = new ItemTags.Wrapper(new ResourceLocation("forge", "ingots/osmium"));
         ItemTags.Wrapper osmiumBlock = new ItemTags.Wrapper(new ResourceLocation("forge", "storage_blocks/osmium"));
-        addGasMapping(new ItemStack(Items.FLINT), MekanismFluids.OXYGEN, 10);
-        addGasMapping(sulfur, MekanismFluids.SULFURIC_ACID, 2);
-        addGasMapping(salt, MekanismFluids.HYDROGEN_CHLORIDE, 2);
-        addGasMapping(osmiumIngot, MekanismFluids.LIQUID_OSMIUM, 200);
-        addGasMapping(osmiumBlock, MekanismFluids.LIQUID_OSMIUM, 1_800);
+        addGasMapping(new ItemStack(Items.FLINT), MekanismGases.OXYGEN, 10);
+        addGasMapping(sulfur, MekanismGases.SULFURIC_ACID, 2);
+        addGasMapping(salt, MekanismGases.HYDROGEN_CHLORIDE, 2);
+        addGasMapping(osmiumIngot, MekanismGases.LIQUID_OSMIUM, 200);
+        addGasMapping(osmiumBlock, MekanismGases.LIQUID_OSMIUM, 1_800);
     }
 
-    public static boolean addGasMapping(@Nonnull ItemStack stack, @Nonnull Gas gas, int amount) {
-        return addGasMapping(new ItemStackMekIngredient(stack), new GasStack(gas, amount));
+    public static boolean addGasMapping(@Nonnull ItemStack stack, @Nonnull IGasProvider gasProvider, int amount) {
+        return addGasMapping(new ItemStackMekIngredient(stack), new GasStack(gasProvider, amount));
     }
 
-    public static boolean addGasMapping(@Nonnull Tag<Item> tag, @Nonnull Gas gas, int amount) {
-        return addGasMapping(new TagMekIngredient(tag), new GasStack(gas, amount));
+    public static boolean addGasMapping(@Nonnull Tag<Item> tag, @Nonnull IGasProvider gasProvider, int amount) {
+        return addGasMapping(new TagMekIngredient(tag), new GasStack(gasProvider, amount));
     }
 
     public static boolean addGasMapping(@Nonnull IMekanismIngredient<ItemStack> ingredient, @Nonnull GasStack gasStack) {

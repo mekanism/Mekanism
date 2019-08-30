@@ -10,7 +10,7 @@ import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -24,7 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
 
     @Nonnull
-    private static final FluidStack STEAM = new FluidStack(MekanismFluids.STEAM.getFluid(), 1);
+    private static final FluidStack STEAM = new FluidStack(MekanismGases.STEAM.getFluid(), 1);
     @Nonnull
     private static final FluidStack WATER = new FluidStack(Fluids.WATER, 1);
 

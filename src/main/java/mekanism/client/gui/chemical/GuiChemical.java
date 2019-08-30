@@ -27,6 +27,7 @@ public abstract class GuiChemical<TILE extends TileEntityMekanism, CONTAINER ext
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawForegroundText();
+        //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {

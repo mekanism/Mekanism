@@ -73,7 +73,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        //TODO: Convert infuse gauge to a proper gui element/widget so we don't need special handling code in this class for it
+        //TODO: 1.14 Convert to GuiElement
         if (xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69) {
             InfuseType type = tileEntity.infuseStored.getType();
             if (type != null) {

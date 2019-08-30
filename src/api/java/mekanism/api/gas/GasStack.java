@@ -1,6 +1,7 @@
 package mekanism.api.gas;
 
 import javax.annotation.Nullable;
+import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -9,21 +10,11 @@ import net.minecraft.nbt.CompoundNBT;
  *
  * @author aidancbrady
  */
+//TODO: Implement IGasProvider?
 public class GasStack implements IHasTranslationKey {
 
     public int amount;
     private Gas type;
-
-    /**
-     * Creates a new GasStack with a defined gas ID and quantity.
-     *
-     * @param id       - gas ID to associate this GasStack to, will perform a GasRegistry lookup in the constructor
-     * @param quantity - amount of gas to be referenced in this GasStack
-     */
-    public GasStack(int id, int quantity) {
-        type = GasRegistry.getGas(id);
-        amount = quantity;
-    }
 
     /**
      * Creates a new GasStack with a defined Gas type and quantity.
@@ -31,8 +22,8 @@ public class GasStack implements IHasTranslationKey {
      * @param gas      - gas type of the stack
      * @param quantity - amount of gas to be referenced in this GasStack
      */
-    public GasStack(Gas gas, int quantity) {
-        type = gas;
+    public GasStack(IGasProvider gas, int quantity) {
+        type = gas.getGas();
         amount = quantity;
     }
 
@@ -127,7 +118,7 @@ public class GasStack implements IHasTranslationKey {
 
     @Override
     public int hashCode() {
-        return type == null ? 0 : type.getID();
+        return type == null ? 0 : type.getRegistryName().hashCode();
     }
 
     @Override

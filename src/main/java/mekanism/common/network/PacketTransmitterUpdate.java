@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -146,8 +146,13 @@ public class PacketTransmitterUpdate {
                 buf.writeDouble(pkt.power);
                 break;
             case GAS:
-                buf.writeInt(pkt.gasStack != null ? pkt.gasStack.getGas().getID() : -1);
-                buf.writeInt(pkt.gasStack != null ? pkt.gasStack.amount : 0);
+                if (pkt.gasStack != null) {
+                    buf.writeBoolean(true);
+                    buf.writeResourceLocation(pkt.gasStack.getGas().getRegistryName());
+                    buf.writeInt(pkt.gasStack.amount);
+                } else {
+                    buf.writeBoolean(false);
+                }
                 buf.writeBoolean(pkt.didGasTransfer);
                 break;
             case FLUID:
@@ -177,8 +182,10 @@ public class PacketTransmitterUpdate {
         } else if (packet.packetType == PacketType.ENERGY) {
             packet.power = buf.readDouble();
         } else if (packet.packetType == PacketType.GAS) {
-            packet.gasType = GasRegistry.getGas(buf.readInt());
-            packet.amount = buf.readInt();
+            if (buf.readBoolean()) {
+                packet.gasType = MekanismAPI.GAS_REGISTRY.getValue(buf.readResourceLocation());
+                packet.amount = buf.readInt();
+            }
             packet.didGasTransfer = buf.readBoolean();
 
             if (packet.gasType != null) {

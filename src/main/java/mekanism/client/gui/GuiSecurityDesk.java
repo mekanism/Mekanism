@@ -178,6 +178,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         drawString(ownerComponent, xSize - 7 - getStringWidth(ownerComponent), (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         drawCenteredText(TextComponentUtil.translate("gui.trustedPlayers"), 74, 57, 0x787878);
+        //TODO: 1.14 Convert to GuiElement
         if (tileEntity.frequency != null) {
             drawString(TextComponentUtil.build(Translation.of("gui.security") + ": ", tileEntity.frequency.securityMode), 13, 103, 0x404040);
         } else {

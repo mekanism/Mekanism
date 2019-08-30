@@ -1,6 +1,8 @@
 package mekanism.api.gas;
 
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
+import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -9,29 +11,28 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * Gas - a class used to set specific properties of gasses when used or seen in-game.
  *
  * @author aidancbrady
  */
-public class Gas implements IHasTranslationKey {
+//TODO: Add tags to gas
+public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasProvider {
 
-    private final String name;
-
-    private String unlocalizedName;
+    private String translationKey;
 
     @Nonnull
     private Fluid fluid = Fluids.EMPTY;
-
     private ResourceLocation iconLocation;
-
     private TextureAtlasSprite sprite;
 
-    private boolean visible = true;
+    private ResourceLocation registryName;
 
+    private boolean visible = true;
     private boolean from_fluid = false;
 
     private int tint = 0xFFFFFF;
@@ -39,25 +40,22 @@ public class Gas implements IHasTranslationKey {
     /**
      * Creates a new Gas object with a defined name or key value.
      *
-     * @param s - name or key to associate this Gas with
+     * @param registryName - name or key to associate this Gas with
      */
-    public Gas(String s, String icon) {
-        this(s, new ResourceLocation(icon));
-    }
-
-    public Gas(String s, ResourceLocation icon) {
-        unlocalizedName = name = s;
+    public Gas(ResourceLocation registryName, ResourceLocation icon) {
+        this.registryName = registryName;
         iconLocation = icon;
+        translationKey = Util.makeTranslationKey("gas", getRegistryName());
     }
 
     /**
      * Creates a new Gas object with a defined name or key value and a specified color tint.
      *
-     * @param s - name or key to associate this Gas with
+     * @param registryName - name or key to associate this Gas with
      * @param t - tint of this Gas
      */
-    public Gas(String s, int t) {
-        this(s, "mekanism:block/liquid/liquid");
+    public Gas(ResourceLocation registryName, int t) {
+        this(registryName, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "block/liquid/liquid"));
         setTint(t);
     }
 
@@ -65,11 +63,12 @@ public class Gas implements IHasTranslationKey {
      * Creates a new Gas object that corresponds to the given Fluid
      */
     public Gas(@Nonnull Fluid fluid) {
-        unlocalizedName = name = fluid.getAttributes().getName();
+        registryName = fluid.getRegistryName();
         iconLocation = fluid.getAttributes().getStillTexture();
         this.fluid = fluid;
         from_fluid = true;
         setTint(fluid.getAttributes().getColor() & 0xFFFFFF);
+        translationKey = Util.makeTranslationKey("gas", getRegistryName());
     }
 
     /**
@@ -83,17 +82,8 @@ public class Gas implements IHasTranslationKey {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
         }
-
-        return GasRegistry.getGas(nbtTags.getString("gasName"));
-    }
-
-    /**
-     * Gets the name (key) of this Gas. This is NOT a translated or localized display name.
-     *
-     * @return this Gas's name or key
-     */
-    public String getName() {
-        return name;
+        //TODO: Different string value
+        return MekanismAPI.GAS_REGISTRY.getValue(new ResourceLocation(nbtTags.getString("gasName")));
     }
 
     /**
@@ -126,18 +116,18 @@ public class Gas implements IHasTranslationKey {
      */
     @Override
     public String getTranslationKey() {
-        return "gas." + unlocalizedName;
+        return translationKey;
     }
 
     /**
      * Sets the unlocalized name of this Gas.
      *
-     * @param s - unlocalized name to set
+     * @param key - unlocalized name to set
      *
      * @return this Gas object
      */
-    public Gas setTranslationKey(String s) {
-        unlocalizedName = s;
+    public Gas setTranslationKey(String key) {
+        translationKey = key;
         return this;
     }
 
@@ -193,15 +183,6 @@ public class Gas implements IHasTranslationKey {
     }
 
     /**
-     * Gets the ID associated with this gas.
-     *
-     * @return the associated gas ID
-     */
-    public int getID() {
-        return GasRegistry.getGasID(this);
-    }
-
-    /**
      * Writes this Gas to a defined tag compound.
      *
      * @param nbtTags - tag compound to write this Gas to
@@ -209,7 +190,7 @@ public class Gas implements IHasTranslationKey {
      * @return the tag compound this gas was written to
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.putString("gasName", getName());
+        nbtTags.putString("gasName", getRegistryName().toString());
         return nbtTags;
     }
 
@@ -228,6 +209,7 @@ public class Gas implements IHasTranslationKey {
      * @return fluid associated with this gas
      */
     @Nonnull
+    @Override
     public Fluid getFluid() {
         return fluid;
     }
@@ -237,26 +219,36 @@ public class Gas implements IHasTranslationKey {
      *
      * @return this Gas object
      */
-    public Gas registerFluid() {
-        if (!hasFluid()) {
-            Fluid fromRegistry = ForgeRegistries.FLUIDS.getValue(getRegistryName());
-            if (fromRegistry == null) {
-                ForgeRegistries.FLUIDS.register(fluid = new GaseousFluid(this));
-            } else {
-                fluid = fromRegistry;
-            }
-        }
+    public Gas setFluid(Fluid fluid) {
+        this.fluid = fluid;
         return this;
     }
 
+    @Override
+    public Gas setRegistryName(ResourceLocation name) {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public Gas getGas() {
+        return this;
+    }
+
+    @Override
     public ResourceLocation getRegistryName() {
-        //TODO: Do registry name more properly
-        return new ResourceLocation("mekanism", name);
+        return registryName;
+    }
+
+    @Override
+    public Class<Gas> getRegistryType() {
+        return Gas.class;
     }
 
     @Override
     public String toString() {
-        return name;
+        //TODO: better to string representation
+        return "Gas: " + getRegistryName();
     }
 
     /**

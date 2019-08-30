@@ -48,7 +48,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        String stored;
+        //TODO: 1.14 Convert to GuiElement
         ITextComponent component;
         if (tileEntity.gasTank.getStored() == Integer.MAX_VALUE) {
             component = TextComponentUtil.translate("gui.infinite");
@@ -58,6 +58,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             component = TextComponentUtil.getString(tileEntity.gasTank.getStored() + "/" + tileEntity.tier.getStorage());
         }
         drawString(component, 45, 40, 0x404040);
+        //TODO: 1.14 Convert to GuiElement
         GasStack gasStack = tileEntity.gasTank.getGas();
         if (gasStack != null) {
             renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.gas"), ": ", gasStack), 45, 49, 0x404040, 112);

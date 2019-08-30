@@ -8,7 +8,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -43,7 +43,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismFluids.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, new GasStack(MekanismGases.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

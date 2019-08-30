@@ -2,6 +2,7 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
+import mekanism.api.providers.IGasProvider;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -13,9 +14,9 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
 
     public Gas gasType;
 
-    public AdvancedMachineInput(ItemStack item, Gas gas) {
+    public AdvancedMachineInput(ItemStack item, IGasProvider gasProvider) {
         itemStack = item;
-        gasType = gas;
+        gasType = gasProvider == null ? null : gasProvider.getGas();
     }
 
     public AdvancedMachineInput() {
@@ -61,7 +62,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
 
     @Override
     public int hashIngredients() {
-        return StackUtils.hashItemStack(itemStack) << 8 | gasType.getID();
+        return StackUtils.hashItemStack(itemStack) << 8 | gasType.getRegistryName().hashCode();
     }
 
     @Override
@@ -69,7 +70,8 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
         if (!isValid()) {
             return !other.isValid();
         }
-        return MachineInput.inputItemMatches(itemStack, other.itemStack) && gasType.getID() == other.gasType.getID();
+        //TODO: Use tags for comparing rather than getRegistryName
+        return MachineInput.inputItemMatches(itemStack, other.itemStack) && gasType.getRegistryName() == other.gasType.getRegistryName();
     }
 
     @Override

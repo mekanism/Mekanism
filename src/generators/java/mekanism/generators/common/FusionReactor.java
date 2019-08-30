@@ -10,7 +10,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -77,7 +77,8 @@ public class FusionReactor {
             ItemStack hohlraum = controller.getInventory().get(0);
             if (!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
-                return gasStack != null && gasStack.getGas() == MekanismFluids.FUSION_FUEL && gasStack.amount == ItemHohlraum.MAX_GAS;
+                //TODO: Tags
+                return gasStack != null && gasStack.getGas() == MekanismGases.FUSION_FUEL.getGas() && gasStack.amount == ItemHohlraum.MAX_GAS;
             }
         }
         return false;
@@ -139,7 +140,7 @@ public class FusionReactor {
         amountToInject -= amountToInject % 2;
         getDeuteriumTank().draw(amountToInject / 2, true);
         getTritiumTank().draw(amountToInject / 2, true);
-        getFuelTank().receive(new GasStack(MekanismFluids.FUSION_FUEL, amountToInject), true);
+        getFuelTank().receive(new GasStack(MekanismGases.FUSION_FUEL, amountToInject), true);
     }
 
     public int burnFuel() {
@@ -162,7 +163,7 @@ public class FusionReactor {
             waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
             if (waterToVaporize > 0) {
                 getWaterTank().drain(waterToVaporize, FluidAction.EXECUTE);
-                getSteamTank().fill(new FluidStack(MekanismFluids.STEAM.getFluid(), waterToVaporize), FluidAction.EXECUTE);
+                getSteamTank().fill(new FluidStack(MekanismGases.STEAM.getFluid(), waterToVaporize), FluidAction.EXECUTE);
             }
 
             caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;

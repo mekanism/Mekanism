@@ -6,7 +6,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.base.IActiveState;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.InventoryUtils;
@@ -241,9 +241,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 getReactor().setCaseTemp(dataStream.readDouble());
                 getReactor().setInjectionRate(dataStream.readInt());
                 getReactor().setBurning(dataStream.readBoolean());
-                fuelTank.setGas(new GasStack(MekanismFluids.FUSION_FUEL, dataStream.readInt()));
-                deuteriumTank.setGas(new GasStack(MekanismFluids.DEUTERIUM, dataStream.readInt()));
-                tritiumTank.setGas(new GasStack(MekanismFluids.TRITIUM, dataStream.readInt()));
+                fuelTank.setGas(new GasStack(MekanismGases.FUSION_FUEL, dataStream.readInt()));
+                deuteriumTank.setGas(new GasStack(MekanismGases.DEUTERIUM, dataStream.readInt()));
+                tritiumTank.setGas(new GasStack(MekanismGases.TRITIUM, dataStream.readInt()));
                 TileUtils.readTankData(dataStream, waterTank);
                 TileUtils.readTankData(dataStream, steamTank);
             } else if (getReactor() != null) {

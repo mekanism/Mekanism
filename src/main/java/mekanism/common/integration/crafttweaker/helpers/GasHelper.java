@@ -1,10 +1,11 @@
 package mekanism.common.integration.crafttweaker.helpers;
 
 import com.blamejared.crafttweaker.api.item.IIngredient;
-import mekanism.api.gas.GasRegistry;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.temporary.IngredientAny;
+import net.minecraft.util.ResourceLocation;
 
 public class GasHelper {
 
@@ -25,7 +26,7 @@ public class GasHelper {
     }
 
     public static GasStack toGas(IGasStack iStack) {
-        return iStack == null ? null : new GasStack(GasRegistry.getGas(iStack.getName()), iStack.getAmount());
+        return iStack == null ? null : new GasStack(MekanismAPI.GAS_REGISTRY.getValue(new ResourceLocation(iStack.getName())), iStack.getAmount());
     }
 
     public static GasStack[] toGases(IGasStack[] iStack) {

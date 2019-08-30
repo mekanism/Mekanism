@@ -3,9 +3,9 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
@@ -107,7 +107,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     double prev = getEnergy();
 
                     setActive(true);
-                    gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
+                    gasTank.receive(new GasStack(MekanismAPI.GAS_REGISTRY.getValue(fluidTank.getFluid().getFluid().getRegistryName()), operations), true);
                     fluidTank.drain(operations, FluidAction.EXECUTE);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
@@ -145,7 +145,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     public boolean isValidFluid(@Nonnull Fluid f) {
-        return GasRegistry.getGas(f) != null;
+        return MekanismAPI.GAS_REGISTRY.getValue(f.getRegistryName()) != null;
     }
 
     public boolean isValidFluid(@Nonnull FluidStack f) {

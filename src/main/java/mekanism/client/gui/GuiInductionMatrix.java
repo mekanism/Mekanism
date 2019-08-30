@@ -46,6 +46,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastInput()), "/t"), 53, 35, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("mekanism.gui.output"), ":"), 53, 44, 0x00CD00);
         drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastOutput()), "/t"), 53, 53, 0x00CD00);
+        //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {

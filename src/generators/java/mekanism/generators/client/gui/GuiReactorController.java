@@ -47,11 +47,7 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 46, 6, 0x404040);
-        if (tileEntity.getActive()) {
-            drawString(TextComponentUtil.translate("mekanism.gui.formed"), 8, 16, 0x404040);
-        } else {
-            drawString(TextComponentUtil.translate("mekanism.gui.incomplete"), 8, 16, 0x404040);
-        }
+        drawString(TextComponentUtil.translate(tileEntity.getActive() ? "mekanism.gui.formed" : "mekanism.gui.incomplete"), 8, 16, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

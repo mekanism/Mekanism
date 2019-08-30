@@ -8,7 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.gear.RenderFlameThrower;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
@@ -68,7 +68,8 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-        if (stack.getGas() != MekanismFluids.HYDROGEN) {
+        //TODO: Tags
+        if (stack.getGas() != MekanismGases.HYDROGEN.getGas()) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
@@ -87,7 +88,8 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
 
     @Override
     public boolean canReceiveGas(ItemStack itemstack, Gas type) {
-        return type == MekanismFluids.HYDROGEN;
+        //TODO: Tags
+        return type == MekanismGases.HYDROGEN.getGas();
     }
 
     @Override
@@ -133,7 +135,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismFluids.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, new GasStack(MekanismGases.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

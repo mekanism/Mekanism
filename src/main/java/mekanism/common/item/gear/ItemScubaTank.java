@@ -12,7 +12,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderScubaTank;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -122,7 +122,8 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-        if (stack.getGas() != MekanismFluids.OXYGEN) {
+        //TODO: Tags
+        if (stack.getGas() != MekanismGases.OXYGEN.getGas()) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
@@ -157,7 +158,8 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public boolean canReceiveGas(ItemStack itemstack, Gas type) {
-        return type == MekanismFluids.OXYGEN;
+        //TODO: Tags
+        return type == MekanismGases.OXYGEN.getGas();
     }
 
     @Override
@@ -188,7 +190,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismFluids.OXYGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, new GasStack(MekanismGases.OXYGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

@@ -13,7 +13,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
@@ -114,7 +114,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return getReactor() != null && (fluid.isEmpty() || fluid.getFluid() == MekanismFluids.STEAM.getFluid());
+        return getReactor() != null && (fluid.isEmpty() || fluid.getFluid() == MekanismGases.STEAM.getFluid());
     }
 
     @Override
@@ -133,11 +133,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (getReactor() != null) {
-            if (stack.getGas() == MekanismFluids.DEUTERIUM) {
+            //TODO: Tags
+            if (stack.getGas() == MekanismGases.DEUTERIUM.getGas()) {
                 return getReactor().getDeuteriumTank().receive(stack, doTransfer);
-            } else if (stack.getGas() == MekanismFluids.TRITIUM) {
+            } else if (stack.getGas() == MekanismGases.TRITIUM.getGas()) {
                 return getReactor().getTritiumTank().receive(stack, doTransfer);
-            } else if (stack.getGas() == MekanismFluids.FUSION_FUEL) {
+            } else if (stack.getGas() == MekanismGases.FUSION_FUEL.getGas()) {
                 return getReactor().getFuelTank().receive(stack, doTransfer);
             }
         }
@@ -151,7 +152,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canReceiveGas(Direction side, Gas type) {
-        return type == MekanismFluids.DEUTERIUM || type == MekanismFluids.TRITIUM || type == MekanismFluids.FUSION_FUEL;
+        //TODO: Tags
+        return type == MekanismGases.DEUTERIUM.getGas() || type == MekanismGases.TRITIUM.getGas() || type == MekanismGases.FUSION_FUEL.getGas();
     }
 
     @Override

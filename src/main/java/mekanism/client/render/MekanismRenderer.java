@@ -7,8 +7,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -357,7 +357,7 @@ public class MekanismRenderer {
 
         TransmitterModel.addIcons(event);
 
-        for (Gas gas : GasRegistry.getRegisteredGasses()) {
+        for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             gas.registerIcon(event);
         }
 
@@ -391,7 +391,7 @@ public class MekanismRenderer {
         RenderLogisticalTransporter.onStitch(map);
         RenderMechanicalPipe.onStitch();
 
-        for (Gas gas : GasRegistry.getRegisteredGasses()) {
+        for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             gas.updateIcon(map);
         }
 
