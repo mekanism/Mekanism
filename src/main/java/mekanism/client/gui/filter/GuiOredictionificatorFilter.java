@@ -122,7 +122,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.filter")), 0, xSize, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.index"), ": " + filter.index), 79, 23, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.index"), ": " + filter.index), 79, 23, 0x404040);
         if (filter.hasFilter()) {
             renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);
         }
@@ -131,11 +131,11 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.lastItem"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("gui.mekanism.lastItem"), xAxis, yAxis);
         } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.nextItem"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("gui.mekanism.nextItem"), xAxis, yAxis);
         } else if (xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60) {
-            displayTooltip(TextComponentUtil.translate("mekanism.gui.oreDictCompat"), xAxis, yAxis);
+            displayTooltip(TextComponentUtil.translate("gui.mekanism.oreDictCompat"), xAxis, yAxis);
         } else if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35) {
             if (!renderStack.isEmpty()) {
                 String name = ItemRegistryUtils.getMod(renderStack);

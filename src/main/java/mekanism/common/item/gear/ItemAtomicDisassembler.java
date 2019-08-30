@@ -72,8 +72,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         Mode mode = getMode(stack);
-        tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.INDIGO, mode));
-        tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.efficiency"), ": ", EnumColor.INDIGO, mode.getEfficiency()));
+        tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.INDIGO, mode));
+        tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.efficiency"), ": ", EnumColor.INDIGO, mode.getEfficiency()));
     }
 
     @Override
@@ -176,7 +176,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 toggleMode(itemstack);
                 Mode mode = getMode(itemstack);
                 entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                      Translation.of("mekanism.tooltip.modeToggle"), " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
+                      Translation.of("tooltip.mekanism.modeToggle"), " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
@@ -363,7 +363,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
         @Override
         public String getTranslationKey() {
-            return "mekanism.tooltip.disassembler." + mode;
+            return "tooltip.mekanism.disassembler." + mode;
         }
 
         public int getEfficiency() {

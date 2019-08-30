@@ -42,9 +42,9 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockInductionCell>
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InductionCellTier tier = getTier(itemstack);
         if (tier != null) {
-            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY,
+            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("tooltip.mekanism.capacity"), ": ", EnumColor.GRAY,
                   EnergyDisplay.of(tier.getMaxEnergy())));
-            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GRAY,
+            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("tooltip.mekanism.stored_energy"), ": ", EnumColor.GRAY,
                   EnergyDisplay.of(getEnergy(itemstack))));
         }
     }

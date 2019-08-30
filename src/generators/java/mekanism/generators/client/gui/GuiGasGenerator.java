@@ -38,8 +38,8 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ", EnergyDisplay.of(tileEntity.generationRate * tileEntity.clientUsed), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ", EnergyDisplay.of(tileEntity.generationRate * tileEntity.clientUsed), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
         addButton(new GuiGasGauge(() -> tileEntity.fuelTank, Type.WIDE, this, resource, 55, 18));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
@@ -52,7 +52,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         //TODO
-        ITextComponent component = TextComponentUtil.build(Translation.of("mekanism.gui.burn_rate"), ": " + tileEntity.clientUsed);
+        ITextComponent component = TextComponentUtil.build(Translation.of("gui.mekanism.burn_rate"), ": " + tileEntity.clientUsed);
         drawString(component, xSize - 8 - getStringWidth(component), (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

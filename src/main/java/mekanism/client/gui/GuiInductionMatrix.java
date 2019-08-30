@@ -32,9 +32,9 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("mekanism.gui.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("gui.mekanism.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")
         ), this, resource));
     }
 
@@ -42,9 +42,9 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.input"), ":"), 53, 26, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.input"), ":"), 53, 26, 0x00CD00);
         drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastInput()), "/t"), 53, 35, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.output"), ":"), 53, 44, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.output"), ":"), 53, 44, 0x00CD00);
         drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastOutput()), "/t"), 53, 53, 0x00CD00);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;

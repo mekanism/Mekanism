@@ -59,7 +59,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
             @Override
             public ITextComponent getText(double level) {
-                return TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(level, tileEntity.getMaxEnergy()));
+                return TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(level, tileEntity.getMaxEnergy()));
             }
         }, Type.STANDARD, this, resource, 6, 10));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
@@ -88,8 +88,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         } else {
             drawString(TextComponentUtil.translate("gui.noDelay"), 26, 30, 0x404040);
         }
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.min"), ": ", EnergyDisplay.of(tileEntity.minThreshold)), 26, 45, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.max"), ": ", EnergyDisplay.of(tileEntity.maxThreshold)), 26, 60, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.min"), ": ", EnergyDisplay.of(tileEntity.minThreshold)), 26, 45, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.max"), ": ", EnergyDisplay.of(tileEntity.maxThreshold)), 26, 60, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

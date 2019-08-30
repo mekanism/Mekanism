@@ -57,7 +57,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
-              getOnHover("mekanism.gui.configuration.strictInput")));
+              getOnHover("gui.mekanism.configuration.strictInput")));
         addButton(new ColorButton(guiLeft + 122, guiTop + 49, 16, 16, this, () -> getTile().getEjector().getOutputColor(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
                     InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
@@ -85,7 +85,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
                     if (color != null) {
                         displayTooltip(color.getColoredName(), xAxis, yAxis);
                     } else {
-                        displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
+                        displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
                     }
                 }
             }
@@ -97,7 +97,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
         drawCenteredText(TextComponentUtil.translate("gui.configuration.transporter"), 0, xSize, 5, 0x404040);
         renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(getTile().getEjector().hasStrictInput()), ")"),
               53, 17, 0x00CD00, 70);
-        drawString(TextComponentUtil.translate("mekanism.gui.input"), 48, 81, 0x787878);
+        drawString(TextComponentUtil.translate("gui.mekanism.input"), 48, 81, 0x787878);
         drawString(TextComponentUtil.translate("gui.output"), 114, 68, 0x787878);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -50,13 +50,13 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.energyUsage), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.energyUsage), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
-            return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
+            return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));
 
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
@@ -70,9 +70,9 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.temp"), ": ",
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
               MekanismUtils.getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
-        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.usage"), ": ", EnergyDisplay.of(tileEntity.energyUsage), "/t"), 50, 41, 0x00CD00, 76);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.usage"), ": ", EnergyDisplay.of(tileEntity.energyUsage), "/t"), 50, 41, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

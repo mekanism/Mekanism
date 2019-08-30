@@ -25,7 +25,7 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.BooleanStateDisplay.OutputInput;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.common.GeneratorsBlock;
@@ -361,7 +361,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         if (!world.isRemote) {
             fluidEject = !fluidEject;
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                  Translation.of("tooltip.configurator.reactorPortEject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), BooleanStateDisplay.OutputInput.of(fluidEject), "."));
+                  Translation.of("tooltip.configurator.reactorPortEject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(fluidEject), "."));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

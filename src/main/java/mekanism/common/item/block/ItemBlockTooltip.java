@@ -31,8 +31,8 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             addStats(itemstack, world, tooltip, flag);
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
         } else {
             addDescription(itemstack, world, tooltip, flag);
         }

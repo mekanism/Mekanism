@@ -25,7 +25,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
-import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
@@ -585,7 +585,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             refreshConnections();
             notifyTileChange();
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                  Translation.of("tooltip.configurator.redstoneSensitivity"), " ", EnumColor.INDIGO, BooleanStateDisplay.OnOff.of(redstoneReactive), "."));
+                  Translation.of("tooltip.configurator.redstoneSensitivity"), " ", EnumColor.INDIGO, OnOff.of(redstoneReactive), "."));
         }
         return ActionResultType.SUCCESS;
     }

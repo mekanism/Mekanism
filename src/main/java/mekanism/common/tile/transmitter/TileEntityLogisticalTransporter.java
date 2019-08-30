@@ -298,7 +298,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         Mekanism.packetHandler.sendUpdatePacket(this);
         EnumColor color = getTransmitter().getColor();
         player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("tooltip.configurator.toggleColor"), ": ",
-              (color != null ? color.getColoredName() : Translation.of("mekanism.gui.none"))));
+              (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
         return ActionResultType.SUCCESS;
     }
 
@@ -307,7 +307,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         super.onRightClick(player, side);
         EnumColor color = getTransmitter().getColor();
         player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("tooltip.configurator.viewColor"), ": ",
-              (color != null ? color.getColoredName() : Translation.of("mekanism.gui.none"))));
+              (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
         return ActionResultType.SUCCESS;
     }
 

@@ -37,9 +37,9 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Bio
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34));
@@ -51,8 +51,8 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Bio
         drawString(tileEntity.getName(), 45, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         drawString(EnergyDisplay.of(tileEntity.getEnergy()).getTextComponent(), 51, 26, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.bioGenerator.bioFuel"), ": " + tileEntity.bioFuelSlot.fluidStored), 51, 35, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.out"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.bioGenerator.bioFuel"), ": " + tileEntity.bioFuelSlot.fluidStored), 51, 35, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.out"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -34,7 +34,7 @@ public class GuiEnergyInfo extends GuiElement {
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
         List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
-        info.add(TextComponentUtil.build(Translation.of("mekanism.gui.unit"), ": ", MekanismConfig.general.energyUnit.get()));
+        info.add(TextComponentUtil.build(Translation.of("gui.mekanism.unit"), ": ", MekanismConfig.general.energyUnit.get()));
         displayTooltips(info, mouseX, mouseY);
     }
 

@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
+import mekanism.api.block.FactoryType;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -122,11 +123,19 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
      * This machine's recipe type.
      */
     @Nonnull
-    private RecipeType recipeType = RecipeType.SMELTING;
+    private RecipeType recipeType;
+
+    @Nonnull
+    private FactoryType type;
 
     public TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider, 0);
-        this.tier = ((BlockFactory) blockProvider.getBlock()).getTier();
+        BlockFactory factoryBlock = (BlockFactory) blockProvider.getBlock();
+        this.tier = factoryBlock.getTier();
+        this.type = factoryBlock.getFactoryType();
+        //TODO: Do this better/potentially remove RecipeType all together
+        // Ideally we would pass information for handling directly to the FactoryType, based on the slots and let it figure it all out
+        recipeType = RecipeType.values()[type.ordinal()];
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
@@ -305,7 +314,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 }
 
                 if (!canOperate(getInputSlot(process), getOutputSlot(process))) {
-                    if (!(recipeType.getFuelType() == MachineFuelType.ADVANCED && recipeType.hasRecipe(getInventory().get(getInputSlot(process))))) {
+                    if (!(type.isAdvancedMachine() && recipeType.hasRecipe(getInventory().get(getInputSlot(process))))) {
                         progress[process] = 0;
                     }
                 }
@@ -328,6 +337,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             lastUsage = prev - getEnergy();
             prevEnergy = getEnergy();
         }
+    }
+
+    @Nonnull
+    public FactoryType getFactoryType() {
+        return type;
     }
 
     @Nonnull
@@ -483,7 +497,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Nullable
     public GasStack getItemGas(ItemStack itemStack) {
-        if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
+        if (type.isAdvancedMachine()) {
             return GasConversionHandler.getItemGas(itemStack, gasTank, recipeType::isValidGas);
         }
         return null;
@@ -492,7 +506,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     public void handleSecondaryFuel() {
         ItemStack extra = getInventory().get(4);
         if (!extra.isEmpty()) {
-            if (recipeType.getFuelType() == MachineFuelType.ADVANCED && gasTank.getNeeded() > 0) {
+            if (type.isAdvancedMachine() && gasTank.getNeeded() > 0) {
                 GasStack gasStack = getItemGas(extra);
                 if (gasStack != null) {
                     Gas gas = gasStack.getGas();
@@ -506,7 +520,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                         }
                     }
                 }
-            } else if (recipeType == RecipeType.INFUSING) {
+            } else if (type == FactoryType.INFUSING) {
                 InfuseObject pendingInfusionInput = InfuseRegistry.getObject(extra);
                 if (pendingInfusionInput != null) {
                     if (infuseStored.getType() == null || infuseStored.getType() == pendingInfusionInput.type) {
@@ -521,7 +535,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     public ItemStack getMachineStack() {
-        return recipeType.getStack();
+        return blockProvider.getItemStack();
     }
 
     @Override
@@ -534,7 +548,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return true;
         } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
             return true;
-        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == 4) {
+        } else if (type.isChanceMachine() && slotID == 4) {
             return true;
         }
         return false;
@@ -582,11 +596,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (slotID == 4) {
-            if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
+            if (type.isAdvancedMachine()) {
                 return getItemGas(itemstack) != null;
-            } else if (recipeType.getFuelType() == MachineFuelType.DOUBLE) {
+            } else if (type.isDoubleMachine()) {
                 return recipeType.hasRecipeForExtra(itemstack);
-            } else if (recipeType == RecipeType.INFUSING) {
+            } else if (type == FactoryType.INFUSING) {
                 return InfuseRegistry.getObject(itemstack) != null && (infuseStored.getType() == null || infuseStored.getType() == InfuseRegistry.getObject(itemstack).type);
             }
         }
@@ -616,7 +630,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         int process = getOperation(inputSlot);
 
-        if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
+        if (type.isAdvancedMachine()) {
             if (cachedRecipe[process] instanceof AdvancedMachineRecipe &&
                 ((AdvancedMachineRecipe) cachedRecipe[process]).inputMatches(getInventory(), inputSlot, gasTank, secondaryEnergyThisTick)) {
                 return ((AdvancedMachineRecipe) cachedRecipe[process]).canOperate(getInventory(), inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
@@ -624,14 +638,14 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(getInventory().get(inputSlot), gasTank.getGasType());
             cachedRecipe[process] = recipe;
             return recipe != null && recipe.canOperate(getInventory(), inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
-        } else if (recipeType.getFuelType() == MachineFuelType.DOUBLE) {
+        } else if (type.isDoubleMachine()) {
             if (cachedRecipe[process] instanceof DoubleMachineRecipe && ((DoubleMachineRecipe) cachedRecipe[process]).inputMatches(getInventory(), inputSlot, 4)) {
                 return ((DoubleMachineRecipe) cachedRecipe[process]).canOperate(getInventory(), inputSlot, 4, outputSlot);
             }
             DoubleMachineRecipe<?> recipe = recipeType.getRecipe(getInventory().get(inputSlot), getInventory().get(4));
             cachedRecipe[process] = recipe;
             return recipe != null && recipe.canOperate(getInventory(), inputSlot, 4, outputSlot);
-        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE) {
+        } else if (type.isChanceMachine()) {
             if (cachedRecipe[process] instanceof ChanceMachineRecipe && ((ChanceMachineRecipe) cachedRecipe[process]).inputMatches(getInventory(), inputSlot)) {
                 return ((ChanceMachineRecipe) cachedRecipe[process]).canOperate(getInventory(), inputSlot, outputSlot, 4);
             }
@@ -640,7 +654,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return recipe != null && recipe.canOperate(getInventory(), inputSlot, outputSlot, 4);
         }
 
-        if (recipeType == RecipeType.INFUSING) {
+        if (type == FactoryType.INFUSING) {
             if (cachedRecipe[process] instanceof MetallurgicInfuserRecipe && ((MetallurgicInfuserRecipe) cachedRecipe[process]).inputMatches(getInventory(), inputSlot, infuseStored)) {
                 return ((MetallurgicInfuserRecipe) cachedRecipe[process]).canOperate(getInventory(), inputSlot, outputSlot, infuseStored);
             }
@@ -672,16 +686,16 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return;
         }
 
-        if (recipeType.getFuelType() == MachineFuelType.ADVANCED && cachedRecipe[process] instanceof AdvancedMachineRecipe) {
+        if (type.isAdvancedMachine() && cachedRecipe[process] instanceof AdvancedMachineRecipe) {
             AdvancedMachineRecipe<?> recipe = (AdvancedMachineRecipe<?>) cachedRecipe[process];
             recipe.operate(getInventory(), inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
-        } else if (recipeType.getFuelType() == MachineFuelType.DOUBLE && cachedRecipe[process] instanceof DoubleMachineRecipe) {
+        } else if (type.isDoubleMachine() && cachedRecipe[process] instanceof DoubleMachineRecipe) {
             DoubleMachineRecipe<?> recipe = (DoubleMachineRecipe<?>) cachedRecipe[process];
             recipe.operate(getInventory(), inputSlot, 4, outputSlot);
-        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE && cachedRecipe[process] instanceof ChanceMachineRecipe) {
+        } else if (type.isChanceMachine() && cachedRecipe[process] instanceof ChanceMachineRecipe) {
             ChanceMachineRecipe<?> recipe = (ChanceMachineRecipe<?>) cachedRecipe[process];
             recipe.operate(getInventory(), inputSlot, outputSlot, 4);
-        } else if (recipeType == RecipeType.INFUSING && cachedRecipe[process] instanceof MetallurgicInfuserRecipe) {
+        } else if (type == FactoryType.INFUSING && cachedRecipe[process] instanceof MetallurgicInfuserRecipe) {
             MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) cachedRecipe[process];
             recipe.output(getInventory(), inputSlot, outputSlot, infuseStored);
         } else {
@@ -708,8 +722,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         super.handlePacketData(dataStream);
 
         if (world.isRemote) {
-            RecipeType oldRecipe = recipeType;
-            recipeType = RecipeType.values()[dataStream.readInt()];
             upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
             recipeTicks = dataStream.readInt();
             sorting = dataStream.readBoolean();
@@ -721,13 +733,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 infuseStored.setType(InfuseRegistry.get(dataStream.readString()));
             } else {
                 infuseStored.setEmpty();
-            }
-
-            if (recipeType != oldRecipe) {
-                setRecipeType(recipeType);
-                if (!upgraded) {
-                    MekanismUtils.updateBlock(world, getPos());
-                }
             }
 
             for (int i = 0; i < tier.processes; i++) {
@@ -745,7 +750,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        setRecipeType(RecipeType.values()[nbtTags.getInt("recipeType")]);
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInt("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
@@ -765,7 +769,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("recipeType", recipeType.ordinal());
         nbtTags.putInt("recipeTicks", recipeTicks);
         nbtTags.putBoolean("sorting", sorting);
         if (infuseStored.getType() != null) {
@@ -785,7 +788,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        data.add(recipeType.ordinal());
         data.add(recipeTicks);
         data.add(sorting);
         data.add(upgraded);

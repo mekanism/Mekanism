@@ -43,8 +43,8 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
@@ -56,11 +56,11 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         drawString(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.finished"), ": ", YesNo.of(tileEntity.finishedCalc)), 51, 35, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.finished"), ": ", YesNo.of(tileEntity.finishedCalc)), 51, 35, 0x00CD00);
         //TODO: 1.14 Convert to GuiElement
         FluidStack fluid = tileEntity.fluidTank.getFluid();
         if (fluid.isEmpty()) {
-            drawString(TextComponentUtil.translate("mekanism.gui.noFluid"), 51, 44, 0x00CD00);
+            drawString(TextComponentUtil.translate("gui.mekanism.noFluid"), 51, 44, 0x00CD00);
         } else {
             drawString(TextComponentUtil.build(fluid, ": " + fluid.getAmount()), 51, 44, 0x00CD00);
         }

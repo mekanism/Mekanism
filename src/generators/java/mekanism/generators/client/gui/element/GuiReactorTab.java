@@ -27,11 +27,11 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
     }
 
     public enum ReactorTab implements TabType<TileEntityReactorController> {
-        HEAT("heat.png", "mekanism.gui.heat", 6, tile ->
+        HEAT("heat.png", "gui.mekanism.heat", 6, tile ->
               new ContainerProvider("mekanism.container.reactor_heat", (i, inv, player) -> new ReactorHeatContainer(i, inv, tile))),
-        FUEL("fuel.png", "mekanism.gui.fuel", 34, tile ->
+        FUEL("fuel.png", "gui.mekanism.fuel", 34, tile ->
               new ContainerProvider("mekanism.container.reactor_fuel", (i, inv, player) -> new ReactorFuelContainer(i, inv, tile))),
-        STAT("stats.png", "mekanism.gui.stats", 62, tile ->
+        STAT("stats.png", "gui.mekanism.stats", 62, tile ->
               new ContainerProvider("mekanism.container.reactor_stats", (i, inv, player) -> new ReactorStatsContainer(i, inv, tile)));
 
         private final Function<TileEntityReactorController, INamedContainerProvider> provider;

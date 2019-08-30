@@ -69,7 +69,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
               getOnHoverReplace(filter)));
         addButton(fuzzyButton = new DisableableImageButton(guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation(),
               onPress -> filter.fuzzy = !filter.fuzzy,
-              getOnHover(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.fuzzyMode"), ": ", YesNo.of(filter.fuzzy)))));
+              getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.fuzzyMode"), ": ", YesNo.of(filter.fuzzy)))));
     }
 
     @Override

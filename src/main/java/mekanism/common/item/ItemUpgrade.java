@@ -39,8 +39,8 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (!InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
         } else {
             tooltip.add(TextComponentUtil.translate(getUpgradeType(itemstack).getDescription()));
         }

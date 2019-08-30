@@ -48,8 +48,8 @@ public abstract class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineR
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 55, 16));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 30, 34).with(SlotOverlay.POWER));
@@ -79,7 +79,7 @@ public abstract class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineR
             if (gasStack != null) {
                 displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

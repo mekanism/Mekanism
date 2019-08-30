@@ -7,6 +7,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
@@ -40,11 +41,11 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack == null) {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.noGas"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.noGas"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.amount));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.GRAY, getMode(stack)));
     }
 
     public void useGas(ItemStack stack) {
@@ -150,7 +151,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         ItemDataUtils.setInt(stack, "mode", mode.ordinal());
     }
 
-    public enum FlamethrowerMode {
+    public enum FlamethrowerMode implements IHasTextComponent {
         COMBAT("tooltip.flamethrower.combat", EnumColor.YELLOW),
         HEAT("tooltip.flamethrower.heat", EnumColor.ORANGE),
         INFERNO("tooltip.flamethrower.inferno", EnumColor.DARK_RED);
@@ -167,6 +168,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
             return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
         }
 
+        @Override
         public ITextComponent getTextComponent() {
             return TextComponentUtil.build(color, unlocalized);
         }

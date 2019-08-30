@@ -37,7 +37,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t");
+                return TextComponentUtil.build(Translation.of("gui.mekanism.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t");
             }
 
             @Override
@@ -48,7 +48,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t");
+                return TextComponentUtil.build(Translation.of("gui.mekanism.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t");
             }
 
             @Override
@@ -60,7 +60,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
-            return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
+            return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));
     }
 
@@ -68,10 +68,10 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.temp"), ": ",
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
               MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT)), 43, 30, 0x00CD00, 90);
-        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t"), 43, 39, 0x00CD00, 90);
-        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t"), 43, 48, 0x00CD00, 90);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t"), 43, 39, 0x00CD00, 90);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t"), 43, 48, 0x00CD00, 90);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -64,11 +64,11 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         }
         FluidStack fluidStack = infoHandler.getTank().getFluid();
         if (fluidStack.isEmpty()) {
-            return TextComponentUtil.translate("mekanism.gui.empty");
+            return TextComponentUtil.translate("gui.mekanism.empty");
         }
         int amount = infoHandler.getTank().getFluidAmount();
         if (amount == Integer.MAX_VALUE) {
-            return TextComponentUtil.translate("mekanism.gui.infinite");
+            return TextComponentUtil.translate("gui.mekanism.infinite");
         }
         return TextComponentUtil.build(fluidStack, ": " + amount + " mB");
     }

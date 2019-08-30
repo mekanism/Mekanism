@@ -39,7 +39,7 @@ public class ItemConfigurationCard extends ItemMekanism {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(itemstack))));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(itemstack))));
     }
 
     @Nonnull
@@ -146,6 +146,6 @@ public class ItemConfigurationCard extends ItemMekanism {
         if (data != null) {
             return data.getString("dataType");
         }
-        return "mekanism.gui.none";
+        return "gui.mekanism.none";
     }
 }

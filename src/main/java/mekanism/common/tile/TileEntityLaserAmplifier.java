@@ -334,7 +334,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
         @Override
         public String getTranslationKey() {
-            return "mekanism.gui." + unlocalizedName;
+            return "gui.mekanism." + unlocalizedName;
         }
     }
 }

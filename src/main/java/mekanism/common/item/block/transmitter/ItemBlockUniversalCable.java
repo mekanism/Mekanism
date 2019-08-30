@@ -43,13 +43,13 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUnivers
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             CableTier tier = getTier(itemstack);
             if (tier != null) {
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY,
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.capacity"), ": ", EnumColor.GRAY,
                       EnergyDisplay.of(tier.getCableCapacity()), "/t"));
             }
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GRAY, Translation.of("mekanism.tooltip.capableTrans"), ":"));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GRAY, Translation.of("tooltip.mekanism.capableTrans"), ":"));
             tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, "FE ", EnumColor.GRAY, "(MinecraftForge)"));
             tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, "EU ", EnumColor.GRAY, "(IndustrialCraft)"));
             tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, "Joules ", EnumColor.GRAY, "(Mekanism)"));

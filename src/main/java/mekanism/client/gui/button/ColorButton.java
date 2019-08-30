@@ -19,7 +19,7 @@ public class ColorButton extends MekanismButton {
             if (color != null) {
                 gui.displayTooltip(color.getColoredName(), xAxis, yAxis);
             } else {
-                gui.displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
+                gui.displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
             }
         });
         this.colorSupplier = colorSupplier;

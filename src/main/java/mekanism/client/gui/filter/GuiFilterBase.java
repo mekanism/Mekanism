@@ -54,7 +54,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
     }
 
     protected IHoverable getOnHoverReplace(MinerFilter filter) {
-        return getOnHover(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.requireReplace"), ": ",
+        return getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.requireReplace"), ": ",
               YesNo.of(filter.requireStack)));
     }
 

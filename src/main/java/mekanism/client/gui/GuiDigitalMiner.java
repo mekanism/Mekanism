@@ -59,12 +59,12 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         addButton(new GuiEnergyInfo(() -> {
             double perTick = tileEntity.getPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
-            ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.capacity"), ": ", EnergyDisplay.of(tileEntity.getMaxEnergy())));
-            ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(perTick), "/t"));
+            ret.add(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.capacity"), ": ", EnergyDisplay.of(tileEntity.getMaxEnergy())));
+            ret.add(TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(perTick), "/t"));
             if (perTick > tileEntity.getMaxEnergy()) {
-                ret.add(TextComponentUtil.build(TextFormatting.RED, Translation.of("mekanism.gui.insufficientbuffer")));
+                ret.add(TextComponentUtil.build(TextFormatting.RED, Translation.of("gui.mekanism.insufficientbuffer")));
             }
-            ret.add(TextComponentUtil.build(Translation.of("mekanism.gui.bufferfree"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));
+            ret.add(TextComponentUtil.build(Translation.of("gui.mekanism.bufferfree"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));
             return ret;
         }, this, resource));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
@@ -78,16 +78,16 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
-              getOnHover("mekanism.gui.digitalMiner.reset")));
+              getOnHover("gui.mekanism.digitalMiner.reset")));
         addButton(new DisableableImageButton(guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(9))),
-              getOnHover("mekanism.gui.digitalMiner.silkTouch")));
+              getOnHover("gui.mekanism.digitalMiner.silkTouch")));
         addButton(new DisableableImageButton(guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
-              getOnHover("mekanism.gui.autoEject")));
+              getOnHover("gui.mekanism.autoEject")));
         addButton(new DisableableImageButton(guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
-              getOnHover("mekanism.gui.digitalMiner.autoPull")));
+              getOnHover("gui.mekanism.digitalMiner.autoPull")));
         updateEnabledButtons();
     }
 
@@ -109,7 +109,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         ITextComponent runningType;
         if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()) {
-            runningType = TextComponentUtil.translate("mekanism.gui.digitalMiner.lowPower");
+            runningType = TextComponentUtil.translate("gui.mekanism.digitalMiner.lowPower");
         } else if (tileEntity.running) {
             runningType = TextComponentUtil.translate("gui.digitalMiner.running");
         } else {
@@ -118,10 +118,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         drawString(runningType, 9, 10, 0x00CD00);
         drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
 
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(tileEntity.doEject)), 9, 30, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.pull"), ": ", OnOff.of(tileEntity.doPull)), 9, 39, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.silk"), ": ", OnOff.of(tileEntity.silkTouch)), 9, 48, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.digitalMiner.toMine"), ":"), 9, 59, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.eject"), ": ", OnOff.of(tileEntity.doEject)), 9, 30, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.pull"), ": ", OnOff.of(tileEntity.doPull)), 9, 39, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.silk"), ": ", OnOff.of(tileEntity.silkTouch)), 9, 48, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.toMine"), ":"), 9, 59, 0x00CD00);
         //TODO: Can this be combined with the one above
         drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
@@ -139,9 +139,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
             displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         } else if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
             if (!tileEntity.missingStack.isEmpty()) {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.digitalMiner.missingBlock"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("gui.mekanism.digitalMiner.missingBlock"), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.well"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("gui.mekanism.well"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

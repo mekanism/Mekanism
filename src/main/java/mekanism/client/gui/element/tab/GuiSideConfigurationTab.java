@@ -22,7 +22,7 @@ public class GuiSideConfigurationTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.translate("mekanism.gui.configuration.side"), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.translate("gui.mekanism.configuration.side"), mouseX, mouseY);
     }
 
     @Override

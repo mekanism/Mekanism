@@ -33,9 +33,9 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.name"), ": ", EnumColor.GRAY, getName(itemstack)));
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.name"), ": ", EnumColor.GRAY, getName(itemstack)));
         ListNBT inventory = getInventory(itemstack);
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY, inventory != null && !inventory.isEmpty()));
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.inventory"), ": ", EnumColor.GRAY, inventory != null && !inventory.isEmpty()));
     }
 
     @Nonnull

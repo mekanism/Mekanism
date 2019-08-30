@@ -56,7 +56,7 @@ public class ItemCraftingFormula extends ItemMekanism {
                     }
                 }
             }
-            tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.ingredients"), ":"));
+            tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.ingredients"), ":"));
             for (ItemStack stack : stacks) {
                 tooltip.add(TextComponentUtil.build(EnumColor.GRAY, " - " + stack.getDisplayName() + " (" + stack.getCount() + ")"));
             }
@@ -90,9 +90,9 @@ public class ItemCraftingFormula extends ItemMekanism {
             return super.getDisplayName(stack);
         }
         if (isInvalid(stack)) {
-            return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_RED, "(", Translation.of("mekanism.tooltip.invalid"), ")");
+            return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_RED, "(", Translation.of("tooltip.mekanism.invalid"), ")");
         }
-        return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_GREEN, "(", Translation.of("mekanism.tooltip.encoded"), ")");
+        return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_GREEN, "(", Translation.of("tooltip.mekanism.encoded"), ")");
     }
 
     public boolean isInvalid(ItemStack stack) {

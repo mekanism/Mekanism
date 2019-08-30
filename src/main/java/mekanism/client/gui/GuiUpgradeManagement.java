@@ -85,13 +85,13 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
         minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.supported"), ":"), 26, 59, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.supported"), ":"), 26, 59, 0x404040);
         if (selectedType == null) {
-            renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.noSelection"), "."), 92, 8, 0.8F, true);
+            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.noSelection"), "."), 92, 8, 0.8F, true);
         } else {
             int amount = getTile().getComponent().getUpgrades(selectedType);
-            renderText(TextComponentUtil.build(selectedType, " ", Translation.of("mekanism.gui.upgrade")), 92, 8, 0.6F, true);
-            renderText(TextComponentUtil.build(Translation.of("mekanism.gui.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
+            renderText(TextComponentUtil.build(selectedType, " ", Translation.of("gui.mekanism.upgrade")), 92, 8, 0.6F, true);
+            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
             int text = 0;
             for (ITextComponent component : selectedType.getInfo(tileEntity)) {
                 renderText(component, 92, 22 + (6 * text++), 0.6F, true);

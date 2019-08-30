@@ -39,11 +39,11 @@ public class ItemSeismicReader extends ItemEnergized {
     @Override
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.AQUA, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.and"), " ", EnumColor.AQUA, MekanismKeyHandler.modeSwitchKey.getKey(), EnumColor.GRAY, " ",
-                  Translation.of("tooltip.forDesc"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.AQUA, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.and"), " ", EnumColor.AQUA, MekanismKeyHandler.modeSwitchKey.getKey(), EnumColor.GRAY, " ",
+                  Translation.of("tooltip.mekanism.for_description"), "."));
         } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
             super.addInformation(itemstack, world, tooltip, flag);
         } else {
@@ -60,14 +60,14 @@ public class ItemSeismicReader extends ItemEnergized {
         if (getEnergy(stack) < ENERGY_USAGE && !player.isCreative()) {
             if (!world.isRemote) {
                 player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
-                      Translation.of("mekanism.tooltip.seismicReader.needsEnergy")));
+                      Translation.of("tooltip.mekanism.seismicReader.needsEnergy")));
             }
 
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         } else if (!MekanismUtils.isChunkVibrated(chunk)) {
             if (!world.isRemote) {
                 player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
-                      Translation.of("mekanism.tooltip.seismicReader.noVibrations")));
+                      Translation.of("tooltip.mekanism.seismicReader.noVibrations")));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }

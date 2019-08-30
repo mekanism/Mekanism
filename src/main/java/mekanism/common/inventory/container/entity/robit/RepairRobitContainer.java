@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.RepairContainer;
 import net.minecraft.network.PacketBuffer;
 
+//TODO: Fix this, as it gets very confused if it extends RepairContainer
 public class RepairRobitContainer extends RepairContainer implements IEntityContainer<EntityRobit> {
 
     private EntityRobit entity;

@@ -57,7 +57,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new DisableableImageButton(guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation(),
-              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("mekanism.gui.allowDefault")));
+              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("gui.mekanism.allowDefault")));
         addButton(new ColorButton(guiLeft + 12, guiTop + 44, 16, 16, this, () -> filter.color,
               onPress -> filter.color = InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               onRightClick -> filter.color = TransporterUtils.decrement(filter.color)));

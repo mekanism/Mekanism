@@ -72,11 +72,11 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack == null) {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.noGas"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.noGas"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.amount));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     @Override

@@ -303,9 +303,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     public enum GasMode implements IHasTranslationKey {
-        IDLE("mekanism.gui.idle"),
-        DUMPING_EXCESS("mekanism.gui.dumping_excess"),
-        DUMPING("mekanism.gui.dumping");
+        IDLE("gui.mekanism.idle"),
+        DUMPING_EXCESS("gui.mekanism.dumping_excess"),
+        DUMPING("gui.mekanism.dumping");
 
         private final String langKey;
 

@@ -55,6 +55,7 @@ public enum MekanismItem implements IItemProvider {
     FLAMETHROWER(new ItemFlamethrower()),
     GAUGE_DROPPER(new ItemGaugeDropper()),
     TELEPORTATION_CORE("teleportation_core"),
+    //TODO: Rename enriched iron?
     ENRICHED_IRON("enriched_iron"),
     ELECTROLYTIC_CORE("electrolytic_core"),
     //TODO: pulps/wood? Doesn't really make sense so not adding it unless it is one of the standards

@@ -74,7 +74,7 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
         addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new DisableableImageButton(guiLeft + 11, guiTop + 64, 11, 11, 199, 11, -11, getGuiLocation(),
-              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("mekanism.gui.allowDefault")));
+              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("gui.mekanism.allowDefault")));
         addButton(checkboxButton = new DisableableImageButton(guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation(),
               onPress -> setText()));
         addButton(new ColorButton(guiLeft + 12, guiTop + 44, 16, 16, this, () -> filter.color,

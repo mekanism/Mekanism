@@ -39,8 +39,8 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
         addButton(new GuiGasGauge(() -> tileEntity.deuteriumTank, Type.SMALL, this, resource, 25, 64));
         addButton(new GuiGasGauge(() -> tileEntity.fuelTank, Type.STANDARD, this, resource, 79, 50));
@@ -71,7 +71,7 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         drawString(tileEntity.getName(), 46, 6, 0x404040);
         //TODO: Lang key for None
-        drawCenteredText(TextComponentUtil.build(Translation.of("mekanism.gui.reactor.injectionRate"),
+        drawCenteredText(TextComponentUtil.build(Translation.of("gui.mekanism.reactor.injectionRate"),
               ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate())), 0, xSize, 35, 0x404040);
         drawString("Edit Rate" + ":", 50, 117, 0x404040);
     }

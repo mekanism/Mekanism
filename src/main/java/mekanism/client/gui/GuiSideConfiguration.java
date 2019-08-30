@@ -70,7 +70,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType)),
-              getOnHover("mekanism.gui.autoEject")));
+              getOnHover("gui.mekanism.autoEject")));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
@@ -113,14 +113,14 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("mekanism.gui.config")), 0, xSize, 5, 0x404040);
+        drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("gui.mekanism.config")), 0, xSize, 5, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         if (getTile().getConfig().canEject(currentType)) {
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.eject"), ": ", OnOff.of(getTile().getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.eject"), ": ", OnOff.of(getTile().getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
         } else {
-            drawString(TextComponentUtil.translate("mekanism.gui.noEject"), 53, 17, 0x00CD00);
+            drawString(TextComponentUtil.translate("gui.mekanism.noEject"), 53, 17, 0x00CD00);
         }
-        drawString(TextComponentUtil.translate("mekanism.gui.slots"), 77, 81, 0x787878);
+        drawString(TextComponentUtil.translate("gui.mekanism.slots"), 77, 81, 0x787878);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

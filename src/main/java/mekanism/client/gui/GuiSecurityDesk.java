@@ -70,19 +70,19 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 0)));
                   updateButtons();
               },
-              getOnHover("mekanism.gui.publicMode")));
+              getOnHover("gui.mekanism.publicMode")));
         addButton(privateButton = new DisableableImageButton(guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 1)));
                   updateButtons();
               },
-              getOnHover("mekanism.gui.privateMode")));
+              getOnHover("gui.mekanism.privateMode")));
         addButton(trustedButton = new DisableableImageButton(guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation(),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 2)));
                   updateButtons();
               },
-              getOnHover("mekanism.gui.trustedMode")));
+              getOnHover("gui.mekanism.trustedMode")));
         addButton(checkboxButton = new DisableableImageButton(guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation(),
               onPress -> {
                   addTrusted(trustedField.getText());
@@ -96,7 +96,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
               },
               (onHover, xAxis, yAxis) -> {
                   if (tileEntity.frequency != null) {
-                      displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.securityOverride"), ": ", OnOff.of(tileEntity.frequency.override)), xAxis, yAxis);
+                      displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.securityOverride"), ": ", OnOff.of(tileEntity.frequency.override)), xAxis, yAxis);
                   }
               }));
         updateButtons();

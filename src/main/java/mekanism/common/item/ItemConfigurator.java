@@ -63,7 +63,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("mekanism.gui.state"), ": ", getState(itemstack)));
+        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("gui.mekanism.state"), ": ", getState(itemstack)));
     }
 
     @Nonnull

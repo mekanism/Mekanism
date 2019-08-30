@@ -42,7 +42,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), tileEntity instanceof TileEntityAdvancedSolarGenerator ? 30 : 45, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawCenteredText(TextComponentUtil.translate("mekanism.gui.producing"), 48, 80, 28, 0x00CD00);
+        drawCenteredText(TextComponentUtil.translate("gui.mekanism.producing"), 48, 80, 28, 0x00CD00);
         drawCenteredText(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getProduction()), "/t"), 48, 80, 42, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

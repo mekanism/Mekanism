@@ -42,8 +42,8 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, H
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ", EnergyDisplay.of(tileEntity.producingEnergy), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ", EnergyDisplay.of(tileEntity.producingEnergy), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
         addButton(new GuiFluidGauge(() -> tileEntity.lavaTank, Type.WIDE, this, resource, 55, 18));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
@@ -53,8 +53,8 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, H
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, false, unit);
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, false, unit);
-            return Arrays.asList(TextComponentUtil.build(Translation.of("mekanism.gui.transferred"), ": " + transfer + "/t"),
-                  TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
+            return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.transferred"), ": " + transfer + "/t"),
+                  TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));
     }
 

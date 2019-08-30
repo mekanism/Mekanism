@@ -9,6 +9,8 @@ import net.minecraft.util.ResourceLocation;
  *
  * @author AidanBrady
  */
+//TODO: Promote infuse type to proper forge registry, and add tag support similar to how gases have Tag<Gas>
+// Also allow for tints rather than just different textures
 public final class InfuseType implements IHasTranslationKey {
 
     /**
@@ -41,7 +43,7 @@ public final class InfuseType implements IHasTranslationKey {
     }
 
     public InfuseType setTranslationKey(String name) {
-        unlocalizedName = "infuse." + name;
+        unlocalizedName = "infuse.mekanism." + name;
         return this;
     }
 

@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
+import mekanism.api.block.FactoryType;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -15,8 +16,6 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IFactory.MachineFuelType;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity;
@@ -57,8 +56,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiSortingTab(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.lastUsage), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.lastUsage), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
     }
 
@@ -72,19 +71,19 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         if (xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69) {
             displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         } else if (xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83) {
-            if (tileEntity.getRecipeType().getFuelType() == MachineFuelType.ADVANCED) {
+            if (tileEntity.getFactoryType().isAdvancedMachine()) {
                 GasStack gasStack = tileEntity.gasTank.getGas();
                 if (gasStack != null) {
                     displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.translate("mekanism.gui.none"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
                 }
-            } else if (tileEntity.getRecipeType() == RecipeType.INFUSING) {
+            } else if (tileEntity.getFactoryType() == FactoryType.INFUSING) {
                 InfuseType type = tileEntity.infuseStored.getType();
                 if (type != null) {
                     displayTooltip(TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.translate("gui.mekanism.empty"), xAxis, yAxis);
                 }
             }
         }
@@ -105,7 +104,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
             drawTexturedRect(guiLeft + xPos, guiTop + 33, 176, 52, 8, displayInt);
         }
 
-        if (tileEntity.getRecipeType().getFuelType() == MachineFuelType.ADVANCED) {
+        if (tileEntity.getFactoryType().isAdvancedMachine()) {
             if (tileEntity.getScaledGasLevel(160) > 0) {
                 GasStack gas = tileEntity.gasTank.getGas();
                 if (gas != null) {
@@ -114,7 +113,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
                     MekanismRenderer.resetColor();
                 }
             }
-        } else if (tileEntity.getRecipeType() == RecipeType.INFUSING) {
+        } else if (tileEntity.getFactoryType() == FactoryType.INFUSING) {
             if (tileEntity.getScaledInfuseLevel(160) > 0) {
                 displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.getType().sprite);
             }

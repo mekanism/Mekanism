@@ -61,9 +61,9 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
         //TODO: 1.14 Convert to GuiElement
         GasStack gasStack = tileEntity.gasTank.getGas();
         if (gasStack != null) {
-            renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.gas"), ": ", gasStack), 45, 49, 0x404040, 112);
+            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.gas"), ": ", gasStack), 45, 49, 0x404040, 112);
         } else {
-            renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.gas"), ": ", Translation.of("mekanism.gui.none")), 45, 49, 0x404040, 112);
+            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.gas"), ": ", Translation.of("gui.mekanism.none")), 45, 49, 0x404040, 112);
         }
         drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         ITextComponent dumpingComponent = TextComponentUtil.build(tileEntity.dumping);

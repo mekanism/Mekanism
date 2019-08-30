@@ -73,11 +73,11 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         //TODO: Better way of doing this?
         FluidStack fluidStack = CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? FluidStack.EMPTY : FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
         if (gasStack == null && fluidStack.isEmpty()) {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.gui.empty"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("gui.mekanism.empty"), "."));
         } else if (gasStack != null) {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.amount));
         } else if (!fluidStack.isEmpty()) {
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", fluidStack, ": " + fluidStack.getAmount()));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", fluidStack, ": " + fluidStack.getAmount()));
         }
     }
 

@@ -61,8 +61,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
         addButton(new GuiSlot(SlotType.EXTRA, this, resource, 5, 64).with(SlotOverlay.PLUS));
@@ -87,7 +87,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
             } else {
                 CrystallizerRecipe recipe = tileEntity.getRecipe();
                 if (recipe == null) {
-                    drawString(TextComponentUtil.build("(", Translation.of("mekanism.gui.noRecipe"), ")"), 29, 24, 0x00CD00);
+                    drawString(TextComponentUtil.build("(", Translation.of("gui.mekanism.noRecipe"), ")"), 29, 24, 0x00CD00);
                 } else {
                     drawString(TextComponentUtil.build("(", recipe.recipeOutput.output.getDisplayName(), ")"), 29, 24, 0x00CD00);
                 }

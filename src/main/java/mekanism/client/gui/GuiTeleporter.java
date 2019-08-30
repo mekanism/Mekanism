@@ -251,7 +251,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         int yAxis = mouseY - guiTop;
         if (xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24) {
             if (frequency == null) {
-                displayTooltip(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.teleporter.noFreq")), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noFreq")), xAxis, yAxis);
             } else {
                 displayTooltip(getStatusDisplay(), xAxis, yAxis);
             }
@@ -270,15 +270,15 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     public ITextComponent getStatusDisplay() {
         switch (getStatus()) {
             case 1:
-                return TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("mekanism.gui.teleporter.ready"));
+                return TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.teleporter.ready"));
             case 2:
-                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.teleporter.noFrame"));
+                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noFrame"));
             case 3:
-                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.teleporter.noLink"));
+                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noLink"));
             case 4:
-                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.teleporter.needsEnergy"));
+                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.needsEnergy"));
         }
-        return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.teleporter.noLink"));
+        return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noLink"));
     }
 
     private UUID getOwner() {

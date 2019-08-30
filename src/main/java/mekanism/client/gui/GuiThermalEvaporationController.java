@@ -35,7 +35,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.totalLoss * unit.intervalSize, false, unit);
-            return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
+            return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));
     }
 
@@ -44,8 +44,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(getStruct(), 50, 21, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.height"), ": " + tileEntity.height), 50, 30, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.temp"), ": ",
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.height"), ": " + tileEntity.height), 50, 30, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
               MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
         renderScaledText(TextComponentUtil.build(Translation.of("gui.production"), ": " + Math.round(tileEntity.lastGain * 100D) / 100D + " mB/t"),
               50, 48, 0x00CD00, 76);

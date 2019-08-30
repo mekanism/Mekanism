@@ -43,8 +43,8 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Ele
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
@@ -59,7 +59,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Ele
         //TODO: 1.14 Convert to GuiElement
         FluidStack fluidStack = tileEntity.fluidTank.getFluid();
         if (fluidStack.isEmpty()) {
-            renderScaledText(TextComponentUtil.translate("mekanism.gui.noFluid"), 51, 35, 0x00CD00, 74);
+            renderScaledText(TextComponentUtil.translate("gui.mekanism.noFluid"), 51, 35, 0x00CD00, 74);
         } else {
             renderScaledText(TextComponentUtil.build(fluidStack, ": " + fluidStack.getAmount()), 51, 35, 0x00CD00, 74);
         }

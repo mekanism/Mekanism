@@ -52,8 +52,8 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSlot(SlotType.EXTRA, this, resource, 16, 34));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 50, 42));
@@ -79,7 +79,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
             if (type != null) {
                 displayTooltip(TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.translate("gui.mekanism.empty"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -102,8 +102,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
             double xAxis = mouseX - guiLeft;
             double yAxis = mouseY - guiTop;
             if (xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82) {
-                TileNetworkList data = TileNetworkList.withContents(0);
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }

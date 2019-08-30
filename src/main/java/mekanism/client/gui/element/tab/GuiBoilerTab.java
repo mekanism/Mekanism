@@ -24,9 +24,9 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
     }
 
     public enum BoilerTab implements TabType<TileEntityBoilerCasing> {
-        MAIN("gases.png", "mekanism.gui.main", tile ->
+        MAIN("gases.png", "gui.mekanism.main", tile ->
               new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, tile))),
-        STAT("stats.png", "mekanism.gui.stats", tile ->
+        STAT("stats.png", "gui.mekanism.stats", tile ->
               new ContainerProvider("mekanism.container.boiler_stats", (i, inv, player) -> new BoilerStatsContainer(i, inv, tile)));
 
         private final Function<TileEntityBoilerCasing, INamedContainerProvider> provider;

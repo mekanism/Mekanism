@@ -36,8 +36,8 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
@@ -47,7 +47,7 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
         drawString(tileEntity.getName(), 45, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.translate(tileEntity.getActive() ? "gui.vibrating" : "gui.idle"), 19, 26, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.chunk"), ": " + (tileEntity.getPos().getX() >> 4) + ", " + (tileEntity.getPos().getZ() >> 4)), 19, 35, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.chunk"), ": " + (tileEntity.getPos().getX() >> 4) + ", " + (tileEntity.getPos().getZ() >> 4)), 19, 35, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

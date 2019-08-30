@@ -26,9 +26,9 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
     }
 
     public enum TurbineTab implements TabType<TileEntityTurbineCasing> {
-        MAIN("gases.png", "mekanism.gui.main", tile ->
+        MAIN("gases.png", "gui.mekanism.main", tile ->
               new ContainerProvider("mekanism.container.industrial_turbine", (i, inv, player) -> new TurbineContainer(i, inv, tile))),
-        STAT("stats.png", "mekanism.gui.stats", tile ->
+        STAT("stats.png", "gui.mekanism.stats", tile ->
               new ContainerProvider("mekanism.container.turbine_stats", (i, inv, player) -> new TurbineStatsContainer(i, inv, tile)));
 
         private final Function<TileEntityTurbineCasing, INamedContainerProvider> provider;

@@ -16,7 +16,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.translate("mekanism.gui.robit.smelting"), 8, 6, 0x404040);
+        drawString(TextComponentUtil.translate("gui.mekanism.robit.smelting"), 8, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 93, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

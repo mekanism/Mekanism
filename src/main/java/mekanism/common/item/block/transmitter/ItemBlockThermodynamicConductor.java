@@ -42,15 +42,15 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<Bloc
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             ConductorTier tier = getTier(itemstack);
             if (tier != null) {
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.conduction"), ": ", EnumColor.GRAY, tier.getInverseConduction()));
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.insulation"), ": ", EnumColor.GRAY, tier.getBaseConductionInsulation()));
-                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.heatCapacity"), ": ", EnumColor.GRAY, tier.getInverseHeatCapacity()));
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.conduction"), ": ", EnumColor.GRAY, tier.getInverseConduction()));
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.insulation"), ": ", EnumColor.GRAY, tier.getBaseConductionInsulation()));
+                tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.heatCapacity"), ": ", EnumColor.GRAY, tier.getInverseHeatCapacity()));
             }
-            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
-                  EnumColor.GRAY, " ", Translation.of("mekanism.tooltip.for_details"), "."));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
+                  EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GRAY, Translation.of("mekanism.tooltip.capableTrans"), ":"));
-            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("mekanism.tooltip.heat"), " (Mekanism)"));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_GRAY, Translation.of("tooltip.mekanism.capableTrans"), ":"));
+            tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("tooltip.mekanism.heat"), " (Mekanism)"));
         }
     }
 

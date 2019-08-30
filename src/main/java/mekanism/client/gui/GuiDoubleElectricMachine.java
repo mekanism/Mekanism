@@ -45,8 +45,8 @@ public abstract class GuiDoubleElectricMachine<RECIPE extends DoubleMachineRecip
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 55, 16));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 30, 34).with(SlotOverlay.POWER));

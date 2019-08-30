@@ -91,7 +91,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 }
                 int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
-                drawString(TextComponentUtil.translate("mekanism.gui.filter"), 32, yStart + 2, 0x404040);
+                drawString(TextComponentUtil.translate("gui.mekanism.filter"), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.getFilterText(), 32, yStart + 2 + 9, 0x404040, 117);
             }
         }

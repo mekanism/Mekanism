@@ -28,7 +28,7 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.redstoneOutput"), ": ", tileEntity.outputMode), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.redstoneOutput"), ": ", tileEntity.outputMode), mouseX, mouseY);
     }
 
     @Override

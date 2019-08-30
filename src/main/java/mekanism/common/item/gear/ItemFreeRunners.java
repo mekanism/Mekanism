@@ -70,9 +70,9 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.storedEnergy"), ": ", EnumColor.GRAY,
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.stored_energy"), ": ", EnumColor.GRAY,
               EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.tooltip.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     @Override

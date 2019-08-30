@@ -33,8 +33,8 @@ public class GuiReactorStats extends GuiReactorInfo<ReactorStatsContainer> {
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
         addButton(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
         addButton(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
@@ -44,29 +44,29 @@ public class GuiReactorStats extends GuiReactorInfo<ReactorStatsContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 46, 6, 0x404040);
         if (tileEntity.isFormed()) {
-            drawString(TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("mekanism.gui.passive")), 6, 26, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.minInject"), ": " + tileEntity.getReactor().getMinInjectionRate(false)),
+            drawString(TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.passive")), 6, 26, 0x404040);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.minInject"), ": " + tileEntity.getReactor().getMinInjectionRate(false)),
                   16, 36, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.ignition"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.ignition"), ": ",
                   MekanismUtils.getTemperatureDisplay(tileEntity.getReactor().getIgnitionTemperature(false), TemperatureUnit.AMBIENT)), 16, 46, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxPlasma"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.maxPlasma"), ": ",
                   MekanismUtils.getTemperatureDisplay(tileEntity.getReactor().getMaxPlasmaTemperature(false), TemperatureUnit.AMBIENT)), 16, 56, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxCasing"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.maxCasing"), ": ",
                   MekanismUtils.getTemperatureDisplay(tileEntity.getReactor().getMaxCasingTemperature(false), TemperatureUnit.AMBIENT)), 16, 66, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.passiveGeneration"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.passiveGeneration"), ": ",
                   EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, false)), "/t"), 16, 76, 0x404040);
-            drawString(TextComponentUtil.build(EnumColor.DARK_BLUE, Translation.of("mekanism.gui.active")), 6, 92, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.minInject"), ": " + tileEntity.getReactor().getMinInjectionRate(true)),
+            drawString(TextComponentUtil.build(EnumColor.DARK_BLUE, Translation.of("gui.mekanism.active")), 6, 92, 0x404040);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.minInject"), ": " + tileEntity.getReactor().getMinInjectionRate(true)),
                   16, 102, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.ignition"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.ignition"), ": ",
                   MekanismUtils.getTemperatureDisplay(tileEntity.getReactor().getIgnitionTemperature(true), TemperatureUnit.AMBIENT)), 16, 112, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxPlasma"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.maxPlasma"), ": ",
                   MekanismUtils.getTemperatureDisplay(tileEntity.getReactor().getMaxPlasmaTemperature(true), TemperatureUnit.AMBIENT)), 16, 122, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxCasing"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.maxCasing"), ": ",
                   MekanismUtils.getTemperatureDisplay(tileEntity.getReactor().getMaxCasingTemperature(true), TemperatureUnit.AMBIENT)), 16, 132, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.passiveGeneration"), ": ",
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.passiveGeneration"), ": ",
                   EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(true, false)), "/t"), 16, 142, 0x404040);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.steamProduction"),
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.steamProduction"),
                   ": " + nf.format(tileEntity.getReactor().getSteamPerTick(false)) + "mB/t"), 16, 152, 0x404040);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

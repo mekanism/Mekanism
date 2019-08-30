@@ -67,15 +67,15 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addButton(new DisableableImageButton(guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation(), onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
             minecraft.displayGuiScreen(null);
-        }, getOnHover("mekanism.gui.robit.teleport")));
+        }, getOnHover("gui.mekanism.robit.teleport")));
         addButton(new DisableableImageButton(guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId())),
-              getOnHover("mekanism.gui.robit.togglePickup")));
+              getOnHover("gui.mekanism.robit.togglePickup")));
         addButton(new DisableableImageButton(guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation(),
-              onPress -> toggleNameChange(), getOnHover("mekanism.gui.robit.rename")));
+              onPress -> toggleNameChange(), getOnHover("gui.mekanism.robit.rename")));
         addButton(new DisableableImageButton(guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId())),
-              getOnHover("mekanism.gui.robit.toggleFollow")));
+              getOnHover("gui.mekanism.robit.toggleFollow")));
         addButton(new DisableableImageButton(guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation(), onPress -> {
             //Clicking main button doesn't do anything while already on the main GUI
         }));
@@ -106,16 +106,16 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.translate("mekanism.gui.robit"), 76, 6, 0x404040);
+        drawString(TextComponentUtil.translate("gui.mekanism.robit"), 76, 6, 0x404040);
 
         if (!displayNameChange) {
             CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit.greeting"), " " + robit.getName() + "!"), 29, 18, 0x00CD00);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.energy"), ": ", EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY)),
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.robit.greeting"), " ", robit.getName(), "!"), 29, 18, 0x00CD00);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.energy"), ": ", EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY)),
                   29, 36 - 4, 0x00CD00);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit.following"), ": " + robit.getFollowing()), 29, 45 - 4, 0x00CD00);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit.dropPickup"), ": " + robit.getDropPickup()), 29, 54 - 4, 0x00CD00);
-            drawString(TextComponentUtil.build(Translation.of("mekanism.gui.robit.owner"), ": " + owner), 29, 63 - 4, 0x00CD00);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.robit.following"), ": " + robit.getFollowing()), 29, 45 - 4, 0x00CD00);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.robit.dropPickup"), ": " + robit.getDropPickup()), 29, 54 - 4, 0x00CD00);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.robit.owner"), ": " + owner), 29, 63 - 4, 0x00CD00);
         }
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;

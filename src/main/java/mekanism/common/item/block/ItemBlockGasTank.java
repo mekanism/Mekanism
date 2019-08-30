@@ -14,7 +14,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -48,18 +48,18 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
         if (gasStack == null) {
-            tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("mekanism.gui.empty"), "."));
+            tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.empty"), "."));
         } else if (gasStack.amount == Integer.MAX_VALUE) {
-            tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GRAY, Translation.of("mekanism.gui.infinite")));
+            tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GRAY, Translation.of("gui.mekanism.infinite")));
         } else {
             tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GRAY, gasStack.amount));
         }
         int cap = getTier(itemstack).getStorage();
         if (cap == Integer.MAX_VALUE) {
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY,
-                  Translation.of("mekanism.gui.infinite")));
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.capacity"), ": ", EnumColor.GRAY,
+                  Translation.of("gui.mekanism.infinite")));
         } else {
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.tooltip.capacity"), ": ", EnumColor.GRAY, cap));
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.capacity"), ": ", EnumColor.GRAY, cap));
         }
         super.addInformation(itemstack, world, tooltip, flag);
     }
@@ -68,13 +68,13 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     @OnlyIn(Dist.CLIENT)
     public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack)).getTextComponent());
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
-            tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("mekanism.gui.overridden"), ")"));
+            tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("gui.mekanism.overridden"), ")"));
         }
         ListNBT inventory = getInventory(itemstack);
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("mekanism.tooltip.inventory"), ": ", EnumColor.GRAY,
-              BooleanStateDisplay.YesNo.of(inventory != null && !inventory.isEmpty())));
+        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.inventory"), ": ", EnumColor.GRAY,
+              YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
     @Override

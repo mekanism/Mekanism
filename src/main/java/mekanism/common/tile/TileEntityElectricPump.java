@@ -361,7 +361,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("mekanism.tooltip.configurator.pumpReset")));
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("tooltip.mekanism.configurator.pumpReset")));
         return ActionResultType.SUCCESS;
     }
 

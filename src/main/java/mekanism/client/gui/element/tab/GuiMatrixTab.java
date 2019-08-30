@@ -24,9 +24,9 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
     }
 
     public enum MatrixTab implements TabType<TileEntityInductionCasing> {
-        MAIN("energy.png", "mekanism.gui.main", tile ->
+        MAIN("energy.png", "gui.mekanism.main", tile ->
               new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv, tile))),
-        STAT("stats.png", "mekanism.gui.stats", tile ->
+        STAT("stats.png", "gui.mekanism.stats", tile ->
               new ContainerProvider("mekanism.container.matrix_stats", (i, inv, player) -> new MatrixStatsContainer(i, inv, tile)));
 
         private final Function<TileEntityInductionCasing, INamedContainerProvider> provider;

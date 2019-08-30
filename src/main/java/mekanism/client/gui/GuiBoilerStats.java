@@ -39,25 +39,25 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Boil
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
-            return Collections.singletonList(TextComponentUtil.build(Translation.of("mekanism.gui.dissipated"), ": " + environment + "/t"));
+            return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));
         addButton(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, data ->
-              TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + data + " mB/t")));
+              TextComponentUtil.build(Translation.of("gui.mekanism.boilRate"), ": " + data + " mB/t")));
         addButton(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, data ->
-              TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + data + " mB/t")));
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxBoil"), ": " + data + " mB/t")));
         maxGraph.enableFixedScale((int) ((tileEntity.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get()) /
                                          SynchronizedBoilerData.getHeatEnthalpy()));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.translate("mekanism.gui.boilerStats"), 0, xSize, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxWater"), ": " + tileEntity.clientWaterCapacity + " mB"), 8, 26, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.maxSteam"), ": " + tileEntity.clientSteamCapacity + " mB"), 8, 35, 0x404040);
-        drawString(TextComponentUtil.translate("mekanism.gui.heatTransfer"), 8, 49, 0x797979);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.superheaters"), ": " + tileEntity.getSuperheatingElements()), 14, 58, 0x404040);
+        drawCenteredText(TextComponentUtil.translate("gui.mekanism.boilerStats"), 0, xSize, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.maxWater"), ": " + tileEntity.clientWaterCapacity + " mB"), 8, 26, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.maxSteam"), ": " + tileEntity.clientSteamCapacity + " mB"), 8, 35, 0x404040);
+        drawString(TextComponentUtil.translate("gui.mekanism.heatTransfer"), 8, 49, 0x797979);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.superheaters"), ": " + tileEntity.getSuperheatingElements()), 14, 58, 0x404040);
         int boilCapacity = (int) (tileEntity.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get() / SynchronizedBoilerData.getHeatEnthalpy());
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.boilCapacity"), ": " + boilCapacity + " mB/t"), 8, 72, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.boilCapacity"), ": " + boilCapacity + " mB/t"), 8, 72, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

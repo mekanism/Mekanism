@@ -127,7 +127,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
         addButton(new DisableableImageButton(guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setMaxY()));
         addButton(new DisableableImageButton(guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(10))),
-              getOnHover("mekanism.gui.digitalMiner.inverse")));
+              getOnHover("gui.mekanism.digitalMiner.inverse")));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
         String prevMin = minField != null ? minField.getText() : "";

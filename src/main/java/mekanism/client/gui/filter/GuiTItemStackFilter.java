@@ -81,7 +81,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new DisableableImageButton(guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation(),
-              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("mekanism.gui.allowDefault")));
+              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("gui.mekanism.allowDefault")));
         addButton(new ColorButton(guiLeft + 12, guiTop + 44, 16, 16, this, () -> filter.color,
               onPress -> filter.color = InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               onRightClick -> filter.color = TransporterUtils.decrement(filter.color)));
@@ -89,9 +89,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
               onPress -> filter.sizeMode = !filter.sizeMode,
               (onHover, xAxis, yAxis) -> {
                   if (tileEntity.singleItem && filter.sizeMode) {
-                      displayTooltip(TextComponentUtil.build(Translation.of("mekanism.gui.sizeMode"), " - ", Translation.of("mekanism.gui.sizeModeConflict")), xAxis, yAxis);
+                      displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.sizeMode"), " - ", Translation.of("gui.mekanism.sizeModeConflict")), xAxis, yAxis);
                   } else {
-                      displayTooltip(TextComponentUtil.translate("mekanism.gui.sizeMode"), xAxis, yAxis);
+                      displayTooltip(TextComponentUtil.translate("gui.mekanism.sizeMode"), xAxis, yAxis);
                   }
               }));
     }
@@ -120,8 +120,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.itemFilter.min"), ":"), 128, 20, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.itemFilter.max"), ":"), 128, 32, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.itemFilter.min"), ":"), 128, 20, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.itemFilter.max"), ":"), 128, 32, 0x404040);
         if (tileEntity.singleItem && filter.sizeMode) {
             drawString(TextComponentUtil.build(EnumColor.RED, OnOff.of(filter.sizeMode), "!"), 141, 46, 0x404040);
         } else {

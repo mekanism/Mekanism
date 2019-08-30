@@ -27,5 +27,27 @@
   "block.mekanismgenerators.reactor_port": "Reactor Port",
   "block.mekanismgenerators.reactor_logic_adapter": "Reactor Logic Adapter",
   "block.mekanismgenerators.reactor_glass": "Reactor Glass",
-  "block.mekanismgenerators.laser_focus_matrix": "Laser Focus Matrix"
+  "block.mekanismgenerators.laser_focus_matrix": "Laser Focus Matrix",
+
+  "tooltip.mekanism.heat_generator": "A generator that uses the heat of lava or other burnable resources to produce energy.",
+  "tooltip.mekanism.solar_generator": "A generator that uses the power of the sun to produce energy.",
+  "tooltip.mekanism.gas_burning_generator": "A generator that harnesses the molecular varying gasses to produce energy.",
+  "tooltip.mekanism.bio_generator": "A generator that burns organic materials of the world to produce energy.",
+  "tooltip.mekanism.advanced_solar_generator": "An advanced generator that directly absorbs the sun's rays with little loss to produce energy.",
+  "tooltip.mekanism.wind_generator": "A generator that uses the strength of the wind to produce energy, with greater efficiency at higher levels.",
+  "tooltip.mekanism.turbine_rotor": "The steel rod that is used to house Turbine Blades within an Industrial Turbine.",
+  "tooltip.mekanism.rotational_complex": "A connector that is placed on the highest Turbine Rotor of an Industrial Turbine to carry kinetic energy into its Electromagnetic Coils.",
+  "tooltip.mekanism.electromagnetic_coil": "A block that converts kinetic energy from a Rotational Complex into usable electricity. These can be placed in any arrangement above your Rotational Complex, as long as they are all touching each other and the complex itself.",
+  "tooltip.mekanism.turbine_casing": "Pressure-resistant casing used in the creation of an Industrial Turbine.",
+  "tooltip.mekanism.turbine_valve": "A type of Turbine Casing that includes a port for the transfer of energy and steam.",
+  "tooltip.mekanism.turbine_vent": "A type of Turbine Casing with an integrated vent for the release of steam. These should be placed on the level of or above the turbine's Rotational Complex.",
+  "tooltip.mekanism.saturating_condenser": "A block that condenses steam processed by an Industrial Turbine into reusable water. These can be placed in any arrangement above your rotational complex.",
+
+  "tooltip.mekanism.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
+  "tooltip.mekanism.laser_focus_matrix": "A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.",
+  "tooltip.mekanism.reactor_controller": "The controlling block for the entire Fusion Reactor structure.",
+  "tooltip.mekanism.reactor_frame": "Reinforced framing that can be used in the Fusion Reactor multiblock.",
+  "tooltip.mekanism.reactor_neutron_capture_plate": "A block that can be used to both block Fusion Reactor radiation and assist in the production of Tritium.",
+  "tooltip.mekanism.reactor_port": "A block of reinforced framing that is capable of managing both the gas and energy transfer of the Fusion Reactor.",
+  "tooltip.mekanism.reactor_logic_adapter": "A block that can be used to allow basic monitoring of a reactor using redstone."
 }

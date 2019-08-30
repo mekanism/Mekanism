@@ -88,7 +88,7 @@ public final class SecurityUtils {
     }
 
     public static void displayNoAccess(PlayerEntity player) {
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED, Translation.of("mekanism.gui.noAccessDesc")));
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED, Translation.of("gui.mekanism.noAccessDesc")));
     }
 
     public static SecurityMode getSecurity(ISecurityTile security, Dist side) {

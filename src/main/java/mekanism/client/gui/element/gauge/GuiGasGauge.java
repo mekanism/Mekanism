@@ -60,7 +60,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (gasStack != null) {
             return TextComponentUtil.build(gasStack, ": " + infoHandler.getTank().getStored());
         }
-        return TextComponentUtil.translate("mekanism.gui.empty");
+        return TextComponentUtil.translate("gui.mekanism.empty");
     }
 
     @Override

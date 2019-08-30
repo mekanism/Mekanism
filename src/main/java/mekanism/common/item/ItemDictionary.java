@@ -43,13 +43,13 @@ public class ItemDictionary extends ItemMekanism {
                 List<String> names = OreDictCache.getOreDictName(testStack);
                 if (!names.isEmpty()) {
                     player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                          Translation.of("mekanism.tooltip.keysFound"), ":"));
+                          Translation.of("tooltip.mekanism.keysFound"), ":"));
                     for (String name : names) {
                         player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GREEN, " - " + name));
                     }
                 } else {
                     player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                          Translation.of("mekanism.tooltip.noKey"), "."));
+                          Translation.of("tooltip.mekanism.noKey"), "."));
                 }
             }
             return ActionResultType.SUCCESS;

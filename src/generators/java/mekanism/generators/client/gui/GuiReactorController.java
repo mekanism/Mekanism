@@ -34,8 +34,8 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
         if (tileEntity.isFormed()) {
             ResourceLocation resource = getGuiLocation();
             addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-                  TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-                  TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
+                  TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+                  TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
                         EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
             addButton(new GuiSlot(SlotType.NORMAL, this, resource, 79, 38));
             addButton(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
@@ -47,7 +47,7 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 46, 6, 0x404040);
-        drawString(TextComponentUtil.translate(tileEntity.getActive() ? "mekanism.gui.formed" : "mekanism.gui.incomplete"), 8, 16, 0x404040);
+        drawString(TextComponentUtil.translate(tileEntity.getActive() ? "gui.mekanism.formed" : "gui.mekanism.incomplete"), 8, 16, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

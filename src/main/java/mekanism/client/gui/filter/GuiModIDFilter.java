@@ -40,8 +40,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.modIDFilter")), 43, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.status"), ": ", status), 35, 20, 0x00CD00);
-        renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.id"), ": " + filter.getModID()), 35, 32, 0x00CD00, 107);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.status"), ": ", status), 35, 20, 0x00CD00);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.id"), ": " + filter.getModID()), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

@@ -28,7 +28,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         if (!itemType.isEmpty()) {
             String amount = Integer.toString(clientAmount);
             if (clientAmount == Integer.MAX_VALUE) {
-                amount = TextComponentUtil.translate("mekanism.gui.infinite").getFormattedText();
+                amount = TextComponentUtil.translate("gui.mekanism.infinite").getFormattedText();
             }
             setLightmapDisabled(true);
             GlStateManager.pushMatrix();

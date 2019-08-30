@@ -41,8 +41,8 @@ public class GuiChemicalDissolutionChamber extends GuiChemical<TileEntityChemica
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiGasGauge(() -> tileEntity.injectTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
         addButton(new GuiGasGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
@@ -65,6 +65,6 @@ public class GuiChemicalDissolutionChamber extends GuiChemical<TileEntityChemica
 
     @Override
     protected void drawForegroundText() {
-        drawString(TextComponentUtil.translate("mekanism.gui.chemicalDissolutionChamber.short"), 35, 4, 0x404040);
+        drawString(TextComponentUtil.translate("gui.mekanism.chemicalDissolutionChamber.short"), 35, 4, 0x404040);
     }
 }

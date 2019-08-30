@@ -41,9 +41,9 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier() : 0), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
@@ -55,16 +55,16 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         drawString(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         //TODO: Why is this different from how all the other ones do it
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.power"),
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.power"),
               ": " + powerFormat.format(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier()))),
               51, 35, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("mekanism.gui.out"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.out"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
         int size = 44;
         if (!tileEntity.getActive()) {
             size += 9;
-            String reason = "mekanism.gui.skyBlocked";
+            String reason = "gui.mekanism.skyBlocked";
             if (tileEntity.isBlacklistDimension()) {
-                reason = "mekanism.gui.noWind";
+                reason = "gui.mekanism.noWind";
             }
             drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of(reason)), 51, size, 0x00CD00);
         }

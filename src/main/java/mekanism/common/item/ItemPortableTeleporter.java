@@ -59,8 +59,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack)).getTextComponent());
         if (getFrequency(itemstack) != null) {
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.frequency"), ": ", EnumColor.GRAY, getFrequency(itemstack).name));
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("mekanism.gui.mode"), ": ", EnumColor.GRAY,
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("gui.mekanism.frequency"), ": ", EnumColor.GRAY, getFrequency(itemstack).name));
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("gui.mekanism.mode"), ": ", EnumColor.GRAY,
                   Translation.of("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public"))));
         }
         super.addInformation(itemstack, world, tooltip, flag);
@@ -74,7 +74,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             if (getOwnerUUID(stack) == null) {
                 setOwnerUUID(stack, player.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, player.getUniqueID(), null));
-                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("mekanism.gui.nowOwn")));
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("gui.mekanism.nowOwn")));
             } else if (SecurityUtils.canAccess(player, stack)) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
                     buf.writeEnumValue(hand);

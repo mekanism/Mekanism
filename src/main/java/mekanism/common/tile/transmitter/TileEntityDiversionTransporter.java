@@ -94,13 +94,13 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         modes[side.ordinal()] = newMode;
         switch (newMode) {
             case 0:
-                description = Translation.of("mekanism.control.disabled.desc");
+                description = Translation.of("tooltip.mekanism.control.disabled.desc");
                 break;
             case 1:
-                description = Translation.of("mekanism.control.high.desc");
+                description = Translation.of("tooltip.mekanism.control.high.desc");
                 break;
             case 2:
-                description = Translation.of("mekanism.control.low.desc");
+                description = Translation.of("tooltip.mekanism.control.low.desc");
                 break;
             default:
                 description = Translation.of("mekanism.none");

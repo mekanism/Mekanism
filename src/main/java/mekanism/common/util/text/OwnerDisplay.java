@@ -38,14 +38,14 @@ public class OwnerDisplay implements IHasTextComponent {
     @Override
     public ITextComponent getTextComponent() {
         if (ownerUUID == null) {
-            return TextComponentUtil.build(EnumColor.RED, Translation.of("mekanism.gui.no_owner"));
+            return TextComponentUtil.build(EnumColor.RED, Translation.of("gui.mekanism.no_owner"));
         }
         //TODO: If the name is supposed to be gotten differently server side, then do so
         //Allows for the name to be overridden by a passed value
         String name = ownerName == null ? MekanismClient.clientUUIDMap.get(ownerUUID) : ownerName;
         if (player == null) {
-            return TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.owner"), name);
+            return TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.owner"), name);
         }
-        return TextComponentUtil.build(EnumColor.GRAY, Translation.of("mekanism.gui.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
+        return TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
     }
 }

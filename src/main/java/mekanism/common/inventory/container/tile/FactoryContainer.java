@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.block.FactoryType;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.MekanismContainerTypes;
@@ -102,7 +103,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
                 if (transferExtraSlot(slotID, slotStack)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tile.getRecipeType() == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null
+            } else if (tile.getFactoryType() == FactoryType.INFUSING && InfuseRegistry.getObject(slotStack) != null
                        && (tile.infuseStored.getType() == null || tile.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
                 if (transferExtraSlot(slotID, slotStack)) {
                     return ItemStack.EMPTY;

@@ -45,7 +45,7 @@ public class GuiEnergyGauge extends GuiGauge {
         if (infoHandler.getEnergyStorage().getEnergy() > 0) {
             return EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()).getTextComponent();
         }
-        return TextComponentUtil.translate("mekanism.gui.empty");
+        return TextComponentUtil.translate("gui.mekanism.empty");
     }
 
     public interface IEnergyInfoHandler {

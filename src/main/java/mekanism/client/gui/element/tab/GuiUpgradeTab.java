@@ -22,7 +22,7 @@ public class GuiUpgradeTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.translate("mekanism.gui.upgrades"), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.translate("gui.mekanism.upgrades"), mouseX, mouseY);
     }
 
     @Override

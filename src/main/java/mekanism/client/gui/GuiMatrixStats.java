@@ -36,7 +36,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
         addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("mekanism.gui.receiving"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t");
+                return TextComponentUtil.build(Translation.of("gui.mekanism.receiving"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t");
             }
 
             @Override
@@ -47,7 +47,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
         addButton(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("mekanism.gui.outputting"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t");
+                return TextComponentUtil.build(Translation.of("gui.mekanism.outputting"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t");
             }
 
             @Override
@@ -56,9 +56,9 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
             }
         }, resource, 38, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("mekanism.gui.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")),
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("gui.mekanism.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")),
               this, resource));
     }
 

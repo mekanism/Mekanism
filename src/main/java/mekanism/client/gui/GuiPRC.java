@@ -49,8 +49,8 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPRC, PressurizedReactionCh
         addButton(new GuiEnergyInfo(() -> {
             double extra = tileEntity.getRecipe() != null ? tileEntity.getRecipe().extraEnergy : 0;
             double energyPerTick = MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.getBaseStorage() + extra);
-            return Arrays.asList(TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(energyPerTick), "/t"),
-                  TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));
+            return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(energyPerTick), "/t"),
+                  TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));
         }, this, resource));
         addButton(new GuiFluidGauge(() -> tileEntity.inputFluidTank, GuiGauge.Type.STANDARD_YELLOW, this, resource, 5, 10));
         addButton(new GuiGasGauge(() -> tileEntity.inputGasTank, GuiGauge.Type.STANDARD_RED, this, resource, 28, 10));

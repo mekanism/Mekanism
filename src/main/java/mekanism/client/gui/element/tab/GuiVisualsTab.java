@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.BooleanStateDisplay;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.util.ResourceLocation;
@@ -24,11 +24,11 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        ITextComponent visualsComponent = TextComponentUtil.build(Translation.of("mekanism.gui.visuals"), ": ", BooleanStateDisplay.OnOff.of(tileEntity.clientRendering));
+        ITextComponent visualsComponent = TextComponentUtil.build(Translation.of("gui.mekanism.visuals"), ": ", OnOff.of(tileEntity.clientRendering));
         if (tileEntity.getRadius() <= 64) {
             displayTooltip(visualsComponent, mouseX, mouseY);
         } else {
-            displayTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("mekanism.gui.visuals.toobig"))), mouseX, mouseY);
+            displayTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("gui.mekanism.visuals.toobig"))), mouseX, mouseY);
         }
     }
 

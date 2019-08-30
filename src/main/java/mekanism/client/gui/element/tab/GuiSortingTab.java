@@ -25,14 +25,14 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory> {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         super.renderButton(mouseX, mouseY, partialTicks);
-        drawString(OnOff.of(tileEntity.sorting).getTextComponent(), -21, 86, 0x0404040);
+        drawString(OnOff.of(tileEntity.sorting).getTextComponent(), x + 5, y + 24, 0x0404040);
         //TODO: Check if needed
         MekanismRenderer.resetColor();
     }
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.translate("mekanism.gui.factory.autoSort"), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.translate("gui.mekanism.factory.autoSort"), mouseX, mouseY);
     }
 
     @Override

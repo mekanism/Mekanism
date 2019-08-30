@@ -41,8 +41,8 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, C
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.using"), ": ", EnergyDisplay.of(tileEntity.clientEnergyUsed), "/t"),
-              TextComponentUtil.build(Translation.of("mekanism.gui.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.clientEnergyUsed), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiGasGauge(() -> tileEntity.leftTank, GuiGauge.Type.STANDARD, this, resource, 25, 13));
         addButton(new GuiGasGauge(() -> tileEntity.centerTank, GuiGauge.Type.STANDARD, this, resource, 79, 4));
@@ -72,7 +72,7 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, C
 
     @Override
     protected void drawForegroundText() {
-        drawString(TextComponentUtil.translate("mekanism.gui.chemicalInfuser.short"), 5, 5, 0x404040);
+        drawString(TextComponentUtil.translate("gui.mekanism.chemicalInfuser.short"), 5, 5, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
     }
 }

@@ -36,10 +36,10 @@ public interface IRedstoneControl {
     boolean canPulse();
 
     enum RedstoneControl implements IHasTranslationKey {
-        DISABLED("mekanism.control.disabled"),
-        HIGH("mekanism.control.high"),
-        LOW("mekanism.control.low"),
-        PULSE("mekanism.control.pulse");
+        DISABLED("tooltip.mekanism.control.disabled"),
+        HIGH("tooltip.mekanism.control.high"),
+        LOW("tooltip.mekanism.control.low"),
+        PULSE("tooltip.mekanism.control.pulse");
 
         private String display;
 

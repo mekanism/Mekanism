@@ -41,7 +41,7 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
         @Override
         protected String getKey() {
-            return "mekanism.tooltip." + (value ? "yes" : "no");
+            return "tooltip.mekanism." + (value ? "yes" : "no");
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
         @Override
         protected String getKey() {
-            return "mekanism.tooltip." + (value ? "on" : "off");
+            return "gui.mekanism." + (value ? "on" : "off");
         }
     }
 
@@ -81,7 +81,7 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
         @Override
         protected String getKey() {
-            return "mekanism.gui." + (value ? "output" : "input");
+            return "gui.mekanism." + (value ? "output" : "input");
         }
     }
 }

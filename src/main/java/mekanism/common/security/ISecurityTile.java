@@ -4,6 +4,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import net.minecraft.util.text.ITextComponent;
 
 public interface ISecurityTile {
@@ -15,9 +16,9 @@ public interface ISecurityTile {
     }
 
     enum SecurityMode implements IHasTextComponent {
-        PUBLIC("mekanism.security.public", EnumColor.BRIGHT_GREEN),
-        PRIVATE("mekanism.security.private", EnumColor.RED),
-        TRUSTED("mekanism.security.trusted", EnumColor.ORANGE);
+        PUBLIC("security.mekanism.public", EnumColor.BRIGHT_GREEN),
+        PRIVATE("security.mekanism.private", EnumColor.RED),
+        TRUSTED("security.mekanism.trusted", EnumColor.ORANGE);
 
         private String display;
         private EnumColor color;
@@ -29,7 +30,7 @@ public interface ISecurityTile {
 
         @Override
         public ITextComponent getTextComponent() {
-            return TextComponentUtil.build(color, display);
+            return TextComponentUtil.build(color, Translation.of(display));
         }
     }
 }

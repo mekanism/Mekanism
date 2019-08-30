@@ -17,7 +17,6 @@ import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IHasGui;
@@ -202,15 +201,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
-        if (tile instanceof TileEntityFactory) {
-            ((IFactory) stack.getItem()).setRecipeType(((TileEntityFactory) tile).getRecipeType().ordinal(), stack);
-        }
-        return stack;
     }
 
     @Override

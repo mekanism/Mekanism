@@ -41,8 +41,8 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-              TextComponentUtil.build(Translation.of("mekanism.gui.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("mekanism.gui.producing"), ": ",
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
                     EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
