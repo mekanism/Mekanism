@@ -411,12 +411,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (world.isRemote) {
-            redstone = dataStream.readBoolean();
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
             if (supportsRedstone()) {
-                controlType = RedstoneControl.values()[dataStream.readInt()];
+                redstone = dataStream.readBoolean();
+                controlType = dataStream.readEnumValue(RedstoneControl.class);
             }
             if (isElectric()) {
                 setEnergy(dataStream.readDouble());
@@ -426,14 +426,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        //TODO: Should there be a hasRedstone?
-        data.add(redstone);
         //TODO: Should there be a hasComponents?
         for (ITileComponent component : components) {
             component.write(data);
         }
         if (supportsRedstone()) {
-            data.add(controlType.ordinal());
+            data.add(redstone);
+            data.add(controlType);
         }
         if (isElectric()) {
             data.add(getEnergy());

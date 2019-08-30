@@ -7,6 +7,7 @@ import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
+import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.text.EnumColor;
@@ -59,8 +60,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>, IHasInventory,
-      IHasTileEntity<TileEntityFluidTank>, IBlockDisableable, ISupportsComparator {
+public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>,
+      IHasInventory, IHasTileEntity<TileEntityFluidTank>, IBlockDisableable, ISupportsComparator, IHasSecurity {
 
     private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -109,8 +110,8 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                 }
             } else {
                 SecurityUtils.displayNoAccess(player);
+                return true;
             }
-            return true;
         }
         if (tileEntity.openGui(player)) {
             return true;
