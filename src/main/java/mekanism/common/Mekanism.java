@@ -744,7 +744,7 @@ public class Mekanism {
     }
 
     private void chunkSave(ChunkDataEvent.Save event) {
-        if (!event.getWorld().isRemote()) {
+        if (event.getWorld() != null && !event.getWorld().isRemote()) {
             CompoundNBT nbtTags = event.getData();
 
             nbtTags.putInt("MekanismWorldGen", baseWorldGenVersion);
@@ -753,7 +753,7 @@ public class Mekanism {
     }
 
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
-        if (!event.getWorld().isRemote()) {
+        if (event.getWorld() != null && !event.getWorld().isRemote()) {
             if (MekanismConfig.general.enableWorldRegeneration.get()) {
                 CompoundNBT loadData = event.getData();
                 if (loadData.getInt("MekanismWorldGen") == baseWorldGenVersion &&

@@ -357,19 +357,6 @@ public enum MekanismBlock implements IBlockProvider {
         return null;
     }
 
-    @Nullable
-    public MekanismBlock getUpgradedBlock() {
-        //TODO: Have this be dynamic/built up automatically
-        if (this == ENERGIZED_SMELTER) {
-            return BASIC_SMELTING_FACTORY;
-        } else if (this == BASIC_SMELTING_FACTORY) {
-            return ADVANCED_SMELTING_FACTORY;
-        } else if (this == ADVANCED_SMELTING_FACTORY) {
-            return ELITE_SMELTING_FACTORY;
-        }
-        return null;
-    }
-
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         for (IBlockProvider blockProvider : values()) {
             registry.register(blockProvider.getBlock());

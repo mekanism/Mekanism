@@ -62,7 +62,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     @OnlyIn(Dist.CLIENT)
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
         //Not structural glass
-        return adjacentBlockState.getBlock() != this;
+        return adjacentBlockState.getBlock() == this;
     }
 
     @OnlyIn(Dist.CLIENT)

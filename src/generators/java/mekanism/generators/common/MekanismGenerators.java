@@ -39,7 +39,7 @@ public class MekanismGenerators implements IModule {
         Mekanism.modulesLoaded.add(instance = this);
         MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::onBlacklistUpdate);
+        MinecraftForge.EVENT_BUS.addListener(this::onBlacklistUpdate);
         modEventBus.addListener(this::commonSetup);
         MekanismGeneratorsConfig.loadFromFiles();
     }

@@ -67,7 +67,7 @@ public class BlockReactorGlass extends BlockTileDrops implements IHasTileEntity<
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
         Block blockOffset = adjacentBlockState.getBlock();
         if (blockOffset instanceof BlockReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {
-            return false;
+            return true;
         }
         return super.isSideInvisible(state, adjacentBlockState, side);
     }

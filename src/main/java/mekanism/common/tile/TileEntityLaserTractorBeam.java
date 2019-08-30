@@ -25,6 +25,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -57,13 +58,13 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
         if (world.isRemote) {
             if (on) {
                 BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
-                Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
-                if (hitCoord == null || !hitCoord.equals(digging)) {
-                    digging = hitCoord;
+                Coord4D hitCoord = new Coord4D(mop, world);
+                if (!hitCoord.equals(digging)) {
+                    digging =  mop.getType() == Type.MISS ? null : hitCoord;
                     diggingProgress = 0;
                 }
 
-                if (hitCoord != null) {
+                if (mop.getType() != Type.MISS) {
                     BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
@@ -86,14 +87,12 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
             }
 
             LaserInfo info = LaserManager.fireLaser(this, getDirection(), firing, world);
-            Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
-
-            if (hitCoord == null || !hitCoord.equals(digging)) {
-                digging = hitCoord;
+            Coord4D hitCoord = new Coord4D(info.movingPos, world);
+            if (!hitCoord.equals(digging)) {
+                digging = info.movingPos.getType() == Type.MISS ? null : hitCoord;
                 diggingProgress = 0;
             }
-
-            if (hitCoord != null) {
+            if (info.movingPos.getType() != Type.MISS) {
                 BlockState blockHit = hitCoord.getBlockState(world);
                 TileEntity tileHit = hitCoord.getTileEntity(world);
                 float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());

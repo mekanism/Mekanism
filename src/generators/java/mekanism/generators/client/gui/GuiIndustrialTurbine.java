@@ -126,8 +126,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         double xAxis = mouseX - guiLeft;
         double yAxis = mouseY - guiTop;
         if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
-            TileNetworkList data = TileNetworkList.withContents((byte) 0);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            //TODO: 1.14 Convert to GuiElement/Button
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 0)));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             return true;
         }
