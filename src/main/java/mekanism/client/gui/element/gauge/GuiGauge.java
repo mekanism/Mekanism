@@ -60,36 +60,32 @@ public abstract class GuiGauge<T> extends GuiElement {
     }
 
     public void renderScale() {
-        if (getScaledLevel() == 0 || getIcon() == null) {
-            guiObj.drawTexturedRect(x, y, width, 0, width, height);
-            return;
-        }
-
         int scale = getScaledLevel();
-        int start = 0;
-
-        applyRenderColor();
-        while (scale > 0) {
-            int renderRemaining;
-            if (scale > 16) {
-                renderRemaining = 16;
-                scale -= 16;
-            } else {
-                renderRemaining = scale;
-                scale = 0;
-            }
-
+        TextureAtlasSprite icon = getIcon();
+        if (scale > 0 && icon != null) {
+            int start = 0;
+            applyRenderColor();
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            for (int i = 0; i < number; i++) {
-                guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
+            while (scale > 0) {
+                int renderRemaining;
+                if (scale > 16) {
+                    renderRemaining = 16;
+                    scale -= 16;
+                } else {
+                    renderRemaining = scale;
+                    scale = 0;
+                }
+                for (int i = 0; i < number; i++) {
+                    guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, icon, 16, renderRemaining);
+                }
+                start += 16;
+                if (scale == 0) {
+                    break;
+                }
             }
-            start += 16;
-            if (scale == 0) {
-                break;
-            }
+            MekanismRenderer.resetColor();
+            minecraft.textureManager.bindTexture(RESOURCE);
         }
-        MekanismRenderer.resetColor();
-        minecraft.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(x, y, width, 0, width, height);
     }
 

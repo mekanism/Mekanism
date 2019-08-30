@@ -122,7 +122,8 @@ public class SoundHandler {
         ISound s = soundMap.get(pos.toLong());
         if (s == null || !Minecraft.getInstance().getSoundHandler().isPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
-            s = new SimpleSound(soundLoc, SoundCategory.BLOCKS, (float) (volume * MekanismConfig.client.baseSoundVolume.get()), 1.0f,
+            //TODO: 1.14 Fix config interaction with floats
+            s = new SimpleSound(soundLoc, SoundCategory.BLOCKS, volume /* * MekanismConfig.client.baseSoundVolume.get()*/, 1.0f,
                   true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f,
                   false) {
                 @Override

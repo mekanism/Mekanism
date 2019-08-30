@@ -106,7 +106,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             ThermalEvaporationRecipe recipe = getRecipe();
             if (canOperate(recipe)) {
                 int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
-                int inputStored = inputTank.getFluidAmount();
                 double outputRatio = (double) recipe.recipeOutput.output.getAmount() / (double) recipe.recipeInput.ingredient.getAmount();
                 double tempMult = Math.max(0, getTemperature()) * MekanismConfig.general.evaporationTempMultiplier.get();
                 double inputToUse = tempMult * recipe.recipeInput.ingredient.getAmount() * ((float) height / (float) MAX_HEIGHT);
@@ -157,7 +156,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean hasRecipe(@Nonnull Fluid fluid) {
-        if ( fluid == Fluids.EMPTY) {
+        if (fluid == Fluids.EMPTY) {
             return false;
         }
         return Recipe.THERMAL_EVAPORATION_PLANT.containsRecipe(fluid);
@@ -227,7 +226,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (Math.abs(temperature - base) < 0.001) {
             temperature = base;
         }
-        float incr = (float) Math.sqrt(Math.abs(temperature - base)) * MekanismConfig.general.evaporationHeatDissipation.get();
+        //TODO: 1.14 fix float config handling
+        float incr = (float) Math.sqrt(Math.abs(temperature - base));// * MekanismConfig.general.evaporationHeatDissipation.get();
 
         if (temperature > base) {
             incr = -incr;

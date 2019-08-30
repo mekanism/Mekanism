@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -23,7 +22,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -49,8 +47,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     public double getDurabilityForDisplay(ItemStack stack) {
         double gasRatio = (getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY;
         //TODO: Better way of doing this?
-        LazyOptionalHelper<FluidStack> fluidContained = new LazyOptionalHelper<>(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? LazyOptional.empty() : FluidUtil.getFluidContained(stack));
-        double fluidRatio = fluidContained.getIfPresentElse(fluid -> (double) fluid.getAmount(), 0D) / (double) CAPACITY;
+        FluidStack fluidStack = CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? FluidStack.EMPTY : FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+        double fluidRatio = (double) fluidStack.getAmount() / (double) CAPACITY;
         return 1D - Math.max(gasRatio, fluidRatio);
     }
 
@@ -69,16 +67,17 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        GasStack gasStack = getGas(itemstack);
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        GasStack gasStack = getGas(stack);
         //TODO: Better way of doing this?
-        LazyOptional<FluidStack> fluidStack = CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? LazyOptional.empty() : FluidUtil.getFluidContained(itemstack);
-        if (gasStack == null && !fluidStack.isPresent()) {
+        //TODO: Better way of doing this?
+        FluidStack fluidStack = CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? FluidStack.EMPTY : FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+        if (gasStack == null && fluidStack.isEmpty()) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.gui.empty"), "."));
         } else if (gasStack != null) {
             tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", gasStack, ": " + gasStack.amount));
-        } else {
-            fluidStack.ifPresent(fluid -> tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", fluid, ": " + fluid.getAmount())));
+        } else if (!fluidStack.isEmpty()) {
+            tooltip.add(TextComponentUtil.build(Translation.of("mekanism.tooltip.stored"), " ", fluidStack, ": " + fluidStack.getAmount()));
         }
     }
 

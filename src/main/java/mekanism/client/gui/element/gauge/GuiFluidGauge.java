@@ -18,6 +18,8 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
 
     public GuiFluidGauge(IFluidInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         super(type, gui, def, x, y, handler);
+        //Ensure it isn't null
+        setDummyType(FluidStack.EMPTY);
     }
 
     public static GuiFluidGauge getDummy(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
@@ -68,7 +70,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         if (amount == Integer.MAX_VALUE) {
             return TextComponentUtil.translate("mekanism.gui.infinite");
         }
-        return TextComponentUtil.build(fluidStack, ": " + amount);
+        return TextComponentUtil.build(fluidStack, ": " + amount + " mB");
     }
 
     @Override

@@ -38,7 +38,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
             addButton(new ReactorLogicButton(guiLeft + 24, guiTop + 32 + typeShift, type, tileEntity, getGuiLocation(),
-                  onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1, type.ordinal()))), getOnHover()));
+                  onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1, type))), getOnHover()));
         }
     }
 

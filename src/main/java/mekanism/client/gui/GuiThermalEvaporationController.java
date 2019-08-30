@@ -18,7 +18,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController, ThermalEvaporationControllerContainer> {
@@ -52,21 +51,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
               50, 48, 0x00CD00, 76);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
-            FluidStack fluid = tileEntity.inputTank.getFluid();
-            if (fluid.isEmpty()) {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.inputTank.getFluidAmount() + "mB"), xAxis, yAxis);
-            }
-        } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
-            FluidStack fluid = tileEntity.outputTank.getFluid();
-            if (fluid.isEmpty()) {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.build(fluid, ": " + tileEntity.outputTank.getFluidAmount() + "mB"), xAxis, yAxis);
-            }
-        } else if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
+        if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
             displayTooltip(MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

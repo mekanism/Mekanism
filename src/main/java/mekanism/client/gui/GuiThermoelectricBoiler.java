@@ -21,7 +21,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoilerCasing, ThermoelectricBoilerContainer> {
@@ -73,23 +72,6 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
               MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT)), 43, 30, 0x00CD00, 90);
         renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t"), 43, 39, 0x00CD00, 90);
         renderScaledText(TextComponentUtil.build(Translation.of("mekanism.gui.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t"), 43, 48, 0x00CD00, 90);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
-            FluidStack waterStored = tileEntity.structure != null ? tileEntity.structure.waterStored : FluidStack.EMPTY;
-            if (waterStored.isEmpty()) {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.build(waterStored, ": " + waterStored.getAmount() + "mB"), xAxis, yAxis);
-            }
-        } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
-            FluidStack steamStored = tileEntity.structure != null ? tileEntity.structure.steamStored : FluidStack.EMPTY;
-            if (steamStored.isEmpty()) {
-                displayTooltip(TextComponentUtil.translate("mekanism.gui.empty"), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.build(steamStored, ": " + steamStored.getAmount() + "mB"), xAxis, yAxis);
-            }
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -20,15 +20,14 @@ public class GuiHeatInfo extends GuiElement {
     private final IInfoHandler infoHandler;
 
     public GuiHeatInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "heat_info.png"), gui, def, -26, 138, 26, 26);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "heat_info.png"), gui, def, -26, 112, 26, 26);
         infoHandler = handler;
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        //TODO: Double check this
-        guiObj.drawTexturedRect(x - width, y - height, 0, 0, width, height);
+        guiObj.drawTexturedRect(x, y, 0, 0, width, height);
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 

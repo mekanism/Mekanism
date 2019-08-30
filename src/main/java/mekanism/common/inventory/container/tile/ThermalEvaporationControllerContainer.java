@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
@@ -32,13 +31,12 @@ public class ThermalEvaporationControllerContainer extends MekanismTileContainer
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            //TODO: Do this better
-            LazyOptionalHelper<FluidStack> fluidHelper = new LazyOptionalHelper<>(FluidUtil.getFluidContained(slotStack));
+            FluidStack fluidStack = FluidUtil.getFluidContained(slotStack).orElse(FluidStack.EMPTY);
             if (slotID == 1 || slotID == 3) {
                 if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (FluidContainerUtils.isFluidContainer(slotStack) && !fluidHelper.isPresent()) {
+            } else if (FluidContainerUtils.isFluidContainer(slotStack) && fluidStack.isEmpty()) {
                 if (slotID != 2) {
                     if (!mergeItemStack(slotStack, 2, 3, false)) {
                         return ItemStack.EMPTY;
@@ -46,7 +44,7 @@ public class ThermalEvaporationControllerContainer extends MekanismTileContainer
                 } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (fluidHelper.isPresent() && tile.hasRecipe(fluidHelper.getValue().getFluid())) {
+            } else if (tile.hasRecipe(fluidStack.getFluid())) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

@@ -51,18 +51,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
         if (!getInventory().get(0).isEmpty()) {
             ChargeUtils.charge(1, this);
-            LazyOptionalHelper<FluidStack> fluidHelper = new LazyOptionalHelper<>(FluidUtil.getFluidContained(getInventory().get(0)));
-            //TODO: Maybe do this differently, such as uses matches
-            if (fluidHelper.isPresent()) {
-                if (fluidHelper.getValue().getFluid().getTags().contains(GeneratorTags.BIO_ETHANOL)) {
-                    FluidUtil.getFluidHandler(getInventory().get(0)).ifPresent(handler -> {
-                        FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, FluidAction.EXECUTE);
-                        if (!drained.isEmpty()) {
-                            bioFuelSlot.fluidStored += drained.getAmount();
-                        }
-                    });
-                }
-            } else {
+            FluidStack fluidStack = FluidUtil.getFluidContained(getInventory().get(0)).orElse(FluidStack.EMPTY);
+            if (fluidStack.isEmpty()) {
                 int fuel = getFuel(getInventory().get(0));
                 if (fuel > 0) {
                     int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
@@ -75,6 +65,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                         }
                     }
                 }
+            } else if (fluidStack.getFluid().getTags().contains(GeneratorTags.BIO_ETHANOL)) {
+                FluidUtil.getFluidHandler(getInventory().get(0)).ifPresent(handler -> {
+                    FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, FluidAction.EXECUTE);
+                    if (!drained.isEmpty()) {
+                        bioFuelSlot.fluidStored += drained.getAmount();
+                    }
+                });
             }
         }
         if (canOperate()) {

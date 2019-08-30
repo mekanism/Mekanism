@@ -2,7 +2,6 @@ package mekanism.client.render;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-import javax.annotation.Nonnull;
 import net.minecraftforge.fluids.FluidStack;
 
 
@@ -18,13 +17,14 @@ public class FluidRenderMap<V> extends Object2ObjectOpenCustomHashMap<FluidStack
     /**
      * Implements equals & hashCode that ignore FluidStack#amount
      */
+    //TODO: should fluidstacks be nonnull here
     public static class FluidHashStrategy implements Hash.Strategy<FluidStack> {
 
         public static FluidHashStrategy INSTANCE = new FluidHashStrategy();
 
         @Override
-        public int hashCode(@Nonnull FluidStack stack) {
-            if (stack.isEmpty()) {
+        public int hashCode(FluidStack stack) {
+            if (stack == null || stack.isEmpty()) {
                 return 0;
             }
             int code = 1;
@@ -36,7 +36,13 @@ public class FluidRenderMap<V> extends Object2ObjectOpenCustomHashMap<FluidStack
         }
 
         @Override
-        public boolean equals(@Nonnull FluidStack a, @Nonnull FluidStack b) {
+        public boolean equals(FluidStack a, FluidStack b) {
+            if (a == null) {
+                return b == null;
+            }
+            if (b == null) {
+                return false;
+            }
             return a.isFluidEqual(b);
         }
     }
