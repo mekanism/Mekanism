@@ -22,19 +22,14 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
     }
 
     public void write(PacketBuffer buffer) {
-        System.out.println("WRITING TAG COLLECTION");
         Map<ResourceLocation, Tag<T>> tagMap = this.getTagMap();
         buffer.writeVarInt(tagMap.size());
-        System.out.println("TagMap Size: " + tagMap.size());
         for (Entry<ResourceLocation, Tag<T>> entry : tagMap.entrySet()) {
             buffer.writeResourceLocation(entry.getKey());
             Tag<T> tag = entry.getValue();
             buffer.writeVarInt(tag.getAllElements().size());
-            System.out.println("Tag key: " + entry.getKey());
-            System.out.println("Elements Size: " + tag.getAllElements().size());
             for (T element : tag.getAllElements()) {
                 ResourceLocation key = this.registry.getKey(element);
-                System.out.println("Element key: " + key);
                 if (key != null) {
                     buffer.writeResourceLocation(key);
                 }
