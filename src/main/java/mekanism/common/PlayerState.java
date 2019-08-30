@@ -150,8 +150,7 @@ public class PlayerState {
             activeFlamethrowers.add(uuid); // Off -> on
         }
 
-        //TODO
-        if (world != null && world.isRemote()) {
+        if (world.isRemote()) {
             boolean startSound;
             // If something changed and we're in a remote world, take appropriate action
             if (changed) {

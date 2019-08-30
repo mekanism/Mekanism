@@ -13,7 +13,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.OreGas;
+import mekanism.api.gas.Slurry;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -44,6 +44,8 @@ import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.security.SecurityFrequency;
+import mekanism.common.tags.MekanismTagManager;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
@@ -66,6 +68,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -142,30 +145,44 @@ public class Mekanism {
     public static KeySync keyMap = new KeySync();
     public static Set<Coord4D> activeVibrators = new HashSet<>();
 
+    private MekanismTagManager mekanismTagManager;
+
     public Mekanism() {
         instance = this;
         MekanismConfig.registerConfigs(ModLoadingContext.get());
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        //TODO: Is this the proper way to register these listeners
-        modEventBus.addListener(this::onEnergyTransferred);
-        modEventBus.addListener(this::onGasTransferred);
-        modEventBus.addListener(this::onLiquidTransferred);
-        modEventBus.addListener(this::onTransmittersAddedEvent);
-        modEventBus.addListener(this::onNetworkClientRequest);
-        modEventBus.addListener(this::onClientTickUpdate);
-        modEventBus.addListener(this::onBlacklistUpdate);
-        modEventBus.addListener(this::chunkSave);
-        modEventBus.addListener(this::onChunkDataLoad);
-        modEventBus.addListener(this::onWorldLoad);
-        modEventBus.addListener(this::onWorldUnload);
+        //TODO: Figure out the proper event bus to register things on
+        MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
+        MinecraftForge.EVENT_BUS.addListener(this::onGasTransferred);
+        MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
+        MinecraftForge.EVENT_BUS.addListener(this::onTransmittersAddedEvent);
+        MinecraftForge.EVENT_BUS.addListener(this::onNetworkClientRequest);
+        MinecraftForge.EVENT_BUS.addListener(this::onClientTickUpdate);
+        MinecraftForge.EVENT_BUS.addListener(this::onBlacklistUpdate);
+        MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
+        MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
+        MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
+        MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::serverStarting);
-        modEventBus.addListener(this::serverStopping);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
         modEventBus.addListener(this::handleIMC);
         //TODO: Register other listeners and various stuff that is needed
 
+        MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
         MekanismConfig.loadFromFiles();
+    }
+
+    public void setTagManager(MekanismTagManager manager) {
+        if (mekanismTagManager == null) {
+            mekanismTagManager = manager;
+        }
+        //TODO: Else throw error
+    }
+
+    public MekanismTagManager getTagManager() {
+        return mekanismTagManager;
     }
 
     /**
@@ -405,15 +422,15 @@ public class Mekanism {
 
         //T4 Processing Recipes
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
-            if (gas instanceof OreGas && !((OreGas) gas).isClean()) {
-                OreGas oreGas = (OreGas) gas;
+            if (gas instanceof Slurry && ((Slurry) gas).isDirty()) {
+                Slurry slurry = (Slurry) gas;
                 if (MekanismBlock.CHEMICAL_WASHER.isEnabled()) {
-                    RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
+                    RecipeHandler.addChemicalWasherRecipe(new GasStack(slurry, 1), new GasStack(slurry.getCleanSlurry(), 1));
                 }
 
                 if (MekanismBlock.CHEMICAL_CRYSTALLIZER.isEnabled()) {
                     //do the crystallizer only if it's one of our gases!
-                    Resource gasResource = Resource.getFromName(oreGas.getName());
+                    Resource gasResource = Resource.getFromName(slurry.getName());
                     if (gasResource != null) {
                         //TODO: Better way to do this
                         MekanismItem crystal = null;
@@ -440,7 +457,7 @@ public class Mekanism {
                                 crystal = MekanismItem.LEAD_CRYSTAL;
                                 break;
                         }
-                        RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), crystal.getItemStack());
+                        RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(slurry.getCleanSlurry(), 200), crystal.getItemStack());
                     }
                 }
             }
@@ -466,12 +483,14 @@ public class Mekanism {
         }
 
         //Fuel Gases
-        FuelHandler.addGas(MekanismGases.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
+        FuelHandler.addGas(MekanismTags.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
+    }
+
+    private void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        event.getServer().getResourceManager().addReloadListener(mekanismTagManager);;
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
-        //TODO: Check this stuff
-        //CommandMek.register(event);
         CommandMek.register();
         //TODO: Do we care about the alternates of mtp, and mtpop
     }

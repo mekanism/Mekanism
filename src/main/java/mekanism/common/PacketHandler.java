@@ -21,6 +21,7 @@ import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketKey;
+import mekanism.common.network.PacketMekanismTags;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortalFX;
@@ -156,6 +157,8 @@ public class PacketHandler {
         netHandler.registerMessage(disc++, PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
         netHandler.registerMessage(disc++, PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
         netHandler.registerMessage(disc++, PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
+
+        netHandler.registerMessage(disc++, PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         //TODO
         //netHandler.registerMessage(disc++, PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
     }

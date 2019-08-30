@@ -4,13 +4,12 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismGases;
-import mekanism.common.MekanismTags;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.item.Item;
@@ -48,7 +47,7 @@ public class MekanismGenerators implements IModule {
     public void commonSetup(FMLCommonSetupEvent event) {
         //TODO: Move recipes to JSON
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        FuelHandler.addGas(MekanismGases.ETHENE, MekanismConfig.general.ETHENE_BURN_TIME.get(),
+        FuelHandler.addGas(MekanismTags.ETHENE, MekanismConfig.general.ETHENE_BURN_TIME.get(),
               MekanismConfig.general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfig.general.ETHENE_BURN_TIME.get());
 
         for (Item dust : MekanismTags.GOLD_DUST.getAllElements()) {

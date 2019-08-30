@@ -1,12 +1,13 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.MekanismGases;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,22 +40,20 @@ public class ElectrolyticSeparatorContainer extends MekanismTileContainer<TileEn
                         return ItemStack.EMPTY;
                     }
                 } else if (slotStack.getItem() instanceof IGasItem) {
-                    if (((IGasItem) slotStack.getItem()).getGas(slotStack) != null) {
-                        //TODO: Tags
-                        if (((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismGases.HYDROGEN.getGas()) {
+                    GasStack gasStack = ((IGasItem) slotStack.getItem()).getGas(slotStack);
+                    if (gasStack != null) {
+                        if (gasStack.getGas().isIn(MekanismTags.HYDROGEN)) {
                             if (!mergeItemStack(slotStack, 1, 2, false)) {
                                 return ItemStack.EMPTY;
                             }
-                        } else if (((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismGases.OXYGEN.getGas()) {
+                        } else if (gasStack.getGas().isIn(MekanismTags.OXYGEN)) {
                             if (!mergeItemStack(slotStack, 2, 3, false)) {
                                 return ItemStack.EMPTY;
                             }
                         }
-                    } else if (((IGasItem) slotStack.getItem()).getGas(slotStack) == null) {
-                        if (!mergeItemStack(slotStack, 1, 2, false)) {
-                            if (!mergeItemStack(slotStack, 2, 3, false)) {
-                                return ItemStack.EMPTY;
-                            }
+                    } else if (!mergeItemStack(slotStack, 1, 2, false)) {
+                        if (!mergeItemStack(slotStack, 2, 3, false)) {
+                            return ItemStack.EMPTY;
                         }
                     }
                 } else if (ChargeUtils.canBeDischarged(slotStack)) {

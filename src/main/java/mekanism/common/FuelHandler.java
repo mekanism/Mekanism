@@ -2,24 +2,26 @@ package mekanism.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
-import mekanism.api.providers.IGasProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
 
 public class FuelHandler {
 
-    //TODO: Tags
-    public static Map<ResourceLocation, FuelGas> fuels = new HashMap<>();
+    private static Map<Tag<Gas>, FuelGas> fuels = new HashMap<>();
 
-    public static void addGas(IGasProvider gasProvider, int burnTicks, double energyPerMilliBucket) {
-        //TODO: use tag instead
-        fuels.put(gasProvider.getRegistryName(), new FuelGas(burnTicks, energyPerMilliBucket));
+    public static void addGas(Tag<Gas> gasTag, int burnTicks, double energyPerMilliBucket) {
+        fuels.put(gasTag, new FuelGas(burnTicks, energyPerMilliBucket));
     }
 
+    @Nullable
     public static FuelGas getFuel(Gas gas) {
-        //TODO: use tag instead
-        if (fuels.containsKey(gas.getRegistryName())) {
-            return fuels.get(gas.getRegistryName());
+        //TODO: Try to optimize this, maybe use gas.getTags()
+        for (Entry<Tag<Gas>, FuelGas> entry : fuels.entrySet()) {
+            if (gas.isIn(entry.getKey())) {
+                return entry.getValue();
+            }
         }
         //TODO: BuildCraft
         /*if (BCPresent() && gas.hasFluid() && BuildcraftFuelRegistry.fuel != null) {

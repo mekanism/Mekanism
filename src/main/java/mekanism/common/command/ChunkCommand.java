@@ -101,7 +101,7 @@ public class ChunkCommand {
     }
 
     private static void handleChunkEvent(ChunkEvent event, String direction) {
-        if (event.getWorld().isRemote()) {
+        if (event.getWorld() == null || event.getWorld().isRemote()) {
             return;
         }
         ChunkPos pos = event.getChunk().getPos();

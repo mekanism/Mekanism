@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.OreGas;
+import mekanism.api.gas.Slurry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -82,8 +82,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         GasStack gasStack = tileEntity.inputTank.getGas();
         if (gasStack != null) {
             drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
-            if (gasStack.getGas() instanceof OreGas) {
-                drawString(TextComponentUtil.build("(", Translation.of(((OreGas) gasStack.getGas()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
+            if (gasStack.getGas() instanceof Slurry) {
+                drawString(TextComponentUtil.build("(", Translation.of(((Slurry) gasStack.getGas()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
             } else {
                 CrystallizerRecipe recipe = tileEntity.getRecipe();
                 if (recipe == null) {
@@ -120,12 +120,12 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         if (prevGas != getInputGas()) {
             prevGas = getInputGas();
             boolean reset = false;
-            if (prevGas == null || !(prevGas instanceof OreGas) || !((OreGas) prevGas).isClean()) {
+            if (prevGas == null || !(prevGas instanceof Slurry) || ((Slurry) prevGas).isDirty()) {
                 reset = true;
                 resetStacks();
             }
             if (!reset) {
-                OreGas gas = (OreGas) prevGas;
+                Slurry gas = (Slurry) prevGas;
                 String oreDictName = "ore" + gas.getName().substring(5);
                 updateStackList(oreDictName);
             }

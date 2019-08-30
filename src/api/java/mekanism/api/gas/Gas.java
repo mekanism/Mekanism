@@ -1,5 +1,6 @@
 package mekanism.api.gas;
 
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IGasProvider;
@@ -10,9 +11,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
@@ -22,6 +27,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 //TODO: Add tags to gas
 public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasProvider {
+
+    private final ReverseTagWrapper<Gas> reverseTags = new ReverseTagWrapper<>(this, GasTags::getGeneration, GasTags::getCollection);
 
     private String translationKey;
 
@@ -52,11 +59,11 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      * Creates a new Gas object with a defined name or key value and a specified color tint.
      *
      * @param registryName - name or key to associate this Gas with
-     * @param t - tint of this Gas
+     * @param tint            - tint of this Gas
      */
-    public Gas(ResourceLocation registryName, int t) {
+    public Gas(ResourceLocation registryName, int tint) {
         this(registryName, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "block/liquid/liquid"));
-        setTint(t);
+        setTint(tint);
     }
 
     /**
@@ -117,6 +124,10 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
     @Override
     public String getTranslationKey() {
         return translationKey;
+    }
+
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent(getTranslationKey());
     }
 
     /**
@@ -219,7 +230,7 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      *
      * @return this Gas object
      */
-    public Gas setFluid(Fluid fluid) {
+    public Gas setFluid(@Nonnull Fluid fluid) {
         this.fluid = fluid;
         return this;
     }
@@ -267,5 +278,13 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      */
     public void setTint(int tint) {
         this.tint = tint;
+    }
+
+    public boolean isIn(Tag<Gas> tags) {
+        return tags.contains(this);
+    }
+
+    public Set<ResourceLocation> getTags() {
+        return reverseTags.getTagNames();
     }
 }

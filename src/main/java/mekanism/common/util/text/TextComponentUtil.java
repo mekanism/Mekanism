@@ -13,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
+//TODO: Move this to API package? would let ore gas use it
 public class TextComponentUtil {
 
     //TODO: Make some just have Translation using formatting rather than building up a layered ITextComponent

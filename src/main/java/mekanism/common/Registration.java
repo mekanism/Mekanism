@@ -5,6 +5,7 @@ import mekanism.api.gas.Gas;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.recipe.MekanismRecipeEnabledCondition;
+import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -29,6 +30,7 @@ public class Registration {
     public static void buildRegistry(RegistryEvent.NewRegistry event) {
         //TODO: Should this be declared in the API package
         MekanismAPI.GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(Mekanism.MODID, "gas")).setType(Gas.class).create();
+        Mekanism.instance.setTagManager(new MekanismTagManager());
     }
 
     @SubscribeEvent

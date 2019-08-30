@@ -12,7 +12,6 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismGases;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -27,6 +26,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityMachine;
@@ -230,13 +230,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (slotID == 0) {
             return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemstack);
         } else if (slotID == 1) {
-            //TODO: Tags
-            return itemstack.getItem() instanceof IGasItem &&
-                   (((IGasItem) itemstack.getItem()).getGas(itemstack) == null || ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismGases.HYDROGEN.getGas());
+            if (itemstack.getItem() instanceof IGasItem) {
+                GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
+                return gasStack == null || gasStack.getGas().isIn(MekanismTags.HYDROGEN);
+            }
+            return false;
         } else if (slotID == 2) {
-            //TODO: Tags
-            return itemstack.getItem() instanceof IGasItem &&
-                   (((IGasItem) itemstack.getItem()).getGas(itemstack) == null || ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismGases.OXYGEN.getGas());
+            if (itemstack.getItem() instanceof IGasItem) {
+                GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
+                return gasStack == null || gasStack.getGas().isIn(MekanismTags.OXYGEN);
+            }
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         }

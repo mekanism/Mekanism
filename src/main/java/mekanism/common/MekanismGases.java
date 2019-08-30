@@ -2,7 +2,7 @@ package mekanism.common;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GaseousFluid;
-import mekanism.api.gas.OreGas;
+import mekanism.api.gas.Slurry;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -27,7 +27,24 @@ public enum MekanismGases implements IGasProvider {
     FUSION_FUEL("fusion_fuel", 0x7E007D, true),
     LITHIUM("lithium", 0xEBA400, true),
     //TODO: Rename liquid osmium? Also make it not visible again in JEI and the like?
-    LIQUID_OSMIUM("liquid_osmium", 0x52bdca);
+    LIQUID_OSMIUM("liquid_osmium", 0x52bdca),
+
+    //Clean Slurry
+    CLEAN_IRON_SLURRY(Resource.IRON),
+    CLEAN_GOLD_SLURRY(Resource.GOLD),
+    CLEAN_OSMIUM_SLURRY(Resource.OSMIUM),
+    CLEAN_COPPER_SLURRY(Resource.COPPER),
+    CLEAN_TIN_SLURRY(Resource.TIN),
+    CLEAN_SILVER_SLURRY(Resource.SILVER),
+    CLEAN_LEAD_SLURRY(Resource.LEAD),
+    //Dirty Slurry
+    DIRTY_IRON_SLURRY(Resource.IRON, CLEAN_IRON_SLURRY),
+    DIRTY_GOLD_SLURRY(Resource.GOLD, CLEAN_GOLD_SLURRY),
+    DIRTY_OSMIUM_SLURRY(Resource.OSMIUM, CLEAN_OSMIUM_SLURRY),
+    DIRTY_COPPER_SLURRY(Resource.COPPER, CLEAN_COPPER_SLURRY),
+    DIRTY_TIN_SLURRY(Resource.TIN, CLEAN_TIN_SLURRY),
+    DIRTY_SILVER_SLURRY(Resource.SILVER, CLEAN_SILVER_SLURRY),
+    DIRTY_LEAD_SLURRY(Resource.LEAD, CLEAN_LEAD_SLURRY);
 
     //TODO: Fix
     public static final Fluid HEAVY_WATER = Fluids.WATER;//new Fluid("heavy_water", new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"), new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
@@ -39,17 +56,26 @@ public enum MekanismGases implements IGasProvider {
     }
 
     MekanismGases(String name, int color, boolean hasFluid) {
-        this.gas = new Gas(new ResourceLocation(Mekanism.MODID, name), color);
-        gas.setFluid(new GaseousFluid(gas));
-    }
-
-    MekanismGases(String name, ResourceLocation texture) {
-        this(name, texture, false);
+        gas = new Gas(new ResourceLocation(Mekanism.MODID, name), color);
+        if (hasFluid) {
+            gas.setFluid(new GaseousFluid(gas));
+        }
     }
 
     MekanismGases(String name, ResourceLocation texture, boolean hasFluid) {
-        this.gas = new Gas(new ResourceLocation(Mekanism.MODID, name), texture);
-        gas.setFluid(new GaseousFluid(gas));
+        gas = new Gas(new ResourceLocation(Mekanism.MODID, name), texture);
+        if (hasFluid) {
+            gas.setFluid(new GaseousFluid(gas));
+        }
+    }
+
+    MekanismGases(Resource resource) {
+        this.gas = new Slurry(new ResourceLocation(Mekanism.MODID, "clean_" + resource.getRegistrySuffix() + "_slurry"), resource.tint);
+    }
+
+    MekanismGases(Resource resource, MekanismGases clean) {
+        //TODO: Do this better
+        this.gas = new Slurry(new ResourceLocation(Mekanism.MODID, "dirty_" + resource.getRegistrySuffix() + "_slurry"), resource.tint, (Slurry) clean.getGas());
     }
 
     @Override
@@ -58,18 +84,8 @@ public enum MekanismGases implements IGasProvider {
     }
 
     public static void register(IForgeRegistry<Gas> registry) {
-        //TODO: Fluids
         for (IGasProvider gasProvider : values()) {
             registry.register(gasProvider.getGas());
-        }
-        //TODO: Keep track of these in the enum?
-        for (Resource resource : Resource.values()) {
-            String suffix = resource.getRegistrySuffix();
-            //Clean
-            OreGas clean = new OreGas(new ResourceLocation(Mekanism.MODID, "clean_" + suffix), resource.tint);
-            registry.register(clean);
-            //Dirty
-            registry.register(new OreGas(new ResourceLocation(Mekanism.MODID, suffix), resource.tint, clean));
         }
     }
 

@@ -12,6 +12,7 @@ import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismGases;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -77,8 +78,7 @@ public class FusionReactor {
             ItemStack hohlraum = controller.getInventory().get(0);
             if (!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
-                //TODO: Tags
-                return gasStack != null && gasStack.getGas() == MekanismGases.FUSION_FUEL.getGas() && gasStack.amount == ItemHohlraum.MAX_GAS;
+                return gasStack != null && gasStack.getGas().isIn(MekanismTags.FUSION_FUEL) && gasStack.amount == ItemHohlraum.MAX_GAS;
             }
         }
         return false;

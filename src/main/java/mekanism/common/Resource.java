@@ -4,13 +4,13 @@ import java.util.Locale;
 import mekanism.common.resource.INamedResource;
 
 public enum Resource implements INamedResource {
-    IRON("iron", 0xaf8e77),
-    GOLD("gold", 0xf2cd67),
-    OSMIUM("osmium", 0x1e79c3),
-    COPPER("copper", 0xaa4b19),
-    TIN("tin", 0xccccd9),
-    SILVER("silver", 0xbfc9cd),
-    LEAD("lead", 0x3d3d41);
+    IRON("iron", 0xAF8E77),
+    GOLD("gold", 0xF2CD67),
+    OSMIUM("osmium", 0x1E79C3),
+    COPPER("copper", 0xAA4B19),
+    TIN("tin", 0xCCCCD9),
+    SILVER("silver", 0xBFC9CD),
+    LEAD("lead", 0x3D3D41);
 
     public final int tint;
     private final String name;

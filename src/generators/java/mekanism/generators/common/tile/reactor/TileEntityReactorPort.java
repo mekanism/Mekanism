@@ -17,6 +17,7 @@ import mekanism.common.MekanismGases;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -133,12 +134,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (getReactor() != null) {
-            //TODO: Tags
-            if (stack.getGas() == MekanismGases.DEUTERIUM.getGas()) {
+            if (stack.getGas().isIn(MekanismTags.DEUTERIUM)) {
                 return getReactor().getDeuteriumTank().receive(stack, doTransfer);
-            } else if (stack.getGas() == MekanismGases.TRITIUM.getGas()) {
+            } else if (stack.getGas().isIn(MekanismTags.TRITIUM)) {
                 return getReactor().getTritiumTank().receive(stack, doTransfer);
-            } else if (stack.getGas() == MekanismGases.FUSION_FUEL.getGas()) {
+            } else if (stack.getGas().isIn(MekanismTags.FUSION_FUEL)) {
                 return getReactor().getFuelTank().receive(stack, doTransfer);
             }
         }
@@ -152,8 +152,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canReceiveGas(Direction side, Gas type) {
-        //TODO: Tags
-        return type == MekanismGases.DEUTERIUM.getGas() || type == MekanismGases.TRITIUM.getGas() || type == MekanismGases.FUSION_FUEL.getGas();
+        return type.isIn(MekanismTags.DEUTERIUM) || type.isIn(MekanismTags.TRITIUM) || type.isIn(MekanismTags.FUSION_FUEL);
     }
 
     @Override

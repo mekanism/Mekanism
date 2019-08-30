@@ -11,6 +11,7 @@ import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -68,8 +69,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-        //TODO: Tags
-        if (stack.getGas() != MekanismGases.HYDROGEN.getGas()) {
+        if (!stack.getGas().isIn(MekanismTags.HYDROGEN)) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
@@ -88,8 +88,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
 
     @Override
     public boolean canReceiveGas(ItemStack itemstack, Gas type) {
-        //TODO: Tags
-        return type == MekanismGases.HYDROGEN.getGas();
+        return type.isIn(MekanismTags.HYDROGEN);
     }
 
     @Override

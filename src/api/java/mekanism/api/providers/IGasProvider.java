@@ -33,6 +33,7 @@ public interface IGasProvider extends IBaseProvider {
     }
 
     default Fluid getFluid() {
-        return Fluids.EMPTY;
+        Gas gas = getGas();
+        return gas.hasFluid() ? gas.getFluid() : Fluids.EMPTY;
     }
 }
