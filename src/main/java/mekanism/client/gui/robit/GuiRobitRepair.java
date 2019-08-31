@@ -8,7 +8,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.RepairContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
@@ -19,15 +18,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
-    private final RepairContainer repairContainer;
-    private final PlayerInventory playerInventory;
-
     private TextFieldWidget itemNameField;
 
     public GuiRobitRepair(RepairRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventory = inv;
-        repairContainer = (RepairRobitContainer) container.inventorySlots;
     }
 
     @Override
@@ -39,15 +33,15 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
         itemNameField.setMaxStringLength(30);
-        repairContainer.removeListener(this);
-        repairContainer.addListener(this);
+        container.removeListener(this);
+        container.addListener(this);
     }
 
     @Override
     public void onClose() {
         super.onClose();
         minecraft.keyboardListener.enableRepeatEvents(false);
-        repairContainer.removeListener(this);
+        container.removeListener(this);
     }
 
     @Override
@@ -56,7 +50,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
         drawString(TextComponentUtil.translate("container.repair"), 60, 6, 0x404040);
 
         //func_216976_f = getMaximumCost
-        int maximumCost = repairContainer.func_216976_f();
+        int maximumCost = container.func_216976_f();
         if (maximumCost > 0) {
             //TODO: Verify this works as intended
             int k = 0x80FF20;
@@ -65,9 +59,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             if (maximumCost >= 40 && !minecraft.player.isCreative()) {
                 component = TextComponentUtil.translate("container.repair.expensive");
                 k = 0xFF6060;
-            } else if (!repairContainer.getSlot(2).getHasStack()) {
+            } else if (!container.getSlot(2).getHasStack()) {
                 flag = false;
-            } else if (!repairContainer.getSlot(2).canTakeStack(playerInventory.player)) {
+            } else if (!container.getSlot(2).canTakeStack(playerInventory.player)) {
                 k = 0xFF6060;
             }
 
@@ -84,7 +78,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     public boolean charTyped(char c, int i) {
         if (itemNameField.charTyped(c, i)) {
-            repairContainer.updateItemName(itemNameField.getText());
+            container.updateItemName(itemNameField.getText());
             minecraft.player.connection.sendPacket(new CRenameItemPacket(itemNameField.getText()));
             return true;
         }
@@ -104,8 +98,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 59, guiTop + 20, 0, ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
-        if ((repairContainer.getSlot(0).getHasStack() || repairContainer.getSlot(1).getHasStack()) && !repairContainer.getSlot(2).getHasStack()) {
+        drawTexturedRect(guiLeft + 59, guiTop + 20, 0, ySize + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+        if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {
             drawTexturedRect(guiLeft + 99, guiTop + 45, xSize + 18, 36, 28, 21);
         }
     }
@@ -121,7 +115,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             itemNameField.setText(itemstack.isEmpty() ? "" : itemstack.getDisplayName().getFormattedText());
             itemNameField.setEnabled(!itemstack.isEmpty());
             if (!itemstack.isEmpty()) {
-                repairContainer.updateItemName(itemNameField.getText());
+                this.container.updateItemName(itemNameField.getText());
                 minecraft.player.connection.sendPacket(new CRenameItemPacket(itemNameField.getText()));
             }
         }

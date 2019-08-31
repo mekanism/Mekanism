@@ -2,14 +2,15 @@ package mekanism.common.inventory.container.entity.robit;
 
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.inventory.container.entity.MekanismEntityContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.RepairContainer;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: Fix this, as it gets very confused if it extends RepairContainer
 public class RepairRobitContainer extends RepairContainer implements IEntityContainer<EntityRobit> {
 
     private EntityRobit entity;
@@ -31,5 +32,11 @@ public class RepairRobitContainer extends RepairContainer implements IEntityCont
     @Override
     public EntityRobit getEntity() {
         return entity;
+    }
+
+    @Nonnull
+    @Override
+    public ContainerType<?> getType() {
+        return MekanismContainerTypes.REPAIR_ROBIT;
     }
 }

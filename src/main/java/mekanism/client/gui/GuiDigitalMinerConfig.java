@@ -118,7 +118,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
     @Override
     public void init() {
         super.init();
-        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
+        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
@@ -150,8 +150,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         HashList<MinerFilter> filters = tileEntity.getFilters();
         //TODO: Lang Keys
-        drawString(TextComponentUtil.translate("gui.digitalMinerConfig"), 43, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.filters"), ":"), 11, 19, 0x00CD00);
+        drawString(TextComponentUtil.translate("gui.mekanism.digitalMinerConfig"), 43, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.filters"), ":"), 11, 19, 0x00CD00);
         drawString(TextComponentUtil.build("T: " + filters.size()), 11, 28, 0x00CD00);
         drawString(TextComponentUtil.build("I: ", OnOff.of(tileEntity.inverse)), 11, 131, 0x00CD00);
         drawString(TextComponentUtil.build("Radi: " + tileEntity.getRadius()), 11, 58, 0x00CD00);
@@ -164,24 +164,24 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
                 int yStart = i * filterH + filterY;
                 if (filter instanceof IItemStackFilter) {
                     renderItem(((IItemStackFilter) filter).getItemStack(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.itemFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.itemFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IOreDictFilter) {
                     IOreDictFilter oreFilter = (IOreDictFilter) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.oredictFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IMaterialFilter) {
                     renderItem(((IMaterialFilter) filter).getMaterialItem(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.materialFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.materialFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IModIDFilter) {
                     IModIDFilter modFilter = (IModIDFilter) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }
                     renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.modIDFilter"), 78, yStart + 2, 0x404040);
                 }
             }
         }

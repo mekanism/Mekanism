@@ -46,7 +46,7 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(TextComponentUtil.translate(tileEntity.getActive() ? "gui.vibrating" : "gui.idle"), 19, 26, 0x00CD00);
+        drawString(TextComponentUtil.translate(tileEntity.getActive() ? "gui.mekanism.vibrating" : "gui.mekanism.idle"), 19, 26, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.chunk"), ": " + (tileEntity.getPos().getX() >> 4) + ", " + (tileEntity.getPos().getZ() >> 4)), 19, 35, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

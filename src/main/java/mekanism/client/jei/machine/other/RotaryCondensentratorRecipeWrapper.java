@@ -44,9 +44,9 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         ITextComponent component;
         if (condensentrating) {
-            component = TextComponentUtil.translate("gui.condensentrating");
+            component = TextComponentUtil.translate("gui.mekanism.condensentrating");
         } else {
-            component = TextComponentUtil.translate("gui.decondensentrating");
+            component = TextComponentUtil.translate("gui.mekanism.decondensentrating");
         }
         minecraft.fontRenderer.drawString(component.getFormattedText(), 3, 62, 0x404040);
     }

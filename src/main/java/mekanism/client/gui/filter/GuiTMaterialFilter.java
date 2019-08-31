@@ -37,7 +37,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(guiLeft + 47, guiTop + 62, 60, 20, "gui.save", onPress -> {
+        addButton(saveButton = new TranslationButton(guiLeft + 47, guiTop + 62, 60, 20, "gui.mekanism.save", onPress -> {
             if (!filter.getMaterialItem().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
@@ -46,11 +46,11 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
                 }
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             } else {
-                status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.itemFilter.noItem"));
+                status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.itemFilter.noItem"));
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(guiLeft + 109, guiTop + 62, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 109, guiTop + 62, 60, 20, "gui.mekanism.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));

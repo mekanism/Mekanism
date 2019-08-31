@@ -257,7 +257,7 @@ public interface IFactory {
         }
 
         public String getGuiTranslationKey() {
-            return "gui.factory." + name;
+            return "gui.mekanism.factory." + name;
         }
 
         public MachineFuelType getFuelType() {

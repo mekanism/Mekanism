@@ -51,9 +51,9 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
         //TODO: 1.14 Convert to GuiElement
         ITextComponent component;
         if (tileEntity.gasTank.getStored() == Integer.MAX_VALUE) {
-            component = TextComponentUtil.translate("gui.infinite");
+            component = TextComponentUtil.translate("gui.mekanism.infinite");
         } else if (tileEntity.tier.getStorage() == Integer.MAX_VALUE) {
-            component = TextComponentUtil.build(tileEntity.gasTank.getStored(), "/", Translation.of("gui.infinite"));
+            component = TextComponentUtil.build(tileEntity.gasTank.getStored(), "/", Translation.of("gui.mekanism.infinite"));
         } else {
             component = TextComponentUtil.getString(tileEntity.gasTank.getStored() + "/" + tileEntity.tier.getStorage());
         }

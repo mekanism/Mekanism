@@ -70,19 +70,22 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+        if (super.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         double xAxis = mouseX - guiLeft;
         double yAxis = mouseY - guiTop;
+        //TODO: Convert to gui element/button
         if (xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82) {
-            TileNetworkList data = TileNetworkList.withContents((byte) 0);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 0)));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            return true;
         } else if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
-            TileNetworkList data = TileNetworkList.withContents((byte) 1);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 1)));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override

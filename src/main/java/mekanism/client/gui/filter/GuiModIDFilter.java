@@ -26,10 +26,10 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.modIDFilter.noID"));
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.modIDFilter.noID"));
             return;
         } else if (name.equals(filter.getModID())) {
-            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.modIDFilter.sameID"));
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.modIDFilter.sameID"));
             return;
         }
         updateStackList(name);
@@ -39,7 +39,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.modIDFilter")), 43, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " " + Translation.of("gui.mekanism.modIDFilter")), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.status"), ": ", status), 35, 20, 0x00CD00);
         renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.id"), ": " + filter.getModID()), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

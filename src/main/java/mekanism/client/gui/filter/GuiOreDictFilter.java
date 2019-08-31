@@ -26,10 +26,10 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter<FILTER>, TI
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.oredictFilter.noKey"));
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.oredictFilter.noKey"));
             return;
         } else if (name.equals(filter.getOreDictName())) {
-            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.oredictFilter.sameKey"));
+            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.oredictFilter.sameKey"));
             return;
         }
         updateStackList(name);
@@ -39,9 +39,9 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter<FILTER>, TI
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.oredictFilter")), 43, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " " + Translation.of("gui.mekanism.oredictFilter")), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.status"), ": ", status), 35, 20, 0x00CD00);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.key"), ": " + filter.getOreDictName()), 35, 32, 0x00CD00, 107);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.key"), ": " + filter.getOreDictName()), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

@@ -25,6 +25,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+//TODO: Ask the main block about the voxel shape this bounding block should have
 public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock> {
 
     @Nullable

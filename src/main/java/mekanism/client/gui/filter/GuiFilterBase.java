@@ -31,7 +31,7 @@ import org.lwjgl.glfw.GLFW;
 public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiFilter<TILE, CONTAINER> {
 
-    protected ITextComponent status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.allOK"));
+    protected ITextComponent status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.allOK"));
     protected FILTER origFilter;
     protected FILTER filter;
     protected boolean isNew;

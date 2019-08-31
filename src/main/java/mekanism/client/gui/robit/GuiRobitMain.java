@@ -30,7 +30,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     private final EntityRobit robit;
 
-    private boolean displayNameChange;
     private TextFieldWidget nameChangeField;
     private Button confirmName;
 
@@ -41,9 +40,9 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     private void toggleNameChange() {
-        displayNameChange = !displayNameChange;
-        confirmName.visible = displayNameChange;
-        nameChangeField.setFocused2(displayNameChange);
+        nameChangeField.visible = !nameChangeField.visible;
+        confirmName.visible = nameChangeField.visible;
+        nameChangeField.setFocused2(nameChangeField.visible);
     }
 
     private void changeName() {
@@ -57,12 +56,13 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(confirmName = new TranslationButton(guiLeft + 58, guiTop + 47, 60, 20, "gui.confirm", onPress -> changeName()));
-        confirmName.visible = displayNameChange;
+        addButton(confirmName = new TranslationButton(guiLeft + 58, guiTop + 47, 60, 20, "gui.mekanism.confirm", onPress -> changeName()));
+        confirmName.visible = false;
 
         addButton(nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, ""));
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused2(true);
+        nameChangeField.visible = false;
 
         addButton(new DisableableImageButton(guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation(), onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
@@ -91,7 +91,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     public boolean charTyped(char c, int i) {
-        if (!displayNameChange) {
+        if (!nameChangeField.visible) {
             return super.charTyped(c, i);
         }
         if (i == GLFW.GLFW_KEY_ENTER) {
@@ -108,7 +108,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.translate("gui.mekanism.robit"), 76, 6, 0x404040);
 
-        if (!displayNameChange) {
+        if (!nameChangeField.visible) {
             CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
             drawString(TextComponentUtil.build(Translation.of("gui.mekanism.robit.greeting"), " ", robit.getName(), "!"), 29, 18, 0x00CD00);
             drawString(TextComponentUtil.build(Translation.of("gui.mekanism.energy"), ": ", EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY)),
@@ -130,7 +130,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         drawTexturedRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
-        if (displayNameChange) {
+        if (nameChangeField.visible) {
             drawTexturedRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
             MekanismRenderer.resetColor();
         }

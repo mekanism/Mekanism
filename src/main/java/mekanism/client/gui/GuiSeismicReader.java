@@ -147,7 +147,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         GlStateManager.pushMatrix();
         GlStateManager.translatef(guiLeft + 72, guiTop + 26, 0);
         GlStateManager.scalef(0.7F, 0.7F, 0.7F);
-        drawString(TextComponentUtil.build(Translation.of("gui.abundancy"), ": " + frequency), 0, 0, 0x919191);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.abundancy"), ": " + frequency), 0, 0, 0x919191);
         GlStateManager.popMatrix();
         MekanismRenderer.resetColor();
         super.render(mouseX, mouseY, partialTick);

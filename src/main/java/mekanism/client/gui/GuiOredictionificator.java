@@ -61,7 +61,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 114));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
 
-        addButton(new TranslationButton(guiLeft + 10, guiTop + 86, 142, 20, "gui.newFilter",
+        addButton(new TranslationButton(guiLeft + 10, guiTop + 86, 142, 20, "gui.mekanism.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
     }
 

@@ -95,7 +95,6 @@ public class MekanismContainerTypes {
     public static final ContainerType<InventoryRobitContainer> INVENTORY_ROBIT = create("inventory_robit", InventoryRobitContainer::new);
     //TODO: Should this be like Crafting/Repair except with FurnaceContainer??
     public static final ContainerType<SmeltingRobitContainer> SMELTING_ROBIT = create("smelting_robit", SmeltingRobitContainer::new);
-    //TODO: Are these two technically used
     public static final ContainerType<CraftingRobitContainer> CRAFTING_ROBIT = create("crafting_robit", CraftingRobitContainer::new);
     public static final ContainerType<RepairRobitContainer> REPAIR_ROBIT = create("repair_robit", RepairRobitContainer::new);
 

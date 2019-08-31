@@ -50,7 +50,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         if (ticker > 0) {
             ticker--;
         } else {
-            status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.allOK"));
+            status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.allOK"));
         }
         if (stackSwitch > 0) {
             stackSwitch--;

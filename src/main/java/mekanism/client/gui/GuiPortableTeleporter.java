@@ -91,15 +91,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }, resource, 158, 26));
         addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 
-        addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.public", onPress -> {
+        addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(guiLeft + 89, guiTop + 14, 60, 20, "gui.private", onPress -> {
+        addButton(privateButton = new TranslationButton(guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", onPress -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(guiLeft + 27, guiTop + 116, 60, 20, "gui.set", onPress -> {
+        addButton(setButton = new TranslationButton(guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -107,7 +107,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 116, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -117,7 +117,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(teleportButton = new TranslationButton(guiLeft + 42, guiTop + 140, 92, 20, "gui.teleport", onPress -> {
+        addButton(teleportButton = new TranslationButton(guiLeft + 42, guiTop + 140, 92, 20, "gui.mekanism.teleport", onPress -> {
             if (clientFreq != null && clientStatus == 1) {
                 //TODO: Set focus
                 //minecraft.mainWindow.setIngameFocus();
@@ -159,9 +159,9 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     public ITextComponent getSecurity(Frequency freq) {
         if (!freq.publicFreq) {
-            return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.private"));
+            return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.private"));
         }
-        return TextComponentUtil.translate("gui.public");
+        return TextComponentUtil.translate("gui.mekanism.public");
     }
 
     public void updateButtons() {
@@ -237,18 +237,18 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(getName(), (xSize / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
         drawString(OwnerDisplay.of(getOwner(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? ySize - 12 : (ySize - 96) + 4, 0x404040);
-        ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.freq"), ": ");
+        ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.mekanism.freq"), ": ");
         drawString(frequencyComponent, 32, 81, 0x404040);
-        ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.security"), ": ");
+        ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.mekanism.security"), ": ");
         drawString(securityComponent, 32, 91, 0x404040);
         if (clientFreq != null) {
             drawString(clientFreq.name, 32 + getStringWidth(frequencyComponent), 81, 0x797979);
             drawString(getSecurity(clientFreq), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
-            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(frequencyComponent), 81, 0x797979);
-            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.none")), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.none")), 32 + getStringWidth(frequencyComponent), 81, 0x797979);
+            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.none")), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.set"), ":"), 27, 104, 0x404040, 20);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.set"), ":"), 27, 104, 0x404040, 20);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;

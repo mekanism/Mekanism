@@ -70,11 +70,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
 
-        addButton(startButton = new TranslationButton(guiLeft + 69, guiTop + 17, 60, 20, "gui.start",
+        addButton(startButton = new TranslationButton(guiLeft + 69, guiTop + 17, 60, 20, "gui.mekanism.start",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
-        addButton(stopButton = new TranslationButton(guiLeft + 69, guiTop + 37, 60, 20, "gui.stop",
+        addButton(stopButton = new TranslationButton(guiLeft + 69, guiTop + 37, 60, 20, "gui.mekanism.stop",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
-        addButton(configButton = new TranslationButton(guiLeft + 69, guiTop + 57, 60, 20, "gui.config",
+        addButton(configButton = new TranslationButton(guiLeft + 69, guiTop + 57, 60, 20, "gui.mekanism.config",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
@@ -111,9 +111,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()) {
             runningType = TextComponentUtil.translate("gui.mekanism.digitalMiner.lowPower");
         } else if (tileEntity.running) {
-            runningType = TextComponentUtil.translate("gui.digitalMiner.running");
+            runningType = TextComponentUtil.translate("gui.mekanism.digitalMiner.running");
         } else {
-            runningType = TextComponentUtil.translate("gui.idle");
+            runningType = TextComponentUtil.translate("gui.mekanism.idle");
         }
         drawString(runningType, 9, 10, 0x00CD00);
         drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);

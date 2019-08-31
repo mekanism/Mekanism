@@ -84,9 +84,9 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         drawString(tileEntity.getName(), 55, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         if (tileEntity.time > 0) {
-            drawString(TextComponentUtil.build(Translation.of("gui.delay"), ": " + tileEntity.time + "t"), 26, 30, 0x404040);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.delay"), ": " + tileEntity.time + "t"), 26, 30, 0x404040);
         } else {
-            drawString(TextComponentUtil.translate("gui.noDelay"), 26, 30, 0x404040);
+            drawString(TextComponentUtil.translate("gui.mekanism.noDelay"), 26, 30, 0x404040);
         }
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.min"), ": ", EnergyDisplay.of(tileEntity.minThreshold)), 26, 45, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.max"), ": ", EnergyDisplay.of(tileEntity.maxThreshold)), 26, 60, 0x404040);

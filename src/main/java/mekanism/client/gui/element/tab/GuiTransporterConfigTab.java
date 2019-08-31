@@ -22,7 +22,7 @@ public class GuiTransporterConfigTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.translate("gui.configuration.transporter"), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.translate("gui.mekanism.configuration.transporter"), mouseX, mouseY);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(guiLeft + 47, guiTop + 62, 60, 20, "gui.save", onPress -> {
+        addButton(saveButton = new TranslationButton(guiLeft + 47, guiTop + 62, 60, 20, "gui.mekanism.save", onPress -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -51,11 +51,11 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
                 }
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             } else {
-                status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.oredictFilter.noKey"));
+                status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.oredictFilter.noKey"));
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(guiLeft + 109, guiTop + 62, 60, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 109, guiTop + 62, 60, 20, "gui.mekanism.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));

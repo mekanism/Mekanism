@@ -40,7 +40,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(guiLeft + 31, guiTop + 62, 54, 20, "gui.save", onPress -> {
+        addButton(saveButton = new TranslationButton(guiLeft + 31, guiTop + 62, 54, 20, "gui.mekanism.save", onPress -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -53,7 +53,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             }
         }));
-        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 62, 54, 20, "gui.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 62, 54, 20, "gui.mekanism.delete", onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
@@ -121,7 +121,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(Translation.of(isNew ? "gui.new" : "gui.edit"), " " + Translation.of("gui.filter")), 0, xSize, 6, 0x404040);
+        drawCenteredText(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " " + Translation.of("gui.mekanism.filter")), 0, xSize, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.index"), ": " + filter.index), 79, 23, 0x404040);
         if (filter.hasFilter()) {
             renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);

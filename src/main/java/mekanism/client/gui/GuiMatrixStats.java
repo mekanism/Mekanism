@@ -64,18 +64,18 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.translate("gui.matrixStats"), 0, xSize, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.input"), ":"), 53, 26, 0x797979);
+        drawCenteredText(TextComponentUtil.translate("gui.mekanism.matrixStats"), 0, xSize, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.input"), ":"), 53, 26, 0x797979);
         drawString(EnergyDisplay.of(tileEntity.getLastInput(), tileEntity.getTransferCap()).getTextComponent(), 59, 35, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.output"), ":"), 53, 46, 0x797979);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.output"), ":"), 53, 46, 0x797979);
         drawString(EnergyDisplay.of(tileEntity.getLastOutput(), tileEntity.getTransferCap()).getTextComponent(), 59, 55, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.dimensions"), ":"), 8, 82, 0x797979);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.dimensions"), ":"), 8, 82, 0x797979);
         if (tileEntity.structure != null) {
             drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x " + tileEntity.structure.volLength, 14, 91, 0x404040);
         }
-        drawString(TextComponentUtil.build(Translation.of("gui.constituents"), ":"), 8, 102, 0x797979);
-        drawString(TextComponentUtil.build(tileEntity.getCellCount() + " ", Translation.of("gui.cells")), 14, 111, 0x404040);
-        drawString(TextComponentUtil.build(tileEntity.getProviderCount() + " ", Translation.of("gui.providers")), 14, 120, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.constituents"), ":"), 8, 102, 0x797979);
+        drawString(TextComponentUtil.build(tileEntity.getCellCount() + " ", Translation.of("gui.mekanism.cells")), 14, 111, 0x404040);
+        drawString(TextComponentUtil.build(tileEntity.getProviderCount() + " ", Translation.of("gui.mekanism.providers")), 14, 120, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

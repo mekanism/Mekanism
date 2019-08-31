@@ -49,7 +49,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
 
-        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.newFilter",
+        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
@@ -166,7 +166,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                 if (filter instanceof IItemStackFilter) {
                     IItemStackFilter itemFilter = (IItemStackFilter) filter;
                     renderItem(itemFilter.getItemStack(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.itemFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.itemFilter"), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {
@@ -178,7 +178,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                         updateStackList(oreFilter);
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.oredictFilter"), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {
@@ -187,7 +187,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                 } else if (filter instanceof IMaterialFilter) {
                     IMaterialFilter itemFilter = (IMaterialFilter) filter;
                     renderItem(itemFilter.getMaterialItem(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.materialFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.materialFilter"), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {
@@ -199,7 +199,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                         updateStackList(modFilter);
                     }
                     renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+                    drawString(TextComponentUtil.translate("gui.mekanism.modIDFilter"), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {

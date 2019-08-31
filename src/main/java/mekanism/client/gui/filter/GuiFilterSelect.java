@@ -27,10 +27,10 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void addButtons() {
-        addButton(itemStackButton = new TranslationButton(guiLeft + 24, guiTop + 32, 128, 20, "gui.itemstack", onItemStackButton()));
-        addButton(oredictButton = new TranslationButton(guiLeft + 24, guiTop + 52, 128, 20, "gui.oredict", onTagButton()));
-        addButton(materialButton = new TranslationButton(guiLeft + 24, guiTop + 72, 128, 20, "gui.material", onMaterialButton()));
-        addButton(modIDButton = new TranslationButton(guiLeft + 24, guiTop + 92, 128, 20, "gui.modID", onModIDButton()));
+        addButton(itemStackButton = new TranslationButton(guiLeft + 24, guiTop + 32, 128, 20, "gui.mekanism.itemstack", onItemStackButton()));
+        addButton(oredictButton = new TranslationButton(guiLeft + 24, guiTop + 52, 128, 20, "gui.mekanism.oredict", onTagButton()));
+        addButton(materialButton = new TranslationButton(guiLeft + 24, guiTop + 72, 128, 20, "gui.mekanism.material", onMaterialButton()));
+        addButton(modIDButton = new TranslationButton(guiLeft + 24, guiTop + 92, 128, 20, "gui.mekanism.modID", onModIDButton()));
         addButton(backButton = new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(), onBackButton()));
     }
 

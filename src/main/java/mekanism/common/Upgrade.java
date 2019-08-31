@@ -127,7 +127,7 @@ public enum Upgrade implements IHasTranslationKey {
         List<ITextComponent> ret = new ArrayList<>();
         if (canMultiply()) {
             double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), (float) tile.getComponent().getUpgrades(this) / (float) getMax());
-            ret.add(TextComponentUtil.build(Translation.of("gui.upgrades.effect"), ": " + (Math.round(effect * 100) / 100F) + "x"));
+            ret.add(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.effect"), ": " + (Math.round(effect * 100) / 100F) + "x"));
         }
         return ret;
     }
@@ -136,7 +136,7 @@ public enum Upgrade implements IHasTranslationKey {
         List<ITextComponent> ret = new ArrayList<>();
         if (canMultiply()) {
             double effect = Math.pow(2, (float) tile.getComponent().getUpgrades(this));
-            ret.add(TextComponentUtil.build(Translation.of("gui.upgrades.effect"), ": " + effect + "x"));
+            ret.add(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.effect"), ": " + effect + "x"));
         }
         return ret;
     }

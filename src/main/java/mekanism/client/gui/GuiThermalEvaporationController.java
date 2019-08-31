@@ -47,7 +47,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.height"), ": " + tileEntity.height), 50, 30, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
               MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.production"), ": " + Math.round(tileEntity.lastGain * 100D) / 100D + " mB/t"),
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.production"), ": " + Math.round(tileEntity.lastGain * 100D) / 100D + " mB/t"),
               50, 48, 0x00CD00, 76);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
@@ -60,11 +60,11 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     private ITextComponent getStruct() {
         if (tileEntity.structured) {
-            return TextComponentUtil.translate("gui.formed");
+            return TextComponentUtil.translate("gui.mekanism.formed");
         } else if (tileEntity.controllerConflict) {
-            return TextComponentUtil.translate("gui.conflict");
+            return TextComponentUtil.translate("gui.mekanism.conflict");
         }
-        return TextComponentUtil.translate("gui.incomplete");
+        return TextComponentUtil.translate("gui.mekanism.incomplete");
     }
 
     @Override

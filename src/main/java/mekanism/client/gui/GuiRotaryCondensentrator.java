@@ -88,9 +88,9 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         if (tileEntity.mode == 0) {
-            drawString(TextComponentUtil.translate("gui.condensentrating"), 6, (ySize - 94) + 2, 0x404040);
+            drawString(TextComponentUtil.translate("gui.mekanism.condensentrating"), 6, (ySize - 94) + 2, 0x404040);
         } else {
-            drawString(TextComponentUtil.translate("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
+            drawString(TextComponentUtil.translate("gui.mekanism.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
         }
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;

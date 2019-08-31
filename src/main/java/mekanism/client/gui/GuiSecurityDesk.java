@@ -53,7 +53,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         super.init();
         addButton(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 4));
 
-        addButton(removeButton = new TranslationButton(guiLeft + 13, guiTop + 81, 122, 20, "gui.remove", onPress -> {
+        addButton(removeButton = new TranslationButton(guiLeft + 13, guiTop + 81, 122, 20, "gui.mekanism.remove", onPress -> {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {
                 TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
@@ -177,14 +177,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         ITextComponent ownerComponent = OwnerDisplay.of(tileEntity.ownerUUID, tileEntity.clientOwner).getTextComponent();
         drawString(ownerComponent, xSize - 7 - getStringWidth(ownerComponent), (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawCenteredText(TextComponentUtil.translate("gui.trustedPlayers"), 74, 57, 0x787878);
+        drawCenteredText(TextComponentUtil.translate("gui.mekanism.trustedPlayers"), 74, 57, 0x787878);
         //TODO: 1.14 Convert to GuiElement
         if (tileEntity.frequency != null) {
-            drawString(TextComponentUtil.build(Translation.of("gui.security") + ": ", tileEntity.frequency.securityMode), 13, 103, 0x404040);
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.security"), ": ", tileEntity.frequency.securityMode), 13, 103, 0x404040);
         } else {
-            drawString(TextComponentUtil.build(EnumColor.RED, Translation.of("gui.securityOffline")), 13, 103, 0x404040);
+            drawString(TextComponentUtil.build(EnumColor.RED, Translation.of("gui.mekanism.securityOffline")), 13, 103, 0x404040);
         }
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.add"), ":"), 13, 70, 0x404040, 20);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.add"), ":"), 13, 70, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

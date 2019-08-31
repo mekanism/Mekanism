@@ -94,11 +94,11 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.translate("gui.configuration.transporter"), 0, xSize, 5, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.strictInput"), " (", OnOff.of(getTile().getEjector().hasStrictInput()), ")"),
+        drawCenteredText(TextComponentUtil.translate("gui.mekanism.configuration.transporter"), 0, xSize, 5, 0x404040);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.strictInput"), " (", OnOff.of(getTile().getEjector().hasStrictInput()), ")"),
               53, 17, 0x00CD00, 70);
         drawString(TextComponentUtil.translate("gui.mekanism.input"), 48, 81, 0x787878);
-        drawString(TextComponentUtil.translate("gui.output"), 114, 68, 0x787878);
+        drawString(TextComponentUtil.translate("gui.mekanism.output"), 114, 68, 0x787878);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
