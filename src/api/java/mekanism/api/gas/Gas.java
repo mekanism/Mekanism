@@ -237,6 +237,7 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
 
     @Override
     public Gas setRegistryName(ResourceLocation name) {
+        //TODO: Check to make sure there is no name set and throw an error if there already is one set
         registryName = name;
         return this;
     }

@@ -11,9 +11,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.infuse.InfuseType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IGasProvider;
+import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
@@ -142,8 +142,8 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addMetallurgicInfuserRecipe(InfuseType infuse, int amount, ItemStack input, ItemStack output) {
-        addRecipe(Recipe.METALLURGIC_INFUSER, new MetallurgicInfuserRecipe(new InfusionInput(infuse, amount, input), output));
+    public static void addMetallurgicInfuserRecipe(IInfuseTypeProvider infuseTypeProvider, int amount, ItemStack input, ItemStack output) {
+        addRecipe(Recipe.METALLURGIC_INFUSER, new MetallurgicInfuserRecipe(new InfusionInput(infuseTypeProvider, amount, input), output));
     }
 
     /**

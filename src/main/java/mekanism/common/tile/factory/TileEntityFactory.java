@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.FactoryType;
 import mekanism.api.gas.Gas;
@@ -730,7 +731,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             int amount = dataStream.readInt();
             if (amount > 0) {
                 infuseStored.setAmount(amount);
-                infuseStored.setType(InfuseRegistry.get(dataStream.readString()));
+                infuseStored.setType(MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(dataStream.readResourceLocation()));
             } else {
                 infuseStored.setEmpty();
             }
@@ -753,11 +754,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInt("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
-        int amount = nbtTags.getInt("infuseStored");
-        if (amount != 0) {
-            infuseStored.setAmount(amount);
-            infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
-        }
+        infuseStored.read(nbtTags.getCompound("infuseStored"));
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt("progress" + i);
         }
@@ -772,10 +769,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         nbtTags.putInt("recipeTicks", recipeTicks);
         nbtTags.putBoolean("sorting", sorting);
         if (infuseStored.getType() != null) {
-            nbtTags.putString("type", infuseStored.getType().name);
-            nbtTags.putInt("infuseStored", infuseStored.getAmount());
-        } else {
-            nbtTags.putString("type", "null");
+            nbtTags.put("infuseStored", infuseStored.write(new CompoundNBT()));
         }
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.putInt("progress" + i, progress[i]);
@@ -795,7 +789,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         data.add(infuseStored.getAmount());
         if (infuseStored.getAmount() > 0) {
-            data.add(infuseStored.getType().name);
+            data.add(infuseStored.getType().getRegistryName());
         }
 
         data.add(progress);

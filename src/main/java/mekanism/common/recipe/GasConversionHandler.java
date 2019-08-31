@@ -28,6 +28,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
+//TODO: Move the conversion handler to API??
 public class GasConversionHandler {
 
     //TODO: Show uses in JEI for fuels that can be turned to gas??

@@ -1,7 +1,6 @@
 package mekanism.common.recipe.inputs;
 
-import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfuseType;
+import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.common.InfuseStorage;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -27,8 +26,9 @@ public class InfusionInput extends MachineInput<InfusionInput> {
         inputStack = itemStack;
     }
 
-    public InfusionInput(InfuseType infusionType, int required, ItemStack itemStack) {
-        infuse = new InfuseStorage(infusionType, required);
+    public InfusionInput(IInfuseTypeProvider infuseTypeProvider, int required, ItemStack itemStack) {
+        //TODO: Check to make sure infuseTypeProvider is not null. Just adding this for now because when passing IGasProvider it had issues
+        infuse = new InfuseStorage(infuseTypeProvider == null ? null : infuseTypeProvider.getInfuseType(), required);
         inputStack = itemStack;
     }
 
@@ -38,9 +38,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
     @Override
     public void load(CompoundNBT nbtTags) {
         inputStack = ItemStack.read(nbtTags.getCompound("input"));
-        InfuseType type = InfuseRegistry.get(nbtTags.getString("infuseType"));
-        int amount = nbtTags.getInt("infuseAmount");
-        infuse = new InfuseStorage(type, amount);
+        infuse = InfuseStorage.readFromNBT(nbtTags.getCompound("infuseStored"));
     }
 
     @Override
@@ -67,7 +65,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
 
     @Override
     public int hashIngredients() {
-        return infuse.getType().unlocalizedName.hashCode() << 8 | StackUtils.hashItemStack(inputStack);
+        return infuse.getType().getRegistryName().hashCode() << 8 | StackUtils.hashItemStack(inputStack);
     }
 
     @Override

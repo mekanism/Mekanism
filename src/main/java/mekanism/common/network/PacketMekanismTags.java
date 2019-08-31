@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.api.gas.GasTags;
+import mekanism.api.infuse.InfuseTypeTags;
 import mekanism.common.tags.MekanismTagManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -18,7 +19,8 @@ public class PacketMekanismTags {
         context.get().enqueueWork(() -> {
             //TODO: 1.14, Only do it if not local
             //if (!netManager.isLocalChannel()) {
-                GasTags.setCollection(message.tags.getGases());
+            GasTags.setCollection(message.tags.getGases());
+            InfuseTypeTags.setCollection(message.tags.getInfuseTypes());
             //}
         });
         context.get().setPacketHandled(true);

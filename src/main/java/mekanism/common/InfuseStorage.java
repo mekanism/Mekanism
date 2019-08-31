@@ -1,12 +1,12 @@
 package mekanism.common;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.infuse.InfuseObject;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 
 public class InfuseStorage implements ISustainedData {
 
@@ -73,22 +73,44 @@ public class InfuseStorage implements ISustainedData {
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (type != null && amount > 0) {
-            ItemDataUtils.setString(itemStack, "infuseType", type.name);
-            ItemDataUtils.setInt(itemStack, "infuseAmount", amount);
+            write(itemStack.getOrCreateTag());
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "infuseType") && ItemDataUtils.hasData(itemStack, "infuseAmount")) {
-            type = InfuseRegistry.get(ItemDataUtils.getString(itemStack, "infuseType"));
-            if (type != null) {
-                amount = ItemDataUtils.getInt(itemStack, "infuseAmount");
-            }
+        if (itemStack.hasTag()) {
+            read(itemStack.getTag());
         } else {
             type = null;
             amount = 0;
         }
+    }
+
+    @Nullable
+    public static InfuseStorage readFromNBT(CompoundNBT nbtTags) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
+            return null;
+        }
+
+        InfuseType type = InfuseType.readFromNBT(nbtTags);
+        int amount = nbtTags.getInt("amount");
+
+        if (type == null || amount <= 0) {
+            return null;
+        }
+        return new InfuseStorage(type, amount);
+    }
+
+    public void read(CompoundNBT nbtTags) {
+        type = InfuseType.readFromNBT(nbtTags);
+        amount = nbtTags.getInt("amount");
+    }
+
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        type.write(nbtTags);
+        nbtTags.putInt("amount", amount);
+        return nbtTags;
     }
 
     public InfuseType getType() {

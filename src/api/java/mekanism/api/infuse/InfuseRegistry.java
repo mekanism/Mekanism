@@ -11,54 +11,13 @@ import net.minecraftforge.items.ItemHandlerHelper;
  *
  * @author AidanBrady
  */
+//TODO: Make this act more like GasConversionHandler
 public class InfuseRegistry {
 
     /**
      * The (private) map of ItemStacks and their related InfuseObjects.
      */
     private static Map<ItemStack, InfuseObject> infuseObjects = new HashMap<>();
-
-    /**
-     * The (private) map of infuse names and their corresponding InfuseTypes.
-     */
-    private static Map<String, InfuseType> infuseTypes = new HashMap<>();
-
-    /**
-     * Registers an InfuseType into the registry. Call this in PreInit!
-     *
-     * @param infuse InfuseType to register
-     */
-    public static void registerInfuseType(InfuseType infuse) {
-        if (infuseTypes.containsKey(infuse.name)) {
-            return;
-        }
-        infuseTypes.put(infuse.name, infuse);
-    }
-
-    /**
-     * Gets an InfuseType from it's name, or null if it doesn't exist.
-     *
-     * @param name - the name of the InfuseType to get
-     *
-     * @return the name's corresponding InfuseType
-     */
-    public static InfuseType get(String name) {
-        if (name.equals("null")) {
-            return null;
-        }
-        return infuseTypes.get(name);
-    }
-
-    /**
-     * Whether or not the registry contains a correspondent InfuseType to a name.
-     *
-     * @param name - the name to check
-     *
-     * @return if the name has a coorespondent InfuseType
-     */
-    public static boolean contains(String name) {
-        return get(name) != null;
-    }
 
     /**
      * Registers a block or item that serves as an infuse object.  An infuse object will store a certain type and amount of infuse, and will deliver this amount to the
@@ -98,14 +57,5 @@ public class InfuseRegistry {
      */
     public static Map<ItemStack, InfuseObject> getObjectMap() {
         return infuseObjects;
-    }
-
-    /**
-     * Gets the private map for InfuseTypes.
-     *
-     * @return private InfuseType map
-     */
-    public static Map<String, InfuseType> getInfuseMap() {
-        return infuseTypes;
     }
 }

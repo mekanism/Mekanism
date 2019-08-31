@@ -1,9 +1,9 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismInfuseTypes;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
@@ -51,7 +51,7 @@ public class MekanismGenerators implements IModule {
               MekanismConfig.general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfig.general.ETHENE_BURN_TIME.get());
 
         for (Item dust : MekanismTags.GOLD_DUST.getAllElements()) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(dust, 4), GeneratorsItem.HOHLRAUM.getItemStack());
+            RecipeHandler.addMetallurgicInfuserRecipe(MekanismInfuseTypes.CARBON, 10, new ItemStack(dust, 4), GeneratorsItem.HOHLRAUM.getItemStack());
         }
 
         MinecraftForge.EVENT_BUS.register(this);

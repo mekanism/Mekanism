@@ -6,7 +6,7 @@ import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.MekanismAPI;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
@@ -19,6 +19,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -34,7 +35,8 @@ public class Infuser {
             return;
         }
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
-            InfuseType type = InfuseRegistry.get(infuseType);
+            //TODO: Use bracket handler instead of string for infuseType
+            InfuseType type = MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(new ResourceLocation(infuseType));
             ItemStackOutput output = new ItemStackOutput(IngredientHelper.getItemStack(itemOutput));
             List<MetallurgicInfuserRecipe> recipes = new ArrayList<>();
             for (IItemStack stack : ingredientInput.getItems()) {

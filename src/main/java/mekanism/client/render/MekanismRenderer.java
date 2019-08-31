@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -361,7 +360,7 @@ public class MekanismRenderer {
             gas.registerIcon(event);
         }
 
-        for (InfuseType type : InfuseRegistry.getInfuseMap().values()) {
+        for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
             event.addSprite(type.iconResource);
         }
 
@@ -395,7 +394,7 @@ public class MekanismRenderer {
             gas.updateIcon(map);
         }
 
-        for (InfuseType type : InfuseRegistry.getInfuseMap().values()) {
+        for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
             type.setIcon(map.getSprite(type.iconResource));
         }
     }

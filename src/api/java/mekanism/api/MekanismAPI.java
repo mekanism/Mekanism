@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
+import mekanism.api.infuse.InfuseType;
 import mekanism.api.providers.IBlockProvider;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
@@ -27,6 +28,7 @@ public class MekanismAPI {
     public static final String MEKANISM_MODID = "mekanism";
 
     public static IForgeRegistry<Gas> GAS_REGISTRY;
+    public static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY;
 
     /**
      * Mekanism debug mode

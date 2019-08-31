@@ -357,12 +357,12 @@ public class Mekanism {
         }
 
         if (MekanismBlock.METALLURGIC_INFUSER.isEnabled()) {
-            InfuseType carbon = InfuseRegistry.get("CARBON");
-            InfuseType bio = InfuseRegistry.get("BIO");
-            InfuseType redstone = InfuseRegistry.get("REDSTONE");
-            InfuseType fungi = InfuseRegistry.get("FUNGI");
-            InfuseType diamond = InfuseRegistry.get("DIAMOND");
-            InfuseType obsidian = InfuseRegistry.get("OBSIDIAN");
+            InfuseType carbon = MekanismInfuseTypes.CARBON.getInfuseType();
+            InfuseType bio = MekanismInfuseTypes.BIO.getInfuseType();
+            InfuseType redstone = MekanismInfuseTypes.REDSTONE.getInfuseType();
+            InfuseType fungi = MekanismInfuseTypes.FUNGI.getInfuseType();
+            InfuseType diamond = MekanismInfuseTypes.DIAMOND.getInfuseType();
+            InfuseType obsidian = MekanismInfuseTypes.REFINED_OBSIDIAN.getInfuseType();
 
             //Infuse objects
             InfuseRegistry.registerInfuseObject(MekanismItem.BIO_FUEL.getItemStack(), new InfuseObject(bio, 5));
@@ -377,6 +377,7 @@ public class Mekanism {
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.RED_MUSHROOM), new InfuseObject(fungi, 10));
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.BROWN_MUSHROOM), new InfuseObject(fungi, 10));
             InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_DIAMOND.getItemStack(), new InfuseObject(diamond, 80));
+            InfuseRegistry.registerInfuseObject(MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack(), new InfuseObject(obsidian, 10));
             InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_OBSIDIAN.getItemStack(), new InfuseObject(obsidian, 80));
 
             //Metallurgic Infuser Recipes
@@ -546,17 +547,6 @@ public class Mekanism {
         }*/
 
         Mekanism.proxy.preInit();
-
-        //Register infuses
-        //TODO: Let infuse types be registered via JSON and data packs
-        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", new ResourceLocation(Mekanism.MODID, "block/infuse/carbon")).setTranslationKey("carbon"));
-        InfuseRegistry.registerInfuseType(new InfuseType("TIN", new ResourceLocation(Mekanism.MODID, "block/infuse/tin")).setTranslationKey("tin"));
-        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", new ResourceLocation(Mekanism.MODID, "block/infuse/diamond")).setTranslationKey("diamond"));
-        InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", new ResourceLocation(Mekanism.MODID, "block/infuse/redstone")).setTranslationKey("redstone"));
-        InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", new ResourceLocation(Mekanism.MODID, "block/infuse/fungi")).setTranslationKey("fungi"));
-        InfuseRegistry.registerInfuseType(new InfuseType("BIO", new ResourceLocation(Mekanism.MODID, "block/infuse/bio")).setTranslationKey("bio"));
-        InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation(Mekanism.MODID, "block/infuse/obsidian")).setTranslationKey("obsidian"));
-
         Capabilities.registerCapabilities();
     }
 

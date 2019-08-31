@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
@@ -218,11 +219,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        int amount = nbtTags.getInt("infuseStored");
-        if (amount != 0) {
-            infuseStored.setAmount(amount);
-            infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
-        }
+        infuseStored.read(nbtTags.getCompound("infuseStored"));
     }
 
     @Nonnull
@@ -230,10 +227,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (infuseStored.getType() != null) {
-            nbtTags.putString("type", infuseStored.getType().name);
-            nbtTags.putInt("infuseStored", infuseStored.getAmount());
-        } else {
-            nbtTags.putString("type", "null");
+            nbtTags.put("infuseStored", infuseStored.write(new CompoundNBT()));
         }
         nbtTags.putBoolean("sideDataStored", true);
         return nbtTags;
@@ -256,7 +250,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             int amount = dataStream.readInt();
             if (amount > 0) {
                 infuseStored.setAmount(amount);
-                infuseStored.setType(InfuseRegistry.get(dataStream.readString()));
+                infuseStored.setType(MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(dataStream.readResourceLocation()));
             } else {
                 infuseStored.setEmpty();
             }
@@ -268,7 +262,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         super.getNetworkedData(data);
         data.add(infuseStored.getAmount());
         if (infuseStored.getAmount() > 0) {
-            data.add(infuseStored.getType().name);
+            data.add(infuseStored.getType().getRegistryName());
         }
         return data;
     }

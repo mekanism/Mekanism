@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
+import mekanism.api.infuse.InfuseType;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.recipe.MekanismRecipeEnabledCondition;
@@ -30,6 +31,7 @@ public class Registration {
     public static void buildRegistry(RegistryEvent.NewRegistry event) {
         //TODO: Should this be declared in the API package
         MekanismAPI.GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(Mekanism.MODID, "gas")).setType(Gas.class).create();
+        MekanismAPI.INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(Mekanism.MODID, "infuse_type")).setType(InfuseType.class).create();
         Mekanism.instance.setTagManager(new MekanismTagManager());
     }
 
@@ -53,8 +55,12 @@ public class Registration {
 
     @SubscribeEvent
     public static void registerGases(RegistryEvent.Register<Gas> event) {
-        //TODO: Is this supposed to just be on the client side
         MekanismGases.register(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
+        MekanismInfuseTypes.register(event.getRegistry());
     }
 
     @SubscribeEvent
