@@ -51,6 +51,8 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 public class BlockChargepad extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityChargepad>, IBlockSound,
       IBlockDisableable {
 
+    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
+    // It does not contain the back pane currently
     private static final VoxelShape CHARGEPAD_BOUNDS = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.chargepad"));
 

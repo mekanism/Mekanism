@@ -108,6 +108,7 @@ public class LaserManager {
             to = new Pos3D(mop.getHitVec());
         }
         from.translate(direction, -0.501);
+        //TODO: Replace this with the built in Particle Type system. so that the renderParticle method actually gets called
         Mekanism.proxy.renderLaser(world, from, to, direction, energy);
         return mop;
     }

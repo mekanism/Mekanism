@@ -54,6 +54,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
 public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IBlockDisableable {
 
+    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.laser"));
 
@@ -163,11 +164,7 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tile instanceof TileEntityLaser) {
-            return VoxelShapes.create(MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLaser) tile).getDirection()).offset(0.5, 0.5, 0.5));
-        }
-        return super.getShape(state, world, pos, context);
+        return VoxelShapes.create(MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), getDirection(state)).offset(0.5, 0.5, 0.5));
     }
 
     @Override

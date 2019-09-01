@@ -68,6 +68,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLogisticalSorter>, ISupportsUpgrades, IStateFacing, IStateActive,
       IBlockSound, IHasInventory, ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, IBlockDisableable, ISupportsComparator, IHasSecurity {
 
+    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
 
@@ -242,12 +243,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tile instanceof TileEntityLogisticalSorter) {
-            return VoxelShapes.create(MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).getDirection())
-                  .offset(0.5, 0.5, 0.5));
-        }
-        return super.getShape(state, world, pos, context);
+        return VoxelShapes.create(MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), getDirection(state)).offset(0.5, 0.5, 0.5));
     }
 
     @Nonnull
