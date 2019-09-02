@@ -15,7 +15,7 @@ public class GuiHandlerRegistryHelper {
     public static <T extends ContainerScreen<?>> void register(IGuiHandlerRegistration registry, MekanismBlock mekanismBlock, Class<? extends T> guiContainerClass,
           int xPos, int yPos, int width, int height) {
         if (mekanismBlock.isEnabled()) {
-            registry.addRecipeClickArea(guiContainerClass, xPos, yPos, width, height, mekanismBlock.getJEICategory());
+            registry.addRecipeClickArea(guiContainerClass, xPos, yPos, width, height, mekanismBlock.getRegistryName());
         }
     }
 
@@ -32,9 +32,9 @@ public class GuiHandlerRegistryHelper {
         MekanismBlock mekanismBlock = MekanismBlock.ENERGIZED_SMELTER;
         if (mekanismBlock.isEnabled()) {
             if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
-                registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, mekanismBlock.getJEICategory());
+                registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, mekanismBlock.getRegistryName());
             } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
-                registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.FURNACE, mekanismBlock.getJEICategory());
+                registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.FURNACE, mekanismBlock.getRegistryName());
             } else {
                 //Only use furnace list, so no extra registration.
                 registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.FURNACE);

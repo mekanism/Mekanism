@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 public class CatalystRegistryHelper {
 
     public static boolean register(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock) {
-        return register(registry, mekanismBlock, mekanismBlock.getJEICategory());
+        return register(registry, mekanismBlock, mekanismBlock.getRegistryName());
     }
 
     public static boolean register(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock, ResourceLocation resourceLocation) {

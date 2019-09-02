@@ -37,7 +37,7 @@ public class RecipeRegistryHelper {
             //TODO: Add all smelting recipes
             //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
             if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
-                registry.addRecipes(Recipe.ENERGIZED_SMELTER.get().values(), mekanismBlock.getJEICategory());
+                registry.addRecipes(Recipe.ENERGIZED_SMELTER.get().values(), mekanismBlock.getRegistryName());
             } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
                 //TODO: Fix this
                 // Only add added recipes
@@ -56,7 +56,7 @@ public class RecipeRegistryHelper {
     public static <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
     void register(IRecipeRegistration registry, MekanismBlock mekanismBlock, Recipe<INPUT, OUTPUT, RECIPE> type) {
         if (mekanismBlock.isEnabled()) {
-            registry.addRecipes(type.get().values(), mekanismBlock.getJEICategory());
+            registry.addRecipes(type.get().values(), mekanismBlock.getRegistryName());
         }
     }
 }

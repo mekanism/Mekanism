@@ -87,6 +87,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
 
     @Override
     public List<ITextComponent> getTooltipComponents(MetallurgicInfuserRecipe recipe, double mouseX, double mouseY) {
+        //TODO: Once the infuse bar gets turned into a GuiElement, then have it get handled via that for the tooltip
         if (mouseX >= 2 && mouseX < 6 && mouseY >= 2 && mouseY < 54) {
             InfuseStorage infuse = recipe.getInput().infuse;
             return Collections.singletonList(TextComponentUtil.build(infuse.getType(), ": " + infuse.getAmount()));

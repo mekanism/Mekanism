@@ -13,10 +13,11 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.util.text.Translation;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -49,7 +50,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     private final IDrawable background;
 
     protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, MekanismBlock mekanismBlock, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
-        this(helper, guiTexture, mekanismBlock.getJEICategory(), mekanismBlock.getTranslationKey(), progress, xOffset, yOffset, width, height);
+        this(helper, guiTexture, mekanismBlock.getRegistryName(), mekanismBlock.getTranslationKey(), progress, xOffset, yOffset, width, height);
     }
 
     protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, ResourceLocation name, String unlocalized, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
@@ -67,11 +68,21 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         fluidOverlayLarge = guiHelper.createDrawable(resource, 19, 1, 16, 59);
         fluidOverlaySmall = guiHelper.createDrawable(resource, 19, 1, 16, 29);
 
-        addGuiElements();
-
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, width, height);
+
+        addGuiElements();
+    }
+
+    @Override
+    public int getLeft() {
+        return -xOffset;
+    }
+
+    @Override
+    public int getTop() {
+        return -yOffset;
     }
 
     @Override
@@ -81,14 +92,13 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public String getTitle() {
-        return TextComponentUtil.build(unlocalizedName).getFormattedText();
+        return Translation.of(unlocalizedName).getTextComponent().getFormattedText();
     }
 
     @Override
     public void draw(RECIPE recipe, double mouseX, double mouseY) {
-        //TODO: Replace the
-        //MekanismRenderer.bindTexture(guiLocation);
-        //guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
+        MekanismRenderer.bindTexture(guiLocation);
+        guiElements.forEach(e -> e.render((int) mouseX, (int) mouseY, 0));
     }
 
     @Override
@@ -135,6 +145,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public final List<String> getTooltipStrings(RECIPE recipe, double mouseX, double mouseY) {
+        //TODO: Should the gui element stuff be queried at all
         return getTooltipComponents(recipe, mouseX, mouseY).stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
     }
 
