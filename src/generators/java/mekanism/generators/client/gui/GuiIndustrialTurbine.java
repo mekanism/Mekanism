@@ -4,9 +4,9 @@ import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiEmbeddedGaugeTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiRateBar;
-import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
+import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiRateBar;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -43,7 +43,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));
         addButton(new GuiPowerBar(this, tileEntity, resource, 164, 16));
-        addButton(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("gui.mekanism.steamInput"),

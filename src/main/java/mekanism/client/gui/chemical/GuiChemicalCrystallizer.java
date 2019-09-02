@@ -8,7 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.Slurry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;

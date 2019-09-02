@@ -1,14 +1,13 @@
 package mekanism.client.jei.machine.other;
 
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -39,12 +38,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory<PressurizedRecipe> {
         guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, guiLocation, 5, 10));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40));
-        guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
-            @Override
-            public double getLevel() {
-                return 1F;
-            }
-        }, guiLocation, 164, 15));
+        guiElements.add(new GuiPowerBar(this, () -> 1F, guiLocation, 164, 15));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {

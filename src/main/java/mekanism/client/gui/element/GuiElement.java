@@ -12,6 +12,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+//TODO: Now these are full fledged widgets figure out if they have to offload things to the main gui obj still
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiElement extends Widget {
 

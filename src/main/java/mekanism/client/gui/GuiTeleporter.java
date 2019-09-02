@@ -7,13 +7,13 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.TranslationButton;
-import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.client.gui.element.bar.GuiPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
@@ -68,7 +68,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiPowerBar(this, new IPowerInfoHandler() {
+        addButton(new GuiPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();

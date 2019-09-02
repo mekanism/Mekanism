@@ -46,7 +46,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     /**
      * The maxiumum amount of infuse this machine can store.
      */
-    public int MAX_INFUSE = 1000;
+    public static final int MAX_INFUSE = 1000;
     /**
      * The amount of infuse this machine has stored.
      */
@@ -210,10 +210,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     @Contract("null -> false")
     public boolean canOperate(MetallurgicInfuserRecipe recipe) {
         return recipe != null && recipe.canOperate(getInventory(), 2, 3, infuseStored);
-    }
-
-    public int getScaledInfuseLevel(int i) {
-        return infuseStored.getAmount() * i / MAX_INFUSE;
     }
 
     @Override

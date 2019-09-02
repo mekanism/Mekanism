@@ -1,10 +1,10 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.api.TileNetworkList;
+import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseType;
+import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -12,24 +12,23 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiInfuseBar;
+import mekanism.client.gui.element.bar.GuiInfuseBar.InfuseInfoProvider;
+import mekanism.client.gui.element.bar.GuiPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.sound.SoundHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,48 +64,35 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
                 return tileEntity.getScaledProgress();
             }
         }, ProgressBar.MEDIUM, this, resource, 70, 46));
+        addButton(new GuiInfuseBar(this, new InfuseInfoProvider() {
+            @Nonnull
+            @Override
+            public TextureAtlasSprite getSprite() {
+                return tileEntity.infuseStored.getType().sprite;
+            }
+
+            @Override
+            public ITextComponent getTooltip() {
+                InfuseType type = tileEntity.infuseStored.getType();
+                if (type == null) {
+                    return TextComponentUtil.translate("gui.mekanism.empty");
+                }
+                return TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount());
+            }
+
+            @Override
+            public double getLevel() {
+                return (double) tileEntity.infuseStored.getAmount() / (double) TileEntityMetallurgicInfuser.MAX_INFUSE;
+            }
+        }, resource, 7, 15));
+        addButton(new GuiDumpButton(this, tileEntity, resource, 140, 65));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        //TODO: 1.14 Convert to GuiElement
-        if (xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69) {
-            InfuseType type = tileEntity.infuseStored.getType();
-            if (type != null) {
-                displayTooltip(TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
-            } else {
-                displayTooltip(TextComponentUtil.translate("gui.mekanism.empty"), xAxis, yAxis);
-            }
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.infuseStored.getType() != null) {
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            int displayInt = tileEntity.getScaledInfuseLevel(52);
-            drawTexturedRectFromIcon(guiLeft + 7, guiTop + 17 + 52 - displayInt, tileEntity.infuseStored.getType().sprite, 4, displayInt);
-        }
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            double xAxis = mouseX - guiLeft;
-            double yAxis = mouseY - guiTop;
-            if (xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82) {
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)));
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
-        }
-        return true;
     }
 
     @Override

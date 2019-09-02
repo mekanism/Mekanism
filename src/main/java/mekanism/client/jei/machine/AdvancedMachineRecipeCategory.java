@@ -3,14 +3,13 @@ package mekanism.client.jei.machine;
 import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismBlock;
@@ -37,12 +36,7 @@ public abstract class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachi
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 30, 34).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, guiLocation, 55, 52));
         guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, guiLocation, 111, 30));
-        guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
-            @Override
-            public double getLevel() {
-                return 1F;
-            }
-        }, guiLocation, 164, 15));
+        guiElements.add(new GuiPowerBar(this, () -> 1F, guiLocation, 164, 15));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {

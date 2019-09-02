@@ -159,13 +159,18 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }*/
 
     @Override
-    public void drawTexturedRect(int x, int y, int u, int v, int w, int h) {
-        blit(x, y, u, v, w, h);
+    public void drawTexturedRect(int x, int y, int u, int v, int width, int height) {
+        blit(x, y, u, v, width, height);
     }
 
     @Override
-    public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h) {
-        blit(x, y, blitOffset, w, h, icon);
+    public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
+        blit(x, y, blitOffset, width, height, icon);
+    }
+
+    @Override
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {
+        blit(x, y, u, v, width, height, textureWidth, textureHeight);
     }
 
     @Override

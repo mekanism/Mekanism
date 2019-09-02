@@ -3,8 +3,11 @@ package mekanism.client.gui.element;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Better name?
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEntityElement<TILE> {
 
     protected final int border;

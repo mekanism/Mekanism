@@ -17,7 +17,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.Translation;
+import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -92,7 +92,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public String getTitle() {
-        return Translation.of(unlocalizedName).getTextComponent().getFormattedText();
+        return TextComponentUtil.translate(unlocalizedName).getFormattedText();
     }
 
     @Override
@@ -109,6 +109,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     @Override
     public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h) {
         gui.blit(x, y, icon, w, h);
+    }
+
+    @Override
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {
+        AbstractGui.blit(x, y, u, v, width, height, textureWidth, textureHeight);
     }
 
     @Override
@@ -140,12 +145,12 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     public List<ITextComponent> getTooltipComponents(RECIPE recipe, double mouseX, double mouseY) {
+        //TODO: Query the gui elements, except they will ave to return a list instead of rendering it
         return Collections.emptyList();
     }
 
     @Override
     public final List<String> getTooltipStrings(RECIPE recipe, double mouseX, double mouseY) {
-        //TODO: Should the gui element stuff be queried at all
         return getTooltipComponents(recipe, mouseX, mouseY).stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
     }
 

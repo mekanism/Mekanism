@@ -1,22 +1,24 @@
 package mekanism.client.jei.machine.other;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.client.gui.element.GuiPowerBar;
-import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiInfuseBar;
+import mekanism.client.gui.element.bar.GuiInfuseBar.InfuseInfoProvider;
+import mekanism.client.gui.element.bar.GuiPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.InfuseStorage;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
@@ -26,11 +28,14 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
+
+    private RecipeInfuseInfoProvider infoProvider;
+    private GuiInfuseBar infuseBar;
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/metallurgic_infuser.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
@@ -46,18 +51,14 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 50, 42));
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 142, 34).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 108, 42));
-        guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
-            @Override
-            public double getLevel() {
-                return 1F;
-            }
-        }, guiLocation, 164, 15));
+        guiElements.add(new GuiPowerBar(this, () -> 1F, guiLocation, 164, 15));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return (double) timer.getValue() / 20F;
             }
         }, ProgressBar.MEDIUM, this, guiLocation, 70, 46));
+        guiElements.add(infuseBar = new GuiInfuseBar(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15));
     }
 
     @Override
@@ -87,18 +88,49 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
 
     @Override
     public List<ITextComponent> getTooltipComponents(MetallurgicInfuserRecipe recipe, double mouseX, double mouseY) {
-        //TODO: Once the infuse bar gets turned into a GuiElement, then have it get handled via that for the tooltip
-        if (mouseX >= 2 && mouseX < 6 && mouseY >= 2 && mouseY < 54) {
-            InfuseStorage infuse = recipe.getInput().infuse;
-            return Collections.singletonList(TextComponentUtil.build(infuse.getType(), ": " + infuse.getAmount()));
+        List<ITextComponent> tooltips = new ArrayList<>();
+        //TODO: Use isHovered, fix the mouseX and mouseY that get passed to draw
+        if (infuseBar.isMouseOver(mouseX, mouseY)) {
+            infoProvider.cachedRecipe = recipe;
+            tooltips.add(infoProvider.getTooltip());
+            infoProvider.cachedRecipe = null;
         }
-        return Collections.emptyList();
+        return tooltips;
     }
 
     @Override
     public void draw(MetallurgicInfuserRecipe recipe, double mouseX, double mouseY) {
+        infoProvider.cachedRecipe = recipe;
         super.draw(recipe, mouseX, mouseY);
-        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        drawTexturedRectFromIcon(2, 2, recipe.getInput().infuse.getType().sprite, 4, 52);
+        infoProvider.cachedRecipe = null;
+    }
+
+    private static class RecipeInfuseInfoProvider implements InfuseInfoProvider {
+
+        @Nullable
+        private MetallurgicInfuserRecipe cachedRecipe;
+
+        @Nullable
+        @Override
+        public TextureAtlasSprite getSprite() {
+            return cachedRecipe == null ? null : cachedRecipe.getInput().infuse.getType().sprite;
+        }
+
+        @Override
+        public ITextComponent getTooltip() {
+            if (cachedRecipe != null) {
+                InfuseStorage storage = cachedRecipe.getInput().infuse;
+                InfuseType type = storage.getType();
+                if (type != null) {
+                    return TextComponentUtil.build(type, ": " + storage.getAmount());
+                }
+            }
+            return TextComponentUtil.translate("gui.mekanism.empty");
+        }
+
+        @Override
+        public double getLevel() {
+            return 1;
+        }
     }
 }

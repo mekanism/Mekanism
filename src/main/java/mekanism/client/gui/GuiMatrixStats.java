@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiRateBar;
-import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
+import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.client.gui.element.bar.GuiRateBar;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
@@ -33,7 +33,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, resource));
         addButton(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.STANDARD, this, resource, 6, 13));
-        addButton(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("gui.mekanism.receiving"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t");
@@ -44,7 +44,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
                 return tileEntity.structure == null ? 0 : tileEntity.getLastInput() / tileEntity.structure.getTransferCap();
             }
         }, resource, 30, 13));
-        addButton(new GuiRateBar(this, new IRateInfoHandler() {
+        addButton(new GuiRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("gui.mekanism.outputting"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t");
