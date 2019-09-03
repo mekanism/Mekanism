@@ -13,11 +13,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiElement {
 
+    private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bar.png");
     private final INFO handler;
 
-    public GuiBar(IGuiWrapper gui, INFO handler, ResourceLocation def, int x, int y, int width, int height) {
+    public GuiBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, ResourceLocation def, int x, int y, int width, int height) {
         //TODO: Bump the width by 2? for the border of the bar image? Or maybe remove border
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bar.png"), gui, def, x, y, width, height);
+        super(resource, gui, def, x, y, width, height);
         this.handler = handler;
     }
 
@@ -29,9 +30,10 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(BAR);
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, 6, 55);
         if (handler.getLevel() > 0) {
+            minecraft.textureManager.bindTexture(RESOURCE);
             renderBarOverlay(mouseX, mouseY, partialTicks);
         }
         minecraft.textureManager.bindTexture(defaultLocation);

@@ -115,7 +115,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int yAxis = mouseY - guiTop;
         //TODO: Does color need to be reset before this
         for (Widget widget : this.buttons) {
-            if (widget.isHovered()) {
+            if (widget.isMouseOver(mouseX, mouseY)) {//.isHovered()) {
                 //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
                 widget.renderToolTip(xAxis, yAxis);
                 break;
@@ -232,8 +232,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        //TODO
-        //this.drawDefaultBackground();
+        this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }

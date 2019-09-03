@@ -384,11 +384,11 @@
   "tier.Creative": "Creative",
 
   "_comment": "Transmission types",
-  "transmission.Energy": "Energy",
-  "transmission.Fluids": "Fluids",
-  "transmission.Gases": "Gases",
-  "transmission.Items": "Items",
-  "transmission.Heat": "Heat",
+  "transmission.mekanism.energy": "Energy",
+  "transmission.mekanism.fluids": "Fluids",
+  "transmission.mekanism.gases": "Gases",
+  "transmission.mekanism.items": "Items",
+  "transmission.mekanism.heat": "Heat",
 
   "_comment": "Update handler text",
   "update.consider": "Consider updating to version",
@@ -419,7 +419,7 @@
   "mekanism.key.voice": "Voice",
 
   "_comment": "Entities",
-  "entity.Robit": "Robit",
+  "entity.mekanism.robit": "Robit",
 
   "_comment": "Gui text",
   "gui.mekanism.condensentrating": "Condensentrating",

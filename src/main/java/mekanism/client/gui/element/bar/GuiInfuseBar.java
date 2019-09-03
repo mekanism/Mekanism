@@ -13,14 +13,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiInfuseBar extends GuiBar<InfuseInfoProvider> {
 
     public GuiInfuseBar(IGuiWrapper gui, InfuseInfoProvider infoProvider, ResourceLocation def, int x, int y) {
-        super(gui, infoProvider, def, x, y, 6, 56);
+        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, def, x, y, 6, 56);
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         TextureAtlasSprite sprite = getHandler().getSprite();
         if (sprite != null) {
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             int displayInt = (int) (getHandler().getLevel() * 52);
             guiObj.drawTexturedRectFromIcon(x + 1, y - 2 + height - displayInt, sprite, 4, displayInt);
         }

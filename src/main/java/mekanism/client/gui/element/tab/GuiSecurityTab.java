@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketSecurityMode;
@@ -46,6 +47,11 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
+    protected void colorTab() {
+        MekanismRenderer.color(0xFFE8AA97);
+    }
+
+    @Override
     protected int getYOffset(double mouseX, double mouseY) {
         UUID owner = getOwner();
         if (owner != null && owner.equals(minecraft.player.getUniqueID())) {
@@ -64,7 +70,17 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
         if (data != null && data.override) {
             mode = data.mode;
         }
-        return width + (innerSize * mode.ordinal());
+        return innerSize * mode.ordinal();
+    }
+
+    @Override
+    protected int getTextureWidth() {
+        return 54;
+    }
+
+    @Override
+    protected int getTextureHeight() {
+        return 54;
     }
 
     @Override

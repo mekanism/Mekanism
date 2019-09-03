@@ -40,7 +40,7 @@ public enum TransmissionType implements IHasTranslationKey {
 
     @Override
     public String getTranslationKey() {
-        return "mekanism.transmission." + getTransmission();
+        return "transmission.mekanism." + getTransmission();
     }
 
     public boolean checkTransmissionType(ITransmitter transmitter) {

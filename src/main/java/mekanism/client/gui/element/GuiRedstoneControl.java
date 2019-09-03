@@ -1,7 +1,9 @@
 package mekanism.client.gui.element;
 
 import mekanism.api.Coord4D;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
@@ -39,6 +41,21 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
 
     @Override
     protected int getXOffset() {
-        return width + (innerSize * ((IRedstoneControl) tileEntity).getControlType().ordinal());
+        return innerSize * ((IRedstoneControl) tileEntity).getControlType().ordinal();
+    }
+
+    @Override
+    protected int getTextureWidth() {
+        return 72;
+    }
+
+    @Override
+    protected int getTextureHeight() {
+        return 36;
+    }
+
+    @Override
+    protected void colorTab() {
+        MekanismRenderer.color(EnumColor.DARK_RED);
     }
 }

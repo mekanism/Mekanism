@@ -17,7 +17,7 @@ public class GuiBucketIO extends GuiElement {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(x, y, 0, 0, width, height);
+        guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
         minecraft.textureManager.bindTexture(defaultLocation);
     }
 

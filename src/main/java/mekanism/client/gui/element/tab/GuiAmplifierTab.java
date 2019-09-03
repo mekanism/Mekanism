@@ -23,7 +23,17 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     protected int getXOffset() {
-        return width + (innerSize * tileEntity.outputMode.ordinal());
+        return innerSize * tileEntity.outputMode.ordinal();
+    }
+
+    @Override
+    protected int getTextureWidth() {
+        return 54;
+    }
+
+    @Override
+    protected int getTextureHeight() {
+        return 36;
     }
 
     @Override

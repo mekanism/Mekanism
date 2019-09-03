@@ -18,7 +18,7 @@ public class GuiPowerBar extends GuiBar<IBarInfoHandler> {
 
     //TODO: For this and elements like it we should not allow clicking them even if the on click does nothing (we don't want a click sound to be made)
     public GuiPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y) {
-        super(gui, new IBarInfoHandler() {
+        super(ENERGY_BAR, gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent();
@@ -32,12 +32,11 @@ public class GuiPowerBar extends GuiBar<IBarInfoHandler> {
     }
 
     public GuiPowerBar(IGuiWrapper gui, IBarInfoHandler handler, ResourceLocation def, int x, int y) {
-        super(gui, handler, def, x, y, 6, 56);
+        super(ENERGY_BAR, gui, handler, def, x, y, 6, 56);
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(ENERGY_BAR);
         int displayInt = (int) (getHandler().getLevel() * 52);
         guiObj.drawModalRectWithCustomSizedTexture(x + 1, y - 2+ height - displayInt, 0, 0, 4, displayInt, 4, 52);
     }

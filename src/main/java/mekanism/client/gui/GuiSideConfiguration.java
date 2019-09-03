@@ -59,8 +59,12 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        for (TransmissionType type : getTile().getConfig().getTransmissions()) {
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource);
+        //TODO: We can set the proper positions based on it now
+        List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
+        for (int i = 0; i < transmissions.size(); i++) {
+            TransmissionType type = transmissions.get(i);
+            //TODO: Figure out if there is a simpler way to do y
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource, (i < 3 ? -26 : 176), 2 + ((i % 3) * (26 + 2)));
             addButton(tab);
             configTabs.add(tab);
         }
@@ -100,14 +104,9 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     }
 
     public void updateTabs() {
-        int rendered = 0;
+        //TODO: Is there a reason to not have them just always all be visible?
         for (GuiConfigTypeTab tab : configTabs) {
-            tab.setVisible(currentType != tab.getTransmissionType());
-            if (tab.isVisible()) {
-                tab.setLeft(rendered >= 0 && rendered <= 2);
-                tab.setYOffset(2 + ((rendered % 3) * (26 + 2)));
-            }
-            rendered++;
+            tab.visible = currentType != tab.getTransmissionType();
         }
     }
 

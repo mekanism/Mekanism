@@ -11,18 +11,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiRateBar extends GuiBar<IBarInfoHandler> {
 
-    private static final ResourceLocation RATE_BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "rate_bar.png");
-
     public GuiRateBar(IGuiWrapper gui, IBarInfoHandler handler, ResourceLocation def, int x, int y) {
-        super(gui, handler, def, x, y, 8, 60);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "rate_bar.png"), gui, handler, def, x, y, 8, 60);
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RATE_BAR);
+        //TODO: Check all of this
         int displayInt = (int) (getHandler().getLevel() * 58);
-        //TODO: Check this
-        guiObj.drawTexturedRect(x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt);
-        //TODO: Should we switch it back to RESOURCE as the texture?
+        guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, 6, 58);
     }
 }

@@ -29,4 +29,14 @@ public class GuiUpgradeTab extends GuiInsetElement<TileEntity> {
     public void onClick(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.UPGRADE_MANAGEMENT, tileEntity.getPos()));
     }
+
+    @Override
+    protected int getTextureWidth() {
+        return 18;
+    }
+
+    @Override
+    protected int getTextureHeight() {
+        return 36;
+    }
 }

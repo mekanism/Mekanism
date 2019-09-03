@@ -5,6 +5,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+//TODO: Convert some of the buttons to being GuiElement instead. Mainly ones that don't even bother rendering text
 public class MekanismButton extends Button {
 
     private final IHoverable onHover;
@@ -44,6 +45,7 @@ public class MekanismButton extends Button {
         return false;
     }
 
+    //TODO: Add right click support to GuiElement
     protected void onRightClick() {
         if (onRightClick != null) {
             onRightClick.onPress(this);

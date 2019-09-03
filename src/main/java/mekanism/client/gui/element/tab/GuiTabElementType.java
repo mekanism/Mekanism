@@ -17,6 +17,17 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
         tabType = type;
     }
 
+
+    @Override
+    protected int getTextureWidth() {
+        return 18;
+    }
+
+    @Override
+    protected int getTextureHeight() {
+        return 36;
+    }
+
     @Override
     public void onClick(double mouseX, double mouseY) {
         //TODO: Handle this correctly

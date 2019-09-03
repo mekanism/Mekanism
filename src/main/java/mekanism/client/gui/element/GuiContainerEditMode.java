@@ -1,7 +1,9 @@
 package mekanism.client.gui.element;
 
 import mekanism.api.Coord4D;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode;
@@ -23,7 +25,17 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     protected int getXOffset() {
-        return width + (innerSize * ((IFluidContainerManager) tileEntity).getContainerEditMode().ordinal());
+        return innerSize * ((IFluidContainerManager) tileEntity).getContainerEditMode().ordinal();
+    }
+
+    @Override
+    protected int getTextureWidth() {
+        return 54;
+    }
+
+    @Override
+    protected int getTextureHeight() {
+        return 36;
     }
 
     @Override
@@ -36,5 +48,10 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
         ContainerEditMode current = ((IFluidContainerManager) tileEntity).getContainerEditMode();
         int ordinalToSet = current.ordinal() < (ContainerEditMode.values().length - 1) ? current.ordinal() + 1 : 0;
         Mekanism.packetHandler.sendToServer(new PacketContainerEditMode(Coord4D.get(tileEntity), ContainerEditMode.values()[ordinalToSet]));
+    }
+
+    @Override
+    protected void colorTab() {
+        MekanismRenderer.color(EnumColor.DARK_BLUE);
     }
 }

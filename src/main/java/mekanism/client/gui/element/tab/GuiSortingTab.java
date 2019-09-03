@@ -18,8 +18,26 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiSortingTab extends GuiInsetElement<TileEntityFactory> {
 
+    private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "extended_holder_left.png");
+
     public GuiSortingTab(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "sorting.png"), gui, def, tile, -26, 62, 26, 35, 18);
+    }
+
+    @Override
+    protected int getTextureWidth() {
+        return 18;
+    }
+
+    @Override
+    protected int getTextureHeight() {
+        return 36;
+    }
+
+    @Override
+    protected ResourceLocation getHolderTexture() {
+        //TODO: Override the right tab holder at some point if we need it
+        return left ? HOLDER_LEFT : GuiInsetElement.INSET_HOLDER_RIGHT;
     }
 
     @Override
