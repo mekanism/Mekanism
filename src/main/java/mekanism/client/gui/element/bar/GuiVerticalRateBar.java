@@ -9,9 +9,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiRateBar extends GuiBar<IBarInfoHandler> {
+public class GuiVerticalRateBar extends GuiVerticalBar<IBarInfoHandler> {
 
-    public GuiRateBar(IGuiWrapper gui, IBarInfoHandler handler, ResourceLocation def, int x, int y) {
+    public GuiVerticalRateBar(IGuiWrapper gui, IBarInfoHandler handler, ResourceLocation def, int x, int y) {
+        //TODO: I believe the width and height will need to be changed/make it stretch
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "rate_bar.png"), gui, handler, def, x, y, 8, 60);
     }
 

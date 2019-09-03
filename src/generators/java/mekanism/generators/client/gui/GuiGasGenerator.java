@@ -3,7 +3,7 @@ package mekanism.generators.client.gui;
 import java.util.Arrays;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -42,7 +42,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
               TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
         addButton(new GuiGasGauge(() -> tileEntity.fuelTank, Type.WIDE, this, resource, 55, 18));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34).with(SlotOverlay.MINUS));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
@@ -59,6 +59,6 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "gas_burning_generator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "blank.png");
     }
 }

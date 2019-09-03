@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -40,7 +40,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 27, 50));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 142, 34).with(SlotOverlay.POWER));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),

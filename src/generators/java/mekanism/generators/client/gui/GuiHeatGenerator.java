@@ -4,7 +4,7 @@ import java.util.Arrays;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -46,7 +46,7 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, H
               TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"))
               , this, resource));
         addButton(new GuiFluidGauge(() -> tileEntity.lavaTank, Type.WIDE, this, resource, 55, 18));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
         addButton(new GuiHeatInfo(() -> {
@@ -67,6 +67,6 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, H
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "heat_generator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "blank.png");
     }
 }

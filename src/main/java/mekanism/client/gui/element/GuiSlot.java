@@ -19,6 +19,7 @@ public class GuiSlot extends GuiElement {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"), gui, def, x, y, type.width, type.height);
         textureX = type.textureX;
         textureY = type.textureY;
+        //TODO: Mark any other ones as inactive that shouldn't allow clicking
         //Mark the slot as inactive as we really just want to be drawing it and not intercepting the mouse clicks
         active = false;
     }

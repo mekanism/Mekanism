@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -50,6 +51,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 24));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 55));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 4).with(SlotOverlay.POWER));
+        addButton(new GuiHorizontalPowerBar(this, tileEntity, resource, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.clientEnergyUsed), "/t"),
               TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
@@ -91,12 +93,6 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             drawString(TextComponentUtil.translate("gui.mekanism.condensentrating"), 6, (ySize - 94) + 2, 0x404040);
         } else {
             drawString(TextComponentUtil.translate("gui.mekanism.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
-        }
-        //TODO: 1.14 Convert to GuiElement
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
-            displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

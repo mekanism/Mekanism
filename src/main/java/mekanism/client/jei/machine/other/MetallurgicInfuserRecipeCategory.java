@@ -15,9 +15,9 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.bar.GuiInfuseBar;
-import mekanism.client.gui.element.bar.GuiInfuseBar.InfuseInfoProvider;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalInfuseBar;
+import mekanism.client.gui.element.bar.GuiVerticalInfuseBar.InfuseInfoProvider;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.InfuseStorage;
 import mekanism.common.MekanismBlock;
@@ -35,7 +35,7 @@ import net.minecraft.util.text.ITextComponent;
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
     private RecipeInfuseInfoProvider infoProvider;
-    private GuiInfuseBar infuseBar;
+    private GuiVerticalInfuseBar infuseBar;
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/metallurgic_infuser.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
@@ -51,14 +51,14 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 50, 42));
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 142, 34).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 108, 42));
-        guiElements.add(new GuiPowerBar(this, () -> 1F, guiLocation, 164, 15));
+        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, guiLocation, 164, 15));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return (double) timer.getValue() / 20F;
             }
         }, ProgressBar.MEDIUM, this, guiLocation, 70, 46));
-        guiElements.add(infuseBar = new GuiInfuseBar(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15));
+        guiElements.add(infuseBar = new GuiVerticalInfuseBar(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15));
     }
 
     @Override

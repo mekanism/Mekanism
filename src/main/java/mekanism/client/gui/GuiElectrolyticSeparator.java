@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -54,7 +54,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 5, 10));
         addButton(new GuiGasGauge(() -> tileEntity.leftTank, GuiGauge.Type.SMALL, this, resource, 58, 18));
         addButton(new GuiGasGauge(() -> tileEntity.rightTank, GuiGauge.Type.SMALL, this, resource, 100, 18));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 34));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 58, 51));

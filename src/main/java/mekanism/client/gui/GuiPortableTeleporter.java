@@ -10,7 +10,7 @@ import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
@@ -78,7 +78,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiPowerBar(this, new IBarInfoHandler() {
+        addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();

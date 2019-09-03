@@ -5,7 +5,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -58,7 +58,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 159, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 159, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
               TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))

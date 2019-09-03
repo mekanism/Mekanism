@@ -8,7 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.Slurry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -57,7 +57,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 160, 23));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 160, 23));
         addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(

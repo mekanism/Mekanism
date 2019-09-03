@@ -1,6 +1,7 @@
 package mekanism.client.gui.chemical;
 
 import java.util.Arrays;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -9,6 +10,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
@@ -27,7 +29,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, ChemicalInfuserContainer> {
+public class GuiChemicalInfuser extends GuiMekanismTile<TileEntityChemicalInfuser, ChemicalInfuserContainer> {
 
     public GuiChemicalInfuser(ChemicalInfuserContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -40,6 +42,7 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, C
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiHorizontalPowerBar(this, tileEntity, resource, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.clientEnergyUsed), "/t"),
               TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
@@ -67,12 +70,19 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser, C
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "chemical_infuser.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "blank.png");
     }
 
     @Override
-    protected void drawForegroundText() {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+        drawTexturedRect(guiLeft + 116, guiTop + 76, 176, 0, tileEntity.getScaledEnergyLevel(52), 4);
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.translate("gui.mekanism.chemicalInfuser.short"), 5, 5, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

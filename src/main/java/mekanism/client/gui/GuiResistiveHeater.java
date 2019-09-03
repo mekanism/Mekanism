@@ -6,7 +6,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -45,7 +45,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 14, 34).with(SlotOverlay.POWER));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiRedstoneControl(this, tileEntity, resource));

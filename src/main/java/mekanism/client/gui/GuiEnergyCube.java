@@ -55,6 +55,6 @@ public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, EnergyC
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "energy_cube.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "blank.png");
     }
 }

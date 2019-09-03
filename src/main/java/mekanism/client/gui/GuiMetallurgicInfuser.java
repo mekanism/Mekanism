@@ -12,9 +12,9 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.bar.GuiInfuseBar;
-import mekanism.client.gui.element.bar.GuiInfuseBar.InfuseInfoProvider;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalInfuseBar;
+import mekanism.client.gui.element.bar.GuiVerticalInfuseBar.InfuseInfoProvider;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -49,7 +49,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
               TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
@@ -64,7 +64,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
                 return tileEntity.getScaledProgress();
             }
         }, ProgressBar.MEDIUM, this, resource, 70, 46));
-        addButton(new GuiInfuseBar(this, new InfuseInfoProvider() {
+        addButton(new GuiVerticalInfuseBar(this, new InfuseInfoProvider() {
             @Nonnull
             @Override
             public TextureAtlasSprite getSprite() {
@@ -97,6 +97,6 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "metallurgic_infuser.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "blank.png");
     }
 }

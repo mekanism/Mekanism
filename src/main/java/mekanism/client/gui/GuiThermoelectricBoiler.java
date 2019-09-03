@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.Collections;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
-import mekanism.client.gui.element.bar.GuiRateBar;
+import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.config.MekanismConfig;
@@ -34,7 +34,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));
-        addButton(new GuiRateBar(this, new IBarInfoHandler() {
+        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("gui.mekanism.boilRate"), ": " + tileEntity.getLastBoilRate() + " mB/t");
@@ -45,7 +45,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
                 return tileEntity.structure == null ? 0 : (double) tileEntity.getLastBoilRate() / (double) tileEntity.structure.lastMaxBoil;
             }
         }, resource, 24, 13));
-        addButton(new GuiRateBar(this, new IBarInfoHandler() {
+        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("gui.mekanism.maxBoil"), ": " + tileEntity.getLastMaxBoil() + " mB/t");

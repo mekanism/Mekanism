@@ -1,6 +1,7 @@
 package mekanism.client.gui.chemical;
 
 import java.util.Arrays;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBucketIO;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
@@ -10,6 +11,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -30,7 +32,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher, ChemicalWasherContainer> {
+public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher, ChemicalWasherContainer> {
 
     public GuiChemicalWasher(ChemicalWasherContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -43,6 +45,7 @@ public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher, Che
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
         addButton(new GuiRedstoneControl(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiHorizontalPowerBar(this, tileEntity, resource, 115, 75));
         addButton(new GuiBucketIO(this, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.clientEnergyUsed), "/t"),
@@ -67,7 +70,14 @@ public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher, Che
     }
 
     @Override
-    protected void drawForegroundText() {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+        drawTexturedRect(guiLeft + 116, guiTop + 76, 176, 0, tileEntity.getScaledEnergyLevel(52), 4);
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 4, 0x404040);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

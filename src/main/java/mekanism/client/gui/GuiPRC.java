@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.bar.GuiPowerBar;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -55,7 +55,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPRC, PressurizedReactionCh
         addButton(new GuiFluidGauge(() -> tileEntity.inputFluidTank, GuiGauge.Type.STANDARD_YELLOW, this, resource, 5, 10));
         addButton(new GuiGasGauge(() -> tileEntity.inputGasTank, GuiGauge.Type.STANDARD_RED, this, resource, 28, 10));
         addButton(new GuiGasGauge(() -> tileEntity.outputGasTank, GuiGauge.Type.SMALL_BLUE, this, resource, 140, 40));
-        addButton(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 53, 34));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 140, 18).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 115, 34));

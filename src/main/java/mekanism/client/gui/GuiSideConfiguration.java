@@ -59,7 +59,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        //TODO: We can set the proper positions based on it now
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             TransmissionType type = transmissions.get(i);
