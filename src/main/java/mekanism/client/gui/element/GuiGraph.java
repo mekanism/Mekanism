@@ -74,7 +74,7 @@ public class GuiGraph extends GuiElement {
             for (int xIter = 0; xIter < xDisplays; xIter++) {
                 int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
                 int heightCalculated = height % 10 > 0 && yIter == yDisplays - 1 ? height % 10 : 10;
-                guiObj.drawTexturedRect(x + (xIter * 10), y + (yIter * 10), 0, 0, widthCalculated, heightCalculated);
+                guiObj.drawModalRectWithCustomSizedTexture(x + (xIter * 10), y + (yIter * 10), 0, 0, widthCalculated, heightCalculated, 12, 10);
             }
         }
     }
@@ -83,7 +83,7 @@ public class GuiGraph extends GuiElement {
         for (int i = 0; i < graphData.size(); i++) {
             int data = Math.min(currentScale, graphData.get(i));
             int relativeHeight = (int) (((double) data / (double) currentScale) * height);
-            guiObj.drawTexturedRect(x + i, y + (height - relativeHeight), 10, 0, 1, 1);
+            guiObj.drawModalRectWithCustomSizedTexture(x + i, y + (height - relativeHeight), 10, 0, 1, 1, 12, 10);
 
             int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
 
@@ -94,7 +94,7 @@ public class GuiGraph extends GuiElement {
             for (int iter = 0; iter < displays; iter++) {
                 GlStateManager.color4f(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
-                guiObj.drawTexturedRect(x + i, y + (height - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
+                guiObj.drawModalRectWithCustomSizedTexture(x + i, y + (height - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height, 12, 10);
             }
             MekanismRenderer.resetColor();
             GlStateManager.disableBlend();

@@ -56,7 +56,16 @@ public class GuiScrollList extends GuiElement {
         minecraft.textureManager.bindTexture(RESOURCE);
         drawBlack();
         drawSelected(selected);
+        drawScroll();
         minecraft.textureManager.bindTexture(defaultLocation);
+        if (!textEntries.isEmpty()) {
+            for (int i = 0; i < height; i++) {
+                int index = getScrollIndex() + i;
+                if (index <= textEntries.size() - 1) {
+                    renderScaledText(textEntries.get(index), x + 1, y + 1 + (10 * i), 0x00CD00, width - 6);
+                }
+            }
+        }
     }
 
     public void drawBlack() {
@@ -65,7 +74,7 @@ public class GuiScrollList extends GuiElement {
         for (int yIter = 0; yIter < height; yIter++) {
             for (int xIter = 0; xIter < xDisplays; xIter++) {
                 int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
-                guiObj.drawTexturedRect(x + (xIter * 10), y + (yIter * 10), 0, 0, widthCalculated, 10);
+                guiObj.drawModalRectWithCustomSizedTexture(x + (xIter * 10), y + (yIter * 10), 0, 0, widthCalculated, 10, 20, 20);
             }
         }
     }
@@ -78,7 +87,7 @@ public class GuiScrollList extends GuiElement {
 
             for (int xIter = 0; xIter < xDisplays; xIter++) {
                 int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
-                guiObj.drawTexturedRect(x + (xIter * 10), y + (index - scroll) * 10, 0, 10, widthCalculated, 10);
+                guiObj.drawModalRectWithCustomSizedTexture(x + (xIter * 10), y + (index - scroll) * 10, 0, 10, widthCalculated, 10, 20, 20);
             }
         }
     }
@@ -88,13 +97,13 @@ public class GuiScrollList extends GuiElement {
         int yStart = y;
 
         for (int i = 0; i < height; i++) {
-            guiObj.drawTexturedRect(xStart, yStart + (i * 10), 10, 1, 6, 10);
+            guiObj.drawModalRectWithCustomSizedTexture(xStart, yStart + (i * 10), 10, 1, 6, 10, 20, 20);
         }
 
-        guiObj.drawTexturedRect(xStart, yStart, 10, 0, 6, 1);
-        guiObj.drawTexturedRect(xStart, yStart + (height * 10) - 1, 10, 0, 6, 1);
+        guiObj.drawModalRectWithCustomSizedTexture(xStart, yStart, 10, 0, 6, 1, 20, 20);
+        guiObj.drawModalRectWithCustomSizedTexture(xStart, yStart + (height * 10) - 1, 10, 0, 6, 1, 20, 20);
 
-        guiObj.drawTexturedRect(xStart + 1, yStart + 1 + getScroll(), 16, 0, 4, 4);
+        guiObj.drawModalRectWithCustomSizedTexture(xStart + 1, yStart + 1 + getScroll(), 16, 0, 4, 4, 20, 20);
     }
 
     public int getMaxScroll() {
@@ -113,24 +122,8 @@ public class GuiScrollList extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        //TODO: Some of this should be in renderButton
-        if (!textEntries.isEmpty()) {
-            for (int i = 0; i < height; i++) {
-                int index = getScrollIndex() + i;
-                if (index <= textEntries.size() - 1) {
-                    renderScaledText(textEntries.get(index), x + 1, y + 1 + (10 * i), 0x00CD00, width - 6);
-                }
-            }
-        }
-
-        minecraft.textureManager.bindTexture(RESOURCE);
-        drawScroll();
-        minecraft.textureManager.bindTexture(defaultLocation);
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        //TODO: Replace with onClick
         if (button == 0) {
             int xStart = x + width - 5;
 
@@ -158,25 +151,21 @@ public class GuiScrollList extends GuiElement {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+    protected void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
-        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
         if (isDragging) {
             scroll = Math.min(Math.max((mouseY - (y + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
         }
-        return true;
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int type) {
-        super.mouseReleased(mouseX, mouseY, type);
-        if (type == 0) {
-            if (isDragging) {
-                dragOffset = 0;
-                isDragging = false;
-            }
+    public void onRelease(double mouseX, double mouseY) {
+        super.onRelease(mouseX, mouseY);
+        if (isDragging) {
+            dragOffset = 0;
+            isDragging = false;
         }
-        return true;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package mekanism.client.gui.robit;
 
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -64,29 +64,33 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         nameChangeField.setFocused2(true);
         nameChangeField.visible = false;
 
-        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation(), onPress -> {
+        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 16, 18, false, getButtonLocation("home"), onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
             minecraft.displayGuiScreen(null);
         }, getOnHover("gui.mekanism.robit.teleport")));
-        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 35, 18, false, getButtonLocation("drop"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId())),
               getOnHover("gui.mekanism.robit.togglePickup")));
-        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 54, 18, false, getButtonLocation("rename"),
               onPress -> toggleNameChange(), getOnHover("gui.mekanism.robit.rename")));
-        addButton(new DisableableImageButton(guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 152, guiTop + 54, 18, false, getButtonLocation("follow"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId())),
               getOnHover("gui.mekanism.robit.toggleFollow")));
-        addButton(new DisableableImageButton(guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation(), onPress -> {
+        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 10, 18, false, getButtonLocation("main"), onPress -> {
             //Clicking main button doesn't do anything while already on the main GUI
         }));
-        addButton(new DisableableImageButton(guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 30, 18, false, getButtonLocation("crafting"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getEntityId()))));
-        addButton(new DisableableImageButton(guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 50, 18, false, getButtonLocation("inventory"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getEntityId()))));
-        addButton(new DisableableImageButton(guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 70, 18, false, getButtonLocation("smelting"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getEntityId()))));
-        addButton(new DisableableImageButton(guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 90, 18, false, getButtonLocation("repair"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getEntityId()))));
+    }
+
+    private ResourceLocation getButtonLocation(String name) {
+        return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "robit/" + name + ".png");
     }
 
     @Override
