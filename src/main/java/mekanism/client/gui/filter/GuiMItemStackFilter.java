@@ -3,6 +3,7 @@ package mekanism.client.gui.filter;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -62,7 +63,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));
-        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         addButton(new DisableableImageButton(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
               onPress -> filter.requireStack = !filter.requireStack,

@@ -1,6 +1,6 @@
 package mekanism.client.gui.filter;
 
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -31,7 +31,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
         addButton(oredictButton = new TranslationButton(guiLeft + 24, guiTop + 52, 128, 20, "gui.mekanism.oredict", onTagButton()));
         addButton(materialButton = new TranslationButton(guiLeft + 24, guiTop + 72, 128, 20, "gui.mekanism.material", onMaterialButton()));
         addButton(modIDButton = new TranslationButton(guiLeft + 24, guiTop + 92, 128, 20, "gui.mekanism.modID", onModIDButton()));
-        addButton(backButton = new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(), onBackButton()));
+        addButton(backButton = new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onBackButton()));
     }
 
     protected abstract IPressable onItemStackButton();

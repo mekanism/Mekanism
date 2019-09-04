@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -57,8 +58,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
-        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation(),
-              onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
+        addButton(new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
         addButton(new DisableableImageButton(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(), onPress -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();

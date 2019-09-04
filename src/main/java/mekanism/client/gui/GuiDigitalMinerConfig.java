@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
@@ -120,7 +121,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
         super.init();
         addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
-        addButton(new DisableableImageButton(guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         addButton(new DisableableImageButton(guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setRadius()));
         addButton(new DisableableImageButton(guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setMinY()));
