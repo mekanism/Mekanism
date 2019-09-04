@@ -16,7 +16,7 @@
       "tag": "forge:circuits/advanced"
     },
     "G": {
-      "tag": "forge:panes/glass"
+      "tag": "forge:glass_panes"
     },
     "I": {
       "item": "mekanism:thermal_evaporation_block"

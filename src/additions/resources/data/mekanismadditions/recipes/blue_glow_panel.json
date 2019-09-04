@@ -11,7 +11,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "forge:panes/glass"
+      "tag": "forge:glass_panes"
     },
     "S": {
       "item": "mekanism:hdpe_sheet"

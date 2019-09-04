@@ -25,7 +25,7 @@
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "tag": "forge:panes/glass"
+      "tag": "forge:glass_panes"
     },
     "W": {
       "tag": "forge:chests/wooden"

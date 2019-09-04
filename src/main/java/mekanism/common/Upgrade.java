@@ -74,11 +74,11 @@ public enum Upgrade implements IHasTranslationKey {
 
     @Override
     public String getTranslationKey() {
-        return "mekanism.upgrade." + name + ".name";
+        return "upgrade.mekanism." + name;
     }
 
     public String getDescription() {
-        return "mekanism.upgrade." + name + ".desc";
+        return "upgrade.mekanism." + name + ".desc";
     }
 
     public int getMax() {

@@ -16,7 +16,7 @@
       "item": "mekanism:basic_gas_tank"
     },
     "G": {
-      "tag": "forge:panes/glass"
+      "tag": "forge:glass_panes"
     },
     "I": {
       "item": "mekanismgenerators:reactor_frame"

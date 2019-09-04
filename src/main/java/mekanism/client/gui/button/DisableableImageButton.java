@@ -26,10 +26,6 @@ public class DisableableImageButton extends MekanismButton {
         this(x, y, width, height, offsetX, offsetY, hoverOffset, 0, resource, onPress, onHover);
     }
 
-    public DisableableImageButton(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, int disabledOffset, ResourceLocation resource, IPressable onPress) {
-        this(x, y, width, height, offsetX, offsetY, hoverOffset, disabledOffset, resource, onPress, null);
-    }
-
     public DisableableImageButton(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, int disabledOffset, ResourceLocation resource,
           IPressable onPress, IHoverable onHover) {
         super(x, y, width, height, "", onPress, onHover);

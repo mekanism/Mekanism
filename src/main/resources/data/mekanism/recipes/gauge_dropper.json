@@ -10,7 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
-      "tag": "forge:panes/glass"
+      "tag": "forge:glass_panes"
     },
     "O": {
       "tag": "forge:ingots/osmium"
