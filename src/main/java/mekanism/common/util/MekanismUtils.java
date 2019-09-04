@@ -1057,6 +1057,7 @@ public final class MekanismUtils {
 
     public enum ResourceType {
         GUI("gui"),
+        GUI_BUTTON("gui/buttons"),
         GUI_ELEMENT("gui/elements"),
         SOUND("sound"),
         RENDER("render"),

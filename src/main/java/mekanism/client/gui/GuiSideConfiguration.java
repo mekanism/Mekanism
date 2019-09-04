@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.common.Mekanism;
@@ -69,9 +69,9 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         }
         updateTabs();
 
-        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 156, guiTop + 6, 14, getButtonLocation("auto_eject"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType)),
               getOnHover("gui.mekanism.autoEject")));
         for (int i = 0; i < slotPosMap.size(); i++) {

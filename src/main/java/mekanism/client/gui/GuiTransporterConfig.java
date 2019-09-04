@@ -7,8 +7,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
 import mekanism.client.gui.button.ColorButton;
-import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -53,9 +53,9 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
     @Override
     public void init() {
         super.init();
-        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(new DisableableImageButton(guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 156, guiTop + 6, 14, getButtonLocation("strict_input"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
               getOnHover("gui.mekanism.configuration.strictInput")));
         addButton(new ColorButton(guiLeft + 122, guiTop + 49, 16, 16, this, () -> getTile().getEjector().getOutputColor(),

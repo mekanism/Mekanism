@@ -1,7 +1,7 @@
 package mekanism.generators.client.gui;
 
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -25,12 +25,12 @@ public abstract class GuiReactorInfo<CONTAINER extends ReactorInfoContainer> ext
     @Override
     public void init() {
         super.init();
-        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
     }
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "tall.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "null.png");
     }
 }

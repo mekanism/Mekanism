@@ -9,6 +9,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -50,6 +52,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     protected IHoverable getOnHover(ITextComponent component) {
         return (onHover, xAxis, yAxis) -> displayTooltip(component, xAxis, yAxis);
+    }
+
+    protected ResourceLocation getButtonLocation(String name) {
+        return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
     }
 
     public int getStringWidth(ITextComponent component) {

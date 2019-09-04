@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -45,7 +46,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     @Override
     public void init() {
         super.init();
-        addButton(new DisableableImageButton(guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         addButton(removeButton = new DisableableImageButton(guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation(),
               onPress -> {
