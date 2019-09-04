@@ -1,6 +1,5 @@
 package mekanism.common.item.block.machine;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -69,13 +68,16 @@ public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip<BlockDigital
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
-        //TODO: Do this better
-        Iterator<BlockPos> iterator = BlockPos.getAllInBox(-1, 0, -1, 1, 1, 1).iterator();
-        while (iterator.hasNext()) {
-            BlockPos pos = iterator.next();
-            if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
-                //If it won't fit then fail
-                return false;
+        BlockPos placePos = context.getPos();
+        for (int xPos = -1; xPos <= 1; xPos++) {
+            for (int yPos = 0; yPos <= 1; yPos++) {
+                for (int zPos = -1; zPos <= 1; zPos++) {
+                    BlockPos pos = placePos.add(xPos, yPos, zPos);
+                    if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
+                        //If it won't fit then fail
+                        return false;
+                    }
+                }
             }
         }
         return super.placeBlock(context, state);

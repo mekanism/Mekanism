@@ -18,6 +18,7 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
 
     @Override
     public void render(TileEntityDigitalMiner tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+        setLightmapDisabled(true);
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png"));
@@ -32,5 +33,6 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
         if (tileEntity.clientRendering) {
             MinerVisualRenderer.render(tileEntity);
         }
+        setLightmapDisabled(false);
     }
 }

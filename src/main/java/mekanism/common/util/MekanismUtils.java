@@ -470,7 +470,6 @@ public final class MekanismUtils {
     public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote) {
-            //TODO: Figure out how to delay this so that the tile gets created before this code runs
             TileEntity tile = getTileEntity(world, boundingLocation);
             if (tile instanceof TileEntityBoundingBlock) {
                 ((TileEntityBoundingBlock) tile).setMainLocation(orig.getPos());
@@ -490,7 +489,6 @@ public final class MekanismUtils {
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote) {
-            //TODO: Figure out how to delay this so that the tile gets created before this code runs
             TileEntity tile = getTileEntity(world, boundingLocation);
             if (tile instanceof TileEntityAdvancedBoundingBlock) {
                 ((TileEntityAdvancedBoundingBlock) tile).setMainLocation(orig.getPos());

@@ -16,6 +16,7 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -26,6 +27,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 //TODO: Ask the main block about the voxel shape this bounding block should have
+//TODO: Extend BlockTileDrops instead and rename it to MekanismBlock. Not done yet as checking is needed to ensure how drops happen
+// still happens correctly and things in the super class don't mess this up
 public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock> {
 
     @Nullable
@@ -187,10 +190,27 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+        return getTileType().create();
+    }
+
+    @Override
     public TileEntityType<TileEntityBoundingBlock> getTileType() {
         if (advanced) {
             return MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK;
         }
         return MekanismTileEntityTypes.BOUNDING_BLOCK;
+    }
+
+    @Nonnull
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        //TODO: Check if this is the ideal solution or do we want to offload it to the main block somehow
+        return BlockRenderLayer.CUTOUT;
     }
 }

@@ -50,6 +50,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fluids.FluidStack;
 
 public abstract class BlockMekanismContainer extends ContainerBlock {
@@ -168,7 +169,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     }*/
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(BlockState, ServerWorld, BlockPos, TileEntity)}. Used together with {@link
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
