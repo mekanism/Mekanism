@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.render.MekanismRenderer;
@@ -43,7 +43,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     protected int yOffset;
     protected IDrawable fluidOverlayLarge;
     protected IDrawable fluidOverlaySmall;
-    protected Set<GuiElement> guiElements = new HashSet<>();
+    protected Set<GuiTexturedElement> guiElements = new HashSet<>();
     private ResourceLocation recipeUID;
     private String unlocalizedName;
 
@@ -102,23 +102,23 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    public void drawTexturedRect(int x, int y, int u, int v, int w, int h) {
-        gui.blit(x, y, u, v, w, h);
+    public void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height) {
+        gui.blit(x, y, textureX, textureY, width, height);
     }
 
     @Override
-    public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h) {
-        gui.blit(x, y, icon, w, h);
+    public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
+        gui.blit(x, y, icon, width, height);
     }
 
     @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {
-        AbstractGui.blit(x, y, u, v, width, height, textureWidth, textureHeight);
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
+        AbstractGui.blit(x, y, textureX, textureY, width, height, textureWidth, textureHeight);
     }
 
     @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int a, int b, int u, int v, int width, int height, int textureWidth, int textureHeight) {
-        AbstractGui.blit(x, y, a, b, u, v, width, height, textureWidth, textureHeight);
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
+        AbstractGui.blit(x, y, desiredWidth, desiredHeight, textureX, textureY, width, height, textureWidth, textureHeight);
     }
 
     @Override

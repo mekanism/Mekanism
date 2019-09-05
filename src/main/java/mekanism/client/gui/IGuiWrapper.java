@@ -12,15 +12,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public interface IGuiWrapper {
 
-    void drawTexturedRect(int x, int y, int u, int v, int width, int height);
+    void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height);
 
     void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height);
 
     //TODO: Rename
-    void drawModalRectWithCustomSizedTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight);
+    void drawModalRectWithCustomSizedTexture(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
 
     //TODO: Rename and get better names for a and b
-    void drawModalRectWithCustomSizedTexture(int x, int y, int a, int b, int u, int v, int width, int height, int textureWidth, int textureHeight);
+    void drawModalRectWithCustomSizedTexture(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
 
     void displayTooltip(ITextComponent component, int xAxis, int yAxis);
 

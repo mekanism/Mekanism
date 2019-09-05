@@ -17,7 +17,7 @@ public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, 36, 63);
         int displayInt = tileEntity.getScaledRecipeProgress(15);
         guiObj.drawModalRectWithCustomSizedTexture(x + 5, y + 24, width, 0, 10, displayInt, 36, 63);

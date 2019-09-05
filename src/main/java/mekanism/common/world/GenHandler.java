@@ -33,7 +33,7 @@ public class GenHandler {
         }
     }
 
-    private static void addGeneration( Biome biome) {
+    private static void addGeneration(Biome biome) {
         addOreGeneration(biome, MekanismBlock.COPPER_ORE, MekanismConfig.general.copperPerChunk, MekanismConfig.general.copperMaxVeinSize, 0, 0, 60);
         addOreGeneration(biome, MekanismBlock.TIN_ORE, MekanismConfig.general.tinPerChunk, MekanismConfig.general.tinMaxVeinSize, 0, 0, 60);
         addOreGeneration(biome, MekanismBlock.OSMIUM_ORE, MekanismConfig.general.osmiumPerChunk, MekanismConfig.general.osmiumMaxVeinSize, 0, 0, 60);

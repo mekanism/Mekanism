@@ -60,7 +60,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                 BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
                 Coord4D hitCoord = new Coord4D(mop, world);
                 if (!hitCoord.equals(digging)) {
-                    digging =  mop.getType() == Type.MISS ? null : hitCoord;
+                    digging = mop.getType() == Type.MISS ? null : hitCoord;
                     diggingProgress = 0;
                 }
 

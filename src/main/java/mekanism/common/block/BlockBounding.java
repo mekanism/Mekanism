@@ -156,7 +156,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     protected boolean canSilkHarvest() {
         return false;
     }*/
-
     @Override
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {

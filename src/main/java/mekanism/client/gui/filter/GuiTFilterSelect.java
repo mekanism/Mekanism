@@ -1,11 +1,11 @@
 package mekanism.client.gui.filter;
 
+import mekanism.client.gui.button.MekanismButton.IPressable;
 import mekanism.common.inventory.container.tile.filter.select.LSFilterSelectContainer;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;

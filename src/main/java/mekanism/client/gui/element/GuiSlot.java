@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSlot extends GuiElement {
+public class GuiSlot extends GuiTexturedElement {
 
     private final int textureX;
     private final int textureY;
@@ -31,7 +31,7 @@ public class GuiSlot extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         guiObj.drawTexturedRect(x, y, textureX, textureY, width, height);
         if (overlay != null) {
             guiObj.drawTexturedRect(x + (width - overlay.width) / 2, y + (height - overlay.height) / 2, overlay.textureX, overlay.textureY, overlay.width, overlay.height);

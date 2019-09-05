@@ -29,14 +29,14 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    protected ResourceLocation getOverlay() {
+    protected ResourceLocation getResource() {
         switch (((IFluidContainerManager) tileEntity).getContainerEditMode()) {
             case FILL:
                 return FILL;
             case EMPTY:
                 return EMPTY;
         }
-        return super.getOverlay();
+        return super.getResource();
     }
 
     @Override

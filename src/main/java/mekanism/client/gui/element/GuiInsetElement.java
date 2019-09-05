@@ -1,8 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -33,16 +30,12 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEn
         this.innerWidth = innerSize;
         this.innerHeight = innerSize;
         //TODO: decide what to do if this doesn't divide nicely
-        this.border = (width - innerSize) / 2;
+        this.border = (width - innerWidth) / 2;
         this.left = x < 0;
     }
 
     protected ResourceLocation getHolderTexture() {
         return left ? INSET_HOLDER_LEFT : INSET_HOLDER_RIGHT;
-    }
-
-    protected ResourceLocation getOverlay() {
-        return RESOURCE;
     }
 
     @Override
@@ -51,13 +44,28 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEn
         return this.active && this.visible && xAxis >= x + border && xAxis < x + width - border && yAxis >= y + border && yAxis < y + height - border;
     }
 
-    @Override
-    protected boolean clicked(double mouseX, double mouseY) {
-        return isMouseOver(mouseX, mouseY);
-    }
-
     protected void colorTab() {
         //Don't do any coloring by default
+    }
+
+    @Override
+    protected int getButtonX() {
+        return x + border + (left ? 1 : -1);
+    }
+
+    @Override
+    protected int getButtonY() {
+        return y + border;
+    }
+
+    @Override
+    protected int getButtonWidth() {
+        return innerWidth;
+    }
+
+    @Override
+    protected int getButtonHeight() {
+        return innerHeight;
     }
 
     @Override
@@ -68,35 +76,10 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEn
         MekanismRenderer.resetColor();
 
         //Draw the button background
-        int buttonX = x + border + (left ? 1 : -1);
-        int buttonY = y + border;
-        drawButton(mouseX, mouseY, buttonX, buttonY);
+        super.renderButton(mouseX, mouseY, partialTicks);
 
-        minecraft.textureManager.bindTexture(getOverlay());
-        guiObj.drawModalRectWithCustomSizedTexture(buttonX, buttonY, 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
+        minecraft.textureManager.bindTexture(getResource());
+        guiObj.drawModalRectWithCustomSizedTexture(getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
         minecraft.textureManager.bindTexture(defaultLocation);
-    }
-
-    //TODO: Move this to a helper method somewhere instead of duplicating it both here and in MekanismButton.
-    private void drawButton(int mouseX, int mouseY, int buttonX, int buttonY) {
-        MekanismRenderer.bindTexture(WIDGETS_LOCATION);
-        int i = getYImage(isMouseOver(mouseX, mouseY));
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-
-        int halfWidthLeft = innerWidth / 2;
-        int halfWidthRight = innerWidth % 2 == 0 ? halfWidthLeft : halfWidthLeft + 1;
-        int halfHeightTop = innerHeight / 2;
-        int halfHeightBottom = innerHeight % 2 == 0 ? halfHeightTop : halfHeightTop + 1;
-        int position = 46 + i * 20;
-        //Left Top Corner
-        blit(buttonX, buttonY, 0, position, halfWidthLeft, halfHeightTop);
-        //Left Bottom Corner
-        blit(buttonX, buttonY + halfHeightTop, 0, position + 20 - halfHeightBottom, halfWidthLeft, halfHeightBottom);
-        //Right Top Corner
-        blit(buttonX + halfWidthLeft, buttonY, 200 - halfWidthRight, position, halfWidthRight, halfHeightTop);
-        //Right Bottom Corner
-        blit(buttonX + halfWidthLeft, buttonY + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom);
     }
 }

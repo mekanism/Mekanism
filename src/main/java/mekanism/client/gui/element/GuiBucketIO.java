@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBucketIO extends GuiElement {
+public class GuiBucketIO extends GuiTexturedElement {
 
     public GuiBucketIO(IGuiWrapper gui, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bucket.png"), gui, def, 176, 66, 26, 57);
@@ -16,7 +16,7 @@ public class GuiBucketIO extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
         minecraft.textureManager.bindTexture(defaultLocation);
     }

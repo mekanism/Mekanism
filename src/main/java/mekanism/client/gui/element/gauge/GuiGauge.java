@@ -4,7 +4,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiGauge<T> extends GuiElement {
+public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     protected EnumColor color;
     protected final int texX;
@@ -51,7 +51,7 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         guiObj.drawTexturedRect(x, y, texX, texY, width, height);
         if (!dummy) {
             renderScale();
@@ -84,7 +84,7 @@ public abstract class GuiGauge<T> extends GuiElement {
                 }
             }
             MekanismRenderer.resetColor();
-            minecraft.textureManager.bindTexture(RESOURCE);
+            minecraft.textureManager.bindTexture(getResource());
         }
         guiObj.drawTexturedRect(x, y, width, 0, width, height);
     }

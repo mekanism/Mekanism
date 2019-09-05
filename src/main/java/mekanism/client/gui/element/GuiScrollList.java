@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiScrollList extends GuiElement {
+public class GuiScrollList extends GuiTexturedElement {
 
     private List<String> textEntries = new ArrayList<>();
     //TODO: Fix dragging
@@ -59,7 +59,7 @@ public class GuiScrollList extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         //Draw Black
         guiObj.drawModalRectWithCustomSizedTexture(x, y, width, height, 0, 0, 10, 10, 20, 20);
         //Draw Selected

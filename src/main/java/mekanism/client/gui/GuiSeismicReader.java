@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.SeismicReaderButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
@@ -12,7 +13,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -31,8 +31,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private World worldObj;
     private List<BlockState> blockList = new ArrayList<>();
     //private Rectangle tooltip;
-    private Button upButton;
-    private Button downButton;
+    private MekanismButton upButton;
+    private MekanismButton downButton;
 
     private int currentLayer;
 
@@ -54,9 +54,9 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(upButton = new SeismicReaderButton(guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation(),
+        addButton(upButton = new SeismicReaderButton(this, guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation(),
               onPress -> currentLayer++));
-        addButton(downButton = new SeismicReaderButton(guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
+        addButton(downButton = new SeismicReaderButton(this, guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
               onPress -> currentLayer--));
         //tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
         updateEnabledButtons();

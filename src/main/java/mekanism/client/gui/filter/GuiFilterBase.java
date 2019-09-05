@@ -2,6 +2,7 @@ package mekanism.client.gui.filter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IFilter;
@@ -16,7 +17,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
@@ -37,8 +37,8 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
     protected boolean isNew;
     protected int ticker;
 
-    protected Button saveButton;
-    protected Button deleteButton;
+    protected MekanismButton saveButton;
+    protected MekanismButton deleteButton;
 
     protected GuiFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

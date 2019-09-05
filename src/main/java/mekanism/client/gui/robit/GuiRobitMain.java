@@ -1,6 +1,7 @@
 package mekanism.client.gui.robit;
 
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.render.MekanismRenderer;
@@ -17,7 +18,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -31,7 +31,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     private final EntityRobit robit;
 
     private TextFieldWidget nameChangeField;
-    private Button confirmName;
+    private MekanismButton confirmName;
 
     public GuiRobitMain(MainRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -56,7 +56,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(confirmName = new TranslationButton(guiLeft + 58, guiTop + 47, 60, 20, "gui.mekanism.confirm", onPress -> changeName()));
+        addButton(confirmName = new TranslationButton(this, guiLeft + 58, guiTop + 47, 60, 20, "gui.mekanism.confirm", onPress -> changeName()));
         confirmName.visible = false;
 
         addButton(nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, ""));
@@ -64,28 +64,28 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         nameChangeField.setFocused2(true);
         nameChangeField.visible = false;
 
-        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 16, 18, getButtonLocation("home"), onPress -> {
+        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 16, 18, getButtonLocation("home"), onPress -> {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
             minecraft.displayGuiScreen(null);
         }, getOnHover("gui.mekanism.robit.teleport")));
-        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 35, 18, getButtonLocation("drop"),
+        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 35, 18, getButtonLocation("drop"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId())),
               getOnHover("gui.mekanism.robit.togglePickup")));
-        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 54, 18, getButtonLocation("rename"),
+        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 54, 18, getButtonLocation("rename"),
               onPress -> toggleNameChange(), getOnHover("gui.mekanism.robit.rename")));
-        addButton(new MekanismImageButton(guiLeft + 152, guiTop + 54, 18, getButtonLocation("follow"),
+        addButton(new MekanismImageButton(this, guiLeft + 152, guiTop + 54, 18, getButtonLocation("follow"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId())),
               getOnHover("gui.mekanism.robit.toggleFollow")));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 10, 18, getButtonLocation("main"), onPress -> {
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 10, 18, getButtonLocation("main"), onPress -> {
             //Clicking main button doesn't do anything while already on the main GUI
         }));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 30, 18, getButtonLocation("crafting"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 30, 18, getButtonLocation("crafting"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getEntityId()))));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 50, 18, getButtonLocation("inventory"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 50, 18, getButtonLocation("inventory"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getEntityId()))));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 70, 18, getButtonLocation("smelting"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 70, 18, getButtonLocation("smelting"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getEntityId()))));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 90, 18, getButtonLocation("repair"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 90, 18, getButtonLocation("repair"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getEntityId()))));
     }
 

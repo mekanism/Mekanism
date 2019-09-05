@@ -399,6 +399,7 @@ public final class MekanismUtils {
 
     /**
      * Checks if a block is valid for a position and the current block there can be replaced.
+     *
      * @return True if the block can be replaced and is within the world's bounds.
      */
     public static boolean isValidReplaceableBlock(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {

@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Check the different settings. For example should robit be immune to fire
-public enum  MekanismEntityTypes implements IEntityTypeProvider {
+public enum MekanismEntityTypes implements IEntityTypeProvider {
     FLAME("flame", EntityType.Builder.<EntityFlame>create(EntityFlame::new, EntityClassification.MISC).size(0.5F, 0.5F)),
     ROBIT("robit", EntityType.Builder.<EntityRobit>create(EntityRobit::new, EntityClassification.MISC).size(0.5F, 0.5F));
 

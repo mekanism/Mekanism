@@ -488,7 +488,8 @@ public class Mekanism {
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener(mekanismTagManager);;
+        event.getServer().getResourceManager().addReloadListener(mekanismTagManager);
+        ;
     }
 
     private void serverStarting(FMLServerStartingEvent event) {

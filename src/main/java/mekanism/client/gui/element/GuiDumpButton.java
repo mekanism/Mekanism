@@ -21,7 +21,7 @@ public class GuiDumpButton extends GuiTileEntityElement<TileEntityMetallurgicInf
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
         minecraft.textureManager.bindTexture(defaultLocation);
     }

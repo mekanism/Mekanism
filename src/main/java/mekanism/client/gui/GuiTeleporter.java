@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -30,7 +31,6 @@ import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -41,10 +41,10 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, TeleporterContainer> {
 
-    private Button publicButton;
-    private Button privateButton;
-    private Button setButton;
-    private Button deleteButton;
+    private MekanismButton publicButton;
+    private MekanismButton privateButton;
+    private MekanismButton setButton;
+    private MekanismButton deleteButton;
     private GuiScrollList scrollList;
     private TextFieldWidget frequencyField;
     private boolean privateMode;
@@ -82,15 +82,15 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 152, 6).with(SlotOverlay.POWER));
         addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 40));
 
-        addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
+        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", onPress -> {
+        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", onPress -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", onPress -> {
+        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
@@ -98,7 +98,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
@@ -111,7 +111,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new MekanismImageButton(guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"),
+        addButton(new MekanismImageButton(this, guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"),
               onPress -> {
                   setFrequency(frequencyField.getText());
                   frequencyField.setText("");

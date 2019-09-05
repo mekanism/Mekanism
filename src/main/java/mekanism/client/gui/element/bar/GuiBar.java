@@ -2,7 +2,7 @@ package mekanism.client.gui.element.bar;
 
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiElement {
+public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement {
 
     private final INFO handler;
 
@@ -32,7 +32,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         renderBar();
         if (handler.getLevel() > 0) {
-            minecraft.textureManager.bindTexture(RESOURCE);
+            minecraft.textureManager.bindTexture(getResource());
             renderBarOverlay(mouseX, mouseY, partialTicks);
         }
         minecraft.textureManager.bindTexture(defaultLocation);

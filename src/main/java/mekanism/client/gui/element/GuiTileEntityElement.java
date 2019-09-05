@@ -7,7 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiTileEntityElement<TILE extends TileEntity> extends GuiElement {
+public abstract class GuiTileEntityElement<TILE extends TileEntity> extends GuiTexturedElement {
 
     protected final TILE tileEntity;
 

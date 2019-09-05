@@ -2,6 +2,7 @@ package mekanism.client.gui.filter;
 
 import java.util.List;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -14,7 +15,6 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -28,7 +28,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     protected List<ItemStack> iterStacks;
     protected int stackSwitch;
     protected int stackIndex;
-    protected Button checkboxButton;
+    protected MekanismButton checkboxButton;
 
     protected GuiTextFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

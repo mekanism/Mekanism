@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiEnergyInfo extends GuiElement {
+public class GuiEnergyInfo extends GuiTexturedElement {
 
     private final IInfoHandler infoHandler;
 
@@ -26,7 +26,7 @@ public class GuiEnergyInfo extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
         minecraft.textureManager.bindTexture(defaultLocation);
     }

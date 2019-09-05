@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiScrollList;
@@ -23,7 +24,6 @@ import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -34,10 +34,10 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter, QuantumEntangloporterContainer> {
 
-    private Button publicButton;
-    private Button privateButton;
-    private Button setButton;
-    private Button deleteButton;
+    private MekanismButton publicButton;
+    private MekanismButton privateButton;
+    private MekanismButton setButton;
+    private MekanismButton deleteButton;
     private GuiScrollList scrollList;
     private TextFieldWidget frequencyField;
     private boolean privateMode;
@@ -60,15 +60,15 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
 
-        addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
+        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", onPress -> {
+        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", onPress -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", onPress -> {
+        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
@@ -76,7 +76,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", onPress -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
@@ -89,7 +89,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new MekanismImageButton(guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), onPress -> {
+        addButton(new MekanismImageButton(this, guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), onPress -> {
             setFrequency(frequencyField.getText());
             frequencyField.setText("");
             updateButtons();

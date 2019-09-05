@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiGraph extends GuiElement {
+public class GuiGraph extends GuiTexturedElement {
 
     private final List<Integer> graphData = new ArrayList<>();
     private final GraphDataHandler dataHandler;
@@ -52,7 +52,7 @@ public class GuiGraph extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         drawBlack();
         drawGraph();
         minecraft.textureManager.bindTexture(defaultLocation);

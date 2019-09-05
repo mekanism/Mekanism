@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -27,7 +28,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -38,9 +38,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, DigitalMinerContainer> {
 
-    private Button startButton;
-    private Button stopButton;
-    private Button configButton;
+    private MekanismButton startButton;
+    private MekanismButton stopButton;
+    private MekanismButton configButton;
 
     public GuiDigitalMiner(DigitalMinerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -70,22 +70,22 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
 
-        addButton(startButton = new TranslationButton(guiLeft + 69, guiTop + 17, 60, 20, "gui.mekanism.start",
+        addButton(startButton = new TranslationButton(this, guiLeft + 69, guiTop + 17, 60, 20, "gui.mekanism.start",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
-        addButton(stopButton = new TranslationButton(guiLeft + 69, guiTop + 37, 60, 20, "gui.mekanism.stop",
+        addButton(stopButton = new TranslationButton(this, guiLeft + 69, guiTop + 37, 60, 20, "gui.mekanism.stop",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
-        addButton(configButton = new TranslationButton(guiLeft + 69, guiTop + 57, 60, 20, "gui.mekanism.config",
+        addButton(configButton = new TranslationButton(this, guiLeft + 69, guiTop + 57, 60, 20, "gui.mekanism.config",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
-        addButton(new MekanismImageButton(guiLeft + 131, guiTop + 47, 14, getButtonLocation("reset"),
+        addButton(new MekanismImageButton(this, guiLeft + 131, guiTop + 47, 14, getButtonLocation("reset"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
               getOnHover("gui.mekanism.digitalMiner.reset")));
-        addButton(new MekanismImageButton(guiLeft + 131, guiTop + 63, 14, getButtonLocation("silk_touch"),
+        addButton(new MekanismImageButton(this, guiLeft + 131, guiTop + 63, 14, getButtonLocation("silk_touch"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(9))),
               getOnHover("gui.mekanism.digitalMiner.silkTouch")));
-        addButton(new MekanismImageButton(guiLeft + 147, guiTop + 47, 14, getButtonLocation("auto_eject"),
+        addButton(new MekanismImageButton(this, guiLeft + 147, guiTop + 47, 14, getButtonLocation("auto_eject"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.autoEject")));
-        addButton(new MekanismImageButton(guiLeft + 147, guiTop + 63, 14, getButtonLocation("auto_pull"),
+        addButton(new MekanismImageButton(this, guiLeft + 147, guiTop + 63, 14, getButtonLocation("auto_pull"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.digitalMiner.autoPull")));
         updateEnabledButtons();

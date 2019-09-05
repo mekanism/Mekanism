@@ -56,7 +56,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    protected ResourceLocation getOverlay() {
+    protected ResourceLocation getResource() {
         SecurityMode mode = getSecurity();
         SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
         if (data != null && data.override) {
@@ -68,7 +68,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
             case TRUSTED:
                 return PROTECTED;
         }
-        return super.getOverlay();
+        return super.getResource();
     }
 
     @Override

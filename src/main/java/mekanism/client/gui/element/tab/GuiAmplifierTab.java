@@ -26,14 +26,14 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     }
 
     @Override
-    protected ResourceLocation getOverlay() {
+    protected ResourceLocation getResource() {
         switch (tileEntity.outputMode) {
             case ENTITY_DETECTION:
                 return ENTITY;
             case ENERGY_CONTENTS:
                 return CONTENTS;
         }
-        return super.getOverlay();
+        return super.getResource();
     }
 
     @Override

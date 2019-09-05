@@ -59,7 +59,7 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      * Creates a new Gas object with a defined name or key value and a specified color tint.
      *
      * @param registryName - name or key to associate this Gas with
-     * @param tint            - tint of this Gas
+     * @param tint         - tint of this Gas
      */
     public Gas(ResourceLocation registryName, int tint) {
         this(registryName, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "block/liquid/liquid"));

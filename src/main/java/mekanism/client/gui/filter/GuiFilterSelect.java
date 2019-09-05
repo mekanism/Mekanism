@@ -1,12 +1,12 @@
 package mekanism.client.gui.filter;
 
+import mekanism.client.gui.button.MekanismButton;
+import mekanism.client.gui.button.MekanismButton.IPressable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,11 +15,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER extends FilterEmptyContainer<TILE>> extends GuiFilter<TILE, CONTAINER> {
 
-    protected Button itemStackButton;
-    protected Button oredictButton;
-    protected Button materialButton;
-    protected Button modIDButton;
-    protected Button backButton;
+    protected MekanismButton itemStackButton;
+    protected MekanismButton oredictButton;
+    protected MekanismButton materialButton;
+    protected MekanismButton modIDButton;
+    protected MekanismButton backButton;
 
     protected GuiFilterSelect(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -27,11 +27,11 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void addButtons() {
-        addButton(itemStackButton = new TranslationButton(guiLeft + 24, guiTop + 32, 128, 20, "gui.mekanism.itemstack", onItemStackButton()));
-        addButton(oredictButton = new TranslationButton(guiLeft + 24, guiTop + 52, 128, 20, "gui.mekanism.oredict", onTagButton()));
-        addButton(materialButton = new TranslationButton(guiLeft + 24, guiTop + 72, 128, 20, "gui.mekanism.material", onMaterialButton()));
-        addButton(modIDButton = new TranslationButton(guiLeft + 24, guiTop + 92, 128, 20, "gui.mekanism.modID", onModIDButton()));
-        addButton(backButton = new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onBackButton()));
+        addButton(itemStackButton = new TranslationButton(this, guiLeft + 24, guiTop + 32, 128, 20, "gui.mekanism.itemstack", onItemStackButton()));
+        addButton(oredictButton = new TranslationButton(this, guiLeft + 24, guiTop + 52, 128, 20, "gui.mekanism.oredict", onTagButton()));
+        addButton(materialButton = new TranslationButton(this, guiLeft + 24, guiTop + 72, 128, 20, "gui.mekanism.material", onMaterialButton()));
+        addButton(modIDButton = new TranslationButton(this, guiLeft + 24, guiTop + 92, 128, 20, "gui.mekanism.modID", onModIDButton()));
+        addButton(backButton = new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onBackButton()));
     }
 
     protected abstract IPressable onItemStackButton();

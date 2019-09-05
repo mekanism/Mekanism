@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiSideConfigurationTab extends GuiInsetElement<TileEntity> {
 
     public GuiSideConfigurationTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "configuration.png"), gui, def, tile, -26,6, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "configuration.png"), gui, def, tile, -26, 6, 26, 18);
     }
 
     @Override

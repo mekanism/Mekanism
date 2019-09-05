@@ -189,7 +189,7 @@ public class PacketHandler {
     /**
      * Send this message to everyone within the supplied dimension.
      *
-     * @param message     - the message to send
+     * @param message   - the message to send
      * @param dimension - the dimension to target
      */
     public <MSG> void sendToDimension(MSG message, DimensionType dimension) {

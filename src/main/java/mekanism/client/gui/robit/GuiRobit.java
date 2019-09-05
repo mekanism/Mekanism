@@ -30,27 +30,27 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 10, 18, getButtonLocation("main"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 10, 18, getButtonLocation("main"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit.getEntityId()))));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 30, 18, getButtonLocation("crafting"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 30, 18, getButtonLocation("crafting"),
               onPress -> {
                   if (shouldOpenGui(RobitGuiType.CRAFTING)) {
                       Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getEntityId()));
                   }
               }));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 50, 18, getButtonLocation("inventory"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 50, 18, getButtonLocation("inventory"),
               onPress -> {
                   if (shouldOpenGui(RobitGuiType.INVENTORY)) {
                       Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getEntityId()));
                   }
               }));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 70, 18, getButtonLocation("smelting"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 70, 18, getButtonLocation("smelting"),
               onPress -> {
                   if (shouldOpenGui(RobitGuiType.SMELTING)) {
                       Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getEntityId()));
                   }
               }));
-        addButton(new MekanismImageButton(guiLeft + 179, guiTop + 90, 18, getButtonLocation("repair"),
+        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 90, 18, getButtonLocation("repair"),
               onPress -> {
                   if (shouldOpenGui(RobitGuiType.REPAIR)) {
                       Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getEntityId()));

@@ -1,5 +1,6 @@
 package mekanism.client.gui.button;
 
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,28 +13,28 @@ public class MekanismImageButton extends MekanismButton {
     private final int textureWidth;
     private final int textureHeight;
 
-    public MekanismImageButton(int x, int y, int size, ResourceLocation resource, IPressable onPress) {
-        this(x, y, size, size, resource, onPress);
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int size, ResourceLocation resource, IPressable onPress) {
+        this(gui, x, y, size, size, resource, onPress);
     }
 
-    public MekanismImageButton(int x, int y, int size, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
-        this(x, y, size, size, resource, onPress, onHover);
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int size, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
+        this(gui, x, y, size, size, resource, onPress, onHover);
     }
 
-    public MekanismImageButton(int x, int y, int size, int textureSize, ResourceLocation resource, IPressable onPress) {
-        this(x, y, size, textureSize, resource, onPress, null);
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int size, int textureSize, ResourceLocation resource, IPressable onPress) {
+        this(gui, x, y, size, textureSize, resource, onPress, null);
     }
 
-    public MekanismImageButton(int x, int y, int size, int textureSize, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
-        this(x, y, size, size, textureSize, textureSize, resource, onPress, onHover);
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int size, int textureSize, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
+        this(gui, x, y, size, size, textureSize, textureSize, resource, onPress, onHover);
     }
 
-    public MekanismImageButton(int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource, IPressable onPress) {
-        this(x, y, width, height, textureWidth, textureHeight, resource, onPress, null);
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource, IPressable onPress) {
+        this(gui, x, y, width, height, textureWidth, textureHeight, resource, onPress, null);
     }
 
-    public MekanismImageButton(int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
-        super(x, y, width, height, "", onPress, onHover);
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
+        super(gui, x, y, width, height, "", onPress, onHover);
         this.resourceLocation = resource;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;

@@ -69,15 +69,15 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         }
         updateTabs();
 
-        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(new MekanismImageButton(guiLeft + 156, guiTop + 6, 14, getButtonLocation("auto_eject"),
+        addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("auto_eject"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType)),
               getOnHover("gui.mekanism.autoEject")));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
-            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
+            addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
                   () -> getTile().getConfig().getOutput(currentType, facing), () -> getTile().getConfig().getOutput(currentType, facing).color, tileEntity, currentType,
                   ConfigurationPacket.SIDE_DATA, getOnHover()));
         }

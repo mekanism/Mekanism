@@ -118,14 +118,14 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
     @Override
     public void init() {
         super.init();
-        addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
+        addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
-        addButton(new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(new MekanismImageButton(guiLeft + 39, guiTop + 67, 11, 12, getButtonLocation("checkmark"), onPress -> setRadius()));
-        addButton(new MekanismImageButton(guiLeft + 39, guiTop + 92, 11, 12, getButtonLocation("checkmark"), onPress -> setMinY()));
-        addButton(new MekanismImageButton(guiLeft + 39, guiTop + 117, 11, 12, getButtonLocation("checkmark"), onPress -> setMaxY()));
-        addButton(new MekanismImageButton(guiLeft + 11, guiTop + 141, 14, getButtonLocation("strict_input"),
+        addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 67, 11, 12, getButtonLocation("checkmark"), onPress -> setRadius()));
+        addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 92, 11, 12, getButtonLocation("checkmark"), onPress -> setMinY()));
+        addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 117, 11, 12, getButtonLocation("checkmark"), onPress -> setMaxY()));
+        addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 141, 14, getButtonLocation("strict_input"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(10))),
               getOnHover("gui.mekanism.digitalMiner.inverse")));
 

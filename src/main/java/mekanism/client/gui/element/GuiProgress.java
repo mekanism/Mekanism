@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiProgress extends GuiElement {
+public class GuiProgress extends GuiTexturedElement {
 
     private final IProgressInfoHandler handler;
     private final ProgressBar type;
@@ -21,7 +21,7 @@ public class GuiProgress extends GuiElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(getResource());
         if (handler.isActive()) {
             guiObj.drawTexturedRect(x, y, type.textureX, type.textureY, width, height);
             int innerOffsetX = 2;
@@ -53,11 +53,11 @@ public class GuiProgress extends GuiElement {
         public final int textureX;
         public final int textureY;
 
-        ProgressBar(int w, int h, int u, int v) {
-            width = w;
-            height = h;
-            textureX = u;
-            textureY = v;
+        ProgressBar(int width, int height, int textureX, int textureY) {
+            this.width = width;
+            this.height = height;
+            this.textureX = textureX;
+            this.textureY = textureY;
         }
     }
 

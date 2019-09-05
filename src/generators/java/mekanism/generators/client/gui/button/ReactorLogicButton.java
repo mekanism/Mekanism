@@ -2,6 +2,7 @@ package mekanism.generators.client.gui.button;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
@@ -18,8 +19,9 @@ public class ReactorLogicButton extends MekanismButton {
     private final ResourceLocation resourceLocation;
     private final ReactorLogic type;
 
-    public ReactorLogicButton(int x, int y, ReactorLogic type, @Nonnull TileEntityReactorLogicAdapter tile, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
-        super(x, y, 128, 22, "", onPress, onHover);
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, ReactorLogic type, @Nonnull TileEntityReactorLogicAdapter tile, ResourceLocation resource, IPressable onPress,
+          IHoverable onHover) {
+        super(gui, x, y, 128, 22, "", onPress, onHover);
         this.tile = tile;
         this.type = type;
         this.resourceLocation = resource;

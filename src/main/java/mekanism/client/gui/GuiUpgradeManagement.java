@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -18,7 +19,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, UpgradeManagementContainer> {
 
-    private Button removeButton;
+    private MekanismButton removeButton;
     @Nullable
     private Upgrade selectedType;
     private boolean isDragging = false;
@@ -45,9 +45,9 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(removeButton = new MekanismImageButton(guiLeft + 136, guiTop + 57, 12, getButtonLocation("remove_upgrade"),
+        addButton(removeButton = new MekanismImageButton(this, guiLeft + 136, guiTop + 57, 12, getButtonLocation("remove_upgrade"),
               onPress -> {
                   if (selectedType != null) {
                       Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), selectedType));

@@ -53,19 +53,19 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(new MekanismImageButton(guiLeft + 156, guiTop + 6, 14, getButtonLocation("strict_input"),
+        addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("strict_input"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
               getOnHover("gui.mekanism.configuration.strictInput")));
-        addButton(new ColorButton(guiLeft + 122, guiTop + 49, 16, 16, this, () -> getTile().getEjector().getOutputColor(),
+        addButton(new ColorButton(this, guiLeft + 122, guiTop + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
                     InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
               onRightClick -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null))));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
-            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
+            addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
                   () -> getTile().getConfig().getOutput(TransmissionType.ITEM, facing), () -> getTile().getEjector().getInputColor(facing), tileEntity, null,
                   ConfigurationPacket.INPUT_COLOR, getOnHover()));
         }

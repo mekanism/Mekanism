@@ -4,7 +4,7 @@ import java.util.Arrays;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
@@ -30,7 +30,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
-            ItemStack stack = GuiElement.minecraft.player.inventory.getItemStack();
+            ItemStack stack = GuiTexturedElement.minecraft.player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {

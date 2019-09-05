@@ -149,8 +149,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void drawTexturedRect(int x, int y, int u, int v, int width, int height) {
-        blit(x, y, u, v, width, height);
+    public void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height) {
+        blit(x, y, textureX, textureY, width, height);
     }
 
     @Override
@@ -159,13 +159,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {
-        blit(x, y, u, v, width, height, textureWidth, textureHeight);
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
+        blit(x, y, textureX, textureY, width, height, textureWidth, textureHeight);
     }
 
     @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int a, int b, int u, int v, int width, int height, int textureWidth, int textureHeight) {
-        blit(x, y, a, b, u, v, width, height, textureWidth, textureHeight);
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
+        blit(x, y, desiredWidth, desiredHeight, textureX, textureY, width, height, textureWidth, textureHeight);
     }
 
     @Override
