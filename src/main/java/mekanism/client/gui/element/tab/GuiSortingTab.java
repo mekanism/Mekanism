@@ -25,16 +25,6 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory> {
     }
 
     @Override
-    protected int getTextureWidth() {
-        return 18;
-    }
-
-    @Override
-    protected int getTextureHeight() {
-        return 36;
-    }
-
-    @Override
     protected ResourceLocation getHolderTexture() {
         //TODO: Override the right tab holder at some point if we need it
         return left ? HOLDER_LEFT : GuiInsetElement.INSET_HOLDER_RIGHT;

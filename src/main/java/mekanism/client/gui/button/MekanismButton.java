@@ -72,7 +72,7 @@ public class MekanismButton extends Button {
             MekanismRenderer.resetColor();
         }
         MekanismRenderer.bindTexture(WIDGETS_LOCATION);
-        int i = this.getYImage(this.isHovered());
+        int i = getYImage(isHovered());
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);

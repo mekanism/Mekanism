@@ -19,8 +19,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
 
+    private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "gun_powder.png");
+    private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_high.png");
+    private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_low.png");
+    private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_pulse.png");
+
     public GuiRedstoneControl(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control.png"), gui, def, tile, 176, 138, 26, 18);
+        super(DISABLED, gui, def, tile, 176, 138, 26, 18);
     }
 
     @Override
@@ -40,18 +45,16 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
     }
 
     @Override
-    protected int getXOffset() {
-        return innerSize * ((IRedstoneControl) tileEntity).getControlType().ordinal();
-    }
-
-    @Override
-    protected int getTextureWidth() {
-        return 72;
-    }
-
-    @Override
-    protected int getTextureHeight() {
-        return 36;
+    protected ResourceLocation getOverlay() {
+        switch (((IRedstoneControl) tileEntity).getControlType()) {
+            case HIGH:
+                return HIGH;
+            case LOW:
+                return LOW;
+            case PULSE:
+                return PULSE;
+        }
+        return super.getOverlay();
     }
 
     @Override

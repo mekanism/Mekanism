@@ -36,14 +36,4 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
     public void onClick(double mouseX, double mouseY) {
         tileEntity.clientRendering = !tileEntity.clientRendering;
     }
-
-    @Override
-    protected int getTextureWidth() {
-        return 18;
-    }
-
-    @Override
-    protected int getTextureHeight() {
-        return 36;
-    }
 }

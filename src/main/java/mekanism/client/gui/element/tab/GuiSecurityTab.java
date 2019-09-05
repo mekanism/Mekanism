@@ -32,11 +32,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends GuiInsetElement<TILE> {
 
+    private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "public.png");
+    private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "private.png");
+    private static final ResourceLocation PROTECTED = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "protected.png");
+
     private final Hand currentHand;
     private boolean isItem;
 
     public GuiSecurityTab(IGuiWrapper gui, TILE tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "security.png"), gui, def, tile, 176, 32, 26, 18);
+        super(PUBLIC, gui, def, tile, 176, 32, 26, 18);
         this.currentHand = Hand.MAIN_HAND;
     }
 
@@ -52,35 +56,19 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    protected int getYOffset(double mouseX, double mouseY) {
-        UUID owner = getOwner();
-        if (owner != null && owner.equals(minecraft.player.getUniqueID())) {
-            SecurityData data = MekanismClient.clientSecurityMap.get(owner);
-            if (data == null || !data.override) {
-                return super.getYOffset(mouseX, mouseY);
-            }
-        }
-        return 36;
-    }
-
-    @Override
-    protected int getXOffset() {
+    protected ResourceLocation getOverlay() {
         SecurityMode mode = getSecurity();
         SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
         if (data != null && data.override) {
             mode = data.mode;
         }
-        return innerSize * mode.ordinal();
-    }
-
-    @Override
-    protected int getTextureWidth() {
-        return 54;
-    }
-
-    @Override
-    protected int getTextureHeight() {
-        return 54;
+        switch (mode) {
+            case PRIVATE:
+                return PRIVATE;
+            case TRUSTED:
+                return PROTECTED;
+        }
+        return super.getOverlay();
     }
 
     @Override

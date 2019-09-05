@@ -17,23 +17,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
+    private static final ResourceLocation OFF = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_off.png");
+    private static final ResourceLocation ENTITY = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_entity.png");
+    private static final ResourceLocation CONTENTS = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_contents.png");
+
     public GuiAmplifierTab(IGuiWrapper gui, TileEntityLaserAmplifier tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier.png"), gui, def, tile, -26, 138, 26, 18);
+        super(OFF, gui, def, tile, -26, 138, 26, 18);
     }
 
     @Override
-    protected int getXOffset() {
-        return innerSize * tileEntity.outputMode.ordinal();
-    }
-
-    @Override
-    protected int getTextureWidth() {
-        return 54;
-    }
-
-    @Override
-    protected int getTextureHeight() {
-        return 36;
+    protected ResourceLocation getOverlay() {
+        switch (tileEntity.outputMode) {
+            case ENTITY_DETECTION:
+                return ENTITY;
+            case ENERGY_CONTENTS:
+                return CONTENTS;
+        }
+        return super.getOverlay();
     }
 
     @Override

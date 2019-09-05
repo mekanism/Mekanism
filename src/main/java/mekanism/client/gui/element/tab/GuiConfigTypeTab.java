@@ -53,16 +53,6 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
     }
 
     @Override
-    protected int getTextureWidth() {
-        return 18;
-    }
-
-    @Override
-    protected int getTextureHeight() {
-        return 36;
-    }
-
-    @Override
     public void renderToolTip(int mouseX, int mouseY) {
         displayTooltip(TextComponentUtil.build(transmission), mouseX, mouseY);
     }
