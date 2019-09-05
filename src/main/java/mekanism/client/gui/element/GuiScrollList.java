@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiScrollList extends GuiElement {
 
     private List<String> textEntries = new ArrayList<>();
-    private boolean isDragging;
+    //TODO: Fix dragging
     private double dragOffset = 0;
     private int selected = -1;
     private double scroll;
@@ -34,32 +34,45 @@ public class GuiScrollList extends GuiElement {
         this.selected = -1;
     }
 
+    private int getElementCount() {
+        //TODO: Maybe come up with a better name, basically is a method that gets how many elements can be rendered at once
+        return height / 10;
+    }
+
     public void setText(List<String> text) {
         if (text == null) {
             textEntries.clear();
             return;
         }
-
         if (selected > text.size() - 1) {
             clearSelection();
         }
-
         textEntries = text;
-
-        if (textEntries.size() <= height) {
+        if (!canScroll()) {
             scroll = 0;
         }
+    }
+
+    private boolean canScroll() {
+        return textEntries.size() > getElementCount();
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(RESOURCE);
-        drawBlack();
-        drawSelected(selected);
+        //Draw Black
+        guiObj.drawModalRectWithCustomSizedTexture(x, y, width, height, 0, 0, 10, 10, 20, 20);
+        //Draw Selected
+        int scroll = getScrollIndex();
+        if (selected != -1 && selected >= scroll && selected <= scroll + getElementCount() - 1) {
+            guiObj.drawModalRectWithCustomSizedTexture(x, y + (selected - scroll) * 10, width, 10, 0, 10, 10, 10, 20, 20);
+        }
+        //Draw Scroll
         drawScroll();
         minecraft.textureManager.bindTexture(defaultLocation);
+        //Render the text into the entries
         if (!textEntries.isEmpty()) {
-            for (int i = 0; i < height; i++) {
+            for (int i = 0; i < getElementCount(); i++) {
                 int index = getScrollIndex() + i;
                 if (index <= textEntries.size() - 1) {
                     renderScaledText(textEntries.get(index), x + 1, y + 1 + (10 * i), 0x00CD00, width - 6);
@@ -68,112 +81,72 @@ public class GuiScrollList extends GuiElement {
         }
     }
 
-    public void drawBlack() {
-        int xDisplays = width / 10 + (width % 10 > 0 ? 1 : 0);
-
-        for (int yIter = 0; yIter < height; yIter++) {
-            for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
-                guiObj.drawModalRectWithCustomSizedTexture(x + (xIter * 10), y + (yIter * 10), 0, 0, widthCalculated, 10, 20, 20);
-            }
-        }
-    }
-
-    public void drawSelected(int index) {
-        int scroll = getScrollIndex();
-
-        if (selected != -1 && index >= scroll && index <= scroll + height - 1) {
-            int xDisplays = width / 10 + (width % 10 > 0 ? 1 : 0);
-
-            for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
-                guiObj.drawModalRectWithCustomSizedTexture(x + (xIter * 10), y + (index - scroll) * 10, 0, 10, widthCalculated, 10, 20, 20);
-            }
-        }
-    }
-
-    public void drawScroll() {
+    private void drawScroll() {
         int xStart = x + width - 6;
-        int yStart = y;
+        //Top
+        guiObj.drawModalRectWithCustomSizedTexture(xStart, y, 10, 0, 6, 1, 20, 20);
+        //Middle
+        guiObj.drawModalRectWithCustomSizedTexture(xStart, y + 1, 6, height - 2, 10, 1, 6, 10, 20, 20);
+        //Bottom
+        guiObj.drawModalRectWithCustomSizedTexture(xStart, y + height - 1, 10, 0, 6, 1, 20, 20);
 
-        for (int i = 0; i < height; i++) {
-            guiObj.drawModalRectWithCustomSizedTexture(xStart, yStart + (i * 10), 10, 1, 6, 10, 20, 20);
-        }
-
-        guiObj.drawModalRectWithCustomSizedTexture(xStart, yStart, 10, 0, 6, 1, 20, 20);
-        guiObj.drawModalRectWithCustomSizedTexture(xStart, yStart + (height * 10) - 1, 10, 0, 6, 1, 20, 20);
-
-        guiObj.drawModalRectWithCustomSizedTexture(xStart + 1, yStart + 1 + getScroll(), 16, 0, 4, 4, 20, 20);
+        guiObj.drawModalRectWithCustomSizedTexture(xStart + 1, y + 1 + getScroll(), 16, 0, 4, 4, 20, 20);
     }
 
-    public int getMaxScroll() {
-        return (height * 10) - 2;
+    private int getMaxScroll() {
+        return height - 2;
     }
 
-    public int getScroll() {
-        return Math.max(Math.min((int) (scroll * (getMaxScroll() - 4)), getMaxScroll() - 4), 0);
+    private int getScroll() {
+        int max = getMaxScroll() - 4;
+        return Math.max(Math.min((int) (scroll * max), max), 0);
     }
 
-    public int getScrollIndex() {
-        if (textEntries.size() <= height) {
+    private int getScrollIndex() {
+        if (!canScroll()) {
             return 0;
         }
-        return (int) ((textEntries.size() * scroll) - ((float) height / (float) textEntries.size()) * scroll);
+        return (int) ((textEntries.size() * scroll) - ((float) getElementCount() / (float) textEntries.size()) * scroll);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        //TODO: Replace with onClick
-        if (button == 0) {
-            int xStart = x + width - 5;
-
-            if (mouseX >= xStart && mouseX <= xStart + 4 && mouseY >= getScroll() + y + 1 && mouseY <= getScroll() + 4 + y + 1) {
-                if (textEntries.size() > height) {
-                    dragOffset = mouseY - (getScroll() + y + 1);
-                    isDragging = true;
-                    return true;
-                }
-            } else if (mouseX >= x && mouseX <= x + width - 6 && mouseY >= y && mouseY <= y + height * 10) {
-                int index = getScrollIndex();
-                clearSelection();
-                for (int i = 0; i < height; i++) {
-                    if (index + i <= textEntries.size() - 1) {
-                        if (mouseY >= (y + i * 10) && mouseY <= (y + i * 10 + 10)) {
-                            selected = index + i;
-                            break;
-                        }
+    public void onClick(double mouseX, double mouseY) {
+        int xStart = x + width - 5;
+        int yStart = y + 1 + getScroll();
+        if (mouseX >= xStart && mouseX <= xStart + 4 && mouseY >= yStart && mouseY <= yStart + 4) {
+            if (canScroll()) {
+                dragOffset = mouseY - yStart;
+            }
+        } else if (mouseX >= x && mouseX <= x + width - 6 && mouseY >= y && mouseY <= y + height) {
+            int index = getScrollIndex();
+            clearSelection();
+            for (int i = 0; i < getElementCount(); i++) {
+                if (index + i <= textEntries.size() - 1) {
+                    if (mouseY >= (y + i * 10) && mouseY <= (y + i * 10 + 10)) {
+                        selected = index + i;
+                        break;
                     }
                 }
-                return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     protected void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
-        super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
-        if (isDragging) {
+        if (canScroll()) {
             scroll = Math.min(Math.max((mouseY - (y + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
         }
     }
 
     @Override
     public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
-        if (isDragging) {
-            dragOffset = 0;
-            isDragging = false;
-        }
+        dragOffset = 0;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height * 10) {
-            // 120 = DirectInput factor for one notch. Linux/OSX LWGL scale accordingly
-            scroll = Math.min(Math.max(scroll - (delta / 120F) * (1F / textEntries.size()), 0), 1);
-            drawScroll();
+        if (canScroll() && mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height) {
+            scroll = Math.min(Math.max(scroll - delta / textEntries.size(), 0), 1);
             return true;
         }
         return false;

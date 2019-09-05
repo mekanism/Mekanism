@@ -54,7 +54,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
+        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 40));
         addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));

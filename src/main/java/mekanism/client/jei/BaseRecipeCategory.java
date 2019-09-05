@@ -117,6 +117,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int a, int b, int u, int v, int width, int height, int textureWidth, int textureHeight) {
+        AbstractGui.blit(x, y, a, b, u, v, width, height, textureWidth, textureHeight);
+    }
+
+    @Override
     public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {
     }
 

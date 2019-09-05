@@ -89,7 +89,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return getEnergy() / getMaxEnergy();
             }
         }, resource, 158, 26));
-        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
+        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 40));
 
         addButton(publicButton = new TranslationButton(guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
             privateMode = false;

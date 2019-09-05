@@ -19,6 +19,9 @@ public interface IGuiWrapper {
     //TODO: Rename
     void drawModalRectWithCustomSizedTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight);
 
+    //TODO: Rename and get better names for a and b
+    void drawModalRectWithCustomSizedTexture(int x, int y, int a, int b, int u, int v, int width, int height, int textureWidth, int textureHeight);
+
     void displayTooltip(ITextComponent component, int xAxis, int yAxis);
 
     void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis);

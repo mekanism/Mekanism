@@ -148,22 +148,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
     }
 
-    /*@Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        double xAxis = mouseX - guiLeft;
-        double yAxis = mouseY - guiTop;
-        boolean returnValue = super.mouseClicked(mouseX, mouseY, button);
-        for (GuiElement element : guiElements) {
-            if (element.mouseClicked(xAxis, yAxis, button)) {
-                //TODO: I think this should return true?
-                //return true;
-                returnValue = true;
-            }
-        }
-        //TODO: Figure out all of this mouseClicked stuff when it should return true and when it should return false
-        return returnValue;
-    }*/
-
     @Override
     public void drawTexturedRect(int x, int y, int u, int v, int width, int height) {
         blit(x, y, u, v, width, height);
@@ -177,6 +161,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void drawModalRectWithCustomSizedTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {
         blit(x, y, u, v, width, height, textureWidth, textureHeight);
+    }
+
+    @Override
+    public void drawModalRectWithCustomSizedTexture(int x, int y, int a, int b, int u, int v, int width, int height, int textureWidth, int textureHeight) {
+        blit(x, y, a, b, u, v, width, height, textureWidth, textureHeight);
     }
 
     @Override
@@ -197,44 +186,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     public FontRenderer getFont() {
         return font;
     }
-
-    /*@Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
-        boolean returnValue = super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        double xAxis = mouseX - guiLeft;
-        double yAxis = mouseY - guiTop;
-        for (GuiElement element : guiElements) {
-            if (element.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld)) {
-                //TODO: I think this should return true?
-                //return true;
-                returnValue = true;
-            }
-        }
-        //TODO: Figure out all of this mouseDragged stuff when it should return true and when it should return false
-        return returnValue;
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int type) {
-        super.mouseReleased(mouseX, mouseY, type);
-        double xAxis = mouseX - guiLeft;
-        double yAxis = mouseY - guiTop;
-        guiElements.forEach(element -> element.mouseReleased(xAxis, yAxis, type));
-        return true;
-    }*/
-
-    //TODO: Mouse scrolling
-    /*@Override
-    public void handleMouseInput() throws IOException {
-        super.handleMouseInput();
-        int delta = Mouse.getEventDWheel();
-        if (delta != 0) {
-            int xAxis = Mouse.getEventX() * width / minecraft.mainWindow.getWidth() - guiLeft;
-            int yAxis = height - Mouse.getEventY() * height / minecraft.mainWindow.getHeight() - 1 - guiTop;
-            guiElements.forEach(element -> element.mouseWheel(xAxis, yAxis, delta));
-        }
-    }*/
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
