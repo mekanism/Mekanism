@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
@@ -111,7 +111,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
         addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new DisableableImageButton(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"),
               onPress -> {
                   setFrequency(frequencyField.getText());
                   frequencyField.setText("");

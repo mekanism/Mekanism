@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
@@ -123,10 +122,10 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
         addButton(new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(new DisableableImageButton(guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setRadius()));
-        addButton(new DisableableImageButton(guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setMinY()));
-        addButton(new DisableableImageButton(guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation(), onPress -> setMaxY()));
-        addButton(new DisableableImageButton(guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 39, guiTop + 67, 11, 12, getButtonLocation("checkmark"), onPress -> setRadius()));
+        addButton(new MekanismImageButton(guiLeft + 39, guiTop + 92, 11, 12, getButtonLocation("checkmark"), onPress -> setMinY()));
+        addButton(new MekanismImageButton(guiLeft + 39, guiTop + 117, 11, 12, getButtonLocation("checkmark"), onPress -> setMaxY()));
+        addButton(new MekanismImageButton(guiLeft + 11, guiTop + 141, 14, getButtonLocation("strict_input"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(10))),
               getOnHover("gui.mekanism.digitalMiner.inverse")));
 

@@ -2,7 +2,6 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.Mekanism;
@@ -35,7 +34,7 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "miner_mod_id_filter.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "miner_text_filter.png");
     }
 
     @Override
@@ -69,9 +68,9 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
         }));
         addButton(new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               onPress -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
-        addButton(new DisableableImageButton(guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 148, guiTop + 45, 14, 16, getButtonLocation("exclamation"),
               onPress -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
-        addButton(checkboxButton = new DisableableImageButton(guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation(),
+        addButton(checkboxButton = new MekanismImageButton(guiLeft + 131, guiTop + 47, 12, getButtonLocation("checkmark"),
               onPress -> setText()));
     }
 }

@@ -3,14 +3,14 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -63,7 +63,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         addButton(energyUsageField = new TextFieldWidget(font, guiLeft + 49, guiTop + 52, 66, 11, prevEnergyUsage));
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
-        addButton(new DisableableImageButton(guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation(), onPress -> setEnergyUsage()));
+        addButton(new MekanismImageButton(guiLeft + 116, guiTop + 51, 11, 12, getButtonLocation("checkmark"), onPress -> setEnergyUsage()));
     }
 
     @Override

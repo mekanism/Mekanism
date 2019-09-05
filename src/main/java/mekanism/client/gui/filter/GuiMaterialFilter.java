@@ -40,7 +40,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " " + Translation.of("gui.mekanism.materialFilter")), 43, 6, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " ", Translation.of("gui.mekanism.materialFilter")), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.status"), ": ", status), 35, 20, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.materialFilter.details"), ":"), 35, 32, 0x00CD00);
         drawForegroundLayer(mouseX, mouseY);

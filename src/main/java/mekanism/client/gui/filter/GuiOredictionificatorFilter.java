@@ -70,7 +70,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }));
-        addButton(new DisableableImageButton(guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation(), onPress -> {
+        addButton(new MekanismImageButton(guiLeft + 63, guiTop + 21, 12, getButtonLocation("checkmark"), onPress -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
                 if (filter.index < matchingItems.size() - 1) {
@@ -121,7 +121,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " " + Translation.of("gui.mekanism.filter")), 0, xSize, 6, 0x404040);
+        drawCenteredText(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " ", Translation.of("gui.mekanism.filter")), 0, xSize, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.index"), ": " + filter.index), 79, 23, 0x404040);
         if (filter.hasFilter()) {
             renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);

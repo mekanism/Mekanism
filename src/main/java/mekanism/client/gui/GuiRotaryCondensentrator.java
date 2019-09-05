@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -81,7 +81,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             }
         }, ProgressBar.LARGE_LEFT, this, resource, 62, 38));
 
-        addButton(new DisableableImageButton(guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 4, guiTop + 4, 18, getButtonLocation("toggle"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.rotaryCondensentrator.toggleOperation")));
     }

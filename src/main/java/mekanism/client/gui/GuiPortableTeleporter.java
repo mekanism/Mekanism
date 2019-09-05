@@ -6,7 +6,7 @@ import java.util.UUID;
 import mekanism.api.text.EnumColor;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -128,7 +128,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new DisableableImageButton(guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation(), onPress -> {
+        addButton(new MekanismImageButton(guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), onPress -> {
             setFrequency(frequencyField.getText());
             frequencyField.setText("");
             updateButtons();

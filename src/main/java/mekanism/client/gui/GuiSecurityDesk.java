@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.render.MekanismRenderer;
@@ -83,13 +84,13 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
                   updateButtons();
               },
               getOnHover("gui.mekanism.trustedMode")));
-        addButton(checkboxButton = new DisableableImageButton(guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation(),
+        addButton(checkboxButton = new MekanismImageButton(guiLeft + 123, guiTop + 68, 11, 12, getButtonLocation("checkmark"),
               onPress -> {
                   addTrusted(trustedField.getText());
                   trustedField.setText("");
                   updateButtons();
               }));
-        addButton(overrideButton = new DisableableImageButton(guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation(),
+        addButton(overrideButton = new MekanismImageButton(guiLeft + 146, guiTop + 59, 16, 16, getButtonLocation("exclamation"),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
                   updateButtons();

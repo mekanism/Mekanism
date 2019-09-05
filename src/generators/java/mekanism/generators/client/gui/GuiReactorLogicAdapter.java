@@ -3,8 +3,8 @@ package mekanism.generators.client.gui;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
@@ -32,7 +32,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     @Override
     public void init() {
         super.init();
-        addButton(new DisableableImageButton(guiLeft + 23, guiTop + 19, 11, 11, 176, 11, -11, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 23, guiTop + 19, 11, 18, getButtonLocation("toggle"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.toggleCooling")));
         for (ReactorLogic type : ReactorLogic.values()) {
