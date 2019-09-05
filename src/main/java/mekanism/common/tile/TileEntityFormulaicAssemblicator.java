@@ -35,6 +35,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+//TODO: 1.14, Fix dupe bug that probably has to do with container/how it "fake fills" (attempt to drag single item after placing it in center slot)
 public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IUpgradeTile, IConfigCardAccess {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
@@ -66,7 +67,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public int pulseOperations;
 
     public RecipeFormula formula;
-    private Optional<ICraftingRecipe> cachedRecipe;
+    private Optional<ICraftingRecipe> cachedRecipe = Optional.empty();
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
     public TileComponentUpgrade<TileEntityFormulaicAssemblicator> upgradeComponent;

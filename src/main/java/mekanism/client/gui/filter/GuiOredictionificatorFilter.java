@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.render.MekanismRenderer;
@@ -59,7 +58,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
-        addButton(new DisableableImageButton(guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation(), onPress -> {
+        addButton(new MekanismImageButton(guiLeft + 31, guiTop + 21, 12, getButtonLocation("left"), onPress -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
                 if (filter.index > 0) {
@@ -70,7 +69,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }));
-        addButton(new MekanismImageButton(guiLeft + 63, guiTop + 21, 12, getButtonLocation("checkmark"), onPress -> {
+        addButton(new MekanismImageButton(guiLeft + 63, guiTop + 21, 12, getButtonLocation("right"), onPress -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
                 if (filter.index < matchingItems.size() - 1) {
@@ -81,7 +80,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }));
-        addButton(new DisableableImageButton(guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation(), onPress -> setText()));
+        addButton(new MekanismImageButton(guiLeft + 130, guiTop + 48, 12, getButtonLocation("checkmark"), onPress -> setText()));
     }
 
     @Override

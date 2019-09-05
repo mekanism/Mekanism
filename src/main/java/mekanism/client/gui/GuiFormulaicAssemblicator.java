@@ -3,13 +3,13 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -65,22 +65,22 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         ), this, resource));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
 
-        addButton(encodeFormulaButton = new DisableableImageButton(guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation(),
+        addButton(encodeFormulaButton = new MekanismImageButton(guiLeft + 7, guiTop + 45, 14, getButtonLocation("encode_formula"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.encodeFormula")));
-        addButton(stockControlButton = new DisableableImageButton(guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation(),
+        addButton(stockControlButton = new MekanismImageButton(guiLeft + 26, guiTop + 75, 16, getButtonLocation("stock_control"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
               getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.stockControl"), ": ", OnOff.of(tileEntity.stockControl)))));
-        addButton(fillEmptyButton = new DisableableImageButton(guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation(),
+        addButton(fillEmptyButton = new MekanismImageButton(guiLeft + 44, guiTop + 75, 16, getButtonLocation("fill_empty"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4))),
               getOnHover("gui.mekanism.fillEmpty")));
-        addButton(craftSingleButton = new DisableableImageButton(guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation(),
+        addButton(craftSingleButton = new MekanismImageButton(guiLeft + 71, guiTop + 75, 16, getButtonLocation("craft_single"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
               getOnHover("gui.mekanism.craftSingle")));
-        addButton(craftAvailableButton = new DisableableImageButton(guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation(),
+        addButton(craftAvailableButton = new MekanismImageButton(guiLeft + 89, guiTop + 75, 16, getButtonLocation("craft_available"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3))),
               getOnHover("gui.mekanism.craftAvailable")));
-        addButton(autoModeButton = new DisableableImageButton(guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation(),
+        addButton(autoModeButton = new MekanismImageButton(guiLeft + 107, guiTop + 75, 16, getButtonLocation("auto_toggle"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.autoModeToggle"), ": ", OnOff.of(tileEntity.autoMode)))));
         updateEnabledButtons();
@@ -128,8 +128,9 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                     int guiY = guiTop + slot.yPos;
                     if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
                         drawColorIcon(guiX, guiY, EnumColor.DARK_RED, 0.8F);
+                        //Only render the "correct" item in the gui slot if we don't already have that item there
+                        renderItem(stack, guiX, guiY);
                     }
-                    renderItem(stack, guiX, guiY);
                 }
             }
         }

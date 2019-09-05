@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.ColorButton;
-import mekanism.client.gui.button.DisableableImageButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
@@ -51,13 +51,13 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
 
         addButton(new TranslationButton(guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
               onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
-        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 12, guiTop + 58, 14, getButtonLocation("single"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
               getOnHover("gui.mekanism.logisticalSorter.singleItem.tooltip")));
-        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 12, guiTop + 84, 14, getButtonLocation("round_robin"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
               getOnHover("gui.mekanism.logisticalSorter.roundRobin.tooltip")));
-        addButton(new DisableableImageButton(guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation(),
+        addButton(new MekanismImageButton(guiLeft + 12, guiTop + 110, 14, getButtonLocation("auto_eject"),
               onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.logisticalSorter.autoEject.tooltip")));
         addButton(new ColorButton(guiLeft + 13, guiTop + 137, 16, 16, this, () -> tileEntity.color,

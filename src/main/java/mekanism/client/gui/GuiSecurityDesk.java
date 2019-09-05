@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.DisableableImageButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiScrollList;
@@ -66,19 +65,19 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         addButton(trustedField = new TextFieldWidget(font, guiLeft + 35, guiTop + 69, 86, 11, ""));
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
-        addButton(publicButton = new DisableableImageButton(guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation(),
+        addButton(publicButton = new MekanismImageButton(guiLeft + 13, guiTop + 113, 40, 16, 40, 16, getButtonLocation("public"),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 0)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.publicMode")));
-        addButton(privateButton = new DisableableImageButton(guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation(),
+        addButton(privateButton = new MekanismImageButton(guiLeft + 54, guiTop + 113, 40, 16, 40, 16, getButtonLocation("private"),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 1)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.privateMode")));
-        addButton(trustedButton = new DisableableImageButton(guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation(),
+        addButton(trustedButton = new MekanismImageButton(guiLeft + 95, guiTop + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
               onPress -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 2)));
                   updateButtons();

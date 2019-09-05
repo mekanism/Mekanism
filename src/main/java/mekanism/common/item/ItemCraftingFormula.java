@@ -58,7 +58,7 @@ public class ItemCraftingFormula extends ItemMekanism {
             }
             tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.ingredients"), ":"));
             for (ItemStack stack : stacks) {
-                tooltip.add(TextComponentUtil.build(EnumColor.GRAY, " - " + stack.getDisplayName() + " (" + stack.getCount() + ")"));
+                tooltip.add(TextComponentUtil.build(EnumColor.GRAY, " - ", stack.getDisplayName(), " (" + stack.getCount() + ")"));
             }
         }
     }

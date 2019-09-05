@@ -214,6 +214,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 if (scale != 1) {
                     GlStateManager.scalef(scale, scale, scale);
                 }
+                //TODO: renderItemAndEffectIntoGUI has some form of GL leak. Fix it
                 itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
                 GlStateManager.disableDepthTest();
