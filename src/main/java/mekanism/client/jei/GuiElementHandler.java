@@ -1,31 +1,41 @@
-//TODO
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
-import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import mekanism.client.gui.GuiMekanism;
-import mezz.jei.api.gui.IAdvancedGuiHandler;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
+import mezz.jei.api.gui.handlers.IGuiClickableArea;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.renderer.Rectangle2d;
 
-public class GuiElementHandler implements IAdvancedGuiHandler {
-
-    @Override
-    public Class getGuiContainerClass() {
-        return GuiMekanism.class;
-    }
+public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
 
     @Override
-    public List<Rectangle> getGuiExtraAreas(ContainerScreen gui) {
-        if (gui instanceof GuiMekanism) {
-            GuiMekanism guiMek = (GuiMekanism) gui;
-            return guiMek.getGuiElements().stream().map(element -> element.getBounds(guiMek.getGuiLeft(), guiMek.getGuiTop()).toRectangle()).collect(Collectors.toList());
+    public List<Rectangle2d> getGuiExtraAreas(GuiMekanism gui) {
+        List<Rectangle2d> extraAreas = new ArrayList<>();
+        List<? extends IGuiEventListener> children = gui.children();
+        for (IGuiEventListener child : children) {
+            if (child instanceof GuiTexturedElement) {
+                GuiTexturedElement element = (GuiTexturedElement) child;
+                //TODO: Only do this if it goes past the border
+                extraAreas.add(new Rectangle2d(element.x, element.y, element.getWidth(), element.getHeight()));
+            }
         }
+        return extraAreas;
+    }
+
+    @Override
+    public Object getIngredientUnderMouse(GuiMekanism gui, double mouseX, double mouseY) {
+        //TODO: ??
         return null;
     }
 
     @Override
-    public Object getIngredientUnderMouse(ContainerScreen guiContainer, int mouseX, int mouseY) {
-        return null;
+    public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism gui) {
+        //TODO: If we can offload this to the elements get it from there that would be ideal
+        return Collections.emptyList();
     }
-}*/
+}

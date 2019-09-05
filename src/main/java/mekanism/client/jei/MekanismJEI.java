@@ -8,6 +8,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnrichmentChamber;
+import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiSolarNeutronActivator;
@@ -192,6 +193,8 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
         GuiHandlerRegistryHelper.registerSmelter(registry);
+
+        registry.addGuiContainerHandler(GuiMekanism.class, new GuiElementHandler());
     }
 
     @Override
