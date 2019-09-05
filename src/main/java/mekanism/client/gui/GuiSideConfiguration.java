@@ -77,7 +77,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
-            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
                   () -> getTile().getConfig().getOutput(currentType, facing), () -> getTile().getConfig().getOutput(currentType, facing).color, tileEntity, currentType,
                   ConfigurationPacket.SIDE_DATA, getOnHover()));
         }

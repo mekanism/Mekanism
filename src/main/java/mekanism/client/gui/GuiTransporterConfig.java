@@ -65,7 +65,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
-            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+            addButton(new SideDataButton(guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
                   () -> getTile().getConfig().getOutput(TransmissionType.ITEM, facing), () -> getTile().getEjector().getInputColor(facing), tileEntity, null,
                   ConfigurationPacket.INPUT_COLOR, getOnHover()));
         }
