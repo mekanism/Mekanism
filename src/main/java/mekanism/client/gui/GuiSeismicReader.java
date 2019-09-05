@@ -55,9 +55,9 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     public void init() {
         super.init();
         addButton(upButton = new SeismicReaderButton(this, guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation(),
-              onPress -> currentLayer++));
+              () -> currentLayer++));
         addButton(downButton = new SeismicReaderButton(this, guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
-              onPress -> currentLayer--));
+              () -> currentLayer--));
         //tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
         updateEnabledButtons();
     }

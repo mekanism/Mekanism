@@ -51,7 +51,7 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 47, guiTop + 62, 60, 20, "gui.mekanism.save", onPress -> {
+        addButton(saveButton = new TranslationButton(this, guiLeft + 47, guiTop + 62, 60, 20, "gui.mekanism.save", () -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -67,18 +67,18 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 109, guiTop + 62, 60, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 109, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
-              onPress -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
+              () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 64, 11, getButtonLocation("default"),
-              onPress -> filter.allowDefault = !filter.allowDefault, getOnHover("gui.mekanism.allowDefault")));
+              () -> filter.allowDefault = !filter.allowDefault, getOnHover("gui.mekanism.allowDefault")));
         addButton(checkboxButton = new MekanismImageButton(this, guiLeft + 131, guiTop + 47, 12, getButtonLocation("checkmark"),
-              onPress -> setText()));
+              this::setText));
         addButton(new ColorButton(this, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color,
-              onPress -> filter.color = InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
-              onRightClick -> filter.color = TransporterUtils.decrement(filter.color)));
+              () -> filter.color = InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
+              () -> filter.color = TransporterUtils.decrement(filter.color)));
     }
 }

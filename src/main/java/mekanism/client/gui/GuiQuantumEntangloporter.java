@@ -60,15 +60,15 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
 
-        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
+        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", onPress -> {
+        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", onPress -> {
+        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
@@ -76,7 +76,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
@@ -89,7 +89,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new MekanismImageButton(this, guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), onPress -> {
+        addButton(new MekanismImageButton(this, guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), () -> {
             setFrequency(frequencyField.getText());
             frequencyField.setText("");
             updateButtons();

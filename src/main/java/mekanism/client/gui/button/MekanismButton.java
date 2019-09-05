@@ -11,36 +11,30 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MekanismButton extends GuiElement {
 
     private final IHoverable onHover;
-    private final IPressable onLeftClick;
-    private final IPressable onRightClick;
+    private final Runnable onLeftClick;
+    private final Runnable onRightClick;
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, String text, IPressable onLeftClick, IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, String text, Runnable onLeftClick, IHoverable onHover) {
         this(gui, x, y, width, height, text, onLeftClick, onLeftClick, onHover);
         //TODO: Decide if default implementation for right clicking should be do nothing, or act as left click
     }
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, String text, IPressable onLeftClick, IPressable onRightClick, IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, String text, Runnable onLeftClick, Runnable onRightClick, IHoverable onHover) {
         super(gui, x, y, width, height, text);
         this.onHover = onHover;
         this.onLeftClick = onLeftClick;
         this.onRightClick = onRightClick;
     }
 
-    protected void onPress() {
+    private void onLeftClick() {
         if (onLeftClick != null) {
-            onLeftClick.onPress(this);
-        }
-    }
-
-    private void click() {
-        if (onLeftClick != null) {
-            onLeftClick.onPress(this);
+            onLeftClick.run();
         }
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        click();
+        onLeftClick();
     }
 
     @Override
@@ -49,7 +43,7 @@ public class MekanismButton extends GuiElement {
         if (this.active && this.visible) {
             if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
                 playDownSound(Minecraft.getInstance().getSoundHandler());
-                click();
+                onLeftClick();
                 return true;
             }
         }
@@ -83,7 +77,7 @@ public class MekanismButton extends GuiElement {
     //TODO: Add right click support to GuiElement
     protected void onRightClick() {
         if (onRightClick != null) {
-            onRightClick.onPress(this);
+            onRightClick.run();
         }
     }
 
@@ -92,12 +86,5 @@ public class MekanismButton extends GuiElement {
     public interface IHoverable {
 
         void onHover(MekanismButton button, int mouseX, int mouseY);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @FunctionalInterface
-    public interface IPressable {
-
-        void onPress(MekanismButton button);
     }
 }

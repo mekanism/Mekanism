@@ -19,7 +19,7 @@ public class ReactorLogicButton extends MekanismButton {
     private final ResourceLocation resourceLocation;
     private final ReactorLogic type;
 
-    public ReactorLogicButton(IGuiWrapper gui, int x, int y, ReactorLogic type, @Nonnull TileEntityReactorLogicAdapter tile, ResourceLocation resource, IPressable onPress,
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, ReactorLogic type, @Nonnull TileEntityReactorLogicAdapter tile, ResourceLocation resource, Runnable onPress,
           IHoverable onHover) {
         super(gui, x, y, 128, 22, "", onPress, onHover);
         this.tile = tile;

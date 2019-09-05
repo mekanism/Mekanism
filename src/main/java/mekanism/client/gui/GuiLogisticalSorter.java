@@ -50,20 +50,20 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
         addButton(new GuiSecurityTab<>(this, tileEntity, resource));
 
         addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 58, 14, getButtonLocation("single"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
               getOnHover("gui.mekanism.logisticalSorter.singleItem.tooltip")));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 84, 14, getButtonLocation("round_robin"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
               getOnHover("gui.mekanism.logisticalSorter.roundRobin.tooltip")));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 110, 14, getButtonLocation("auto_eject"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.logisticalSorter.autoEject.tooltip")));
         addButton(new ColorButton(this, guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color,
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
                     GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
-              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, 1)))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, 1)))));
     }
 
     private boolean overUpArrow(double xAxis, double yAxis, int arrowX, int yStart) {

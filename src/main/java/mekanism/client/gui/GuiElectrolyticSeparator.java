@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiGasMode;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -16,12 +17,10 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.ElectrolyticSeparatorContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -29,7 +28,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,45 +64,20 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
                 return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.BI, this, resource, 78, 29));
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        double xAxis = mouseX - guiLeft;
-        double yAxis = mouseY - guiTop;
-        //TODO: Convert to gui element/button
-        if (xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 0)));
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            return true;
-        } else if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 1)));
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            return true;
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
+        addButton(new GuiGasMode(this, resource, 7, 72, false, () -> tileEntity.dumpLeft,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 0)))));
+        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tileEntity.dumpRight,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 1)))));
     }
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "electrolytic_separator.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "blank.png");
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 45, 6, 0x404040);
-        renderScaledText(TextComponentUtil.build(tileEntity.dumpLeft), 21, 73, 0x404040, 66);
-        ITextComponent component = TextComponentUtil.build(tileEntity.dumpRight);
-        renderScaledText(component, 156 - (int) (getStringWidth(component) * getNeededScale(component, 66)), 73, 0x404040, 66);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //Left
-        drawTexturedRect(guiLeft + 8, guiTop + 73, 176, GasMode.chooseByMode(tileEntity.dumpLeft, 52, 60, 68), 8, 8);
-        //Right
-        drawTexturedRect(guiLeft + 160, guiTop + 73, 176, GasMode.chooseByMode(tileEntity.dumpRight, 52, 60, 68), 8, 8);
     }
 }

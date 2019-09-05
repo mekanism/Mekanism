@@ -47,6 +47,15 @@ public abstract class GuiElement extends Widget {
         return getFontRenderer().drawString(text, x, y, color);
     }
 
+    public int getStringWidth(ITextComponent component) {
+        return getFontRenderer().getStringWidth(component.getFormattedText());
+    }
+
+    public float getNeededScale(ITextComponent text, int maxX) {
+        int length = getStringWidth(text);
+        return length <= maxX ? 1 : (float) maxX / length;
+    }
+
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
         int length = getFontRenderer().getStringWidth(text);
 

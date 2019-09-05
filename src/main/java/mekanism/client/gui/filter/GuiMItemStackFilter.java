@@ -2,7 +2,6 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
@@ -34,8 +33,6 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner, DMItemStackFilterContainer> {
 
-    private MekanismButton fuzzyButton;
-
     public GuiMItemStackFilter(DMItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         origFilter = container.getFilter();
@@ -45,7 +42,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 27, guiTop + 62, 60, 20, "gui.mekanism.save", onPress -> {
+        addButton(saveButton = new TranslationButton(this, guiLeft + 27, guiTop + 62, 60, 20, "gui.mekanism.save", () -> {
             if (!filter.getItemStack().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
@@ -58,17 +55,17 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 60, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
-              onPress -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
+              () -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         addButton(new MekanismImageButton(this, guiLeft + 148, guiTop + 45, 14, 16, getButtonLocation("exclamation"),
-              onPress -> filter.requireStack = !filter.requireStack,
+              () -> filter.requireStack = !filter.requireStack,
               getOnHoverReplace(filter)));
-        addButton(fuzzyButton = new MekanismImageButton(this, guiLeft + 15, guiTop + 45, 14, getButtonLocation("fuzzy"),
-              onPress -> filter.fuzzy = !filter.fuzzy,
+        addButton(new MekanismImageButton(this, guiLeft + 15, guiTop + 45, 14, getButtonLocation("fuzzy"),
+              () -> filter.fuzzy = !filter.fuzzy,
               getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.fuzzyMode"), ": ", YesNo.of(filter.fuzzy)))));
     }
 

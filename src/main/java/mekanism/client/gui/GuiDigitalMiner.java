@@ -71,22 +71,22 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
 
         addButton(startButton = new TranslationButton(this, guiLeft + 69, guiTop + 17, 60, 20, "gui.mekanism.start",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)))));
         addButton(stopButton = new TranslationButton(this, guiLeft + 69, guiTop + 37, 60, 20, "gui.mekanism.stop",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4)))));
         addButton(configButton = new TranslationButton(this, guiLeft + 69, guiTop + 57, 60, 20, "gui.mekanism.config",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tileEntity.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 131, guiTop + 47, 14, getButtonLocation("reset"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
               getOnHover("gui.mekanism.digitalMiner.reset")));
         addButton(new MekanismImageButton(this, guiLeft + 131, guiTop + 63, 14, getButtonLocation("silk_touch"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(9))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(9))),
               getOnHover("gui.mekanism.digitalMiner.silkTouch")));
         addButton(new MekanismImageButton(this, guiLeft + 147, guiTop + 47, 14, getButtonLocation("auto_eject"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.autoEject")));
         addButton(new MekanismImageButton(this, guiLeft + 147, guiTop + 63, 14, getButtonLocation("auto_pull"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.digitalMiner.autoPull")));
         updateEnabledButtons();
     }

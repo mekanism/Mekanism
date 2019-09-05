@@ -33,7 +33,7 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 27, guiTop + 62, 60, 20, "gui.mekanism.save", onPress -> {
+        addButton(saveButton = new TranslationButton(this, guiLeft + 27, guiTop + 62, 60, 20, "gui.mekanism.save", () -> {
             if (!filter.getMaterialItem().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
@@ -46,14 +46,14 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 60, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
-              onPress -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
+              () -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         addButton(new MekanismImageButton(this, guiLeft + 148, guiTop + 45, 14, 16, getButtonLocation("exclamation"),
-              onPress -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
+              () -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
     }
 
     @Override

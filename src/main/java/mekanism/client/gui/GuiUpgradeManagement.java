@@ -46,13 +46,12 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     public void init() {
         super.init();
         addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
-        addButton(removeButton = new MekanismImageButton(this, guiLeft + 136, guiTop + 57, 12, getButtonLocation("remove_upgrade"),
-              onPress -> {
-                  if (selectedType != null) {
-                      Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), selectedType));
-                  }
-              }));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
+        addButton(removeButton = new MekanismImageButton(this, guiLeft + 136, guiTop + 57, 12, getButtonLocation("remove_upgrade"), () -> {
+            if (selectedType != null) {
+                Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), selectedType));
+            }
+        }));
         updateEnabledButtons();
     }
 

@@ -54,14 +54,14 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
     public void init() {
         super.init();
         addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("strict_input"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
               getOnHover("gui.mekanism.configuration.strictInput")));
         addButton(new ColorButton(this, guiLeft + 122, guiTop + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
                     InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
-              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null))));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);

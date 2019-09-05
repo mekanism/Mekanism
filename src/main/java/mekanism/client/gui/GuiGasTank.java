@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
+import mekanism.client.gui.element.GuiGasMode;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -9,19 +10,16 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityGasTank;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,6 +41,8 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 7, 7).with(SlotOverlay.PLUS));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 7, 39).with(SlotOverlay.MINUS));
+        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tileEntity.dumping,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
     }
 
     @Override
@@ -66,8 +66,6 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.gas"), ": ", Translation.of("gui.mekanism.none")), 45, 49, 0x404040, 112);
         }
         drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-        ITextComponent dumpingComponent = TextComponentUtil.build(tileEntity.dumping);
-        drawString(dumpingComponent, 156 - getStringWidth(dumpingComponent), 73, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -75,25 +73,11 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = GasMode.chooseByMode(tileEntity.dumping, 10, 18, 26);
-        drawTexturedRect(guiLeft + 160, guiTop + 73, 176, displayInt, 8, 8);
         if (tileEntity.gasTank.getGas() != null) {
+            //TODO: 1.14 Convert to GuiElement, and make it draw the gas texture instead of the bar (will make it easier at a glance to see what is going on)
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
             drawTexturedRect(guiLeft + 65, guiTop + 17, 176, 0, scale, 10);
         }
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        double xAxis = mouseX - guiLeft;
-        double yAxis = mouseY - guiTop;
-        if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
-            TileNetworkList data = TileNetworkList.withContents(0);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-        }
-        return true;
     }
 
     @Override

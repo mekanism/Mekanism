@@ -91,15 +91,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }, resource, 158, 26));
         addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 40));
 
-        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", onPress -> {
+        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", onPress -> {
+        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", onPress -> {
+        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -107,7 +107,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -117,7 +117,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(teleportButton = new TranslationButton(this, guiLeft + 42, guiTop + 140, 92, 20, "gui.mekanism.teleport", onPress -> {
+        addButton(teleportButton = new TranslationButton(this, guiLeft + 42, guiTop + 140, 92, 20, "gui.mekanism.teleport", () -> {
             if (clientFreq != null && clientStatus == 1) {
                 //TODO: Set focus
                 //minecraft.mainWindow.setIngameFocus();
@@ -128,7 +128,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         addButton(frequencyField = new TextFieldWidget(font, guiLeft + 50, guiTop + 104, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new MekanismImageButton(this, guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), onPress -> {
+        addButton(new MekanismImageButton(this, guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), () -> {
             setFrequency(frequencyField.getText());
             frequencyField.setText("");
             updateButtons();

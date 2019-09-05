@@ -14,11 +14,11 @@ public class SeismicReaderButton extends MekanismButton {
     private final int offsetX;
     private final int offsetY;
 
-    public SeismicReaderButton(IGuiWrapper gui, int x, int y, int width, int height, int offsetX, int offsetY, ResourceLocation resource, IPressable onPress) {
+    public SeismicReaderButton(IGuiWrapper gui, int x, int y, int width, int height, int offsetX, int offsetY, ResourceLocation resource, Runnable onPress) {
         this(gui, x, y, width, height, offsetX, offsetY, resource, onPress, null);
     }
 
-    public SeismicReaderButton(IGuiWrapper gui, int x, int y, int width, int height, int offsetX, int offsetY, ResourceLocation resource, IPressable onPress, IHoverable onHover) {
+    public SeismicReaderButton(IGuiWrapper gui, int x, int y, int width, int height, int offsetX, int offsetY, ResourceLocation resource, Runnable onPress, IHoverable onHover) {
         super(gui, x, y, width, height, "", onPress, onHover);
         this.resourceLocation = resource;
         this.offsetX = offsetX;

@@ -27,9 +27,9 @@ public class SideDataButton extends MekanismButton {
     public SideDataButton(IGuiWrapper gui, int x, int y, int slotPosMapIndex, Supplier<SideData> sideDataSupplier, Supplier<EnumColor> colorSupplier,
           TileEntity tile, TransmissionType transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
         super(gui, x, y, 14, 14, "",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile),
                     InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, slotPosMapIndex, transmissionType)),
-              onRightClick -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), 1, slotPosMapIndex, transmissionType)),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), 1, slotPosMapIndex, transmissionType)),
               onHover);
         this.sideDataSupplier = sideDataSupplier;
         this.colorSupplier = colorSupplier;

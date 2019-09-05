@@ -66,22 +66,22 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         addButton(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
 
         addButton(encodeFormulaButton = new MekanismImageButton(this, guiLeft + 7, guiTop + 45, 14, getButtonLocation("encode_formula"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.encodeFormula")));
         addButton(stockControlButton = new MekanismImageButton(this, guiLeft + 26, guiTop + 75, 16, getButtonLocation("stock_control"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
               getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.stockControl"), ": ", OnOff.of(tileEntity.stockControl)))));
         addButton(fillEmptyButton = new MekanismImageButton(this, guiLeft + 44, guiTop + 75, 16, getButtonLocation("fill_empty"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4))),
               getOnHover("gui.mekanism.fillEmpty")));
         addButton(craftSingleButton = new MekanismImageButton(this, guiLeft + 71, guiTop + 75, 16, getButtonLocation("craft_single"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
               getOnHover("gui.mekanism.craftSingle")));
         addButton(craftAvailableButton = new MekanismImageButton(this, guiLeft + 89, guiTop + 75, 16, getButtonLocation("craft_available"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3))),
               getOnHover("gui.mekanism.craftAvailable")));
         addButton(autoModeButton = new MekanismImageButton(this, guiLeft + 107, guiTop + 75, 16, getButtonLocation("auto_toggle"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.autoModeToggle"), ": ", OnOff.of(tileEntity.autoMode)))));
         updateEnabledButtons();
     }

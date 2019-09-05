@@ -53,7 +53,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         super.init();
         addButton(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 40));
 
-        addButton(removeButton = new TranslationButton(this, guiLeft + 13, guiTop + 81, 122, 20, "gui.mekanism.remove", onPress -> {
+        addButton(removeButton = new TranslationButton(this, guiLeft + 13, guiTop + 81, 122, 20, "gui.mekanism.remove", () -> {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {
                 TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
@@ -66,31 +66,31 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
         addButton(publicButton = new MekanismImageButton(this, guiLeft + 13, guiTop + 113, 40, 16, 40, 16, getButtonLocation("public"),
-              onPress -> {
+              () -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 0)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.publicMode")));
         addButton(privateButton = new MekanismImageButton(this, guiLeft + 54, guiTop + 113, 40, 16, 40, 16, getButtonLocation("private"),
-              onPress -> {
+              () -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 1)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.privateMode")));
         addButton(trustedButton = new MekanismImageButton(this, guiLeft + 95, guiTop + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
-              onPress -> {
+              () -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, 2)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.trustedMode")));
         addButton(checkboxButton = new MekanismImageButton(this, guiLeft + 123, guiTop + 68, 11, 12, getButtonLocation("checkmark"),
-              onPress -> {
+              () -> {
                   addTrusted(trustedField.getText());
                   trustedField.setText("");
                   updateButtons();
               }));
         addButton(overrideButton = new MekanismImageButton(this, guiLeft + 146, guiTop + 59, 16, 16, getButtonLocation("exclamation"),
-              onPress -> {
+              () -> {
                   Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
                   updateButtons();
               },

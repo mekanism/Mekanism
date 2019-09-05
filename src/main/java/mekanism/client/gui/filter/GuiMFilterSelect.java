@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import mekanism.client.gui.button.MekanismButton.IPressable;
 import mekanism.common.inventory.container.tile.filter.select.DMFilterSelectContainer;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -20,28 +19,28 @@ public class GuiMFilterSelect extends GuiFilterSelect<TileEntityDigitalMiner, DM
     }
 
     @Override
-    protected IPressable onItemStackButton() {
-        return onPress -> sendPacketToServer(ClickedTileButton.DM_FILTER_ITEMSTACK);
+    protected Runnable onItemStackButton() {
+        return () -> sendPacketToServer(ClickedTileButton.DM_FILTER_ITEMSTACK);
     }
 
     @Override
-    protected IPressable onTagButton() {
-        return onPress -> sendPacketToServer(ClickedTileButton.DM_FILTER_TAG);
+    protected Runnable onTagButton() {
+        return () -> sendPacketToServer(ClickedTileButton.DM_FILTER_TAG);
     }
 
     @Override
-    protected IPressable onMaterialButton() {
-        return onPress -> sendPacketToServer(ClickedTileButton.DM_FILTER_MATERIAL);
+    protected Runnable onMaterialButton() {
+        return () -> sendPacketToServer(ClickedTileButton.DM_FILTER_MATERIAL);
     }
 
     @Override
-    protected IPressable onModIDButton() {
-        return onPress -> sendPacketToServer(ClickedTileButton.DM_FILTER_MOD_ID);
+    protected Runnable onModIDButton() {
+        return () -> sendPacketToServer(ClickedTileButton.DM_FILTER_MOD_ID);
     }
 
     @Override
-    protected IPressable onBackButton() {
-        return onPress -> sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
+    protected Runnable onBackButton() {
+        return () -> sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
     }
 
     @Override

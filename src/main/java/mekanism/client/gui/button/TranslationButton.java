@@ -8,11 +8,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TranslationButton extends MekanismButton {
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, String translationKey, IPressable onPress) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, String translationKey, Runnable onPress) {
         this(gui, x, y, width, height, TextComponentUtil.translate(translationKey).getFormattedText(), onPress, null);
     }
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, String translationKey, IPressable onPress, IHoverable onHover) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, String translationKey, Runnable onPress, IHoverable onHover) {
         super(gui, x, y, width, height, TextComponentUtil.translate(translationKey).getFormattedText(), onPress, onHover);
     }
 }

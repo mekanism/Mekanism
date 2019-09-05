@@ -40,7 +40,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 31, guiTop + 62, 54, 20, "gui.mekanism.save", onPress -> {
+        addButton(saveButton = new TranslationButton(this, guiLeft + 31, guiTop + 62, 54, 20, "gui.mekanism.save", () -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -53,12 +53,13 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 54, 20, "gui.mekanism.delete", onPress -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 54, 20, "gui.mekanism.delete", () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
-        addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onPress -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
-        addButton(new MekanismImageButton(this, guiLeft + 31, guiTop + 21, 12, getButtonLocation("left"), onPress -> {
+        addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
+              () -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
+        addButton(new MekanismImageButton(this, guiLeft + 31, guiTop + 21, 12, getButtonLocation("left"), () -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
                 if (filter.index > 0) {
@@ -69,7 +70,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }));
-        addButton(new MekanismImageButton(this, guiLeft + 63, guiTop + 21, 12, getButtonLocation("right"), onPress -> {
+        addButton(new MekanismImageButton(this, guiLeft + 63, guiTop + 21, 12, getButtonLocation("right"), () -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
                 if (filter.index < matchingItems.size() - 1) {
@@ -80,7 +81,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }));
-        addButton(new MekanismImageButton(this, guiLeft + 130, guiTop + 48, 12, getButtonLocation("checkmark"), onPress -> setText()));
+        addButton(new MekanismImageButton(this, guiLeft + 130, guiTop + 48, 12, getButtonLocation("checkmark"), this::setText));
     }
 
     @Override

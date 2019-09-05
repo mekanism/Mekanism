@@ -62,7 +62,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
 
         addButton(new TranslationButton(this, guiLeft + 10, guiTop + 86, 142, 20, "gui.mekanism.newFilter",
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
     }
 
     private boolean overFilter(double xAxis, double yAxis, int yStart) {

@@ -33,12 +33,12 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     public void init() {
         super.init();
         addButton(new MekanismImageButton(this, guiLeft + 23, guiTop + 19, 11, 18, getButtonLocation("toggle"),
-              onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.toggleCooling")));
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
             addButton(new ReactorLogicButton(this, guiLeft + 24, guiTop + 32 + typeShift, type, tileEntity, getGuiLocation(),
-                  onPress -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1, type))), getOnHover()));
+                  () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1, type))), getOnHover()));
         }
     }
 

@@ -1,7 +1,6 @@
 package mekanism.client.gui.filter;
 
 import mekanism.client.gui.button.MekanismButton;
-import mekanism.client.gui.button.MekanismButton.IPressable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
@@ -34,15 +33,15 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
         addButton(backButton = new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onBackButton()));
     }
 
-    protected abstract IPressable onItemStackButton();
+    protected abstract Runnable onItemStackButton();
 
-    protected abstract IPressable onTagButton();
+    protected abstract Runnable onTagButton();
 
-    protected abstract IPressable onMaterialButton();
+    protected abstract Runnable onMaterialButton();
 
-    protected abstract IPressable onModIDButton();
+    protected abstract Runnable onModIDButton();
 
-    protected abstract IPressable onBackButton();
+    protected abstract Runnable onBackButton();
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
