@@ -10,6 +10,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.network.PacketTileEntity;
@@ -18,6 +19,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -75,8 +78,37 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity.gasTank.getGas() != null) {
             //TODO: 1.14 Convert to GuiElement, and make it draw the gas texture instead of the bar (will make it easier at a glance to see what is going on)
+            // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
+            // The other option which may make more sense is to make it be a GuiGauge
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
-            drawTexturedRect(guiLeft + 65, guiTop + 17, 176, 0, scale, 10);
+            drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, tileEntity.gasTank.getGas().getGas().getSprite(), scale, 10);
+            TextureAtlasSprite icon = tileEntity.gasTank.getGas().getGas().getSprite();
+            if (scale > 0 && icon != null) {
+                minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                MekanismRenderer.color(tileEntity.gasTank.getGas());
+                int start = 0;
+                int x = guiLeft + 65;
+                int y = guiTop + 17;
+                while (scale > 0) {
+                    int renderRemaining;
+                    if (scale > 16) {
+                        renderRemaining = 16;
+                        scale -= 16;
+                    } else {
+                        renderRemaining = scale;
+                        scale = 0;
+                    }
+                    drawTexturedRectFromIcon(x + 72 - renderRemaining - start, y, icon, renderRemaining, 10);
+                    start += 16;
+                    if (scale == 0) {
+                        break;
+                    }
+                }
+
+                MekanismRenderer.resetColor();
+                //Reset the texture location, even though it technically isn't needed
+                minecraft.textureManager.bindTexture(getGuiLocation());
+            }
         }
     }
 
