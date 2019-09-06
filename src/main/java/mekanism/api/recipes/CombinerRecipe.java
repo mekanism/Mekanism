@@ -18,7 +18,7 @@ import net.minecraft.item.crafting.Ingredient;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class CombinerRecipe implements BiPredicate<@NonNull ItemStack, @NonNull ItemStack> {
+public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull ItemStack> {
 
     private final Ingredient mainInput;
 

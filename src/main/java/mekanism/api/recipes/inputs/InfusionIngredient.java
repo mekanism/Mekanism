@@ -7,7 +7,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionContainer;
-import mekanism.common.InfuseStorage;
 
 /**
  * Created by Thiakil on 12/07/2019.

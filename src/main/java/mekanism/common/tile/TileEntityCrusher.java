@@ -1,20 +1,19 @@
 package mekanism.common.tile;
 
-import java.util.Map;
+import java.util.List;
+import mekanism.api.recipes.ItemStack2ItemStackRecipe;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 
-public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe> {
+public class TileEntityCrusher extends TileEntityElectricMachine<ItemStack2ItemStackRecipe> {
 
     public TileEntityCrusher() {
         super("crusher", MachineType.CRUSHER, 200);
     }
 
     @Override
-    public Map<ItemStackInput, CrusherRecipe> getRecipes() {
+    public List<ItemStack2ItemStackRecipe> getRecipes() {
         return Recipe.CRUSHER.get();
     }
 }

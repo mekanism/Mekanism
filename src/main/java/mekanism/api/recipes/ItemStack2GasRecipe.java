@@ -1,7 +1,5 @@
 package mekanism.api.recipes;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -18,7 +16,7 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStack2GasRecipe implements Predicate<@NonNull ItemStack> {
+public class ItemStack2GasRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     private final Ingredient input;
 

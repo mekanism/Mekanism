@@ -19,7 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ItemStack2ItemStackRecipe implements Predicate<@NonNull ItemStack> {
+public class ItemStack2ItemStackRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     private final Ingredient mainInput;
 

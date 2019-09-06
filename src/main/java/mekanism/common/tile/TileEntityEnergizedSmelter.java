@@ -1,20 +1,19 @@
 package mekanism.common.tile;
 
-import java.util.Map;
+import java.util.List;
+import mekanism.api.recipes.ItemStack2ItemStackRecipe;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 
-public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<SmeltingRecipe> {
+public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<ItemStack2ItemStackRecipe> {
 
     public TileEntityEnergizedSmelter() {
         super("smelter", MachineType.ENERGIZED_SMELTER, 200);
     }
 
     @Override
-    public Map<ItemStackInput, SmeltingRecipe> getRecipes() {
+    public List<ItemStack2ItemStackRecipe> getRecipes() {
         return Recipe.ENERGIZED_SMELTER.get();
     }
 }

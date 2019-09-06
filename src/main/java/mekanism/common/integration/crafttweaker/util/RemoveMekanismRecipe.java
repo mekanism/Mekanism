@@ -1,19 +1,16 @@
 package mekanism.common.integration.crafttweaker.util;
 
 import crafttweaker.CraftTweakerAPI;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
 
-public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
-      RecipeMapModification<INPUT, RECIPE> {
+public class RemoveMekanismRecipe<RECIPE extends IMekanismRecipe> extends RecipeMapModification<RECIPE> {
 
     private final IngredientWrapper input;
     private final IngredientWrapper output;
 
-    public RemoveMekanismRecipe(String name, Recipe<INPUT, OUTPUT, RECIPE> recipeType, IngredientWrapper output, IngredientWrapper input) {
+    public RemoveMekanismRecipe(String name, Recipe<RECIPE> recipeType, IngredientWrapper output, IngredientWrapper input) {
         super(name, false, recipeType);
         this.input = input;
         this.output = output;

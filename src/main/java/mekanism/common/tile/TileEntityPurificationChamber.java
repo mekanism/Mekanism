@@ -1,23 +1,22 @@
 package mekanism.common.tile;
 
-import java.util.Map;
+import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
+public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe> {
 
     public TileEntityPurificationChamber() {
         super("purifier", MachineType.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override
-    public Map<AdvancedMachineInput, PurificationRecipe> getRecipes() {
+    public List<ItemStackGasToItemStackRecipe> getRecipes() {
         return Recipe.PURIFICATION_CHAMBER.get();
     }
 
@@ -36,7 +35,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 
     @Override
     public boolean isValidGas(Gas gas) {
-        return Recipe.PURIFICATION_CHAMBER.containsRecipe(gas);
+        return Recipe.PURIFICATION_CHAMBER.findFirst(recipe -> recipe.getGasInput().test(gas)) != null;
     }
 
     @Override

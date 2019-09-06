@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -19,6 +20,7 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.api.recipes.ItemStack2GasRecipe;
 import mekanism.api.recipes.ItemStack2ItemStackRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -53,6 +55,11 @@ public final class RecipeHandler {
         Recipe.ENRICHMENT_CHAMBER.put(new ItemStack2ItemStackRecipe(input, output));
     }
 
+    @Deprecated
+    public static void addEnrichmentChamberRecipe(ItemStack input, ItemStack output) {
+        addEnrichmentChamberRecipe(Ingredient.fromStacks(input), output);
+    }
+
     /**
      * Add an Osmium Compressor recipe.
      *
@@ -61,6 +68,11 @@ public final class RecipeHandler {
      */
     public static void addOsmiumCompressorRecipe(Ingredient input, GasIngredient gasInput, ItemStack output) {
         Recipe.OSMIUM_COMPRESSOR.put(new ItemStackGasToItemStackRecipe(input, gasInput, output));
+    }
+
+    @Deprecated
+    public static void addOsmiumCompressorRecipe(ItemStack input, ItemStack output) {
+        addOsmiumCompressorRecipe(Ingredient.fromStacks(input), GasIngredient.fromInstance(MekanismFluids.LiquidOsmium), output);
     }
 
     /**
@@ -74,6 +86,11 @@ public final class RecipeHandler {
         Recipe.COMBINER.put(new CombinerRecipe(input, extra, output));
     }
 
+    @Deprecated
+    public static void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output) {
+        addCombinerRecipe(Ingredient.fromStacks(input), Ingredient.fromStacks(extra), output);
+    }
+
     /**
      * Add a Crusher recipe.
      *
@@ -84,6 +101,11 @@ public final class RecipeHandler {
         Recipe.CRUSHER.put(new ItemStack2ItemStackRecipe(input, output));
     }
 
+    @Deprecated
+    public static void addCrusherRecipe(ItemStack input, ItemStack output) {
+        addCrusherRecipe(Ingredient.fromStacks(input), output);
+    }
+
     /**
      * Add a Purification Chamber recipe.
      *
@@ -92,6 +114,11 @@ public final class RecipeHandler {
      */
     public static void addPurificationChamberRecipe(Ingredient input, ItemStack output) {
         Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, new Instance(MekanismFluids.Oxygen), output));
+    }
+
+    @Deprecated
+    public static void addPurificationChamberRecipe(ItemStack input, ItemStack output) {
+        addPurificationChamberRecipe(Ingredient.fromStacks(input), output);
     }
 
     /**
@@ -105,6 +132,11 @@ public final class RecipeHandler {
         Recipe.METALLURGIC_INFUSER.put(new MetallurgicInfuserRecipe(input, infusionIngredient, output));
     }
 
+    @Deprecated
+    public static void addMetallurgicInfuserRecipe(InfuseType infuse, int amount, ItemStack input, ItemStack output) {
+        addMetallurgicInfuserRecipe(InfusionIngredient.from(infuse, amount), Ingredient.fromStacks(input), output);
+    }
+
     /**
      * Add a Chemical Infuser recipe.
      *
@@ -114,6 +146,11 @@ public final class RecipeHandler {
      */
     public static void addChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
         Recipe.CHEMICAL_INFUSER.put(new ChemicalInfuserRecipe(leftInput, rightInput, output));
+    }
+
+    @Deprecated
+    public static void addChemicalInfuserRecipe(GasStack leftInput, GasStack rightInput, GasStack output) {
+        addChemicalInfuserRecipe(GasStackIngredient.fromInstance(leftInput.getGas(), leftInput.amount), GasStackIngredient.fromInstance(rightInput.getGas(), rightInput.amount), output);
     }
 
     /**
@@ -127,6 +164,11 @@ public final class RecipeHandler {
         Recipe.CHEMICAL_OXIDIZER.put(new ItemStack2GasRecipe(input, outputGas, outputAmount));
     }
 
+    @Deprecated
+    public static void addChemicalOxidizerRecipe(ItemStack input, GasStack output) {
+        addChemicalOxidizerRecipe(Ingredient.fromStacks(input), output.getGas(), output.amount);
+    }
+
     /**
      * Add a Chemical Injection Chamber recipe.
      *
@@ -135,6 +177,11 @@ public final class RecipeHandler {
      */
     public static void addChemicalInjectionChamberRecipe(Ingredient input, GasIngredient gas, ItemStack output) {
         Recipe.CHEMICAL_INJECTION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, gas, output));
+    }
+
+    @Deprecated
+    public static void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output) {
+        addChemicalInjectionChamberRecipe(Ingredient.fromStacks(input), GasIngredient.fromInstance(gas), output);
     }
 
     /**
@@ -146,6 +193,11 @@ public final class RecipeHandler {
      */
     public static void addElectrolyticSeparatorRecipe(FluidStackIngredient fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
         Recipe.ELECTROLYTIC_SEPARATOR.put(new ElectrolysisRecipe(fluid, energy, leftOutput, rightOutput));
+    }
+
+    @Deprecated
+    public static void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
+        addElectrolyticSeparatorRecipe(FluidStackIngredient.fromInstance(fluid), energy, leftOutput, rightOutput);
     }
 
     /**
@@ -160,6 +212,11 @@ public final class RecipeHandler {
         Recipe.PRECISION_SAWMILL.put(new SawmillRecipe(input, primaryOutput, secondaryOutput, chance));
     }
 
+    @Deprecated
+    public static void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput, double chance) {
+        addPrecisionSawmillRecipe(Ingredient.fromStacks(input), primaryOutput, secondaryOutput, chance);
+    }
+
     /**
      * Add a Precision Sawmill recipe with no chance output
      *
@@ -167,7 +224,12 @@ public final class RecipeHandler {
      * @param primaryOutput - guaranteed output
      */
     public static void addPrecisionSawmillRecipe(Ingredient input, ItemStack primaryOutput) {
-        Recipe.PRECISION_SAWMILL.put(new SawmillRecipe(input, primaryOutput, ItemStack.EMPTY, 0));
+        addPrecisionSawmillRecipe(input, primaryOutput, ItemStack.EMPTY, 0);
+    }
+
+    @Deprecated
+    public static void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput) {
+        addPrecisionSawmillRecipe(Ingredient.fromStacks(input), primaryOutput);
     }
 
     /**
@@ -180,6 +242,11 @@ public final class RecipeHandler {
         Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStack2GasRecipe(input, outputGas, outputAmount));
     }
 
+    @Deprecated
+    public static void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output) {
+        addChemicalDissolutionChamberRecipe(Ingredient.fromStacks(input), output.getGas(), output.amount);
+    }
+
     /**
      * Add a Chemical Washer recipe.
      *
@@ -190,6 +257,11 @@ public final class RecipeHandler {
         Recipe.CHEMICAL_WASHER.put(new GasToGasRecipe(input, output));
     }
 
+    @Deprecated
+    public static void addChemicalWasherRecipe(GasStack input, GasStack output) {
+        addChemicalWasherRecipe(GasStackIngredient.fromInstance(input.getGas(), input.amount), output);
+    }
+
     /**
      * Add a Chemical Crystallizer recipe.
      *
@@ -198,6 +270,11 @@ public final class RecipeHandler {
      */
     public static void addChemicalCrystallizerRecipe(GasStackIngredient input, ItemStack output) {
         Recipe.CHEMICAL_CRYSTALLIZER.put(new ChemicalCrystallizerRecipe(input, output));
+    }
+
+    @Deprecated
+    public static void addChemicalCrystallizerRecipe(GasStack input, ItemStack output) {
+        addChemicalCrystallizerRecipe(GasStackIngredient.fromInstance(input.getGas(), input.amount), output);
     }
 
     /**
@@ -216,12 +293,28 @@ public final class RecipeHandler {
         Recipe.PRESSURIZED_REACTION_CHAMBER.put(new PressurizedReactionRecipe(inputSolid, inputFluid, inputGas, outputGas, gasOutputAmount, extraEnergy, ticks, outputSolid));
     }
 
+    @Deprecated
+    public static void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
+        addPRCRecipe(Ingredient.fromStacks(inputSolid), FluidStackIngredient.fromInstance(inputFluid), GasStackIngredient.fromInstance(inputGas.getGas(), inputGas.amount),
+              outputSolid, outputGas.getGas(), outputGas.amount, extraEnergy, ticks);
+    }
+
     public static void addThermalEvaporationRecipe(FluidStackIngredient inputFluid, FluidStack outputFluid) {
         Recipe.THERMAL_EVAPORATION_PLANT.put(new FluidToFluidRecipe(inputFluid, outputFluid));
     }
 
+    @Deprecated
+    public static void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid) {
+        addThermalEvaporationRecipe(FluidStackIngredient.fromInstance(inputFluid), outputFluid);
+    }
+
     public static void addSolarNeutronRecipe(GasStackIngredient inputGas, GasStack outputGas) {
         Recipe.SOLAR_NEUTRON_ACTIVATOR.put(new GasToGasRecipe(inputGas, outputGas));
+    }
+
+    @Deprecated
+    public static void addSolarNeutronRecipe(GasStack inputGas, GasStack outputGas) {
+        addSolarNeutronRecipe(GasStackIngredient.fromInstance(inputGas.getGas(), inputGas.amount), outputGas);
     }
 
     public static void addAmbientGas(int dimensionID, GasStack ambient) {
@@ -346,7 +439,7 @@ public final class RecipeHandler {
         return false;
     }
 
-    public static class Recipe<RECIPETYPE> {
+    public static class Recipe<RECIPE_TYPE extends IMekanismRecipe> {
 
         private static List<Recipe> values = new ArrayList<>();
 
@@ -360,8 +453,7 @@ public final class RecipeHandler {
 
         public static final Recipe<ItemStack2ItemStackRecipe> CRUSHER = new Recipe<>(MachineType.CRUSHER, ItemStack2ItemStackRecipe.class);
 
-        public static final Recipe<ItemStackGasToItemStackRecipe> PURIFICATION_CHAMBER = new Recipe<>(
-              MachineType.PURIFICATION_CHAMBER, ItemStackGasToItemStackRecipe.class);
+        public static final Recipe<ItemStackGasToItemStackRecipe> PURIFICATION_CHAMBER = new Recipe<>(MachineType.PURIFICATION_CHAMBER, ItemStackGasToItemStackRecipe.class);
 
         public static final Recipe<MetallurgicInfuserRecipe> METALLURGIC_INFUSER = new Recipe<>(MachineType.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class);
 
@@ -397,18 +489,18 @@ public final class RecipeHandler {
             return values;
         }
 
-        private final List<RECIPETYPE> recipes = new ArrayList<>();
+        private final List<RECIPE_TYPE> recipes = new ArrayList<>();
         private final String recipeName;
         @Nonnull
         private final String jeiCategory;
 
-        private Class<RECIPETYPE> recipeClass;
+        private Class<RECIPE_TYPE> recipeClass;
 
-        private Recipe(MachineType type, Class<RECIPETYPE> recipe) {
+        private Recipe(MachineType type, Class<RECIPE_TYPE> recipe) {
             this(type.getBlockName(), recipe);
         }
 
-        private Recipe(String name, Class<RECIPETYPE> recipe) {
+        private Recipe(String name, Class<RECIPE_TYPE> recipe) {
             recipeName = name;
             jeiCategory = "mekanism." + recipeName.toLowerCase(Locale.ROOT);
 
@@ -417,13 +509,13 @@ public final class RecipeHandler {
             values.add(this);
         }
 
-        public void put(@Nonnull RECIPETYPE recipe) {
+        public boolean put(@Nonnull RECIPE_TYPE recipe) {
             Preconditions.checkArgument(recipeClass.isInstance(recipe));
-            recipes.add(recipe);
+            return recipes.add(recipe);
         }
 
-        public void remove(@Nonnull Predicate<RECIPETYPE> removeIfTrue) {
-            recipes.removeIf(removeIfTrue);
+        public boolean remove(@Nonnull Predicate<RECIPE_TYPE> removeIfTrue) {
+            return recipes.removeIf(removeIfTrue);
         }
 
         public String getRecipeName() {
@@ -436,21 +528,21 @@ public final class RecipeHandler {
         }
 
 
-        public Class<RECIPETYPE> getRecipeClass() {
+        public Class<RECIPE_TYPE> getRecipeClass() {
             return recipeClass;
         }
 
         @Nonnull
-        public List<RECIPETYPE> get() {
+        public List<RECIPE_TYPE> get() {
             return recipes;
         }
 
-        public Stream<RECIPETYPE> stream() {
+        public Stream<RECIPE_TYPE> stream() {
             return recipes.stream();
         }
 
         @Nullable
-        public RECIPETYPE findFirst(Predicate<RECIPETYPE> matchCriteria) {
+        public RECIPE_TYPE findFirst(Predicate<RECIPE_TYPE> matchCriteria) {
             return recipes.stream().filter(matchCriteria).findFirst().orElse(null);
         }
     }

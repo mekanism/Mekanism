@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 
-public class PressurizedReactionRecipe {
+public class PressurizedReactionRecipe implements IMekanismRecipe {
 
     private final Ingredient inputSolid;
     private final FluidStackIngredient inputFluid;

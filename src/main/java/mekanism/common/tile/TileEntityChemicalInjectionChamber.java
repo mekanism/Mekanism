@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.List;
-import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -10,13 +9,11 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> {
+public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe> {
 
     public TileEntityChemicalInjectionChamber() {
         super("injection", MachineType.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
@@ -48,7 +45,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 
     @Override
     public boolean isValidGas(Gas gas) {
-        return Recipe.CHEMICAL_INJECTION_CHAMBER.containsRecipe(gas);
+        return Recipe.CHEMICAL_INJECTION_CHAMBER.findFirst(recipe -> recipe.getGasInput().test(gas)) != null;
     }
 
     @Override

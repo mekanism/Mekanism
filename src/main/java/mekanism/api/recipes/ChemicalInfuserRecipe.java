@@ -3,7 +3,6 @@ package mekanism.api.recipes;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.BiPredicate;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -16,7 +15,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChemicalInfuserRecipe implements BiPredicate<@NonNull GasStack, @NonNull GasStack> {
+public class ChemicalInfuserRecipe implements IMekanismRecipe, BiPredicate<@NonNull GasStack, @NonNull GasStack> {
 
     @NonNull
     private final GasStackIngredient leftInput;

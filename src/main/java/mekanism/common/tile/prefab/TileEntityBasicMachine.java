@@ -2,23 +2,21 @@ package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 
-public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
-      TileEntityOperationalMachine implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IConfigCardAccess {
+public abstract class TileEntityBasicMachine<RECIPE extends IMekanismRecipe> extends TileEntityOperationalMachine implements IElectricMachine<RECIPE>, IComputerIntegration,
+      ISideConfiguration, IConfigCardAccess {
 
     public ResourceLocation guiLocation;
 

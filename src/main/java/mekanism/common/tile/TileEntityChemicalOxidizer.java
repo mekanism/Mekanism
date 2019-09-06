@@ -72,7 +72,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return RecipeHandler.getOxidizerRecipe(new ItemStackInput(itemstack)) != null;
+            return RecipeHandler.getOxidizerRecipe(itemstack) != null;
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }

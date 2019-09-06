@@ -1,7 +1,6 @@
 package mekanism.api.recipes;
 
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -9,9 +8,8 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import org.apache.commons.lang3.tuple.Pair;
 
-public class SawmillRecipe implements Predicate<@NonNull ItemStack> {
+public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     protected static Random RANDOM = new Random();
 

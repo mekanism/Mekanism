@@ -4,7 +4,6 @@ import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.Contract;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidToFluidRecipe implements Predicate<@NonNull FluidStack> {
+public class FluidToFluidRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
 

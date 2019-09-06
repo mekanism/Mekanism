@@ -1,10 +1,9 @@
 package mekanism.common.tile;
 
-import java.util.Map;
+import java.util.List;
+import mekanism.api.recipes.CombinerRecipe;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.DoubleMachineInput;
-import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 
 public class TileEntityCombiner extends TileEntityDoubleElectricMachine<CombinerRecipe> {
@@ -14,7 +13,7 @@ public class TileEntityCombiner extends TileEntityDoubleElectricMachine<Combiner
     }
 
     @Override
-    public Map<DoubleMachineInput, CombinerRecipe> getRecipes() {
+    public List<CombinerRecipe> getRecipes() {
         return Recipe.COMBINER.get();
     }
 }

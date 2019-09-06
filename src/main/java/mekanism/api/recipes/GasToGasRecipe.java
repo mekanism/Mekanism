@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Contract;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class GasToGasRecipe implements Predicate<@NonNull GasStack> {
+public class GasToGasRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
 

@@ -9,7 +9,7 @@ import mekanism.api.gas.GasStack;
  * Input: int (ticks taken)
  * Output: GasStack
  */
-public class AmbientAccumulatorRecipe implements IntPredicate {
+public class AmbientAccumulatorRecipe implements IMekanismRecipe, IntPredicate {
 
     private final int ticksRequired;
 

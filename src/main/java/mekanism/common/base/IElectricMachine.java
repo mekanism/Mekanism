@@ -1,17 +1,14 @@
 package mekanism.common.base;
 
 import java.util.List;
-import java.util.Map;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.api.recipes.IMekanismRecipe;
 
 /**
  * Internal interface containing methods that are shared by many core Mekanism machines.  TODO: remove next minor MC version.
  *
  * @author AidanBrady
  */
-public interface IElectricMachine<RECIPE> {
+public interface IElectricMachine<RECIPE extends IMekanismRecipe> {
 
     /**
      * Update call for machines. Use instead of updateEntity() - it's called every tick.

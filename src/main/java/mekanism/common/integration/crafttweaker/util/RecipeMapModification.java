@@ -1,45 +1,43 @@
 package mekanism.common.integration.crafttweaker.util;
 
+import com.sun.jna.platform.win32.WinUser.INPUT;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.integration.crafttweaker.helpers.RecipeInfoHelper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
 
-public abstract class RecipeMapModification<INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> implements IAction {
+public abstract class RecipeMapModification<RECIPE extends IMekanismRecipe> implements IAction {
 
-    protected final Map<INPUT, RECIPE> recipes;
-    protected final Map<INPUT, RECIPE> map;
+    protected final Set<RECIPE> recipes;
+    protected final Recipe<RECIPE> recipeType;
     protected final String name;
     protected boolean add;
 
-    protected RecipeMapModification(String name, boolean add, Recipe<INPUT, ?, RECIPE> recipeType) {
+    protected RecipeMapModification(String name, boolean add, Recipe<RECIPE> recipeType) {
         this.name = name;
-        this.map = recipeType.get();
+        this.recipeType = recipeType;
         this.add = add;
-        this.recipes = new HashMap<>();
+        this.recipes = new HashSet<>();
     }
 
     @Override
     public void apply() {
         if (!recipes.isEmpty()) {
             if (add) {
-                for (Entry<INPUT, RECIPE> entry : recipes.entrySet()) {
-                    INPUT key = entry.getKey();
-                    RECIPE value = entry.getValue();
-                    if (map.put(key, value) != null) {
-                        CraftTweakerAPI.logInfo(String.format("Overwritten %s Recipe for %s", name,
-                              RecipeInfoHelper.getRecipeInfo(new AbstractMap.SimpleEntry<>(entry.getKey(), value))));
+                for (RECIPE recipe : recipes) {
+                    if (!recipeType.put(recipe)) {
+                        //TODO: Failed to add warning
+                        /*CraftTweakerAPI.logInfo(String.format("Overwritten %s Recipe for %s", name,
+                              RecipeInfoHelper.getRecipeInfo(new AbstractMap.SimpleEntry<>(entry.getKey(), value))));*/
                     }
                 }
             } else {
+                //TODO
                 for (INPUT key : recipes.keySet()) {
                     if (map.remove(key) == null) {
                         CraftTweakerAPI.logError(String.format("Error removing %s Recipe : null object", name));
@@ -51,7 +49,7 @@ public abstract class RecipeMapModification<INPUT extends MachineInput<INPUT>, R
 
     private String getRecipeInfo() {
         if (!recipes.isEmpty()) {
-            return recipes.entrySet().stream().filter(Objects::nonNull).map(RecipeInfoHelper::getRecipeInfo).collect(Collectors.joining(", "));
+            return recipes.stream().filter(Objects::nonNull).map(RecipeInfoHelper::getRecipeInfo).collect(Collectors.joining(", "));
         }
         return "Unknown item";
     }

@@ -19,7 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetallurgicInfuserRecipe implements BiPredicate<InfusionContainer, ItemStack> {
+public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<InfusionContainer, ItemStack> {
 
     private final Ingredient itemInput;
 

@@ -1,12 +1,11 @@
 package mekanism.client.jei;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.recipes.ItemStack2ItemStackRecipe;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiElectrolyticSeparator;
@@ -48,11 +47,7 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.MekanismUtils;
 import mezz.jei.api.IModRegistry;
@@ -240,7 +235,7 @@ public class RecipeRegistryHelper {
         registry.handleRecipes(SmeltingRecipe.class, MachineRecipeWrapper::new, Recipe.ENERGIZED_SMELTER.getJEICategory());
         if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
             // Add all recipes
-            Collection<SmeltingRecipe> recipeList = Recipe.ENERGIZED_SMELTER.get().values();
+            List<ItemStack2ItemStackRecipe> recipeList = Recipe.ENERGIZED_SMELTER.get();
             registry.addRecipes(recipeList.stream().map(MachineRecipeWrapper::new).collect(Collectors.toList()),
                   Recipe.ENERGIZED_SMELTER.getJEICategory());
 
@@ -249,7 +244,7 @@ public class RecipeRegistryHelper {
                         Recipe.ENERGIZED_SMELTER.getJEICategory());
         } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
             // Only add added recipes
-            Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
+            List<ItemStack2ItemStackRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
             List<MachineRecipeWrapper> smeltingWrapper = smeltingRecipes.entrySet().stream().filter(entry ->
                   !FurnaceRecipes.instance().getSmeltingList().containsKey(entry.getKey().ingredient)).map(entry ->
                   new MachineRecipeWrapper<>(entry.getValue())).collect(Collectors.toList());
@@ -279,11 +274,10 @@ public class RecipeRegistryHelper {
         FactoryTier.forEnabled(tier -> registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING), VanillaRecipeCategoryUid.SMELTING));
     }
 
-    private static <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
-    void addRecipes(IModRegistry registry, Recipe<INPUT, OUTPUT, RECIPE> type, IRecipeWrapperFactory<RECIPE> factory) {
+    private static <RECIPE> void addRecipes(IModRegistry registry, Recipe<RECIPE> type, IRecipeWrapperFactory<RECIPE> factory) {
         String recipeCategoryUid = type.getJEICategory();
         registry.handleRecipes(type.getRecipeClass(), factory, recipeCategoryUid);
-        registry.addRecipes(type.get().values().stream().map(factory::getRecipeWrapper).collect(Collectors.toList()), recipeCategoryUid);
+        registry.addRecipes(type.get().stream().map(factory::getRecipeWrapper).collect(Collectors.toList()), recipeCategoryUid);
     }
 
     private static void registerRecipeItem(IModRegistry registry, MachineType type, Recipe recipe) {

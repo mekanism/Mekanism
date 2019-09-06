@@ -1,19 +1,18 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
-import java.util.Map;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.ChanceMachineRecipe;
-import mekanism.common.recipe.outputs.ChanceOutput;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.prefab.TileEntityUpgradeableMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +21,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<ItemStackInput, ChanceOutput, RECIPE> {
+public abstract class TileEntityChanceMachine<RECIPE extends IMekanismRecipe> extends TileEntityUpgradeableMachine<RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
@@ -123,11 +122,6 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
             cachedRecipe = RecipeHandler.getChanceRecipe(input, getRecipes());
         }
         return cachedRecipe;
-    }
-
-    @Override
-    public Map<ItemStackInput, RECIPE> getRecipes() {
-        return null;
     }
 
     @Override

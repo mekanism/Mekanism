@@ -9,7 +9,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasIngredient;
-import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,7 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemStack, @NonNull Gas> {
+public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull Gas> {
 
     private final Ingredient itemInput;
 

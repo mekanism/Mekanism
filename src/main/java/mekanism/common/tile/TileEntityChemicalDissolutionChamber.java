@@ -104,7 +104,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 1) {
-            return RecipeHandler.getDissolutionRecipe(new ItemStackInput(itemstack)) != null;
+            return RecipeHandler.getDissolutionRecipe(itemstack) != null;
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         }

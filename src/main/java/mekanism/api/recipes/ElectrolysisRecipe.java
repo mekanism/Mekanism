@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 /**
  * Created by Thiakil on 15/07/2019.
  */
-public class ElectrolysisRecipe implements Predicate<@NonNull FluidStack> {
+public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
 

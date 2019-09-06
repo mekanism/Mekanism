@@ -1,10 +1,10 @@
 package mekanism.common.tile;
 
-import java.util.Map;
+import java.util.List;
+import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.SawmillRecipe;
+import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
@@ -15,7 +15,7 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
     }
 
     @Override
-    public Map<ItemStackInput, SawmillRecipe> getRecipes() {
+    public List<SawmillRecipe> getRecipes() {
         return Recipe.PRECISION_SAWMILL.get();
     }
 }
