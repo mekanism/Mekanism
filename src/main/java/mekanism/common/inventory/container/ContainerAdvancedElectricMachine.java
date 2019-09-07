@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -13,7 +14,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityAdvancedElectricMachine<RECIPE>> {
+public class ContainerAdvancedElectricMachine<RECIPE extends IMekanismRecipe> extends ContainerMekanism<TileEntityAdvancedElectricMachine<RECIPE>> {
 
     public ContainerAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {
         super(tile, inventory);

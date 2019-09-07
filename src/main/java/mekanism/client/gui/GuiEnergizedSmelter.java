@@ -1,16 +1,16 @@
 package mekanism.client.gui;
 
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiEnergizedSmelter extends GuiElectricMachine<SmeltingRecipe> {
+public class GuiEnergizedSmelter extends GuiElectricMachine<ItemStackToItemStackRecipe> {
 
-    public GuiEnergizedSmelter(InventoryPlayer inventory, TileEntityElectricMachine<SmeltingRecipe> tile) {
+    public GuiEnergizedSmelter(InventoryPlayer inventory, TileEntityElectricMachine<ItemStackToItemStackRecipe> tile) {
         super(inventory, tile);
     }
 

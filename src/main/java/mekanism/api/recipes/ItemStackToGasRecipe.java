@@ -16,14 +16,14 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStack2GasRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
+public class ItemStackToGasRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     private final Ingredient input;
 
     private final Gas outputGas;
     private final int outputGasAmount;
 
-    public ItemStack2GasRecipe(Ingredient input, Gas outputGas, int outputGasAmount) {
+    public ItemStackToGasRecipe(Ingredient input, Gas outputGas, int outputGasAmount) {
         this.input = input;
         this.outputGas = outputGas;
         this.outputGasAmount = outputGasAmount;

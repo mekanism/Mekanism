@@ -4,7 +4,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import mekanism.api.recipes.ItemStack2ItemStackRecipe;
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -29,7 +29,7 @@ public class Crusher {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ItemStack output = CraftTweakerMC.getItemStack(itemOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CRUSHER,
-                  new ItemStack2ItemStackRecipe(CraftTweakerMC.getIngredient(ingredientInput), output)));
+                  new ItemStackToItemStackRecipe(CraftTweakerMC.getIngredient(ingredientInput), output)));
         }
     }
 

@@ -1,7 +1,7 @@
 package mekanism.api.recipes;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -33,8 +33,8 @@ public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@N
         return outputRepresentation.copy();
     }
 
-    public Collection<ItemStack> getOutputDefinition() {
-        return Collections.singleton(outputRepresentation);
+    public List<ItemStack> getOutputDefinition() {
+        return Collections.singletonList(outputRepresentation);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@N
         }
 
         @Override
-        public Collection<ItemStack> getOutputDefinition() {
+        public List<ItemStack> getOutputDefinition() {
             return outputSupplier.getPossibleOutputs();
         }
     }

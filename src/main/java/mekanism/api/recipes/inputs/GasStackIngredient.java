@@ -14,6 +14,10 @@ import mekanism.api.gas.GasStack;
  * Created by Thiakil on 11/07/2019.
  */
 public abstract class GasStackIngredient implements Predicate<@NonNull GasStack> {
+    public static GasStackIngredient fromInstance(@NonNull GasStack instance){
+        return new Instance(instance.getGas(), instance.amount);
+    }
+
     public static GasStackIngredient fromInstance(@NonNull Gas instance, int minAmount){
         return new Instance(instance, minAmount);
     }
@@ -49,6 +53,7 @@ public abstract class GasStackIngredient implements Predicate<@NonNull GasStack>
         }
     }
 
+    //TODO: 1.14 remove/replace with one that is based off of Tags
     public static class Named extends GasStackIngredient {
         @Nonnull
         private final String name;

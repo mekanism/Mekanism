@@ -1,7 +1,7 @@
 package mekanism.api.recipes;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -53,8 +53,8 @@ public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull Ite
      * For JEI, gets a display stack
      * @return Representation of output, MUST NOT be modified
      */
-    public Collection<ItemStack> getOutputDefinition() {
-        return Collections.singleton(outputDefinition);
+    public List<ItemStack> getOutputDefinition() {
+        return Collections.singletonList(outputDefinition);
     }
 
     public static class CombinerRecipeOre extends CombinerRecipe {
@@ -72,7 +72,7 @@ public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull Ite
         }
 
         @Override
-        public Collection<ItemStack> getOutputDefinition() {
+        public List<ItemStack> getOutputDefinition() {
             return this.outputSupplier.getPossibleOutputs();
         }
     }

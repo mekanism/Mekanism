@@ -1,15 +1,19 @@
 package mekanism.client.jei.machine.other;
 
+import java.util.List;
+import mekanism.api.annotations.NonNull;
+import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.machine.FluidToFluidRecipeWrapper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fluids.FluidStack;
 
-public class ThermalEvaporationRecipeCategory<WRAPPER extends ThermalEvaporationRecipeWrapper<ThermalEvaporationRecipe>> extends BaseRecipeCategory<WRAPPER> {
+public class ThermalEvaporationRecipeCategory<WRAPPER extends FluidToFluidRecipeWrapper> extends BaseRecipeCategory<WRAPPER> {
 
     public ThermalEvaporationRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png",
@@ -24,13 +28,14 @@ public class ThermalEvaporationRecipeCategory<WRAPPER extends ThermalEvaporation
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        ThermalEvaporationRecipe tempRecipe = recipeWrapper.getRecipe();
+        FluidToFluidRecipe tempRecipe = recipeWrapper.getRecipe();
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().ingredient.amount, false,
+        @NonNull List<FluidStack> fluidInputs = tempRecipe.getInput().getRepresentations();
+        int max = fluidInputs.stream().mapToInt(input -> input.amount).filter(input -> input >= 0).max().orElse(0);
+        fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, max, false, fluidOverlayLarge);
+        fluidStacks.init(1, false, 153 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutputRepresentation().amount, false,
               fluidOverlayLarge);
-        fluidStacks.init(1, false, 153 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutput().output.amount, false,
-              fluidOverlayLarge);
-        fluidStacks.set(0, tempRecipe.recipeInput.ingredient);
-        fluidStacks.set(1, tempRecipe.recipeOutput.output);
+        fluidStacks.set(0, fluidInputs);
+        fluidStacks.set(1, tempRecipe.getOutputRepresentation());
     }
 }

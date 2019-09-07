@@ -1,10 +1,14 @@
 package mekanism.api.recipes.inputs;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 
 /**
  * Created by Thiakil on 11/07/2019.
@@ -19,6 +23,13 @@ public abstract class GasIngredient implements Predicate<@NonNull Gas> {
         return new Named(name);
     }
 
+    /**
+     * Primarily for JEI, a list of valid instances of the stack (i.e. a resolved GasStack(s) from the registry)
+     * @param size The size to make each returned stack
+     * @return List (empty means no valid registrations found and recipe is to be hidden)
+     */
+    public abstract @NonNull List<GasStack> getRepresentations(int size);
+
     public static class Instance extends GasIngredient {
         @NonNull
         private final Gas gasInstance;
@@ -31,8 +42,14 @@ public abstract class GasIngredient implements Predicate<@NonNull Gas> {
         public boolean test(@NonNull Gas gas) {
             return Objects.requireNonNull(gas) == gasInstance;
         }
+
+        @Override
+        public @NonNull List<GasStack> getRepresentations(int size) {
+            return Collections.singletonList(new GasStack(gasInstance, size));
+        }
     }
 
+    //TODO: 1.14 remove/replace with one that is based off of Tags
     public static class Named extends GasIngredient {
         @Nonnull
         private final String name;
@@ -44,6 +61,12 @@ public abstract class GasIngredient implements Predicate<@NonNull Gas> {
         @Override
         public boolean test(@NonNull Gas gas) {
             return Objects.requireNonNull(gas).getName().equals(this.name);
+        }
+
+        @Override
+        public @NonNull List<GasStack> getRepresentations(int size) {
+            Gas gas = GasRegistry.getGas(name);
+            return gas != null ? Collections.singletonList(new GasStack(gas, size)) : Collections.emptyList();
         }
     }
 }

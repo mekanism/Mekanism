@@ -55,4 +55,6 @@ public abstract class InfusionIngredient {
             return Collections.singletonList(infuseObject);
         }
     }
+
+    //TODO: 1.14 Add one that is based off of tags so as to allow multiple types
 }

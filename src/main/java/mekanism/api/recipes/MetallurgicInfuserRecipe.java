@@ -1,7 +1,7 @@
 package mekanism.api.recipes;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -38,8 +38,8 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
         return infusionInput.test(infusionContainer) && itemInput.apply(itemStack);
     }
 
-    public @NonNull Collection<@NonNull ItemStack> getOutputDefinition() {
-        return Collections.singleton(this.outputDefinition);
+    public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
+        return Collections.singletonList(this.outputDefinition);
     }
 
     public ItemStack getOutput(InfusionContainer inputInfuse, ItemStack inputItem) {
@@ -64,7 +64,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
         }
 
         @Override
-        public @NonNull Collection<@NonNull ItemStack> getOutputDefinition() {
+        public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
             return oreOutput.getPossibleOutputs();
         }
 

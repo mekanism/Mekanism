@@ -9,10 +9,9 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.IntegerInput;
-import mekanism.common.recipe.machines.AmbientGasRecipe;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TileUtils;
@@ -27,7 +26,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
     public static Random gasRand = new Random();
     public GasTank collectedGas = new GasTank(1000);
     public int cachedDimensionId = 0;
-    public AmbientGasRecipe cachedRecipe;
+    public AmbientAccumulatorRecipe cachedRecipe;
 
     public TileEntityAmbientAccumulator() {
         super("AmbientAccumulator");
@@ -39,7 +38,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
         if (!world.isRemote) {
             if (cachedRecipe == null || world.provider.getDimension() != cachedDimensionId) {
                 cachedDimensionId = world.provider.getDimension();
-                cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
+                cachedRecipe = RecipeHandler.getDimensionGas(cachedDimensionId);
             }
             if (cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput().applyOutputs(collectedGas, false, 1)) {
                 cachedRecipe.getOutput().applyOutputs(collectedGas, true, 1);

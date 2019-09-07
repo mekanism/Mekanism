@@ -6,6 +6,7 @@ import mekanism.api.infuse.InfuseType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+//TODO: Deprecate all of these, and add more detailed ways to add them using the new recipe system
 public interface MekanismRecipeHelper {
 
     /**

@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 public abstract class FluidStackIngredient implements Predicate<@NonNull FluidStack> {
 
     public static FluidStackIngredient fromInstance(@NonNull Fluid instance, int minAmount) {
-        return new Instance(new FluidStack(instance, minAmount));
+        return fromInstance(new FluidStack(instance, minAmount));
     }
 
     public static FluidStackIngredient fromInstance(@NonNull FluidStack instance) {
@@ -54,6 +54,7 @@ public abstract class FluidStackIngredient implements Predicate<@NonNull FluidSt
         }
     }
 
+    //TODO: 1.14 remove/replace with one that is based off of Tags
     public static class Named extends FluidStackIngredient {
 
         @Nonnull

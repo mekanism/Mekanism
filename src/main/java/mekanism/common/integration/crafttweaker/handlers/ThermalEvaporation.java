@@ -3,6 +3,8 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
+import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -11,7 +13,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -26,7 +27,7 @@ public class ThermalEvaporation {
     public static void addRecipe(ILiquidStack liquidInput, ILiquidStack liquidOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, liquidOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.THERMAL_EVAPORATION_PLANT,
-                  new ThermalEvaporationRecipe(IngredientHelper.toFluid(liquidInput), IngredientHelper.toFluid(liquidOutput))));
+                  new FluidToFluidRecipe(FluidStackIngredient.fromInstance(IngredientHelper.toFluid(liquidInput)), IngredientHelper.toFluid(liquidOutput))));
         }
     }
 

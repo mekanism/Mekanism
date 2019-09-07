@@ -4,6 +4,7 @@ import crafttweaker.mc1120.item.MCItemStack;
 import java.util.Map.Entry;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
@@ -22,7 +23,7 @@ public class RecipeInfoHelper {
     private RecipeInfoHelper() {
     }
 
-    public static String getRecipeInfo(Entry<? extends MachineInput, ? extends MachineRecipe> recipe) {
+    public static String getRecipeInfo(IMekanismRecipe recipe) {
         MachineOutput output = recipe.getValue().recipeOutput;
         if (output instanceof ItemStackOutput) {
             return getItemName(((ItemStackOutput) output).output);

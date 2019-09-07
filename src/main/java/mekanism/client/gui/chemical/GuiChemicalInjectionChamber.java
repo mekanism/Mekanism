@@ -1,17 +1,17 @@
 package mekanism.client.gui.chemical;
 
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.client.gui.GuiAdvancedElectricMachine;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<InjectionRecipe> {
+public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<ItemStackGasToItemStackRecipe> {
 
-    public GuiChemicalInjectionChamber(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<InjectionRecipe> tile) {
+    public GuiChemicalInjectionChamber(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe> tile) {
         super(inventory, tile);
     }
 

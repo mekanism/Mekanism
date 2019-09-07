@@ -1,7 +1,7 @@
 package mekanism.api.recipes;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -56,7 +56,7 @@ public class ChemicalInfuserRecipe implements IMekanismRecipe, BiPredicate<@NonN
         return rightInput;
     }
 
-    public Collection<GasStack> getOutputDefinition() {
-        return Collections.singleton(new GasStack(outputGas, outputGasAmount));
+    public List<GasStack> getOutputDefinition() {
+        return Collections.singletonList(new GasStack(outputGas, outputGasAmount));
     }
 }

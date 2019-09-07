@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
@@ -130,6 +131,20 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
         return Collections.emptyList();
     }
 
+    protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<GasStack> stacks, boolean overlay) {
+        if (stacks.isEmpty()) {
+            return;
+        }
+
+        IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;
+        int max = stacks.stream().mapToInt(stack -> stack.amount).filter(stack -> stack >= 0).max().orElse(0);
+        GasStackRenderer renderer = new GasStackRenderer(max, false, width, height, overlay ? fluidOverlay : null);
+        group.init(slot, input, renderer, x, y, width, height, 0, 0);
+        group.set(slot, stacks);
+        //TODO: Make sure it renders properly once we have multiple different types (might not have to deal with it until 1.14)
+    }
+
+    @Deprecated
     protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nullable GasStack stack, boolean overlay) {
         if (stack == null) {
             return;

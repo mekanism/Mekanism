@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -54,7 +55,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     public int gasOutput = 256;
 
-    private SolarNeutronRecipe cachedRecipe;
+    private GasToGasRecipe cachedRecipe;
 
     private int currentRedstoneLevel;
     private boolean isActive;
@@ -122,7 +123,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         return possibleProcess;
     }
 
-    public SolarNeutronRecipe getRecipe() {
+    public GasToGasRecipe getRecipe() {
         GasInput input = getInput();
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getSolarNeutronRecipe(getInput());
@@ -134,11 +135,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         return new GasInput(inputTank.getGas());
     }
 
-    public boolean canOperate(SolarNeutronRecipe recipe) {
+    public boolean canOperate(GasToGasRecipe recipe) {
         return recipe != null && recipe.canOperate(inputTank, outputTank);
     }
 
-    public void operate(SolarNeutronRecipe recipe) {
+    public void operate(GasToGasRecipe recipe) {
         recipe.operate(inputTank, outputTank, getUpgradedUsage());
     }
 

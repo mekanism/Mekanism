@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -19,13 +18,13 @@ import net.minecraft.item.crafting.Ingredient;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ItemStack2ItemStackRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
+public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     private final Ingredient mainInput;
 
     private ItemStack outputDefinition;
 
-    public ItemStack2ItemStackRecipe(Ingredient mainInput, ItemStack outputDefinition) {
+    public ItemStackToItemStackRecipe(Ingredient mainInput, ItemStack outputDefinition) {
         this.mainInput = mainInput;
         this.outputDefinition = outputDefinition.copy();
     }
@@ -47,15 +46,15 @@ public class ItemStack2ItemStackRecipe implements IMekanismRecipe, Predicate<@No
      * For JEI, gets a display stack
      * @return Representation of output, MUST NOT be modified
      */
-    public Collection<ItemStack> getOutputDefinition() {
-        return Collections.singleton(outputDefinition);
+    public List<ItemStack> getOutputDefinition() {
+        return Collections.singletonList(outputDefinition);
     }
 
-    public static class ItemStack2ItemStackRecipeOre extends ItemStack2ItemStackRecipe {
+    public static class ItemStackToItemStackRecipeOre extends ItemStackToItemStackRecipe {
 
         private final OreDictSupplier outputSupplier;
 
-        public ItemStack2ItemStackRecipeOre(Ingredient mainInput, String outputOreName) {
+        public ItemStackToItemStackRecipeOre(Ingredient mainInput, String outputOreName) {
             super(mainInput, ItemStack.EMPTY);
             this.outputSupplier = new OreDictSupplier(outputOreName);
         }

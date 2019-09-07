@@ -1,6 +1,7 @@
 package mekanism.client.jei.machine.chemical;
 
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -10,15 +11,16 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.machine.ItemStackToGasRecipeWrapper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.OxidationRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import scala.actors.threadpool.Arrays;
 
-public class ChemicalOxidizerRecipeCategory<WRAPPER extends ChemicalOxidizerRecipeWrapper<OxidationRecipe>> extends BaseRecipeCategory<WRAPPER> {
+public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory<ItemStackToGasRecipeWrapper> {
 
     public ChemicalOxidizerRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiChemicalOxidizer.png", Recipe.CHEMICAL_OXIDIZER.getJEICategory(),
@@ -38,12 +40,12 @@ public class ChemicalOxidizerRecipeCategory<WRAPPER extends ChemicalOxidizerReci
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        OxidationRecipe tempRecipe = recipeWrapper.getRecipe();
+    public void setRecipe(IRecipeLayout recipeLayout, ItemStackToGasRecipeWrapper recipeWrapper, IIngredients ingredients) {
+        ItemStackToGasRecipe tempRecipe = recipeWrapper.getRecipe();
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
-        itemStacks.set(0, tempRecipe.getInput().ingredient);
+        itemStacks.set(0, Arrays.asList(tempRecipe.getInput().getMatchingStacks()));
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.recipeOutput.output, true);
+        initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutputDefinition(), true);
     }
 }

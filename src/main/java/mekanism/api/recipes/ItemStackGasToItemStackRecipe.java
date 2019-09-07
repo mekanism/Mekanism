@@ -1,7 +1,7 @@
 package mekanism.api.recipes;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -54,8 +54,8 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
         return itemInput.apply(itemStack) && gasInput.test(gasStack);
     }
 
-    public @NonNull Collection<@NonNull ItemStack> getOutputDefinition() {
-        return Collections.singleton(outputDefinition);
+    public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
+        return Collections.singletonList(outputDefinition);
     }
 
     public static class ItemStackGasToItemStackRecipeOre extends ItemStackGasToItemStackRecipe {
@@ -73,7 +73,7 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
         }
 
         @Override
-        public @NonNull Collection<@NonNull ItemStack> getOutputDefinition() {
+        public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
             return this.outputSupplier.getPossibleOutputs();
         }
     }

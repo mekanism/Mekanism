@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
+import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fml.relauncher.Side;

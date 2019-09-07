@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
@@ -15,7 +16,6 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerChanceMachine;
-import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityChanceMachine<RECIPE>> {
+public class GuiChanceMachine<RECIPE extends IMekanismRecipe> extends GuiMekanismTile<TileEntityChanceMachine<RECIPE>> {
 
     public GuiChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine<RECIPE> tile) {
         super(tile, new ContainerChanceMachine<>(inventory, tile));

@@ -34,11 +34,10 @@ public class Reaction {
     public static void addRecipe(IIngredient ingredientInput, ILiquidStack liquidInput, IGasStack gasInput, IItemStack itemOutput, IGasStack gasOutput, double energy, int duration) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, liquidInput, gasInput, itemOutput, gasOutput)) {
             FluidStack fluidInput = IngredientHelper.toFluid(liquidInput);
-            GasStack gas = GasHelper.toGas(gasInput);
             GasStack outputGas = GasHelper.toGas(gasOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
                   new PressurizedReactionRecipe(CraftTweakerMC.getIngredient(ingredientInput), FluidStackIngredient.fromInstance(fluidInput),
-                        GasStackIngredient.fromInstance(gas.getGas(), gas.amount), outputGas.getGas(), outputGas.amount, energy, duration, CraftTweakerMC.getItemStack(itemOutput))));
+                        GasStackIngredient.fromInstance(GasHelper.toGas(gasInput)), outputGas.getGas(), outputGas.amount, energy, duration, CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

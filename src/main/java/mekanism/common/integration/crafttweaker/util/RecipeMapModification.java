@@ -1,6 +1,5 @@
 package mekanism.common.integration.crafttweaker.util;
 
-import com.sun.jna.platform.win32.WinUser.INPUT;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import java.util.HashSet;
@@ -37,9 +36,9 @@ public abstract class RecipeMapModification<RECIPE extends IMekanismRecipe> impl
                     }
                 }
             } else {
-                //TODO
-                for (INPUT key : recipes.keySet()) {
-                    if (map.remove(key) == null) {
+                for (RECIPE recipe : recipes) {
+                    if (!recipeType.remove(r -> r.equals(recipe))) {
+                        //TODO: It is null if an exception is thrown so catch it so fix this error message
                         CraftTweakerAPI.logError(String.format("Error removing %s Recipe : null object", name));
                     }
                 }

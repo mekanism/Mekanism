@@ -1,6 +1,10 @@
 package mekanism.client.jei.machine.other;
 
+import java.util.Arrays;
+import java.util.List;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -15,15 +19,17 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.PressurizedRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class PRCRecipeCategory<WRAPPER extends PRCRecipeWrapper<PressurizedRecipe>> extends BaseRecipeCategory<WRAPPER> {
+public class PRCRecipeCategory<WRAPPER extends PRCRecipeWrapper> extends BaseRecipeCategory<WRAPPER> {
 
     public PRCRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiPRC.png", Recipe.PRESSURIZED_REACTION_CHAMBER.getJEICategory(),
@@ -54,17 +60,21 @@ public class PRCRecipeCategory<WRAPPER extends PRCRecipeWrapper<PressurizedRecip
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        PressurizedRecipe tempRecipe = recipeWrapper.getRecipe();
+        PressurizedReactionRecipe tempRecipe = recipeWrapper.getRecipe();
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 53 - xOffset, 34 - yOffset);
         itemStacks.init(1, false, 115 - xOffset, 34 - yOffset);
-        itemStacks.set(0, tempRecipe.recipeInput.getSolid());
-        itemStacks.set(1, tempRecipe.recipeOutput.getItemOutput());
+        itemStacks.set(0, Arrays.asList(tempRecipe.getInputSolid().getMatchingStacks()));
+        @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = tempRecipe.getOutputDefinition();
+        itemStacks.set(1, outputDefinition.getLeft());
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlayLarge);
-        fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
+
+        @NonNull List<FluidStack> fluidInputs = tempRecipe.getInputFluid().getRepresentations();
+        int max = fluidInputs.stream().mapToInt(input -> input.amount).filter(input -> input >= 0).max().orElse(0);
+        fluidStacks.init(0, true, 3, 0, 16, 58, max, false, fluidOverlayLarge);
+        fluidStacks.set(0, fluidInputs);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
-        initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);
+        initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, tempRecipe.getGasInput().getRepresentations(), true);
+        initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, outputDefinition.getRight(), true);
     }
 }

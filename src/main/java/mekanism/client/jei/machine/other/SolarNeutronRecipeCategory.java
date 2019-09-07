@@ -1,17 +1,18 @@
 package mekanism.client.jei.machine.other;
 
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.machine.GasToGasRecipeWrapper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
 
-public class SolarNeutronRecipeCategory<WRAPPER extends SolarNeutronRecipeWrapper<SolarNeutronRecipe>> extends BaseRecipeCategory<WRAPPER> {
+public class SolarNeutronRecipeCategory<WRAPPER extends GasToGasRecipeWrapper> extends BaseRecipeCategory<WRAPPER> {
 
     public SolarNeutronRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiSolarNeutronActivator.png", Recipe.SOLAR_NEUTRON_ACTIVATOR.getJEICategory(),
@@ -26,9 +27,9 @@ public class SolarNeutronRecipeCategory<WRAPPER extends SolarNeutronRecipeWrappe
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        SolarNeutronRecipe tempRecipe = recipeWrapper.getRecipe();
+        GasToGasRecipe tempRecipe = recipeWrapper.getRecipe();
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, tempRecipe.recipeInput.ingredient, true);
-        initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.recipeOutput.output, true);
+        initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().getRepresentations(), true);
+        initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutputRepresentation(), true);
     }
 }

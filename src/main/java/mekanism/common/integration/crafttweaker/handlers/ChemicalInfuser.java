@@ -2,6 +2,8 @@ package mekanism.common.integration.crafttweaker.handlers;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
+import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -12,7 +14,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -26,8 +27,9 @@ public class ChemicalInfuser {
     @ZenMethod
     public static void addRecipe(IGasStack leftGasInput, IGasStack rightGasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, leftGasInput, rightGasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER, new ChemicalInfuserRecipe(GasHelper.toGas(leftGasInput),
-                  GasHelper.toGas(rightGasInput), GasHelper.toGas(gasOutput))));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER,
+                  new ChemicalInfuserRecipe(GasStackIngredient.fromInstance(GasHelper.toGas(leftGasInput)),
+                        GasStackIngredient.fromInstance(GasHelper.toGas(rightGasInput)), GasHelper.toGas(gasOutput))));
         }
     }
 
