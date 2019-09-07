@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.TileNetworkList;
+import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
@@ -15,8 +16,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.FluidInput;
-import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -102,7 +101,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
             manageBuckets();
 
-            ThermalEvaporationRecipe recipe = getRecipe();
+            FluidToFluidRecipe recipe = getRecipe();
             if (canOperate(recipe)) {
                 int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
                 int inputStored = inputTank.getFluidAmount();
@@ -139,8 +138,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         }
     }
 
-    public ThermalEvaporationRecipe getRecipe() {
-        return RecipeHandler.getThermalEvaporationRecipe(new FluidInput(inputTank.getFluid()));
+    public FluidToFluidRecipe getRecipe() {
+        return RecipeHandler.getThermalEvaporationRecipe(inputTank.getFluid());
     }
 
     @Override
@@ -185,7 +184,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         }
     }
 
-    public boolean canOperate(ThermalEvaporationRecipe recipe) {
+    public boolean canOperate(FluidToFluidRecipe recipe) {
         if (!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid() == null) {
             return false;
         }

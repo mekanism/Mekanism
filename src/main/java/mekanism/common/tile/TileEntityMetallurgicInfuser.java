@@ -8,6 +8,7 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
 import mekanism.common.MekanismBlocks;
@@ -25,7 +26,6 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
-import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -196,7 +196,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             if (infuseStored.getType() != null) {
                 return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null;
             }
-            for (InfusionInput input : Recipe.METALLURGIC_INFUSER.get().keySet()) {
+            for (InfusionInput input : Recipe.METALLURGIC_INFUSER.get()) {
                 if (ItemHandlerHelper.canItemStacksStack(input.inputStack, itemstack)) {
                     return true;
                 }

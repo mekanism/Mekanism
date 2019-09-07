@@ -9,13 +9,13 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -37,7 +37,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     public GasTank gasTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
 
-    public OxidationRecipe cachedRecipe;
+    public ItemStackToGasRecipe cachedRecipe;
 
     public TileEntityChemicalOxidizer() {
         super("machine.oxidizer", MachineType.CHEMICAL_OXIDIZER, 3, 100);
@@ -50,7 +50,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(inventory.get(2), gasTank);
-            OxidationRecipe recipe = getRecipe();
+            ItemStackToGasRecipe recipe = getRecipe();
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 setEnergy(getEnergy() - energyPerTick);
@@ -100,7 +100,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         return InventoryUtils.EMPTY;
     }
 
-    public OxidationRecipe getRecipe() {
+    public ItemStackToGasRecipe getRecipe() {
         ItemStackInput input = getInput();
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
@@ -112,11 +112,11 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         return new ItemStackInput(inventory.get(0));
     }
 
-    public boolean canOperate(OxidationRecipe recipe) {
+    public boolean canOperate(ItemStackToGasRecipe recipe) {
         return recipe != null && recipe.canOperate(inventory, gasTank);
     }
 
-    public void operate(OxidationRecipe recipe) {
+    public void operate(ItemStackToGasRecipe recipe) {
         recipe.operate(inventory, gasTank);
         markDirty();
     }

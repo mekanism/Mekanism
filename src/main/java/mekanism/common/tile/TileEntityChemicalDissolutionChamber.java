@@ -9,6 +9,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
@@ -18,7 +19,6 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -50,7 +50,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public int gasOutput = 256;
     public int operatingTicks = 0;
     public int ticksRequired = BASE_TICKS_REQUIRED;
-    public DissolutionRecipe cachedRecipe;
+    public ItemStackToGasRecipe cachedRecipe;
 
     public TileEntityChemicalDissolutionChamber() {
         super("machine.dissolution", MachineType.CHEMICAL_DISSOLUTION_CHAMBER, 4);
@@ -77,7 +77,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
             }
             TileUtils.drawGas(inventory.get(2), outputTank);
             boolean changed = false;
-            DissolutionRecipe recipe = getRecipe();
+            ItemStackToGasRecipe recipe = getRecipe();
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
             if (canOperate(recipe) && getEnergy() >= energyPerTick && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
@@ -136,7 +136,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         return (double) operatingTicks / (double) ticksRequired;
     }
 
-    public DissolutionRecipe getRecipe() {
+    public ItemStackToGasRecipe getRecipe() {
         ItemStackInput input = getInput();
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getDissolutionRecipe(getInput());
@@ -148,11 +148,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         return new ItemStackInput(inventory.get(1));
     }
 
-    public boolean canOperate(DissolutionRecipe recipe) {
+    public boolean canOperate(ItemStackToGasRecipe recipe) {
         return recipe != null && recipe.canOperate(inventory, outputTank);
     }
 
-    public void operate(DissolutionRecipe recipe) {
+    public void operate(ItemStackToGasRecipe recipe) {
         recipe.operate(inventory, outputTank);
         markDirty();
     }

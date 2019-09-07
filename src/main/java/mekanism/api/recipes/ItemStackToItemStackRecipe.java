@@ -12,8 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 
 /**
- * Inputs: ItemStack (item)
- * Output: ItemStack (transformed)
+ * Inputs: ItemStack (item) Output: ItemStack (transformed)
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -44,6 +43,7 @@ public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@N
 
     /**
      * For JEI, gets a display stack
+     *
      * @return Representation of output, MUST NOT be modified
      */
     public List<ItemStack> getOutputDefinition() {

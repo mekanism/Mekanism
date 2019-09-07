@@ -12,8 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 
 /**
- * Inputs: ItemStack (main item) + ItemStack (material to combine with)
- * Output: ItemStack (combined)
+ * Inputs: ItemStack (main item) + ItemStack (material to combine with) Output: ItemStack (combined)
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -51,6 +50,7 @@ public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull Ite
 
     /**
      * For JEI, gets a display stack
+     *
      * @return Representation of output, MUST NOT be modified
      */
     public List<ItemStack> getOutputDefinition() {

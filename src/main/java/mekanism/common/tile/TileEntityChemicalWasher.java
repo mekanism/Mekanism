@@ -10,6 +10,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -22,7 +23,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.GasInput;
-import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -58,7 +58,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public GasTank outputTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
 
-    public WasherRecipe cachedRecipe;
+    public GasToGasRecipe cachedRecipe;
 
     private int currentRedstoneLevel;
     public double clientEnergyUsed;
@@ -75,7 +75,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             ChargeUtils.discharge(3, this);
             manageBuckets();
             TileUtils.drawGas(inventory.get(2), outputTank);
-            WasherRecipe recipe = getRecipe();
+            GasToGasRecipe recipe = getRecipe();
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 int operations = operate(recipe);
@@ -95,7 +95,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         }
     }
 
-    public WasherRecipe getRecipe() {
+    public GasToGasRecipe getRecipe() {
         GasInput input = getInput();
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getChemicalWasherRecipe(getInput());
@@ -107,11 +107,11 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         return new GasInput(inputTank.getGas());
     }
 
-    public boolean canOperate(WasherRecipe recipe) {
+    public boolean canOperate(GasToGasRecipe recipe) {
         return recipe != null && recipe.canOperate(inputTank, fluidTank, outputTank);
     }
 
-    public int operate(WasherRecipe recipe) {
+    public int operate(GasToGasRecipe recipe) {
         int operations = getUpgradedUsage();
         recipe.operate(inputTank, fluidTank, outputTank, operations);
         return operations;

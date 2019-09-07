@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack>{
+public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
 

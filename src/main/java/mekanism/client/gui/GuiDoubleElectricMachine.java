@@ -16,7 +16,6 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerDoubleElectricMachine;
-import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;

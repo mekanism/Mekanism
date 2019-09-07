@@ -54,6 +54,7 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
     }
 
     public class ChanceOutput {
+
         protected final double rand;
 
         public ChanceOutput(double rand) {

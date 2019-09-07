@@ -15,8 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 
 /**
- * Inputs: ItemStack + GasStack
- * Output: ItemStack
+ * Inputs: ItemStack + GasStack Output: ItemStack
  *
  * Ex-AdvancedMachineInput based; InjectionRecipe, OsmiumCompressorRecipe, PurificationRecipe
  */

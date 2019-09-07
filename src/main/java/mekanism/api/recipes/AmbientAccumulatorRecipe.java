@@ -6,8 +6,7 @@ import mekanism.api.gas.GasStack;
 /**
  * Ambient Accumulator Recipe
  *
- * Input: int (ticks taken)
- * Output: GasStack
+ * Input: int (ticks taken) Output: GasStack
  */
 public class AmbientAccumulatorRecipe implements IMekanismRecipe, IntPredicate {
 
@@ -25,7 +24,9 @@ public class AmbientAccumulatorRecipe implements IMekanismRecipe, IntPredicate {
 
     /**
      * Check dimension against recipe
+     *
      * @param value the dimension Id
+     *
      * @return true if match
      */
     @Override

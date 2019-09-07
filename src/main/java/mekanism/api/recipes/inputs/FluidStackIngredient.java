@@ -29,6 +29,7 @@ public abstract class FluidStackIngredient implements Predicate<@NonNull FluidSt
 
     /**
      * Primarily for JEI, a list of valid instances of the stack (i.e. a resolved FluidStack(s) from the registry)
+     *
      * @return List (empty means no valid registrations found and recipe is to be hidden)
      */
     public abstract @NonNull List<FluidStack> getRepresentations();

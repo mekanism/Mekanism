@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -25,7 +26,6 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
-import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -83,7 +83,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
      * Type type of gas this block is dumping.
      */
     public GasMode dumpRight = GasMode.IDLE;
-    public SeparatorRecipe cachedRecipe;
+    public ElectrolysisRecipe cachedRecipe;
     public double clientEnergyUsed;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     /**
@@ -119,7 +119,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
                 rightTank.draw(GasUtils.addGas(inventory.get(2), rightTank.getGas()), true);
                 MekanismUtils.saveChunk(this);
             }
-            SeparatorRecipe recipe = getRecipe();
+            ElectrolysisRecipe recipe = getRecipe();
 
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
@@ -162,7 +162,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         }
     }
 
-    public int getUpgradedUsage(SeparatorRecipe recipe) {
+    public int getUpgradedUsage(ElectrolysisRecipe recipe) {
         int possibleProcess;
         if (leftTank.getGasType() == recipe.recipeOutput.leftGas.getGas()) {
             possibleProcess = leftTank.getNeeded() / recipe.recipeOutput.leftGas.amount;
@@ -176,7 +176,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         return Math.min(fluidTank.getFluidAmount() / recipe.recipeInput.ingredient.amount, possibleProcess);
     }
 
-    public SeparatorRecipe getRecipe() {
+    public ElectrolysisRecipe getRecipe() {
         FluidInput input = getInput();
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getElectrolyticSeparatorRecipe(getInput());
@@ -188,11 +188,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         return new FluidInput(fluidTank.getFluid());
     }
 
-    public boolean canOperate(SeparatorRecipe recipe) {
+    public boolean canOperate(ElectrolysisRecipe recipe) {
         return recipe != null && recipe.canOperate(fluidTank, leftTank, rightTank);
     }
 
-    public int operate(SeparatorRecipe recipe) {
+    public int operate(ElectrolysisRecipe recipe) {
         int operations = getUpgradedUsage(recipe);
         recipe.operate(fluidTank, leftTank, rightTank, operations);
         return operations;

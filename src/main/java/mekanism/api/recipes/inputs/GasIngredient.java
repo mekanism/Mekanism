@@ -15,7 +15,7 @@ import mekanism.api.gas.GasStack;
  */
 public abstract class GasIngredient implements Predicate<@NonNull Gas> {
 
-    public static GasIngredient fromInstance(@NonNull Gas instance){
+    public static GasIngredient fromInstance(@NonNull Gas instance) {
         return new Instance(instance);
     }
 
@@ -25,12 +25,15 @@ public abstract class GasIngredient implements Predicate<@NonNull Gas> {
 
     /**
      * Primarily for JEI, a list of valid instances of the stack (i.e. a resolved GasStack(s) from the registry)
+     *
      * @param size The size to make each returned stack
+     *
      * @return List (empty means no valid registrations found and recipe is to be hidden)
      */
     public abstract @NonNull List<GasStack> getRepresentations(int size);
 
     public static class Instance extends GasIngredient {
+
         @NonNull
         private final Gas gasInstance;
 
@@ -51,6 +54,7 @@ public abstract class GasIngredient implements Predicate<@NonNull Gas> {
 
     //TODO: 1.14 remove/replace with one that is based off of Tags
     public static class Named extends GasIngredient {
+
         @Nonnull
         private final String name;
 

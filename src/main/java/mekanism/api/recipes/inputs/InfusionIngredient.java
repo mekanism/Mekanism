@@ -20,7 +20,7 @@ public abstract class InfusionIngredient {
     public abstract boolean test(@NonNull InfuseType infuseType, int i);
 
     public boolean test(@NonNull InfusionContainer input) {
-        if (input.getType() == null){
+        if (input.getType() == null) {
             return false;
         }
         return test(input.getType(), input.getAmount());
@@ -28,11 +28,13 @@ public abstract class InfusionIngredient {
 
     /**
      * Primarily for JEI, a list of valid instances of the stack (i.e. a resolved InfuseObject(s))
+     *
      * @return List (empty means no valid registrations found and recipe is to be hidden)
      */
     public abstract @NonNull List<InfuseObject> getRepresentations();
 
     public static class SingleType extends InfusionIngredient {
+
         @NonNull
         private final InfuseType infuseType;
 

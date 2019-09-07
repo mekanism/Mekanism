@@ -39,7 +39,7 @@ public class GasToGasRecipe implements IMekanismRecipe, Predicate<@NonNull GasSt
         return outputRepresentation;
     }
 
-    @Contract(value="_ -> new", pure=true)
+    @Contract(value = "_ -> new", pure = true)
     public GasStack getOutput(GasStack input) {
         return outputRepresentation.copy();
     }

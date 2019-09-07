@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -21,7 +22,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.GasInput;
-import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
@@ -43,7 +43,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     public GasTank inputTank = new GasTank(MAX_GAS);
 
-    public CrystallizerRecipe cachedRecipe;
+    public ChemicalCrystallizerRecipe cachedRecipe;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -77,7 +77,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
             TileUtils.receiveGas(inventory.get(0), inputTank);
-            CrystallizerRecipe recipe = getRecipe();
+            ChemicalCrystallizerRecipe recipe = getRecipe();
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 setActive(true);
                 setEnergy(getEnergy() - energyPerTick);
@@ -101,7 +101,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         return new GasInput(inputTank.getGas());
     }
 
-    public CrystallizerRecipe getRecipe() {
+    public ChemicalCrystallizerRecipe getRecipe() {
         GasInput input = getInput();
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getChemicalCrystallizerRecipe(getInput());
@@ -109,11 +109,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         return cachedRecipe;
     }
 
-    public boolean canOperate(CrystallizerRecipe recipe) {
+    public boolean canOperate(ChemicalCrystallizerRecipe recipe) {
         return recipe != null && recipe.canOperate(inputTank, inventory);
     }
 
-    public void operate(CrystallizerRecipe recipe) {
+    public void operate(ChemicalCrystallizerRecipe recipe) {
         recipe.operate(inputTank, inventory);
         markDirty();
     }

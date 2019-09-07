@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.OreGas;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -22,7 +23,6 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
-import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -78,7 +78,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
             if (tileEntity.inputTank.getGas().getGas() instanceof OreGas) {
                 fontRenderer.drawString("(" + ((OreGas) tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
             } else {
-                CrystallizerRecipe recipe = tileEntity.getRecipe();
+                ChemicalCrystallizerRecipe recipe = tileEntity.getRecipe();
                 if (recipe == null) {
                     fontRenderer.drawString("(" + LangUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
                 } else {

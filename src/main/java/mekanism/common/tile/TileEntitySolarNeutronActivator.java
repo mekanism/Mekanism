@@ -25,7 +25,6 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
-import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -84,7 +83,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         if (!world.isRemote) {
             TileUtils.receiveGas(inventory.get(0), inputTank);
             TileUtils.drawGas(inventory.get(1), outputTank);
-            SolarNeutronRecipe recipe = getRecipe();
+            GasToGasRecipe recipe = getRecipe();
 
             // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
             // changing this would dramatically affect a lot of setups with Fusion reactors which can take

@@ -5,7 +5,6 @@ import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
-import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;

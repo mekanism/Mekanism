@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
@@ -26,7 +25,6 @@ import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.PressurizedInput;
-import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
@@ -91,7 +89,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
         super.onUpdate();
 
         if (!world.isRemote) {
-            PressurizedRecipe recipe = getRecipe();
+            PressurizedReactionRecipe recipe = getRecipe();
             ChargeUtils.discharge(1, this);
             if (canOperate(recipe) && MekanismUtils.canFunction(this) &&
                 getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy)) {
