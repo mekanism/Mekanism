@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
@@ -65,14 +66,16 @@ public class ItemConfigurationCard extends ItemMekanism {
                                                                              EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
                         }
                         return EnumActionResult.SUCCESS;
-                    } else if (getData(stack) != null) {
+                    }
+                    NBTTagCompound data = getData(stack);
+                    if (data != null) {
                         if (getNameFromTile(tileEntity, side).equals(getDataType(stack))) {
-                            setBaseData(getData(stack), tileEntity);
+                            setBaseData(data, tileEntity);
                             if (CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
                                 ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
-                                special.setConfigurationData(getData(stack));
+                                special.setConfigurationData(data);
                             }
-
+                            updateTile(tileEntity);
                             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN +
                                                                        LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s",
                                                                              EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
@@ -88,6 +91,15 @@ public class ItemConfigurationCard extends ItemMekanism {
             }
         }
         return EnumActionResult.PASS;
+    }
+
+    private <TILE extends TileEntity & ITileNetwork> void updateTile(TileEntity tileEntity) {
+        //Check the capability in case for some reason the tile doesn't want to expose the fact it has it
+        ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+        if (network instanceof TileEntity) {
+            //Ensure the implementation is still a tile entity
+            Mekanism.packetHandler.sendUpdatePacket((TILE) network);
+        }
     }
 
     private NBTTagCompound getBaseData(TileEntity tile) {
