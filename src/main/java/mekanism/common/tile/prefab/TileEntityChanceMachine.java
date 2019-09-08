@@ -62,13 +62,12 @@ public abstract class TileEntityChanceMachine<RECIPE extends IMekanismRecipe> ex
             RECIPE recipe = getRecipe();
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 setActive(true);
-                electricityStored -= energyPerTick;
-                if ((operatingTicks + 1) < ticksRequired) {
-                    operatingTicks++;
-                } else {
+                operatingTicks++;
+                if (operatingTicks >= ticksRequired) {
                     operate(recipe);
                     operatingTicks = 0;
                 }
+                electricityStored -= energyPerTick;
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
             }

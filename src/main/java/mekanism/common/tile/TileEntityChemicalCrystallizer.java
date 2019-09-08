@@ -81,9 +81,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 setActive(true);
                 setEnergy(getEnergy() - energyPerTick);
-                if ((operatingTicks + 1) < ticksRequired) {
-                    operatingTicks++;
-                } else {
+                operatingTicks++;
+                if (operatingTicks >= ticksRequired) {
                     operate(recipe);
                     operatingTicks = 0;
                 }

@@ -54,9 +54,8 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 setEnergy(getEnergy() - energyPerTick);
-                if (operatingTicks < ticksRequired) {
-                    operatingTicks++;
-                } else {
+                operatingTicks++;
+                if (operatingTicks >= ticksRequired) {
                     operate(recipe);
                     operatingTicks = 0;
                     markDirty();

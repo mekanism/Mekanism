@@ -13,7 +13,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerElectricMachine<RECIPE extends IMekanismRecipe> extends ContainerMekanism<TileEntityElectricMachine<RECIPE>> {
+public class ContainerElectricMachine<RECIPE extends IMekanismRecipe> extends ContainerMekanism<TileEntityElectricMachine> {
 
     public ContainerElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine<RECIPE> tile) {
         super(tile, inventory);

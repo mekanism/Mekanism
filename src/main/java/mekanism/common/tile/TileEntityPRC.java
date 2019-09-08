@@ -99,10 +99,10 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
                     recalculateUpgradables(Upgrade.SPEED);
                 }
                 setActive(true);
-                if ((operatingTicks + 1) < ticksRequired) {
-                    operatingTicks++;
+                operatingTicks++;
+                if (operatingTicks < ticksRequired) {
                     electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
-                } else if ((operatingTicks + 1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy)) {
+                } else if (getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy)) {
                     operate(recipe);
                     operatingTicks = 0;
                     electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
