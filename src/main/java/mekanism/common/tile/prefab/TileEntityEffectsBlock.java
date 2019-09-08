@@ -9,6 +9,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -72,7 +73,17 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @SideOnly(Side.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
-        if (!MekanismConfig.current().client.enableMachineSounds.val() || soundEvent == null) {
+        if (!MekanismConfig.current().client.enableMachineSounds.val()) {
+            return;
+        }
+        if (soundEvent == null) {
+            //If we are a factory but sounds are not disabled, attempt to set the sound event.
+            // Fixes a bug with factories created by using installers not informing the client that the factory has a sound
+            // Note: This should not be needed in 1.14 as the different factory types know what sound they produce
+            // rather than passing "null" to this class and having to later call setSoundEvent
+            if (this instanceof TileEntityFactory) {
+                setSoundEvent(((TileEntityFactory) this).getRecipeType().getSound());
+            }
             return;
         }
 
@@ -86,8 +97,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
 
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler()
-                  .isSoundPlaying(activeSound))) {
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound))) {
                 activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), getInitialVolume(), getPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
