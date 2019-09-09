@@ -21,6 +21,7 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -198,8 +199,8 @@ public final class RecipeHandler {
      * @param input     - input ItemStack
      * @param outputGas - output GasStack
      */
-    public static void addChemicalDissolutionChamberRecipe(Ingredient input, Gas outputGas, int outputAmount) {
-        Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackToGasRecipe(input, outputGas, outputAmount));
+    public static void addChemicalDissolutionChamberRecipe(Ingredient input, GasIngredient inputGas, Gas outputGas, int outputAmount) {
+        Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, outputGas, outputAmount));
     }
 
     /**
@@ -307,18 +308,6 @@ public final class RecipeHandler {
     }
 
     /**
-     * Gets the Chemical Dissolution Chamber of the ItemStack in the parameters
-     *
-     * @param input - ItemStack
-     *
-     * @return DissolutionRecipe
-     */
-    @Nullable
-    public static ItemStackToGasRecipe getDissolutionRecipe(@Nonnull ItemStack input) {
-        return Recipe.CHEMICAL_DISSOLUTION_CHAMBER.findFirst(recipe -> recipe.test(input));
-    }
-
-    /**
      * Gets the Chemical Oxidizer Recipe for the ItemStack in the parameters.
      *
      * @param input - ItemStack
@@ -402,7 +391,7 @@ public final class RecipeHandler {
 
         public static final Recipe<SawmillRecipe> PRECISION_SAWMILL = new Recipe<>(MachineType.PRECISION_SAWMILL, SawmillRecipe.class);
 
-        public static final Recipe<ItemStackToGasRecipe> CHEMICAL_DISSOLUTION_CHAMBER = new Recipe<>(MachineType.CHEMICAL_DISSOLUTION_CHAMBER, ItemStackToGasRecipe.class);
+        public static final Recipe<ItemStackGasToGasRecipe> CHEMICAL_DISSOLUTION_CHAMBER = new Recipe<>(MachineType.CHEMICAL_DISSOLUTION_CHAMBER, ItemStackGasToGasRecipe.class);
 
         public static final Recipe<GasToGasRecipe> CHEMICAL_WASHER = new Recipe<>(MachineType.CHEMICAL_WASHER, GasToGasRecipe.class);
 

@@ -4,8 +4,10 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -30,7 +32,17 @@ public class ChemicalDissolution {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasOutput)) {
             GasStack output = GasHelper.toGas(gasOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
-                  new ItemStackToGasRecipe(CraftTweakerMC.getIngredient(ingredientInput), output.getGas(), output.amount)));
+                  new ItemStackGasToGasRecipe(CraftTweakerMC.getIngredient(ingredientInput), GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), output.getGas(), output.amount)));
+        }
+    }
+
+    @ZenMethod
+    public static void addRecipe(IIngredient ingredientInput, IGasStack inputGas, IGasStack gasOutput) {
+        if (IngredientHelper.checkNotNull(NAME, ingredientInput, inputGas, gasOutput)) {
+            GasStack output = GasHelper.toGas(gasOutput);
+            GasStack input = GasHelper.toGas(gasOutput);
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
+                  new ItemStackGasToGasRecipe(CraftTweakerMC.getIngredient(ingredientInput), GasIngredient.fromInstance(input.getGas()), output.getGas(), output.amount)));
         }
     }
 

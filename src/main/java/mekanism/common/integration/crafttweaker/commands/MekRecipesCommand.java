@@ -16,9 +16,10 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
@@ -66,9 +67,10 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 break;
             case "dissolution":
                 type = Recipe.CHEMICAL_DISSOLUTION_CHAMBER;
-                for (ItemStackToGasRecipe recipe : Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.dissolution.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
+                for (ItemStackGasToGasRecipe recipe : Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) {
+                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.dissolution.addRecipe(%s, %s, %s)",
+                          RecipeInfoHelper.getItemName(recipe.getItemInput().ingredient),
+                          RecipeInfoHelper.getGasName(recipe.getGasInput()),
                           RecipeInfoHelper.getGasName(recipe.getOutputDefinition())
                     ));
                 }

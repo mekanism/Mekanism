@@ -105,7 +105,7 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalDissolutionChamberRecipe(Ingredient.fromStacks(input), output.getGas(), output.amount);
+        RecipeHandler.addChemicalDissolutionChamberRecipe(Ingredient.fromStacks(input), GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), output.getGas(), output.amount);
     }
 
     @Override

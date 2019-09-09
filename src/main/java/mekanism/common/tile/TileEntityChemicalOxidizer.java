@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -10,12 +11,13 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.cache.ItemStackToGasCachedRecipe;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -31,13 +33,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ISustainedData, ITankManager, IGasHandler {
+public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ISustainedData, ITankManager, IGasHandler {
 
     public static final int MAX_GAS = 10000;
     public GasTank gasTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
-
-    public ItemStackToGasRecipe cachedRecipe;
 
     public TileEntityChemicalOxidizer() {
         super("machine.oxidizer", MachineType.CHEMICAL_OXIDIZER, 3, 100);
@@ -50,20 +50,11 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(inventory.get(2), gasTank);
-            ItemStackToGasRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                setEnergy(getEnergy() - energyPerTick);
-                operatingTicks++;
-                if (operatingTicks >= ticksRequired) {
-                    operate(recipe);
-                    operatingTicks = 0;
-                    markDirty();
-                }
-            } else if (prevEnergy >= getEnergy()) {
-                setActive(false);
+            //TODO: Technically this does not have to set it as it is set in getOrFindCachedRecipe
+            cachedRecipe = getOrFindCachedRecipe();
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
-            prevEnergy = getEnergy();
             TileUtils.emitGas(this, gasTank, gasOutput, MekanismUtils.getRight(facing));
         }
     }
@@ -99,25 +90,24 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         return InventoryUtils.EMPTY;
     }
 
-    public ItemStackToGasRecipe getRecipe() {
-        ItemStackInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
-        }
-        return cachedRecipe;
+    @Nullable
+    @Override
+    protected ItemStackToGasRecipe getRecipe() {
+        ItemStack stack = inventory.get(0);
+        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
-    public ItemStackInput getInput() {
-        return new ItemStackInput(inventory.get(0));
-    }
-
-    public boolean canOperate(ItemStackToGasRecipe recipe) {
-        return recipe != null && recipe.canOperate(inventory, gasTank);
-    }
-
-    public void operate(ItemStackToGasRecipe recipe) {
-        recipe.operate(inventory, gasTank);
-        markDirty();
+    @Nullable
+    @Override
+    protected ItemStackToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe) {
+        return new ItemStackToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), (output, simulate) -> {
+            if (gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount) {
+                gasTank.receive(output, !simulate);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -147,6 +137,12 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         super.writeToNBT(nbtTags);
         nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
         return nbtTags;
+    }
+
+    @Nonnull
+    @Override
+    public Recipe<ItemStackToGasRecipe> getRecipes() {
+        return Recipe.CHEMICAL_OXIDIZER;
     }
 
     @Override

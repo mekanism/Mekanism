@@ -13,22 +13,22 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackGasToItemStackRecipe> {
+public class ItemStackGasToGasCachedRecipe extends CachedRecipe<ItemStackGasToGasRecipe> {
 
-    private final BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput;
+    private final BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput;
     private final Supplier<@NonNull ItemStack> inputStack;
     private final Supplier<@NonNull GasTank> inputTank;
     private final IntSupplier gasUsage;
 
-    public ItemStackGasToItemStackCachedRecipe(ItemStackGasToItemStackRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
+    public ItemStackGasToGasCachedRecipe(ItemStackGasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
           IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull ItemStack> inputStack,
-          Supplier<@NonNull GasTank> inputTank, IntSupplier gasUsage, BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput) {
+          Supplier<@NonNull GasTank> inputTank, IntSupplier gasUsage, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
         this.inputStack = inputStack;
         this.inputTank = inputTank;

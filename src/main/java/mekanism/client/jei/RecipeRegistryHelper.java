@@ -28,19 +28,20 @@ import mekanism.client.gui.chemical.GuiChemicalInfuser;
 import mekanism.client.gui.chemical.GuiChemicalInjectionChamber;
 import mekanism.client.gui.chemical.GuiChemicalOxidizer;
 import mekanism.client.gui.chemical.GuiChemicalWasher;
-import mekanism.client.jei.machine.other.SawmillRecipeWrapper;
-import mekanism.client.jei.machine.other.CombinerRecipeWrapper;
 import mekanism.client.jei.machine.FluidToFluidRecipeWrapper;
 import mekanism.client.jei.machine.GasToGasRecipeWrapper;
+import mekanism.client.jei.machine.ItemStackGasToGasRecipeWrapper;
 import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeWrapper;
 import mekanism.client.jei.machine.ItemStackToGasRecipeWrapper;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalInfuserRecipeWrapper;
+import mekanism.client.jei.machine.other.CombinerRecipeWrapper;
 import mekanism.client.jei.machine.other.ElectrolyticSeparatorRecipeWrapper;
 import mekanism.client.jei.machine.other.MetallurgicInfuserRecipeWrapper;
 import mekanism.client.jei.machine.other.PRCRecipeWrapper;
 import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeWrapper;
+import mekanism.client.jei.machine.other.SawmillRecipeWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
@@ -143,7 +144,7 @@ public class RecipeRegistryHelper {
         if (!MachineType.CHEMICAL_DISSOLUTION_CHAMBER.isEnabled()) {
             return;
         }
-        addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, ItemStackToGasRecipeWrapper::new);
+        addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, ItemStackGasToGasRecipeWrapper::new);
         registry.addRecipeClickArea(GuiChemicalDissolutionChamber.class, 64, 40, 48, 8, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.getJEICategory());
         registerRecipeItem(registry, MachineType.CHEMICAL_DISSOLUTION_CHAMBER, Recipe.CHEMICAL_DISSOLUTION_CHAMBER);
     }

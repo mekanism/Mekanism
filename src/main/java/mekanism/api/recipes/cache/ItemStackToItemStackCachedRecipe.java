@@ -35,12 +35,14 @@ public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToIt
 
     @Override
     public boolean hasResourcesForTick() {
+        //TODO: Check to make sure we have enough of the item
         return recipe.test(getInput());
     }
 
     @Override
     public boolean hasRoomForOutput() {
         //TODO: Should we cache the result of recipe.getOutput, as ItemStack.copy() is a relatively expensive call
+        // If we decide to do it also check other cached recipes that end up having copy calls via their getOutput checks
         return addToOutput.apply(recipe.getOutput(getInput()), true);
     }
 

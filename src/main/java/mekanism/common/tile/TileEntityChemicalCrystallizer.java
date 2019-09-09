@@ -37,7 +37,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine implements IGasHandler, ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess {
+public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<ChemicalCrystallizerRecipe> implements IGasHandler, ISideConfiguration, ISustainedData,
+      ITankManager, IConfigCardAccess {
 
     public static final int MAX_GAS = 10000;
 

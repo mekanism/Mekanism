@@ -106,7 +106,7 @@ public final class OreDictManager {
                   new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
             Gas oreGas = GasRegistry.getGas(resource.getName().toLowerCase(Locale.ROOT));
             if (oreGas != null) {
-                RecipeHandler.addChemicalDissolutionChamberRecipe(oreIngredient, oreGas, 1000);
+                RecipeHandler.addChemicalDissolutionChamberRecipe(oreIngredient, GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), oreGas, 1000);
             }
 
             RecipeHandler.addCrusherRecipe(new OreIngredient("ingot" + resource.getName()), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
