@@ -11,7 +11,8 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
@@ -20,8 +21,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.GasConversionHandler;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -40,7 +39,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class TileEntityAdvancedElectricMachine<RECIPE extends IMekanismRecipe> extends TileEntityUpgradeableMachine<RECIPE> implements IGasHandler, ISustainedData {
+public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgradeableMachine<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy",
                                                          "getEnergyNeeded"};
@@ -55,9 +54,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends IMekanism
      * How much secondary energy this machine uses per tick, including upgrades.
      */
     public double secondaryEnergyPerTick;
-    public int secondaryEnergyThisTick;
+    private int gasUsageThisTick;
     public GasTank gasTank;
-    public Gas prevGas;
 
     /**
      * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
@@ -119,7 +117,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends IMekanism
         return GasConversionHandler.getItemGas(itemStack, gasTank, this::isValidGas);
     }
 
-    public abstract boolean isValidGas(Gas gas);
+    public boolean isValidGas(Gas gas) {
+        return getRecipes().findFirst(recipe -> recipe.getGasInput().test(gas)) != null;
+    }
 
     @Override
     public void onUpdate() {
@@ -128,30 +128,13 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends IMekanism
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             handleSecondaryFuel();
-            boolean inactive = false;
-            RECIPE recipe = getRecipe();
-            secondaryEnergyThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int) Math.ceil(secondaryEnergyPerTick);
-
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
-                setActive(true);
-                operatingTicks++;
-                if (operatingTicks >= ticksRequired) {
-                    operate(recipe);
-                    operatingTicks = 0;
-                }
-                gasTank.draw(secondaryEnergyThisTick, true);
-                electricityStored -= energyPerTick;
-            } else {
-                inactive = true;
-                setActive(false);
-            }
-
-            if (inactive && getRecipe() == null) {
-                operatingTicks = 0;
-            }
-            prevEnergy = getEnergy();
-            if (!(gasTank.getGasType() == null || gasTank.getStored() == 0)) {
-                prevGas = gasTank.getGasType();
+            //TODO: Is there some better way to do this rather than storing it and then doing it like this?
+            // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
+            gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int) Math.ceil(secondaryEnergyPerTick);
+            //TODO: Technically this does not have to set it as it is set in getOrFindCachedRecipe
+            cachedRecipe = getOrFindCachedRecipe();
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
         }
     }
@@ -188,11 +171,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends IMekanism
         } else if (slotID == 4) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
-            for (AdvancedMachineInput input : getRecipes().keySet()) {
-                if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
-                    return true;
-                }
-            }
+            return getRecipes().get().stream().anyMatch(input -> input.getItemInput().apply(itemstack));
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (slotID == 1) {
@@ -201,29 +180,41 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends IMekanism
         return false;
     }
 
+    @Nullable
     @Override
-    public AdvancedMachineInput getInput() {
-        return new AdvancedMachineInput(inventory.get(0), prevGas);
-    }
-
-    @Override
-    public RECIPE getRecipe() {
-        AdvancedMachineInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
+    protected ItemStackGasToItemStackRecipe getRecipe() {
+        ItemStack stack = inventory.get(0);
+        if (stack.isEmpty()) {
+            return null;
         }
-        return cachedRecipe;
+        GasStack gasStack = gasTank.getGas();
+        if (gasStack == null || gasStack.amount == 0) {
+            return null;
+        }
+        return getRecipes().findFirst(recipe -> recipe.test(stack, gasStack.getGas()));
     }
 
+    @Nullable
     @Override
-    public void operate(RECIPE recipe) {
-        recipe.operate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
-        markDirty();
-    }
-
-    @Override
-    public boolean canOperate(RECIPE recipe) {
-        return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
+    protected ItemStackGasToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe) {
+        //TODO: Deduplicate stuff that is for "itemstack output" etc
+        return new ItemStackGasToItemStackCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> gasTank, () -> gasUsageThisTick,
+              (output, simulate) -> {
+                  ItemStack stack = inventory.get(2);
+                  if (stack.isEmpty()) {
+                      if (!simulate) {
+                          inventory.set(2, output.copy());
+                      }
+                      return true;
+                  } else if (ItemHandlerHelper.canItemStacksStack(stack, output) && stack.getCount() + output.getCount() <= stack.getMaxStackSize()) {
+                      if (!simulate) {
+                          stack.grow(output.getCount());
+                      }
+                      return true;
+                  }
+                  return false;
+              });
     }
 
     @Override
@@ -347,7 +338,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends IMekanism
             case 4:
                 return new Object[]{facing};
             case 5:
-                return new Object[]{canOperate(getRecipe())};
+                //TODO: potentially simplify this, or at least get a new cached recipe if it is null
+                return new Object[]{cachedRecipe != null && cachedRecipe.hasResourcesForTick() && cachedRecipe.hasRoomForOutput()};
             case 6:
                 return new Object[]{maxEnergy};
             case 7:

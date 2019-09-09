@@ -11,8 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.api.recipes.CombinerRecipe;
-import mekanism.api.recipes.ItemStackToItemStackRecipe;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
@@ -755,13 +753,13 @@ public class ClientProxy extends CommonProxy {
             case 2:
                 return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:
-                return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine<ItemStackToItemStackRecipe>) tileEntity);
+                return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 4:
-                return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe>) tileEntity);
+                return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 5:
                 return new GuiCombiner(player.inventory, (TileEntityDoubleElectricMachine<CombinerRecipe>) tileEntity);
             case 6:
-                return new GuiCrusher(player.inventory, (TileEntityElectricMachine<ItemStackToItemStackRecipe>) tileEntity);
+                return new GuiCrusher(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 7:
                 return new GuiRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator) tileEntity);
             case 8:
@@ -778,9 +776,9 @@ public class ClientProxy extends CommonProxy {
                 return new GuiTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
             //EMPTY 14
             case 15:
-                return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe>) tileEntity);
+                return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 16:
-                return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine<ItemStackToItemStackRecipe>) tileEntity);
+                return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 17:
                 return new GuiElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
             case 18:
@@ -793,7 +791,7 @@ public class ClientProxy extends CommonProxy {
             case 30:
                 return new GuiChemicalInfuser(player.inventory, (TileEntityChemicalInfuser) tileEntity);
             case 31:
-                return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe>) tileEntity);
+                return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 32:
                 return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator) tileEntity);
             case 33:

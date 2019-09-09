@@ -1,7 +1,8 @@
-package mekanism.common.recipe.cache;
+package mekanism.api.recipes.cache;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,7 +17,7 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
     private final DoubleSupplier perTickEnergy;
     private final DoubleSupplier storedEnergy;
     private final Consumer<Boolean> setActive;
-    private final Consumer<Double> useEnergy;
+    private final DoubleConsumer useEnergy;
     private final IntSupplier requiredTicks;
     private final Runnable onFinish;
     protected final RECIPE recipe;
@@ -28,7 +29,7 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
 
     //TODO: JavaDocs
     protected CachedRecipe(RECIPE recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy, IntSupplier requiredTicks,
-          Consumer<Boolean> setActive, Consumer<Double> useEnergy, Runnable onFinish) {
+          Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish) {
         this.recipe = recipe;
         this.canTileFunction = canTileFunction;
         this.requiredTicks = requiredTicks;

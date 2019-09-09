@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -13,7 +14,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe> {
+public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine {
 
     public TileEntityChemicalInjectionChamber() {
         super("injection", MachineType.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
@@ -24,9 +25,10 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
         configComponent.setCanEject(TransmissionType.GAS, false);
     }
 
+    @Nonnull
     @Override
-    public List<ItemStackGasToItemStackRecipe> getRecipes() {
-        return Recipe.CHEMICAL_INJECTION_CHAMBER.get();
+    public Recipe<ItemStackGasToItemStackRecipe> getRecipes() {
+        return Recipe.CHEMICAL_INJECTION_CHAMBER;
     }
 
     @Override
@@ -41,11 +43,6 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && gasTank.canReceive(type) && isValidGas(type);
 
-    }
-
-    @Override
-    public boolean isValidGas(Gas gas) {
-        return Recipe.CHEMICAL_INJECTION_CHAMBER.findFirst(recipe -> recipe.getGasInput().test(gas)) != null;
     }
 
     @Override

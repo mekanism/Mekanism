@@ -18,8 +18,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityMachine extends TileEntityEffectsBlock implements IUpgradeTile, IRedstoneControl, ISecurityTile {
 
-    public double prevEnergy;
-
     public double BASE_ENERGY_PER_TICK;
 
     public double energyPerTick;

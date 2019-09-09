@@ -1,6 +1,5 @@
 package mekanism.client.gui.chemical;
 
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.client.gui.GuiAdvancedElectricMachine;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -9,9 +8,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<ItemStackGasToItemStackRecipe> {
+public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine {
 
-    public GuiChemicalInjectionChamber(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe> tile) {
+    public GuiChemicalInjectionChamber(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tile) {
         super(inventory, tile);
     }
 

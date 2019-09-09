@@ -4,11 +4,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.recipe.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -19,6 +19,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMachine<ItemStackToItemStackRecipe> {
 
@@ -78,8 +79,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         } else if (slotID == 3) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
-            //TODO: Check ignoring stack size
-            return getRecipes().findFirst(recipe -> recipe.test(itemstack)) != null;
+            return getRecipes().get().stream().anyMatch(input -> input.getInput().apply(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -96,10 +96,23 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     @Nullable
     @Override
     protected ItemStackToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe) {
+        //TODO: Deduplicate stuff that is for "itemstack output" etc
         return new ItemStackToItemStackCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0));
-        //TODO: We need to pass the "output slot" so that the cache can check if we can stack with the output/there is room in output
-        // and then put in the output when it can
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), (output, simulate) -> {
+            ItemStack stack = inventory.get(2);
+            if (stack.isEmpty()) {
+                if (!simulate) {
+                    inventory.set(2, output.copy());
+                }
+                return true;
+            } else if (ItemHandlerHelper.canItemStacksStack(stack, output) && stack.getCount() + output.getCount() <= stack.getMaxStackSize()) {
+                if (!simulate) {
+                    stack.grow(output.getCount());
+                }
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override

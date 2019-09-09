@@ -1,21 +1,18 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
-public class ContainerAdvancedElectricMachine<RECIPE extends IMekanismRecipe> extends ContainerMekanism<TileEntityAdvancedElectricMachine<RECIPE>> {
+public class ContainerAdvancedElectricMachine extends ContainerMekanism<TileEntityAdvancedElectricMachine> {
 
-    public ContainerAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {
+    public ContainerAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tile) {
         super(tile, inventory);
     }
 
@@ -80,12 +77,7 @@ public class ContainerAdvancedElectricMachine<RECIPE extends IMekanismRecipe> ex
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        for (AdvancedMachineInput input : tileEntity.getRecipes().keySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
-                return true;
-            }
-        }
-        return false;
+        return tileEntity.getRecipes().get().stream().anyMatch(input -> input.getItemInput().apply(itemstack));
     }
 
     @Override

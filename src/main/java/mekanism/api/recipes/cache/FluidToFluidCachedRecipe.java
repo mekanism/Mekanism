@@ -1,37 +1,40 @@
-package mekanism.common.recipe.cache;
+package mekanism.api.recipes.cache;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
-import net.minecraft.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToItemStackRecipe> {
+public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
 
-    private final Supplier<ItemStack> inputStack;
-
-    public ItemStackToItemStackCachedRecipe(ItemStackToItemStackRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, Consumer<Boolean> setActive, Consumer<Double> useEnergy, Runnable onFinish, Supplier<ItemStack> inputStack) {
+    public FluidToFluidCachedRecipe(FluidToFluidRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
+          IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
-        this.inputStack = inputStack;
 
     }
 
     @Override
     public boolean hasResourcesForTick() {
-        return recipe.getInput().apply(inputStack.get());
+        //TODO: Implement
+        return false;
     }
 
     @Override
     public boolean hasRoomForOutput() {
         //TODO: implement
         return false;
+    }
+
+    @Override
+    protected void useResources() {
+        super.useResources();
+        //TODO: Use any secondary resources or remove this override
     }
 
     @Override

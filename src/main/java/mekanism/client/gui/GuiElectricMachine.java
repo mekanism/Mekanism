@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
@@ -25,10 +24,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiElectricMachine<RECIPE extends IMekanismRecipe> extends GuiMekanismTile<TileEntityElectricMachine<RECIPE>> {
+public class GuiElectricMachine extends GuiMekanismTile<TileEntityElectricMachine> {
 
-    public GuiElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine<RECIPE> tile) {
-        super(tile, new ContainerElectricMachine<>(inventory, tile));
+    public GuiElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine tile) {
+        super(tile, new ContainerElectricMachine(inventory, tile));
         ResourceLocation resource = tileEntity.guiLocation;
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

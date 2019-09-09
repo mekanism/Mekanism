@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -9,20 +9,16 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine<ItemStackGasToItemStackRecipe> {
+public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine {
 
     public TileEntityOsmiumCompressor() {
         super("compressor", MachineType.OSMIUM_COMPRESSOR, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
+    @Nonnull
     @Override
-    public List<ItemStackGasToItemStackRecipe> getRecipes() {
-        return Recipe.OSMIUM_COMPRESSOR.get();
-    }
-
-    @Override
-    public boolean isValidGas(Gas gas) {
-        return Recipe.OSMIUM_COMPRESSOR.findFirst(recipe -> recipe.getGasInput().test(gas)) != null;
+    public Recipe<ItemStackGasToItemStackRecipe> getRecipes() {
+        return Recipe.OSMIUM_COMPRESSOR;
     }
 
     @Override
