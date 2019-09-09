@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine.other;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -82,7 +81,7 @@ public class MetallurgicInfuserRecipeCategory<WRAPPER extends MetallurgicInfuser
         itemStacks.init(0, true, 45, 26);
         itemStacks.init(1, false, 103, 26);
         itemStacks.init(2, true, 11, 18);
-        itemStacks.set(0, Arrays.asList(tempRecipe.getItemInput().getMatchingStacks()));
+        itemStacks.set(0, tempRecipe.getItemInput().getRepresentations());
         itemStacks.set(1, tempRecipe.getOutputDefinition());
         itemStacks.set(2, getInfuseStacks(tempRecipe.getInfusionInput().getRepresentations()));
     }

@@ -14,7 +14,6 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import scala.actors.threadpool.Arrays;
 
 public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipeWrapper> {
 
@@ -49,8 +48,8 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipeWra
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);
         itemStacks.init(2, false, 27, 36);
-        itemStacks.set(0, Arrays.asList(tempRecipe.getMainInput().getMatchingStacks()));
+        itemStacks.set(0, tempRecipe.getMainInput().getRepresentations());
         itemStacks.set(1, tempRecipe.getOutputDefinition());
-        itemStacks.set(2, Arrays.asList(tempRecipe.getExtraInput().getMatchingStacks()));
+        itemStacks.set(2, tempRecipe.getExtraInput().getRepresentations());
     }
 }

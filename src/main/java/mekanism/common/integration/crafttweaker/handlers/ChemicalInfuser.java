@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
-import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -28,8 +27,7 @@ public class ChemicalInfuser {
     public static void addRecipe(IGasStack leftGasInput, IGasStack rightGasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, leftGasInput, rightGasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER,
-                  new ChemicalInfuserRecipe(GasStackIngredient.fromInstance(GasHelper.toGas(leftGasInput)),
-                        GasStackIngredient.fromInstance(GasHelper.toGas(rightGasInput)), GasHelper.toGas(gasOutput))));
+                  new ChemicalInfuserRecipe(GasHelper.toGasStackIngredient(leftGasInput), GasHelper.toGasStackIngredient(rightGasInput), GasHelper.toGas(gasOutput))));
         }
     }
 

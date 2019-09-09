@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -14,8 +15,9 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
         super("sawmill", MachineType.PRECISION_SAWMILL, 200, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
     }
 
+    @Nonnull
     @Override
-    public List<SawmillRecipe> getRecipes() {
-        return Recipe.PRECISION_SAWMILL.get();
+    public Recipe<SawmillRecipe> getRecipes() {
+        return Recipe.PRECISION_SAWMILL;
     }
 }

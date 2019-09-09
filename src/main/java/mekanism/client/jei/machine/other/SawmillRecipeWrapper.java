@@ -18,7 +18,7 @@ public class SawmillRecipeWrapper extends MekanismRecipeWrapper<SawmillRecipe> {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(Arrays.asList(recipe.getInput().getMatchingStacks())));
+        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
         ingredients.setOutputLists(VanillaTypes.ITEM, Arrays.asList(recipe.getMainOutputDefinition(), recipe.getSecondaryOutputDefinition()));
     }
 

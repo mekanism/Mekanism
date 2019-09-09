@@ -35,7 +35,6 @@ public class ItemStackToGasCachedRecipe extends CachedRecipe<ItemStackToGasRecip
 
     @Override
     public boolean hasResourcesForTick() {
-        //TODO: Check to make sure we have enough of the item
         return recipe.test(getInput());
     }
 

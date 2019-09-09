@@ -8,6 +8,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
@@ -19,12 +21,10 @@ import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.StackUtils;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.fixers.GeneratorTEFixer;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -44,7 +44,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.oredict.OreDictionary;
 
 @Mod(modid = MekanismGenerators.MODID, useMetadata = true, guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 @Mod.EventBusSubscriber()
@@ -136,9 +135,8 @@ public class MekanismGenerators implements IModule {
         FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.current().general.ETHENE_BURN_TIME.val(),
               MekanismConfig.current().general.FROM_H2.val() + MekanismConfig.current().generators.bioGeneration.val() * 2 * MekanismConfig.current().general.ETHENE_BURN_TIME.val());
 
-        for (ItemStack ore : OreDictionary.getOres("dustGold", false)) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, StackUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
-        }
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(InfuseRegistry.get("CARBON"), 10),
+              ItemStackIngredient.from("dustGold", 4), GeneratorsItems.Hohlraum.getEmptyItem());
     }
 
     @Override

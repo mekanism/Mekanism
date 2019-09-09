@@ -3,7 +3,6 @@ package mekanism.api.recipes.inputs;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import net.minecraftforge.fluids.Fluid;
@@ -13,7 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Created by Thiakil on 12/07/2019.
  */
-public abstract class FluidStackIngredient implements Predicate<@NonNull FluidStack> {
+public abstract class FluidStackIngredient implements InputPredicate<@NonNull FluidStack> {
 
     public static FluidStackIngredient fromInstance(@NonNull Fluid instance, int minAmount) {
         return fromInstance(new FluidStack(instance, minAmount));
@@ -27,13 +26,6 @@ public abstract class FluidStackIngredient implements Predicate<@NonNull FluidSt
         return new Named(name, minAmount);
     }
 
-    /**
-     * Primarily for JEI, a list of valid instances of the stack (i.e. a resolved FluidStack(s) from the registry)
-     *
-     * @return List (empty means no valid registrations found and recipe is to be hidden)
-     */
-    public abstract @NonNull List<FluidStack> getRepresentations();
-
     public static class Instance extends FluidStackIngredient {
 
         @NonNull
@@ -45,7 +37,12 @@ public abstract class FluidStackIngredient implements Predicate<@NonNull FluidSt
 
         @Override
         public boolean test(@NonNull FluidStack fluidStack) {
-            return Objects.requireNonNull(fluidStack).isFluidEqual(fluidInstance) && fluidStack.amount >= fluidInstance.amount;
+            return testType(fluidStack) && fluidStack.amount >= fluidInstance.amount;
+        }
+
+        @Override
+        public boolean testType(@NonNull FluidStack fluidStack) {
+            return Objects.requireNonNull(fluidStack).isFluidEqual(fluidInstance);
         }
 
         @Override
@@ -69,7 +66,12 @@ public abstract class FluidStackIngredient implements Predicate<@NonNull FluidSt
 
         @Override
         public boolean test(@NonNull FluidStack fluidStack) {
-            return Objects.requireNonNull(fluidStack).getFluid().getName().equals(this.name) && fluidStack.amount >= minAmount;
+            return testType(fluidStack) && fluidStack.amount >= minAmount;
+        }
+
+        @Override
+        public boolean testType(@NonNull FluidStack fluidStack) {
+            return Objects.requireNonNull(fluidStack).getFluid().getName().equals(this.name);
         }
 
         @Override

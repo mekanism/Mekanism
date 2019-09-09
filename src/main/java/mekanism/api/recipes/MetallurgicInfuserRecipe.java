@@ -8,10 +8,10 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 
 /**
  * Created by Thiakil on 14/07/2019.
@@ -21,13 +21,13 @@ import net.minecraft.item.crafting.Ingredient;
 @MethodsReturnNonnullByDefault
 public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<InfusionContainer, ItemStack> {
 
-    private final Ingredient itemInput;
+    private final ItemStackIngredient itemInput;
 
     private final InfusionIngredient infusionInput;
 
     private final ItemStack outputDefinition;
 
-    public MetallurgicInfuserRecipe(Ingredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {
+    public MetallurgicInfuserRecipe(ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {
         this.itemInput = itemInput;
         this.infusionInput = infusionInput;
         this.outputDefinition = outputDefinition.copy();
@@ -35,7 +35,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
 
     @Override
     public boolean test(InfusionContainer infusionContainer, ItemStack itemStack) {
-        return infusionInput.test(infusionContainer) && itemInput.apply(itemStack);
+        return infusionInput.test(infusionContainer) && itemInput.test(itemStack);
     }
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
@@ -50,7 +50,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
         return this.infusionInput;
     }
 
-    public Ingredient getItemInput() {
+    public ItemStackIngredient getItemInput() {
         return this.itemInput;
     }
 
@@ -58,7 +58,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
 
         private final OreDictSupplier oreOutput;
 
-        public MetallurgicInfuserRecipeOre(Ingredient itemInput, InfusionIngredient infusionInput, String outputOredictName) {
+        public MetallurgicInfuserRecipeOre(ItemStackIngredient itemInput, InfusionIngredient infusionInput, String outputOredictName) {
             super(itemInput, infusionInput, ItemStack.EMPTY);
             this.oreOutput = new OreDictSupplier(outputOredictName);
         }

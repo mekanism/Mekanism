@@ -209,9 +209,10 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
         return LangUtils.localize(getBlockType().getTranslationKey() + "." + fullName + ".short.name");
     }
 
+    @Nonnull
     @Override
-    public List<PressurizedReactionRecipe> getRecipes() {
-        return Recipe.PRESSURIZED_REACTION_CHAMBER.get();
+    public Recipe<PressurizedReactionRecipe> getRecipes() {
+        return Recipe.PRESSURIZED_REACTION_CHAMBER;
     }
 
     @Override

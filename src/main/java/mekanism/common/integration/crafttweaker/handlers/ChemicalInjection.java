@@ -5,7 +5,6 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -30,8 +29,7 @@ public class ChemicalInjection {
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER,
-                  new ItemStackGasToItemStackRecipe(CraftTweakerMC.getIngredient(ingredientInput), GasIngredient.fromInstance(GasHelper.toGas(gasInput).getGas()),
-                        CraftTweakerMC.getItemStack(itemOutput))));
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasIngredient(gasInput), CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

@@ -54,7 +54,6 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
     public boolean hasResourcesForTick() {
         GasTank gasTank = getGasTank();
         Gas gasInput = gasTank.getGasType();
-        //TODO: Check to make sure we have enough of the item
         return gasInput != null && recipe.test(getItemInput(), gasInput) && gasTank.getStored() >= getGasUsage();
     }
 

@@ -4,7 +4,6 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import mekanism.api.gas.Gas;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.common.Mekanism;
@@ -32,7 +31,7 @@ public class Compressor {
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR,
-                  new ItemStackGasToItemStackRecipe(CraftTweakerMC.getIngredient(ingredientInput), GasIngredient.fromInstance(MekanismFluids.LiquidOsmium),
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasIngredient.fromInstance(MekanismFluids.LiquidOsmium),
                         CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
@@ -40,10 +39,9 @@ public class Compressor {
     @ZenMethod
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
-            Gas gas = GasHelper.toGas(gasInput).getGas();
             //TODO: Allow amount to be specified?
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR,
-                  new ItemStackGasToItemStackRecipe(CraftTweakerMC.getIngredient(ingredientInput), GasIngredient.fromInstance(gas), CraftTweakerMC.getItemStack(itemOutput))));
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasIngredient(gasInput), CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

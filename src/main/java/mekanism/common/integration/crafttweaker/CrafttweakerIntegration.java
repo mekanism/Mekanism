@@ -10,6 +10,7 @@ import mekanism.common.integration.crafttweaker.commands.GasesCommand;
 import mekanism.common.integration.crafttweaker.commands.InfuseTypesCommand;
 import mekanism.common.integration.crafttweaker.commands.MekRecipesCommand;
 
+//TODO: Check all for null cases if unable to find the gas
 public class CrafttweakerIntegration {
 
     public static final List<IAction> LATE_REMOVALS = new LinkedList<>();

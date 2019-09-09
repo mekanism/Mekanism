@@ -22,7 +22,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends IMekanismRecip
     public int BASE_TICKS_REQUIRED;
 
     public int ticksRequired;
-    //TODO: Protected/private?
+    //TODO: Protected?
     public CachedRecipe<RECIPE> cachedRecipe = null;
 
     protected TileEntityOperationalMachine(String sound, MachineType type, int upgradeSlot, int baseTicksRequired) {

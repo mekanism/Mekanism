@@ -25,7 +25,7 @@ public class ContainerChemicalDissolutionChamber extends ContainerMekanism<TileE
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (tileEntity.getRecipes().get().stream().anyMatch(input -> input.getItemInput().apply(slotStack))) {
+            if (tileEntity.getRecipes().contains(recipe -> recipe.getItemInput().testType(slotStack))) {
                 if (slotID != 1) {
                     if (!mergeItemStack(slotStack, 1, 2, true)) {
                         return ItemStack.EMPTY;

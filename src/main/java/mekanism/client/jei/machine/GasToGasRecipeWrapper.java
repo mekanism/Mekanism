@@ -1,5 +1,6 @@
 package mekanism.client.jei.machine;
 
+import java.util.Collections;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.ingredients.IIngredients;
@@ -12,7 +13,7 @@ public class GasToGasRecipeWrapper extends MekanismRecipeWrapper<GasToGasRecipe>
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInputs(MekanismJEI.TYPE_GAS, recipe.getInput().getRepresentations());
+        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutputRepresentation());
     }
 }

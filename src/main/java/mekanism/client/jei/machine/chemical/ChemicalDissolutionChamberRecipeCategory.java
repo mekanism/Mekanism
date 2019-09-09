@@ -34,7 +34,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
         ItemStackGasToGasRecipe tempRecipe = recipeWrapper.getRecipe();
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
-        itemStacks.set(0, Arrays.asList(tempRecipe.getItemInput().getMatchingStacks()));
+        itemStacks.set(0, tempRecipe.getItemInput().getRepresentations());
         //TODO: Show gas input as well
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58,

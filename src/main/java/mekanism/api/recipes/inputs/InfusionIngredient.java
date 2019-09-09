@@ -11,6 +11,7 @@ import mekanism.api.infuse.InfusionContainer;
 /**
  * Created by Thiakil on 12/07/2019.
  */
+//TODO: 1.14 make this be InputPredicate<InfuseType>
 public abstract class InfusionIngredient {
 
     public static InfusionIngredient from(@NonNull InfuseType infuseType, int minAmount) {

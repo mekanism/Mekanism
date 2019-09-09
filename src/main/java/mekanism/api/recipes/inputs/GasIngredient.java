@@ -3,7 +3,6 @@ package mekanism.api.recipes.inputs;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
@@ -13,7 +12,8 @@ import mekanism.api.gas.GasStack;
 /**
  * Created by Thiakil on 11/07/2019.
  */
-public abstract class GasIngredient implements Predicate<@NonNull Gas> {
+//TODO: Should this be merged with GasStackIngredient and just be of size one or zero
+public abstract class GasIngredient implements InputPredicate<@NonNull Gas> {
 
     public static GasIngredient fromInstance(@NonNull Gas instance) {
         return new Instance(instance);
@@ -43,12 +43,22 @@ public abstract class GasIngredient implements Predicate<@NonNull Gas> {
 
         @Override
         public boolean test(@NonNull Gas gas) {
-            return Objects.requireNonNull(gas) == gasInstance;
+            return testType(gas);
         }
 
         @Override
         public @NonNull List<GasStack> getRepresentations(int size) {
             return Collections.singletonList(new GasStack(gasInstance, size));
+        }
+
+        @Override
+        public boolean testType(@NonNull Gas gas) {
+            return Objects.requireNonNull(gas) == gasInstance;
+        }
+
+        @Override
+        public @NonNull List<@NonNull Gas> getRepresentations() {
+            return Collections.singletonList(gasInstance);
         }
     }
 
@@ -64,13 +74,24 @@ public abstract class GasIngredient implements Predicate<@NonNull Gas> {
 
         @Override
         public boolean test(@NonNull Gas gas) {
-            return Objects.requireNonNull(gas).getName().equals(this.name);
+            return testType(gas);
         }
 
         @Override
         public @NonNull List<GasStack> getRepresentations(int size) {
             Gas gas = GasRegistry.getGas(name);
             return gas != null ? Collections.singletonList(new GasStack(gas, size)) : Collections.emptyList();
+        }
+
+        @Override
+        public boolean testType(@NonNull Gas gas) {
+            return Objects.requireNonNull(gas).getName().equals(this.name);
+        }
+
+        @Override
+        public @NonNull List<@NonNull Gas> getRepresentations() {
+            Gas gas = GasRegistry.getGas(name);
+            return gas != null ? Collections.singletonList(gas) : Collections.emptyList();
         }
     }
 }

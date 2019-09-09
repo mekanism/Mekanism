@@ -7,8 +7,10 @@ import crafttweaker.api.item.IngredientAny;
 import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.oredict.IOreDictEntry;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
@@ -155,5 +157,9 @@ public class IngredientHelper {
 
     public static FluidStack toFluid(ILiquidStack fluid) {
         return fluid == null ? null : FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount());
+    }
+
+    public static ItemStackIngredient toIngredient(@Nonnull IIngredient ingredient) {
+        return ItemStackIngredient.from(CraftTweakerMC.getIngredient(ingredient), ingredient.getAmount());
     }
 }

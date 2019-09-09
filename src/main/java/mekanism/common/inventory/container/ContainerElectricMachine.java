@@ -28,7 +28,7 @@ public class ContainerElectricMachine extends ContainerMekanism<TileEntityElectr
                 if (!mergeItemStack(slotStack, 3, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tileEntity.getRecipes().get().stream().anyMatch(input -> input.getInput().apply(slotStack))) {
+            } else if (tileEntity.getRecipes().contains(recipe -> recipe.getInput().testType(slotStack))) {
                 if (slotID != 0 && slotID != 1) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

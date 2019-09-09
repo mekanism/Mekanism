@@ -2,8 +2,6 @@ package mekanism.common.integration.crafttweaker.handlers;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.minecraft.CraftTweakerMC;
-import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
@@ -28,9 +26,8 @@ public class ChemicalOxidizer {
     @ZenMethod
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasOutput)) {
-            GasStack output = GasHelper.toGas(gasOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_OXIDIZER,
-                  new ItemStackToGasRecipe(CraftTweakerMC.getIngredient(ingredientInput), output.getGas(), output.amount)));
+                  new ItemStackToGasRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGas(gasOutput))));
         }
     }
 

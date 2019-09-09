@@ -1,6 +1,6 @@
 package mekanism.client.jei.machine;
 
-import java.util.Arrays;
+import java.util.Collections;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.ingredients.IIngredients;
@@ -14,7 +14,7 @@ public class ItemStackToGasRecipeWrapper extends MekanismRecipeWrapper<ItemStack
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInputs(VanillaTypes.ITEM, Arrays.asList(recipe.getInput().getMatchingStacks()));
+        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutputDefinition());
     }
 }

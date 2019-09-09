@@ -15,7 +15,7 @@ public class CombinerRecipeWrapper extends MekanismRecipeWrapper<CombinerRecipe>
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(Arrays.asList(recipe.getMainInput().getMatchingStacks()), Arrays.asList(recipe.getExtraInput().getMatchingStacks())));
+        ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(recipe.getMainInput().getRepresentations(), recipe.getExtraInput().getRepresentations()));
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
     }
 }

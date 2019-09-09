@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mezz.jei.api.ingredients.IIngredients;
@@ -14,7 +13,7 @@ public class ItemStackToItemStackRecipeWrapper extends MekanismRecipeWrapper<Ite
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInputs(VanillaTypes.ITEM, Arrays.asList(recipe.getInput().getMatchingStacks()));
+        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
     }
 }

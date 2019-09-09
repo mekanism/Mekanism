@@ -18,7 +18,6 @@ import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import scala.actors.threadpool.Arrays;
 
 public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory<ItemStackToGasRecipeWrapper> {
 
@@ -44,7 +43,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory<ItemStack
         ItemStackToGasRecipe tempRecipe = recipeWrapper.getRecipe();
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
-        itemStacks.set(0, Arrays.asList(tempRecipe.getInput().getMatchingStacks()));
+        itemStacks.set(0, tempRecipe.getInput().getRepresentations());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutputDefinition(), true);
     }

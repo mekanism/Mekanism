@@ -20,7 +20,7 @@ public class MetallurgicInfuserRecipeWrapper extends MekanismRecipeWrapper<Metal
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        List<ItemStack> inputStacks = Arrays.asList(recipe.getItemInput().getMatchingStacks());
+        List<ItemStack> inputStacks = recipe.getItemInput().getRepresentations();
         List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInfusionInput().getRepresentations());
         //TODO: Check
         //ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.inputStack);

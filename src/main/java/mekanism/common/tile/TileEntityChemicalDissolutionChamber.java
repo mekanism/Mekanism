@@ -41,7 +41,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
-    public final double BASE_ENERGY_USAGE = MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getUsage();
     public GasTank injectTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
     public double injectUsage = BASE_INJECT_USAGE;
@@ -85,7 +84,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 1) {
-            return getRecipes().get().stream().anyMatch(input -> input.getItemInput().apply(itemstack));
+            return getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -199,7 +198,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     }
 
     private boolean isValidGas(Gas gas) {
-        return getRecipes().findFirst(recipe -> recipe.getGasInput().test(gas)) != null;
+        return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override

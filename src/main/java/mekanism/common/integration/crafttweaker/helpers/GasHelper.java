@@ -2,8 +2,12 @@ package mekanism.common.integration.crafttweaker.helpers;
 
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
+import javax.annotation.Nullable;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.inputs.GasIngredient;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 
 public class GasHelper {
@@ -24,8 +28,28 @@ public class GasHelper {
         return false;
     }
 
+    @Nullable
     public static GasStack toGas(IGasStack iStack) {
-        return iStack == null ? null : new GasStack(GasRegistry.getGas(iStack.getName()), iStack.getAmount());
+        if (iStack == null) {
+            return null;
+        }
+        Gas gas = GasRegistry.getGas(iStack.getName());
+        return gas == null ? null : new GasStack(gas, iStack.getAmount());
+    }
+
+    @Nullable
+    public static GasStackIngredient toGasStackIngredient(IGasStack iStack) {
+        GasStack gasStack = toGas(iStack);
+        return gasStack == null ? null : GasStackIngredient.fromInstance(gasStack);
+    }
+
+    @Nullable
+    public static GasIngredient toGasIngredient(IGasStack iStack) {
+        if (iStack == null) {
+            return null;
+        }
+        Gas gas = GasRegistry.getGas(iStack.getName());
+        return gas == null ? null : GasIngredient.fromInstance(gas);
     }
 
     public static GasStack[] toGases(IGasStack[] iStack) {

@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -28,7 +27,7 @@ public class ChemicalWasher {
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
-                  new GasToGasRecipe(GasStackIngredient.fromInstance(GasHelper.toGas(gasInput)), GasHelper.toGas(gasOutput))));
+                  new GasToGasRecipe(GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
         }
     }
 

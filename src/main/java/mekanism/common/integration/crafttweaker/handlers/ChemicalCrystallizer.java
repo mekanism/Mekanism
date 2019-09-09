@@ -5,7 +5,6 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
-import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -30,7 +29,7 @@ public class ChemicalCrystallizer {
     public static void addRecipe(IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER,
-                  new ChemicalCrystallizerRecipe(GasStackIngredient.fromInstance(GasHelper.toGas(gasInput)), CraftTweakerMC.getItemStack(itemOutput))));
+                  new ChemicalCrystallizerRecipe(GasHelper.toGasStackIngredient(gasInput), CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

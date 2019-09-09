@@ -7,9 +7,9 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 
 /**
  * Inputs: ItemStack + GasStack Output: GasStack
@@ -21,7 +21,7 @@ import net.minecraft.item.crafting.Ingredient;
 @MethodsReturnNonnullByDefault
 public class ItemStackGasToGasRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull Gas> {
 
-    private final Ingredient itemInput;
+    private final ItemStackIngredient itemInput;
 
     private final GasIngredient gasInput;
 
@@ -29,14 +29,18 @@ public class ItemStackGasToGasRecipe implements IMekanismRecipe, BiPredicate<@No
 
     private final int outputGasAmount;
 
-    public ItemStackGasToGasRecipe(Ingredient itemInput, GasIngredient gasInput, Gas outputGas, int outputGasAmount) {
+    public ItemStackGasToGasRecipe(ItemStackIngredient itemInput, GasIngredient gasInput, Gas outputGas, int outputGasAmount) {
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.outputGas = outputGas;
         this.outputGasAmount = outputGasAmount;
     }
 
-    public Ingredient getItemInput() {
+    public ItemStackGasToGasRecipe(ItemStackIngredient itemInput, GasIngredient gasInput, GasStack output) {
+        this(itemInput, gasInput, output.getGas(), output.amount);
+    }
+
+    public ItemStackIngredient getItemInput() {
         return itemInput;
     }
 
@@ -50,7 +54,7 @@ public class ItemStackGasToGasRecipe implements IMekanismRecipe, BiPredicate<@No
 
     @Override
     public boolean test(@NonNull ItemStack itemStack, @NonNull Gas gasStack) {
-        return itemInput.apply(itemStack) && gasInput.test(gasStack);
+        return itemInput.test(itemStack) && gasInput.test(gasStack);
     }
 
     public GasStack getOutputDefinition() {

@@ -77,7 +77,7 @@ public class ContainerAdvancedElectricMachine extends ContainerMekanism<TileEnti
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        return tileEntity.getRecipes().get().stream().anyMatch(input -> input.getItemInput().apply(itemstack));
+        return tileEntity.getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
     }
 
     @Override

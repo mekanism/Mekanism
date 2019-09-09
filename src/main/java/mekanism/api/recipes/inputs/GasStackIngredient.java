@@ -3,7 +3,6 @@ package mekanism.api.recipes.inputs;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
@@ -13,7 +12,7 @@ import mekanism.api.gas.GasStack;
 /**
  * Created by Thiakil on 11/07/2019.
  */
-public abstract class GasStackIngredient implements Predicate<@NonNull GasStack> {
+public abstract class GasStackIngredient implements InputPredicate<@NonNull GasStack> {
 
     public static GasStackIngredient fromInstance(@NonNull GasStack instance) {
         return new Instance(instance.getGas(), instance.amount);
@@ -27,13 +26,6 @@ public abstract class GasStackIngredient implements Predicate<@NonNull GasStack>
         return new Named(name, minAmount);
     }
 
-    /**
-     * Primarily for JEI, a list of valid instances of the stack (i.e. a resolved GasStack(s) from the registry)
-     *
-     * @return List (empty means no valid registrations found and recipe is to be hidden)
-     */
-    public abstract @NonNull List<GasStack> getRepresentations();
-
     public static class Instance extends GasStackIngredient {
 
         @NonNull
@@ -46,8 +38,13 @@ public abstract class GasStackIngredient implements Predicate<@NonNull GasStack>
         }
 
         @Override
-        public boolean test(@NonNull GasStack gas) {
-            return Objects.requireNonNull(gas).getGas() == gasInstance && gas.amount >= minAmount;
+        public boolean test(@NonNull GasStack gasStack) {
+            return testType(gasStack) && gasStack.amount >= minAmount;
+        }
+
+        @Override
+        public boolean testType(@NonNull GasStack gasStack) {
+            return Objects.requireNonNull(gasStack).getGas() == gasInstance;
         }
 
         @Override
@@ -69,8 +66,13 @@ public abstract class GasStackIngredient implements Predicate<@NonNull GasStack>
         }
 
         @Override
-        public boolean test(@NonNull GasStack gas) {
-            return Objects.requireNonNull(gas).getGas().getName().equals(this.name) && gas.amount >= minAmount;
+        public boolean test(@NonNull GasStack gasStack) {
+            return testType(gasStack) && gasStack.amount >= minAmount;
+        }
+
+        @Override
+        public boolean testType(@NonNull GasStack gasStack) {
+            return Objects.requireNonNull(gasStack).getGas().getName().equals(this.name);
         }
 
         @Override

@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.Arrays;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
@@ -64,7 +63,7 @@ public class PRCRecipeCategory<WRAPPER extends PRCRecipeWrapper> extends BaseRec
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 53 - xOffset, 34 - yOffset);
         itemStacks.init(1, false, 115 - xOffset, 34 - yOffset);
-        itemStacks.set(0, Arrays.asList(tempRecipe.getInputSolid().getMatchingStacks()));
+        itemStacks.set(0, tempRecipe.getInputSolid().getRepresentations());
         @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = tempRecipe.getOutputDefinition();
         itemStacks.set(1, outputDefinition.getLeft());
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();

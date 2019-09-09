@@ -6,9 +6,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 
 /**
  * Created by Thiakil on 14/07/2019.
@@ -18,23 +18,27 @@ import net.minecraft.item.crafting.Ingredient;
 @MethodsReturnNonnullByDefault
 public class ItemStackToGasRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
-    private final Ingredient input;
+    private final ItemStackIngredient input;
 
     private final Gas outputGas;
     private final int outputGasAmount;
 
-    public ItemStackToGasRecipe(Ingredient input, Gas outputGas, int outputGasAmount) {
+    public ItemStackToGasRecipe(ItemStackIngredient input, Gas outputGas, int outputGasAmount) {
         this.input = input;
         this.outputGas = outputGas;
         this.outputGasAmount = outputGasAmount;
     }
 
-    @Override
-    public boolean test(@NonNull ItemStack itemStack) {
-        return this.input.apply(itemStack);
+    public ItemStackToGasRecipe(ItemStackIngredient input, GasStack output) {
+        this(input, output.getGas(), output.amount);
     }
 
-    public Ingredient getInput() {
+    @Override
+    public boolean test(@NonNull ItemStack itemStack) {
+        return this.input.test(itemStack);
+    }
+
+    public ItemStackIngredient getInput() {
         return input;
     }
 

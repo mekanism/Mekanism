@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -30,13 +29,12 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasIngredient;
-import mekanism.api.recipes.inputs.GasIngredient.Instance;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismFluids;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -52,13 +50,8 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addEnrichmentChamberRecipe(Ingredient input, ItemStack output) {
+    public static void addEnrichmentChamberRecipe(ItemStackIngredient input, ItemStack output) {
         Recipe.ENRICHMENT_CHAMBER.put(new ItemStackToItemStackRecipe(input, output));
-    }
-
-    @Deprecated
-    public static void addEnrichmentChamberRecipe(ItemStack input, ItemStack output) {
-        addEnrichmentChamberRecipe(Ingredient.fromStacks(input), output);
     }
 
     /**
@@ -67,7 +60,7 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addOsmiumCompressorRecipe(Ingredient input, GasIngredient gasInput, ItemStack output) {
+    public static void addOsmiumCompressorRecipe(ItemStackIngredient input, GasIngredient gasInput, ItemStack output) {
         Recipe.OSMIUM_COMPRESSOR.put(new ItemStackGasToItemStackRecipe(input, gasInput, output));
     }
 
@@ -78,13 +71,8 @@ public final class RecipeHandler {
      * @param extra  - extra ItemStack
      * @param output - output ItemStack
      */
-    public static void addCombinerRecipe(Ingredient input, Ingredient extra, ItemStack output) {
+    public static void addCombinerRecipe(ItemStackIngredient input, ItemStackIngredient extra, ItemStack output) {
         Recipe.COMBINER.put(new CombinerRecipe(input, extra, output));
-    }
-
-    @Deprecated
-    public static void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output) {
-        addCombinerRecipe(Ingredient.fromStacks(input), Ingredient.fromStacks(extra), output);
     }
 
     /**
@@ -93,13 +81,8 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addCrusherRecipe(Ingredient input, ItemStack output) {
+    public static void addCrusherRecipe(ItemStackIngredient input, ItemStack output) {
         Recipe.CRUSHER.put(new ItemStackToItemStackRecipe(input, output));
-    }
-
-    @Deprecated
-    public static void addCrusherRecipe(ItemStack input, ItemStack output) {
-        addCrusherRecipe(Ingredient.fromStacks(input), output);
     }
 
     /**
@@ -108,8 +91,8 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addPurificationChamberRecipe(Ingredient input, ItemStack output) {
-        Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, new Instance(MekanismFluids.Oxygen), output));
+    public static void addPurificationChamberRecipe(ItemStackIngredient input, ItemStack output) {
+        Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, GasIngredient.fromInstance(MekanismFluids.Oxygen), output));
     }
 
     /**
@@ -119,13 +102,8 @@ public final class RecipeHandler {
      * @param input              - input ItemStack
      * @param output             - output ItemStack
      */
-    public static void addMetallurgicInfuserRecipe(InfusionIngredient infusionIngredient, Ingredient input, ItemStack output) {
+    public static void addMetallurgicInfuserRecipe(InfusionIngredient infusionIngredient, ItemStackIngredient input, ItemStack output) {
         Recipe.METALLURGIC_INFUSER.put(new MetallurgicInfuserRecipe(input, infusionIngredient, output));
-    }
-
-    @Deprecated
-    public static void addMetallurgicInfuserRecipe(InfuseType infuse, int amount, ItemStack input, ItemStack output) {
-        addMetallurgicInfuserRecipe(InfusionIngredient.from(infuse, amount), Ingredient.fromStacks(input), output);
     }
 
     /**
@@ -146,8 +124,12 @@ public final class RecipeHandler {
      * @param outputGas    - output Gas
      * @param outputAmount - amount of gas output
      */
-    public static void addChemicalOxidizerRecipe(Ingredient input, Gas outputGas, int outputAmount) {
+    public static void addChemicalOxidizerRecipe(ItemStackIngredient input, Gas outputGas, int outputAmount) {
         Recipe.CHEMICAL_OXIDIZER.put(new ItemStackToGasRecipe(input, outputGas, outputAmount));
+    }
+
+    public static void addChemicalOxidizerRecipe(ItemStackIngredient input, GasStack output) {
+        Recipe.CHEMICAL_OXIDIZER.put(new ItemStackToGasRecipe(input, output));
     }
 
     /**
@@ -156,7 +138,7 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addChemicalInjectionChamberRecipe(Ingredient input, GasIngredient gas, ItemStack output) {
+    public static void addChemicalInjectionChamberRecipe(ItemStackIngredient input, GasIngredient gas, ItemStack output) {
         Recipe.CHEMICAL_INJECTION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, gas, output));
     }
 
@@ -179,7 +161,7 @@ public final class RecipeHandler {
      * @param secondaryOutput - possible extra output
      * @param chance          - probability of obtaining extra output
      */
-    public static void addPrecisionSawmillRecipe(Ingredient input, ItemStack primaryOutput, ItemStack secondaryOutput, double chance) {
+    public static void addPrecisionSawmillRecipe(ItemStackIngredient input, ItemStack primaryOutput, ItemStack secondaryOutput, double chance) {
         Recipe.PRECISION_SAWMILL.put(new SawmillRecipe(input, primaryOutput, secondaryOutput, chance));
     }
 
@@ -189,7 +171,7 @@ public final class RecipeHandler {
      * @param input         - input ItemStack
      * @param primaryOutput - guaranteed output
      */
-    public static void addPrecisionSawmillRecipe(Ingredient input, ItemStack primaryOutput) {
+    public static void addPrecisionSawmillRecipe(ItemStackIngredient input, ItemStack primaryOutput) {
         addPrecisionSawmillRecipe(input, primaryOutput, ItemStack.EMPTY, 0);
     }
 
@@ -199,8 +181,12 @@ public final class RecipeHandler {
      * @param input     - input ItemStack
      * @param outputGas - output GasStack
      */
-    public static void addChemicalDissolutionChamberRecipe(Ingredient input, GasIngredient inputGas, Gas outputGas, int outputAmount) {
+    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasIngredient inputGas, Gas outputGas, int outputAmount) {
         Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, outputGas, outputAmount));
+    }
+
+    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasIngredient inputGas, GasStack output) {
+        Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, output));
     }
 
     /**
@@ -235,14 +221,14 @@ public final class RecipeHandler {
      * @param extraEnergy     - extra energy needed by the recipe
      * @param ticks           - amount of ticks it takes for this recipe to complete
      */
-    public static void addPRCRecipe(Ingredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, ItemStack outputSolid, Gas outputGas, int gasOutputAmount, double extraEnergy, int ticks) {
+    public static void addPRCRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, ItemStack outputSolid, Gas outputGas,
+          int gasOutputAmount, double extraEnergy, int ticks) {
         Recipe.PRESSURIZED_REACTION_CHAMBER.put(new PressurizedReactionRecipe(inputSolid, inputFluid, inputGas, outputGas, gasOutputAmount, extraEnergy, ticks, outputSolid));
     }
 
-    @Deprecated
-    public static void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
-        addPRCRecipe(Ingredient.fromStacks(inputSolid), FluidStackIngredient.fromInstance(inputFluid), GasStackIngredient.fromInstance(inputGas),
-              outputSolid, outputGas.getGas(), outputGas.amount, extraEnergy, ticks);
+    public static void addPRCRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, ItemStack outputSolid, GasStack outputGas,
+          double extraEnergy, int ticks) {
+        Recipe.PRESSURIZED_REACTION_CHAMBER.put(new PressurizedReactionRecipe(inputSolid, inputFluid, inputGas, outputGas, extraEnergy, ticks, outputSolid));
     }
 
     public static void addThermalEvaporationRecipe(FluidStackIngredient inputFluid, FluidStack outputFluid) {
@@ -358,7 +344,7 @@ public final class RecipeHandler {
 
     public static boolean isInPressurizedRecipe(@Nonnull ItemStack stack) {
         if (!stack.isEmpty()) {
-            return Recipe.PRESSURIZED_REACTION_CHAMBER.get().stream().anyMatch(recipe -> recipe.getInputSolid().apply(stack));
+            return Recipe.PRESSURIZED_REACTION_CHAMBER.contains(recipe -> recipe.getInputSolid().testType(stack));
         }
         return false;
     }
@@ -468,6 +454,10 @@ public final class RecipeHandler {
         @Nullable
         public RECIPE_TYPE findFirst(Predicate<RECIPE_TYPE> matchCriteria) {
             return recipes.stream().filter(matchCriteria).findFirst().orElse(null);
+        }
+
+        public boolean contains(Predicate<RECIPE_TYPE> matchCriteria) {
+            return recipes.stream().anyMatch(matchCriteria);
         }
     }
 }

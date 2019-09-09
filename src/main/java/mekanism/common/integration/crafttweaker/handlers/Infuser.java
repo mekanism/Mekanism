@@ -35,8 +35,8 @@ public class Infuser {
         }
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             InfuseType type = InfuseRegistry.get(infuseType);
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER,
-                  new MetallurgicInfuserRecipe(CraftTweakerMC.getIngredient(ingredientInput), InfusionIngredient.from(type, infuseAmount), CraftTweakerMC.getItemStack(itemOutput))));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new MetallurgicInfuserRecipe(
+                  IngredientHelper.toIngredient(ingredientInput), InfusionIngredient.from(type, infuseAmount), CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

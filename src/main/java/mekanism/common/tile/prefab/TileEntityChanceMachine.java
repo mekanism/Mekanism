@@ -1,6 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.recipes.IMekanismRecipe;

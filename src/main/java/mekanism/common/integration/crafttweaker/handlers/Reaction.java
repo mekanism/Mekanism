@@ -5,10 +5,8 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -19,7 +17,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import net.minecraftforge.fluids.FluidStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -33,11 +30,9 @@ public class Reaction {
     @ZenMethod
     public static void addRecipe(IIngredient ingredientInput, ILiquidStack liquidInput, IGasStack gasInput, IItemStack itemOutput, IGasStack gasOutput, double energy, int duration) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, liquidInput, gasInput, itemOutput, gasOutput)) {
-            FluidStack fluidInput = IngredientHelper.toFluid(liquidInput);
-            GasStack outputGas = GasHelper.toGas(gasOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
-                  new PressurizedReactionRecipe(CraftTweakerMC.getIngredient(ingredientInput), FluidStackIngredient.fromInstance(fluidInput),
-                        GasStackIngredient.fromInstance(GasHelper.toGas(gasInput)), outputGas.getGas(), outputGas.amount, energy, duration, CraftTweakerMC.getItemStack(itemOutput))));
+                  new PressurizedReactionRecipe(IngredientHelper.toIngredient(ingredientInput), FluidStackIngredient.fromInstance(IngredientHelper.toFluid(liquidInput)),
+                        GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput), energy, duration, CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

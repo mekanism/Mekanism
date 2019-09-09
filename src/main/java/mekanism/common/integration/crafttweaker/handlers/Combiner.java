@@ -5,6 +5,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -13,9 +14,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -30,7 +28,7 @@ public class Combiner {
     public static void addRecipe(IIngredient ingredientInput, IIngredient ingredientExtra, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, ingredientExtra, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.COMBINER,
-                  new CombinerRecipe(CraftTweakerMC.getIngredient(ingredientInput), CraftTweakerMC.getIngredient(ingredientExtra), CraftTweakerMC.getItemStack(itemOutput))));
+                  new CombinerRecipe(IngredientHelper.toIngredient(ingredientInput), IngredientHelper.toIngredient(ingredientExtra), CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 
@@ -42,7 +40,7 @@ public class Combiner {
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.COMBINER,
-                  new CombinerRecipe(CraftTweakerMC.getIngredient(ingredientInput), Ingredient.fromStacks(new ItemStack(Blocks.COBBLESTONE)), CraftTweakerMC.getItemStack(itemOutput))));
+                  new CombinerRecipe(IngredientHelper.toIngredient(ingredientInput), ItemStackIngredient.from("cobblestone"), CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

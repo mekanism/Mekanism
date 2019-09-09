@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -12,8 +13,9 @@ public class TileEntityCombiner extends TileEntityDoubleElectricMachine<Combiner
         super("combiner", MachineType.COMBINER, 200);
     }
 
+    @Nonnull
     @Override
-    public List<CombinerRecipe> getRecipes() {
-        return Recipe.COMBINER.get();
+    public Recipe<CombinerRecipe> getRecipes() {
+        return Recipe.COMBINER;
     }
 }

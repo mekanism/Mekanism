@@ -79,7 +79,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         } else if (slotID == 3) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
-            return getRecipes().get().stream().anyMatch(input -> input.getInput().apply(itemstack));
+            return getRecipes().contains(recipe -> recipe.getInput().testType(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }

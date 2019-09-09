@@ -29,7 +29,7 @@ public class Crusher {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ItemStack output = CraftTweakerMC.getItemStack(itemOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CRUSHER,
-                  new ItemStackToItemStackRecipe(CraftTweakerMC.getIngredient(ingredientInput), output)));
+                  new ItemStackToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), output)));
         }
     }
 

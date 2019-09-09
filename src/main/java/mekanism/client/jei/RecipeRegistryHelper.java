@@ -1,7 +1,6 @@
 package mekanism.client.jei;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -249,7 +248,7 @@ public class RecipeRegistryHelper {
             List<ItemStackToItemStackRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
             List<ItemStackToItemStackRecipeWrapper> smeltingWrapper = new ArrayList<>();
             for (ItemStackToItemStackRecipe recipe : smeltingRecipes) {
-                if (Arrays.stream(recipe.getInput().getMatchingStacks()).allMatch(smeltingList::containsKey)) {
+                if (recipe.getInput().getRepresentations().stream().allMatch(smeltingList::containsKey)) {
                     //If it does not contain all inputs then we add it
                     //TODO: Decide if we should be handling it differently if only some of them match
                     smeltingWrapper.add(new ItemStackToItemStackRecipeWrapper(recipe));

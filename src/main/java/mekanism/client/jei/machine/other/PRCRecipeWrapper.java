@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
@@ -21,7 +20,7 @@ public class PRCRecipeWrapper extends MekanismRecipeWrapper<PressurizedReactionR
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(Arrays.asList(recipe.getInputSolid().getMatchingStacks())));
+        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInputSolid().getRepresentations()));
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getInputFluid().getRepresentations()));
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getGasInput().getRepresentations()));
         @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();

@@ -5,6 +5,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -14,7 +15,6 @@ import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -29,7 +29,7 @@ public class Sawmill {
     @ZenMethod
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput, @Optional IItemStack optionalItemOutput, @Optional double optionalChance) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
-            Ingredient input = CraftTweakerMC.getIngredient(ingredientInput);
+            ItemStackIngredient input = IngredientHelper.toIngredient(ingredientInput);
             ItemStack output = CraftTweakerMC.getItemStack(itemOutput);
             SawmillRecipe recipe;
             if (optionalItemOutput == null) {

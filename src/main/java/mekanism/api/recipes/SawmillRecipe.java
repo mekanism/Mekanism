@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 
 public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     protected static Random RANDOM = new Random();
 
-    private final Ingredient input;
+    private final ItemStackIngredient input;
 
     private final ItemStack mainOutputDefinition;
 
@@ -21,7 +21,7 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
 
     private final double secondaryChance;
 
-    public SawmillRecipe(Ingredient input, ItemStack mainOutputDefinition, ItemStack secondaryOutputDefinition, double secondaryChance) {
+    public SawmillRecipe(ItemStackIngredient input, ItemStack mainOutputDefinition, ItemStack secondaryOutputDefinition, double secondaryChance) {
         this.input = input;
         this.mainOutputDefinition = mainOutputDefinition;
         this.secondaryOutputDefinition = secondaryOutputDefinition;
@@ -30,7 +30,7 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
 
     @Override
     public boolean test(@NonNull ItemStack stack) {
-        return this.input.apply(stack);
+        return this.input.test(stack);
     }
 
     public ChanceOutput getOutput(ItemStack input) {
@@ -49,7 +49,7 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
         return secondaryChance;
     }
 
-    public Ingredient getInput() {
+    public ItemStackIngredient getInput() {
         return input;
     }
 

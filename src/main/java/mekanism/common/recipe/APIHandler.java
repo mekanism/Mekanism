@@ -9,8 +9,8 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismFluids;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
@@ -27,43 +27,44 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addEnrichmentChamberRecipe(ItemStack input, ItemStack output) {
         checkPhase();
-        RecipeHandler.addEnrichmentChamberRecipe(Ingredient.fromStacks(input), output);
+        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
     public void addOsmiumCompressorRecipe(ItemStack input, ItemStack output) {
         checkPhase();
-        RecipeHandler.addOsmiumCompressorRecipe(Ingredient.fromStacks(input), GasIngredient.fromInstance(MekanismFluids.LiquidOsmium), output);
+        RecipeHandler.addOsmiumCompressorRecipe(ItemStackIngredient.from(input), GasIngredient.fromInstance(MekanismFluids.LiquidOsmium), output);
     }
 
     @Override
     @Deprecated
     public void addCombinerRecipe(ItemStack input, ItemStack output) {
-        addCombinerRecipe(input, new ItemStack(Blocks.COBBLESTONE), output);
+        checkPhase();
+        RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(input), ItemStackIngredient.from("cobblestone"), output);
     }
 
     @Override
     public void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output) {
         checkPhase();
-        RecipeHandler.addCombinerRecipe(Ingredient.fromStacks(input), Ingredient.fromStacks(extra), output);
+        RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(input), ItemStackIngredient.from(extra), output);
     }
 
     @Override
     public void addCrusherRecipe(ItemStack input, ItemStack output) {
         checkPhase();
-        RecipeHandler.addCrusherRecipe(Ingredient.fromStacks(input), output);
+        RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
     public void addPurificationChamberRecipe(ItemStack input, ItemStack output) {
         checkPhase();
-        RecipeHandler.addPurificationChamberRecipe(Ingredient.fromStacks(input), output);
+        RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
     public void addMetallurgicInfuserRecipe(InfuseType infuse, int amount, ItemStack input, ItemStack output) {
         checkPhase();
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(infuse, amount), Ingredient.fromStacks(input), output);
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(infuse, amount), ItemStackIngredient.from(Ingredient.fromStacks(input), input.getCount()), output);
     }
 
     @Override
@@ -75,13 +76,13 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addChemicalOxidizerRecipe(ItemStack input, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalOxidizerRecipe(Ingredient.fromStacks(input), output.getGas(), output.amount);
+        RecipeHandler.addChemicalOxidizerRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
     public void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output) {
         checkPhase();
-        RecipeHandler.addChemicalInjectionChamberRecipe(Ingredient.fromStacks(input), GasIngredient.fromInstance(gas), output);
+        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(input), GasIngredient.fromInstance(gas), output);
     }
 
     @Override
@@ -93,19 +94,19 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput, double chance) {
         checkPhase();
-        RecipeHandler.addPrecisionSawmillRecipe(Ingredient.fromStacks(input), primaryOutput, secondaryOutput, chance);
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(input), primaryOutput, secondaryOutput, chance);
     }
 
     @Override
     public void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput) {
         checkPhase();
-        RecipeHandler.addPrecisionSawmillRecipe(Ingredient.fromStacks(input), primaryOutput);
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(input), primaryOutput);
     }
 
     @Override
     public void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalDissolutionChamberRecipe(Ingredient.fromStacks(input), GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), output.getGas(), output.amount);
+        RecipeHandler.addChemicalDissolutionChamberRecipe(ItemStackIngredient.from(input), GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), output);
     }
 
     @Override
@@ -123,8 +124,8 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
         checkPhase();
-        RecipeHandler.addPRCRecipe(Ingredient.fromStacks(inputSolid), FluidStackIngredient.fromInstance(inputFluid), GasStackIngredient.fromInstance(inputGas),
-              outputSolid, outputGas.getGas(), outputGas.amount, extraEnergy, ticks);
+        RecipeHandler.addPRCRecipe(ItemStackIngredient.from(Ingredient.fromStacks(inputSolid), inputSolid.getCount()), FluidStackIngredient.fromInstance(inputFluid),
+              GasStackIngredient.fromInstance(inputGas), outputSolid, outputGas, extraEnergy, ticks);
     }
 
     @Override

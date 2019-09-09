@@ -6,10 +6,10 @@ import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 
 /**
  * Inputs: ItemStack (item) Output: ItemStack (transformed)
@@ -19,21 +19,21 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
-    private final Ingredient mainInput;
+    private final ItemStackIngredient mainInput;
 
     private ItemStack outputDefinition;
 
-    public ItemStackToItemStackRecipe(Ingredient mainInput, ItemStack outputDefinition) {
+    public ItemStackToItemStackRecipe(ItemStackIngredient mainInput, ItemStack outputDefinition) {
         this.mainInput = mainInput;
         this.outputDefinition = outputDefinition.copy();
     }
 
     @Override
     public boolean test(@NonNull ItemStack input) {
-        return mainInput.apply(input);
+        return mainInput.test(input);
     }
 
-    public Ingredient getInput() {
+    public ItemStackIngredient getInput() {
         return mainInput;
     }
 
@@ -54,7 +54,7 @@ public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@N
 
         private final OreDictSupplier outputSupplier;
 
-        public ItemStackToItemStackRecipeOre(Ingredient mainInput, String outputOreName) {
+        public ItemStackToItemStackRecipeOre(ItemStackIngredient mainInput, String outputOreName) {
             super(mainInput, ItemStack.EMPTY);
             this.outputSupplier = new OreDictSupplier(outputOreName);
         }
