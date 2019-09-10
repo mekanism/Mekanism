@@ -12,6 +12,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.cache.ItemStackToGasCachedRecipe;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -50,8 +51,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(inventory.get(2), gasTank);
-            //TODO: Technically this does not have to set it as it is set in getOrFindCachedRecipe
-            cachedRecipe = getOrFindCachedRecipe();
+            cachedRecipe = getUpdatedCache(cachedRecipe);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -92,22 +92,16 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Nullable
     @Override
-    protected ItemStackToGasRecipe getRecipe() {
+    public ItemStackToGasRecipe getRecipe() {
         ItemStack stack = inventory.get(0);
         return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
-    protected ItemStackToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe) {
+    public ItemStackToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe) {
         return new ItemStackToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), (output, simulate) -> {
-            if (gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount) {
-                gasTank.receive(output, !simulate);
-                return true;
-            }
-            return false;
-        });
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), OutputHelper.getAddToOutput(gasTank));
     }
 
     @Override

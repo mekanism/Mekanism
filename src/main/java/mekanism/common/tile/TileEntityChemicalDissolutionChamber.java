@@ -12,6 +12,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -72,8 +73,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
             }
             TileUtils.drawGas(inventory.get(2), outputTank);
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
-            //TODO: Technically this does not have to set it as it is set in getOrFindCachedRecipe
-            cachedRecipe = getOrFindCachedRecipe();
+            cachedRecipe = getUpdatedCache(cachedRecipe);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -114,7 +114,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Nullable
     @Override
-    protected ItemStackGasToGasRecipe getRecipe() {
+    public ItemStackGasToGasRecipe getRecipe() {
         ItemStack stack = inventory.get(0);
         if (stack.isEmpty()) {
             return null;
@@ -128,16 +128,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Nullable
     @Override
-    protected ItemStackGasToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe) {
+    public ItemStackGasToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe) {
         return new ItemStackGasToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> injectTank, () -> injectUsageThisTick,
-              (output, simulate) -> {
-                  if (outputTank.canReceive(output.getGas()) && outputTank.getNeeded() >= output.amount) {
-                      outputTank.receive(output, !simulate);
-                      return true;
-                  }
-                  return false;
-              });
+              OutputHelper.getAddToOutput(outputTank));
     }
 
     @Override

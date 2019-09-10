@@ -10,7 +10,6 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
-import mekanism.api.recipes.CombinerRecipe;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
@@ -195,7 +194,6 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
@@ -757,7 +755,7 @@ public class ClientProxy extends CommonProxy {
             case 4:
                 return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 5:
-                return new GuiCombiner(player.inventory, (TileEntityDoubleElectricMachine<CombinerRecipe>) tileEntity);
+                return new GuiCombiner(player.inventory, (TileEntityCombiner) tileEntity);
             case 6:
                 return new GuiCrusher(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 7:

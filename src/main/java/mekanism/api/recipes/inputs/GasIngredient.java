@@ -13,6 +13,7 @@ import mekanism.api.gas.GasStack;
  * Created by Thiakil on 11/07/2019.
  */
 //TODO: Should this be merged with GasStackIngredient and just be of size one or zero
+//TODO: Remove this and make recipes using it have it be use this as a base * whatever per tick they want to use, default this to 1
 public abstract class GasIngredient implements InputPredicate<@NonNull Gas> {
 
     public static GasIngredient fromInstance(@NonNull Gas instance) {

@@ -91,8 +91,6 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
 
     public abstract boolean hasRoomForOutput();
 
+    //TODO: None of the implementations are currently actually removing the inputs from the machines here, and are only adding the output
     protected abstract void finishProcessing();
-
-    //TODO: Boolean or way to check if the cached recipe is invalid/done and the machine should recalculate things
-    // either updating the cached recipe or replacing the recipe it has cached with a new one (probably the better way of doing it)
 }

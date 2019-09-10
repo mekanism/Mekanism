@@ -13,15 +13,14 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
-import mekanism.common.inventory.container.ContainerChanceMachine;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.inventory.container.ContainerChemicalDissolutionChamber;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.inventory.container.ContainerChemicalOxidizer;
 import mekanism.common.inventory.container.ContainerChemicalWasher;
+import mekanism.common.inventory.container.ContainerCombiner;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
-import mekanism.common.inventory.container.ContainerDoubleElectricMachine;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.inventory.container.ContainerElectricMachine;
 import mekanism.common.inventory.container.ContainerElectricPump;
@@ -42,6 +41,7 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.inventory.container.ContainerPersonalChest;
+import mekanism.common.inventory.container.ContainerPrecisionSawmill;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
@@ -60,12 +60,12 @@ import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.tile.TileEntityChemicalWasher;
+import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityElectricPump;
@@ -84,6 +84,7 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -94,7 +95,6 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
@@ -290,7 +290,7 @@ public class CommonProxy implements IGuiProvider {
             case 4:
                 return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 5:
-                return new ContainerDoubleElectricMachine<>(player.inventory, (TileEntityDoubleElectricMachine) tileEntity);
+                return new ContainerCombiner(player.inventory, (TileEntityCombiner) tileEntity);
             case 6:
                 return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 7:
@@ -336,7 +336,7 @@ public class CommonProxy implements IGuiProvider {
             case 33:
                 return new ContainerThermalEvaporationController(player.inventory, (TileEntityThermalEvaporationController) tileEntity);
             case 34:
-                return new ContainerChanceMachine<>(player.inventory, (TileEntityChanceMachine) tileEntity);
+                return new ContainerPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill) tileEntity);
             case 35:
                 return new ContainerChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber) tileEntity);
             case 36:

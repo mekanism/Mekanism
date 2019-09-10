@@ -1,21 +1,18 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.tile.prefab.TileEntityChanceMachine;
+import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerChanceMachine<RECIPE extends IMekanismRecipe> extends ContainerMekanism<TileEntityChanceMachine<RECIPE>> {
+public class ContainerPrecisionSawmill extends ContainerMekanism<TileEntityPrecisionSawmill> {
 
-    public ContainerChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine<RECIPE> tile) {
+    public ContainerPrecisionSawmill(InventoryPlayer inventory, TileEntityPrecisionSawmill tile) {
         super(tile, inventory);
     }
 
@@ -41,7 +38,7 @@ public class ContainerChanceMachine<RECIPE extends IMekanismRecipe> extends Cont
                 } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (RecipeHandler.getChanceRecipe(new ItemStackInput(slotStack), tileEntity.getRecipes()) != null) {
+            } else if (tileEntity.getRecipes().contains(recipe -> recipe.getInput().testType(slotStack))) {
                 if (slotID != 0 && slotID != 1) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

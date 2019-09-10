@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
@@ -19,7 +20,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMachine<ItemStackToItemStackRecipe> {
 
@@ -64,8 +64,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-            //TODO: Technically this does not have to set it as it is set in getOrFindCachedRecipe
-            cachedRecipe = getOrFindCachedRecipe();
+            cachedRecipe = getUpdatedCache(cachedRecipe);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -88,31 +87,16 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
 
     @Nullable
     @Override
-    protected ItemStackToItemStackRecipe getRecipe() {
+    public ItemStackToItemStackRecipe getRecipe() {
         ItemStack stack = inventory.get(0);
         return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
-    protected ItemStackToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe) {
-        //TODO: Deduplicate stuff that is for "itemstack output" etc
+    public ItemStackToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe) {
         return new ItemStackToItemStackCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), (output, simulate) -> {
-            ItemStack stack = inventory.get(2);
-            if (stack.isEmpty()) {
-                if (!simulate) {
-                    inventory.set(2, output.copy());
-                }
-                return true;
-            } else if (ItemHandlerHelper.canItemStacksStack(stack, output) && stack.getCount() + output.getCount() <= stack.getMaxStackSize()) {
-                if (!simulate) {
-                    stack.grow(output.getCount());
-                }
-                return true;
-            }
-            return false;
-        });
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), OutputHelper.getAddToOutput(inventory, 2));
     }
 
     @Override

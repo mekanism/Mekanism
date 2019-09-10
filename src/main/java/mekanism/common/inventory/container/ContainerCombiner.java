@@ -1,21 +1,18 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.inputs.DoubleMachineInput;
-import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
+import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
-public class ContainerDoubleElectricMachine<RECIPE extends IMekanismRecipe> extends ContainerMekanism<TileEntityDoubleElectricMachine<RECIPE>> {
+public class ContainerCombiner extends ContainerMekanism<TileEntityCombiner> {
 
-    public ContainerDoubleElectricMachine(InventoryPlayer inventory, TileEntityDoubleElectricMachine<RECIPE> tile) {
+    public ContainerCombiner(InventoryPlayer inventory, TileEntityCombiner tile) {
         super(tile, inventory);
     }
 
@@ -80,21 +77,11 @@ public class ContainerDoubleElectricMachine<RECIPE extends IMekanismRecipe> exte
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        for (DoubleMachineInput input : tileEntity.getRecipes().keySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
-                return true;
-            }
-        }
-        return false;
+        return tileEntity.getRecipes().contains(recipe -> recipe.getMainInput().testType(itemstack));
     }
 
     private boolean isExtraItem(ItemStack itemstack) {
-        for (DoubleMachineInput input : tileEntity.getRecipes().keySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(input.extraStack, itemstack)) {
-                return true;
-            }
-        }
-        return false;
+        return tileEntity.getRecipes().contains(recipe -> recipe.getExtraInput().testType(itemstack));
     }
 
     @Override

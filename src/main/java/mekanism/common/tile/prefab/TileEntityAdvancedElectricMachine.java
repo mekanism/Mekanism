@@ -13,6 +13,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
@@ -37,7 +38,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgradeableMachine<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
 
@@ -131,8 +131,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
             //TODO: Is there some better way to do this rather than storing it and then doing it like this?
             // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
             gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int) Math.ceil(secondaryEnergyPerTick);
-            //TODO: Technically this does not have to set it as it is set in getOrFindCachedRecipe
-            cachedRecipe = getOrFindCachedRecipe();
+            cachedRecipe = getUpdatedCache(cachedRecipe);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -182,7 +181,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
 
     @Nullable
     @Override
-    protected ItemStackGasToItemStackRecipe getRecipe() {
+    public ItemStackGasToItemStackRecipe getRecipe() {
         ItemStack stack = inventory.get(0);
         if (stack.isEmpty()) {
             return null;
@@ -196,25 +195,10 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
 
     @Nullable
     @Override
-    protected ItemStackGasToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe) {
-        //TODO: Deduplicate stuff that is for "itemstack output" etc
+    public ItemStackGasToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe) {
         return new ItemStackGasToItemStackCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> gasTank, () -> gasUsageThisTick,
-              (output, simulate) -> {
-                  ItemStack stack = inventory.get(2);
-                  if (stack.isEmpty()) {
-                      if (!simulate) {
-                          inventory.set(2, output.copy());
-                      }
-                      return true;
-                  } else if (ItemHandlerHelper.canItemStacksStack(stack, output) && stack.getCount() + output.getCount() <= stack.getMaxStackSize()) {
-                      if (!simulate) {
-                          stack.grow(output.getCount());
-                      }
-                      return true;
-                  }
-                  return false;
-              });
+              OutputHelper.getAddToOutput(inventory, 2));
     }
 
     @Override
