@@ -64,7 +64,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -87,14 +87,14 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
 
     @Nullable
     @Override
-    public ItemStackToItemStackRecipe getRecipe() {
+    public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
-    public ItemStackToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe) {
+    public ItemStackToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         return new ItemStackToItemStackCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), OutputHelper.getAddToOutput(inventory, 2));
     }

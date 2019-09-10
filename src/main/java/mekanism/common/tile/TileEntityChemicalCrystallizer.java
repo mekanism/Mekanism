@@ -77,7 +77,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
             TileUtils.receiveGas(inventory.get(0), inputTank);
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -92,7 +92,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Nullable
     @Override
-    public ChemicalCrystallizerRecipe getRecipe() {
+    public ChemicalCrystallizerRecipe getRecipe(int cacheIndex) {
         GasStack gasStack = inputTank.getGas();
         if (gasStack == null || gasStack.amount == 0) {
             return null;
@@ -102,7 +102,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Nullable
     @Override
-    public ChemicalCrystallizerCachedRecipe createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe) {
+    public ChemicalCrystallizerCachedRecipe createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
         return new ChemicalCrystallizerCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inputTank, OutputHelper.getAddToOutput(inventory, 1));
     }

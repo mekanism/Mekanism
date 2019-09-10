@@ -69,7 +69,7 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
          * Used for checking the maximum amount we can get as a secondary for purposes of seeing if we have space to process
          */
         public ItemStack getMaxSecondaryOutput() {
-            return secondaryOutputDefinition.copy();
+            return secondaryChance > 0 ? secondaryOutputDefinition.copy() : ItemStack.EMPTY;
         }
 
         public ItemStack getSecondaryOutput() {

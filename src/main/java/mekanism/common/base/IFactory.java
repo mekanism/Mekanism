@@ -165,6 +165,10 @@ public interface IFactory {
             return fuelSpeed;
         }
 
+        public Recipe getRecipe() {
+            return recipe;
+        }
+
         @Override
         public String getName() {
             return name().toLowerCase(Locale.ROOT);

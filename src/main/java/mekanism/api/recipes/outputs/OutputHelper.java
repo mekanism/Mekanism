@@ -46,6 +46,10 @@ public class OutputHelper {
 
     //TODO: Should we add some checks to these like ensuring slot is within the inventory size and stuff
     private static boolean applyOutputs(NonNullList<ItemStack> inventory, int index, ItemStack output, boolean simulate) {
+        if (output.isEmpty()) {
+            //If we are not trying to add anything there is always room
+            return true;
+        }
         ItemStack stack = inventory.get(index);
         if (stack.isEmpty()) {
             if (!simulate) {
@@ -62,6 +66,7 @@ public class OutputHelper {
     }
 
     private static boolean applyOutputs(GasTank gasTank, GasStack output, boolean simulate) {
+        //TODO: Can we add some form of quick check for if we are trying to add "empty"
         if (gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount) {
             gasTank.receive(output, !simulate);
             return true;

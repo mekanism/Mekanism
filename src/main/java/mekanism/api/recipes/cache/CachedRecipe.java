@@ -93,4 +93,8 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
 
     //TODO: None of the implementations are currently actually removing the inputs from the machines here, and are only adding the output
     protected abstract void finishProcessing();
+
+    public RECIPE getRecipe() {
+        return recipe;
+    }
 }

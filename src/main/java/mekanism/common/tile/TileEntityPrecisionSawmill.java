@@ -60,7 +60,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -87,14 +87,14 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
 
     @Nullable
     @Override
-    public SawmillRecipe getRecipe() {
+    public SawmillRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
-    public SawmillCachedRecipe createNewCachedRecipe(@Nonnull SawmillRecipe recipe) {
+    public SawmillCachedRecipe createNewCachedRecipe(@Nonnull SawmillRecipe recipe, int cacheIndex) {
         return new SawmillCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), OutputHelper.getAddToOutput(inventory, 2, 4));
     }

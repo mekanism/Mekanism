@@ -73,7 +73,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
             }
             TileUtils.drawGas(inventory.get(2), outputTank);
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -114,7 +114,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Nullable
     @Override
-    public ItemStackGasToGasRecipe getRecipe() {
+    public ItemStackGasToGasRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         if (stack.isEmpty()) {
             return null;
@@ -128,7 +128,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Nullable
     @Override
-    public ItemStackGasToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe) {
+    public ItemStackGasToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe, int cacheIndex) {
         return new ItemStackGasToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> injectTank, () -> injectUsageThisTick,
               OutputHelper.getAddToOutput(outputTank));

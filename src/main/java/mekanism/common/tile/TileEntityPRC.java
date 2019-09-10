@@ -91,7 +91,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
 
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -139,7 +139,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
 
     @Nullable
     @Override
-    public PressurizedReactionRecipe getRecipe() {
+    public PressurizedReactionRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         if (stack.isEmpty()) {
             return null;
@@ -157,7 +157,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
 
     @Nullable
     @Override
-    public PressurizedReactionCachedRecipe createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe) {
+    public PressurizedReactionCachedRecipe createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe, int cacheIndex) {
         //TODO: Try to cache the energy per tick
         //TODO: base ticks required
         recipe.getDuration();

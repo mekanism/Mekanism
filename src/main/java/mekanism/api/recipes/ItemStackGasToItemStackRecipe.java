@@ -49,8 +49,8 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
     }
 
     @Override
-    public boolean test(@NonNull ItemStack itemStack, @NonNull Gas gasStack) {
-        return itemInput.test(itemStack) && gasInput.test(gasStack);
+    public boolean test(@NonNull ItemStack itemStack, @NonNull Gas gas) {
+        return itemInput.test(itemStack) && gasInput.test(gas);
     }
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {

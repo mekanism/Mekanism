@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IngredientNBT;
 import net.minecraftforge.oredict.OreIngredient;
 
 public class ItemStackIngredient implements InputPredicate<@NonNull ItemStack> {
@@ -19,7 +20,9 @@ public class ItemStackIngredient implements InputPredicate<@NonNull ItemStack> {
     }
 
     public static ItemStackIngredient from(@NonNull ItemStack stack, int amount) {
-        return from(Ingredient.fromStacks(stack), amount);
+        //Support NBT that is on the stack in case it matters
+        //It is a protected constructor so pretend we are extending it and implementing it via the {}
+        return from(new IngredientNBT(stack) {}, amount);
     }
 
     public static ItemStackIngredient from(@NonNull Block block) {

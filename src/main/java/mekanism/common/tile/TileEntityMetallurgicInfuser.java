@@ -95,7 +95,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                     }
                 }
             }
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -202,14 +202,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Nullable
     @Override
-    public MetallurgicInfuserRecipe getRecipe() {
+    public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(2);
         return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infuseStored, stack));
     }
 
     @Nullable
     @Override
-    public MetallurgicInfuserCachedRecipe createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe) {
+    public MetallurgicInfuserCachedRecipe createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
         return new MetallurgicInfuserCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> infuseStored, () -> inventory.get(2),
               OutputHelper.getAddToOutput(inventory, 3));

@@ -78,7 +78,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             manageBuckets();
             TileUtils.drawGas(inventory.get(2), outputTank);
             double prev = getEnergy();
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -102,7 +102,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Nullable
     @Override
-    public ChemicalWasherRecipe getRecipe() {
+    public ChemicalWasherRecipe getRecipe(int cacheIndex) {
         GasStack gasStack = inputTank.getGas();
         FluidStack fluid = fluidTank.getFluid();
         return gasStack == null || gasStack.amount == 0 || fluid == null || fluid.amount == 0 ? null : getRecipes().findFirst(recipe -> recipe.test(fluid, gasStack));
@@ -110,7 +110,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Nullable
     @Override
-    public ChemicalWasherCachedRecipe createNewCachedRecipe(@Nonnull ChemicalWasherRecipe recipe) {
+    public ChemicalWasherCachedRecipe createNewCachedRecipe(@Nonnull ChemicalWasherRecipe recipe, int cacheIndex) {
         return new ChemicalWasherCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> inputTank, this::getUpgradedUsage,
               OutputHelper.getAddToOutput(outputTank));

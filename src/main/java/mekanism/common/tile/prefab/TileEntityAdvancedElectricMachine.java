@@ -131,7 +131,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
             //TODO: Is there some better way to do this rather than storing it and then doing it like this?
             // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
             gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int) Math.ceil(secondaryEnergyPerTick);
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -181,7 +181,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
 
     @Nullable
     @Override
-    public ItemStackGasToItemStackRecipe getRecipe() {
+    public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         if (stack.isEmpty()) {
             return null;
@@ -195,7 +195,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
 
     @Nullable
     @Override
-    public ItemStackGasToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe) {
+    public ItemStackGasToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
         return new ItemStackGasToItemStackCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> gasTank, () -> gasUsageThisTick,
               OutputHelper.getAddToOutput(inventory, 2));

@@ -63,7 +63,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -88,7 +88,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
     @Nullable
     @Override
-    public CombinerRecipe getRecipe() {
+    public CombinerRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         ItemStack extraStack = inventory.get(1);
         return stack.isEmpty() || extraStack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack, extraStack));
@@ -96,7 +96,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
     @Nullable
     @Override
-    public CombinerCachedRecipe createNewCachedRecipe(@Nonnull CombinerRecipe recipe) {
+    public CombinerCachedRecipe createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
         return new CombinerCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> inventory.get(1),
               OutputHelper.getAddToOutput(inventory, 2));

@@ -51,7 +51,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(inventory.get(2), gasTank);
-            cachedRecipe = getUpdatedCache(cachedRecipe);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
@@ -92,14 +92,14 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Nullable
     @Override
-    public ItemStackToGasRecipe getRecipe() {
+    public ItemStackToGasRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
-    public ItemStackToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe) {
+    public ItemStackToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
         return new ItemStackToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), OutputHelper.getAddToOutput(gasTank));
     }
