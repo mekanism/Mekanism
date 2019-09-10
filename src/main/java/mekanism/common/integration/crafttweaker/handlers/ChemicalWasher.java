@@ -2,7 +2,9 @@ package mekanism.common.integration.crafttweaker.handlers;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
-import mekanism.api.recipes.GasToGasRecipe;
+import crafttweaker.api.liquid.ILiquidStack;
+import mekanism.api.recipes.ChemicalWasherRecipe;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -13,6 +15,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import net.minecraftforge.fluids.FluidRegistry;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -27,7 +30,15 @@ public class ChemicalWasher {
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
-                  new GasToGasRecipe(GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
+                  new ChemicalWasherRecipe(FluidStackIngredient.fromInstance(FluidRegistry.WATER, 5), GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
+        }
+    }
+
+    @ZenMethod
+    public static void addRecipe(ILiquidStack cleansingIngredient, IGasStack gasInput, IGasStack gasOutput) {
+        if (IngredientHelper.checkNotNull(NAME, cleansingIngredient, gasInput, gasOutput)) {
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
+                  new ChemicalWasherRecipe(IngredientHelper.toIngredient(cleansingIngredient), GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
         }
     }
 

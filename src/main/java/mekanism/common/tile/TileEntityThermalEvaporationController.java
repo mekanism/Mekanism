@@ -154,11 +154,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         refresh();
     }
 
-    public boolean hasRecipe(Fluid fluid) {
-        if (fluid == null) {
-            return false;
-        }
-        return Recipe.THERMAL_EVAPORATION_PLANT.containsRecipe(fluid);
+    public boolean hasRecipe(FluidStack fluid) {
+        return Recipe.THERMAL_EVAPORATION_PLANT.contains(recipe -> recipe.getInput().testType(fluid));
     }
 
     protected void refresh() {
@@ -204,7 +201,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
                     @Override
                     public boolean isValid(Fluid f) {
-                        return hasRecipe(f);
+                        return hasRecipe(new FluidStack(f, 1));
                     }
                 });
             }

@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -10,7 +11,11 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.ChemicalWasherRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.ChemicalWasherCachedRecipe;
+import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -20,9 +25,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -48,17 +51,16 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager,
-      IComparatorSupport {
+      IComparatorSupport, ICachedRecipeHolder<ChemicalWasherRecipe> {
 
     public static final int MAX_GAS = 10000;
     public static final int MAX_FLUID = 10000;
-    public static int WATER_USAGE = 5;
     public FluidTank fluidTank = new FluidTank(MAX_FLUID);
     public GasTank inputTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
 
-    public GasToGasRecipe cachedRecipe;
+    public CachedRecipe<ChemicalWasherRecipe> cachedRecipe;
 
     private int currentRedstoneLevel;
     public double clientEnergyUsed;
@@ -75,18 +77,15 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             ChargeUtils.discharge(3, this);
             manageBuckets();
             TileUtils.drawGas(inventory.get(2), outputTank);
-            GasToGasRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                int operations = operate(recipe);
-                double prev = getEnergy();
-                setEnergy(getEnergy() - energyPerTick * operations);
-                clientEnergyUsed = prev - getEnergy();
-            } else if (prevEnergy >= getEnergy()) {
-                setActive(false);
+            double prev = getEnergy();
+            cachedRecipe = getUpdatedCache(cachedRecipe);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
+            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+            clientEnergyUsed = prev - getEnergy();
+
             TileUtils.emitGas(this, outputTank, gasOutput, MekanismUtils.getRight(facing));
-            prevEnergy = getEnergy();
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
                 world.updateComparatorOutputLevel(pos, getBlockType());
@@ -95,38 +94,40 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         }
     }
 
-    public GasToGasRecipe getRecipe() {
-        GasInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getChemicalWasherRecipe(getInput());
-        }
-        return cachedRecipe;
+    @Nonnull
+    @Override
+    public Recipe<ChemicalWasherRecipe> getRecipes() {
+        return Recipe.CHEMICAL_WASHER;
     }
 
-    public GasInput getInput() {
-        return new GasInput(inputTank.getGas());
+    @Nullable
+    @Override
+    public ChemicalWasherRecipe getRecipe() {
+        GasStack gasStack = inputTank.getGas();
+        FluidStack fluid = fluidTank.getFluid();
+        return gasStack == null || gasStack.amount == 0 || fluid == null || fluid.amount == 0 ? null : getRecipes().findFirst(recipe -> recipe.test(fluid, gasStack));
     }
 
-    public boolean canOperate(GasToGasRecipe recipe) {
-        return recipe != null && recipe.canOperate(inputTank, fluidTank, outputTank);
-    }
-
-    public int operate(GasToGasRecipe recipe) {
-        int operations = getUpgradedUsage();
-        recipe.operate(inputTank, fluidTank, outputTank, operations);
-        return operations;
+    @Nullable
+    @Override
+    public ChemicalWasherCachedRecipe createNewCachedRecipe(@Nonnull ChemicalWasherRecipe recipe) {
+        return new ChemicalWasherCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> inputTank, this::getUpgradedUsage,
+              OutputHelper.getAddToOutput(outputTank));
     }
 
     private void manageBuckets() {
         if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
+            //TODO: Instead of water, use the recipe's cleansing fluid
             FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
         }
     }
 
-    public int getUpgradedUsage() {
+    private int getUpgradedUsage() {
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
         possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
+        //TODO: Instead of water, use the recipe's cleansing fluid amount
         return Math.min(fluidTank.getFluidAmount() / WATER_USAGE, possibleProcess);
     }
 
@@ -186,7 +187,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         if (getTank(side) == inputTank) {
-            return getTank(side).canReceive(type) && Recipe.CHEMICAL_WASHER.containsRecipe(type);
+            return getTank(side).canReceive(type) && getRecipes().contains(recipe -> recipe.getInput().testType(new GasStack(type, 1)));
         }
         return false;
     }
@@ -222,6 +223,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
+            //TODO: Instead of water, use the recipe's cleansing fluid
             return FluidUtil.getFluidContained(itemstack) != null && FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry.WATER;
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
@@ -289,6 +291,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        //TODO: Instead of water, use the recipe's cleansing fluid
         return from == EnumFacing.UP && fluid.getFluid().equals(FluidRegistry.WATER);
     }
 

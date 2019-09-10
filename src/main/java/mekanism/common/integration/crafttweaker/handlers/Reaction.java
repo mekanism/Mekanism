@@ -6,7 +6,6 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -31,7 +30,7 @@ public class Reaction {
     public static void addRecipe(IIngredient ingredientInput, ILiquidStack liquidInput, IGasStack gasInput, IItemStack itemOutput, IGasStack gasOutput, double energy, int duration) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, liquidInput, gasInput, itemOutput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
-                  new PressurizedReactionRecipe(IngredientHelper.toIngredient(ingredientInput), FluidStackIngredient.fromInstance(IngredientHelper.toFluid(liquidInput)),
+                  new PressurizedReactionRecipe(IngredientHelper.toIngredient(ingredientInput), IngredientHelper.toIngredient(liquidInput),
                         GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput), energy, duration, CraftTweakerMC.getItemStack(itemOutput))));
         }
     }

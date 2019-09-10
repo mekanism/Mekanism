@@ -39,7 +39,7 @@ public class ContainerThermalEvaporationController extends ContainerMekanism<Til
                 } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (fluidContained != null && tileEntity.hasRecipe(fluidContained.getFluid())) {
+            } else if (fluidContained != null && tileEntity.hasRecipe(fluidContained)) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

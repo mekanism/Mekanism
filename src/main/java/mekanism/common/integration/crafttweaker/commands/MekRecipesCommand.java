@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.ChemicalWasherRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -106,7 +107,7 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 break;
             case "washer":
                 type = Recipe.CHEMICAL_WASHER;
-                for (GasToGasRecipe recipe : Recipe.CHEMICAL_WASHER.get()) {
+                for (ChemicalWasherRecipe recipe : Recipe.CHEMICAL_WASHER.get()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.washer.addRecipe(%s, %s)",
                           RecipeInfoHelper.getGasName(recipe.getInput().ingredient),
                           RecipeInfoHelper.getGasName(recipe.getOutput().output)

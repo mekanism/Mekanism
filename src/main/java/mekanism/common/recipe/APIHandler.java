@@ -13,6 +13,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismFluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
@@ -112,7 +113,7 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addChemicalWasherRecipe(GasStack input, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalWasherRecipe(GasStackIngredient.fromInstance(input), output);
+        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.fromInstance(FluidRegistry.WATER, 5), GasStackIngredient.fromInstance(input), output);
     }
 
     @Override

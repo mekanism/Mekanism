@@ -1,12 +1,9 @@
 package mekanism.common.integration.crafttweaker.helpers;
 
 import crafttweaker.mc1120.item.MCItemStack;
-import java.util.Map.Entry;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.IMekanismRecipe;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.recipe.outputs.FluidOutput;

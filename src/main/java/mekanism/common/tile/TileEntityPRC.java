@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
@@ -11,6 +11,8 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -24,7 +26,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
@@ -89,8 +90,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
         super.onUpdate();
 
         if (!world.isRemote) {
-            PressurizedReactionRecipe recipe = getRecipe();
             ChargeUtils.discharge(1, this);
+            cachedRecipe = getUpdatedCache(cachedRecipe);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
+            }
             if (canOperate(recipe) && MekanismUtils.canFunction(this) &&
                 getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy)) {
                 boolean update = BASE_TICKS_REQUIRED != recipe.ticks;
@@ -133,29 +137,34 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
         return false;
     }
 
+    @Nullable
     @Override
     public PressurizedReactionRecipe getRecipe() {
-        PressurizedInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getPRCRecipe(input);
+        ItemStack stack = inventory.get(0);
+        if (stack.isEmpty()) {
+            return null;
         }
-        return cachedRecipe;
+        FluidStack fluid = inputFluidTank.getFluid();
+        if (fluid == null || fluid.amount == 0) {
+            return null;
+        }
+        GasStack gas = inputGasTank.getGas();
+        if (gas == null || gas.amount == 0) {
+            return null;
+        }
+        return getRecipes().findFirst(recipe -> recipe.test(stack, fluid, gas));
     }
 
+    @Nullable
     @Override
-    public PressurizedInput getInput() {
-        return new PressurizedInput(inventory.get(0), inputFluidTank.getFluid(), inputGasTank.getGas());
-    }
-
-    @Override
-    public void operate(PressurizedReactionRecipe recipe) {
-        recipe.operate(inventory, inputFluidTank, inputGasTank, outputGasTank);
-        markDirty();
-    }
-
-    @Override
-    public boolean canOperate(PressurizedReactionRecipe recipe) {
-        return recipe != null && recipe.canOperate(inventory, inputFluidTank, inputGasTank, outputGasTank);
+    public PressurizedReactionCachedRecipe createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe) {
+        //TODO: Try to cache the energy per tick
+        //TODO: base ticks required
+        recipe.getDuration();
+        return new PressurizedReactionCachedRecipe(recipe, () -> MekanismUtils.canFunction(this),
+              () -> MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.getEnergyRequired()), this::getEnergy, () -> ticksRequired,
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> inputFluidTank, () -> inputGasTank,
+              OutputHelper.getAddToOutput(outputGasTank, inventory, 2));
     }
 
     @Override
@@ -232,7 +241,8 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
             case 3:
                 return new Object[]{facing};
             case 4:
-                return new Object[]{canOperate(getRecipe())};
+                //TODO: potentially simplify this, or at least get a new cached recipe if it is null
+                return new Object[]{cachedRecipe != null && cachedRecipe.hasResourcesForTick() && cachedRecipe.hasRoomForOutput()};
             case 5:
                 return new Object[]{getMaxEnergy()};
             case 6:

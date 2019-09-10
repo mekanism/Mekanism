@@ -14,7 +14,6 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
-import scala.actors.threadpool.Arrays;
 
 public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory<ItemStackGasToGasRecipeWrapper> {
 

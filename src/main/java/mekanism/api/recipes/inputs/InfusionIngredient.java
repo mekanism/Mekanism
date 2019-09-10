@@ -11,28 +11,18 @@ import mekanism.api.infuse.InfusionContainer;
 /**
  * Created by Thiakil on 12/07/2019.
  */
-//TODO: 1.14 make this be InputPredicate<InfuseType>
-public abstract class InfusionIngredient {
+public abstract class InfusionIngredient implements InputPredicate<InfuseObject> {
 
     public static InfusionIngredient from(@NonNull InfuseType infuseType, int minAmount) {
         return new SingleType(infuseType, minAmount);
     }
 
-    public abstract boolean test(@NonNull InfuseType infuseType, int i);
-
     public boolean test(@NonNull InfusionContainer input) {
         if (input.getType() == null) {
             return false;
         }
-        return test(input.getType(), input.getAmount());
+        return test(new InfuseObject(input.getType(), input.getAmount()));
     }
-
-    /**
-     * Primarily for JEI, a list of valid instances of the stack (i.e. a resolved InfuseObject(s))
-     *
-     * @return List (empty means no valid registrations found and recipe is to be hidden)
-     */
-    public abstract @NonNull List<InfuseObject> getRepresentations();
 
     public static class SingleType extends InfusionIngredient {
 
@@ -49,8 +39,13 @@ public abstract class InfusionIngredient {
         }
 
         @Override
-        public boolean test(@NonNull InfuseType infuseType, int amount) {
-            return Objects.requireNonNull(infuseType) == this.infuseType && amount >= this.minAmount;
+        public boolean test(InfuseObject infuseObject) {
+            return testType(infuseObject) && infuseObject.getAmount() >= this.minAmount;
+        }
+
+        @Override
+        public boolean testType(InfuseObject infuseObject) {
+            return Objects.requireNonNull(infuseObject.getType()) == this.infuseType;
         }
 
         @Override

@@ -4,7 +4,6 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -27,7 +26,7 @@ public class ThermalEvaporation {
     public static void addRecipe(ILiquidStack liquidInput, ILiquidStack liquidOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, liquidOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.THERMAL_EVAPORATION_PLANT,
-                  new FluidToFluidRecipe(FluidStackIngredient.fromInstance(IngredientHelper.toFluid(liquidInput)), IngredientHelper.toFluid(liquidOutput))));
+                  new FluidToFluidRecipe(IngredientHelper.toIngredient(liquidInput), IngredientHelper.toFluid(liquidOutput))));
         }
     }
 

@@ -59,7 +59,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller != null && controller.hasRecipe(fluid.getFluid());
+        return controller != null && controller.hasRecipe(fluid);
     }
 
     @Override

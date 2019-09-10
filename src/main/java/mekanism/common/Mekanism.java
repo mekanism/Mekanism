@@ -540,7 +540,8 @@ public class Mekanism {
             if (gas instanceof OreGas && !((OreGas) gas).isClean()) {
                 OreGas oreGas = (OreGas) gas;
                 if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_WASHER)) {
-                    RecipeHandler.addChemicalWasherRecipe(GasStackIngredient.fromInstance(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
+                    RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.fromInstance(FluidRegistry.WATER, 5),
+                          GasStackIngredient.fromInstance(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
                 }
 
                 //do the crystallizer only if it's one of ours!

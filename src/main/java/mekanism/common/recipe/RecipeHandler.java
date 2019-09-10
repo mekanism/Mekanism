@@ -15,6 +15,7 @@ import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.ChemicalWasherRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -195,8 +196,8 @@ public final class RecipeHandler {
      * @param input  - input GasStack
      * @param output - output GasStack
      */
-    public static void addChemicalWasherRecipe(GasStackIngredient input, GasStack output) {
-        Recipe.CHEMICAL_WASHER.put(new GasToGasRecipe(input, output));
+    public static void addChemicalWasherRecipe(FluidStackIngredient cleansingIngredient, GasStackIngredient input, GasStack output) {
+        Recipe.CHEMICAL_WASHER.put(new ChemicalWasherRecipe(cleansingIngredient, input, output));
     }
 
     /**
@@ -289,8 +290,8 @@ public final class RecipeHandler {
      * @return WasherRecipe
      */
     @Nullable
-    public static GasToGasRecipe getChemicalWasherRecipe(@Nonnull GasStack input) {
-        return Recipe.CHEMICAL_WASHER.findFirst(recipe -> recipe.test(input));
+    public static ChemicalWasherRecipe getChemicalWasherRecipe(@Nonnull FluidStack fluid, @Nonnull GasStack input) {
+        return Recipe.CHEMICAL_WASHER.findFirst(recipe -> recipe.test(fluid, input));
     }
 
     /**
@@ -379,7 +380,7 @@ public final class RecipeHandler {
 
         public static final Recipe<ItemStackGasToGasRecipe> CHEMICAL_DISSOLUTION_CHAMBER = new Recipe<>(MachineType.CHEMICAL_DISSOLUTION_CHAMBER, ItemStackGasToGasRecipe.class);
 
-        public static final Recipe<GasToGasRecipe> CHEMICAL_WASHER = new Recipe<>(MachineType.CHEMICAL_WASHER, GasToGasRecipe.class);
+        public static final Recipe<ChemicalWasherRecipe> CHEMICAL_WASHER = new Recipe<>(MachineType.CHEMICAL_WASHER, ChemicalWasherRecipe.class);
 
         public static final Recipe<ChemicalCrystallizerRecipe> CHEMICAL_CRYSTALLIZER = new Recipe<>(MachineType.CHEMICAL_CRYSTALLIZER, ChemicalCrystallizerRecipe.class);
 

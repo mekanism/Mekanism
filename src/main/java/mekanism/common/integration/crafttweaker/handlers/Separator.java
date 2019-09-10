@@ -4,7 +4,6 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -29,7 +28,7 @@ public class Separator {
     public static void addRecipe(ILiquidStack liquidInput, double energy, IGasStack leftGasOutput, IGasStack rightGasOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, leftGasOutput, rightGasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.ELECTROLYTIC_SEPARATOR,
-                  new ElectrolysisRecipe(FluidStackIngredient.fromInstance(IngredientHelper.toFluid(liquidInput)), energy, GasHelper.toGas(leftGasOutput),
+                  new ElectrolysisRecipe(IngredientHelper.toIngredient(liquidInput), energy, GasHelper.toGas(leftGasOutput),
                         GasHelper.toGas(rightGasOutput))));
         }
     }

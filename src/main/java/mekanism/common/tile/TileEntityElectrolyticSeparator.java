@@ -12,6 +12,8 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
+import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -51,7 +53,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
-      IUpgradeInfoHandler, ITankManager, IComparatorSupport {
+      IUpgradeInfoHandler, ITankManager, IComparatorSupport, ICachedRecipeHolder<ElectrolysisRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
                                                          "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
@@ -83,7 +85,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
      * Type type of gas this block is dumping.
      */
     public GasMode dumpRight = GasMode.IDLE;
-    public ElectrolysisRecipe cachedRecipe;
+    public ElectrolysisCachedRecipe cachedRecipe;
     public double clientEnergyUsed;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     /**
@@ -123,8 +125,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
-                boolean update = BASE_ENERGY_PER_TICK != recipe.energyUsage;
-                BASE_ENERGY_PER_TICK = recipe.energyUsage;
+                boolean update = BASE_ENERGY_PER_TICK != recipe.getEnergyUsage();
+                BASE_ENERGY_PER_TICK = recipe.getEnergyUsage();
                 if (update) {
                     recalculateUpgradables(Upgrade.ENERGY);
                 }
@@ -135,10 +137,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
             }
+            prevEnergy = getEnergy();
+
             int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
             handleTank(leftTank, dumpLeft, MekanismUtils.getLeft(facing), dumpAmount);
             handleTank(rightTank, dumpRight, MekanismUtils.getRight(facing), dumpAmount);
-            prevEnergy = getEnergy();
 
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {

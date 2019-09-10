@@ -9,6 +9,7 @@ import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class OutputHelper {
 
@@ -17,12 +18,16 @@ public class OutputHelper {
     }
 
     public static BiFunction<@NonNull GasStack, Boolean, Boolean> getAddToOutput(@Nonnull GasTank gasTank) {
+        return (output, simulate) -> applyOutputs(gasTank, output, simulate);
+    }
+
+    public static BiFunction<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>, Boolean, Boolean> getAddToOutput(@Nonnull GasTank gasTank,
+          @Nonnull NonNullList<ItemStack> inventory, int slot) {
         return (output, simulate) -> {
-            if (gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount) {
-                gasTank.receive(output, !simulate);
-                return true;
+            if (!applyOutputs(gasTank, output.getRight(), simulate)) {
+                return false;
             }
-            return false;
+            return applyOutputs(inventory, slot, output.getLeft(), simulate);
         };
     }
 
@@ -51,6 +56,14 @@ public class OutputHelper {
             if (!simulate) {
                 stack.grow(output.getCount());
             }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean applyOutputs(GasTank gasTank, GasStack output, boolean simulate) {
+        if (gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount) {
+            gasTank.receive(output, !simulate);
             return true;
         }
         return false;
