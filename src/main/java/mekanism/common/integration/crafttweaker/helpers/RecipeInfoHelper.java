@@ -52,11 +52,13 @@ public class RecipeInfoHelper {
     }
 
     public static String getFluidName(@Nonnull FluidStack stack) {
-        return stack.getAmount() > 1 ? String.format("<liquid:%s> * %s", stack.getFluid().getAttributes().getName(), stack.getAmount()) : getFluidName(stack.getFluid());
+        //TODO: Used to be name
+        return stack.getAmount() > 1 ? String.format("<liquid:%s> * %s", stack.getFluid().getRegistryName().toString(), stack.getAmount()) : getFluidName(stack.getFluid());
     }
 
     public static String getFluidName(@Nonnull Fluid fluid) {
-        return String.format("<liquid:%s>", fluid.getAttributes().getName());
+        //TODO: Used to be name
+        return String.format("<liquid:%s>", fluid.getRegistryName().toString());
     }
 
     public static String getItemName(ItemStack stack) {

@@ -197,7 +197,8 @@ public final class FluidRenderer {
             code = 31 * code + height;
             code = 31 * code + length;
             code = 31 * code + width;
-            code = 31 * code + fluidType.getFluid().getAttributes().getName().hashCode();
+            //TODO: Used to be name
+            code = 31 * code + fluidType.getFluid().getRegistryName().hashCode();
             code = 31 * code + (fluidType.hasTag() ? fluidType.getTag().hashCode() : 0);
             return code;
         }

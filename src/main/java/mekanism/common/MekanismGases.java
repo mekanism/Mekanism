@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GaseousFluid;
 import mekanism.api.gas.Slurry;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.fluid.Fluid;
@@ -58,14 +57,14 @@ public enum MekanismGases implements IGasProvider {
     MekanismGases(String name, int color, boolean hasFluid) {
         gas = new Gas(new ResourceLocation(Mekanism.MODID, name), color);
         if (hasFluid) {
-            gas.setFluid(new GaseousFluid(gas));
+            gas.createFluid();
         }
     }
 
     MekanismGases(String name, ResourceLocation texture, boolean hasFluid) {
         gas = new Gas(new ResourceLocation(Mekanism.MODID, name), texture);
         if (hasFluid) {
-            gas.setFluid(new GaseousFluid(gas));
+            gas.createFluid();
         }
     }
 

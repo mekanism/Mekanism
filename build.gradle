@@ -226,7 +226,7 @@ dependencies {
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
 
     //TODO: Use proper CrT dependency if this is not the path for maven
-    compileOnly "com.blamejared.crafttweaker:CraftTweaker:1.14.4-5.0.0.56"
+    compileOnly "com.blamejared.crafttweaker:CraftTweaker:1.14.4-5.0.0.57"
 
     // Not updated yet
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"

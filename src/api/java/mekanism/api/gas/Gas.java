@@ -18,6 +18,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
@@ -231,8 +233,25 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      * @return this Gas object
      */
     public Gas setFluid(@Nonnull Fluid fluid) {
+        //TODO: Don't allow setting it once it is already set?
         this.fluid = fluid;
         return this;
+    }
+
+    public void createFluid() {
+        int tint = getTint();
+        //Fluids use ARGB so make sure that we are not using a fully transparent tint.
+        // This fixes issues with some mods rendering our fluids as invisible
+        if ((tint & 0xFF000000) == 0) {
+            tint = 0xFF000000 | tint;
+        }
+        //TODO: Light?
+        //TODO: Should we create both source and flowing?
+        ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> fluid, () -> fluid,
+              FluidAttributes.builder(getIcon(), getIcon()).color(tint).gaseous());//.bucket(test_fluid_bucket).block(test_fluid_block);
+        ForgeFlowingFluid flowingFluid = new ForgeFlowingFluid.Source(properties);
+        flowingFluid.setRegistryName(getRegistryName());
+        setFluid(flowingFluid);
     }
 
     @Override
