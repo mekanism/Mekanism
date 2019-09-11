@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
@@ -39,7 +41,9 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPRC> {
         addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiEnergyInfo(() -> {
-            double extra = tileEntity.getRecipe() != null ? tileEntity.getRecipe().extraEnergy : 0;
+            //TODO: Use a getter for the cached recipe
+            CachedRecipe<PressurizedReactionRecipe> recipe = tileEntity.getUpdatedCache(tileEntity.cachedRecipe, 0);
+            double extra = recipe == null ? 0 : recipe.getRecipe().getEnergyRequired();
             String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.BASE_ENERGY_PER_TICK + extra));
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
                   LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));

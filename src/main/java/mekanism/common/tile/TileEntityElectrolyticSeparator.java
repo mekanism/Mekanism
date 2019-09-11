@@ -13,6 +13,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -84,7 +85,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
      * Type type of gas this block is dumping.
      */
     public GasMode dumpRight = GasMode.IDLE;
-    public ElectrolysisCachedRecipe cachedRecipe;
+    public CachedRecipe<ElectrolysisRecipe> cachedRecipe;
     public double clientEnergyUsed;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     /**
@@ -104,39 +105,24 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-            if (!inventory.get(0).isEmpty()) {
-                if (isFluidInputItem(inventory.get(0))) {
-                    if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
-                        fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), true);
-                    }
-                }
+            ItemStack fluidInputStack = inventory.get(0);
+            if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
+                fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), true);
             }
-
-            if (!inventory.get(1).isEmpty() && leftTank.getStored() > 0) {
-                leftTank.draw(GasUtils.addGas(inventory.get(1), leftTank.getGas()), true);
-                MekanismUtils.saveChunk(this);
-            }
-            if (!inventory.get(2).isEmpty() && rightTank.getStored() > 0) {
-                rightTank.draw(GasUtils.addGas(inventory.get(2), rightTank.getGas()), true);
+            //TODO: look at other places that call drawGas and the likes and see if they need saving
+            boolean needsSaving = TileUtils.drawGas(inventory.get(1), leftTank);
+            needsSaving |= TileUtils.drawGas(inventory.get(2), rightTank);
+            if (needsSaving) {
                 MekanismUtils.saveChunk(this);
             }
 
-            ElectrolysisRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                boolean update = BASE_ENERGY_PER_TICK != recipe.getEnergyUsage();
-                BASE_ENERGY_PER_TICK = recipe.getEnergyUsage();
-                if (update) {
-                    recalculateUpgradables(Upgrade.ENERGY);
-                }
-                int operations = operate(recipe);
-                double prev = getEnergy();
-                setEnergy(getEnergy() - energyPerTick * operations);
-                clientEnergyUsed = prev - getEnergy();
-            } else if (prevEnergy >= getEnergy()) {
-                setActive(false);
+            double prev = getEnergy();
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
-            prevEnergy = getEnergy();
+            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+            clientEnergyUsed = prev - getEnergy();
 
             int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
             handleTank(leftTank, dumpLeft, MekanismUtils.getLeft(facing), dumpAmount);
@@ -164,20 +150,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         }
     }
 
-    public int getUpgradedUsage(ElectrolysisRecipe recipe) {
-        int possibleProcess;
-        if (leftTank.getGasType() == recipe.recipeOutput.leftGas.getGas()) {
-            possibleProcess = leftTank.getNeeded() / recipe.recipeOutput.leftGas.amount;
-            possibleProcess = Math.min(rightTank.getNeeded() / recipe.recipeOutput.rightGas.amount, possibleProcess);
-        } else {
-            possibleProcess = leftTank.getNeeded() / recipe.recipeOutput.rightGas.amount;
-            possibleProcess = Math.min(rightTank.getNeeded() / recipe.recipeOutput.leftGas.amount, possibleProcess);
-        }
-        possibleProcess = Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
-        possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
-        return Math.min(fluidTank.getFluidAmount() / recipe.recipeInput.ingredient.amount, possibleProcess);
-    }
-
     @Nonnull
     @Override
     public Recipe<ElectrolysisRecipe> getRecipes() {
@@ -194,16 +166,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Nullable
     @Override
     public ElectrolysisCachedRecipe createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
-        int maxOperations = getUpgradedUsage(recipe);
+        //TODO: Is this fine, or do we need it somewhere that will get called in more places than ONLY when the cache is being made
+        boolean update = BASE_ENERGY_PER_TICK != recipe.getEnergyUsage();
+        BASE_ENERGY_PER_TICK = recipe.getEnergyUsage();
+        if (update) {
+            recalculateUpgradables(Upgrade.ENERGY);
+        }
         return new ElectrolysisCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> maxOperations,
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> upgradeComponent.getUpgrades(Upgrade.SPEED),
               OutputHelper.getAddToOutput(leftTank, rightTank));
-    }
-
-    //TODO: Check what this was used for before and reimplement as needed
-    public boolean canFill(GasStack leftGas, GasStack rightGas) {
-        return leftTank.canReceive(leftGas.getGas()) && leftTank.getNeeded() >= leftGas.amount
-               && rightTank.canReceive(rightGas.getGas()) && rightTank.getNeeded() >= rightGas.amount;
     }
 
     @Override
@@ -368,8 +339,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        //TODO: Does this need to check the current type. Is this what the other canFill was used by earlier?
-        return getRecipes().contains(recipe -> recipe.getInput().testType(fluid));
+        FluidStack currentFluid = fluidTank.getFluid();
+        if (currentFluid == null) {
+            //If we don't have a fluid currently stored, then check if the fluid wanting to be input is valid for this machine
+            return getRecipes().contains(recipe -> recipe.getInput().testType(fluid));
+        }
+        //Otherwise return true if the fluid is the same as the one we already have stored
+        return currentFluid.isFluidEqual(fluid);
     }
 
     @Override

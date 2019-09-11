@@ -11,6 +11,7 @@ import mekanism.api.infuse.InfusionContainer;
 /**
  * Created by Thiakil on 12/07/2019.
  */
+//TODO: Allow for empty infusion ingredients (at least in 1.14, and make InfuseObject more similar to being InfuseStack)
 public abstract class InfusionIngredient implements InputIngredient<InfuseObject> {
 
     public static InfusionIngredient from(@NonNull InfuseType infuseType, int minAmount) {

@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.OreGas;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -78,11 +79,14 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
             if (tileEntity.inputTank.getGas().getGas() instanceof OreGas) {
                 fontRenderer.drawString("(" + ((OreGas) tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
             } else {
-                ChemicalCrystallizerRecipe recipe = tileEntity.getRecipe();
+                //TODO: Use a getter for the cached recipe
+                CachedRecipe<ChemicalCrystallizerRecipe> recipe = tileEntity.getUpdatedCache(tileEntity.cachedRecipe, 0);
                 if (recipe == null) {
                     fontRenderer.drawString("(" + LangUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
                 } else {
-                    fontRenderer.drawString("(" + recipe.recipeOutput.output.getDisplayName() + ")", 29, 24, 0x00CD00);
+                    //TODO: Do something that will avoid risking a null pointer if tank is empty?
+                    String name = recipe.getRecipe().getOutput(tileEntity.inputTank.getGas()).getDisplayName();
+                    fontRenderer.drawString("(" + name + ")", 29, 24, 0x00CD00);
                 }
             }
         }

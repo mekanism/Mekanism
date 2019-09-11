@@ -22,33 +22,32 @@ import net.minecraftforge.fluids.FluidTank;
 public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe> {
 
     private final BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput;
-    private final Supplier<@NonNull FluidTank> cleansingTank;
-    private final Supplier<@NonNull GasTank> inputTank;
-    private final IntSupplier maxOperations;
+    private final Supplier<@NonNull FluidTank> fluidTank;
+    private final Supplier<@NonNull GasTank> gasTank;
+    private final IntSupplier speedUpgrades;
 
     public FluidGasToGasCachedRecipe(FluidGasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
           IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> cleansingTank,
-          Supplier<@NonNull GasTank> inputTank, IntSupplier maxOperations, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
+          Supplier<@NonNull GasTank> gasTank, IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
-        this.cleansingTank = cleansingTank;
-        this.inputTank = inputTank;
+        this.fluidTank = cleansingTank;
+        this.gasTank = gasTank;
         this.addToOutput = addToOutput;
-        this.maxOperations = maxOperations;
+        this.speedUpgrades = speedUpgrades;
     }
 
     @Nonnull
     private GasTank getGasTank() {
-        return inputTank.get();
+        return gasTank.get();
     }
 
     @Nonnull
-    private FluidTank getCleansingTank() {
-        return cleansingTank.get();
+    private FluidTank getFluidTank() {
+        return fluidTank.get();
     }
 
-    private int getMaxOperations() {
-        //TODO: Use this
-        return maxOperations.getAsInt();
+    private int getSpeedUpgrades() {
+        return speedUpgrades.getAsInt();
     }
 
     @Override
@@ -57,7 +56,7 @@ public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe>
         if (gasInput == null) {
             return false;
         }
-        FluidStack fluidStack = getCleansingTank().getFluid();
+        FluidStack fluidStack = getFluidTank().getFluid();
         if (fluidStack == null || fluidStack.amount == 0) {
             return false;
         }
@@ -66,13 +65,23 @@ public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe>
 
     @Override
     public boolean hasRoomForOutput() {
-        return addToOutput.apply(recipe.getOutput(getCleansingTank().getFluid(), getGasTank().getGas()), true);
+        return addToOutput.apply(recipe.getOutput(getFluidTank().getFluid(), getGasTank().getGas()), true);
     }
 
     @Override
     protected void finishProcessing() {
-        //TODO: Use/calculate proper amount here based on max operations, as in the has resources/has room we only care if it has enough for at least one operation
-        int maxOperations = getMaxOperations();
-        addToOutput.apply(recipe.getOutput(getCleansingTank().getFluid(), getGasTank().getGas()), false);
+        GasTank gasTank = getGasTank();
+        FluidTank fluidTank = getFluidTank();
+        int possibleProcess = (int) Math.pow(2, getSpeedUpgrades());
+        possibleProcess = Math.min(Math.min(gasTank.getStored(), outputTank.getNeeded()), possibleProcess);
+        possibleProcess = Math.min((int) (getStoredElectricity() / getEnergyPerTick()), possibleProcess);
+        //TODO: Instead of water, use the recipe's cleansing fluid amount
+
+        //TODO: Make a way to get the "size" of the current matching ingredient
+        possibleProcess = Math.min(fluidTank.getFluidAmount() / recipeFluid.amount, possibleProcess);
+
+        //TODO: Should the possibleProcess stuff be offloaded upwards to a method that defaults to returning 1
+        // And should we finally make the stuff passed to getOutput do "something" and return based on how many outputs it would make
+        addToOutput.apply(recipe.getOutput(getFluidTank().getFluid(), getGasTank().getGas()), false);
     }
 }

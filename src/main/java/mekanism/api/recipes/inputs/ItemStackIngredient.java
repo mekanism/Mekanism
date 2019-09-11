@@ -12,6 +12,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IngredientNBT;
 import net.minecraftforge.oredict.OreIngredient;
 
+//TODO: Allow for empty item stacks?
 public abstract class ItemStackIngredient implements InputIngredient<@NonNull ItemStack> {
 
     //TODO: Make ones that take a list of blocks/items

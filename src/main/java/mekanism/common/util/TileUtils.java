@@ -63,14 +63,18 @@ public class TileUtils {
         return false;
     }
 
-    public static void drawGas(ItemStack stack, GasTank tank) {
-        drawGas(stack, tank, true);
+    /**
+     * @return True if gas was removed
+     */
+    public static boolean drawGas(ItemStack stack, GasTank tank) {
+        return drawGas(stack, tank, true);
     }
 
-    public static void drawGas(ItemStack stack, GasTank tank, boolean doDraw) {
+    public static boolean drawGas(ItemStack stack, GasTank tank, boolean doDraw) {
         if (!stack.isEmpty() && tank.getGas() != null) {
-            tank.draw(GasUtils.addGas(stack, tank.getGas()), doDraw);
+            return tank.draw(GasUtils.addGas(stack, tank.getGas()), doDraw) != null;
         }
+        return false;
     }
 
     public static void emitGas(TileEntityBasicBlock tile, GasTank tank, int gasOutput, EnumFacing facing) {

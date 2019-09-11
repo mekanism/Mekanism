@@ -13,6 +13,7 @@ import mekanism.api.gas.GasStack;
 /**
  * Created by Thiakil on 11/07/2019.
  */
+//TODO: Allow for empty gas stacks (at least in 1.14 when we will have an empty variant of GasStack)
 public abstract class GasStackIngredient implements InputIngredient<@NonNull GasStack> {
 
     public static GasStackIngredient from(@NonNull GasStack instance) {

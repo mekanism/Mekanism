@@ -11,8 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerChemicalWasher extends ContainerMekanism<TileEntityChemicalWasher> {
 
@@ -32,7 +30,7 @@ public class ContainerChemicalWasher extends ContainerMekanism<TileEntityChemica
                 if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (FluidUtil.getFluidContained(slotStack) != null && FluidUtil.getFluidContained(slotStack).getFluid() == FluidRegistry.WATER) {
+            } else if (TileEntityChemicalWasher.isFluidInputItem(slotStack)) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

@@ -70,11 +70,11 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
         return canTileFunction.getAsBoolean();
     }
 
-    private double getStoredElectricity() {
+    protected double getStoredElectricity() {
         return storedEnergy.getAsDouble();
     }
 
-    private double getEnergyPerTick() {
+    protected double getEnergyPerTick() {
         return perTickEnergy.getAsDouble();
     }
 
