@@ -1,19 +1,16 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
+import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMetallurgicInfuser> {
 
@@ -68,15 +65,13 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
     }
 
     public boolean isInputItem(ItemStack itemStack) {
+        //If we have a type make sure that the recipe is valid for the type we have stored
         if (tileEntity.infuseStored.getType() != null) {
-            return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tileEntity.infuseStored, itemStack)) != null;
+            InfuseObject currentInfuseType = new InfuseObject(tileEntity.infuseStored.getType(), tileEntity.infuseStored.getAmount());
+            return tileEntity.getRecipes().contains(recipe -> recipe.getInfusionInput().testType(currentInfuseType) && recipe.getItemInput().testType(itemStack));
         }
-        for (InfusionInput input : Recipe.METALLURGIC_INFUSER.get().keySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(input.inputStack, itemStack)) {
-                return true;
-            }
-        }
-        return false;
+        //Otherwise just look for items that can be used
+        return tileEntity.getRecipes().contains(recipe -> recipe.getItemInput().testType(itemStack));
     }
 
     @Override

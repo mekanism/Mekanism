@@ -111,8 +111,9 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Nullable
     @Override
     public ChemicalWasherCachedRecipe createNewCachedRecipe(@Nonnull ChemicalWasherRecipe recipe, int cacheIndex) {
+        int maxOperations = getUpgradedUsage(recipe);
         return new ChemicalWasherCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> inputTank, this::getUpgradedUsage,
+              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> inputTank, () -> maxOperations,
               OutputHelper.getAddToOutput(outputTank));
     }
 
@@ -123,7 +124,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         }
     }
 
-    private int getUpgradedUsage() {
+    private int getUpgradedUsage(ChemicalWasherRecipe recipe) {
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
         possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);

@@ -21,13 +21,24 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
 
     private final BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput;
     private final Supplier<@NonNull FluidTank> inputTank;
+    private final IntSupplier maxOperations;
 
     public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
           IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> inputTank,
-          BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput) {
+          IntSupplier maxOperations, BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
         this.inputTank = inputTank;
+        this.maxOperations = maxOperations;
         this.addToOutput = addToOutput;
+    }
+
+    private FluidTank getTank() {
+        return inputTank.get();
+    }
+
+    private int getMaxOperations() {
+        //TODO: Use this
+        return maxOperations.getAsInt();
     }
 
     @Override

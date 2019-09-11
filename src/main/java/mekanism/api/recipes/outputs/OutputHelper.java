@@ -21,6 +21,15 @@ public class OutputHelper {
         return (output, simulate) -> applyOutputs(gasTank, output, simulate);
     }
 
+    public static BiFunction<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>, Boolean, Boolean> getAddToOutput(@Nonnull GasTank leftTank, @Nonnull GasTank rightTank) {
+        return (output, simulate) -> {
+            if (!applyOutputs(leftTank, output.getRight(), simulate)) {
+                return false;
+            }
+            return applyOutputs(rightTank, output.getRight(), simulate);
+        };
+    }
+
     public static BiFunction<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>, Boolean, Boolean> getAddToOutput(@Nonnull GasTank gasTank,
           @Nonnull NonNullList<ItemStack> inventory, int slot) {
         return (output, simulate) -> {

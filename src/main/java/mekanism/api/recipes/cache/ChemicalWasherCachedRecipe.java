@@ -14,6 +14,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.ChemicalWasherRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 @FieldsAreNonnullByDefault
@@ -53,16 +54,25 @@ public class ChemicalWasherCachedRecipe extends CachedRecipe<ChemicalWasherRecip
     @Override
     public boolean hasResourcesForTick() {
         GasStack gasInput = getGasTank().getGas();
-        return gasInput != null && recipe.test(, gasInput);
+        if (gasInput == null) {
+            return false;
+        }
+        FluidStack fluidStack = getCleansingTank().getFluid();
+        if (fluidStack == null || fluidStack.amount == 0) {
+            return false;
+        }
+        return recipe.test(fluidStack, gasInput);
     }
 
     @Override
     public boolean hasRoomForOutput() {
-        return addToOutput.apply(recipe.getOutput(, getGasTank().getGas()), true);
+        return addToOutput.apply(recipe.getOutput(getCleansingTank().getFluid(), getGasTank().getGas()), true);
     }
 
     @Override
     protected void finishProcessing() {
-        addToOutput.apply(recipe.getOutput(, getGasTank().getGas()), false);
+        //TODO: Use/calculate proper amount here based on max operations, as in the has resources/has room we only care if it has enough for at least one operation
+        int maxOperations = getMaxOperations();
+        addToOutput.apply(recipe.getOutput(getCleansingTank().getFluid(), getGasTank().getGas()), false);
     }
 }

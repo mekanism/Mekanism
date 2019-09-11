@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.infuse.InfuseObject;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.ChemicalWasherRecipe;
@@ -24,12 +28,15 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.common.integration.crafttweaker.helpers.RecipeInfoHelper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class MekRecipesCommand extends CraftTweakerCommand {
 
@@ -56,71 +63,91 @@ public class MekRecipesCommand extends CraftTweakerCommand {
         String subCommand = args[0];
         CraftTweakerAPI.logCommand(subCommand + ":");
         Recipe<? extends IMekanismRecipe> type;
+        //TODO: Don't use null for getting the output values
         switch (subCommand) {
             case "crystallizer":
                 type = Recipe.CHEMICAL_CRYSTALLIZER;
                 for (ChemicalCrystallizerRecipe recipe : Recipe.CHEMICAL_CRYSTALLIZER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.crystallizer.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getGasName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<GasStack> possibleGases = recipe.getInput().getRepresentations();
+                    for (GasStack possibleGas : possibleGases) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.crystallizer.addRecipe(%s, %s)",
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getItemName(recipe.getOutput(possibleGas))
+                        ));
+                    }
                 }
                 break;
             case "dissolution":
                 type = Recipe.CHEMICAL_DISSOLUTION_CHAMBER;
                 for (ItemStackGasToGasRecipe recipe : Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.dissolution.addRecipe(%s, %s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getItemInput().ingredient),
-                          RecipeInfoHelper.getGasName(recipe.getGasInput()),
-                          RecipeInfoHelper.getGasName(recipe.getOutputDefinition())
-                    ));
+                    @NonNull List<Gas> possibleGases = recipe.getGasInput().getRepresentations();
+                    for (Gas possibleGas : possibleGases) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.dissolution.addRecipe(%s, %s, %s)",
+                              RecipeInfoHelper.getItemName(recipe.getItemInput().getRepresentations()),
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getGasName(recipe.getOutput(null, new GasStack(possibleGas, 1)))
+                        ));
+                    }
                 }
                 break;
             case "chemicalInfuser":
                 type = Recipe.CHEMICAL_INFUSER;
                 for (ChemicalInfuserRecipe recipe : Recipe.CHEMICAL_INFUSER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.infuser.addRecipe(%s, %s, %s)",
-                          RecipeInfoHelper.getGasName(recipe.getLeftInput().leftGas),
-                          RecipeInfoHelper.getGasName(recipe.getRightInput().rightGas),
-                          RecipeInfoHelper.getGasName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<GasStack> leftGases = recipe.getLeftInput().getRepresentations();
+                    @NonNull List<GasStack> rightGases = recipe.getRightInput().getRepresentations();
+                    for (GasStack leftGas : leftGases) {
+                        for (GasStack rightGas : rightGases) {
+                            CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.infuser.addRecipe(%s, %s, %s)",
+                                  RecipeInfoHelper.getGasName(leftGas),
+                                  RecipeInfoHelper.getGasName(rightGas),
+                                  RecipeInfoHelper.getGasName(recipe.getOutput(leftGas, rightGas))
+                            ));
+                        }
+                    }
                 }
                 break;
             case "injection":
                 type = Recipe.CHEMICAL_INJECTION_CHAMBER;
                 for (ItemStackGasToItemStackRecipe recipe : Recipe.CHEMICAL_INJECTION_CHAMBER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.injection.addRecipe(%s, %s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
-                          RecipeInfoHelper.getGasName(recipe.getInput().gasType),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<Gas> possibleGases = recipe.getGasInput().getRepresentations();
+                    for (Gas possibleGas : possibleGases) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.injection.addRecipe(%s, %s, %s)",
+                              RecipeInfoHelper.getItemName(recipe.getItemInput().getRepresentations()),
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getItemName(recipe.getOutput(null, new GasStack(possibleGas, 1)))
+                        ));
+                    }
                 }
                 break;
             case "oxidizer":
                 type = Recipe.CHEMICAL_OXIDIZER;
                 for (ItemStackToGasRecipe recipe : Recipe.CHEMICAL_OXIDIZER.get()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.oxidizer.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getGasName(recipe.getOutput().output)
+                          RecipeInfoHelper.getItemName(recipe.getInput().getRepresentations()),
+                          RecipeInfoHelper.getGasName(recipe.getOutput(null))
                     ));
                 }
                 break;
             case "washer":
                 type = Recipe.CHEMICAL_WASHER;
                 for (ChemicalWasherRecipe recipe : Recipe.CHEMICAL_WASHER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.washer.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getGasName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getGasName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<GasStack> possibleGases = recipe.getInput().getRepresentations();
+                    for (GasStack possibleGas : possibleGases) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.washer.addRecipe(%s, %s, %s)",
+                              RecipeInfoHelper.getFluidName(recipe.getCleansingIngredient().getRepresentations()),
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getGasName(recipe.getOutput(null, possibleGas))
+                        ));
+                    }
                 }
                 break;
             case "combiner":
                 type = Recipe.COMBINER;
                 for (CombinerRecipe recipe : Recipe.COMBINER.get()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.combiner.addRecipe(%s, %s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
-                          RecipeInfoHelper.getItemName(recipe.getInput().extraStack),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
+                          RecipeInfoHelper.getItemName(recipe.getMainInput().getRepresentations()),
+                          RecipeInfoHelper.getItemName(recipe.getExtraInput().getRepresentations()),
+                          RecipeInfoHelper.getItemName(recipe.getOutput(null, null))
                     ));
                 }
                 break;
@@ -128,19 +155,20 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 type = Recipe.CRUSHER;
                 for (ItemStackToItemStackRecipe recipe : Recipe.CRUSHER.get()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.crusher.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
+                          RecipeInfoHelper.getItemName(recipe.getInput().getRepresentations()),
+                          RecipeInfoHelper.getItemName(recipe.getOutput(null))
                     ));
                 }
                 break;
             case "separator":
                 type = Recipe.ELECTROLYTIC_SEPARATOR;
                 for (ElectrolysisRecipe recipe : Recipe.ELECTROLYTIC_SEPARATOR.get()) {
+                    Pair<GasStack, GasStack> output = recipe.getOutput(null);
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.separator.addRecipe(%s, %s, %s, %s)",
-                          RecipeInfoHelper.getFluidName(recipe.getInput().ingredient),
+                          RecipeInfoHelper.getFluidName(recipe.getInput().getRepresentations()),
                           recipe.getEnergyUsage(),
-                          RecipeInfoHelper.getGasName(recipe.getOutput().leftGas),
-                          RecipeInfoHelper.getGasName(recipe.getOutput().rightGas)
+                          RecipeInfoHelper.getGasName(output.getLeft()),
+                          RecipeInfoHelper.getGasName(output.getRight())
                     ));
                 }
                 break;
@@ -148,8 +176,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 type = Recipe.ENERGIZED_SMELTER;
                 for (ItemStackToItemStackRecipe recipe : Recipe.ENERGIZED_SMELTER.get()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.smelter.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
+                          RecipeInfoHelper.getItemName(recipe.getInput().getRepresentations()),
+                          RecipeInfoHelper.getItemName(recipe.getOutput(null))
                     ));
                 }
                 break;
@@ -157,82 +185,108 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 type = Recipe.ENRICHMENT_CHAMBER;
                 for (ItemStackToItemStackRecipe recipe : Recipe.ENRICHMENT_CHAMBER.get()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.enrichment.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
+                          RecipeInfoHelper.getItemName(recipe.getInput().getRepresentations()),
+                          RecipeInfoHelper.getItemName(recipe.getOutput(null))
                     ));
                 }
                 break;
             case "metallurgicInfuser":
                 type = Recipe.METALLURGIC_INFUSER;
                 for (MetallurgicInfuserRecipe recipe : Recipe.METALLURGIC_INFUSER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.infuser.addRecipe(%s, %s, %s, %s)",
-                          recipe.getInput().infuse.getType(),
-                          recipe.getInput().infuse.getAmount(),
-                          RecipeInfoHelper.getItemName(recipe.getInput().inputStack),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<InfuseObject> infuseObjects = recipe.getInfusionInput().getRepresentations();
+                    for (InfuseObject infuseObject : infuseObjects) {
+                        //TODO: Check if this is printing out the correct value for the input type
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.infuser.addRecipe(%s, %s, %s, %s)",
+                              infuseObject.getType(),
+                              infuseObject.getAmount(),
+                              RecipeInfoHelper.getItemName(recipe.getItemInput().getRepresentations()),
+                              RecipeInfoHelper.getItemName(recipe.getOutput(null, null))
+                        ));
+                    }
                 }
                 break;
             case "compressor":
                 type = Recipe.OSMIUM_COMPRESSOR;
                 for (ItemStackGasToItemStackRecipe recipe : Recipe.OSMIUM_COMPRESSOR.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.compressor.addRecipe(%s, %s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
-                          RecipeInfoHelper.getGasName(recipe.getInput().gasType),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<Gas> possibleGases = recipe.getGasInput().getRepresentations();
+                    for (Gas possibleGas : possibleGases) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.compressor.addRecipe(%s, %s, %s)",
+                              RecipeInfoHelper.getItemName(recipe.getItemInput().getRepresentations()),
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getItemName(recipe.getOutput(null, new GasStack(possibleGas, 1)))
+                        ));
+                    }
                 }
                 break;
             case "sawmill":
                 type = Recipe.PRECISION_SAWMILL;
                 for (SawmillRecipe recipe : Recipe.PRECISION_SAWMILL.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.sawmill.addRecipe(%s, %s, %s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().primaryOutput),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().secondaryOutput),
-                          recipe.getOutput().secondaryChance
-                    ));
+                    ChanceOutput output = recipe.getOutput(null);
+                    ItemStack secondaryOutput = output.getMaxSecondaryOutput();
+                    if (recipe.getSecondaryChance() > 0 && !secondaryOutput.isEmpty()) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.sawmill.addRecipe(%s, %s, %s, %s)",
+                              RecipeInfoHelper.getItemName(recipe.getInput().getRepresentations()),
+                              RecipeInfoHelper.getItemName(output.getMainOutput()),
+                              RecipeInfoHelper.getItemName(secondaryOutput),
+                              recipe.getSecondaryChance()
+                        ));
+                    } else {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.sawmill.addRecipe(%s, %s)",
+                              RecipeInfoHelper.getItemName(recipe.getInput().getRepresentations()),
+                              RecipeInfoHelper.getItemName(output.getMainOutput())
+                        ));
+                    }
                 }
                 break;
             case "prc":
                 type = Recipe.PRESSURIZED_REACTION_CHAMBER;
                 for (PressurizedReactionRecipe recipe : Recipe.PRESSURIZED_REACTION_CHAMBER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.reaction.addRecipe(%s, %s, %s, %s, %s, %s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().getSolid()),
-                          RecipeInfoHelper.getFluidName(recipe.getInput().getFluid()),
-                          RecipeInfoHelper.getGasName(recipe.getInput().getGas()),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().getItemOutput()),
-                          RecipeInfoHelper.getGasName(recipe.getOutput().getGasOutput()),
-                          recipe.getEnergyRequired(),
-                          recipe.getDuration()
-                    ));
+                    @NonNull List<GasStack> possibleGases = recipe.getGasInput().getRepresentations();
+                    for (GasStack possibleGas : possibleGases) {
+                        @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> output = recipe.getOutput(null, null, possibleGas);
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.reaction.addRecipe(%s, %s, %s, %s, %s, %s, %s)",
+                              RecipeInfoHelper.getItemName(recipe.getInputSolid().getRepresentations()),
+                              RecipeInfoHelper.getFluidName(recipe.getInputFluid().getRepresentations()),
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getItemName(output.getLeft()),
+                              RecipeInfoHelper.getGasName(output.getRight()),
+                              recipe.getEnergyRequired(),
+                              recipe.getDuration()
+                        ));
+                    }
                 }
                 break;
             case "purification":
                 type = Recipe.PURIFICATION_CHAMBER;
                 for (ItemStackGasToItemStackRecipe recipe : Recipe.PURIFICATION_CHAMBER.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.purification.addRecipe(%s, %s, %s)",
-                          RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
-                          RecipeInfoHelper.getGasName(recipe.getInput().gasType),
-                          RecipeInfoHelper.getItemName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<Gas> possibleGases = recipe.getGasInput().getRepresentations();
+                    for (Gas possibleGas : possibleGases) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.purification.addRecipe(%s, %s, %s)",
+                              RecipeInfoHelper.getItemName(recipe.getItemInput().getRepresentations()),
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getItemName(recipe.getOutput(null, new GasStack(possibleGas, 1)))
+                        ));
+                    }
                 }
                 break;
             case "solarneutronactivator":
                 type = Recipe.SOLAR_NEUTRON_ACTIVATOR;
                 for (GasToGasRecipe recipe : Recipe.SOLAR_NEUTRON_ACTIVATOR.get()) {
-                    CraftTweakerAPI.logCommand(String.format("mods.mekanism.solarneutronactivator.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getGasName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getGasName(recipe.getOutput().output)
-                    ));
+                    @NonNull List<GasStack> possibleGases = recipe.getInput().getRepresentations();
+                    for (GasStack possibleGas : possibleGases) {
+                        CraftTweakerAPI.logCommand(String.format("mods.mekanism.solarneutronactivator.addRecipe(%s, %s)",
+                              RecipeInfoHelper.getGasName(possibleGas),
+                              RecipeInfoHelper.getGasName(recipe.getOutput(possibleGas))
+                        ));
+                    }
                 }
                 break;
             case "thermalevaporation":
                 type = Recipe.THERMAL_EVAPORATION_PLANT;
                 for (FluidToFluidRecipe recipe : Recipe.THERMAL_EVAPORATION_PLANT.get()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.thermalevaporation.addRecipe(%s, %s)",
-                          RecipeInfoHelper.getFluidName(recipe.getInput().ingredient),
-                          RecipeInfoHelper.getFluidName(recipe.getOutput().output)
+                          RecipeInfoHelper.getFluidName(recipe.getInput().getRepresentations()),
+                          RecipeInfoHelper.getFluidName(recipe.getOutput(null))
                     ));
                 }
                 break;

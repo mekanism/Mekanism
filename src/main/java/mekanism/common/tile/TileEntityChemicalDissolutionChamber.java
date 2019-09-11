@@ -42,6 +42,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
+    public static final int BASE_TICKS_REQUIRED = 100;
     public GasTank injectTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
     public double injectUsage = BASE_INJECT_USAGE;
@@ -49,7 +50,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public int gasOutput = 256;
 
     public TileEntityChemicalDissolutionChamber() {
-        super("machine.dissolution", MachineType.CHEMICAL_DISSOLUTION_CHAMBER, 4, 100);
+        super("machine.dissolution", MachineType.CHEMICAL_DISSOLUTION_CHAMBER, 4, BASE_TICKS_REQUIRED);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
         upgradeComponent.setSupported(Upgrade.GAS);
     }

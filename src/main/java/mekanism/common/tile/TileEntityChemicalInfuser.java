@@ -19,8 +19,6 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -91,18 +89,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         possibleProcess = Math.min(centerTank.getNeeded() / recipe.recipeOutput.output.amount, possibleProcess);
         possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
         return possibleProcess;
-    }
-
-    public ChemicalPairInput getInput() {
-        return new ChemicalPairInput(leftTank.getGas(), rightTank.getGas());
-    }
-
-    public ChemicalInfuserRecipe getRecipe() {
-        ChemicalPairInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getChemicalInfuserRecipe(getInput());
-        }
-        return cachedRecipe;
     }
 
     public boolean canOperate(ChemicalInfuserRecipe recipe) {

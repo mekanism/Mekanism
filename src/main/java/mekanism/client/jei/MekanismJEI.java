@@ -8,8 +8,8 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
-import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
-import mekanism.client.jei.machine.MachineRecipeCategory;
+import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
 import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.chemical.ChemicalDissolutionChamberRecipeCategory;
 import mekanism.client.jei.machine.chemical.ChemicalInfuserRecipeCategory;
@@ -121,21 +121,21 @@ public class MekanismJEI implements IModPlugin {
         addRecipeCategory(registry, MachineType.COMBINER, new CombinerRecipeCategory(guiHelper, Recipe.COMBINER.getJEICategory(),
               "tile.MachineBlock.Combiner.name", ProgressBar.STONE));
 
-        addRecipeCategory(registry, MachineType.PURIFICATION_CHAMBER, new AdvancedMachineRecipeCategory<>(guiHelper, Recipe.PURIFICATION_CHAMBER.getJEICategory(),
+        addRecipeCategory(registry, MachineType.PURIFICATION_CHAMBER, new ItemStackGasToItemStackRecipeCategory(guiHelper, Recipe.PURIFICATION_CHAMBER.getJEICategory(),
               "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED));
-        addRecipeCategory(registry, MachineType.OSMIUM_COMPRESSOR, new AdvancedMachineRecipeCategory<>(guiHelper, Recipe.OSMIUM_COMPRESSOR.getJEICategory(),
+        addRecipeCategory(registry, MachineType.OSMIUM_COMPRESSOR, new ItemStackGasToItemStackRecipeCategory(guiHelper, Recipe.OSMIUM_COMPRESSOR.getJEICategory(),
               "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED));
-        addRecipeCategory(registry, MachineType.CHEMICAL_INJECTION_CHAMBER, new AdvancedMachineRecipeCategory<>(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.getJEICategory(),
+        addRecipeCategory(registry, MachineType.CHEMICAL_INJECTION_CHAMBER, new ItemStackGasToItemStackRecipeCategory(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.getJEICategory(),
               "tile.MachineBlock2.ChemicalInjectionChamber.name", ProgressBar.YELLOW));
 
         addRecipeCategory(registry, MachineType.PRECISION_SAWMILL, new SawmillRecipeCategory(guiHelper, Recipe.PRECISION_SAWMILL.getJEICategory(),
               "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE));
 
-        addRecipeCategory(registry, MachineType.ENRICHMENT_CHAMBER, new MachineRecipeCategory<>(guiHelper, Recipe.ENRICHMENT_CHAMBER.getJEICategory(),
+        addRecipeCategory(registry, MachineType.ENRICHMENT_CHAMBER, new ItemStackToItemStackRecipeCategory(guiHelper, Recipe.ENRICHMENT_CHAMBER.getJEICategory(),
               "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE));
-        addRecipeCategory(registry, MachineType.CRUSHER, new MachineRecipeCategory<>(guiHelper, Recipe.CRUSHER.getJEICategory(), "tile.MachineBlock.Crusher.name",
+        addRecipeCategory(registry, MachineType.CRUSHER, new ItemStackToItemStackRecipeCategory(guiHelper, Recipe.CRUSHER.getJEICategory(), "tile.MachineBlock.Crusher.name",
               ProgressBar.CRUSH));
-        addRecipeCategory(registry, MachineType.ENERGIZED_SMELTER, new MachineRecipeCategory<>(guiHelper, Recipe.ENERGIZED_SMELTER.getJEICategory(),
+        addRecipeCategory(registry, MachineType.ENERGIZED_SMELTER, new ItemStackToItemStackRecipeCategory(guiHelper, Recipe.ENERGIZED_SMELTER.getJEICategory(),
               "tile.MachineBlock.EnergizedSmelter.name", ProgressBar.BLUE));
 
         //There is no config option to disable the thermal evaporation plant

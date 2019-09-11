@@ -23,8 +23,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -120,18 +118,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
         return possibleProcess;
-    }
-
-    public GasToGasRecipe getRecipe() {
-        GasInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getSolarNeutronRecipe(getInput());
-        }
-        return cachedRecipe;
-    }
-
-    public GasInput getInput() {
-        return new GasInput(inputTank.getGas());
     }
 
     public boolean canOperate(GasToGasRecipe recipe) {

@@ -5,7 +5,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +27,7 @@ public class ContainerElectrolyticSeparator extends ContainerMekanism<TileEntity
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             if (slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3) {
-                if (isCorrectFluid(slotStack)) {
+                if (TileEntityElectrolyticSeparator.isFluidInputItem(slotStack)) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -75,10 +74,6 @@ public class ContainerElectrolyticSeparator extends ContainerMekanism<TileEntity
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    public boolean isCorrectFluid(ItemStack itemStack) {
-        return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemStack);
     }
 
     @Override

@@ -5,7 +5,6 @@ import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.machine.ItemStackGasToGasRecipeWrapper;
-import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.IGuiHelper;
@@ -34,10 +33,10 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
         itemStacks.set(0, tempRecipe.getItemInput().getRepresentations());
-        //TODO: Show gas input as well
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
+        //TODO: Figure out amounts for gas input
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58,
-              new GasStack(MekanismFluids.SulfuricAcid, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED),
+              tempRecipe.getGasInput().getRepresentations(TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED),
               true);
         initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutputDefinition(), true);
     }

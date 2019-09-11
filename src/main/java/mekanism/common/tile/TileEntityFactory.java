@@ -3,11 +3,18 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -22,9 +29,14 @@ import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
+import mekanism.api.recipes.cache.SawmillCachedRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -423,7 +435,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 return true;
             }
             //If there is no cached item input or it doesn't match our fallback then it is an out of date cache,
-            // so we ignore the fact that we have a cache and set our local copy of it to null to ensure it doesn't accidently get used
+            // so we ignore the fact that we have a cache and set our local copy of it to null to ensure it doesn't accidentally get used
             cached = null;
         }
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
@@ -431,31 +443,60 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         IMekanismRecipe foundRecipe = null;
         if (recipeType == RecipeType.SMELTING || recipeType == RecipeType.ENRICHING || recipeType == RecipeType.CRUSHING) {
-            Recipe<ItemStackToItemStackRecipe> recipes = recipeType == RecipeType.SMELTING ? Recipe.ENERGIZED_SMELTER :
-                                                         recipeType == RecipeType.ENRICHING ? Recipe.ENRICHMENT_CHAMBER : Recipe.CRUSHER;
+            Recipe<ItemStackToItemStackRecipe> recipes = getRecipes();
             foundRecipe = recipes.findFirst(recipe -> recipe.getInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput), output));
         } else if (recipeType == RecipeType.COMPRESSING || recipeType == RecipeType.PURIFYING || recipeType == RecipeType.INJECTING) {
-            Recipe<ItemStackGasToItemStackRecipe> recipes = recipeType == RecipeType.COMPRESSING ? Recipe.OSMIUM_COMPRESSOR :
-                                                            recipeType == RecipeType.PURIFYING ? Recipe.PURIFICATION_CHAMBER : Recipe.CHEMICAL_INJECTION_CHAMBER;
+            Recipe<ItemStackGasToItemStackRecipe> recipes = getRecipes();
+            GasStack gasStack = gasTank.getGas();
+            Gas gas = gasStack == null || gasStack.amount == 0 ? null : gasStack.getGas();
             foundRecipe = recipes.findFirst(recipe -> {
-                //TODO: Check gas/secondary if not null?
-                // If it is null we can ignore that check
-                return recipe.getItemInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput), output);
+                if (recipe.getItemInput().testType(fallbackInput)) {
+                    //If we don't have a gas stored ignore checking for a match
+                    if (gas == null || recipe.getGasInput().testType(gas)) {
+                        //TODO: Give it something that is not null when we don't have a stored gas stack
+                        return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput, gasStack), output);
+                    }
+                }
+                return false;
             });
         } else if (recipeType == RecipeType.COMBINING) {
+            ItemStack extra = inventory.get(4);
             foundRecipe = Recipe.COMBINER.findFirst(recipe -> {
-                //TODO: Check secondary
-                return recipe.getMainInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput), output);
+                if (recipe.getMainInput().testType(fallbackInput)) {
+                    if (extra.isEmpty() || recipe.getExtraInput().testType(extra)) {
+                        return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput, extra), output);
+                    }
+                }
+                return false;
             });
         } else if (recipeType == RecipeType.INFUSING) {
+            int stored = infuseStored.getAmount();
+            InfuseObject infuseObject = stored == 0 ? null : new InfuseObject(infuseStored.getType(), stored);
             foundRecipe = Recipe.METALLURGIC_INFUSER.findFirst(recipe -> {
-                //TODO: Check secondary
-                return recipe.getItemInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput), output);
+                if (recipe.getItemInput().testType(fallbackInput)) {
+                    if (stored == 0 || recipe.getInfusionInput().testType(infuseObject)) {
+                        //TODO: Should this pass infuseObject instead of infuseStored?
+                        return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(infuseStored, fallbackInput), output);
+                    }
+                }
+                return false;
             });
         } else if (recipeType == RecipeType.SAWING) {
+            ItemStack extra = inventory.get(4);
             foundRecipe = Recipe.PRECISION_SAWMILL.findFirst(recipe -> {
-                //TODO: Check secondary output as if they don't match we shouldn't allow this really anyways
-                return recipe.getInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput).getMainOutput(), output);
+                if (recipe.getInput().testType(fallbackInput)) {
+                    ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
+                    if (ItemHandlerHelper.canItemStacksStack(chanceOutput.getMainOutput(), output)) {
+                        //If the input is good and the primary output matches, make sure that the secondary
+                        // output of this recipe will stack with what is currently in the secondary slot
+                        if (extra.isEmpty()) {
+                            return true;
+                        }
+                        ItemStack secondaryOutput = chanceOutput.getMaxSecondaryOutput();
+                        return secondaryOutput.isEmpty() || ItemHandlerHelper.canItemStacksStack(secondaryOutput, extra);
+                    }
+                }
+                return false;
             });
         }
         if (foundRecipe == null) {
@@ -923,38 +964,25 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         if (stack.isEmpty()) {
             return null;
         }
-        if (recipeType == RecipeType.SMELTING) {
-            return Recipe.ENERGIZED_SMELTER.findFirst(recipe -> recipe.test(stack));
-        } else if (recipeType == RecipeType.ENRICHING) {
-            return Recipe.ENRICHMENT_CHAMBER.findFirst(recipe -> recipe.test(stack));
-        } else if (recipeType == RecipeType.CRUSHING) {
-            return Recipe.CRUSHER.findFirst(recipe -> recipe.test(stack));
+        if (recipeType == RecipeType.SMELTING || recipeType == RecipeType.ENRICHING || recipeType == RecipeType.CRUSHING) {
+            Recipe<ItemStackToItemStackRecipe> recipes = getRecipes();
+            return recipes.findFirst(recipe -> recipe.test(stack));
+        } else if (recipeType == RecipeType.COMPRESSING || recipeType == RecipeType.PURIFYING || recipeType == RecipeType.INJECTING) {
+            GasStack gasStack = gasTank.getGas();
+            if (gasStack == null || gasStack.amount == 0) {
+                return null;
+            }
+            Gas gas = gasStack.getGas();
+            if (gas == null) {
+                return null;
+            }
+            Recipe<ItemStackGasToItemStackRecipe> recipes = getRecipes();
+            return recipes.findFirst(recipe -> recipe.test(stack, gas));
         } else if (recipeType == RecipeType.SAWING) {
             return Recipe.PRECISION_SAWMILL.findFirst(recipe -> recipe.test(stack));
         } else if (recipeType == RecipeType.COMBINING) {
             ItemStack extra = inventory.get(4);
             return extra.isEmpty() ? null : Recipe.COMBINER.findFirst(recipe -> recipe.test(stack, extra));
-        } else if (recipeType == RecipeType.COMPRESSING) {
-            GasStack gasStack = gasTank.getGas();
-            if (gasStack == null || gasStack.amount == 0) {
-                return null;
-            }
-            Gas gas = gasStack.getGas();
-            return gas == null ? null : Recipe.OSMIUM_COMPRESSOR.findFirst(recipe -> recipe.test(stack, gas));
-        } else if (recipeType == RecipeType.PURIFYING) {
-            GasStack gasStack = gasTank.getGas();
-            if (gasStack == null || gasStack.amount == 0) {
-                return null;
-            }
-            Gas gas = gasStack.getGas();
-            return gas == null ? null : Recipe.PURIFICATION_CHAMBER.findFirst(recipe -> recipe.test(stack, gas));
-        } else if (recipeType == RecipeType.INJECTING) {
-            GasStack gasStack = gasTank.getGas();
-            if (gasStack == null || gasStack.amount == 0) {
-                return null;
-            }
-            Gas gas = gasStack.getGas();
-            return gas == null ? null : Recipe.CHEMICAL_INJECTION_CHAMBER.findFirst(recipe -> recipe.test(stack, gas));
         } else if (recipeType == RecipeType.INFUSING) {
             return Recipe.METALLURGIC_INFUSER.findFirst(recipe -> recipe.test(infuseStored, stack));
         }
@@ -963,28 +991,35 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public CachedRecipe createNewCachedRecipe(@Nonnull IMekanismRecipe recipe, int cacheIndex) {
-        switch (recipeType) {
-            case SMELTING:
-            case ENRICHING:
-            case CRUSHING:
-                ItemStackToItemStackRecipe castedRecipe = (ItemStackToItemStackRecipe) recipe;
-                int inputSlot = getInputSlot(cacheIndex);
-                int outputSlot = getOutputSlot(cacheIndex);
-                return new ItemStackToItemStackCachedRecipe(castedRecipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy,
-                      () -> ticksRequired, active -> activeStates[cacheIndex] = active, energy -> setEnergy(getEnergy() - energy), this::markDirty,
-                      () -> inventory.get(inputSlot), OutputHelper.getAddToOutput(inventory, outputSlot));
-            case COMPRESSING:
-            case PURIFYING:
-            case INJECTING:
-                break;
-            case COMBINING:
-                break;
-            case INFUSING:
-                break;
-            case SAWING:
-                break;
+        int inputSlot = getInputSlot(cacheIndex);
+        int outputSlot = getOutputSlot(cacheIndex);
+        BooleanSupplier canFunction = () -> MekanismUtils.canFunction(this);
+        DoubleSupplier perTickEnergy = () -> energyPerTick;
+        IntSupplier requiredTicks = () -> ticksRequired;
+        Consumer<Boolean> setActive = active -> activeStates[cacheIndex] = active;
+        DoubleConsumer useEnergy = energy -> setEnergy(getEnergy() - energy);
+        Supplier<@NonNull ItemStack> inputStack = () -> inventory.get(inputSlot);
+        if (recipeType == RecipeType.SMELTING || recipeType == RecipeType.ENRICHING || recipeType == RecipeType.CRUSHING) {
+            ItemStackToItemStackRecipe castedRecipe = (ItemStackToItemStackRecipe) recipe;
+            return new ItemStackToItemStackCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
+                  inputStack, OutputHelper.getAddToOutput(inventory, outputSlot));
+        } else if (recipeType == RecipeType.COMPRESSING || recipeType == RecipeType.PURIFYING || recipeType == RecipeType.INJECTING) {
+            ItemStackGasToItemStackRecipe castedRecipe = (ItemStackGasToItemStackRecipe) recipe;
+            return new ItemStackGasToItemStackCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
+                  inputStack, () -> gasTank, () -> secondaryEnergyThisTick, OutputHelper.getAddToOutput(inventory, outputSlot));
+        } else if (recipeType == RecipeType.COMBINING) {
+            CombinerRecipe castedRecipe = (CombinerRecipe) recipe;
+            return new CombinerCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
+                  inputStack, () -> inventory.get(4), OutputHelper.getAddToOutput(inventory, outputSlot));
+        } else if (recipeType == RecipeType.INFUSING) {
+            MetallurgicInfuserRecipe castedRecipe = (MetallurgicInfuserRecipe) recipe;
+            return new MetallurgicInfuserCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
+                  () -> infuseStored, inputStack, OutputHelper.getAddToOutput(inventory, outputSlot));
+        } else if (recipeType == RecipeType.SAWING) {
+            SawmillRecipe castedRecipe = (SawmillRecipe) recipe;
+            return new SawmillCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
+                  inputStack, OutputHelper.getAddToOutput(inventory, outputSlot, 4));
         }
-
         //TODO: Do we have to invalidate cache when recipe type changes/how to invalidate it
         return null;
     }

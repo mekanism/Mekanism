@@ -26,12 +26,12 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
@@ -284,15 +284,16 @@ public final class MekanismHooks {
                 //there appears to be no way to get this via api, so fall back to unloc names
                 crystalSeed.get().getSubItems(CreativeTabs.SEARCH, seeds);
                 //Crystal seeds use a meta AND NBT to determine growth state, so we need to ignore the NBT, and use the meta which should be fixed on what stage it's at
-                MachineInput.addCustomItemMatcher(crystalSeed.get().getClass(), (def, test) -> def.getItem() == test.getItem() && def.getMetadata() == test.getMetadata());
+                // Because we want to ignore it we forge pass an Ingredient instance that ignores NBT, as ItemStackIngredient.from(ItemStack) defaults to an ingredient
+                // that supports matching NBT
                 for (ItemStack stack : seeds) {
                     String unloc = crystalSeed.get().getTranslationKey(stack);
                     if (unloc.endsWith("certus") && pureCertus.isPresent()) {
-                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(stack), pureCertus.get().copy());
+                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Ingredient.fromStacks(stack)), pureCertus.get().copy());
                     } else if (unloc.endsWith("nether") && pureNether.isPresent()) {
-                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(stack), pureNether.get().copy());
+                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Ingredient.fromStacks(stack)), pureNether.get().copy());
                     } else if (unloc.endsWith("fluix") && pureFluix.isPresent()) {
-                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(stack), pureFluix.get().copy());
+                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Ingredient.fromStacks(stack)), pureFluix.get().copy());
                     }
                 }
             }

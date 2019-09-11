@@ -14,9 +14,9 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 
-public class MachineRecipeCategory<WRAPPER extends MekanismRecipeWrapper> extends BaseRecipeCategory<WRAPPER> {
+public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackToItemStackRecipeWrapper> {
 
-    public MachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
+    public ItemStackToItemStackRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress, 28, 16, 144, 54);
     }
 
@@ -40,7 +40,7 @@ public class MachineRecipeCategory<WRAPPER extends MekanismRecipeWrapper> extend
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, ItemStackToItemStackRecipeWrapper recipeWrapper, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);

@@ -26,8 +26,9 @@ public class IMCHandler {
                     delete = true;
                 }
 
-                for (Recipe<?, ?, ?> type : Recipe.values()) {
+                for (Recipe<?> type : Recipe.values()) {
                     if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe")) {
+                        //TODO: Handle recipes as well as make some form of legacy support
                         //handleRecipe(type, msg, delete);
                         //found = true;
                         break;

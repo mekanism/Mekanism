@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.util;
 
 import crafttweaker.CraftTweakerAPI;
 import mekanism.api.recipes.IMekanismRecipe;
-import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 
 public class RemoveMekanismRecipe<RECIPE extends IMekanismRecipe> extends RecipeMapModification<RECIPE> {
@@ -19,11 +18,12 @@ public class RemoveMekanismRecipe<RECIPE extends IMekanismRecipe> extends Recipe
     @Override
     public void apply() {
         //Don't move this into the constructor so that if an addon registers recipes late, we can still remove them
-        map.forEach((key, value) -> {
+        //TODO: Fix removing
+        /*map.forEach((key, value) -> {
             if (IngredientHelper.matches(key, input) && IngredientHelper.matches(value.getOutput(), output)) {
                 recipes.put(key, value);
             }
-        });
+        });*/
         if (recipes.isEmpty()) {
             String warning = "";
             if (input.isEmpty()) {
