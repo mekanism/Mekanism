@@ -6,9 +6,8 @@ import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.inputs.GasIngredient;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import mekanism.common.util.FieldsAreNonnullByDefault;
@@ -22,15 +21,15 @@ import net.minecraft.item.ItemStack;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull Gas> {
+//TODO: Make a note of the fact this recipe uses the size of the gas input as a base, but still for the most part will end up multiplying it
+// by a per tick usage
+public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
 
     private final ItemStackIngredient itemInput;
-
-    private final GasIngredient gasInput;
-
+    private final GasStackIngredient gasInput;
     private final ItemStack outputDefinition;
 
-    public ItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, GasIngredient gasInput, ItemStack outputDefinition) {
+    public ItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputDefinition) {
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.outputDefinition = outputDefinition;
@@ -40,7 +39,7 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
         return itemInput;
     }
 
-    public GasIngredient getGasInput() {
+    public GasStackIngredient getGasInput() {
         return gasInput;
     }
 
@@ -49,8 +48,8 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
     }
 
     @Override
-    public boolean test(@NonNull ItemStack itemStack, @NonNull Gas gas) {
-        return itemInput.test(itemStack) && gasInput.test(gas);
+    public boolean test(@NonNull ItemStack itemStack, @NonNull GasStack gasStack) {
+        return itemInput.test(itemStack) && gasInput.test(gasStack);
     }
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
@@ -61,7 +60,7 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
 
         private final OreDictSupplier outputSupplier;
 
-        public ItemStackGasToItemStackRecipeOre(ItemStackIngredient itemInput, GasIngredient gasInput, String outputOreName) {
+        public ItemStackGasToItemStackRecipeOre(ItemStackIngredient itemInput, GasStackIngredient gasInput, String outputOreName) {
             super(itemInput, gasInput, ItemStack.EMPTY);
             this.outputSupplier = new OreDictSupplier(outputOreName);
         }

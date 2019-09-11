@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
-import mekanism.api.recipes.ChemicalWasherRecipe;
+import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
@@ -30,15 +30,15 @@ public class ChemicalWasher {
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
-                  new ChemicalWasherRecipe(FluidStackIngredient.fromInstance(FluidRegistry.WATER, 5), GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
+                  new FluidGasToGasRecipe(FluidStackIngredient.from(FluidRegistry.WATER, 5), GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
         }
     }
 
     @ZenMethod
-    public static void addRecipe(ILiquidStack cleansingIngredient, IGasStack gasInput, IGasStack gasOutput) {
-        if (IngredientHelper.checkNotNull(NAME, cleansingIngredient, gasInput, gasOutput)) {
+    public static void addRecipe(ILiquidStack fluidInput, IGasStack gasInput, IGasStack gasOutput) {
+        if (IngredientHelper.checkNotNull(NAME, fluidInput, gasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
-                  new ChemicalWasherRecipe(IngredientHelper.toIngredient(cleansingIngredient), GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
+                  new FluidGasToGasRecipe(IngredientHelper.toIngredient(fluidInput), GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
         }
     }
 

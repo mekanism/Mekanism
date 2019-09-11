@@ -14,30 +14,29 @@ import org.jetbrains.annotations.Contract;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ChemicalWasherRecipe implements IMekanismRecipe, BiPredicate<@NonNull FluidStack, @NonNull GasStack> {
+public class FluidGasToGasRecipe implements IMekanismRecipe, BiPredicate<@NonNull FluidStack, @NonNull GasStack> {
 
-    private final GasStackIngredient input;
-    private final FluidStackIngredient cleansingIngredient;
-
+    private final GasStackIngredient gasInput;
+    private final FluidStackIngredient fluidInput;
     private final GasStack outputRepresentation;
 
-    public ChemicalWasherRecipe(FluidStackIngredient cleansingIngredient, GasStackIngredient input, GasStack outputRepresentation) {
-        this.cleansingIngredient = cleansingIngredient;
-        this.input = input;
+    public FluidGasToGasRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack outputRepresentation) {
+        this.fluidInput = fluidInput;
+        this.gasInput = gasInput;
         this.outputRepresentation = outputRepresentation;
     }
 
     @Override
     public boolean test(@NonNull FluidStack fluidStack, @NonNull GasStack gasStack) {
-        return input.test(gasStack);
+        return fluidInput.test(fluidStack) && gasInput.test(gasStack);
     }
 
-    public FluidStackIngredient getCleansingIngredient() {
-        return cleansingIngredient;
+    public FluidStackIngredient getFluidInput() {
+        return fluidInput;
     }
 
-    public GasStackIngredient getInput() {
-        return input;
+    public GasStackIngredient getGasInput() {
+        return gasInput;
     }
 
     public GasStack getOutputRepresentation() {
@@ -46,7 +45,6 @@ public class ChemicalWasherRecipe implements IMekanismRecipe, BiPredicate<@NonNu
 
     @Contract(value = "_, _ -> new", pure = true)
     public GasStack getOutput(FluidStack fluidStack, GasStack input) {
-        //TODO: Return the value based on the difference in size of the fluidstack?
         return outputRepresentation.copy();
     }
 }

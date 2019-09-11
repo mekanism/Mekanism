@@ -2,10 +2,10 @@ package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.gas.Gas;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.inputs.GasIngredient;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -60,15 +60,18 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         itemStacks.init(2, false, 27, 36);
         itemStacks.set(0, tempRecipe.getItemInput().getRepresentations());
         itemStacks.set(1, tempRecipe.getOutputDefinition());
-        GasIngredient gasInput = tempRecipe.getGasInput();
+        GasStackIngredient gasInput = tempRecipe.getGasInput();
         List<ItemStack> gasItemProviders = new ArrayList<>();
-        for (Gas gas : gasInput.getRepresentations()) {
-            gasItemProviders.addAll(GasConversionHandler.getStacksForGas(gas));
+        @NonNull List<@NonNull GasStack> gasInputs = gasInput.getRepresentations();
+        List<GasStack> scaledGases = new ArrayList<>();
+        int scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
+        for (GasStack gas : gasInputs) {
+            gasItemProviders.addAll(GasConversionHandler.getStacksForGas(gas.getGas()));
+            //While we are already looping the gases ensure we scale it to get the average amount that will get used over all
+            scaledGases.add(gas.copy().withAmount(scale));
         }
         itemStacks.set(2, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 33, 21, 6, 12,
-              gasInput.getRepresentations(TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK),
-              false);
+        initGas(gasStacks, 0, true, 33, 21, 6, 12, scaledGases, false);
     }
 }

@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
@@ -53,8 +52,9 @@ public class ItemStackGasToGasCachedRecipe extends CachedRecipe<ItemStackGasToGa
     @Override
     public boolean hasResourcesForTick() {
         GasTank gasTank = getGasTank();
-        Gas gasInput = gasTank.getGasType();
-        return gasInput != null && recipe.test(getItemInput(), gasInput) && gasTank.getStored() >= getGasUsage();
+        GasStack gas = gasTank.getGas();
+        //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
+        return gas != null && recipe.test(getItemInput(), gas) && gasTank.getStored() >= gas.amount * getGasUsage();
     }
 
     @Override
@@ -69,7 +69,12 @@ public class ItemStackGasToGasCachedRecipe extends CachedRecipe<ItemStackGasToGa
     @Override
     protected void useResources() {
         super.useResources();
-        getGasTank().draw(getGasUsage(), true);
+        GasStack gas = getGasTank().getGas();
+        if (gas != null && gas.amount > 0) {
+            getGasTank().draw(gas.amount * getGasUsage(), true);
+        }
+        //TODO: Else throw some error? It really should already have the needed amount due to the hasResourceForTick call
+        // but it may make sense to check anyways
     }
 
     @Override

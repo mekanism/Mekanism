@@ -5,7 +5,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.inputs.GasIngredient;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
@@ -33,7 +33,7 @@ public class Purification {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ItemStack output = CraftTweakerMC.getItemStack(itemOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
-                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasIngredient.fromInstance(MekanismFluids.Oxygen), output)));
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasStackIngredient.from(MekanismFluids.Oxygen, 1), output)));
         }
     }
 
@@ -42,7 +42,7 @@ public class Purification {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
             ItemStack output = CraftTweakerMC.getItemStack(itemOutput);
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
-                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasIngredient(gasInput), output)));
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasStackIngredient(gasInput), output)));
         }
     }
 

@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
-import mekanism.api.recipes.inputs.GasIngredient;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
@@ -29,7 +29,8 @@ public class ChemicalDissolution {
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
-                  new ItemStackGasToGasRecipe(IngredientHelper.toIngredient(ingredientInput), GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), GasHelper.toGas(gasOutput))));
+                  new ItemStackGasToGasRecipe(IngredientHelper.toIngredient(ingredientInput), GasStackIngredient.from(MekanismFluids.SulfuricAcid, 1),
+                        GasHelper.toGas(gasOutput))));
         }
     }
 
@@ -37,7 +38,7 @@ public class ChemicalDissolution {
     public static void addRecipe(IIngredient ingredientInput, IGasStack inputGas, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, inputGas, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
-                  new ItemStackGasToGasRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasIngredient(inputGas), GasHelper.toGas(gasOutput))));
+                  new ItemStackGasToGasRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasStackIngredient(inputGas), GasHelper.toGas(gasOutput))));
         }
     }
 

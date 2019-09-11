@@ -1,6 +1,7 @@
 package mekanism.api.recipes.inputs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NonNull;
@@ -11,7 +12,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IngredientNBT;
 import net.minecraftforge.oredict.OreIngredient;
 
-public class ItemStackIngredient implements InputPredicate<@NonNull ItemStack> {
+public abstract class ItemStackIngredient implements InputIngredient<@NonNull ItemStack> {
 
     //TODO: Make ones that take a list of blocks/items
 
@@ -58,45 +59,75 @@ public class ItemStackIngredient implements InputPredicate<@NonNull ItemStack> {
     }
 
     public static ItemStackIngredient from(@NonNull Ingredient ingredient, int amount) {
-        return new ItemStackIngredient(ingredient, amount);
+        return new Single(ingredient, amount);
     }
 
-    @NonNull
-    private final Ingredient ingredient;
-    private final int amount;
+    public static class Single extends ItemStackIngredient {
 
-    public ItemStackIngredient(@NonNull Ingredient ingredient, int amount) {
-        this.ingredient = Objects.requireNonNull(ingredient);
-        this.amount = amount;
-    }
+        @NonNull
+        private final Ingredient ingredient;
+        private final int amount;
 
-    @Override
-    public boolean test(@NonNull ItemStack stack) {
-        return testType(stack) && stack.getCount() >= amount;
-    }
-
-    @Override
-    public boolean testType(@NonNull ItemStack stack) {
-        //TODO: Should this fail on empty stacks
-        return ingredient.apply(stack);
-    }
-
-    /**
-     * Primarily for JEI, a list of valid instances of the stack (i.e. the ItemStack(s) that match the ingredient with the proper size)
-     *
-     * @return List (empty means no valid registrations found and recipe is to be hidden)
-     */
-    @NonNull
-    @Override
-    public List<ItemStack> getRepresentations() {
-        //TODO: Can this be cached some how
-        List<ItemStack> representations = new ArrayList<>();
-        for (ItemStack stack : ingredient.getMatchingStacks()) {
-            //TODO: if there a cleaner way to do this that doesn't require copying at least when the size is the same
-            ItemStack copy = stack.copy();
-            copy.setCount(amount);
-            representations.add(copy);
+        public Single(@NonNull Ingredient ingredient, int amount) {
+            this.ingredient = Objects.requireNonNull(ingredient);
+            this.amount = amount;
         }
-        return representations;
+
+        @Override
+        public boolean test(@NonNull ItemStack stack) {
+            return testType(stack) && stack.getCount() >= amount;
+        }
+
+        @Override
+        public boolean testType(@NonNull ItemStack stack) {
+            //TODO: Should this fail on empty stacks
+            return ingredient.apply(stack);
+        }
+
+        @NonNull
+        @Override
+        public List<ItemStack> getRepresentations() {
+            //TODO: Can this be cached some how
+            List<ItemStack> representations = new ArrayList<>();
+            for (ItemStack stack : ingredient.getMatchingStacks()) {
+                //TODO: if there a cleaner way to do this that doesn't require copying at least when the size is the same
+                ItemStack copy = stack.copy();
+                copy.setCount(amount);
+                representations.add(copy);
+            }
+            return representations;
+        }
+    }
+
+    //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
+    // Also cleanup the javadoc comment about this, and try to make the helpers that create a new instance
+    // return a normal ItemStackIngredient (Single), if we only have a singular one
+    public static class Multi extends ItemStackIngredient {
+
+        private final ItemStackIngredient[] ingredients;
+
+        protected Multi(@NonNull ItemStackIngredient... ingredients) {
+            this.ingredients = ingredients;
+        }
+
+        @Override
+        public boolean test(@NonNull ItemStack stack) {
+            return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
+        }
+
+        @Override
+        public boolean testType(@NonNull ItemStack stack) {
+            return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
+        }
+
+        @NonNull
+        @Override
+        public List<ItemStack> getRepresentations() {
+            List<ItemStack> representations = new ArrayList<>();
+            for (ItemStackIngredient ingredient : ingredients) {
+                representations.addAll(ingredient.getRepresentations());
+            }
+            return representations;
+        }
     }
 }

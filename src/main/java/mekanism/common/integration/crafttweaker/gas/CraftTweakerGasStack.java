@@ -118,6 +118,7 @@ public class CraftTweakerGasStack implements IGasStack {
     @Override
     public boolean matches(IItemStack stack) {
         ItemStack itemStack = CraftTweakerMC.getItemStack(stack);
+        //TODO: Should this use GasConversionHandler
         if (itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
             GasStack gasStack = item.getGas(itemStack);

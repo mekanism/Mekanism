@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Contract;
 public class GasToGasRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
-
     private final GasStack outputRepresentation;
 
     public GasToGasRecipe(GasStackIngredient input, GasStack outputRepresentation) {

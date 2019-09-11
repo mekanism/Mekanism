@@ -35,7 +35,7 @@ import mekanism.client.jei.machine.ItemStackToGasRecipeWrapper;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalInfuserRecipeWrapper;
-import mekanism.client.jei.machine.chemical.ChemicalWasherRecipeWrapper;
+import mekanism.client.jei.machine.FluidGasToGasRecipeWrapper;
 import mekanism.client.jei.machine.other.CombinerRecipeWrapper;
 import mekanism.client.jei.machine.other.ElectrolyticSeparatorRecipeWrapper;
 import mekanism.client.jei.machine.other.MetallurgicInfuserRecipeWrapper;
@@ -172,7 +172,7 @@ public class RecipeRegistryHelper {
         if (!MachineType.CHEMICAL_WASHER.isEnabled()) {
             return;
         }
-        addRecipes(registry, Recipe.CHEMICAL_WASHER, ChemicalWasherRecipeWrapper::new);
+        addRecipes(registry, Recipe.CHEMICAL_WASHER, FluidGasToGasRecipeWrapper::new);
         registry.addRecipeClickArea(GuiChemicalWasher.class, 61, 39, 55, 8, Recipe.CHEMICAL_WASHER.getJEICategory());
         registerRecipeItem(registry, MachineType.CHEMICAL_WASHER, Recipe.CHEMICAL_WASHER);
     }

@@ -12,7 +12,6 @@ import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -60,19 +59,19 @@ public final class OreDictManager {
         ItemStackIngredient plankWood = ItemStackIngredient.from("plankWood");
         RecipeHandler.addPrecisionSawmillRecipe(plankWood, new ItemStack(Items.STICK, 6),
               new ItemStack(MekanismItems.Sawdust), MekanismConfig.current().general.sawdustChancePlank.val());
-        RecipeHandler.addPRCRecipe(plankWood, FluidStackIngredient.fromInstance(FluidRegistry.WATER, 20),
-              GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 20), ItemStack.EMPTY, MekanismFluids.Hydrogen, 20, 0, 30);
+        RecipeHandler.addPRCRecipe(plankWood, FluidStackIngredient.from(FluidRegistry.WATER, 20),
+              GasStackIngredient.from(MekanismFluids.Oxygen, 20), ItemStack.EMPTY, MekanismFluids.Hydrogen, 20, 0, 30);
 
         ItemStackIngredient slabWood = ItemStackIngredient.from("slabWood");
         RecipeHandler.addPrecisionSawmillRecipe(slabWood, new ItemStack(Items.STICK, 3), new ItemStack(MekanismItems.Sawdust),
               MekanismConfig.current().general.sawdustChancePlank.val() / 2);
-        RecipeHandler.addPRCRecipe(slabWood, FluidStackIngredient.fromInstance(FluidRegistry.WATER, 10),
-              GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 10), ItemStack.EMPTY, MekanismFluids.Hydrogen, 10, 0, 15);
+        RecipeHandler.addPRCRecipe(slabWood, FluidStackIngredient.from(FluidRegistry.WATER, 10),
+              GasStackIngredient.from(MekanismFluids.Oxygen, 10), ItemStack.EMPTY, MekanismFluids.Hydrogen, 10, 0, 15);
 
         ItemStackIngredient stickWood = ItemStackIngredient.from("stickWood");
         RecipeHandler.addPrecisionSawmillRecipe(stickWood, new ItemStack(MekanismItems.Sawdust));
-        RecipeHandler.addPRCRecipe(stickWood, FluidStackIngredient.fromInstance(FluidRegistry.WATER, 4),
-              GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 4), ItemStack.EMPTY, MekanismFluids.Hydrogen, 4, 0, 6);
+        RecipeHandler.addPRCRecipe(stickWood, FluidStackIngredient.from(FluidRegistry.WATER, 4),
+              GasStackIngredient.from(MekanismFluids.Oxygen, 4), ItemStack.EMPTY, MekanismFluids.Hydrogen, 4, 0, 6);
 
         RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("oreNetherSteel"), new ItemStack(MekanismItems.OtherDust, 4, 1));
 
@@ -89,25 +88,26 @@ public final class OreDictManager {
         RecipeHandler.addChemicalOxidizerRecipe(ItemStackIngredient.from("dustSalt"), MekanismFluids.Brine, 15);
 
         ItemStackIngredient dustRefinedObsidian = ItemStackIngredient.from("dustRefinedObsidian");
-        RecipeHandler.addOsmiumCompressorRecipe(dustRefinedObsidian, GasIngredient.fromInstance(MekanismFluids.LiquidOsmium), new ItemStack(MekanismItems.Ingot, 1, 0));
+        RecipeHandler.addOsmiumCompressorRecipe(dustRefinedObsidian, GasStackIngredient.from(MekanismFluids.LiquidOsmium, 1),
+              new ItemStack(MekanismItems.Ingot, 1, 0));
         RecipeHandler.addEnrichmentChamberRecipe(dustRefinedObsidian, new ItemStack(MekanismItems.CompressedObsidian));
         InfuseRegistry.registerInfuseObject(new OreIngredient("dustRefinedObsidian"), new InfuseObject(Objects.requireNonNull(InfuseRegistry.get("OBSIDIAN")), 10));
 
         for (Resource resource : Resource.values()) {
             RecipeHandler.addCrusherRecipe(ItemStackIngredient.from("clump" + resource.getName()), new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
             RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from("shard" + resource.getName()), new ItemStack(MekanismItems.Clump, 1, resource.ordinal()));
-            RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from("crystal" + resource.getName()), GasIngredient.fromInstance(MekanismFluids.HydrogenChloride),
+            RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from("crystal" + resource.getName()), GasStackIngredient.from(MekanismFluids.HydrogenChloride, 1),
                   new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
             RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("dustDirty" + resource.getName()), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
 
             ItemStackIngredient oreIngredient = ItemStackIngredient.from("ore" + resource.getName());
             RecipeHandler.addEnrichmentChamberRecipe(oreIngredient, new ItemStack(MekanismItems.Dust, 2, resource.ordinal()));
             RecipeHandler.addPurificationChamberRecipe(oreIngredient, new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
-            RecipeHandler.addChemicalInjectionChamberRecipe(oreIngredient, GasIngredient.fromInstance(MekanismFluids.HydrogenChloride),
+            RecipeHandler.addChemicalInjectionChamberRecipe(oreIngredient, GasStackIngredient.from(MekanismFluids.HydrogenChloride, 1),
                   new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
             Gas oreGas = GasRegistry.getGas(resource.getName().toLowerCase(Locale.ROOT));
             if (oreGas != null) {
-                RecipeHandler.addChemicalDissolutionChamberRecipe(oreIngredient, GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), oreGas, 1000);
+                RecipeHandler.addChemicalDissolutionChamberRecipe(oreIngredient, GasStackIngredient.from(MekanismFluids.SulfuricAcid, 1), oreGas, 1000);
             }
 
             RecipeHandler.addCrusherRecipe(ItemStackIngredient.from("ingot" + resource.getName()), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
@@ -253,8 +253,8 @@ public final class OreDictManager {
             RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.COAL), StackUtils.size(oreDict.get(0), 1));
             ItemStackIngredient dustCoal = ItemStackIngredient.from("dustCoal");
             RecipeHandler.addEnrichmentChamberRecipe(dustCoal, new ItemStack(Items.COAL));
-            RecipeHandler.addPRCRecipe(dustCoal, FluidStackIngredient.fromInstance(FluidRegistry.WATER, 100),
-                  GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 100), new ItemStack(MekanismItems.OtherDust, 1, 3),
+            RecipeHandler.addPRCRecipe(dustCoal, FluidStackIngredient.from(FluidRegistry.WATER, 100),
+                  GasStackIngredient.from(MekanismFluids.Oxygen, 100), new ItemStack(MekanismItems.OtherDust, 1, 3),
                   MekanismFluids.Hydrogen, 100, 0, 100);
         }
 
@@ -263,8 +263,8 @@ public final class OreDictManager {
             RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(new ItemStack(Items.COAL, 1, 1)), StackUtils.size(oreDict.get(0), 1));
             ItemStackIngredient dustCharcoal = ItemStackIngredient.from("dustCharcoal");
             RecipeHandler.addEnrichmentChamberRecipe(dustCharcoal, new ItemStack(Items.COAL, 1, 1));
-            RecipeHandler.addPRCRecipe(dustCharcoal, FluidStackIngredient.fromInstance(FluidRegistry.WATER, 100),
-                  GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 100), new ItemStack(MekanismItems.OtherDust, 1, 3),
+            RecipeHandler.addPRCRecipe(dustCharcoal, FluidStackIngredient.from(FluidRegistry.WATER, 100),
+                  GasStackIngredient.from(MekanismFluids.Oxygen, 100), new ItemStack(MekanismItems.OtherDust, 1, 3),
                   MekanismFluids.Hydrogen, 100, 0, 100);
         }
 
@@ -293,15 +293,15 @@ public final class OreDictManager {
 
         RecipeHandler.addCrusherRecipe(ItemStackIngredient.from("treeSapling"), new ItemStack(MekanismItems.BioFuel, 2));
 
-        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("blockCoal"), FluidStackIngredient.fromInstance(FluidRegistry.WATER, 1000),
-              GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 1000), new ItemStack(MekanismItems.OtherDust, 9, 3),
+        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("blockCoal"), FluidStackIngredient.from(FluidRegistry.WATER, 1000),
+              GasStackIngredient.from(MekanismFluids.Oxygen, 1000), new ItemStack(MekanismItems.OtherDust, 9, 3),
               MekanismFluids.Hydrogen, 1000, 0, 900);
-        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("blockCharcoal"), FluidStackIngredient.fromInstance(FluidRegistry.WATER, 1000),
-              GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 1000), new ItemStack(MekanismItems.OtherDust, 9, 3),
+        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("blockCharcoal"), FluidStackIngredient.from(FluidRegistry.WATER, 1000),
+              GasStackIngredient.from(MekanismFluids.Oxygen, 1000), new ItemStack(MekanismItems.OtherDust, 9, 3),
               MekanismFluids.Hydrogen, 1000, 0, 900);
 
-        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("dustWood"), FluidStackIngredient.fromInstance(FluidRegistry.WATER, 20),
-              GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 20), ItemStack.EMPTY, MekanismFluids.Hydrogen, 20, 0, 30);
+        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("dustWood"), FluidStackIngredient.from(FluidRegistry.WATER, 20),
+              GasStackIngredient.from(MekanismFluids.Oxygen, 20), ItemStack.EMPTY, MekanismFluids.Hydrogen, 20, 0, 30);
         //TODO: 1.14 evaluate adding a charcoal dust item to Mekanism, and if so use that instead of charcoal here
         RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("dustWood", 8), new ItemStack(Items.COAL, 1, 1));
     }
@@ -344,8 +344,8 @@ public final class OreDictManager {
                 addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1), dummyWorld);
             }
         }
-        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("logWood"), FluidStackIngredient.fromInstance(FluidRegistry.WATER, 100),
-              GasStackIngredient.fromInstance(MekanismFluids.Oxygen, 100), ItemStack.EMPTY, MekanismFluids.Hydrogen, 100, 0, 150);
+        RecipeHandler.addPRCRecipe(ItemStackIngredient.from("logWood"), FluidStackIngredient.from(FluidRegistry.WATER, 100),
+              GasStackIngredient.from(MekanismFluids.Oxygen, 100), ItemStack.EMPTY, MekanismFluids.Hydrogen, 100, 0, 150);
     }
 
     private static void addSawmillLog(InventoryCrafting tempCrafting, ItemStack log, DummyWorld world) {

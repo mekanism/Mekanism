@@ -19,7 +19,6 @@ import net.minecraft.item.ItemStack;
 public class ItemStackToGasRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     private final ItemStackIngredient input;
-
     private final Gas outputGas;
     private final int outputGasAmount;
 

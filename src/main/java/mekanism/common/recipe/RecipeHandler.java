@@ -15,7 +15,7 @@ import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
-import mekanism.api.recipes.ChemicalWasherRecipe;
+import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -29,7 +29,6 @@ import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -61,7 +60,7 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addOsmiumCompressorRecipe(ItemStackIngredient input, GasIngredient gasInput, ItemStack output) {
+    public static void addOsmiumCompressorRecipe(ItemStackIngredient input, GasStackIngredient gasInput, ItemStack output) {
         Recipe.OSMIUM_COMPRESSOR.put(new ItemStackGasToItemStackRecipe(input, gasInput, output));
     }
 
@@ -93,7 +92,7 @@ public final class RecipeHandler {
      * @param output - output ItemStack
      */
     public static void addPurificationChamberRecipe(ItemStackIngredient input, ItemStack output) {
-        Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, GasIngredient.fromInstance(MekanismFluids.Oxygen), output));
+        Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, GasStackIngredient.from(MekanismFluids.Oxygen, 1), output));
     }
 
     /**
@@ -139,7 +138,7 @@ public final class RecipeHandler {
      * @param input  - input ItemStack
      * @param output - output ItemStack
      */
-    public static void addChemicalInjectionChamberRecipe(ItemStackIngredient input, GasIngredient gas, ItemStack output) {
+    public static void addChemicalInjectionChamberRecipe(ItemStackIngredient input, GasStackIngredient gas, ItemStack output) {
         Recipe.CHEMICAL_INJECTION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, gas, output));
     }
 
@@ -182,11 +181,11 @@ public final class RecipeHandler {
      * @param input     - input ItemStack
      * @param outputGas - output GasStack
      */
-    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasIngredient inputGas, Gas outputGas, int outputAmount) {
+    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasStackIngredient inputGas, Gas outputGas, int outputAmount) {
         Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, outputGas, outputAmount));
     }
 
-    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasIngredient inputGas, GasStack output) {
+    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasStackIngredient inputGas, GasStack output) {
         Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, output));
     }
 
@@ -196,8 +195,8 @@ public final class RecipeHandler {
      * @param input  - input GasStack
      * @param output - output GasStack
      */
-    public static void addChemicalWasherRecipe(FluidStackIngredient cleansingIngredient, GasStackIngredient input, GasStack output) {
-        Recipe.CHEMICAL_WASHER.put(new ChemicalWasherRecipe(cleansingIngredient, input, output));
+    public static void addChemicalWasherRecipe(FluidStackIngredient fluidInput, GasStackIngredient input, GasStack output) {
+        Recipe.CHEMICAL_WASHER.put(new FluidGasToGasRecipe(fluidInput, input, output));
     }
 
     /**
@@ -290,7 +289,7 @@ public final class RecipeHandler {
      * @return WasherRecipe
      */
     @Nullable
-    public static ChemicalWasherRecipe getChemicalWasherRecipe(@Nonnull FluidStack fluid, @Nonnull GasStack input) {
+    public static FluidGasToGasRecipe getChemicalWasherRecipe(@Nonnull FluidStack fluid, @Nonnull GasStack input) {
         return Recipe.CHEMICAL_WASHER.findFirst(recipe -> recipe.test(fluid, input));
     }
 
@@ -380,7 +379,7 @@ public final class RecipeHandler {
 
         public static final Recipe<ItemStackGasToGasRecipe> CHEMICAL_DISSOLUTION_CHAMBER = new Recipe<>(MachineType.CHEMICAL_DISSOLUTION_CHAMBER, ItemStackGasToGasRecipe.class);
 
-        public static final Recipe<ChemicalWasherRecipe> CHEMICAL_WASHER = new Recipe<>(MachineType.CHEMICAL_WASHER, ChemicalWasherRecipe.class);
+        public static final Recipe<FluidGasToGasRecipe> CHEMICAL_WASHER = new Recipe<>(MachineType.CHEMICAL_WASHER, FluidGasToGasRecipe.class);
 
         public static final Recipe<ChemicalCrystallizerRecipe> CHEMICAL_CRYSTALLIZER = new Recipe<>(MachineType.CHEMICAL_CRYSTALLIZER, ChemicalCrystallizerRecipe.class);
 

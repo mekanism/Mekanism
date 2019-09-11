@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
 
     private final ItemStackIngredient mainInput;
-
     private ItemStack outputDefinition;
 
     public ItemStackToItemStackRecipe(ItemStackIngredient mainInput, ItemStack outputDefinition) {

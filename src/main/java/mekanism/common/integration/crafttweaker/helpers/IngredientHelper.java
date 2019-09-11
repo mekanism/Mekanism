@@ -88,7 +88,7 @@ public class IngredientHelper {
     }
 
     public static FluidStackIngredient toIngredient(ILiquidStack fluid) {
-        return fluid == null ? null : FluidStackIngredient.fromInstance(FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount()));
+        return fluid == null ? null : FluidStackIngredient.from(FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount()));
     }
 
     public static ItemStackIngredient toIngredient(@Nonnull IIngredient ingredient) {

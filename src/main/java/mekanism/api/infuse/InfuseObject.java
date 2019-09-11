@@ -1,7 +1,6 @@
 package mekanism.api.infuse;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * InfuseObject - an object associated with an ItemStack that can modify a Metallurgic Infuser's internal infuse.
@@ -26,8 +25,8 @@ public class InfuseObject implements InfusionContainer {
         stored = i;
     }
 
-    //TODO: Why is this nullable when it should be Nonnull based on other spots
-    @Nullable
+    //TODO: Why is this nullable when it should be Nonnull based on other spots (it has to do with InfusionContainer being Nullable)
+    @Nonnull
     @Override
     public InfuseType getType() {
         return type;

@@ -14,11 +14,8 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
     protected static Random RANDOM = new Random();
 
     private final ItemStackIngredient input;
-
     private final ItemStack mainOutputDefinition;
-
     private final ItemStack secondaryOutputDefinition;
-
     private final double secondaryChance;
 
     public SawmillRecipe(ItemStackIngredient input, ItemStack mainOutputDefinition, ItemStack secondaryOutputDefinition, double secondaryChance) {

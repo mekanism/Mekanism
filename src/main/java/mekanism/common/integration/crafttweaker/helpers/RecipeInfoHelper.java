@@ -8,7 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
-import mekanism.api.recipes.ChemicalWasherRecipe;
+import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -22,6 +22,8 @@ import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -51,8 +53,8 @@ public class RecipeInfoHelper {
             return getGasName(((AmbientAccumulatorRecipe) recipe).getOutput());
         } else if (recipe instanceof ChemicalInfuserRecipe) {
             return getGasName(((ChemicalInfuserRecipe) recipe).getOutput(null, null));
-        } else if (recipe instanceof ChemicalWasherRecipe) {
-            return getGasName(((ChemicalWasherRecipe) recipe).getOutput(null, null));
+        } else if (recipe instanceof FluidGasToGasRecipe) {
+            return getGasName(((FluidGasToGasRecipe) recipe).getOutput(null, null));
         } else if (recipe instanceof GasToGasRecipe) {
             return getGasName(((GasToGasRecipe) recipe).getOutput(null));
         } else if (recipe instanceof ItemStackGasToGasRecipe) {
@@ -102,7 +104,7 @@ public class RecipeInfoHelper {
         return String.format("<gas:%s>", gas.getName());
     }
 
-    public static String getFluidName(List<FluidStack> stacks) {
+    public static String getFluidName(FluidStackIngredient ingredient) {
         //TODO: Implement
     }
 
@@ -114,8 +116,9 @@ public class RecipeInfoHelper {
         return String.format("<liquid:%s>", fluid.getName());
     }
 
-    public static String getItemName(List<ItemStack> stacks) {
-        //TODO: Implement
+    public static String getItemName(ItemStackIngredient ingredient) {
+        //TODO: Implement, make sure to test if adding extra paren around the different things is needed
+        // ex: (<dirt> * 2) |  (<stone> * 4) to ensure it doesn't process it as ((<dirt> * 2) | <stone>) * 4
     }
 
     public static String getItemName(ItemStack stack) {

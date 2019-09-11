@@ -190,7 +190,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         if (gasStack == null || gasStack.amount == 0) {
             return null;
         }
-        return getRecipes().findFirst(recipe -> recipe.test(stack, gasStack.getGas()));
+        return getRecipes().findFirst(recipe -> recipe.test(stack, gasStack));
     }
 
     @Nullable

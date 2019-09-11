@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
@@ -77,7 +76,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                 if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tileEntity.getRecipeType().getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null) {
+            } else if (tileEntity.isValidInputItem(slotStack)) {
                 if (isInputSlot(slotID)) {
                     if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
@@ -93,12 +92,8 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                 } else if (!mergeItemStack(slotStack, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tileEntity.getItemGas(slotStack) != null) {
-                if (transferExtraSlot(slotID, slotStack)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (tileEntity.getRecipeType() == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null
-                       && (tileEntity.infuseStored.getType() == null || tileEntity.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
+            } else if (tileEntity.isValidExtraItem(slotStack)) {
+                //TODO: Should this check it is the extra slot before checking if it is a valid input?
                 if (transferExtraSlot(slotID, slotStack)) {
                     return ItemStack.EMPTY;
                 }

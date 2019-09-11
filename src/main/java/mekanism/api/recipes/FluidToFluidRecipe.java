@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Contract;
 public class FluidToFluidRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
-
     private final FluidStack outputRepresentation;
 
     public FluidToFluidRecipe(FluidStackIngredient input, FluidStack outputRepresentation) {

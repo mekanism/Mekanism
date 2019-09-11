@@ -6,7 +6,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -34,7 +33,7 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addOsmiumCompressorRecipe(ItemStack input, ItemStack output) {
         checkPhase();
-        RecipeHandler.addOsmiumCompressorRecipe(ItemStackIngredient.from(input), GasIngredient.fromInstance(MekanismFluids.LiquidOsmium), output);
+        RecipeHandler.addOsmiumCompressorRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(MekanismFluids.LiquidOsmium, 1), output);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addChemicalInfuserRecipe(GasStack leftInput, GasStack rightInput, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalInfuserRecipe(GasStackIngredient.fromInstance(leftInput), GasStackIngredient.fromInstance(rightInput), output);
+        RecipeHandler.addChemicalInfuserRecipe(GasStackIngredient.from(leftInput), GasStackIngredient.from(rightInput), output);
     }
 
     @Override
@@ -83,13 +82,13 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output) {
         checkPhase();
-        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(input), GasIngredient.fromInstance(gas), output);
+        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(gas, 1), output);
     }
 
     @Override
     public void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
         checkPhase();
-        RecipeHandler.addElectrolyticSeparatorRecipe(FluidStackIngredient.fromInstance(fluid), energy, leftOutput, rightOutput);
+        RecipeHandler.addElectrolyticSeparatorRecipe(FluidStackIngredient.from(fluid), energy, leftOutput, rightOutput);
     }
 
     @Override
@@ -107,37 +106,37 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalDissolutionChamberRecipe(ItemStackIngredient.from(input), GasIngredient.fromInstance(MekanismFluids.SulfuricAcid), output);
+        RecipeHandler.addChemicalDissolutionChamberRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(MekanismFluids.SulfuricAcid, 1), output);
     }
 
     @Override
     public void addChemicalWasherRecipe(GasStack input, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.fromInstance(FluidRegistry.WATER, 5), GasStackIngredient.fromInstance(input), output);
+        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.from(FluidRegistry.WATER, 5), GasStackIngredient.from(input), output);
     }
 
     @Override
     public void addChemicalCrystallizerRecipe(GasStack input, ItemStack output) {
         checkPhase();
-        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.fromInstance(input), output);
+        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(input), output);
     }
 
     @Override
     public void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
         checkPhase();
-        RecipeHandler.addPRCRecipe(ItemStackIngredient.from(Ingredient.fromStacks(inputSolid), inputSolid.getCount()), FluidStackIngredient.fromInstance(inputFluid),
-              GasStackIngredient.fromInstance(inputGas), outputSolid, outputGas, extraEnergy, ticks);
+        RecipeHandler.addPRCRecipe(ItemStackIngredient.from(Ingredient.fromStacks(inputSolid), inputSolid.getCount()), FluidStackIngredient.from(inputFluid),
+              GasStackIngredient.from(inputGas), outputSolid, outputGas, extraEnergy, ticks);
     }
 
     @Override
     public void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid) {
         checkPhase();
-        RecipeHandler.addThermalEvaporationRecipe(FluidStackIngredient.fromInstance(inputFluid), outputFluid);
+        RecipeHandler.addThermalEvaporationRecipe(FluidStackIngredient.from(inputFluid), outputFluid);
     }
 
     @Override
     public void addSolarNeutronRecipe(GasStack inputGas, GasStack outputGas) {
         checkPhase();
-        RecipeHandler.addSolarNeutronRecipe(GasStackIngredient.fromInstance(inputGas), outputGas);
+        RecipeHandler.addSolarNeutronRecipe(GasStackIngredient.from(inputGas), outputGas);
     }
 }

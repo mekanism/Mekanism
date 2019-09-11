@@ -11,9 +11,7 @@ import mekanism.api.gas.GasStack;
 public class AmbientAccumulatorRecipe implements IMekanismRecipe, IntPredicate {
 
     private final int ticksRequired;
-
     private final int dimension;
-
     private final GasStack output;
 
     public AmbientAccumulatorRecipe(int dimensionId, int ticksRequired, GasStack output) {

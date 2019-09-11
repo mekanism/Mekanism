@@ -23,6 +23,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.infuse.InfuseType;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -87,6 +88,10 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler,
       ISpecialConfigData, ITierUpgradeable, ISustainedData, IComparatorSupport, ICachedRecipeHolder {
 
+    public static final int UPGRADE_SLOT_ID = 0;
+    public static final int ENERGY_SLOT_ID = 1;
+    public static final int EXTRA_SLOT_ID = 4;
+
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final CachedRecipe[] cachedRecipes;
     private boolean[] activeStates;
@@ -149,8 +154,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{5, 6, 7}));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{8, 9, 10}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{1}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[]{4}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{ENERGY_SLOT_ID}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[]{EXTRA_SLOT_ID}));
 
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{4, 0, 0, 3, 1, 2});
 
@@ -166,7 +171,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     public TileEntityFactory(FactoryTier type, MachineType machine) {
-        super("null", machine, 0);
+        super("null", machine, UPGRADE_SLOT_ID);
         tier = type;
         inventory = NonNullList.withSize(5 + type.processes * 2, ItemStack.EMPTY);
         progress = new int[type.processes];
@@ -248,7 +253,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             if (ticker == 1) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
             }
-            ChargeUtils.discharge(1, this);
+            ChargeUtils.discharge(ENERGY_SLOT_ID, this);
 
             handleSecondaryFuel();
             sortInventory();
@@ -328,7 +333,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             SideData data = configComponent.getOutputs(TransmissionType.ITEM).get(2);
             //Append the "extra" slot to the available slots
             data.availableSlots = Arrays.copyOf(data.availableSlots, data.availableSlots.length + 1);
-            data.availableSlots[data.availableSlots.length - 1] = 4;
+            data.availableSlots[data.availableSlots.length - 1] = EXTRA_SLOT_ID;
         }
 
         for (Upgrade upgrade : upgradeComponent.getSupportedTypes()) {
@@ -368,11 +373,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                     if (Math.abs(count - checkStack.getCount()) < 2 || !InventoryUtils.areItemsStackable(stack, checkStack)) {
                         continue;
                     }
-                    //TODO: This if statement used to update the cache. Is there any reason to still do so?
-                    // Or can we just let that be handled by the operation.
-                    // If we don't update the cache now then doing multiple levels of sorting may fail
-                    //Output/Input will not match
-                    // Only check if the input spot is empty otherwise assume it works
+                    //Output/Input will not match; Only check if the input spot is empty otherwise assume it works
                     if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output, true) ||
                         checkStack.isEmpty() && !inputProducesOutput(slotID, stack, inventory.get(tier.processes + checkSlotID), true)) {
                         continue;
@@ -420,13 +421,13 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             } else if (cachedRecipe instanceof CombinerRecipe) {
                 CombinerRecipe recipe = (CombinerRecipe) cachedRecipe;
                 recipeInput = recipe.getMainInput();
-                ItemStack extra = inventory.get(4);
+                ItemStack extra = inventory.get(EXTRA_SLOT_ID);
                 secondaryMatch = extra.isEmpty() || recipe.getExtraInput().testType(extra);
             } else if (cachedRecipe instanceof MetallurgicInfuserRecipe) {
                 MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) cachedRecipe;
                 recipeInput = recipe.getItemInput();
                 //Type cannot be null or the amount would be zero
-                secondaryMatch = infuseStored.getAmount() == 0 || recipe.getInfusionInput().testType(new InfuseObject(infuseStored.getType(), infuseStored.getAmount()));
+                secondaryMatch = infuseStored.getAmount() == 0 || recipe.getInfusionInput().testType(infuseStored.getType());
             } else if (cachedRecipe instanceof SawmillRecipe) {
                 recipeInput = ((SawmillRecipe) cachedRecipe).getInput();
             }
@@ -460,7 +461,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 return false;
             });
         } else if (recipeType == RecipeType.COMBINING) {
-            ItemStack extra = inventory.get(4);
+            ItemStack extra = inventory.get(EXTRA_SLOT_ID);
             foundRecipe = Recipe.COMBINER.findFirst(recipe -> {
                 if (recipe.getMainInput().testType(fallbackInput)) {
                     if (extra.isEmpty() || recipe.getExtraInput().testType(extra)) {
@@ -471,18 +472,16 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             });
         } else if (recipeType == RecipeType.INFUSING) {
             int stored = infuseStored.getAmount();
-            InfuseObject infuseObject = stored == 0 ? null : new InfuseObject(infuseStored.getType(), stored);
+            InfuseType type = infuseStored.getType();
             foundRecipe = Recipe.METALLURGIC_INFUSER.findFirst(recipe -> {
-                if (recipe.getItemInput().testType(fallbackInput)) {
-                    if (stored == 0 || recipe.getInfusionInput().testType(infuseObject)) {
-                        //TODO: Should this pass infuseObject instead of infuseStored?
-                        return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(infuseStored, fallbackInput), output);
-                    }
+                //Check the infusion type before the ItemStack type as it a quicker easier compare check
+                if (stored == 0 || recipe.getInfusionInput().testType(type)) {
+                    return recipe.getItemInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(infuseStored, fallbackInput), output);
                 }
                 return false;
             });
         } else if (recipeType == RecipeType.SAWING) {
-            ItemStack extra = inventory.get(4);
+            ItemStack extra = inventory.get(EXTRA_SLOT_ID);
             foundRecipe = Recipe.PRECISION_SAWMILL.findFirst(recipe -> {
                 if (recipe.getInput().testType(fallbackInput)) {
                     ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
@@ -529,7 +528,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     public void handleSecondaryFuel() {
-        ItemStack extra = inventory.get(4);
+        ItemStack extra = inventory.get(EXTRA_SLOT_ID);
         if (!extra.isEmpty()) {
             if (recipeType.getFuelType() == MachineFuelType.ADVANCED && gasTank.getNeeded() > 0) {
                 GasStack gasStack = getItemGas(extra);
@@ -565,7 +564,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        if (slotID == 1) {
+        if (slotID == ENERGY_SLOT_ID) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         } else if (tier == FactoryTier.BASIC && slotID >= 8 && slotID <= 10) {
             return true;
@@ -573,7 +572,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return true;
         } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
             return true;
-        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == 4) {
+        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == EXTRA_SLOT_ID) {
             return true;
         }
         return false;
@@ -581,7 +580,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        if (slotID == 1) {
+        if (slotID == ENERGY_SLOT_ID) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (isInputSlot(slotID)) {
             return inputProducesOutput(slotID, itemstack, inventory.get(tier.processes + slotID), false);
@@ -596,24 +595,54 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
+        if (slotID == UPGRADE_SLOT_ID) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
-        } else if (slotID == 1) {
+        } else if (slotID == ENERGY_SLOT_ID) {
             return ChargeUtils.canBeDischarged(itemstack);
-        } else if (slotID == 4) {
-            if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
-                return getItemGas(itemstack) != null;
-            } else if (recipeType.getFuelType() == MachineFuelType.DOUBLE) {
-                return recipeType.hasRecipeForExtra(itemstack);
-            } else if (recipeType == RecipeType.INFUSING) {
-                return InfuseRegistry.getObject(itemstack) != null && (infuseStored.getType() == null || infuseStored.getType() == InfuseRegistry.getObject(itemstack).type);
-            }
+        } else if (slotID == EXTRA_SLOT_ID) {
+            return isValidExtraItem(itemstack);
         } else if (isInputSlot(slotID)) {
-            return recipeType.getAnyRecipe(itemstack, inventory.get(4), gasTank.getGasType(), infuseStored) != null;
+            return isValidInputItem(itemstack);
         }
         return false;
     }
 
+    //Like isItemValidForSlot makes no assumptions about current stored types
+    public boolean isValidInputItem(@Nonnull ItemStack stack) {
+        if (recipeType == RecipeType.SMELTING || recipeType == RecipeType.ENRICHING || recipeType == RecipeType.CRUSHING) {
+            Recipe<ItemStackToItemStackRecipe> recipes = getRecipes();
+            return recipes.contains(recipe -> recipe.getInput().testType(stack));
+        } else if (recipeType == RecipeType.COMPRESSING || recipeType == RecipeType.PURIFYING || recipeType == RecipeType.INJECTING) {
+            Recipe<ItemStackGasToItemStackRecipe> recipes = getRecipes();
+            return recipes.contains(recipe -> recipe.getItemInput().testType(stack));
+        } else if (recipeType == RecipeType.COMBINING) {
+            return Recipe.COMBINER.contains(recipe -> recipe.getMainInput().testType(stack));
+        } else if (recipeType == RecipeType.INFUSING) {
+            return Recipe.METALLURGIC_INFUSER.contains(recipe -> recipe.getItemInput().testType(stack));
+        } else if (recipeType == RecipeType.SAWING) {
+            return Recipe.PRECISION_SAWMILL.contains(recipe -> recipe.getInput().testType(stack));
+        }
+        return false;
+    }
+
+    //Like isItemValidForSlot makes no assumptions about current stored types
+    public boolean isValidExtraItem(@Nonnull ItemStack stack) {
+        if (recipeType == RecipeType.COMPRESSING || recipeType == RecipeType.PURIFYING || recipeType == RecipeType.INJECTING) {
+            GasStack gasStackFromItem = GasConversionHandler.getItemGas(stack, gasTank, recipeType::isValidGas);
+            if (gasStackFromItem == null) {
+                return false;
+            }
+            Gas gasFromItem = gasStackFromItem.getGas();
+            Recipe<ItemStackGasToItemStackRecipe> recipes = getRecipes();
+            return recipes.contains(recipe -> recipe.getGasInput().testType(gasFromItem));
+        } else if (recipeType == RecipeType.COMBINING) {
+            return Recipe.COMBINER.contains(recipe -> recipe.getExtraInput().testType(stack));
+        } else if (recipeType == RecipeType.INFUSING) {
+            InfuseObject infuse = InfuseRegistry.getObject(stack);
+            return infuse != null && Recipe.METALLURGIC_INFUSER.contains(recipe -> recipe.getInfusionInput().testType(infuse.getType()));
+        }
+        return false;
+    }
 
     public int getScaledProgress(int i, int process) {
         return progress[process] * i / ticksRequired;
@@ -972,16 +1001,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             if (gasStack == null || gasStack.amount == 0) {
                 return null;
             }
-            Gas gas = gasStack.getGas();
-            if (gas == null) {
-                return null;
-            }
             Recipe<ItemStackGasToItemStackRecipe> recipes = getRecipes();
-            return recipes.findFirst(recipe -> recipe.test(stack, gas));
+            return recipes.findFirst(recipe -> recipe.test(stack, gasStack));
         } else if (recipeType == RecipeType.SAWING) {
             return Recipe.PRECISION_SAWMILL.findFirst(recipe -> recipe.test(stack));
         } else if (recipeType == RecipeType.COMBINING) {
-            ItemStack extra = inventory.get(4);
+            ItemStack extra = inventory.get(EXTRA_SLOT_ID);
             return extra.isEmpty() ? null : Recipe.COMBINER.findFirst(recipe -> recipe.test(stack, extra));
         } else if (recipeType == RecipeType.INFUSING) {
             return Recipe.METALLURGIC_INFUSER.findFirst(recipe -> recipe.test(infuseStored, stack));
@@ -1010,7 +1035,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         } else if (recipeType == RecipeType.COMBINING) {
             CombinerRecipe castedRecipe = (CombinerRecipe) recipe;
             return new CombinerCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
-                  inputStack, () -> inventory.get(4), OutputHelper.getAddToOutput(inventory, outputSlot));
+                  inputStack, () -> inventory.get(EXTRA_SLOT_ID), OutputHelper.getAddToOutput(inventory, outputSlot));
         } else if (recipeType == RecipeType.INFUSING) {
             MetallurgicInfuserRecipe castedRecipe = (MetallurgicInfuserRecipe) recipe;
             return new MetallurgicInfuserCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
@@ -1018,7 +1043,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         } else if (recipeType == RecipeType.SAWING) {
             SawmillRecipe castedRecipe = (SawmillRecipe) recipe;
             return new SawmillCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
-                  inputStack, OutputHelper.getAddToOutput(inventory, outputSlot, 4));
+                  inputStack, OutputHelper.getAddToOutput(inventory, outputSlot, EXTRA_SLOT_ID));
         }
         //TODO: Do we have to invalidate cache when recipe type changes/how to invalidate it
         return null;

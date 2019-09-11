@@ -22,9 +22,7 @@ import net.minecraft.item.ItemStack;
 public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<InfusionContainer, ItemStack> {
 
     private final ItemStackIngredient itemInput;
-
     private final InfusionIngredient infusionInput;
-
     private final ItemStack outputDefinition;
 
     public MetallurgicInfuserRecipe(ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {

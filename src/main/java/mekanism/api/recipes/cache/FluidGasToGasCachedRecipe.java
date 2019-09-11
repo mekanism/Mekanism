@@ -12,21 +12,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.recipes.ChemicalWasherRecipe;
+import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ChemicalWasherCachedRecipe extends CachedRecipe<ChemicalWasherRecipe> {
+public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe> {
 
     private final BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput;
     private final Supplier<@NonNull FluidTank> cleansingTank;
     private final Supplier<@NonNull GasTank> inputTank;
     private final IntSupplier maxOperations;
 
-    public ChemicalWasherCachedRecipe(ChemicalWasherRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
+    public FluidGasToGasCachedRecipe(FluidGasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
           IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> cleansingTank,
           Supplier<@NonNull GasTank> inputTank, IntSupplier maxOperations, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);

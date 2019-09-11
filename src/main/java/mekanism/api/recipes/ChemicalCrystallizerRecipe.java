@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
-
     private final ItemStack outputRepresentation;
 
     public ChemicalCrystallizerRecipe(GasStackIngredient input, ItemStack outputRepresentation) {

@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -92,6 +93,8 @@ public class InfuseStorage implements ISustainedData, InfusionContainer {
         }
     }
 
+    @Nullable
+    @Override
     public InfuseType getType() {
         return amount == 0 ? null : type;
     }
@@ -101,6 +104,7 @@ public class InfuseStorage implements ISustainedData, InfusionContainer {
         return this;
     }
 
+    @Override
     public int getAmount() {
         return type == null ? 0 : amount;
     }

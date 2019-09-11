@@ -20,9 +20,7 @@ import net.minecraft.item.ItemStack;
 public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull ItemStack> {
 
     private final ItemStackIngredient mainInput;
-
     private final ItemStackIngredient extraInput;
-
     private ItemStack outputDefinition;
 
     public CombinerRecipe(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack outputDefinition) {

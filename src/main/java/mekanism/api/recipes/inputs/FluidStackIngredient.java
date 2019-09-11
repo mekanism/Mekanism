@@ -12,17 +12,17 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Created by Thiakil on 12/07/2019.
  */
-public abstract class FluidStackIngredient implements InputPredicate<@NonNull FluidStack> {
+public abstract class FluidStackIngredient implements InputIngredient<@NonNull FluidStack> {
 
-    public static FluidStackIngredient fromInstance(@NonNull Fluid instance, int minAmount) {
-        return fromInstance(new FluidStack(instance, minAmount));
+    public static FluidStackIngredient from(@NonNull Fluid instance, int minAmount) {
+        return from(new FluidStack(instance, minAmount));
     }
 
-    public static FluidStackIngredient fromInstance(@NonNull FluidStack instance) {
+    public static FluidStackIngredient from(@NonNull FluidStack instance) {
         return new Instance(instance);
     }
 
-    public static FluidStackIngredient fromName(@NonNull String name, int minAmount) {
+    public static FluidStackIngredient from(@NonNull String name, int minAmount) {
         return new Named(name, minAmount);
     }
 

@@ -13,11 +13,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
-
     private final GasStack leftGasOutput;
-
     private final GasStack rightGasOutput;
-
     private final double energyUsage;
 
     public ElectrolysisRecipe(FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {

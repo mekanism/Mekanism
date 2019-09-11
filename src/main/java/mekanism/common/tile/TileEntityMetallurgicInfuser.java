@@ -183,8 +183,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         } else if (slotID == 2) {
             //If we have a type make sure that the recipe is valid for the type we have stored
             if (infuseStored.getType() != null) {
-                InfuseObject currentInfuseType = new InfuseObject(infuseStored.getType(), infuseStored.getAmount());
-                return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(currentInfuseType) && recipe.getItemInput().testType(itemstack));
+                return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(infuseStored.getType()) && recipe.getItemInput().testType(itemstack));
             }
             //Otherwise just look for items that can be used
             return getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));

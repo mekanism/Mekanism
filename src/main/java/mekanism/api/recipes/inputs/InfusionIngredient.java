@@ -11,7 +11,7 @@ import mekanism.api.infuse.InfusionContainer;
 /**
  * Created by Thiakil on 12/07/2019.
  */
-public abstract class InfusionIngredient implements InputPredicate<InfuseObject> {
+public abstract class InfusionIngredient implements InputIngredient<InfuseObject> {
 
     public static InfusionIngredient from(@NonNull InfuseType infuseType, int minAmount) {
         return new SingleType(infuseType, minAmount);
@@ -23,6 +23,8 @@ public abstract class InfusionIngredient implements InputPredicate<InfuseObject>
         }
         return test(new InfuseObject(input.getType(), input.getAmount()));
     }
+
+    public abstract boolean testType(@NonNull InfuseType infuseType);
 
     public static class SingleType extends InfusionIngredient {
 
@@ -39,19 +41,26 @@ public abstract class InfusionIngredient implements InputPredicate<InfuseObject>
         }
 
         @Override
-        public boolean test(InfuseObject infuseObject) {
+        public boolean test(@NonNull InfuseObject infuseObject) {
             return testType(infuseObject) && infuseObject.getAmount() >= this.minAmount;
         }
 
         @Override
-        public boolean testType(InfuseObject infuseObject) {
-            return Objects.requireNonNull(infuseObject.getType()) == this.infuseType;
+        public boolean testType(@NonNull InfuseObject infuseObject) {
+            return testType(Objects.requireNonNull(infuseObject).getType());
+        }
+
+        @Override
+        public boolean testType(@NonNull InfuseType infuseType) {
+            return Objects.requireNonNull(infuseType) == this.infuseType;
         }
 
         @Override
         public @NonNull List<InfuseObject> getRepresentations() {
             return Collections.singletonList(infuseObject);
         }
+
+        //TODO: A InfuseType representations thing
     }
 
     //TODO: 1.14 Add one that is based off of tags so as to allow multiple types

@@ -3,9 +3,10 @@ package mekanism.client.jei.machine.other;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.annotations.NonNull;
+import mekanism.api.infuse.InfuseObject;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.client.jei.machine.MekanismRecipeWrapper;
-import mekanism.common.InfuseStorage;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import net.minecraft.client.Minecraft;
@@ -32,15 +33,23 @@ public class MetallurgicInfuserRecipeWrapper extends MekanismRecipeWrapper<Metal
     public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         if (mc.currentScreen != null) {
             mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            mc.currentScreen.drawTexturedModalRect(2, 2, recipe.getInput().infuse.getType().sprite, 4, 52);
+            @NonNull List<InfuseObject> representations = recipe.getInfusionInput().getRepresentations();
+            //TODO: Make it cycle instead of just use the first (will be a lot easier in 1.14 with the JEI changes and with the system of drawing the infuse bar)
+            if (!representations.isEmpty()) {
+                InfuseObject infuse = representations.get(0);
+                mc.currentScreen.drawTexturedModalRect(2, 2, infuse.getType().sprite, 4, 52);
+            }
         }
     }
 
     @Override
     public List<String> getTooltipStrings(int mouseX, int mouseY) {
         if (mouseX >= 2 && mouseX < 6 && mouseY >= 2 && mouseY < 54) {
-            InfuseStorage infuse = recipe.getInput().infuse;
-            return Collections.singletonList(infuse.getType().getLocalizedName() + ": " + infuse.getAmount());
+            @NonNull List<InfuseObject> representations = recipe.getInfusionInput().getRepresentations();
+            if (!representations.isEmpty()) {
+                InfuseObject infuse = representations.get(0);
+                return Collections.singletonList(infuse.getType().getLocalizedName() + ": " + infuse.getAmount());
+            }
         }
         return Collections.emptyList();
     }

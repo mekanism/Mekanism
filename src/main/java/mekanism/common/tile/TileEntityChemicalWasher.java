@@ -11,9 +11,9 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.recipes.ChemicalWasherRecipe;
+import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ChemicalWasherCachedRecipe;
+import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Upgrade;
@@ -51,7 +51,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager,
-      IComparatorSupport, ICachedRecipeHolder<ChemicalWasherRecipe> {
+      IComparatorSupport, ICachedRecipeHolder<FluidGasToGasRecipe> {
 
     public static final int MAX_GAS = 10000;
     public static final int MAX_FLUID = 10000;
@@ -60,7 +60,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public GasTank outputTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
 
-    public CachedRecipe<ChemicalWasherRecipe> cachedRecipe;
+    public CachedRecipe<FluidGasToGasRecipe> cachedRecipe;
 
     private int currentRedstoneLevel;
     public double clientEnergyUsed;
@@ -96,13 +96,13 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Nonnull
     @Override
-    public Recipe<ChemicalWasherRecipe> getRecipes() {
+    public Recipe<FluidGasToGasRecipe> getRecipes() {
         return Recipe.CHEMICAL_WASHER;
     }
 
     @Nullable
     @Override
-    public ChemicalWasherRecipe getRecipe(int cacheIndex) {
+    public FluidGasToGasRecipe getRecipe(int cacheIndex) {
         GasStack gasStack = inputTank.getGas();
         FluidStack fluid = fluidTank.getFluid();
         return gasStack == null || gasStack.amount == 0 || fluid == null || fluid.amount == 0 ? null : getRecipes().findFirst(recipe -> recipe.test(fluid, gasStack));
@@ -110,9 +110,9 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Nullable
     @Override
-    public ChemicalWasherCachedRecipe createNewCachedRecipe(@Nonnull ChemicalWasherRecipe recipe, int cacheIndex) {
+    public FluidGasToGasCachedRecipe createNewCachedRecipe(@Nonnull FluidGasToGasRecipe recipe, int cacheIndex) {
         int maxOperations = getUpgradedUsage(recipe);
-        return new ChemicalWasherCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
+        return new FluidGasToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> inputTank, () -> maxOperations,
               OutputHelper.getAddToOutput(outputTank));
     }
@@ -124,11 +124,12 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         }
     }
 
-    private int getUpgradedUsage(ChemicalWasherRecipe recipe) {
+    private int getUpgradedUsage(FluidGasToGasRecipe recipe) {
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
         possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
         //TODO: Instead of water, use the recipe's cleansing fluid amount
+
         return Math.min(fluidTank.getFluidAmount() / WATER_USAGE, possibleProcess);
     }
 
@@ -188,7 +189,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         if (getTank(side) == inputTank) {
-            return getTank(side).canReceive(type) && getRecipes().contains(recipe -> recipe.getInput().testType(new GasStack(type, 1)));
+            return getTank(side).canReceive(type) && getRecipes().contains(recipe -> recipe.getGasInput().testType(type));
         }
         return false;
     }

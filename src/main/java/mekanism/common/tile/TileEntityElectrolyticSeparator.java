@@ -222,11 +222,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
-            if (fluidContained != null) {
-                return getRecipes().contains(recipe -> recipe.getInput().testType(fluidContained));
-            }
-            return false;
+            return isFluidInputItem(itemstack);
         } else if (slotID == 1) {
             return itemstack.getItem() instanceof IGasItem &&
                    (((IGasItem) itemstack.getItem()).getGas(itemstack) == null || ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Hydrogen);

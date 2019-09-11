@@ -17,6 +17,9 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public class InfuseRegistry {
 
+    //TODO: Should it use ItemStackIngredient instead of Ingredient to allow for the things to require a size
+    // also should we just entirely replace the ingredient -> infuse object system, and the GasConversionHandler
+    // system by making them be "recipe types"
     /**
      * The (private) map of infuse names and their corresponding InfuseTypes.
      */

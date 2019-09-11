@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NonNull;
 
-public interface InputPredicate<T> extends Predicate<T> {
+public interface InputIngredient<TYPE> extends Predicate<TYPE> {
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -13,12 +13,14 @@ public interface InputPredicate<T> extends Predicate<T> {
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(T t);//TODO: Use this instead of test in some spots we currently use test
+    boolean testType(@NonNull TYPE t);
 
     /**
      * Primarily for JEI, a list of valid instances of the type
      *
      * @return List (empty means no valid registrations found and recipe is to be hidden)
      */
-    @NonNull List<T> getRepresentations();
+    //TODO: Make a note after checking some stuff but this should either allow them to be mutable or specifically say
+    // not to attempt to mutate them
+    @NonNull List<TYPE> getRepresentations();
 }

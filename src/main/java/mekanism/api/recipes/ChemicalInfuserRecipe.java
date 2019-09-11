@@ -19,13 +19,10 @@ public class ChemicalInfuserRecipe implements IMekanismRecipe, BiPredicate<@NonN
 
     @NonNull
     private final GasStackIngredient leftInput;
-
     @NonNull
     private final GasStackIngredient rightInput;
-
     @NonNull
     private final Gas outputGas;
-
     private final int outputGasAmount;
 
     public ChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, Gas outputGas, int outputGasAmount) {
