@@ -5,17 +5,33 @@ import crafttweaker.api.item.IItemCondition;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IItemTransformer;
 import crafttweaker.api.item.IItemTransformerNew;
+import crafttweaker.api.item.IngredientOr;
 import crafttweaker.api.liquid.ILiquidStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.player.IPlayer;
+import crafttweaker.mc1120.item.MCItemStack;
+import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.item.ItemBlockGasTank;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeHooks;
 
 public class CraftTweakerGasStack implements IGasStack {
 
+    private final IItemTransformerNew transformerNew;
     private final GasStack stack;
 
     public CraftTweakerGasStack(GasStack stack) {
+        this(stack, null);
+    }
+
+    public CraftTweakerGasStack(GasStack stack, IItemTransformerNew transformerNew) {
         this.stack = stack;
+        this.transformerNew = transformerNew;
     }
 
     @Override
@@ -45,17 +61,28 @@ public class CraftTweakerGasStack implements IGasStack {
 
     @Override
     public List<IItemStack> getItems() {
-        return null;
+        IItemStack stack = getGasTankExample();
+        return stack == null ? Collections.emptyList() : Collections.singletonList(stack);
     }
 
     @Override
     public IItemStack[] getItemArray() {
-        return new IItemStack[0];
+        IItemStack stack = getGasTankExample();
+        return stack == null ? new IItemStack[0] : new IItemStack[]{stack};
+    }
+
+    @Nullable
+    private IItemStack getGasTankExample() {
+        ItemStack gasTank = new ItemStack(MekanismBlocks.GasTank);
+        //TODO: Should we also make it be a specific tier
+        ((ItemBlockGasTank) gasTank.getItem()).setGas(gasTank, this.stack);
+        IItemStack stack = CraftTweakerMC.getIItemStack(gasTank);
+        return stack == null ? null : stack.withDisplayName(String.format("Any container with %s * %d", getDisplayName(), this.getAmount()));
     }
 
     @Override
     public List<ILiquidStack> getLiquids() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -64,63 +91,86 @@ public class CraftTweakerGasStack implements IGasStack {
     }
 
     @Override
-    public IIngredient or(IIngredient iIngredient) {
-        return null;
+    public IIngredient or(IIngredient ingredient) {
+        return new IngredientOr(this, ingredient);
     }
 
     @Override
     public IIngredient transformNew(IItemTransformerNew transformer) {
-        return null;
+        return new CraftTweakerGasStack(this.stack, transformer);
     }
 
     @Override
-    public IIngredient transform(IItemTransformer iItemTransformer) {
-        return null;
+    public IIngredient transform(IItemTransformer transformer) {
+        throw new UnsupportedOperationException("Gas stacks can't have transformers");
     }
 
     @Override
-    public IIngredient only(IItemCondition iItemCondition) {
-        return null;
+    public IIngredient only(IItemCondition condition) {
+        throw new UnsupportedOperationException("Gas stacks can't have conditions");
     }
 
     @Override
     public IIngredient marked(String s) {
-        return null;
+        throw new UnsupportedOperationException("Gas stacks can't be marked");
     }
 
     @Override
-    public boolean matches(IItemStack iItemStack) {
+    public boolean matches(IItemStack stack) {
+        ItemStack itemStack = CraftTweakerMC.getItemStack(stack);
+        if (itemStack.getItem() instanceof IGasItem) {
+            IGasItem item = (IGasItem) itemStack.getItem();
+            GasStack gasStack = item.getGas(itemStack);
+            return gasStack != null && matches(new CraftTweakerGasStack(gasStack));
+        }
         return false;
     }
 
     @Override
-    public boolean matchesExact(IItemStack iItemStack) {
+    public boolean matchesExact(IItemStack stack) {
+        return this.matches(stack);
+    }
+
+    @Override
+    public boolean matches(ILiquidStack liquid) {
         return false;
     }
 
     @Override
-    public boolean matches(ILiquidStack iLiquidStack) {
-        return false;
+    public boolean contains(IIngredient ingredient) {
+        if (ingredient == null) {
+            return false;
+        }
+        List<IGasStack> gases = IngredientExpansion.getGases(ingredient);
+        return gases.stream().allMatch(gasStack -> IngredientExpansion.matches(ingredient, gasStack)) && !gases.isEmpty();
     }
 
     @Override
-    public boolean contains(IIngredient iIngredient) {
-        return false;
-    }
-
-    @Override
-    public IItemStack applyTransform(IItemStack iItemStack, IPlayer iPlayer) {
-        return null;
+    public IItemStack applyTransform(IItemStack item, IPlayer player) {
+        return item;
     }
 
     @Override
     public IItemStack applyNewTransform(IItemStack item) {
-        return null;
+        if (transformerNew != null) {
+            return transformerNew.transform(item);
+        }
+        ItemStack itemStack = CraftTweakerMC.getItemStack(item);
+        if (itemStack.getItem() instanceof IGasItem) {
+            IGasItem gasItem = (IGasItem) itemStack.getItem();
+            if (gasItem.canProvideGas(itemStack, stack.getGas())) {
+                //TODO: Do we need to check to ensure it has enough? Or will that be caught by the matches check
+                gasItem.removeGas(itemStack, stack.amount);
+            }
+            return MCItemStack.createNonCopy(itemStack);
+        }
+        return CraftTweakerMC.getIItemStack(ForgeHooks.getContainerItem(itemStack));
     }
 
     @Override
     public boolean hasNewTransformers() {
-        return false;
+        //Always return true so that the draining can be done
+        return true;
     }
 
     @Override
@@ -134,17 +184,28 @@ public class CraftTweakerGasStack implements IGasStack {
     }
 
     @Override
+    public List<IGasStack> getGases() {
+        return Collections.singletonList(this);
+    }
+
+    @Override
+    public boolean matches(IGasStack gasStack) {
+        return gasStack != null && getDefinition().equals(gasStack.getDefinition()) && getAmount() <= gasStack.getAmount();
+    }
+
+    @Override
     public Object getInternal() {
         return stack;
     }
 
     @Override
-    public String toCommandString() {
+    public String toString() {
+        //TODO: MCLiquidStack does not include a multiplication value. Should we mirror that
         return stack.amount > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.amount) : String.format("<gas:%s>", stack.getGas().getName());
     }
 
     @Override
-    public String toString() {
-        return toCommandString();
+    public String toCommandString() {
+        return toString();
     }
 }

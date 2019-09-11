@@ -37,57 +37,47 @@ public class RecipeInfoHelper {
         //Item input
         if (recipe instanceof ChemicalCrystallizerRecipe) {
             return getItemName(((ChemicalCrystallizerRecipe) recipe).getOutput(null));
-        }
-        if (recipe instanceof CombinerRecipe) {
+        } else if (recipe instanceof CombinerRecipe) {
             return getItemName(((CombinerRecipe) recipe).getOutput(null, null));
-        }
-        if (recipe instanceof ItemStackGasToItemStackRecipe) {
+        } else if (recipe instanceof ItemStackGasToItemStackRecipe) {
             return getItemName(((ItemStackGasToItemStackRecipe) recipe).getOutput(null, null));
-        }
-        if (recipe instanceof ItemStackToItemStackRecipe) {
+        } else if (recipe instanceof ItemStackToItemStackRecipe) {
             return getItemName(((ItemStackToItemStackRecipe) recipe).getOutput(null));
-        }
-        if (recipe instanceof MetallurgicInfuserRecipe) {
+        } else if (recipe instanceof MetallurgicInfuserRecipe) {
             return getItemName(((MetallurgicInfuserRecipe) recipe).getOutput(null, null));
         }
         //Gas output
-        if (recipe instanceof AmbientAccumulatorRecipe) {
+        else if (recipe instanceof AmbientAccumulatorRecipe) {
             return getGasName(((AmbientAccumulatorRecipe) recipe).getOutput());
-        }
-        if (recipe instanceof ChemicalInfuserRecipe) {
+        } else if (recipe instanceof ChemicalInfuserRecipe) {
             return getGasName(((ChemicalInfuserRecipe) recipe).getOutput(null, null));
-        }
-        if (recipe instanceof ChemicalWasherRecipe) {
+        } else if (recipe instanceof ChemicalWasherRecipe) {
             return getGasName(((ChemicalWasherRecipe) recipe).getOutput(null, null));
-        }
-        if (recipe instanceof GasToGasRecipe) {
+        } else if (recipe instanceof GasToGasRecipe) {
             return getGasName(((GasToGasRecipe) recipe).getOutput(null));
-        }
-        if (recipe instanceof ItemStackGasToGasRecipe) {
+        } else if (recipe instanceof ItemStackGasToGasRecipe) {
             return getGasName(((ItemStackGasToGasRecipe) recipe).getOutput(null, null));
-        }
-        if (recipe instanceof ItemStackToGasRecipe) {
+        } else if (recipe instanceof ItemStackToGasRecipe) {
             return getGasName(((ItemStackToGasRecipe) recipe).getOutput(null));
         }
         //Fluid
-        if (recipe instanceof FluidToFluidRecipe) {
-            FluidToFluidRecipe castedRecipe = (FluidToFluidRecipe) recipe;
+        else if (recipe instanceof FluidToFluidRecipe) {
             return getFluidName(((FluidToFluidRecipe) recipe).getOutput(null));
         }
         //Double Gas output
-        if (recipe instanceof ElectrolysisRecipe) {
+        else if (recipe instanceof ElectrolysisRecipe) {
             ElectrolysisRecipe castedRecipe = (ElectrolysisRecipe) recipe;
             Pair<GasStack, GasStack> output = castedRecipe.getOutput(null);
             return "[" + getGasName(output.getLeft()) + ", " + getGasName(output.getRight()) + "]";
         }
         //item gas output
-        if (recipe instanceof PressurizedReactionRecipe) {
+        else if (recipe instanceof PressurizedReactionRecipe) {
             PressurizedReactionRecipe castedRecipe = (PressurizedReactionRecipe) recipe;
             @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> output = castedRecipe.getOutput(null, null, null);
             return "[" + getItemName(output.getLeft()) + ", " + getGasName(output.getRight()) + "]";
         }
         //item item
-        if (recipe instanceof SawmillRecipe) {
+        else if (recipe instanceof SawmillRecipe) {
             SawmillRecipe castedRecipe = (SawmillRecipe) recipe;
             ChanceOutput output = castedRecipe.getOutput(null);
             ItemStack secondaryOutput = output.getMaxSecondaryOutput();
@@ -100,6 +90,10 @@ public class RecipeInfoHelper {
         return null;
     }
 
+    public static String getGasName(List<GasStack> stacks) {
+        //TODO: Implement
+    }
+
     public static String getGasName(GasStack stack) {
         return stack.amount > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.amount) : getGasName(stack.getGas());
     }
@@ -109,7 +103,7 @@ public class RecipeInfoHelper {
     }
 
     public static String getFluidName(List<FluidStack> stacks) {
-        //TODO: If CrT does not support multi ingredient fluids replace this with loops
+        //TODO: Implement
     }
 
     public static String getFluidName(FluidStack stack) {
@@ -121,7 +115,7 @@ public class RecipeInfoHelper {
     }
 
     public static String getItemName(List<ItemStack> stacks) {
-        //TODO: Implement this
+        //TODO: Implement
     }
 
     public static String getItemName(ItemStack stack) {

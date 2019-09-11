@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.gas;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
+import java.util.List;
 import stanhebben.zenscript.annotations.OperatorType;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
@@ -24,4 +25,10 @@ public interface IGasStack extends IIngredient {
     @ZenOperator(OperatorType.MUL)
     @ZenMethod
     IGasStack withAmount(int amount);
+
+    @ZenGetter("gases")
+    List<IGasStack> getGases();
+
+    @ZenMethod
+    boolean matches(IGasStack gasStack);
 }
