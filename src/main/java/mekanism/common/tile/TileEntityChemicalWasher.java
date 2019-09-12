@@ -112,9 +112,9 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Nullable
     @Override
     public FluidGasToGasCachedRecipe createNewCachedRecipe(@Nonnull FluidGasToGasRecipe recipe, int cacheIndex) {
-        return new FluidGasToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> inputTank,
-              () -> upgradeComponent.getUpgrades(Upgrade.SPEED), OutputHelper.getAddToOutput(outputTank));
+        return new FluidGasToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, this::setActive,
+              energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> inputTank, () -> upgradeComponent.getUpgrades(Upgrade.SPEED),
+              OutputHelper.getAddToOutput(outputTank));
     }
 
     @Override

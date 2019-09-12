@@ -1,10 +1,12 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Random;
+import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 
@@ -12,32 +14,40 @@ import mekanism.common.util.FieldsAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AmbientAccumulatorCachedRecipe extends CachedRecipe<AmbientAccumulatorRecipe> {
 
-    public AmbientAccumulatorCachedRecipe(AmbientAccumulatorRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, recipe::getTicksRequired, setActive, useEnergy, onFinish);
+    private static final Random gasRand = new Random();
 
+    private final BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput;
+    //TODO: 1.14 DimensionType instead of id
+    //This can be a supplier in case someone implementing this ends up having their collector be able to go from one dimension to another
+    private final IntSupplier currentDimension;
+
+    public AmbientAccumulatorCachedRecipe(AmbientAccumulatorRecipe recipe, BooleanSupplier canTileFunction, Runnable onFinish,
+          IntSupplier currentDimension, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
+        super(recipe, canTileFunction, () -> 0, () -> 0, recipe::getTicksRequired, active -> {
+        }, energy -> {
+        }, onFinish);
+        this.currentDimension = currentDimension;
+        this.addToOutput = addToOutput;
+    }
+
+    private int getDimension() {
+        return currentDimension.getAsInt();
     }
 
     @Override
     public boolean hasResourcesForTick() {
-        //TODO: Implement
-        return false;
+        return getDimension() == recipe.getDimension();
     }
 
     @Override
     public boolean hasRoomForOutput() {
-        //TODO: implement
-        return false;
-    }
-
-    @Override
-    protected void useResources() {
-        super.useResources();
-        //TODO: Use any secondary resources or remove this override
+        return addToOutput.apply(recipe.getOutput(), true);
     }
 
     @Override
     protected void finishProcessing() {
-        //TODO: add the output to the output slot
+        if (gasRand.nextDouble() < 0.05) {
+            addToOutput.apply(recipe.getOutput(), false);
+        }
     }
 }

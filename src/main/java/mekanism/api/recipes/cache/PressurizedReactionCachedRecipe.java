@@ -14,6 +14,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -37,26 +38,38 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
         this.addToOutput = addToOutput;
     }
 
+    private ItemStack getItemInput() {
+        return inputStack.get();
+    }
+
+    private FluidTank getFluidTank() {
+        return fluidInputTank.get();
+    }
+
+    private GasTank getGasTank() {
+        return gasInputTank.get();
+    }
+
     @Override
     public boolean hasResourcesForTick() {
-        //TODO: Implement
-        return false;
+        GasStack gas = getGasTank().getGas();
+        if (gas == null || gas.amount == 0) {
+            return false;
+        }
+        FluidStack fluid = getFluidTank().getFluid();
+        if (fluid == null || fluid.amount == 0) {
+            return false;
+        }
+        return recipe.test(getItemInput(), fluid, gas);
     }
 
     @Override
     public boolean hasRoomForOutput() {
-        //TODO: implement
-        return false;
-    }
-
-    @Override
-    protected void useResources() {
-        super.useResources();
-        //TODO: Use any secondary resources or remove this override
+        return addToOutput.apply(recipe.getOutput(getItemInput(), getFluidTank().getFluid(), getGasTank().getGas()), true);
     }
 
     @Override
     protected void finishProcessing() {
-        //TODO: add the output to the output slot
+        addToOutput.apply(recipe.getOutput(getItemInput(), getFluidTank().getFluid(), getGasTank().getGas()), false);
     }
 }

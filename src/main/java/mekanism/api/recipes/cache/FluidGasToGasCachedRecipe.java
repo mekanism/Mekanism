@@ -27,10 +27,16 @@ public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe>
     private final IntSupplier speedUpgrades;
 
     public FluidGasToGasCachedRecipe(FluidGasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> cleansingTank,
+          Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> fluidTank, Supplier<@NonNull GasTank> gasTank,
+          IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
+        this(recipe, canTileFunction, perTickEnergy, storedEnergy, () -> 1, setActive, useEnergy, onFinish, fluidTank, gasTank, speedUpgrades, addToOutput);
+    }
+
+    public FluidGasToGasCachedRecipe(FluidGasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
+          IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> fluidTank,
           Supplier<@NonNull GasTank> gasTank, IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
-        this.fluidTank = cleansingTank;
+        this.fluidTank = fluidTank;
         this.gasTank = gasTank;
         this.addToOutput = addToOutput;
         this.speedUpgrades = speedUpgrades;

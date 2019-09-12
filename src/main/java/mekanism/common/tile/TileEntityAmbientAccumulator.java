@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -10,10 +10,15 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
+import mekanism.api.recipes.cache.AmbientAccumulatorCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -21,12 +26,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler {
+public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ICachedRecipeHolder<AmbientAccumulatorRecipe> {
 
-    public static Random gasRand = new Random();
     public GasTank collectedGas = new GasTank(1000);
-    public int cachedDimensionId = 0;
-    public AmbientAccumulatorRecipe cachedRecipe;
+    public CachedRecipe<AmbientAccumulatorRecipe> cachedRecipe;
 
     public TileEntityAmbientAccumulator() {
         super("AmbientAccumulator");
@@ -36,12 +39,9 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            if (cachedRecipe == null || world.provider.getDimension() != cachedDimensionId) {
-                cachedDimensionId = world.provider.getDimension();
-                cachedRecipe = RecipeHandler.getDimensionGas(cachedDimensionId);
-            }
-            if (cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput().applyOutputs(collectedGas, false, 1)) {
-                cachedRecipe.getOutput().applyOutputs(collectedGas, true, 1);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
         }
     }
@@ -103,5 +103,24 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
             return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public Recipe<AmbientAccumulatorRecipe> getRecipes() {
+        return Recipe.AMBIENT_ACCUMULATOR;
+    }
+
+    @Nullable
+    @Override
+    public AmbientAccumulatorRecipe getRecipe(int cacheIndex) {
+        return getRecipes().findFirst(recipe -> recipe.test(world.provider.getDimension()));
+    }
+
+    @Nullable
+    @Override
+    public CachedRecipe<AmbientAccumulatorRecipe> createNewCachedRecipe(@Nonnull AmbientAccumulatorRecipe recipe, int cacheIndex) {
+        return new AmbientAccumulatorCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), this::markDirty, () -> world.provider.getDimension(),
+              OutputHelper.getAddToOutput(collectedGas));
     }
 }

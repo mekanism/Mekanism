@@ -88,40 +88,12 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             cachedRecipe = getUpdatedCache(cachedRecipe, 0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) &&
-                getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy)) {
-                boolean update = BASE_TICKS_REQUIRED != recipe.ticks;
-                BASE_TICKS_REQUIRED = recipe.ticks;
-                if (update) {
-                    recalculateUpgradables(Upgrade.SPEED);
-                }
-                setActive(true);
-                operatingTicks++;
-                if (operatingTicks < ticksRequired) {
-                    electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
-                } else if (getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy)) {
-                    operate(recipe);
-                    operatingTicks = 0;
-                    electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
-                }
-            } else {
-                BASE_TICKS_REQUIRED = 100;
-                if (prevEnergy >= getEnergy()) {
-                    setActive(false);
-                }
-            }
-
-            if (!canOperate(recipe)) {
-                operatingTicks = 0;
-            }
-            prevEnergy = getEnergy();
         }
     }
 
@@ -158,9 +130,12 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
     @Nullable
     @Override
     public PressurizedReactionCachedRecipe createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe, int cacheIndex) {
-        //TODO: Try to cache the energy per tick
-        //TODO: base ticks required
-        recipe.getDuration();
+        //TODO: Is this fine, or do we need it somewhere that will get called in more places than ONLY when the cache is being made
+        boolean update = BASE_TICKS_REQUIRED != recipe.getDuration();
+        BASE_TICKS_REQUIRED = recipe.getDuration();
+        if (update) {
+            recalculateUpgradables(Upgrade.SPEED);
+        }
         return new PressurizedReactionCachedRecipe(recipe, () -> MekanismUtils.canFunction(this),
               () -> MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.getEnergyRequired()), this::getEnergy, () -> ticksRequired,
               this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> inputFluidTank, () -> inputGasTank,

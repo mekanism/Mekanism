@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
@@ -12,6 +13,10 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.GasToGasCachedRecipe;
+import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -23,6 +28,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -35,13 +41,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, IActiveState, ISustainedData,
-      ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler, IComparatorSupport {
+      ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler, IComparatorSupport, ICachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10000;
     private static final int[] INPUT_SLOT = {0};
@@ -52,7 +59,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     public int gasOutput = 256;
 
-    private GasToGasRecipe cachedRecipe;
+    private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
     private int currentRedstoneLevel;
     private boolean isActive;
@@ -81,28 +88,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         if (!world.isRemote) {
             TileUtils.receiveGas(inventory.get(0), inputTank);
             TileUtils.drawGas(inventory.get(1), outputTank);
-            GasToGasRecipe recipe = getRecipe();
 
-            // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
-            // changing this would dramatically affect a lot of setups with Fusion reactors which can take
-            // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
-            // rain checks.
-            boolean seesSun = world.isDaytime() && world.canSeeSky(getPos().up()) && !world.provider.isNether();
-            if (needsRainCheck) {
-                seesSun &= !(world.isRaining() || world.isThundering());
-            }
-
-            if (seesSun && canOperate(recipe) && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                operate(recipe);
-            } else {
-                setActive(false);
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
 
             TileUtils.emitGas(this, outputTank, gasOutput, facing);
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
             if (world.getTotalWorldTime() % 20 == 0) {
+                //TODO: Why do we have to be sending updates to the client anyways?
+                // I believe we send when state changes, and otherwise we only should have to be sending if recipe actually processes
                 Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
@@ -114,18 +111,34 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         }
     }
 
-    public int getUpgradedUsage() {
-        int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-        possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
-        return possibleProcess;
+    @Nonnull
+    @Override
+    public Recipe<GasToGasRecipe> getRecipes() {
+        return Recipe.SOLAR_NEUTRON_ACTIVATOR;
     }
 
-    public boolean canOperate(GasToGasRecipe recipe) {
-        return recipe != null && recipe.canOperate(inputTank, outputTank);
+    @Nullable
+    @Override
+    public GasToGasRecipe getRecipe(int cacheIndex) {
+        GasStack gas = inputTank.getGas();
+        return gas == null || gas.amount == 0 ? null : getRecipes().findFirst(recipe -> recipe.test(gas));
     }
 
-    public void operate(GasToGasRecipe recipe) {
-        recipe.operate(inputTank, outputTank, getUpgradedUsage());
+    @Nullable
+    @Override
+    public GasToGasCachedRecipe createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
+        BlockPos positionAbove = getPos().up();
+        return new GasToGasCachedRecipe(recipe, () -> {
+            // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
+            // changing this would dramatically affect a lot of setups with Fusion reactors which can take
+            // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
+            // rain checks.
+            boolean seesSun = world.isDaytime() && world.canSeeSky(positionAbove) && !world.provider.isNether();
+            if (needsRainCheck) {
+                seesSun &= !(world.isRaining() || world.isThundering());
+            }
+            return seesSun && MekanismUtils.canFunction(this);
+        }, this::setActive, this::markDirty, () -> inputTank, () -> upgradeComponent.getUpgrades(Upgrade.SPEED), OutputHelper.getAddToOutput(outputTank));
     }
 
     @Override

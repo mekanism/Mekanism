@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.TileNetworkList;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager {
+public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager, ICachedRecipeHolder<FluidToFluidRecipe> {
 
     public static final int MAX_OUTPUT = 10000;
     public static final int MAX_SOLARS = 4;

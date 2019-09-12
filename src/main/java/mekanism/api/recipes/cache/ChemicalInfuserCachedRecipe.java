@@ -26,6 +26,12 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
     private final IntSupplier speedUpgrades;
 
     public ChemicalInfuserCachedRecipe(ChemicalInfuserRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
+          Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> leftTank, Supplier<@NonNull GasTank> rightTank,
+          IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
+        this(recipe, canTileFunction, perTickEnergy, storedEnergy, () -> 1, setActive, useEnergy, onFinish, leftTank, rightTank, speedUpgrades, addToOutput);
+    }
+
+    public ChemicalInfuserCachedRecipe(ChemicalInfuserRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
           IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> leftTank,
           Supplier<@NonNull GasTank> rightTank, IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);

@@ -96,9 +96,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Nullable
     @Override
     public ChemicalInfuserCachedRecipe createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
-        return new ChemicalInfuserCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> 1,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> leftTank, () -> rightTank,
-              () -> upgradeComponent.getUpgrades(Upgrade.SPEED), OutputHelper.getAddToOutput(centerTank));
+        return new ChemicalInfuserCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, this::setActive,
+              energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> leftTank, () -> rightTank, () -> upgradeComponent.getUpgrades(Upgrade.SPEED),
+              OutputHelper.getAddToOutput(centerTank));
     }
 
     @Override

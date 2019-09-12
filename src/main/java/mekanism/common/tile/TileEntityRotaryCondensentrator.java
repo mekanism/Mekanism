@@ -82,6 +82,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
                 }
 
+                //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
                     (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();

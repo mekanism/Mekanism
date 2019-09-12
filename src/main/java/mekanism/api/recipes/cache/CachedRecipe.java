@@ -11,6 +11,7 @@ import mekanism.common.util.FieldsAreNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
+//TODO: JavaDocs
 public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
 
     private final BooleanSupplier canTileFunction;
@@ -27,7 +28,8 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
      */
     private int operatingTicks;
 
-    //TODO: JavaDocs
+    //TODO: If this gets converted almost to more of a builder pattern with some reasonable defaults that may be useful
+    // Especially when it comes to some of the recipes having "optional" but currently unused in our machines params
     protected CachedRecipe(RECIPE recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy, IntSupplier requiredTicks,
           Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish) {
         this.recipe = recipe;
