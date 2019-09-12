@@ -20,6 +20,6 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 [[dependencies.forge]]
     modId="forge"
     mandatory=true
-    versionRange="[28,)" #TODO Set the version to first recommended build with fluids
+    versionRange="[28.1.0,)"
     side="BOTH"
 #TODO: Add the optional dependencies
