@@ -92,8 +92,6 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
         currentMax = Math.min(inputFluid.amount / recipeFluid.amount, currentMax);
 
         //Calculate the current max based on how much gas input we have to what is needed, capping at what we are told to use as a max
-        //NOTE: We multiply the required gas amount by our gas usage amount
-        //TODO: Should we be multiplying this by gas usage or somehow transition it to a new system
         currentMax = Math.min(inputGas.amount / recipeGas.amount, currentMax);
 
         //Calculate the max based on the space in the output

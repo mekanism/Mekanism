@@ -94,6 +94,7 @@ public class RecipeInfoHelper {
 
     public static String getGasName(List<GasStack> stacks) {
         //TODO: Implement
+        return "TODO: THIS SHOULD NOT BE HERE, IF THIS MESSAGE SOMEHOW GETS INTO AN ACTUAL RELEASE PLEASE REPORT IT.";
     }
 
     public static String getGasName(GasStack stack) {
@@ -106,6 +107,7 @@ public class RecipeInfoHelper {
 
     public static String getFluidName(FluidStackIngredient ingredient) {
         //TODO: Implement
+        return "TODO: THIS SHOULD NOT BE HERE, IF THIS MESSAGE SOMEHOW GETS INTO AN ACTUAL RELEASE PLEASE REPORT IT.";
     }
 
     public static String getFluidName(FluidStack stack) {
@@ -119,6 +121,7 @@ public class RecipeInfoHelper {
     public static String getItemName(ItemStackIngredient ingredient) {
         //TODO: Implement, make sure to test if adding extra paren around the different things is needed
         // ex: (<dirt> * 2) |  (<stone> * 4) to ensure it doesn't process it as ((<dirt> * 2) | <stone>) * 4
+        return "TODO: THIS SHOULD NOT BE HERE, IF THIS MESSAGE SOMEHOW GETS INTO AN ACTUAL RELEASE PLEASE REPORT IT.";
     }
 
     public static String getItemName(ItemStack stack) {

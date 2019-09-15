@@ -22,6 +22,6 @@ public interface InfusionContainer {
 
     //TODO: 1.14 maybe move where this is declared/how it works slightly
     default boolean isEmpty() {
-        return getType() == null || getAmount() == 0;
+        return getType() == null || getAmount() <= 0;
     }
 }

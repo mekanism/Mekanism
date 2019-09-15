@@ -93,7 +93,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     gasTank.draw(operations, true);
                     setEnergy(getEnergy() - energyPerTick * operations);
                     clientEnergyUsed = prev - getEnergy();
-                } else if (prevEnergy >= getEnergy()) {
+                } else {
                     setActive(false);
                 }
             } else if (mode == 1) {
@@ -104,6 +104,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
                 }
 
+                //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&
                     (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
@@ -114,11 +115,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     fluidTank.drain(operations, true);
                     setEnergy(getEnergy() - energyPerTick * operations);
                     clientEnergyUsed = prev - getEnergy();
-                } else if (prevEnergy >= getEnergy()) {
+                } else {
                     setActive(false);
                 }
             }
-            prevEnergy = getEnergy();
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
                 world.updateComparatorOutputLevel(pos, getBlockType());
