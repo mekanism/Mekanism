@@ -4,18 +4,21 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.TileNetworkList;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.FluidToFluidCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -60,6 +63,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public double partialOutput = 0;
 
     public float biomeTemp = 0;
+    //TODO: 1.14 potentially convert temperature to a double given we are using a DoubleSupplier anyways
+    // Will make it so we don't have cast issues from the configs. Doing so in 1.12 may be slightly annoying
+    // due to the fact the variables are stored in NBT as floats. Even though it should be able to load the float as a double
     public float temperature = 0;
     public float heatToAbsorb = 0;
 
@@ -77,11 +83,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public int clientSolarAmount;
     public boolean clientStructured;
 
-    public boolean cacheStructure = false;
-
     public float prevScale;
 
     public float totalLoss = 0;
+
+    public CachedRecipe<FluidToFluidRecipe> cachedRecipe;
 
     public TileEntityThermalEvaporationController() {
         super("ThermalEvaporationController");
@@ -98,37 +104,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             }
             if (structured) {
                 updateTemperature();
+                manageBuckets();
             }
-
-            manageBuckets();
-
-            FluidToFluidRecipe recipe = getRecipe();
-            if (canOperate(recipe)) {
-                int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
-                int inputStored = inputTank.getFluidAmount();
-                double outputRatio = (double) recipe.recipeOutput.output.amount / (double) recipe.recipeInput.ingredient.amount;
-                double tempMult = Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
-                double inputToUse = tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
-                inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
-                inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
-
-                lastGain = (float) inputToUse / (float) recipe.recipeInput.ingredient.amount;
-                partialInput += inputToUse;
-
-                if (partialInput >= 1) {
-                    int inputInt = (int) Math.floor(partialInput);
-                    inputTank.drain(inputInt, true);
-                    partialInput %= 1;
-                    partialOutput += (double) inputInt / recipe.recipeInput.ingredient.amount;
-                }
-
-                if (partialOutput >= 1) {
-                    int outputInt = (int) Math.floor(partialOutput);
-                    outputTank.fill(new FluidStack(recipe.recipeOutput.output.getFluid(), outputInt), true);
-                    partialOutput %= 1;
-                }
-            } else {
-                lastGain = 0;
+            cachedRecipe = getUpdatedCache(cachedRecipe, 0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
             if (structured) {
                 if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
@@ -137,10 +117,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 }
             }
         }
-    }
-
-    public FluidToFluidRecipe getRecipe() {
-        return RecipeHandler.getThermalEvaporationRecipe(inputTank.getFluid());
     }
 
     @Override
@@ -182,12 +158,25 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         }
     }
 
-    public boolean canOperate(FluidToFluidRecipe recipe) {
-        if (!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid() == null) {
-            return false;
-        }
-        return recipe != null && recipe.canOperate(inputTank, outputTank);
+    @Nonnull
+    @Override
+    public Recipe<FluidToFluidRecipe> getRecipes() {
+        return Recipe.THERMAL_EVAPORATION_PLANT;
+    }
 
+    @Nullable
+    @Override
+    public FluidToFluidRecipe getRecipe(int cacheIndex) {
+        FluidStack fluid = inputTank.getFluid();
+        return fluid == null ? null : getRecipes().findFirst(recipe -> recipe.test(fluid));
+    }
+
+    @Nullable
+    @Override
+    public FluidToFluidCachedRecipe createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
+        //TODO: pass a way to set lastGain to this
+        return new FluidToFluidCachedRecipe(recipe, () -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this), this::markDirty,
+              () -> inputTank, this::getTemperature, () -> height, MAX_HEIGHT, OutputHelper.getOutputHandler(outputTank));
     }
 
     private void manageBuckets() {

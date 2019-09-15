@@ -9,6 +9,9 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 // Note: The cacheIndex is for purposes of what cache it will be stored in
 public interface ICachedRecipeHolder<RECIPE extends IMekanismRecipe> {
 
+    //TODO: This is actually in error AS Recipe does not exist in the scope of the api package
+    // Technically it is not *needed* by anything except is useful for the implementations of some of the things
+    // the interface declares
     @Nonnull
     Recipe<RECIPE> getRecipes();
 

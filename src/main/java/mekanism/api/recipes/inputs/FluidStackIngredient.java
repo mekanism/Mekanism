@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -47,6 +48,13 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             return Objects.requireNonNull(fluidStack).isFluidEqual(fluidInstance);
         }
 
+        @Nullable
+        @Override
+        //TODO: 1.14 make this return  @NonNull FluidStack like IntelliJ wants when implementing unimplemented interface methods
+        public FluidStack getMatchingInstance(@NonNull FluidStack fluidStack) {
+            return test(fluidStack) ? fluidInstance : null;
+        }
+
         @Override
         @NonNull
         public List<FluidStack> getRepresentations() {
@@ -74,6 +82,17 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Override
         public boolean testType(@NonNull FluidStack fluidStack) {
             return Objects.requireNonNull(fluidStack).getFluid().getName().equals(this.name);
+        }
+
+        @Nullable
+        @Override
+        //TODO: 1.14 make this return  @NonNull FluidStack like IntelliJ wants when implementing unimplemented interface methods
+        public FluidStack getMatchingInstance(@NonNull FluidStack fluidStack) {
+            if (test(fluidStack)) {
+                Fluid fluid = FluidRegistry.getFluid(this.name);
+                return fluid == null ? null : new FluidStack(fluid, minAmount);
+            }
+            return null;
         }
 
         @Override
@@ -110,6 +129,14 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         public boolean testType(@NonNull FluidStack fluidStack) {
             Objects.requireNonNull(fluidStack);
             return Arrays.stream(matchingStacks).anyMatch(fluidStack::isFluidEqual);
+        }
+
+        @Nullable
+        @Override
+        //TODO: 1.14 make this return  @NonNull FluidStack like InteliJ wants when implementing unimplemented interface methods
+        public FluidStack getMatchingInstance(@NonNull FluidStack fluidStack) {
+            Objects.requireNonNull(fluidStack);
+            return Arrays.stream(matchingStacks).filter(stack -> fluidStack.isFluidEqual(stack) && fluidStack.amount >= stack.amount).findFirst().orElse(null);
         }
 
         @Override

@@ -35,6 +35,12 @@ public class AmbientAccumulatorCachedRecipe extends CachedRecipe<AmbientAccumula
     }
 
     @Override
+    protected int getOperationsThisTick(int currentMax) {
+        //TODO: Move hasResourcesForTick and hasRoomForOutput into this calculation
+        return 1;
+    }
+
+    @Override
     public boolean hasResourcesForTick() {
         return getDimension() == recipe.getDimension();
     }
@@ -45,7 +51,7 @@ public class AmbientAccumulatorCachedRecipe extends CachedRecipe<AmbientAccumula
     }
 
     @Override
-    protected void finishProcessing() {
+    protected void finishProcessing(int operations) {
         if (gasRand.nextDouble() < 0.05) {
             addToOutput.apply(recipe.getOutput(), false);
         }

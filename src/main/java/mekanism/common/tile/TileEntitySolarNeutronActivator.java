@@ -138,7 +138,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
                 seesSun &= !(world.isRaining() || world.isThundering());
             }
             return seesSun && MekanismUtils.canFunction(this);
-        }, this::setActive, this::markDirty, () -> inputTank, () -> upgradeComponent.getUpgrades(Upgrade.SPEED), OutputHelper.getAddToOutput(outputTank));
+        }, this::setActive, this::markDirty, () -> inputTank, currentMax -> {
+            if (currentMax == 0) {
+                //Short circuit that if we already can't perform any outputs, just return
+                return 0;
+            }
+            return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+        }, OutputHelper.getOutputHandler(outputTank));
     }
 
     @Override

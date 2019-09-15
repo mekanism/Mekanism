@@ -216,8 +216,8 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
             case 3:
                 return new Object[]{facing};
             case 4:
-                //TODO: potentially simplify this, or at least get a new cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.hasResourcesForTick() && cachedRecipe.hasRoomForOutput()};
+                //TODO: Decide if we should try to get the cached recipe if it is null
+                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
             case 5:
                 return new Object[]{getMaxEnergy()};
             case 6:

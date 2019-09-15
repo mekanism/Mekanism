@@ -1,8 +1,6 @@
 package mekanism.api.recipes.cache;
 
-import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -10,32 +8,35 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.function.BooleanConsumer;
+import mekanism.api.function.IntToIntFunction;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.common.Upgrade;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
 
-    private final BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput;
+    private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final Supplier<@NonNull GasTank> inputTank;
-    private final IntSupplier speedUpgrades;
+    //TODO: Rename, and shift up to the CachedRecipe class level once we move things to having setters for "optional" params
+    private final IntToIntFunction operationCalculator;
 
-    public GasToGasCachedRecipe(GasToGasRecipe recipe, BooleanSupplier canTileFunction, Consumer<Boolean> setActive, Runnable onFinish,
-          Supplier<@NonNull GasTank> inputTank, IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
-        this(recipe, canTileFunction, () -> 0, () -> 0, () -> 1, setActive, energy -> {}, onFinish, inputTank, speedUpgrades, addToOutput);
+    public GasToGasCachedRecipe(GasToGasRecipe recipe, BooleanSupplier canTileFunction, BooleanConsumer setActive, Runnable onFinish,
+          Supplier<@NonNull GasTank> inputTank, IntToIntFunction operationCalculator, IOutputHandler<@NonNull GasStack> outputHandler) {
+        this(recipe, canTileFunction, () -> 0, () -> 0, () -> 1, setActive, energy -> {}, onFinish, inputTank, operationCalculator, outputHandler);
     }
 
     public GasToGasCachedRecipe(GasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> inputTank,
-          IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
+          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> inputTank,
+          IntToIntFunction operationCalculator, IOutputHandler<@NonNull GasStack> outputHandler) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
         this.inputTank = inputTank;
-        this.addToOutput = addToOutput;
-        this.speedUpgrades = speedUpgrades;
+        this.operationCalculator = operationCalculator;
+        this.outputHandler = outputHandler;
     }
 
     @Nonnull
@@ -43,8 +44,30 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
         return inputTank.get();
     }
 
-    private int getSpeedUpgrades() {
-        return speedUpgrades.getAsInt();
+    @Override
+    protected int getOperationsThisTick(int currentMax) {
+        currentMax = super.getOperationsThisTick(currentMax);
+        if (currentMax == 0) {
+            //If our parent checks show we can't operate then return so
+            return 0;
+        }
+        GasStack inputGas = getGasTank().getGas();
+        if (inputGas == null || inputGas.amount == 0) {
+            return 0;
+        }
+        GasStack recipeInput = recipe.getInput().getMatchingInstance(inputGas);
+        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+        if (recipeInput == null || recipeInput.amount == 0) {
+            //TODO: 1.14 make this check about being empty instead
+            return 0;
+        }
+        //Calculate the current max based on how much input we have to what is needed, capping at what we are told to use as a max
+        currentMax = Math.min(inputGas.amount / recipeInput.amount, currentMax);
+        //Calculate the max based on the space in the output
+        currentMax = outputHandler.operationsRoomFor(recipe.getOutput(recipeInput), currentMax);
+
+        //Do any extra processing for the max amount
+        return operationCalculator.apply(currentMax);
     }
 
     @Override
@@ -54,17 +77,20 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
     }
 
     @Override
-    public boolean hasRoomForOutput() {
-        return addToOutput.apply(recipe.getOutput(getGasTank().getGas()), true);
-    }
-
-    @Override
-    protected void finishProcessing() {
-        GasTank inputTank = getGasTank();
-        int possibleProcess = (int) Math.pow(2, getSpeedUpgrades());
-        possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
-
-        //TODO: Handle processing stuff
-        addToOutput.apply(recipe.getOutput(getGasTank().getGas()), false);
+    protected void finishProcessing(int operations) {
+        //TODO: Cache this stuff from when getOperationsThisTick was called?
+        GasStack inputGas = getGasTank().getGas();
+        if (inputGas == null || inputGas.amount == 0) {
+            //Something went wrong, this if should never really be true if we got to finishProcessing
+            return;
+        }
+        GasStack recipeInput = recipe.getInput().getMatchingInstance(inputGas);
+        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+        if (recipeInput == null || recipeInput.amount == 0) {
+            //TODO: 1.14 make this check about being empty instead
+            //Something went wrong, this if should never really be true if we got to finishProcessing
+            return;
+        }
+        outputHandler.handleOutput(recipe.getOutput(recipeInput), operations);
     }
 }

@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.function.BooleanConsumer;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -26,13 +27,13 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
     private final IntSupplier speedUpgrades;
 
     public ChemicalInfuserCachedRecipe(ChemicalInfuserRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> leftTank, Supplier<@NonNull GasTank> rightTank,
+          BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> leftTank, Supplier<@NonNull GasTank> rightTank,
           IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         this(recipe, canTileFunction, perTickEnergy, storedEnergy, () -> 1, setActive, useEnergy, onFinish, leftTank, rightTank, speedUpgrades, addToOutput);
     }
 
     public ChemicalInfuserCachedRecipe(ChemicalInfuserRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> leftTank,
+          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> leftTank,
           Supplier<@NonNull GasTank> rightTank, IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
         this.leftTank = leftTank;
@@ -56,6 +57,12 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
     }
 
     @Override
+    protected int getOperationsThisTick(int currentMax) {
+        //TODO: Move hasResourcesForTick and hasRoomForOutput into this calculation
+        return 1;
+    }
+
+    @Override
     public boolean hasResourcesForTick() {
         GasStack leftInput = getLeftTank().getGas();
         GasStack rightInput = getRightTank().getGas();
@@ -68,7 +75,7 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
     }
 
     @Override
-    protected void finishProcessing() {
+    protected void finishProcessing(int operations) {
         GasTank leftTank = getLeftTank();
         GasTank rightTank = getRightTank();
         int possibleProcess = (int) Math.pow(2, getSpeedUpgrades());

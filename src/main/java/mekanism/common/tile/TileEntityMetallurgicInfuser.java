@@ -291,8 +291,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             case 2:
                 return new Object[]{facing};
             case 3:
-                //TODO: potentially simplify this, or at least get a new cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.hasResourcesForTick() && cachedRecipe.hasRoomForOutput()};
+                //TODO: Decide if we should try to get the cached recipe if it is null
+                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
             case 4:
                 return new Object[]{getMaxEnergy()};
             case 5:

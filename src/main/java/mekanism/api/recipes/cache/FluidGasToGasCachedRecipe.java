@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.function.BooleanConsumer;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.FluidGasToGasRecipe;
@@ -27,13 +28,13 @@ public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe>
     private final IntSupplier speedUpgrades;
 
     public FluidGasToGasCachedRecipe(FluidGasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> fluidTank, Supplier<@NonNull GasTank> gasTank,
+          BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> fluidTank, Supplier<@NonNull GasTank> gasTank,
           IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         this(recipe, canTileFunction, perTickEnergy, storedEnergy, () -> 1, setActive, useEnergy, onFinish, fluidTank, gasTank, speedUpgrades, addToOutput);
     }
 
     public FluidGasToGasCachedRecipe(FluidGasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, Consumer<Boolean> setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> fluidTank,
+          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> fluidTank,
           Supplier<@NonNull GasTank> gasTank, IntSupplier speedUpgrades, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
         super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
         this.fluidTank = fluidTank;
@@ -57,6 +58,12 @@ public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe>
     }
 
     @Override
+    protected int getOperationsThisTick(int currentMax) {
+        //TODO: Move hasResourcesForTick and hasRoomForOutput into this calculation
+        return 1;
+    }
+
+    @Override
     public boolean hasResourcesForTick() {
         GasStack gasInput = getGasTank().getGas();
         if (gasInput == null) {
@@ -75,7 +82,7 @@ public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe>
     }
 
     @Override
-    protected void finishProcessing() {
+    protected void finishProcessing(int operations) {
         GasTank gasTank = getGasTank();
         FluidTank fluidTank = getFluidTank();
         int possibleProcess = (int) Math.pow(2, getSpeedUpgrades());

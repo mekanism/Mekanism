@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -56,6 +57,13 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             return Objects.requireNonNull(gas) == gasInstance;
         }
 
+        @Nullable
+        @Override
+        //TODO: 1.14 make this return  @NonNull GasStack like IntelliJ wants when implementing unimplemented interface methods
+        public GasStack getMatchingInstance(@NonNull GasStack gasStack) {
+            return test(gasStack) ? new GasStack(gasInstance, minAmount) : null;
+        }
+
         @Override
         public @NonNull List<GasStack> getRepresentations() {
             return Collections.singletonList(new GasStack(gasInstance, minAmount));
@@ -87,6 +95,17 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         @Override
         public boolean testType(@NonNull Gas gas) {
             return Objects.requireNonNull(gas).getName().equals(this.name);
+        }
+
+        @Nullable
+        @Override
+        //TODO: 1.14 make this return  @NonNull GasStack like IntelliJ wants when implementing unimplemented interface methods
+        public GasStack getMatchingInstance(@NonNull GasStack gasStack) {
+            if (test(gasStack)) {
+                Gas gas = GasRegistry.getGas(name);
+                return gas == null ? null : new GasStack(gas, minAmount);
+            }
+            return null;
         }
 
         @Override
@@ -127,6 +146,14 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         public boolean testType(@NonNull Gas gas) {
             Objects.requireNonNull(gas);
             return Arrays.stream(matchingStacks).anyMatch(stack -> gas == stack.getGas());
+        }
+
+        @Nullable
+        @Override
+        //TODO: 1.14 make this return  @NonNull GasStack like InteliJ wants when implementing unimplemented interface methods
+        public GasStack getMatchingInstance(@NonNull GasStack gasStack) {
+            Objects.requireNonNull(gasStack);
+            return Arrays.stream(matchingStacks).filter(stack -> gasStack.getGas() == stack.getGas() && gasStack.amount >= stack.amount).findFirst().orElse(null);
         }
 
         @Override

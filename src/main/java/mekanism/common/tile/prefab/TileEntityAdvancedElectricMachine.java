@@ -322,8 +322,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
             case 4:
                 return new Object[]{facing};
             case 5:
-                //TODO: potentially simplify this, or at least get a new cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.hasResourcesForTick() && cachedRecipe.hasRoomForOutput()};
+                //TODO: Decide if we should try to get the cached recipe if it is null
+                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
             case 6:
                 return new Object[]{maxEnergy};
             case 7:

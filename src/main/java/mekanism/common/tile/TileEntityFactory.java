@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -15,6 +14,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.function.BooleanConsumer;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -825,9 +825,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 if ((Integer) arguments[0] < 0 || (Integer) arguments[0] > cachedRecipes.length) {
                     return new Object[]{"No such operation found."};
                 }
-                //TODO: potentially simplify this, or at least get a new cached recipe if it is null
                 CachedRecipe cachedRecipe = cachedRecipes[(Integer) arguments[0]];
-                return new Object[]{cachedRecipe != null && cachedRecipe.hasResourcesForTick() && cachedRecipe.hasRoomForOutput()};
+                //TODO: Decide if we should try to get the cached recipe if it is null
+                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
             case 4:
                 return new Object[]{getMaxEnergy()};
             case 5:
@@ -1021,7 +1021,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         BooleanSupplier canFunction = () -> MekanismUtils.canFunction(this);
         DoubleSupplier perTickEnergy = () -> energyPerTick;
         IntSupplier requiredTicks = () -> ticksRequired;
-        Consumer<Boolean> setActive = active -> activeStates[cacheIndex] = active;
+        BooleanConsumer setActive = active -> activeStates[cacheIndex] = active;
         DoubleConsumer useEnergy = energy -> setEnergy(getEnergy() - energy);
         Supplier<@NonNull ItemStack> inputStack = () -> inventory.get(inputSlot);
         if (recipeType == RecipeType.SMELTING || recipeType == RecipeType.ENRICHING || recipeType == RecipeType.CRUSHING) {
