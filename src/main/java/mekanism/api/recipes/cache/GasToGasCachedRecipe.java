@@ -42,7 +42,6 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
         GasStack recipeInput = recipe.getInput().getMatchingInstance(inputGas);
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
         if (recipeInput == null || recipeInput.amount == 0) {
-            //TODO: 1.14 make this check about being empty instead
             return 0;
         }
         //Calculate the current max based on how much input we have to what is needed, capping at what we are told to use as a max
@@ -52,7 +51,7 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
     }
 
     @Override
-    public boolean hasResourcesForTick() {
+    public boolean isInputValid() {
         GasStack gasInput = getGasTank().getGas();
         return gasInput != null && recipe.test(gasInput);
     }
@@ -68,7 +67,6 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
         GasStack recipeInput = recipe.getInput().getMatchingInstance(inputGas);
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
         if (recipeInput == null || recipeInput.amount == 0) {
-            //TODO: 1.14 make this check about being empty instead
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }

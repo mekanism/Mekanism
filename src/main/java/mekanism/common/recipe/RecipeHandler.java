@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -241,112 +240,6 @@ public final class RecipeHandler {
 
     public static void addAmbientGas(int dimensionID, GasStack ambient) {
         Recipe.AMBIENT_ACCUMULATOR.put(new AmbientAccumulatorRecipe(dimensionID, 20, ambient));
-    }
-
-    /**
-     * Gets the Metallurgic Infuser Recipe for the InfusionInput in the parameters.
-     *
-     * @param item   - input item
-     * @param infuse - input Infusion
-     *
-     * @return MetallurgicInfuserRecipe
-     */
-    @Nullable
-    public static MetallurgicInfuserRecipe getMetallurgicInfuserRecipe(@Nonnull ItemStack item, InfusionContainer infuse) {
-        return Recipe.METALLURGIC_INFUSER.findFirst(recipe -> recipe.test(infuse, item));
-    }
-
-    /**
-     * Gets the Chemical Infuser Recipe of the ChemicalPairInput in the parameters.
-     *
-     * @param input1 - Left input
-     * @param input2 - right input
-     *
-     * @return ChemicalInfuserRecipe
-     */
-    @Nullable
-    public static ChemicalInfuserRecipe getChemicalInfuserRecipe(@Nonnull GasStack input1, @Nonnull GasStack input2) {
-        return Recipe.CHEMICAL_INFUSER.findFirst(recipe -> recipe.test(input1, input2));
-    }
-
-    /**
-     * Gets the Chemical Crystallizer Recipe for the defined Gas input.
-     *
-     * @param input - GasInput
-     *
-     * @return CrystallizerRecipe
-     */
-    @Nullable
-    public static ChemicalCrystallizerRecipe getChemicalCrystallizerRecipe(@Nonnull GasStack input) {
-        return Recipe.CHEMICAL_CRYSTALLIZER.findFirst(recipe -> recipe.test(input));
-    }
-
-    /**
-     * Gets the Chemical Washer Recipe for the defined Gas input.
-     *
-     * @param input - GasInput
-     *
-     * @return WasherRecipe
-     */
-    @Nullable
-    public static FluidGasToGasRecipe getChemicalWasherRecipe(@Nonnull FluidStack fluid, @Nonnull GasStack input) {
-        return Recipe.CHEMICAL_WASHER.findFirst(recipe -> recipe.test(fluid, input));
-    }
-
-    /**
-     * Gets the Chemical Oxidizer Recipe for the ItemStack in the parameters.
-     *
-     * @param input - ItemStack
-     *
-     * @return OxidationRecipe
-     */
-    @Nullable
-    public static ItemStackToGasRecipe getOxidizerRecipe(@Nonnull ItemStack input) {
-        return Recipe.CHEMICAL_OXIDIZER.findFirst(recipe -> recipe.test(input));
-    }
-
-    @Nullable
-    public static SawmillRecipe getSawmillRecipe(@Nonnull ItemStack input) {
-        return Recipe.PRECISION_SAWMILL.findFirst(recipe -> recipe.test(input));
-    }
-
-    /**
-     * Get the Electrolytic Separator Recipe corresponding to electrolysing a given fluid.
-     *
-     * @param input - the FluidStack to electrolyse fluid from
-     *
-     * @return SeparatorRecipe
-     */
-    @Nullable
-    public static ElectrolysisRecipe getElectrolyticSeparatorRecipe(@Nonnull FluidStack input) {
-        return Recipe.ELECTROLYTIC_SEPARATOR.findFirst(recipe -> recipe.test(input));
-    }
-
-    @Nullable
-    public static FluidToFluidRecipe getThermalEvaporationRecipe(@Nonnull FluidStack input) {
-        return Recipe.THERMAL_EVAPORATION_PLANT.findFirst(recipe -> recipe.test(input));
-    }
-
-    @Nullable
-    public static GasToGasRecipe getSolarNeutronRecipe(@Nonnull GasStack input) {
-        return Recipe.SOLAR_NEUTRON_ACTIVATOR.findFirst(recipe -> recipe.test(input));
-    }
-
-    @Nullable
-    public static PressurizedReactionRecipe getPRCRecipe(ItemStack solid, FluidStack fluid, GasStack gas) {
-        return Recipe.PRESSURIZED_REACTION_CHAMBER.findFirst(recipe -> recipe.test(solid, fluid, gas));
-    }
-
-    @Nullable
-    public static AmbientAccumulatorRecipe getDimensionGas(int dimension) {
-        return Recipe.AMBIENT_ACCUMULATOR.findFirst(recipe -> recipe.test(dimension));
-    }
-
-    public static boolean isInPressurizedRecipe(@Nonnull ItemStack stack) {
-        if (!stack.isEmpty()) {
-            return Recipe.PRESSURIZED_REACTION_CHAMBER.contains(recipe -> recipe.getInputSolid().testType(stack));
-        }
-        return false;
     }
 
     public static class Recipe<RECIPE_TYPE extends IMekanismRecipe> {

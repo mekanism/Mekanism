@@ -25,7 +25,6 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemUpgrade;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -101,7 +100,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return RecipeHandler.isInPressurizedRecipe(itemstack);
+            return Recipe.PRESSURIZED_REACTION_CHAMBER.contains(recipe -> recipe.getInputSolid().testType(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (slotID == 3) {
@@ -138,7 +137,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
             recalculateUpgradables(Upgrade.SPEED);
         }
         return new PressurizedReactionCachedRecipe(recipe, () -> inventory.get(0), () -> inputFluidTank, () -> inputGasTank,
-              OutputHelper.getAddToOutput(outputGasTank, inventory, 2))
+              OutputHelper.getOutputHandler(outputGasTank, inventory, 2))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.getEnergyRequired()), this::getEnergy,

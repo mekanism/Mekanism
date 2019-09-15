@@ -175,6 +175,35 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
         //TODO: Have lastGain be set properly, and our setActive -> false set lastGain to zero
+        //TODO: HANDLE ALL THIS STUFF, A good chunk of it can probably go in the getOutputHandler (or in a custom one we pass from here)
+        // But none of it should remain outside of what gets passed in one way or another to the cached reipe
+        if (canOperate(recipe)) {
+            int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
+            double outputRatio = (double) recipe.recipeOutput.output.amount / (double) recipe.recipeInput.ingredient.amount;
+            double tempMult = Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
+            double inputToUse = tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
+            inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
+            inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
+
+            lastGain = (float) inputToUse / (float) recipe.recipeInput.ingredient.amount;
+            partialInput += inputToUse;
+
+            if (partialInput >= 1) {
+                int inputInt = (int) Math.floor(partialInput);
+                inputTank.drain(inputInt, true);
+                partialInput %= 1;
+                partialOutput += (double) inputInt / recipe.recipeInput.ingredient.amount;
+            }
+
+            if (partialOutput >= 1) {
+                int outputInt = (int) Math.floor(partialOutput);
+                outputTank.fill(new FluidStack(recipe.recipeOutput.output.getFluid(), outputInt), true);
+                partialOutput %= 1;
+            }
+        } else {
+            lastGain = 0;
+        }
+
         return new FluidToFluidCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(outputTank))
               .setCanHolderFunction(() -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
               .setOnFinish(this::markDirty)

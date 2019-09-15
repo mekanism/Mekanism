@@ -172,7 +172,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (update) {
             recalculateUpgradables(Upgrade.ENERGY);
         }
-        return new ElectrolysisCachedRecipe(recipe, () -> fluidTank, OutputHelper.getAddToOutput(leftTank, rightTank))
+        return new ElectrolysisCachedRecipe(recipe, () -> fluidTank, OutputHelper.getOutputHandler(leftTank, rightTank))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

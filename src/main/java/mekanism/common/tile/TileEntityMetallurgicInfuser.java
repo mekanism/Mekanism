@@ -210,7 +210,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Nullable
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new MetallurgicInfuserCachedRecipe(recipe, () -> infuseStored, () -> inventory.get(2), OutputHelper.getAddToOutput(inventory, 3))
+        return new MetallurgicInfuserCachedRecipe(recipe, () -> infuseStored, () -> inventory.get(2), OutputHelper.getOutputHandler(inventory, 3))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

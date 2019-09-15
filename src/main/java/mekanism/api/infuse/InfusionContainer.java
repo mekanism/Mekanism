@@ -19,4 +19,9 @@ public interface InfusionContainer {
      * @return the amount, must be 0 if type is null
      */
     int getAmount();
+
+    //TODO: 1.14 maybe move where this is declared/how it works slightly
+    default boolean isEmpty() {
+        return getType() == null || getAmount() == 0;
+    }
 }

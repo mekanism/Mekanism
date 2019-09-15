@@ -3,7 +3,7 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +37,7 @@ public class ContainerPRC extends ContainerMekanism<TileEntityPRC> {
                 } else if (!mergeItemStack(slotStack, 3, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (RecipeHandler.isInPressurizedRecipe(slotStack)) {
+            } else if (Recipe.PRESSURIZED_REACTION_CHAMBER.contains(recipe -> recipe.getInputSolid().testType(slotStack))) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

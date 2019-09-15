@@ -96,7 +96,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     @Nullable
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackToItemStackCachedRecipe(recipe, () -> inventory.get(0), OutputHelper.getAddToOutput(inventory, 2))
+        return new ItemStackToItemStackCachedRecipe(recipe, () -> inventory.get(0), OutputHelper.getOutputHandler(inventory, 2))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

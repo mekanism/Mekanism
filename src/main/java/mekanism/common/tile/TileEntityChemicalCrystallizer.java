@@ -104,7 +104,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Nullable
     @Override
     public CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
-        return new ChemicalCrystallizerCachedRecipe(recipe, () -> inputTank, OutputHelper.getAddToOutput(inventory, 1))
+        return new ChemicalCrystallizerCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(inventory, 1))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

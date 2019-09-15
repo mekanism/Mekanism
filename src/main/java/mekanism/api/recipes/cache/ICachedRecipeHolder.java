@@ -20,7 +20,7 @@ public interface ICachedRecipeHolder<RECIPE extends IMekanismRecipe> {
     @Nullable
     default CachedRecipe<RECIPE> getUpdatedCache(@Nullable CachedRecipe<RECIPE> currentCache, int cacheIndex) {
         //If there is no cached recipe or the input doesn't match, attempt to get the recipe based on the input
-        if (currentCache == null || !currentCache.hasResourcesForTick()) {
+        if (currentCache == null || !currentCache.isInputValid()) {
             //TODO: Should this use a separate method than hasResourcesForTick?
             RECIPE recipe = getRecipe(cacheIndex);
             if (recipe != null) {

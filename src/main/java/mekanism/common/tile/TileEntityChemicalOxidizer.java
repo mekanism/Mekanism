@@ -18,7 +18,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
@@ -63,7 +62,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return RecipeHandler.getOxidizerRecipe(itemstack) != null;
+            return Recipe.CHEMICAL_OXIDIZER.contains(recipe -> recipe.getInput().testType(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -101,7 +100,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Nullable
     @Override
     public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackToGasCachedRecipe(recipe, () -> inventory.get(0), OutputHelper.getAddToOutput(gasTank))
+        return new ItemStackToGasCachedRecipe(recipe, () -> inventory.get(0), OutputHelper.getOutputHandler(gasTank))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

@@ -1,11 +1,11 @@
 package mekanism.api.recipes.cache;
 
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -15,14 +15,13 @@ import org.apache.commons.lang3.tuple.Pair;
 @ParametersAreNonnullByDefault
 public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
 
-    private final BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput;
+    private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
     private final Supplier<@NonNull FluidTank> inputTank;
 
-    public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, Supplier<@NonNull FluidTank> inputTank,
-          BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput) {
+    public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, Supplier<@NonNull FluidTank> inputTank, IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler) {
         super(recipe);
         this.inputTank = inputTank;
-        this.addToOutput = addToOutput;
+        this.outputHandler = outputHandler;
     }
 
     private FluidTank getTank() {
@@ -31,26 +30,47 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
 
     @Override
     protected int getOperationsThisTick(int currentMax) {
-        //TODO: Move hasResourcesForTick and hasRoomForOutput into this calculation
-        //TODO: Make sure to check both tanks in case the left is in the right and the right is in the left
-        // Actually is that even needed given those are OUTPUT tanks so it *should* really match what our recipe believes
-        return 1;
+        currentMax = super.getOperationsThisTick(currentMax);
+        if (currentMax == 0) {
+            //If our parent checks show we can't operate then return so
+            return 0;
+        }
+        FluidStack inputFluid = getTank().getFluid();
+        if (inputFluid == null || inputFluid.amount == 0) {
+            return 0;
+        }
+        FluidStack recipeInput = recipe.getInput().getMatchingInstance(inputFluid);
+        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
+        if (recipeInput == null || recipeInput.amount == 0) {
+            //TODO: 1.14 make this check about being empty instead
+            return 0;
+        }
+        //Calculate the current max based on how much input we have to what is needed, capping at what we are told to use as a max
+        currentMax = Math.min(inputFluid.amount / recipeInput.amount, currentMax);
+        //Calculate the max based on the space in the output
+        return outputHandler.operationsRoomFor(recipe.getOutput(recipeInput), currentMax);
     }
 
     @Override
-    public boolean hasResourcesForTick() {
+    public boolean isInputValid() {
         FluidStack fluidStack = getTank().getFluid();
         return fluidStack != null && recipe.test(fluidStack);
     }
 
     @Override
-    public boolean hasRoomForOutput() {
-        return addToOutput.apply(recipe.getOutput(getTank().getFluid()), true);
-    }
-
-    @Override
     protected void finishProcessing(int operations) {
-        //TODO: Handle processing stuff
-        addToOutput.apply(recipe.getOutput(getTank().getFluid()), false);
+        //TODO: Cache this stuff from when getOperationsThisTick was called?
+        FluidStack inputFluid = getTank().getFluid();
+        if (inputFluid == null || inputFluid.amount == 0) {
+            //Something went wrong, this if should never really be true if we got to finishProcessing
+            return;
+        }
+        FluidStack recipeInput = recipe.getInput().getMatchingInstance(inputFluid);
+        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+        if (recipeInput == null || recipeInput.amount == 0) {
+            //Something went wrong, this if should never really be true if we got to finishProcessing
+            return;
+        }
+        outputHandler.handleOutput(recipe.getOutput(recipeInput), operations);
     }
 }

@@ -98,7 +98,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     @Nullable
     @Override
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
-        return new CombinerCachedRecipe(recipe, () -> inventory.get(0), () -> inventory.get(1), OutputHelper.getAddToOutput(inventory, 2))
+        return new CombinerCachedRecipe(recipe, () -> inventory.get(0), () -> inventory.get(1), OutputHelper.getOutputHandler(inventory, 2))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

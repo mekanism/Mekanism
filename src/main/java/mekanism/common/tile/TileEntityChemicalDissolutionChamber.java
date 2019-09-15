@@ -131,7 +131,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Nullable
     @Override
     public CachedRecipe<ItemStackGasToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToGasCachedRecipe(recipe, () -> inventory.get(0), () -> injectTank, () -> injectUsageThisTick, OutputHelper.getAddToOutput(outputTank))
+        return new ItemStackGasToGasCachedRecipe(recipe, () -> inventory.get(0), () -> injectTank, () -> injectUsageThisTick, OutputHelper.getOutputHandler(outputTank))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

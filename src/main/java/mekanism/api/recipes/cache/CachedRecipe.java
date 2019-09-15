@@ -85,7 +85,7 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
     }
 
     public void process() {
-        boolean hasResourcesForTick = hasResourcesForTick();
+        boolean hasResourcesForTick = isInputValid();
         //TODO: Given we are going to probably have ALL recipes check the getOperationsThisTick(), we are going to
         // want some way to check things so that by default it doesn't do the max operations and instead does a single
         // run for the majority of recipes
@@ -139,6 +139,8 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
     //TODO: Is there a better name for this, basically is how many times this can function this tick
     // Also note that the postProcess doesn't auto get run on this
     protected int getOperationsThisTick(int currentMax) {
+        //TODO: Try to deduplicate the code in the implementations as there is a good bit of duplication for calculating the max
+        // of the different types that recipe uses
         if (currentMax == 0) {
             //Short circuit that if we already can't perform any outputs, just return
             return 0;
@@ -160,9 +162,8 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
         return canHolderFunction() && postProcessOperations.apply(getOperationsThisTick(1)) > 0;
     }
 
-    //TODO: Find some alternative for checking input validity for the cached recipe refresh
-    // as we ONLY care about the inputs in that case
-    public abstract boolean hasResourcesForTick();
+    //TODO: Is there some alternative for how we can check the validity of the input for cached recipe refresh purposes
+    public abstract boolean isInputValid();
 
     //TODO: None of the implementations are currently actually removing the inputs from the machines here, and are only adding the output
     protected abstract void finishProcessing(int operations);
