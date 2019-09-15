@@ -95,10 +95,19 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Nullable
     @Override
-    public ChemicalInfuserCachedRecipe createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
-        return new ChemicalInfuserCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, this::setActive,
-              energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> leftTank, () -> rightTank, () -> upgradeComponent.getUpgrades(Upgrade.SPEED),
-              OutputHelper.getAddToOutput(centerTank));
+    public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
+        return new ChemicalInfuserCachedRecipe(recipe, () -> leftTank, () -> rightTank, OutputHelper.getAddToOutput(centerTank))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+              });
     }
 
     @Override

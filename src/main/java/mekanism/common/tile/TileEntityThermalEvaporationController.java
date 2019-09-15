@@ -173,10 +173,19 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Nullable
     @Override
-    public FluidToFluidCachedRecipe createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
-        //TODO: pass a way to set lastGain to this
-        return new FluidToFluidCachedRecipe(recipe, () -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this), this::markDirty,
-              () -> inputTank, this::getTemperature, () -> height, MAX_HEIGHT, OutputHelper.getOutputHandler(outputTank));
+    public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
+        //TODO: Have lastGain be set properly, and our setActive -> false set lastGain to zero
+        return new FluidToFluidCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(outputTank))
+              .setCanHolderFunction(() -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+                  //TODO: Do the thermal evaporation specific additional checks
+                  return currentMax;
+              });
     }
 
     private void manageBuckets() {

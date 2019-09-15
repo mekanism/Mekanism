@@ -85,6 +85,16 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             return ingredient.apply(stack);
         }
 
+        @Override
+        public @NonNull ItemStack getMatchingInstance(@NonNull ItemStack stack) {
+            if (test(stack)) {
+                ItemStack matching = stack.copy();
+                matching.setCount(amount);
+                return matching;
+            }
+            return ItemStack.EMPTY;
+        }
+
         @NonNull
         @Override
         public List<ItemStack> getRepresentations() {
@@ -119,6 +129,18 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         @Override
         public boolean testType(@NonNull ItemStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
+        }
+
+        @Override
+        public @NonNull ItemStack getMatchingInstance(@NonNull ItemStack stack) {
+            for (ItemStackIngredient ingredient : ingredients) {
+                ItemStack matchingInstance = ingredient.getMatchingInstance(stack);
+                //Note: Cannot actually return null for ItemStacks it is just the other types that have a null variation for now
+                if (!matchingInstance.isEmpty()) {
+                    return matchingInstance;
+                }
+            }
+            return ItemStack.EMPTY;
         }
 
         @NonNull

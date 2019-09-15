@@ -3,6 +3,7 @@ package mekanism.api.recipes.inputs;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseType;
@@ -12,6 +13,7 @@ import mekanism.api.infuse.InfusionContainer;
  * Created by Thiakil on 12/07/2019.
  */
 //TODO: Allow for empty infusion ingredients (at least in 1.14, and make InfuseObject more similar to being InfuseStack)
+// ALso should InfuseObject be passed as NonNull
 public abstract class InfusionIngredient implements InputIngredient<InfuseObject> {
 
     public static InfusionIngredient from(@NonNull InfuseType infuseType, int minAmount) {
@@ -56,6 +58,14 @@ public abstract class InfusionIngredient implements InputIngredient<InfuseObject
             return Objects.requireNonNull(infuseType) == this.infuseType;
         }
 
+        @Nullable
+        @Override
+        //TODO: 1.14 make this return  @NonNull InfuseObject like IntelliJ will want to when implementing unimplemented interface methods
+        // if we make InfusionIngredient be of a NonNull InfuseObject
+        public InfuseObject getMatchingInstance(@NonNull InfuseObject infuseObject) {
+            return test(infuseObject) ? this.infuseObject : null;
+        }
+
         @Override
         public @NonNull List<InfuseObject> getRepresentations() {
             return Collections.singletonList(infuseObject);
@@ -63,6 +73,8 @@ public abstract class InfusionIngredient implements InputIngredient<InfuseObject
 
         //TODO: A InfuseType representations thing
     }
+
+    //TODO: Create a Multi for InfusionIngredient
 
     //TODO: 1.14 Add one that is based off of tags so as to allow multiple types
 }

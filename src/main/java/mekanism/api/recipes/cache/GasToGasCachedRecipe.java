@@ -1,15 +1,9 @@
 package mekanism.api.recipes.cache;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.BooleanConsumer;
-import mekanism.api.function.IntToIntFunction;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.GasToGasRecipe;
@@ -22,20 +16,10 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final Supplier<@NonNull GasTank> inputTank;
-    //TODO: Rename, and shift up to the CachedRecipe class level once we move things to having setters for "optional" params
-    private final IntToIntFunction operationCalculator;
 
-    public GasToGasCachedRecipe(GasToGasRecipe recipe, BooleanSupplier canTileFunction, BooleanConsumer setActive, Runnable onFinish,
-          Supplier<@NonNull GasTank> inputTank, IntToIntFunction operationCalculator, IOutputHandler<@NonNull GasStack> outputHandler) {
-        this(recipe, canTileFunction, () -> 0, () -> 0, () -> 1, setActive, energy -> {}, onFinish, inputTank, operationCalculator, outputHandler);
-    }
-
-    public GasToGasCachedRecipe(GasToGasRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> inputTank,
-          IntToIntFunction operationCalculator, IOutputHandler<@NonNull GasStack> outputHandler) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
+    public GasToGasCachedRecipe(GasToGasRecipe recipe, Supplier<@NonNull GasTank> inputTank, IOutputHandler<@NonNull GasStack> outputHandler) {
+        super(recipe);
         this.inputTank = inputTank;
-        this.operationCalculator = operationCalculator;
         this.outputHandler = outputHandler;
     }
 
@@ -64,10 +48,7 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
         //Calculate the current max based on how much input we have to what is needed, capping at what we are told to use as a max
         currentMax = Math.min(inputGas.amount / recipeInput.amount, currentMax);
         //Calculate the max based on the space in the output
-        currentMax = outputHandler.operationsRoomFor(recipe.getOutput(recipeInput), currentMax);
-
-        //Do any extra processing for the max amount
-        return operationCalculator.apply(currentMax);
+        return outputHandler.operationsRoomFor(recipe.getOutput(recipeInput), currentMax);
     }
 
     @Override

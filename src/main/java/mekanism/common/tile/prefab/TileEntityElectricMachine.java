@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -94,9 +95,13 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
 
     @Nullable
     @Override
-    public ItemStackToItemStackCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackToItemStackCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), OutputHelper.getAddToOutput(inventory, 2));
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+        return new ItemStackToItemStackCachedRecipe(recipe, () -> inventory.get(0), OutputHelper.getAddToOutput(inventory, 2))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     @Override

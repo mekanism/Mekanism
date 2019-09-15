@@ -1,14 +1,9 @@
 package mekanism.api.recipes.cache;
 
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.BooleanConsumer;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.common.util.FieldsAreNonnullByDefault;
@@ -21,10 +16,8 @@ public class SawmillCachedRecipe extends CachedRecipe<SawmillRecipe> {
     private final BiFunction<@NonNull ChanceOutput, Boolean, Boolean> addToOutput;
     private final Supplier<@NonNull ItemStack> inputStack;
 
-    public SawmillCachedRecipe(SawmillRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull ItemStack> inputStack,
-          BiFunction<@NonNull ChanceOutput, Boolean, Boolean> addToOutput) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
+    public SawmillCachedRecipe(SawmillRecipe recipe, Supplier<@NonNull ItemStack> inputStack, BiFunction<@NonNull ChanceOutput, Boolean, Boolean> addToOutput) {
+        super(recipe);
         this.inputStack = inputStack;
         this.addToOutput = addToOutput;
     }

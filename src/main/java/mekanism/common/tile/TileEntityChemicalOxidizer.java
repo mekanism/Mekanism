@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToGasCachedRecipe;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ISustainedData;
@@ -99,9 +100,13 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Nullable
     @Override
-    public ItemStackToGasCachedRecipe createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackToGasCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), OutputHelper.getAddToOutput(gasTank));
+    public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
+        return new ItemStackToGasCachedRecipe(recipe, () -> inventory.get(0), OutputHelper.getAddToOutput(gasTank))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     @Override

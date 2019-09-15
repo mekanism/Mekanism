@@ -10,6 +10,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -208,10 +209,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Nullable
     @Override
-    public MetallurgicInfuserCachedRecipe createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new MetallurgicInfuserCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> infuseStored, () -> inventory.get(2),
-              OutputHelper.getAddToOutput(inventory, 3));
+    public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
+        return new MetallurgicInfuserCachedRecipe(recipe, () -> infuseStored, () -> inventory.get(2), OutputHelper.getAddToOutput(inventory, 3))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     public int getScaledInfuseLevel(int i) {

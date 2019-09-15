@@ -1,15 +1,11 @@
 package mekanism.api.recipes.cache;
 
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.BooleanConsumer;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -25,10 +21,9 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
     private final Supplier<@NonNull GasTank> inputTank;
     private final IntSupplier gasUsage;
 
-    public ItemStackGasToItemStackCachedRecipe(ItemStackGasToItemStackRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull ItemStack> inputStack,
-          Supplier<@NonNull GasTank> inputTank, IntSupplier gasUsage, BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
+    public ItemStackGasToItemStackCachedRecipe(ItemStackGasToItemStackRecipe recipe,  Supplier<@NonNull ItemStack> inputStack, Supplier<@NonNull GasTank> inputTank,
+          IntSupplier gasUsage, BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput) {
+        super(recipe);
         this.inputStack = inputStack;
         this.inputTank = inputTank;
         this.addToOutput = addToOutput;

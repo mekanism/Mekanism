@@ -13,6 +13,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalCrystallizerCachedRecipe;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -102,9 +103,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Nullable
     @Override
-    public ChemicalCrystallizerCachedRecipe createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
-        return new ChemicalCrystallizerCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inputTank, OutputHelper.getAddToOutput(inventory, 1));
+    public CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
+        return new ChemicalCrystallizerCachedRecipe(recipe, () -> inputTank, OutputHelper.getAddToOutput(inventory, 1))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     @Override

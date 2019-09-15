@@ -165,16 +165,25 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Nullable
     @Override
-    public ElectrolysisCachedRecipe createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
         //TODO: Is this fine, or do we need it somewhere that will get called in more places than ONLY when the cache is being made
         boolean update = BASE_ENERGY_PER_TICK != recipe.getEnergyUsage();
         BASE_ENERGY_PER_TICK = recipe.getEnergyUsage();
         if (update) {
             recalculateUpgradables(Upgrade.ENERGY);
         }
-        return new ElectrolysisCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, this::setActive,
-              energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> fluidTank, () -> upgradeComponent.getUpgrades(Upgrade.SPEED),
-              OutputHelper.getAddToOutput(leftTank, rightTank));
+        return new ElectrolysisCachedRecipe(recipe, () -> fluidTank, OutputHelper.getAddToOutput(leftTank, rightTank))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+              });
     }
 
     @Override

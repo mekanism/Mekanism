@@ -1,14 +1,9 @@
 package mekanism.api.recipes.cache;
 
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.BooleanConsumer;
 import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
@@ -22,10 +17,9 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
     private final Supplier<@NonNull InfusionContainer> infusionContainer;
     private final Supplier<@NonNull ItemStack> inputStack;
 
-    public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull InfusionContainer> infusionContainer,
-          Supplier<@NonNull ItemStack> inputStack, BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
+    public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, Supplier<@NonNull InfusionContainer> infusionContainer, Supplier<@NonNull ItemStack> inputStack,
+          BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput) {
+        super(recipe);
         this.infusionContainer = infusionContainer;
         this.inputStack = inputStack;
         this.addToOutput = addToOutput;

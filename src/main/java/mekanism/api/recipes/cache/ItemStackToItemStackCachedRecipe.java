@@ -1,14 +1,9 @@
 package mekanism.api.recipes.cache;
 
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.BooleanConsumer;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
@@ -21,10 +16,9 @@ public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToIt
     private final BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput;
     private final Supplier<@NonNull ItemStack> inputStack;
 
-    public ItemStackToItemStackCachedRecipe(ItemStackToItemStackRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull ItemStack> inputStack,
+    public ItemStackToItemStackCachedRecipe(ItemStackToItemStackRecipe recipe, Supplier<@NonNull ItemStack> inputStack,
           BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
+        super(recipe);
         this.inputStack = inputStack;
         this.addToOutput = addToOutput;
     }

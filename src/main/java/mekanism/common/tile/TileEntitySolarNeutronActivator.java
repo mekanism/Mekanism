@@ -126,25 +126,29 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     @Nullable
     @Override
-    public GasToGasCachedRecipe createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
+    public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
         BlockPos positionAbove = getPos().up();
-        return new GasToGasCachedRecipe(recipe, () -> {
-            // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
-            // changing this would dramatically affect a lot of setups with Fusion reactors which can take
-            // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
-            // rain checks.
-            boolean seesSun = world.isDaytime() && world.canSeeSky(positionAbove) && !world.provider.isNether();
-            if (needsRainCheck) {
-                seesSun &= !(world.isRaining() || world.isThundering());
-            }
-            return seesSun && MekanismUtils.canFunction(this);
-        }, this::setActive, this::markDirty, () -> inputTank, currentMax -> {
-            if (currentMax == 0) {
-                //Short circuit that if we already can't perform any outputs, just return
-                return 0;
-            }
-            return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
-        }, OutputHelper.getOutputHandler(outputTank));
+        return new GasToGasCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(outputTank))
+              .setCanHolderFunction(() -> {
+                  // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
+                  // changing this would dramatically affect a lot of setups with Fusion reactors which can take
+                  // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
+                  // rain checks.
+                  boolean seesSun = world.isDaytime() && world.canSeeSky(positionAbove) && !world.provider.isNether();
+                  if (needsRainCheck) {
+                      seesSun &= !(world.isRaining() || world.isThundering());
+                  }
+                  return seesSun && MekanismUtils.canFunction(this);
+              })
+              .setActive(this::setActive)
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+              });
     }
 
     @Override

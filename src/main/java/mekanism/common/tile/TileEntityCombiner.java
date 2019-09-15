@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -96,10 +97,13 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
     @Nullable
     @Override
-    public CombinerCachedRecipe createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
-        return new CombinerCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), () -> energyPerTick, this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> inventory.get(1),
-              OutputHelper.getAddToOutput(inventory, 2));
+    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
+        return new CombinerCachedRecipe(recipe, () -> inventory.get(0), () -> inventory.get(1), OutputHelper.getAddToOutput(inventory, 2))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     @Nonnull

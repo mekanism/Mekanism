@@ -1,12 +1,8 @@
 package mekanism.api.recipes.cache;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.IntToIntFunction;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.common.config.MekanismConfig;
@@ -20,39 +16,15 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
 
     private final IOutputHandler<@NonNull FluidStack> outputHandler;
     private final Supplier<@NonNull FluidTank> inputTank;
-    //TODO: Rename, and shift up to the CachedRecipe class level once we move things to having setters for "optional" params
-    private final IntToIntFunction operationCalculator;
-    private final DoubleSupplier temperature;
-    private final IntSupplier height;
-    private final int maxHeight;
 
-    //TODO: Debate on how best to do this
-    private double partialInput;
-    private double partialOutput;
-
-    public FluidToFluidCachedRecipe(FluidToFluidRecipe recipe, BooleanSupplier canTileFunction, Runnable onFinish, Supplier<@NonNull FluidTank> inputTank,
-          DoubleSupplier temperature, IntSupplier height, int maxHeight, IntToIntFunction operationCalculator, IOutputHandler<@NonNull FluidStack> outputHandler) {
-        super(recipe, canTileFunction, () -> 0, () -> 0, () -> 1, active -> {
-        }, energy -> {
-        }, onFinish);
+    public FluidToFluidCachedRecipe(FluidToFluidRecipe recipe, Supplier<@NonNull FluidTank> inputTank, IOutputHandler<@NonNull FluidStack> outputHandler) {
+        super(recipe);
         this.inputTank = inputTank;
-        this.temperature = temperature;
-        this.height = height;
-        this.maxHeight = maxHeight;
-        this.operationCalculator = operationCalculator;
         this.outputHandler = outputHandler;
     }
 
     private FluidTank getInputTank() {
         return inputTank.get();
-    }
-
-    private double getTemperature() {
-        return temperature.getAsDouble();
-    }
-
-    private int getHeight() {
-        return height.getAsInt();
     }
 
     @Override
@@ -75,10 +47,7 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
         //Calculate the current max based on how much input we have to what is needed, capping at what we are told to use as a max
         currentMax = Math.min(inputFluid.amount / recipeInput.amount, currentMax);
         //Calculate the max based on the space in the output
-        currentMax = outputHandler.operationsRoomFor(recipe.getOutput(recipeInput), currentMax);
-
-        //Do any extra processing for the max amount
-        return operationCalculator.apply(currentMax);
+        return outputHandler.operationsRoomFor(recipe.getOutput(recipeInput), currentMax);
     }
 
     @Override

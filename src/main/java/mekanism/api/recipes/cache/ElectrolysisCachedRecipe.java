@@ -1,15 +1,9 @@
 package mekanism.api.recipes.cache;
 
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.BooleanConsumer;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.common.util.FieldsAreNonnullByDefault;
@@ -23,20 +17,11 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
 
     private final BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput;
     private final Supplier<@NonNull FluidTank> inputTank;
-    private final IntSupplier speedUpgrades;
 
-    public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> inputTank, IntSupplier speedUpgrades,
+    public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, Supplier<@NonNull FluidTank> inputTank,
           BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput) {
-        this(recipe, canTileFunction, perTickEnergy, storedEnergy, () -> 1, setActive, useEnergy, onFinish, inputTank, speedUpgrades, addToOutput);
-    }
-
-    public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull FluidTank> inputTank,
-          IntSupplier speedUpgrades, BiFunction<@NonNull Pair<GasStack, GasStack>, Boolean, Boolean> addToOutput) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
+        super(recipe);
         this.inputTank = inputTank;
-        this.speedUpgrades = speedUpgrades;
         this.addToOutput = addToOutput;
     }
 
@@ -44,13 +29,11 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
         return inputTank.get();
     }
 
-    private int getSpeedUpgrades() {
-        return speedUpgrades.getAsInt();
-    }
-
     @Override
     protected int getOperationsThisTick(int currentMax) {
         //TODO: Move hasResourcesForTick and hasRoomForOutput into this calculation
+        //TODO: Make sure to check both tanks in case the left is in the right and the right is in the left
+        // Actually is that even needed given those are OUTPUT tanks so it *should* really match what our recipe believes
         return 1;
     }
 
@@ -67,21 +50,6 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO: DO NOT PASS NULL HERE
-        Pair<GasStack, GasStack> output = recipe.getOutput(null);
-
-        FluidTank fluidTank = getTank();
-        int possibleProcess = (int) Math.pow(2, getSpeedUpgrades());
-        if (leftTank.getGasType() == recipe.recipeOutput.leftGas.getGas()) {
-            possibleProcess = Math.min(leftTank.getNeeded() / output.getLeft().amount, possibleProcess);
-            possibleProcess = Math.min(rightTank.getNeeded() / output.getRight().amount, possibleProcess);
-        } else {
-            possibleProcess = Math.min(leftTank.getNeeded() / output.getRight().amount, possibleProcess);
-            possibleProcess = Math.min(rightTank.getNeeded() / output.getLeft().amount, possibleProcess);
-        }
-        possibleProcess = Math.min((int) (getStoredElectricity() / getEnergyPerTick()), possibleProcess);
-        possibleProcess = Math.min(fluidTank.getFluidAmount() / recipe.recipeInput.ingredient.amount, possibleProcess);
-
         //TODO: Handle processing stuff
         addToOutput.apply(recipe.getOutput(getTank().getFluid()), false);
     }

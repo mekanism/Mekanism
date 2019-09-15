@@ -120,7 +120,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
     @Nullable
     @Override
     public CachedRecipe<AmbientAccumulatorRecipe> createNewCachedRecipe(@Nonnull AmbientAccumulatorRecipe recipe, int cacheIndex) {
-        return new AmbientAccumulatorCachedRecipe(recipe, () -> MekanismUtils.canFunction(this), this::markDirty, () -> world.provider.getDimension(),
-              OutputHelper.getAddToOutput(collectedGas));
+        return new AmbientAccumulatorCachedRecipe(recipe, () -> world.provider.getDimension(), OutputHelper.getAddToOutput(collectedGas)).setOnFinish(this::markDirty)
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this));
     }
 }

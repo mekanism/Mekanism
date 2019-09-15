@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -129,17 +130,21 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
 
     @Nullable
     @Override
-    public PressurizedReactionCachedRecipe createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe, int cacheIndex) {
+    public CachedRecipe<PressurizedReactionRecipe> createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe, int cacheIndex) {
         //TODO: Is this fine, or do we need it somewhere that will get called in more places than ONLY when the cache is being made
         boolean update = BASE_TICKS_REQUIRED != recipe.getDuration();
         BASE_TICKS_REQUIRED = recipe.getDuration();
         if (update) {
             recalculateUpgradables(Upgrade.SPEED);
         }
-        return new PressurizedReactionCachedRecipe(recipe, () -> MekanismUtils.canFunction(this),
-              () -> MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.getEnergyRequired()), this::getEnergy, () -> ticksRequired,
-              this::setActive, energy -> setEnergy(getEnergy() - energy), this::markDirty, () -> inventory.get(0), () -> inputFluidTank, () -> inputGasTank,
-              OutputHelper.getAddToOutput(outputGasTank, inventory, 2));
+        return new PressurizedReactionCachedRecipe(recipe, () -> inventory.get(0), () -> inputFluidTank, () -> inputGasTank,
+              OutputHelper.getAddToOutput(outputGasTank, inventory, 2))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(() -> MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.getEnergyRequired()), this::getEnergy,
+                    energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     @Override

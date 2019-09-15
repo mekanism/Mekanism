@@ -1026,24 +1026,45 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         Supplier<@NonNull ItemStack> inputStack = () -> inventory.get(inputSlot);
         if (recipeType == RecipeType.SMELTING || recipeType == RecipeType.ENRICHING || recipeType == RecipeType.CRUSHING) {
             ItemStackToItemStackRecipe castedRecipe = (ItemStackToItemStackRecipe) recipe;
-            return new ItemStackToItemStackCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
-                  inputStack, OutputHelper.getAddToOutput(inventory, outputSlot));
+            return new ItemStackToItemStackCachedRecipe(castedRecipe, inputStack, OutputHelper.getAddToOutput(inventory, outputSlot))
+                  .setCanHolderFunction(canFunction)
+                  .setActive(setActive)
+                  .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
+                  .setRequiredTicks(requiredTicks)
+                  .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.COMPRESSING || recipeType == RecipeType.PURIFYING || recipeType == RecipeType.INJECTING) {
             ItemStackGasToItemStackRecipe castedRecipe = (ItemStackGasToItemStackRecipe) recipe;
-            return new ItemStackGasToItemStackCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
-                  inputStack, () -> gasTank, () -> secondaryEnergyThisTick, OutputHelper.getAddToOutput(inventory, outputSlot));
+            return new ItemStackGasToItemStackCachedRecipe(castedRecipe, inputStack, () -> gasTank, () -> secondaryEnergyThisTick,
+                  OutputHelper.getAddToOutput(inventory, outputSlot))
+                  .setCanHolderFunction(canFunction)
+                  .setActive(setActive)
+                  .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
+                  .setRequiredTicks(requiredTicks)
+                  .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.COMBINING) {
             CombinerRecipe castedRecipe = (CombinerRecipe) recipe;
-            return new CombinerCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
-                  inputStack, () -> inventory.get(EXTRA_SLOT_ID), OutputHelper.getAddToOutput(inventory, outputSlot));
+            return new CombinerCachedRecipe(castedRecipe, inputStack, () -> inventory.get(EXTRA_SLOT_ID), OutputHelper.getAddToOutput(inventory, outputSlot))
+                  .setCanHolderFunction(canFunction)
+                  .setActive(setActive)
+                  .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
+                  .setRequiredTicks(requiredTicks)
+                  .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.INFUSING) {
             MetallurgicInfuserRecipe castedRecipe = (MetallurgicInfuserRecipe) recipe;
-            return new MetallurgicInfuserCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
-                  () -> infuseStored, inputStack, OutputHelper.getAddToOutput(inventory, outputSlot));
+            return new MetallurgicInfuserCachedRecipe(castedRecipe, () -> infuseStored, inputStack, OutputHelper.getAddToOutput(inventory, outputSlot))
+                  .setCanHolderFunction(canFunction)
+                  .setActive(setActive)
+                  .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
+                  .setRequiredTicks(requiredTicks)
+                  .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.SAWING) {
             SawmillRecipe castedRecipe = (SawmillRecipe) recipe;
-            return new SawmillCachedRecipe(castedRecipe, canFunction, perTickEnergy, this::getEnergy, requiredTicks, setActive, useEnergy, this::markDirty,
-                  inputStack, OutputHelper.getAddToOutput(inventory, outputSlot, EXTRA_SLOT_ID));
+            return new SawmillCachedRecipe(castedRecipe, inputStack, OutputHelper.getAddToOutput(inventory, outputSlot, EXTRA_SLOT_ID))
+                  .setCanHolderFunction(canFunction)
+                  .setActive(setActive)
+                  .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
+                  .setRequiredTicks(requiredTicks)
+                  .setOnFinish(this::markDirty);
         }
         //TODO: Do we have to invalidate cache when recipe type changes/how to invalidate it
         return null;

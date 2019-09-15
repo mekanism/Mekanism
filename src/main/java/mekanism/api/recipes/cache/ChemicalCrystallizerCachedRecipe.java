@@ -1,15 +1,10 @@
 package mekanism.api.recipes.cache;
 
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.function.BooleanConsumer;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -23,10 +18,9 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
     private final Supplier<@NonNull GasTank> inputTank;
     private final BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput;
 
-    public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BooleanSupplier canTileFunction, DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy,
-          IntSupplier requiredTicks, BooleanConsumer setActive, DoubleConsumer useEnergy, Runnable onFinish, Supplier<@NonNull GasTank> inputTank,
+    public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe,  Supplier<@NonNull GasTank> inputTank,
           BiFunction<@NonNull ItemStack, Boolean, Boolean> addToOutput) {
-        super(recipe, canTileFunction, perTickEnergy, storedEnergy, requiredTicks, setActive, useEnergy, onFinish);
+        super(recipe);
         this.inputTank = inputTank;
         this.addToOutput = addToOutput;
     }

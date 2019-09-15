@@ -2,7 +2,6 @@ package mekanism.api.recipes.cache;
 
 import java.util.Random;
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -21,13 +20,11 @@ public class AmbientAccumulatorCachedRecipe extends CachedRecipe<AmbientAccumula
     //This can be a supplier in case someone implementing this ends up having their collector be able to go from one dimension to another
     private final IntSupplier currentDimension;
 
-    public AmbientAccumulatorCachedRecipe(AmbientAccumulatorRecipe recipe, BooleanSupplier canTileFunction, Runnable onFinish,
-          IntSupplier currentDimension, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
-        super(recipe, canTileFunction, () -> 0, () -> 0, recipe::getTicksRequired, active -> {
-        }, energy -> {
-        }, onFinish);
+    public AmbientAccumulatorCachedRecipe(AmbientAccumulatorRecipe recipe, IntSupplier currentDimension, BiFunction<@NonNull GasStack, Boolean, Boolean> addToOutput) {
+        super(recipe);
         this.currentDimension = currentDimension;
         this.addToOutput = addToOutput;
+        setRequiredTicks(recipe::getTicksRequired);
     }
 
     private int getDimension() {
