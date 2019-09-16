@@ -371,6 +371,10 @@ public abstract class BlockBasic extends BlockTileDrops {
                                 return false;
                             }
                         }
+                    case 3:
+                    case 4:
+                        //Don't allow mobs to spawn on induction cells or providers
+                        return false;
                     default:
                         return super.canCreatureSpawn(state, world, pos, type);
                 }
