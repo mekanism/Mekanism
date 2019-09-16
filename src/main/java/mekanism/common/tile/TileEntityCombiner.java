@@ -131,7 +131,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
             case 0:
                 return new Object[]{getEnergy()};
             case 1:
-                return new Object[]{operatingTicks};
+                return new Object[]{getOperatingTicks()};
             case 2:
                 return new Object[]{isActive};
             case 3:

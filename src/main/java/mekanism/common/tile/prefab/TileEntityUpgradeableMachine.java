@@ -48,7 +48,7 @@ public abstract class TileEntityUpgradeableMachine<RECIPE extends IMekanismRecip
         factory.electricityStored = electricityStored;
 
         //Machine
-        factory.progress[0] = operatingTicks;
+        factory.progress[0] = getOperatingTicks();
         factory.isActive = isActive;
         factory.setControlType(getControlType());
         //TODO: Copy over some of the cached recipe information

@@ -30,7 +30,17 @@ public abstract class TileEntityOperationalMachine<RECIPE extends IMekanismRecip
     }
 
     public double getScaledProgress() {
-        return (double) operatingTicks / (double) ticksRequired;
+        return (double) getOperatingTicks() / (double) ticksRequired;
+    }
+
+    public int getOperatingTicks() {
+        if (world.isRemote) {
+            return operatingTicks;
+        }
+        if (cachedRecipe == null) {
+            return 0;
+        }
+        return cachedRecipe.getOperatingTicks();
     }
 
     @Override
@@ -45,7 +55,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends IMekanismRecip
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(operatingTicks);
+        data.add(getOperatingTicks());
         data.add(ticksRequired);
         return data;
     }
@@ -53,6 +63,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends IMekanismRecip
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
+        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         operatingTicks = nbtTags.getInteger("operatingTicks");
     }
 
@@ -60,7 +71,8 @@ public abstract class TileEntityOperationalMachine<RECIPE extends IMekanismRecip
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setInteger("operatingTicks", operatingTicks);
+        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
+        nbtTags.setInteger("operatingTicks", getOperatingTicks());
         return nbtTags;
     }
 

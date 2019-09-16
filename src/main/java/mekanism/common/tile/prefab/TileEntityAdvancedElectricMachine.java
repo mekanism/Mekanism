@@ -321,7 +321,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
             case 1:
                 return new Object[]{gasTank.getStored()};
             case 2:
-                return new Object[]{operatingTicks};
+                return new Object[]{getOperatingTicks()};
             case 3:
                 return new Object[]{isActive};
             case 4:

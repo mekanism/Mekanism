@@ -46,7 +46,8 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
      * Ticks the machine has spent processing so far
      */
     private int operatingTicks;
-    //TODO: We need to sync the operating ticks back to the
+    //TODO: We need to sync the operating ticks back to the machines
+    // Maybe we should also save/load cached recipes when a machine gets saved
 
     protected CachedRecipe(RECIPE recipe) {
         this.recipe = recipe;
@@ -113,6 +114,10 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
             // as operating ticks will be set to zero in that case anyways
             operatingTicks = 0;
         }
+    }
+
+    public int getOperatingTicks() {
+        return operatingTicks;
     }
 
     private boolean canHolderFunction() {

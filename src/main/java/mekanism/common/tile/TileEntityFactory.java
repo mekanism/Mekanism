@@ -206,6 +206,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         factory.electricityStored = electricityStored;
 
         //Factory
+        //TODO: Copy this
         System.arraycopy(progress, 0, factory.progress, 0, tier.processes);
 
         factory.recipeTicks = recipeTicks;
@@ -644,8 +645,19 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         return false;
     }
 
+    public int getProgress(int cacheIndex) {
+        if (world.isRemote) {
+            return progress[cacheIndex];
+        }
+        CachedRecipe cachedRecipe = cachedRecipes[cacheIndex];
+        if (cachedRecipe == null) {
+            return 0;
+        }
+        return cachedRecipe.getOperatingTicks();
+    }
+
     public int getScaledProgress(int i, int process) {
-        return progress[process] * i / ticksRequired;
+        return getProgress(process) * i / ticksRequired;
     }
 
     public int getScaledInfuseLevel(int i) {
@@ -722,6 +734,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             infuseStored.setAmount(amount);
             infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
         }
+        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInteger("progress" + i);
         }
@@ -742,8 +755,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         } else {
             nbtTags.setString("type", "null");
         }
+        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
-            nbtTags.setInteger("progress" + i, progress[i]);
+            nbtTags.setInteger("progress" + i, getProgress(i));
         }
         nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
         return nbtTags;
@@ -764,7 +778,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             data.add(infuseStored.getType().name);
         }
 
-        data.add(progress);
+        //TODO: Do this better
+        int[] progressToSync = new int[progress.length];
+        for (int i = 0; i < progress.length; i++) {
+            progressToSync[i] = getProgress(i);
+        }
+        data.add(progressToSync);
         TileUtils.addTankData(data, gasTank);
         upgraded = false;
         return data;
@@ -812,7 +831,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 if ((Integer) arguments[0] < 0 || (Integer) arguments[0] > progress.length) {
                     return new Object[]{"No such operation found."};
                 }
-                return new Object[]{progress[(Integer) arguments[0]]};
+                return new Object[]{getProgress((Integer) arguments[0])};
             case 2:
                 return new Object[]{facing};
             case 3:

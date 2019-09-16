@@ -128,7 +128,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         factory.electricityStored = electricityStored;
 
         //Machine
-        factory.progress[0] = operatingTicks;
+        factory.progress[0] = getOperatingTicks();
         factory.setActive(isActive);
         factory.setControlType(getControlType());
         //TODO: Transfer cache?
@@ -291,7 +291,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             case 0:
                 return new Object[]{getEnergy()};
             case 1:
-                return new Object[]{operatingTicks};
+                return new Object[]{getOperatingTicks()};
             case 2:
                 return new Object[]{facing};
             case 3:
