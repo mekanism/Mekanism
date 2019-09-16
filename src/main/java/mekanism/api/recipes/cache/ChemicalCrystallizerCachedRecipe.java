@@ -73,6 +73,7 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
+        getGasTank().draw(recipeGas.amount * operations, true);
         outputHandler.handleOutput(recipe.getOutput(recipeGas), operations);
     }
 }

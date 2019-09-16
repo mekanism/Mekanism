@@ -69,6 +69,7 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
+        getInputTank().drain(inputFluid.amount * operations, true);
         outputHandler.handleOutput(recipe.getOutput(recipeInput), operations);
     }
 }

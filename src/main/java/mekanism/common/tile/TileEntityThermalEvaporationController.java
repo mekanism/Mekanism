@@ -59,9 +59,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public boolean temperatureSet = false;
 
-    public double partialInput = 0;
-    public double partialOutput = 0;
-
     public float biomeTemp = 0;
     //TODO: 1.14 potentially convert temperature to a double given we are using a DoubleSupplier anyways
     // Will make it so we don't have cast issues from the configs. Doing so in 1.12 may be slightly annoying
@@ -177,33 +174,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         //TODO: Have lastGain be set properly, and our setActive -> false set lastGain to zero
         //TODO: HANDLE ALL THIS STUFF, A good chunk of it can probably go in the getOutputHandler (or in a custom one we pass from here)
         // But none of it should remain outside of what gets passed in one way or another to the cached reipe
-        if (canOperate(recipe)) {
-            int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
-            double outputRatio = (double) recipe.recipeOutput.output.amount / (double) recipe.recipeInput.ingredient.amount;
-            double tempMult = Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
-            double inputToUse = tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
-            inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
-            inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
-
-            lastGain = (float) inputToUse / (float) recipe.recipeInput.ingredient.amount;
-            partialInput += inputToUse;
-
-            if (partialInput >= 1) {
-                int inputInt = (int) Math.floor(partialInput);
-                inputTank.drain(inputInt, true);
-                partialInput %= 1;
-                partialOutput += (double) inputInt / recipe.recipeInput.ingredient.amount;
-            }
-
-            if (partialOutput >= 1) {
-                int outputInt = (int) Math.floor(partialOutput);
-                outputTank.fill(new FluidStack(recipe.recipeOutput.output.getFluid(), outputInt), true);
-                partialOutput %= 1;
-            }
-        } else {
-            lastGain = 0;
-        }
-
         return new FluidToFluidCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(outputTank))
               .setCanHolderFunction(() -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
               .setOnFinish(this::markDirty)
@@ -212,8 +182,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                       //Short circuit that if we already can't perform any outputs, just return
                       return 0;
                   }
-                  //TODO: Do the thermal evaporation specific additional checks
-                  return currentMax;
+
+                  double tempMult = Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
+                  double multiplier = tempMult * height / (float) MAX_HEIGHT;
+                  //TODO: See how close all these checks are to properly calculating usage
+                  //Also set values like lastGain
+                  return Math.min(MekanismUtils.clampToInt(currentMax * multiplier), currentMax);
               });
     }
 
@@ -505,8 +479,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
         temperature = nbtTags.getFloat("temperature");
 
-        partialInput = nbtTags.getDouble("partialWater");
-        partialOutput = nbtTags.getDouble("partialBrine");
+        //TODO: These are no longer used, or do they need to be used
+        //partialInput = nbtTags.getDouble("partialWater");
+        //partialOutput = nbtTags.getDouble("partialBrine");
     }
 
     @Nonnull
@@ -518,8 +493,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
         nbtTags.setFloat("temperature", temperature);
 
-        nbtTags.setDouble("partialWater", partialInput);
-        nbtTags.setDouble("partialBrine", partialOutput);
+        //TODO: These are no longer used, or do they need to be used
+        //nbtTags.setDouble("partialWater", partialInput);
+        //nbtTags.setDouble("partialBrine", partialOutput);
         return nbtTags;
     }
 

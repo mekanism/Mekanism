@@ -50,6 +50,18 @@ public class InfuseStorage implements ISustainedData, InfusionContainer {
         }
     }
 
+    public void subtract(InfuseObject input) {
+        if (type == input.type && amount >= input.stored) {
+            amount -= input.stored;
+        } else if (type == input.type) {
+            amount = 0;
+        }
+        if (amount <= 0) {
+            type = null;
+            amount = 0;
+        }
+    }
+
     public void increase(InfuseStorage input) {
         if (type == null) {
             type = input.type;

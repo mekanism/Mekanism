@@ -886,7 +886,8 @@ public class Mekanism {
         // Add all furnace recipes to the energized smelter
         // Must happen after CraftTweaker for vanilla stuff has run.
         for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
-            Recipe.ENERGIZED_SMELTER.put(new ItemStackToItemStackRecipe(ItemStackIngredient.from(entry.getKey()), entry.getValue()));
+            //The vanilla furnace does not support NBT so we use an ingredient that does not to ensure that things behave properly
+            Recipe.ENERGIZED_SMELTER.put(new ItemStackToItemStackRecipe(ItemStackIngredient.from(Ingredient.fromStacks(entry.getKey())), entry.getValue()));
         }
 
         hooks.hookPostInit();

@@ -146,6 +146,10 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
+        //TODO: Should this be done in some other way than shrink, such as via an IItemHandler, 1.14
+        inputItem.shrink(recipeItem.getCount() * operations);
+        getFluidTank().drain(inputFluid.amount * operations, true);
+        getGasTank().draw(recipeGas.amount * operations, true);
         outputHandler.handleOutput(recipe.getOutput(recipeItem, recipeFluid, recipeGas), operations);
     }
 }

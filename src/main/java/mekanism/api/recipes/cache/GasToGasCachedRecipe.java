@@ -70,6 +70,7 @@ public class GasToGasCachedRecipe extends CachedRecipe<GasToGasRecipe> {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
+        getGasTank().draw(recipeInput.amount * operations, true);
         outputHandler.handleOutput(recipe.getOutput(recipeInput), operations);
     }
 }

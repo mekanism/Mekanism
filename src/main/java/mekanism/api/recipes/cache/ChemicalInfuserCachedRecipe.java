@@ -134,6 +134,9 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
+
+        getLeftTank().draw(leftRecipeInput.amount * operations, true);
+        getRightTank().draw(rightRecipeInput.amount * operations, true);
         outputHandler.handleOutput(recipe.getOutput(leftRecipeInput, rightRecipeInput), operations);
     }
 }

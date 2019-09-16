@@ -104,7 +104,9 @@ public class CombinerCachedRecipe extends CachedRecipe<CombinerRecipe> {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
-
+        //TODO: Should this be done in some other way than shrink, such as via an IItemHandler, 1.14
+        inputMain.shrink(recipeMain.getCount() * operations);
+        inputExtra.shrink(recipeExtra.getCount() * operations);
         outputHandler.handleOutput(recipe.getOutput(recipeMain, recipeExtra), operations);
     }
 }

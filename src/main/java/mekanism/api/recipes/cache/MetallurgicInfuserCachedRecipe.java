@@ -4,9 +4,9 @@ import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseObject;
-import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.outputs.IOutputHandler;
+import mekanism.common.InfuseStorage;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
@@ -15,10 +15,10 @@ import net.minecraft.item.ItemStack;
 public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfuserRecipe> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
-    private final Supplier<@NonNull InfusionContainer> infusionContainer;
+    private final Supplier<@NonNull InfuseStorage> infusionContainer;
     private final Supplier<@NonNull ItemStack> inputStack;
 
-    public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, Supplier<@NonNull InfusionContainer> infusionContainer, Supplier<@NonNull ItemStack> inputStack,
+    public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, Supplier<@NonNull InfuseStorage> infusionContainer, Supplier<@NonNull ItemStack> inputStack,
           IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
         this.infusionContainer = infusionContainer;
@@ -30,7 +30,7 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
         return inputStack.get();
     }
 
-    private InfusionContainer getInfusionContainer() {
+    private InfuseStorage getInfusionContainer() {
         return infusionContainer.get();
     }
 
@@ -52,7 +52,7 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
         }
 
         //Now check the infusion input
-        InfusionContainer inputInfusion = getInfusionContainer();
+        InfuseStorage inputInfusion = getInfusionContainer();
         if (inputInfusion.isEmpty()) {
             return 0;
         }
@@ -95,7 +95,7 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
         }
 
         //Now check the infusion input
-        InfusionContainer inputInfusion = getInfusionContainer();
+        InfuseStorage inputInfusion = getInfusionContainer();
         if (inputInfusion.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
@@ -108,6 +108,9 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
+        //TODO: Should this be done in some other way than shrink, such as via an IItemHandler, 1.14
+        inputInfusion.subtract(new InfuseObject(recipeInfuseObject.type, recipeInfuseObject.getAmount() * operations));
+        inputItem.shrink(recipeItem.getCount() * operations);
         outputHandler.handleOutput(recipe.getOutput(recipeInfuseObject, recipeItem), operations);
     }
 }

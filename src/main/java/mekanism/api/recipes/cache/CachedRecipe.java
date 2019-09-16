@@ -46,6 +46,7 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
      * Ticks the machine has spent processing so far
      */
     private int operatingTicks;
+    //TODO: We need to sync the operating ticks back to the
 
     protected CachedRecipe(RECIPE recipe) {
         this.recipe = recipe;
@@ -165,7 +166,7 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
     //TODO: Is there some alternative for how we can check the validity of the input for cached recipe refresh purposes
     public abstract boolean isInputValid();
 
-    //TODO: None of the implementations are currently actually removing the inputs from the machines here, and are only adding the output
+    //TODO: Check all recipes for properly removing the inputs
     protected abstract void finishProcessing(int operations);
 
     public RECIPE getRecipe() {
