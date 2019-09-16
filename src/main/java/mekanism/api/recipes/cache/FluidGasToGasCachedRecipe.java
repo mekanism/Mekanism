@@ -119,7 +119,7 @@ public class FluidGasToGasCachedRecipe extends CachedRecipe<FluidGasToGasRecipe>
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
-        getFluidTank().drain(inputFluid.amount * operations, true);
+        getFluidTank().drain(recipeFluid.amount * operations, true);
         getGasTank().draw(recipeGas.amount * operations, true);
         outputHandler.handleOutput(recipe.getOutput(recipeFluid, recipeGas), operations);
     }

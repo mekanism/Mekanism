@@ -96,10 +96,18 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
     protected void useResources(int operations) {
         super.useResources(operations);
         GasTank gasTank = getGasTank();
-        GasStack gas = gasTank.getGas();
-        if (gas != null && gas.amount > 0) {
-            gasTank.draw(gas.amount * getGasUsage(), true);
+        GasStack inputGas = gasTank.getGas();
+        if (inputGas == null || inputGas.amount == 0) {
+            //Something went wrong, this if should never really be true if we are in useResources
+            return;
         }
+        GasStack recipeGas = recipe.getGasInput().getMatchingInstance(inputGas);
+        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+        if (recipeGas == null || recipeGas.amount == 0) {
+            //Something went wrong, this if should never really be true if we are in useResources
+            return;
+        }
+        gasTank.draw(recipeGas.amount * operations * getGasUsage(), true);
         //TODO: Else throw some error? It really should already have the needed amount due to the hasResourceForTick call
         // but it may make sense to check anyways
     }

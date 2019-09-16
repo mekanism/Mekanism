@@ -133,8 +133,7 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
 
     //TODO: JavaDoc to mention that super should be called to ensure that the per tick energy is used
     protected void useResources(int operations) {
-        //TODO: Multiple energy used by operations
-        useEnergy.accept(getEnergyPerTick());
+        useEnergy.accept(operations * getEnergyPerTick());
     }
 
     //TODO: Is there a better name for this, basically is how many times this can function this tick

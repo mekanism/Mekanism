@@ -71,7 +71,7 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
-        getTank().drain(inputFluid.amount * operations, true);
+        getTank().drain(recipeInput.amount * operations, true);
         outputHandler.handleOutput(recipe.getOutput(recipeInput), operations);
     }
 }
