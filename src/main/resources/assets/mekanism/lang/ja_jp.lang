@@ -1009,13 +1009,13 @@ tile.Generator.WindGenerator.name=風力発電機
 tile.Generator.TurbineRotor.name=タービンローター
 tile.Generator.RotationalComplex.name=回転機構
 tile.Generator.ElectromagneticCoil.name=電磁コイル
-tile.Generator.TurbineCasing.name=タービン筐体
+tile.Generator.TurbineCasing.name=タービンケース
 tile.Generator.TurbineValve.name=タービンバルブ
 tile.Generator.TurbineVent.name=蒸気排出口
 tile.Generator.SaturatingCondenser.name=飽和凝縮器
 
 tile.Reactor.ReactorController.name=核融合炉制御装置
-tile.Reactor.ReactorFrame.name=核融合炉筐体
+tile.Reactor.ReactorFrame.name=核融合炉フレーム
 tile.Reactor.ReactorNeutronCapturePlate.name=中性子捕捉板
 tile.Reactor.ReactorPort.name=核融合炉搬入出ポート
 tile.Reactor.ReactorLogicAdapter.name=核融合炉論理アダプター
@@ -1047,7 +1047,7 @@ mekanism.configgui.ctgy.generators.generation=発電の設定
 # Config Tooltips
 mekanism.configgui.ctgy.generators.general.tooltip=MekanismGeneratorsの基本設定
 mekanism.configgui.ctgy.generators.generators.tooltip=機械ごとの有効・無効化の設定
-mekanism.configgui.ctgy.generators.generation.tooltip=機械のエネルギーに関する設定
+mekanism.configgui.ctgy.generators.generation.tooltip=機械のエネルギー使用量に関する設定
 
 #########
 # TOOLS
@@ -1138,9 +1138,9 @@ mekanism.configgui.ctgy.tools.armor=防具のバランス
 mekanism.configgui.ctgy.tools.tools=道具のバランス
 
 # Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=MekanismToolsの基本設定
-mekanism.configgui.ctgy.tools.armor.tooltip=MekanismToolsの防具におけるパラメータの設定
-mekanism.configgui.ctgy.tools.tools.tooltip=MekanismToolsの道具におけるパラメータの設定
+mekanism.configgui.ctgy.tools.general.tooltip=MekanismToolsの一般的な構成に関する設定
+mekanism.configgui.ctgy.tools.armor.tooltip=MekanismToolsの防具一式の防御の値とバランスに関する設定
+mekanism.configgui.ctgy.tools.tools.tooltip=MekanismToolsの道具一式の効率の値とバランスに関する設定
 
 # Commands
 cmd.mek.usage=
