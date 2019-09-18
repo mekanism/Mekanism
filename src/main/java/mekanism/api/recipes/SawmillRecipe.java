@@ -50,6 +50,7 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
         return input;
     }
 
+    //TODO: nextChanceOutput() method so that we can have a more accurate calculation for OutputHelper
     public class ChanceOutput {
 
         protected final double rand;
@@ -72,6 +73,17 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
         public ItemStack getSecondaryOutput() {
             if (rand <= secondaryChance) {
                 return secondaryOutputDefinition.copy();
+            }
+            return ItemStack.EMPTY;
+        }
+
+        //TODO: JavaDoc
+        public ItemStack nextSecondaryOutput() {
+            if (secondaryChance > 0) {
+                double rand = RANDOM.nextDouble();
+                if (rand <= secondaryChance) {
+                    return secondaryOutputDefinition.copy();
+                }
             }
             return ItemStack.EMPTY;
         }

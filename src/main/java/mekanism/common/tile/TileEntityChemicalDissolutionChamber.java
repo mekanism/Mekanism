@@ -38,7 +38,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-//TODO: Make an ItemStackGasToGasRecipe, so that this properly supports using other things in the inject tank
 public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements IGasHandler, ISustainedData, ITankManager {
 
     public static final int MAX_GAS = 10000;

@@ -48,6 +48,8 @@ public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
     private int operatingTicks;
     //TODO: We need to sync the operating ticks back to the machines
     // Maybe we should also save/load cached recipes when a machine gets saved
+    // If we add a setter for the operating ticks, then this should be relatively simple to have it copy from one machine to the upgrades
+    // and also to load what state the recipe was at.
 
     protected CachedRecipe(RECIPE recipe) {
         this.recipe = recipe;

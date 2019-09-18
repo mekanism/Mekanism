@@ -354,7 +354,6 @@ public final class OreDictManager {
         ItemStack resultEntry = matchingRecipe != null ? matchingRecipe.getRecipeOutput() : ItemStack.EMPTY;
 
         if (!resultEntry.isEmpty()) {
-            //TODO: Figure out if this should be using the "logWood" entry? It probably shouldn't due to the fact that would include multiple wood types
             RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(log), StackUtils.size(resultEntry, 6), new ItemStack(MekanismItems.Sawdust),
                   MekanismConfig.current().general.sawdustChanceLog.val());
         }

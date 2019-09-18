@@ -1,6 +1,5 @@
 package mekanism.api.recipes.outputs;
 
-//TODO: Figure out a better name for this?
 public interface IOutputHandler<OUTPUT> {
 
     void handleOutput(OUTPUT toOutput, int operations);

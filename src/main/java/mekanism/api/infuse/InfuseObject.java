@@ -25,7 +25,6 @@ public class InfuseObject implements InfusionContainer {
         stored = i;
     }
 
-    //TODO: Why is this nullable when it should be Nonnull based on other spots (it has to do with InfusionContainer being Nullable)
     @Nonnull
     @Override
     public InfuseType getType() {

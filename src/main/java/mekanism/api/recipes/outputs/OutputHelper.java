@@ -68,11 +68,12 @@ public class OutputHelper {
             public void handleOutput(@NonNull ChanceOutput toOutput, int operations) {
                 OutputHelper.handleOutput(inventory, slot, toOutput.getMainOutput(), operations);
                 //TODO: Batch this into a single addition call, by looping over and calculating things?
-                // NOTE: Currently sawmill cached recipes with operations > 1 don't even make sense
-                // as the Chance output caches whether or not there is an output
+                ItemStack secondaryOutput = toOutput.getSecondaryOutput();
                 for (int i = 0; i < operations; i++) {
-                    ItemStack secondaryOutput = toOutput.getSecondaryOutput();
                     OutputHelper.handleOutput(inventory, secondarySlot, secondaryOutput, operations);
+                    if (i + 1 < operations) {
+                        secondaryOutput = toOutput.nextSecondaryOutput();
+                    }
                 }
             }
 
