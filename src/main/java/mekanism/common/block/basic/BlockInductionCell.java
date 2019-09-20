@@ -1,6 +1,8 @@
 package mekanism.common.block.basic;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
@@ -14,10 +16,13 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
+import net.minecraft.entity.EntityType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasInventory, IHasTileEntity<TileEntityInductionCell> {
@@ -44,6 +49,11 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Override
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
+        return false;
     }
 
     @Override
