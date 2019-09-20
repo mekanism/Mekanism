@@ -6,6 +6,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.SawmillCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
@@ -96,7 +97,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     @Nullable
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@Nonnull SawmillRecipe recipe, int cacheIndex) {
-        return new SawmillCachedRecipe(recipe, () -> inventory.get(0), OutputHelper.getOutputHandler(inventory, 2, 4))
+        return new SawmillCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), OutputHelper.getOutputHandler(inventory, 2, 4))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

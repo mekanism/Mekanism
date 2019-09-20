@@ -15,6 +15,7 @@ import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -96,7 +97,8 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Nullable
     @Override
     public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
-        return new ChemicalInfuserCachedRecipe(recipe, () -> leftTank, () -> rightTank, OutputHelper.getOutputHandler(centerTank))
+        return new ChemicalInfuserCachedRecipe(recipe, InputHelper.getInputHandler(leftTank), InputHelper.getInputHandler(rightTank),
+              OutputHelper.getOutputHandler(centerTank))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

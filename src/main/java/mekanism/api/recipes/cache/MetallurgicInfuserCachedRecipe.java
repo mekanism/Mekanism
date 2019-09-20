@@ -1,12 +1,11 @@
 package mekanism.api.recipes.cache;
 
-import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import mekanism.common.InfuseStorage;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
@@ -15,23 +14,15 @@ import net.minecraft.item.ItemStack;
 public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfuserRecipe> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
-    private final Supplier<@NonNull InfuseStorage> infusionContainer;
-    private final Supplier<@NonNull ItemStack> inputStack;
+    private final IInputHandler<@NonNull InfuseObject> infusionInputHandler;
+    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
-    public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, Supplier<@NonNull InfuseStorage> infusionContainer, Supplier<@NonNull ItemStack> inputStack,
-          IOutputHandler<@NonNull ItemStack> outputHandler) {
+    public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, IInputHandler<@NonNull InfuseObject> infusionInputHandler,
+          IInputHandler<@NonNull ItemStack> itemInputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
-        this.infusionContainer = infusionContainer;
-        this.inputStack = inputStack;
+        this.infusionInputHandler = infusionInputHandler;
+        this.itemInputHandler = itemInputHandler;
         this.outputHandler = outputHandler;
-    }
-
-    private ItemStack getItemInput() {
-        return inputStack.get();
-    }
-
-    private InfuseStorage getInfusionContainer() {
-        return infusionContainer.get();
     }
 
     @Override
@@ -41,34 +32,25 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
             //If our parent checks show we can't operate then return so
             return 0;
         }
-        ItemStack inputItem = getItemInput();
-        if (inputItem.isEmpty()) {
-            return 0;
-        }
-        ItemStack recipeItem = recipe.getItemInput().getMatchingInstance(inputItem);
+        //TODO: This input getting, is only really needed for getting the output
+        ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
             return 0;
         }
 
         //Now check the infusion input
-        InfuseStorage inputInfusion = getInfusionContainer();
-        if (inputInfusion.isEmpty()) {
-            return 0;
-        }
-        InfuseObject inputInfuseObject = new InfuseObject(inputInfusion.getType(), inputInfusion.getAmount());
-        InfuseObject recipeInfuseObject = recipe.getInfusionInput().getMatchingInstance(inputInfuseObject);
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputInfuseObject)
+        InfuseObject recipeInfuseObject = infusionInputHandler.getRecipeInput(recipe.getInfusionInput());
         if (recipeInfuseObject == null || recipeInfuseObject.isEmpty()) {
             //TODO: 1.14 have there be an "EMPTY" object instance so that it can never be null
             return 0;
         }
 
-        //Calculate the current max based on how much item input we have to what is needed, capping at what we are told to use as a max
-        currentMax = Math.min(inputItem.getCount() / recipeItem.getCount(), currentMax);
+        //Calculate the current max based on the item input
+        currentMax = itemInputHandler.operationsCanSupport(recipe.getItemInput(), currentMax);
 
-        //Calculate the current max based on how much infusion input we have to what is needed, capping at what we are told to use as a max
-        currentMax = Math.min(inputInfusion.getAmount() / recipeInfuseObject.getAmount(), currentMax);
+        //Calculate the current max based on the infusion input
+        currentMax = infusionInputHandler.operationsCanSupport(recipe.getInfusionInput(), currentMax);
 
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeInfuseObject, recipeItem), currentMax);
@@ -76,41 +58,26 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
 
     @Override
     public boolean isInputValid() {
-        return recipe.test(getInfusionContainer(), getItemInput());
+        return recipe.test(infusionInputHandler.getInput(), itemInputHandler.getInput());
     }
 
     @Override
     protected void finishProcessing(int operations) {
         //TODO: Cache this stuff from when getOperationsThisTick was called?
-        ItemStack inputItem = getItemInput();
-        if (inputItem.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-        ItemStack recipeItem = recipe.getItemInput().getMatchingInstance(inputItem);
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
+        ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         if (recipeItem.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
 
-        //Now check the infusion input
-        InfuseStorage inputInfusion = getInfusionContainer();
-        if (inputInfusion.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-        InfuseObject inputInfuseObject = new InfuseObject(inputInfusion.getType(), inputInfusion.getAmount());
-        InfuseObject recipeInfuseObject = recipe.getInfusionInput().getMatchingInstance(inputInfuseObject);
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputInfuseObject)
+        InfuseObject recipeInfuseObject = infusionInputHandler.getRecipeInput(recipe.getInfusionInput());
         if (recipeInfuseObject == null || recipeInfuseObject.isEmpty()) {
             //TODO: 1.14 have there be an "EMPTY" object instance so that it can never be null
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
-        //TODO: Should this be done in some other way than shrink, such as via an IItemHandler, 1.14
-        inputInfusion.subtract(new InfuseObject(recipeInfuseObject.type, recipeInfuseObject.getAmount() * operations));
-        inputItem.shrink(recipeItem.getCount() * operations);
+        infusionInputHandler.use(recipeInfuseObject, operations);
+        itemInputHandler.use(recipeItem, operations);
         outputHandler.handleOutput(recipe.getOutput(recipeInfuseObject, recipeItem), operations);
     }
 }

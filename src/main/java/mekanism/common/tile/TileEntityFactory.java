@@ -7,7 +7,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
@@ -38,6 +37,8 @@ import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.cache.SawmillCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -1042,10 +1043,10 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         IntSupplier requiredTicks = () -> ticksRequired;
         BooleanConsumer setActive = active -> activeStates[cacheIndex] = active;
         DoubleConsumer useEnergy = energy -> setEnergy(getEnergy() - energy);
-        Supplier<@NonNull ItemStack> inputStack = () -> inventory.get(inputSlot);
+        IInputHandler<@NonNull ItemStack> itemInputHandler = InputHelper.getInputHandler(inventory, inputSlot);
         if (recipeType == RecipeType.SMELTING || recipeType == RecipeType.ENRICHING || recipeType == RecipeType.CRUSHING) {
             ItemStackToItemStackRecipe castedRecipe = (ItemStackToItemStackRecipe) recipe;
-            return new ItemStackToItemStackCachedRecipe(castedRecipe, inputStack, OutputHelper.getOutputHandler(inventory, outputSlot))
+            return new ItemStackToItemStackCachedRecipe(castedRecipe, itemInputHandler, OutputHelper.getOutputHandler(inventory, outputSlot))
                   .setCanHolderFunction(canFunction)
                   .setActive(setActive)
                   .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
@@ -1053,7 +1054,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                   .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.COMPRESSING || recipeType == RecipeType.PURIFYING || recipeType == RecipeType.INJECTING) {
             ItemStackGasToItemStackRecipe castedRecipe = (ItemStackGasToItemStackRecipe) recipe;
-            return new ItemStackGasToItemStackCachedRecipe(castedRecipe, inputStack, () -> gasTank, () -> secondaryEnergyThisTick,
+            return new ItemStackGasToItemStackCachedRecipe(castedRecipe, itemInputHandler, InputHelper.getInputHandler(gasTank), () -> secondaryEnergyThisTick,
                   OutputHelper.getOutputHandler(inventory, outputSlot))
                   .setCanHolderFunction(canFunction)
                   .setActive(setActive)
@@ -1062,7 +1063,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                   .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.COMBINING) {
             CombinerRecipe castedRecipe = (CombinerRecipe) recipe;
-            return new CombinerCachedRecipe(castedRecipe, inputStack, () -> inventory.get(EXTRA_SLOT_ID), OutputHelper.getOutputHandler(inventory, outputSlot))
+            return new CombinerCachedRecipe(castedRecipe, itemInputHandler, InputHelper.getInputHandler(inventory, EXTRA_SLOT_ID),
+                  OutputHelper.getOutputHandler(inventory, outputSlot))
                   .setCanHolderFunction(canFunction)
                   .setActive(setActive)
                   .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
@@ -1070,7 +1072,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                   .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.INFUSING) {
             MetallurgicInfuserRecipe castedRecipe = (MetallurgicInfuserRecipe) recipe;
-            return new MetallurgicInfuserCachedRecipe(castedRecipe, () -> infuseStored, inputStack, OutputHelper.getOutputHandler(inventory, outputSlot))
+            return new MetallurgicInfuserCachedRecipe(castedRecipe, InputHelper.getInputHandler(infuseStored), itemInputHandler,
+                  OutputHelper.getOutputHandler(inventory, outputSlot))
                   .setCanHolderFunction(canFunction)
                   .setActive(setActive)
                   .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)
@@ -1078,7 +1081,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                   .setOnFinish(this::markDirty);
         } else if (recipeType == RecipeType.SAWING) {
             SawmillRecipe castedRecipe = (SawmillRecipe) recipe;
-            return new SawmillCachedRecipe(castedRecipe, inputStack, OutputHelper.getOutputHandler(inventory, outputSlot, EXTRA_SLOT_ID))
+            return new SawmillCachedRecipe(castedRecipe, itemInputHandler, OutputHelper.getOutputHandler(inventory, outputSlot, EXTRA_SLOT_ID))
                   .setCanHolderFunction(canFunction)
                   .setActive(setActive)
                   .setEnergyRequirements(perTickEnergy, this::getEnergy, useEnergy)

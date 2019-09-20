@@ -15,6 +15,7 @@ import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -112,7 +113,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Nullable
     @Override
     public CachedRecipe<FluidGasToGasRecipe> createNewCachedRecipe(@Nonnull FluidGasToGasRecipe recipe, int cacheIndex) {
-        return new FluidGasToGasCachedRecipe(recipe, () -> fluidTank, () -> inputTank, OutputHelper.getOutputHandler(outputTank))
+        return new FluidGasToGasCachedRecipe(recipe, InputHelper.getInputHandler(fluidTank), InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

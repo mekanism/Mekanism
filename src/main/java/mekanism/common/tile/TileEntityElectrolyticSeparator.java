@@ -16,6 +16,7 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
@@ -172,7 +173,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (update) {
             recalculateUpgradables(Upgrade.ENERGY);
         }
-        return new ElectrolysisCachedRecipe(recipe, () -> fluidTank, OutputHelper.getOutputHandler(leftTank, rightTank))
+        return new ElectrolysisCachedRecipe(recipe, InputHelper.getInputHandler(fluidTank), OutputHelper.getOutputHandler(leftTank, rightTank))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

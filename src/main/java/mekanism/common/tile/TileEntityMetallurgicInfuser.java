@@ -12,6 +12,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
@@ -210,7 +211,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Nullable
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new MetallurgicInfuserCachedRecipe(recipe, () -> infuseStored, () -> inventory.get(2), OutputHelper.getOutputHandler(inventory, 3))
+        return new MetallurgicInfuserCachedRecipe(recipe, InputHelper.getInputHandler(infuseStored), InputHelper.getInputHandler(inventory, 2),
+              OutputHelper.getOutputHandler(inventory, 3))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

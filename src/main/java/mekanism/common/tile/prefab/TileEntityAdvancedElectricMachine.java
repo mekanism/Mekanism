@@ -14,6 +14,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
@@ -197,8 +198,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Nullable
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToItemStackCachedRecipe(recipe, () -> inventory.get(0), () -> gasTank, () -> gasUsageThisTick,
-              OutputHelper.getOutputHandler(inventory, 2))
+        return new ItemStackGasToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(gasTank),
+              () -> gasUsageThisTick, OutputHelper.getOutputHandler(inventory, 2))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

@@ -15,6 +15,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalCrystallizerCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
@@ -104,7 +105,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Nullable
     @Override
     public CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
-        return new ChemicalCrystallizerCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(inventory, 1))
+        return new ChemicalCrystallizerCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(inventory, 1))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

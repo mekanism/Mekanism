@@ -13,6 +13,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
@@ -130,7 +131,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Nullable
     @Override
     public CachedRecipe<ItemStackGasToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToGasCachedRecipe(recipe, () -> inventory.get(0), () -> injectTank, () -> injectUsageThisTick, OutputHelper.getOutputHandler(outputTank))
+        return new ItemStackGasToGasCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(injectTank), () -> injectUsageThisTick,
+              OutputHelper.getOutputHandler(outputTank))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> energyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

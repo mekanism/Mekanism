@@ -13,6 +13,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -136,8 +137,8 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedReactionRec
         if (update) {
             recalculateUpgradables(Upgrade.SPEED);
         }
-        return new PressurizedReactionCachedRecipe(recipe, () -> inventory.get(0), () -> inputFluidTank, () -> inputGasTank,
-              OutputHelper.getOutputHandler(outputGasTank, inventory, 2))
+        return new PressurizedReactionCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(inputFluidTank),
+              InputHelper.getInputHandler(inputGasTank), OutputHelper.getOutputHandler(outputGasTank, inventory, 2))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.getEnergyRequired()), this::getEnergy,

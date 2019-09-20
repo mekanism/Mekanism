@@ -1,14 +1,13 @@
 package mekanism.api.recipes.cache;
 
-import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import org.apache.commons.lang3.tuple.Pair;
 
 @FieldsAreNonnullByDefault
@@ -16,16 +15,12 @@ import org.apache.commons.lang3.tuple.Pair;
 public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
 
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
-    private final Supplier<@NonNull FluidTank> inputTank;
+    private final IInputHandler<@NonNull FluidStack> inputHandler;
 
-    public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, Supplier<@NonNull FluidTank> inputTank, IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler) {
+    public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, IInputHandler<@NonNull FluidStack> inputHandler, IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler) {
         super(recipe);
-        this.inputTank = inputTank;
+        this.inputHandler = inputHandler;
         this.outputHandler = outputHandler;
-    }
-
-    private FluidTank getTank() {
-        return inputTank.get();
     }
 
     @Override
@@ -35,43 +30,33 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
             //If our parent checks show we can't operate then return so
             return 0;
         }
-        FluidStack inputFluid = getTank().getFluid();
-        if (inputFluid == null || inputFluid.amount == 0) {
-            return 0;
-        }
-        FluidStack recipeInput = recipe.getInput().getMatchingInstance(inputFluid);
+        //TODO: This input getting, is only really needed for getting the output
+        FluidStack recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
-        if (recipeInput == null || recipeInput.amount == 0) {
-            //TODO: 1.14 make this check about being empty instead
+        if (recipeFluid == null || recipeFluid.amount == 0) {
             return 0;
         }
-        //Calculate the current max based on how much input we have to what is needed, capping at what we are told to use as a max
-        currentMax = Math.min(inputFluid.amount / recipeInput.amount, currentMax);
+        //Calculate the current max based on the fluid input
+        currentMax = inputHandler.operationsCanSupport(recipe.getInput(), currentMax);
         //Calculate the max based on the space in the output
-        return outputHandler.operationsRoomFor(recipe.getOutput(recipeInput), currentMax);
+        return outputHandler.operationsRoomFor(recipe.getOutput(recipeFluid), currentMax);
     }
 
     @Override
     public boolean isInputValid() {
-        FluidStack fluidStack = getTank().getFluid();
+        FluidStack fluidStack = inputHandler.getInput();
         return fluidStack != null && recipe.test(fluidStack);
     }
 
     @Override
     protected void finishProcessing(int operations) {
         //TODO: Cache this stuff from when getOperationsThisTick was called?
-        FluidStack inputFluid = getTank().getFluid();
-        if (inputFluid == null || inputFluid.amount == 0) {
+        FluidStack recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
+        if (recipeFluid == null || recipeFluid.amount == 0) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
-        FluidStack recipeInput = recipe.getInput().getMatchingInstance(inputFluid);
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
-        if (recipeInput == null || recipeInput.amount == 0) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-        getTank().drain(recipeInput.amount * operations, true);
-        outputHandler.handleOutput(recipe.getOutput(recipeInput), operations);
+        inputHandler.use(recipeFluid, operations);
+        outputHandler.handleOutput(recipe.getOutput(recipeFluid), operations);
     }
 }

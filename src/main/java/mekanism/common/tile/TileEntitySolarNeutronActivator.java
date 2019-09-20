@@ -16,6 +16,7 @@ import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.GasToGasCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -128,7 +129,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
         BlockPos positionAbove = getPos().up();
-        return new GasToGasCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(outputTank))
+        return new GasToGasCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
               .setCanHolderFunction(() -> {
                   // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
                   // changing this would dramatically affect a lot of setups with Fusion reactors which can take

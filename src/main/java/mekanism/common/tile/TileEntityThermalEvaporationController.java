@@ -12,6 +12,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidToFluidCachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -174,7 +175,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         //TODO: Have lastGain be set properly, and our setActive -> false set lastGain to zero
         //TODO: HANDLE ALL THIS STUFF, A good chunk of it can probably go in the getOutputHandler (or in a custom one we pass from here)
         // But none of it should remain outside of what gets passed in one way or another to the cached reipe
-        return new FluidToFluidCachedRecipe(recipe, () -> inputTank, OutputHelper.getOutputHandler(outputTank))
+        return new FluidToFluidCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
               .setCanHolderFunction(() -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
