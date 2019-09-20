@@ -13,6 +13,7 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.material.IMekanismMaterial;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -55,6 +56,21 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hp"), ": " + (stack.getMaxDamage() - stack.getDamage())));
+    }
+
+    @Override
+    public boolean canHarvestBlock(BlockState state) {
+        Block block = state.getBlock();
+        if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK) {
+            //Shovel
+            return true;
+        }
+        //Pickaxe
+        if (state.getHarvestTool() == ToolType.PICKAXE) {
+            return getTier().getHarvestLevel() >= state.getHarvestLevel();
+        }
+        Material material = state.getMaterial();
+        return material == Material.ROCK || material == Material.IRON || material == Material.ANVIL;
     }
 
     @Override

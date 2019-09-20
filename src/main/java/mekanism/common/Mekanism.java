@@ -233,6 +233,7 @@ public class Mekanism {
             RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.CHISELED_STONE_BRICKS), new ItemStack(Blocks.STONE_BRICKS));
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.FLINT), new ItemStack(Items.GUNPOWDER));
             RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND, 2));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.RED_SANDSTONE), new ItemStack(Blocks.RED_SAND, 2));
 
             RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.WHITE_WOOL), new ItemStack(Items.STRING, 4));
             RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.ORANGE_WOOL), new ItemStack(Items.STRING, 4));
@@ -295,7 +296,7 @@ public class Mekanism {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.CRAFTING_TABLE), new ItemStack(Blocks.OAK_PLANKS, 4));
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.JUKEBOX), new ItemStack(Blocks.OAK_PLANKS, 8), new ItemStack(Items.DIAMOND), 1);
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BOOKSHELF), new ItemStack(Blocks.OAK_PLANKS, 6), new ItemStack(Items.BOOK, 3), 1);
-            //Trapdoos
+            //Trapdoors
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ACACIA_TRAPDOOR), new ItemStack(Blocks.ACACIA_PLANKS, 3));
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.BIRCH_TRAPDOOR), new ItemStack(Blocks.BIRCH_PLANKS, 3));
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.DARK_OAK_TRAPDOOR), new ItemStack(Blocks.DARK_OAK_PLANKS, 3));
