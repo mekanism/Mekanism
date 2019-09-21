@@ -20,33 +20,25 @@ import mekanism.client.gui.chemical.GuiChemicalOxidizer;
 import mekanism.client.gui.chemical.GuiChemicalWasher;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
-import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
-import mekanism.client.jei.machine.ChanceMachineRecipeCategory;
-import mekanism.client.jei.machine.DoubleMachineRecipeCategory;
-import mekanism.client.jei.machine.MachineRecipeCategory;
-import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeCategory;
-import mekanism.client.jei.machine.chemical.ChemicalDissolutionChamberRecipeCategory;
-import mekanism.client.jei.machine.chemical.ChemicalInfuserRecipeCategory;
-import mekanism.client.jei.machine.chemical.ChemicalOxidizerRecipeCategory;
-import mekanism.client.jei.machine.chemical.ChemicalWasherRecipeCategory;
-import mekanism.client.jei.machine.other.ElectrolyticSeparatorRecipeCategory;
-import mekanism.client.jei.machine.other.MetallurgicInfuserRecipeCategory;
-import mekanism.client.jei.machine.other.PRCRecipeCategory;
-import mekanism.client.jei.machine.other.SolarNeutronRecipeCategory;
-import mekanism.client.jei.machine.other.ThermalEvaporationRecipeCategory;
+import mekanism.client.jei.machine.CombinerRecipeCategory;
+import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
+import mekanism.client.jei.machine.SawmillRecipeCategory;
+import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
+import mekanism.client.jei.machine.ItemStackGasToGasRecipeCategory;
+import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
+import mekanism.client.jei.machine.FluidGasToGasRecipeCategory;
+import mekanism.client.jei.machine.ElectrolysisRecipeCategory;
+import mekanism.client.jei.machine.MetallurgicInfuserRecipeCategory;
+import mekanism.client.jei.machine.PressurizedReactionRecipeCategory;
+import mekanism.client.jei.machine.GasToGasRecipeCategory;
+import mekanism.client.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.CombinerRecipe;
-import mekanism.common.recipe.machines.CrusherRecipe;
-import mekanism.common.recipe.machines.EnrichmentRecipe;
-import mekanism.common.recipe.machines.InjectionRecipe;
-import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
-import mekanism.common.recipe.machines.PurificationRecipe;
-import mekanism.common.recipe.machines.SawmillRecipe;
-import mekanism.common.recipe.machines.SmeltingRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -82,75 +74,36 @@ public class MekanismJEI implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration registry) {
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
 
+        //TODO: Fix adding the recipes to this as I think it probably grabs it from all the matching recipe types
         addRecipeCategory(registry, MekanismBlock.CHEMICAL_CRYSTALLIZER, new ChemicalCrystallizerRecipeCategory(guiHelper));
-        addRecipeCategory(registry, MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, new ChemicalDissolutionChamberRecipeCategory(guiHelper));
+        addRecipeCategory(registry, MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, new ItemStackGasToGasRecipeCategory(guiHelper));
         addRecipeCategory(registry, MekanismBlock.CHEMICAL_INFUSER, new ChemicalInfuserRecipeCategory(guiHelper));
-        addRecipeCategory(registry, MekanismBlock.CHEMICAL_OXIDIZER, new ChemicalOxidizerRecipeCategory(guiHelper));
-        addRecipeCategory(registry, MekanismBlock.CHEMICAL_WASHER, new ChemicalWasherRecipeCategory(guiHelper));
-        addRecipeCategory(registry, MekanismBlock.ELECTROLYTIC_SEPARATOR, new ElectrolyticSeparatorRecipeCategory(guiHelper));
+        addRecipeCategory(registry, MekanismBlock.CHEMICAL_OXIDIZER, new ItemStackToGasRecipeCategory(guiHelper));
+        addRecipeCategory(registry, MekanismBlock.CHEMICAL_WASHER, new FluidGasToGasRecipeCategory(guiHelper));
+        addRecipeCategory(registry, MekanismBlock.ELECTROLYTIC_SEPARATOR, new ElectrolysisRecipeCategory(guiHelper));
         addRecipeCategory(registry, MekanismBlock.METALLURGIC_INFUSER, new MetallurgicInfuserRecipeCategory(guiHelper));
-        addRecipeCategory(registry, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, new PRCRecipeCategory(guiHelper));
+        addRecipeCategory(registry, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, new PressurizedReactionRecipeCategory(guiHelper));
 
         //TODO
         //addRecipeCategory(registry, MekanismBlock.ROTARY_CONDENSENTRATOR, new RotaryCondensentratorRecipeCategory(guiHelper, true));
         //addRecipeCategory(registry, MekanismBlock.ROTARY_CONDENSENTRATOR, new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
-        addRecipeCategory(registry, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, new SolarNeutronRecipeCategory(guiHelper));
+        addRecipeCategory(registry, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, new GasToGasRecipeCategory(guiHelper));
 
-        addRecipeCategory(registry, MekanismBlock.COMBINER, new DoubleMachineRecipeCategory(guiHelper, MekanismBlock.COMBINER, ProgressBar.STONE) {
-            @Override
-            public Class getRecipeClass() {
-                return CombinerRecipe.class;
-            }
-        });
+        addRecipeCategory(registry, MekanismBlock.COMBINER, new CombinerRecipeCategory(guiHelper, MekanismBlock.COMBINER, ProgressBar.STONE));
 
-        addRecipeCategory(registry, MekanismBlock.PURIFICATION_CHAMBER, new AdvancedMachineRecipeCategory(guiHelper, MekanismBlock.PURIFICATION_CHAMBER, ProgressBar.RED) {
-            @Override
-            public Class getRecipeClass() {
-                return PurificationRecipe.class;
-            }
-        });
-        addRecipeCategory(registry, MekanismBlock.OSMIUM_COMPRESSOR, new AdvancedMachineRecipeCategory(guiHelper, MekanismBlock.OSMIUM_COMPRESSOR, ProgressBar.RED) {
-            @Override
-            public Class getRecipeClass() {
-                return OsmiumCompressorRecipe.class;
-            }
-        });
-        addRecipeCategory(registry, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, new AdvancedMachineRecipeCategory(guiHelper, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, ProgressBar.YELLOW) {
-            @Override
-            public Class getRecipeClass() {
-                return InjectionRecipe.class;
-            }
-        });
+        addRecipeCategory(registry, MekanismBlock.PURIFICATION_CHAMBER, new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlock.PURIFICATION_CHAMBER, ProgressBar.RED));
+        addRecipeCategory(registry, MekanismBlock.OSMIUM_COMPRESSOR, new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlock.OSMIUM_COMPRESSOR, ProgressBar.RED));
+        addRecipeCategory(registry, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, ProgressBar.YELLOW));
 
-        addRecipeCategory(registry, MekanismBlock.PRECISION_SAWMILL, new ChanceMachineRecipeCategory(guiHelper, MekanismBlock.PRECISION_SAWMILL, ProgressBar.PURPLE) {
-            @Override
-            public Class getRecipeClass() {
-                return SawmillRecipe.class;
-            }
-        });
+        addRecipeCategory(registry, MekanismBlock.PRECISION_SAWMILL, new SawmillRecipeCategory(guiHelper, MekanismBlock.PRECISION_SAWMILL, ProgressBar.PURPLE));
 
-        addRecipeCategory(registry, MekanismBlock.ENRICHMENT_CHAMBER, new MachineRecipeCategory(guiHelper, MekanismBlock.ENRICHMENT_CHAMBER, ProgressBar.BLUE) {
-            @Override
-            public Class getRecipeClass() {
-                return EnrichmentRecipe.class;
-            }
-        });
-        addRecipeCategory(registry, MekanismBlock.CRUSHER, new MachineRecipeCategory(guiHelper, MekanismBlock.CRUSHER, ProgressBar.CRUSH) {
-            @Override
-            public Class getRecipeClass() {
-                return CrusherRecipe.class;
-            }
-        });
-        addRecipeCategory(registry, MekanismBlock.ENERGIZED_SMELTER, new MachineRecipeCategory(guiHelper, MekanismBlock.ENERGIZED_SMELTER, ProgressBar.BLUE) {
-            @Override
-            public Class getRecipeClass() {
-                return SmeltingRecipe.class;
-            }
-        });
+        addRecipeCategory(registry, MekanismBlock.ENRICHMENT_CHAMBER, new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlock.ENRICHMENT_CHAMBER, ProgressBar.BLUE));
+        addRecipeCategory(registry, MekanismBlock.CRUSHER, new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlock.CRUSHER, ProgressBar.CRUSH));
+        addRecipeCategory(registry, MekanismBlock.ENERGIZED_SMELTER, new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlock.ENERGIZED_SMELTER, ProgressBar.BLUE));
 
         //There is no config option to disable the thermal evaporation plant
-        addRecipeCategory(registry, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, new ThermalEvaporationRecipeCategory(guiHelper));
+        addRecipeCategory(registry, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, new FluidToFluidRecipeCategory(guiHelper));
     }
 
     private void addRecipeCategory(IRecipeCategoryRegistration registry, MekanismBlock mekanismBlock, BaseRecipeCategory category) {

@@ -18,7 +18,7 @@ import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.ISustainedData;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity;
@@ -80,6 +80,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
                 }
 
+                //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
                     (fluidTank.getFluid().isEmpty() || (fluidTank.getFluid().getAmount() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
@@ -90,7 +91,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     gasTank.draw(operations, true);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
-                } else if (prevEnergy >= getEnergy()) {
+                } else {
                     setActive(false);
                 }
             } else if (mode == 1) {
@@ -101,8 +102,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
                 }
 
+                //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&
-                    (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
+                    (gasTank.isEmpty() || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
@@ -111,11 +113,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     fluidTank.drain(operations, FluidAction.EXECUTE);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
-                } else if (prevEnergy >= getEnergy()) {
+                } else {
                     setActive(false);
                 }
             }
-            prevEnergy = getEnergy();
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
                 world.updateComparatorOutputLevel(pos, getBlockType());
@@ -207,22 +208,23 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         return gasTank.receive(stack, doTransfer);
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         return gasTank.draw(amount, doTransfer);
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         return mode == 1 && side == getLeftSide() && gasTank.canDraw(type);
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return mode == 0 && side == getLeftSide() && gasTank.canReceive(type);
     }
 

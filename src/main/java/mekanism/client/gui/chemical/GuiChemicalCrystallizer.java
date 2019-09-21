@@ -6,6 +6,8 @@ import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.Slurry;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
@@ -23,7 +25,6 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
-import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -85,11 +86,14 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
             if (gasStack.getGas() instanceof Slurry) {
                 drawString(TextComponentUtil.build("(", Translation.of(((Slurry) gasStack.getGas()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
             } else {
-                CrystallizerRecipe recipe = tileEntity.getRecipe();
+                //TODO: Use a getter for the cached recipe
+                CachedRecipe<ChemicalCrystallizerRecipe> recipe = tileEntity.getUpdatedCache(0);
                 if (recipe == null) {
                     drawString(TextComponentUtil.build("(", Translation.of("gui.mekanism.noRecipe"), ")"), 29, 24, 0x00CD00);
                 } else {
-                    drawString(TextComponentUtil.build("(", recipe.recipeOutput.output.getDisplayName(), ")"), 29, 24, 0x00CD00);
+                    //TODO: Do something that will avoid risking a null pointer if tank is empty?
+                    ITextComponent name = recipe.getRecipe().getOutput(tileEntity.inputTank.getGas()).getDisplayName();
+                    drawString(TextComponentUtil.build("(", name, ")"), 29, 24, 0x00CD00);
                 }
             }
         }

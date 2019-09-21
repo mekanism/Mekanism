@@ -155,13 +155,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         if (tier == GasTankTier.CREATIVE) {
             return stack != null ? stack.amount : 0;
         }
         return gasTank.receive(stack, doTransfer);
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
@@ -171,7 +172,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 2, side)) {
             return gasTank.canDraw(type);
         }
@@ -179,7 +180,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 1, side)) {
             return gasTank.canReceive(type);
         }

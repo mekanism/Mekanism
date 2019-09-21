@@ -1,28 +1,28 @@
 package mekanism.common.tile;
 
-import java.util.Map;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.util.Direction;
 
-public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
+public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine {
 
     public TileEntityPurificationChamber() {
         super(MekanismBlock.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
+    @Nonnull
     @Override
-    public Map<AdvancedMachineInput, PurificationRecipe> getRecipes() {
-        return Recipe.PURIFICATION_CHAMBER.get();
+    public Recipe<ItemStackGasToItemStackRecipe> getRecipes() {
+        return Recipe.PURIFICATION_CHAMBER;
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack.getGas())) {
             return gasTank.receive(stack, doTransfer);
         }
@@ -30,13 +30,8 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return gasTank.canReceive(type) && isValidGas(type);
-    }
-
-    @Override
-    public boolean isValidGas(Gas gas) {
-        return Recipe.PURIFICATION_CHAMBER.containsRecipe(gas);
     }
 
     @Override

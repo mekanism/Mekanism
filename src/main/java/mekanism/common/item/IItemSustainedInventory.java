@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import mekanism.common.base.ISustainedInventory;
+import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;

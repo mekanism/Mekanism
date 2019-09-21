@@ -9,18 +9,20 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismGases;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -37,7 +39,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityMachine implements IGasHandler, ISustainedData, ITankManager, IComparatorSupport {
+public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements IGasHandler, ISustainedData, ITankManager,
+      IComparatorSupport {
 
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
@@ -47,12 +50,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public double injectUsage = BASE_INJECT_USAGE;
     public int injectUsageThisTick;
     public int gasOutput = 256;
-    public int operatingTicks = 0;
-    public int ticksRequired = BASE_TICKS_REQUIRED;
-    public DissolutionRecipe cachedRecipe;
 
     public TileEntityChemicalDissolutionChamber() {
-        super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, 4);
+        super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, 4, BASE_TICKS_REQUIRED);
         upgradeComponent.setSupported(Upgrade.GAS);
     }
 
@@ -74,27 +74,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
                 }
             }
             TileUtils.drawGas(getInventory().get(2), outputTank);
-            boolean changed = false;
-            DissolutionRecipe recipe = getRecipe();
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
-            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                setEnergy(getEnergy() - getEnergyPerTick());
-                minorOperate();
-                if ((operatingTicks + 1) < ticksRequired) {
-                    operatingTicks++;
-                } else {
-                    operate(recipe);
-                    operatingTicks = 0;
-                }
-            } else if (prevEnergy >= getEnergy()) {
-                changed = true;
-                setActive(false);
+            cachedRecipe = getUpdatedCache(0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
-            if (changed && !canOperate(recipe)) {
-                operatingTicks = 0;
-            }
-            prevEnergy = getEnergy();
             TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
         }
     }
@@ -102,7 +86,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 1) {
-            return RecipeHandler.getDissolutionRecipe(new ItemStackInput(itemstack)) != null;
+            return getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -130,29 +114,42 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         return InventoryUtils.EMPTY;
     }
 
-    public double getScaledProgress() {
-        return (double) operatingTicks / (double) ticksRequired;
+    @Override
+    @Nonnull
+    public Recipe<ItemStackGasToGasRecipe> getRecipes() {
+        return Recipe.CHEMICAL_DISSOLUTION_CHAMBER;
     }
 
-    public DissolutionRecipe getRecipe() {
-        ItemStackInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getDissolutionRecipe(getInput());
-        }
+    @Nullable
+    @Override
+    public CachedRecipe<ItemStackGasToGasRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
-    public ItemStackInput getInput() {
-        return new ItemStackInput(getInventory().get(1));
+    @Nullable
+    @Override
+    public ItemStackGasToGasRecipe getRecipe(int cacheIndex) {
+        ItemStack stack = inventory.get(0);
+        if (stack.isEmpty()) {
+            return null;
+        }
+        GasStack gasStack = injectTank.getGas();
+        if (gasStack.isEmpty()) {
+            return null;
+        }
+        return getRecipes().findFirst(recipe -> recipe.test(stack, gasStack));
     }
 
-    public boolean canOperate(DissolutionRecipe recipe) {
-        return recipe != null && recipe.canOperate(getInventory(), outputTank);
-    }
-
-    public void operate(DissolutionRecipe recipe) {
-        recipe.operate(getInventory(), outputTank);
-        markDirty();
+    @Nullable
+    @Override
+    public CachedRecipe<ItemStackGasToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe, int cacheIndex) {
+        return new ItemStackGasToGasCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(injectTank), () -> injectUsageThisTick,
+              OutputHelper.getOutputHandler(outputTank))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     public void minorOperate() {
@@ -163,7 +160,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (world.isRemote) {
-            operatingTicks = dataStream.readInt();
             TileUtils.readTankData(dataStream, injectTank);
             TileUtils.readTankData(dataStream, outputTank);
         }
@@ -172,7 +168,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(operatingTicks);
         TileUtils.addTankData(data, injectTank);
         TileUtils.addTankData(data, outputTank);
         return data;
@@ -181,7 +176,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        operatingTicks = nbtTags.getInt("operatingTicks");
         injectTank.read(nbtTags.getCompound("injectTank"));
         outputTank.read(nbtTags.getCompound("gasTank"));
         GasUtils.clearIfInvalid(injectTank, this::isValidGas);
@@ -191,37 +185,36 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("operatingTicks", operatingTicks);
         nbtTags.put("injectTank", injectTank.write(new CompoundNBT()));
         nbtTags.put("gasTank", outputTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack.getGas())) {
             return injectTank.receive(stack, doTransfer);
         }
         return 0;
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return side == getLeftSide() && injectTank.canReceive(type) && isValidGas(type);
     }
 
     private boolean isValidGas(Gas gas) {
-        //TODO: Replace with commented version once this becomes an AdvancedMachine
-        return gas == MekanismGases.SULFURIC_ACID.getGas();//Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(gas);
+        return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         return false;
     }
 
@@ -278,15 +271,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
-            case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage())); // incorporate speed upgrades
-                break;
             case GAS:
                 injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
                 break;
             case SPEED:
-                ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
                 break;
             default:

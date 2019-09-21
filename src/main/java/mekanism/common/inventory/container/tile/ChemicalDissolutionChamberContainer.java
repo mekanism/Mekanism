@@ -5,8 +5,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,7 +31,7 @@ public class ChemicalDissolutionChamberContainer extends MekanismTileContainer<T
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (RecipeHandler.getDissolutionRecipe(new ItemStackInput(slotStack)) != null) {
+            if (tile.getRecipes().contains(recipe -> recipe.getItemInput().testType(slotStack))) {
                 if (slotID != 1) {
                     if (!mergeItemStack(slotStack, 1, 2, true)) {
                         return ItemStack.EMPTY;

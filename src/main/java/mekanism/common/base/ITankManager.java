@@ -27,23 +27,24 @@ public interface ITankManager {
             ItemGaugeDropper dropper = (ItemGaugeDropper) stack.getItem();
 
             if (!stack.isEmpty()) {
+                GasStack storedGas = dropper.getGas(stack);
                 if (tank instanceof GasTank) {
                     GasTank gasTank = (GasTank) tank;
-                    int dropperStored = dropper.getGas(stack) != null ? dropper.getGas(stack).amount : 0;
+                    int dropperStored = storedGas.getAmount();
 
-                    if (dropper.getGas(stack) != null && gasTank.getGas() != null && !dropper.getGas(stack).isGasEqual(gasTank.getGas())) {
+                    if (!storedGas.isGasEqual(gasTank.getGas())) {
                         return;
                     }
 
                     if (button == 0) { //Insert gas into dropper
-                        if (FluidUtil.getFluidContained(stack).isPresent() || gasTank.getGas() == null) {
+                        if (FluidUtil.getFluidContained(stack).isPresent() || gasTank.isEmpty()) {
                             return;
                         }
 
                         int toInsert = Math.min(gasTank.getStored(), ItemGaugeDropper.CAPACITY - dropperStored);
                         GasStack drawn = gasTank.draw(toInsert, true);
-                        if (drawn != null) {
-                            dropper.setGas(stack, new GasStack(drawn.getGas(), dropperStored + drawn.amount));
+                        if (!drawn.isEmpty()) {
+                            dropper.setGas(stack, new GasStack(drawn, dropperStored + drawn.getAmount()));
                         }
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 1) { //Extract gas from dropper
@@ -52,11 +53,11 @@ public interface ITankManager {
                         }
 
                         int toExtract = Math.min(gasTank.getNeeded(), dropperStored);
-                        toExtract = gasTank.receive(new GasStack(dropper.getGas(stack).getGas(), toExtract), true);
-                        dropper.setGas(stack, new GasStack(dropper.getGas(stack).getGas(), dropperStored - toExtract));
+                        toExtract = gasTank.receive(new GasStack(storedGas.getGas(), toExtract), true);
+                        dropper.setGas(stack, new GasStack(storedGas.getGas(), dropperStored - toExtract));
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 2) { //Dump the tank
-                        gasTank.setGas(null);
+                        gasTank.setGas(GasStack.EMPTY);
                     }
                 } else if (tank instanceof FluidTank) {
                     FluidTank fluidTank = (FluidTank) tank;
@@ -68,7 +69,7 @@ public interface ITankManager {
                     }
 
                     if (button == 0) { //Insert fluid into dropper
-                        if (dropper.getGas(stack) != null || fluidTank.getFluid().isEmpty()) {
+                        if (!storedGas.isEmpty() || fluidTank.getFluid().isEmpty()) {
                             return;
                         }
 
@@ -77,7 +78,7 @@ public interface ITankManager {
 
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 1) { //Extract fluid from dropper
-                        if (dropper.getGas(stack) != null || fluidTank.getCapacity() - fluidTank.getFluidAmount() == 0) {
+                        if (!storedGas.isEmpty() || fluidTank.getCapacity() - fluidTank.getFluidAmount() == 0) {
                             return;
                         }
 
@@ -86,7 +87,7 @@ public interface ITankManager {
 
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 2) { //Dump the tank
-                        fluidTank.setFluid(null);
+                        fluidTank.setFluid(FluidStack.EMPTY);
                     }
                 }
             }

@@ -22,7 +22,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.chance.PrecisionSawmillContainer;
+import mekanism.common.inventory.container.tile.PrecisionSawmillContainer;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;

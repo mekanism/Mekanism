@@ -1,23 +1,29 @@
 package mekanism.api.infuse;
 
-import javax.annotation.Nullable;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.ReverseTagWrapper;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
  * The types of infuse currently available in Mekanism.
  *
  * @author AidanBrady
  */
-//TODO: Promote infuse type to proper forge registry, and add tag support similar to how gases have Tag<Gas>
-// Also allow for tints rather than just different textures
-public final class InfuseType implements IForgeRegistryEntry<InfuseType>, IHasTranslationKey, IInfuseTypeProvider {
+//TODO: Allow for tints rather than just different textures
+public class InfuseType extends ForgeRegistryEntry<InfuseType> implements IHasTranslationKey, IInfuseTypeProvider {
+
+    private final ReverseTagWrapper<InfuseType> reverseTags = new ReverseTagWrapper<>(this, InfuseTypeTags::getGeneration, InfuseTypeTags::getCollection);
 
     /**
      * The name of this infusion.
@@ -34,7 +40,6 @@ public final class InfuseType implements IForgeRegistryEntry<InfuseType>, IHasTr
      */
     public TextureAtlasSprite sprite;
     private String translationKey;
-    private ResourceLocation registryName;
     //TODO: Actually use the tint
     private int tint;
 
@@ -48,7 +53,7 @@ public final class InfuseType implements IForgeRegistryEntry<InfuseType>, IHasTr
     }
 
     public InfuseType(ResourceLocation registryName, ResourceLocation texture, int tint) {
-        this.registryName = registryName;
+        setRegistryName(registryName);
         translationKey = Util.makeTranslationKey("infuse_type", getRegistryName());
         iconResource = texture;
         this.tint = tint;
@@ -58,9 +63,8 @@ public final class InfuseType implements IForgeRegistryEntry<InfuseType>, IHasTr
         sprite = tex;
     }
 
-    public InfuseType setTranslationKey(String translationKey) {
-        this.translationKey = translationKey;
-        return this;
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent(getTranslationKey());
     }
 
     @Override
@@ -68,38 +72,34 @@ public final class InfuseType implements IForgeRegistryEntry<InfuseType>, IHasTr
         return translationKey;
     }
 
-    @Override
-    public InfuseType setRegistryName(ResourceLocation name) {
-        //TODO: Check to make sure there is no name set and throw an error if there already is one set
-        registryName = name;
-        return this;
-    }
-
+    @Nonnull
     @Override
     public InfuseType getInfuseType() {
         return this;
     }
 
-    @Nullable
-    @Override
-    public ResourceLocation getRegistryName() {
-        return registryName;
-    }
-
-    @Override
-    public Class<InfuseType> getRegistryType() {
-        return InfuseType.class;
-    }
-
+    @Nonnull
     public static InfuseType readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
-            return null;
+            return MekanismAPI.EMPTY_INFUSE_TYPE;
         }
-        return MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(new ResourceLocation(nbtTags.getString("infuseTypeName")));
+        InfuseType infuseType = MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(new ResourceLocation(nbtTags.getString("infuseTypeName")));
+        if (infuseType == null) {
+            return MekanismAPI.EMPTY_INFUSE_TYPE;
+        }
+        return infuseType;
     }
 
     public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.putString("infuseTypeName", getRegistryName().toString());
         return nbtTags;
+    }
+
+    public boolean isIn(Tag<InfuseType> tags) {
+        return tags.contains(this);
+    }
+
+    public Set<ResourceLocation> getTags() {
+        return reverseTags.getTagNames();
     }
 }

@@ -11,7 +11,7 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
-import mekanism.common.base.ISustainedInventory;
+import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;

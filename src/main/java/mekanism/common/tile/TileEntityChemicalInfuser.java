@@ -10,15 +10,19 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ChemicalPairInput;
-import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -34,7 +38,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ISustainedData, IUpgradeInfoHandler, ITankManager {
+public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ISustainedData, IUpgradeInfoHandler, ITankManager,
+      ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10000;
     public GasTank leftTank = new GasTank(MAX_GAS);
@@ -42,7 +47,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     public GasTank centerTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
 
-    public ChemicalInfuserRecipe cachedRecipe;
+    public CachedRecipe<ChemicalInfuserRecipe> cachedRecipe;
 
     public double clientEnergyUsed;
 
@@ -57,58 +62,53 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
             TileUtils.receiveGas(getInventory().get(0), leftTank);
             TileUtils.receiveGas(getInventory().get(1), rightTank);
             TileUtils.drawGas(getInventory().get(2), centerTank);
-            ChemicalInfuserRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                int operations = operate(recipe);
-                double prev = getEnergy();
-                setEnergy(getEnergy() - getEnergyPerTick() * operations);
-                clientEnergyUsed = prev - getEnergy();
-            } else {
-                if (prevEnergy >= getEnergy()) {
-                    setActive(false);
-                }
+            double prev = getEnergy();
+            cachedRecipe = getUpdatedCache(0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
+            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+            clientEnergyUsed = prev - getEnergy();
             TileUtils.emitGas(this, centerTank, gasOutput, getDirection());
-            prevEnergy = getEnergy();
         }
     }
 
-    public int getUpgradedUsage(ChemicalInfuserRecipe recipe) {
-        int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-        if (leftTank.getGasType() == recipe.recipeInput.leftGas.getGas()) {
-            possibleProcess = Math.min(leftTank.getStored() / recipe.recipeInput.leftGas.amount, possibleProcess);
-            possibleProcess = Math.min(rightTank.getStored() / recipe.recipeInput.rightGas.amount, possibleProcess);
-        } else {
-            possibleProcess = Math.min(leftTank.getStored() / recipe.recipeInput.rightGas.amount, possibleProcess);
-            possibleProcess = Math.min(rightTank.getStored() / recipe.recipeInput.leftGas.amount, possibleProcess);
-        }
-        possibleProcess = Math.min(centerTank.getNeeded() / recipe.recipeOutput.output.amount, possibleProcess);
-        possibleProcess = Math.min((int) (getEnergy() / getEnergyPerTick()), possibleProcess);
-        return possibleProcess;
+    @Nonnull
+    @Override
+    public Recipe<ChemicalInfuserRecipe> getRecipes() {
+        return Recipe.CHEMICAL_INFUSER;
     }
 
-    public ChemicalPairInput getInput() {
-        return new ChemicalPairInput(leftTank.getGas(), rightTank.getGas());
-    }
-
-    public ChemicalInfuserRecipe getRecipe() {
-        ChemicalPairInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getChemicalInfuserRecipe(getInput());
-        }
+    @Nullable
+    @Override
+    public CachedRecipe<ChemicalInfuserRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
-    public boolean canOperate(ChemicalInfuserRecipe recipe) {
-        return recipe != null && recipe.canOperate(leftTank, rightTank, centerTank);
+    @Nullable
+    @Override
+    public ChemicalInfuserRecipe getRecipe(int cacheIndex) {
+        GasStack leftGas = leftTank.getGas();
+        GasStack rightGas = rightTank.getGas();
+        return leftGas.isEmpty() || rightGas.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(leftGas, rightGas));
     }
 
-    public int operate(ChemicalInfuserRecipe recipe) {
-        int operations = getUpgradedUsage(recipe);
-        recipe.operate(leftTank, rightTank, centerTank, operations);
-        markDirty();
-        return operations;
+    @Nullable
+    @Override
+    public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
+        return new ChemicalInfuserCachedRecipe(recipe, InputHelper.getInputHandler(leftTank), InputHelper.getInputHandler(rightTank),
+              OutputHelper.getOutputHandler(centerTank))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+              });
     }
 
     @Override
@@ -168,18 +168,19 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return getTank(side) != null && getTank(side) != centerTank && getTank(side).canReceive(type);
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack != null ? stack.getGas() : null)) {
             return getTank(side).receive(stack, doTransfer);
         }
         return 0;
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
@@ -189,7 +190,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         return getTank(side) != null && getTank(side) == centerTank && getTank(side).canDraw(type);
     }
 

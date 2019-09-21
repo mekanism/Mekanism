@@ -12,7 +12,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.ISustainedTank;
+import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.machine.BlockFluidTank;

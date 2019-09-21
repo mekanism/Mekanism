@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.ISustainedTank;
+import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

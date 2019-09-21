@@ -19,7 +19,7 @@ public interface IGasHandler {
      *
      * @return gas added
      */
-    int receiveGas(Direction side, GasStack stack, boolean doTransfer);
+    int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer);
 
     /**
      * Draws a certain amount of gas from this block.
@@ -28,6 +28,7 @@ public interface IGasHandler {
      *
      * @return gas drawn
      */
+    @Nonnull
     GasStack drawGas(Direction side, int amount, boolean doTransfer);
 
     /**
@@ -38,7 +39,7 @@ public interface IGasHandler {
      *
      * @return if block accepts gas
      */
-    boolean canReceiveGas(Direction side, Gas type);
+    boolean canReceiveGas(Direction side, @Nonnull Gas type);
 
     /**
      * Whether or not this block can be drawn of gas from a certain side.
@@ -48,7 +49,7 @@ public interface IGasHandler {
      *
      * @return if block can be drawn of gas
      */
-    boolean canDrawGas(Direction side, Gas type);
+    boolean canDrawGas(Direction side, @Nonnull Gas type);
 
     /**
      * Gets the tanks present on this handler. READ ONLY. DO NOT MODIFY.

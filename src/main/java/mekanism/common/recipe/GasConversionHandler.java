@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -56,19 +55,21 @@ public class GasConversionHandler {
     }
 
     public static boolean addGasMapping(@Nonnull IMekanismIngredient<ItemStack> ingredient, @Nonnull GasStack gasStack) {
-        Gas gas = gasStack.getGas();
-        if (gas == null || gasStack.amount <= 0) {
+        if (gasStack.isEmpty()) {
             return false;
         }
-        List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.computeIfAbsent(gas, k -> new ArrayList<>());
+        List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.computeIfAbsent(gasStack.getGas(), k -> new ArrayList<>());
         //TODO: Better checking at some point if the ingredient is already in there? Should partial checking happen as well
         ingredients.add(ingredient);
         return ingredientToGas.put(ingredient, gasStack) == null;
     }
 
     public static int removeGasMapping(@Nonnull IMekanismIngredient<ItemStack> ingredient, @Nonnull GasStack gasStack) {
+        if (gasStack.isEmpty()) {
+            return 0;
+        }
         Gas gas = gasStack.getGas();
-        if (gas != null && gasStack.amount > 0 && gasToIngredients.containsKey(gas)) {
+        if (gasToIngredients.containsKey(gas)) {
             List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.get(gas);
             List<IMekanismIngredient<ItemStack>> toRemove = new ArrayList<>();
             for (IMekanismIngredient<ItemStack> stored : ingredients) {
@@ -98,13 +99,13 @@ public class GasConversionHandler {
     /**
      * Gets an item gas checking if it will be valid for a specific tank and if the type is also valid.
      */
-    @Nullable
+    @Nonnull
     public static GasStack getItemGas(ItemStack itemStack, GasTank gasTank, Predicate<Gas> isValidGas) {
         return getItemGas(itemStack, gasTank.getNeeded(), (gas, quantity) -> {
             if (gas != null && gasTank.canReceive(gas) && isValidGas.test(gas)) {
                 return new GasStack(gas, quantity);
             }
-            return null;
+            return GasStack.EMPTY;
         });
     }
 
@@ -116,14 +117,14 @@ public class GasConversionHandler {
      *
      * @return fuel ticks
      */
-    @Nullable
+    @Nonnull
     public static GasStack getItemGas(ItemStack itemStack, int needed, BiFunction<Gas, Integer, GasStack> getIfValid) {
         if (itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
             GasStack gas = item.getGas(itemStack);
             //Check to make sure it can provide the gas it contains
-            if (gas != null && item.canProvideGas(itemStack, gas.getGas())) {
-                int amount = Math.min(needed, Math.min(gas.amount, item.getRate(itemStack)));
+            if (!gas.isEmpty() && item.canProvideGas(itemStack, gas.getGas())) {
+                int amount = Math.min(needed, Math.min(gas.getAmount(), item.getRate(itemStack)));
                 if (amount > 0) {
                     GasStack gasStack = getIfValid.apply(gas.getGas(), amount);
                     if (gasStack != null) {
@@ -134,13 +135,13 @@ public class GasConversionHandler {
         }
         for (Entry<IMekanismIngredient<ItemStack>, GasStack> entry : ingredientToGas.entrySet()) {
             if (entry.getKey().contains(itemStack)) {
-                GasStack gasStack = getIfValid.apply(entry.getValue().getGas(), entry.getValue().amount);
+                GasStack gasStack = getIfValid.apply(entry.getValue().getGas(), entry.getValue().getAmount());
                 if (gasStack != null) {
                     return gasStack;
                 }
             }
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     public static List<ItemStack> getStacksForGas(Gas type) {

@@ -3,7 +3,9 @@ package mekanism.client.jei.gas;
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.text.EnumColor;
@@ -54,7 +56,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         this.overlay = overlay;
     }
 
-    private static TextureAtlasSprite getStillGasSprite(Gas gas) {
+    private static TextureAtlasSprite getStillGasSprite(@Nonnull Gas gas) {
         AtlasTexture textureMapBlocks = Minecraft.getInstance().getTextureMap();
         ResourceLocation gasStill = gas.getIcon();
         TextureAtlasSprite gasStillSprite = null;
@@ -87,6 +89,9 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
     @Override
     public void render(int xPosition, int yPosition, @Nullable GasStack gasStack) {
+        if (gasStack == null) {
+            return;
+        }
         GlStateManager.enableBlend();
         GlStateManager.enableAlphaTest();
         drawGas(xPosition, yPosition, gasStack);
@@ -100,18 +105,18 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         GlStateManager.disableBlend();
     }
 
-    private void drawGas(int xPosition, int yPosition, @Nullable GasStack gasStack) {
-        Gas gas = gasStack == null ? null : gasStack.getGas();
-        if (gas == null) {
+    private void drawGas(int xPosition, int yPosition, @Nonnull GasStack gasStack) {
+        if (gasStack.isEmpty()) {
             return;
         }
-        int scaledAmount = (gasStack.amount * height) / capacityMb;
-        if (gasStack.amount > 0 && scaledAmount < MIN_FLUID_HEIGHT) {
+        int scaledAmount = (gasStack.getAmount() * height) / capacityMb;
+        if (scaledAmount < MIN_FLUID_HEIGHT) {
             scaledAmount = MIN_FLUID_HEIGHT;
         }
         if (scaledAmount > height) {
             scaledAmount = height;
         }
+        Gas gas = gasStack.getGas();
         drawTiledSprite(xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(gas));
     }
 
@@ -144,18 +149,18 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     @Override
-    public List<String> getTooltip(GasStack gasStack, ITooltipFlag tooltipFlag) {
+    public List<String> getTooltip(@Nonnull GasStack gasStack, ITooltipFlag tooltipFlag) {
         List<String> tooltip = new ArrayList<>();
         Gas gasType = gasStack.getGas();
-        if (gasType == null) {
+        if (gasType == MekanismAPI.EMPTY_GAS) {
             return tooltip;
         }
         tooltip.add(TextComponentUtil.build(gasType).getFormattedText());
         ITextComponent component = null;
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb));
+            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount.with.capacity", gasStack.getAmount(), capacityMb));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount", gasStack.amount));
+            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount", gasStack.getAmount()));
         }
         if (component != null) {
             tooltip.add(component.getFormattedText());
@@ -164,7 +169,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     @Override
-    public FontRenderer getFontRenderer(Minecraft minecraft, GasStack gasStack) {
+    public FontRenderer getFontRenderer(Minecraft minecraft, @Nonnull GasStack gasStack) {
         return minecraft.fontRenderer;
     }
 

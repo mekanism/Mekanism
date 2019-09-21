@@ -1,16 +1,13 @@
 package mekanism.common.tile.prefab;
 
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
-      TileEntityBasicMachine<INPUT, OUTPUT, RECIPE> implements ITierUpgradeable {
+public abstract class TileEntityUpgradeableMachine<RECIPE extends IMekanismRecipe> extends TileEntityBasicMachine<RECIPE> implements ITierUpgradeable {
 
     /**
      * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -49,10 +46,10 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         factory.electricityStored = electricityStored;
 
         //Machine
-        factory.progress[0] = operatingTicks;
+        factory.progress[0] = getOperatingTicks();
         factory.isActive = isActive;
         factory.setControlType(getControlType());
-        factory.prevEnergy = prevEnergy;
+        //TODO: Copy over some of the cached recipe information
         factory.upgradeComponent.readFrom(upgradeComponent);
         factory.upgradeComponent.setUpgradeSlot(0);
         factory.ejectorComponent.readFrom(ejectorComponent);

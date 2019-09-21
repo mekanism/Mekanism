@@ -8,7 +8,7 @@ import mekanism.common.MekanismItem;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.ISustainedData;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;

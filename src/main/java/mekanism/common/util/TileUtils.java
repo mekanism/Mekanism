@@ -22,10 +22,10 @@ public class TileUtils {
     private static final CompoundNBT EMPTY_TAG_COMPOUND = new CompoundNBT();
 
     public static void addTankData(TileNetworkList data, GasTank tank) {
-        if (tank.getGas() != null) {
-            data.add(tank.getGas().write(new CompoundNBT()));
-        } else {
+        if (tank.isEmpty()) {
             data.add(EMPTY_TAG_COMPOUND);
+        } else {
+            data.add(tank.getGas().write(new CompoundNBT()));
         }
     }
 
@@ -56,25 +56,29 @@ public class TileUtils {
 
     //Returns true if it entered the if statement, basically for use by TileEntityGasTank
     public static boolean receiveGas(ItemStack stack, GasTank tank) {
-        if (!stack.isEmpty() && (tank.getGas() == null || tank.getStored() < tank.getMaxGas())) {
+        if (!stack.isEmpty() && (tank.isEmpty() || tank.getStored() < tank.getMaxGas())) {
             tank.receive(GasUtils.removeGas(stack, tank.getGasType(), tank.getNeeded()), true);
             return true;
         }
         return false;
     }
 
-    public static void drawGas(ItemStack stack, GasTank tank) {
-        drawGas(stack, tank, true);
+    /**
+     * @return True if gas was removed
+     */
+    public static boolean drawGas(ItemStack stack, GasTank tank) {
+        return drawGas(stack, tank, true);
     }
 
-    public static void drawGas(ItemStack stack, GasTank tank, boolean doDraw) {
-        if (!stack.isEmpty() && tank.getGas() != null) {
-            tank.draw(GasUtils.addGas(stack, tank.getGas()), doDraw);
+    public static boolean  drawGas(ItemStack stack, GasTank tank, boolean doDraw) {
+        if (!stack.isEmpty() && !tank.isEmpty()) {
+            return !tank.draw(GasUtils.addGas(stack, tank.getGas()), doDraw).isEmpty();
         }
+        return false;
     }
 
     public static void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, Direction facing) {
-        if (tank.getGas() != null) {
+        if (!tank.isEmpty()) {
             GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), gasOutput));
             tank.draw(GasUtils.emit(toSend, tile, EnumSet.of(facing)), true);
         }

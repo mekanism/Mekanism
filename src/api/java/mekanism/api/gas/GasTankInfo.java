@@ -1,6 +1,6 @@
 package mekanism.api.gas;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * Created by Thiakil on 11/11/2017.
@@ -12,7 +12,7 @@ public interface GasTankInfo {
      *
      * @return the stored gas, or null
      */
-    @Nullable
+    @Nonnull
     GasStack getGas();
 
     /**

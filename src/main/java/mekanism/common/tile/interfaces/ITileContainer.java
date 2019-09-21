@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.base.ISustainedInventory;
+import mekanism.api.sustained.ISustainedInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;

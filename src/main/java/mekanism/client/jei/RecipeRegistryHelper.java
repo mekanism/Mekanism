@@ -1,12 +1,10 @@
 package mekanism.client.jei;
 
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
 import mezz.jei.api.registration.IRecipeRegistration;
 
 public class RecipeRegistryHelper {
@@ -37,7 +35,7 @@ public class RecipeRegistryHelper {
             //TODO: Add all smelting recipes
             //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
             if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
-                registry.addRecipes(Recipe.ENERGIZED_SMELTER.get().values(), mekanismBlock.getRegistryName());
+                registry.addRecipes(Recipe.ENERGIZED_SMELTER.get(), mekanismBlock.getRegistryName());
             } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
                 //TODO: Fix this
                 // Only add added recipes
@@ -53,10 +51,9 @@ public class RecipeRegistryHelper {
         }
     }
 
-    public static <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
-    void register(IRecipeRegistration registry, MekanismBlock mekanismBlock, Recipe<INPUT, OUTPUT, RECIPE> type) {
+    public static <RECIPE extends IMekanismRecipe> void register(IRecipeRegistration registry, MekanismBlock mekanismBlock, Recipe<RECIPE> type) {
         if (mekanismBlock.isEnabled()) {
-            registry.addRecipes(type.get().values(), mekanismBlock.getRegistryName());
+            registry.addRecipes(type.get(), mekanismBlock.getRegistryName());
         }
     }
 }

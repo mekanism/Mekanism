@@ -4,14 +4,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import net.minecraft.util.Direction;
@@ -19,12 +16,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
-      TileEntityOperationalMachine implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IConfigCardAccess {
+public abstract class TileEntityBasicMachine<RECIPE extends IMekanismRecipe> extends TileEntityOperationalMachine<RECIPE> implements IComputerIntegration,
+      ISideConfiguration, IConfigCardAccess {
 
     public ResourceLocation guiLocation;
-
-    public RECIPE cachedRecipe = null;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;

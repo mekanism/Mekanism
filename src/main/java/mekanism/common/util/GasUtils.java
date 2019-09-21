@@ -71,11 +71,11 @@ public final class GasUtils {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
             if (type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type)) {
-                return null;
+                return GasStack.EMPTY;
             }
             return item.removeGas(itemStack, amount);
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     /**

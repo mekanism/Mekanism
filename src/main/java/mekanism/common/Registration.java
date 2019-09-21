@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.entity.MekanismEntityTypes;
@@ -15,23 +14,20 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registration {
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void buildRegistry(RegistryEvent.NewRegistry event) {
-        //TODO: Should this be declared in the API package
-        MekanismAPI.GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(Mekanism.MODID, "gas")).setType(Gas.class).create();
-        MekanismAPI.INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(Mekanism.MODID, "infuse_type")).setType(InfuseType.class).create();
+        //TODO: Come up with a better way than just doing it on low to make sure this happens AFTER the registries are initialized?
         Mekanism.instance.setTagManager(new MekanismTagManager());
     }
 

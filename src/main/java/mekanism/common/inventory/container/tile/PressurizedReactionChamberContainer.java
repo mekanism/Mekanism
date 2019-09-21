@@ -4,8 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,14 +12,14 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
-public class PressurizedReactionChamberContainer extends MekanismTileContainer<TileEntityPRC> {
+public class PressurizedReactionChamberContainer extends MekanismTileContainer<TileEntityPressurizedReactionChamber> {
 
-    public PressurizedReactionChamberContainer(int id, PlayerInventory inv, TileEntityPRC tile) {
+    public PressurizedReactionChamberContainer(int id, PlayerInventory inv, TileEntityPressurizedReactionChamber tile) {
         super(MekanismContainerTypes.PRESSURIZED_REACTION_CHAMBER, id, inv, tile);
     }
 
     public PressurizedReactionChamberContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, getTileFromBuf(buf, TileEntityPRC.class));
+        this(id, inv, getTileFromBuf(buf, TileEntityPressurizedReactionChamber.class));
     }
 
     @Nonnull
@@ -43,7 +42,7 @@ public class PressurizedReactionChamberContainer extends MekanismTileContainer<T
                 } else if (!mergeItemStack(slotStack, 3, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (RecipeHandler.isInPressurizedRecipe(slotStack)) {
+            } else if (tile.getRecipes().contains(recipe -> recipe.getInputSolid().testType(slotStack))) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

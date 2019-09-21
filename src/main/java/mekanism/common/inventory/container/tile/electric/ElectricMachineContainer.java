@@ -5,9 +5,6 @@ import javax.annotation.Nullable;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,7 +13,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ElectricMachineContainer<RECIPE extends BasicMachineRecipe<RECIPE>, TILE extends TileEntityElectricMachine<RECIPE>> extends MekanismTileContainer<TILE> {
+public abstract class ElectricMachineContainer<TILE extends TileEntityElectricMachine> extends MekanismTileContainer<TILE> {
 
     protected ElectricMachineContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
         super(type, id, inv, tile);
@@ -34,7 +31,7 @@ public abstract class ElectricMachineContainer<RECIPE extends BasicMachineRecipe
                 if (!mergeItemStack(slotStack, 3, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (RecipeHandler.getRecipe(new ItemStackInput(slotStack), tile.getRecipes()) != null) {
+            } else if (tile.getRecipes().contains(recipe -> recipe.getInput().testType(slotStack))) {
                 if (slotID != 0 && slotID != 1) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

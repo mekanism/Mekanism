@@ -2,12 +2,7 @@ package mekanism.common.integration;
 
 import java.util.stream.Stream;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
 
 public class IMCHandler {
@@ -26,10 +21,11 @@ public class IMCHandler {
                     delete = true;
                 }
 
-                for (Recipe<?, ?, ?> type : Recipe.values()) {
+                for (Recipe<?> type : Recipe.values()) {
                     if (method.equalsIgnoreCase(type.getRecipeName() + "Recipe")) {
-                        handleRecipe(type, msg, delete);
-                        found = true;
+                        //TODO: Handle recipes as well as make some form of legacy support
+                        //handleRecipe(type, msg, delete);
+                        //found = true;
                         break;
                     }
                 }
@@ -40,7 +36,7 @@ public class IMCHandler {
         });
     }
 
-    private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
+    /*private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
     void handleRecipe(Recipe<INPUT, OUTPUT, RECIPE> type, IMCMessage msg, boolean delete) {
         //TODO: Safety check. Maybe we should even have them send something other than nbt
         CompoundNBT nbt = (CompoundNBT) msg.getMessageSupplier().get();
@@ -61,5 +57,5 @@ public class IMCHandler {
         } else {
             Mekanism.logger.error(msg.getSenderModId() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid input.");
         }
-    }
+    }*/
 }

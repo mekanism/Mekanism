@@ -1,15 +1,17 @@
 package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.BasicMachineRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -21,7 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 
-public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<ItemStackInput, ItemStackOutput, RECIPE> {
+public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMachine<ItemStackToItemStackRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
@@ -61,23 +63,10 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
     public void onUpdate() {
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-            RECIPE recipe = getRecipe();
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
-                setActive(true);
-                pullEnergy(null, getEnergyPerTick(), false);
-                if ((operatingTicks + 1) < ticksRequired) {
-                    operatingTicks++;
-                } else if ((operatingTicks + 1) >= ticksRequired) {
-                    operate(recipe);
-                    operatingTicks = 0;
-                }
-            } else if (prevEnergy >= getEnergy()) {
-                setActive(false);
+            cachedRecipe = getUpdatedCache(0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
-            if (!canOperate(recipe)) {
-                operatingTicks = 0;
-            }
-            prevEnergy = getEnergy();
         }
     }
 
@@ -88,36 +77,35 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
         } else if (slotID == 3) {
             return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 0) {
-            return RecipeHandler.isInRecipe(itemstack, getRecipes());
+            return getRecipes().contains(recipe -> recipe.getInput().testType(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
         return false;
     }
 
+    @Nullable
     @Override
-    public ItemStackInput getInput() {
-        return new ItemStackInput(getInventory().get(0));
-    }
-
-    @Override
-    public RECIPE getRecipe() {
-        ItemStackInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
-        }
+    public CachedRecipe<ItemStackToItemStackRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
+    @Nullable
     @Override
-    public void operate(RECIPE recipe) {
-        recipe.operate(getInventory(), 0, 2);
-        markDirty();
+    public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
+        ItemStack stack = inventory.get(0);
+        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
+    @Nullable
     @Override
-    public boolean canOperate(RECIPE recipe) {
-        return recipe != null && recipe.canOperate(getInventory(), 0, 2);
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+        return new ItemStackToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), OutputHelper.getOutputHandler(inventory, 2))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     @Override
@@ -139,13 +127,14 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
             case 0:
                 return new Object[]{getEnergy()};
             case 1:
-                return new Object[]{operatingTicks};
+                return new Object[]{getOperatingTicks()};
             case 2:
                 return new Object[]{getActive()};
             case 3:
                 return new Object[]{getDirection()};
             case 4:
-                return new Object[]{canOperate(getRecipe())};
+                //TODO: Decide if we should try to get the cached recipe if it is null
+                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
             case 5:
                 return new Object[]{getMaxEnergy()};
             case 6:

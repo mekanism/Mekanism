@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
@@ -37,8 +38,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     public float gasScale;
 
+    //TODO: Remove refGas?
+    @Nonnull
     public Gas refGas;
 
+    @Nonnull
     public GasStack buffer;
     public int prevStored;
 

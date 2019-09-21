@@ -11,24 +11,26 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.FluidInput;
-import mekanism.common.recipe.machines.SeparatorRecipe;
-import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
-import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -53,7 +55,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
-      IUpgradeInfoHandler, ITankManager, IComparatorSupport {
+      IUpgradeInfoHandler, ITankManager, IComparatorSupport, ITileCachedRecipeHolder<ElectrolysisRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
                                                          "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
@@ -85,13 +87,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
      * Type type of gas this block is dumping.
      */
     public GasMode dumpRight = GasMode.IDLE;
-    public SeparatorRecipe cachedRecipe;
+    public CachedRecipe<ElectrolysisRecipe> cachedRecipe;
     public double clientEnergyUsed;
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
-    /**
-     * This machine's current RedstoneControl type.
-     */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     private int currentRedstoneLevel;
 
@@ -112,43 +109,28 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     public void onUpdate() {
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-            if (!getInventory().get(0).isEmpty()) {
-                if (Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(getInventory().get(0))) {
-                    if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
-                        fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
-                    }
-                }
+            ItemStack fluidInputStack = inventory.get(0);
+            if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
+                fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
             }
 
-            if (!getInventory().get(1).isEmpty() && leftTank.getStored() > 0) {
-                leftTank.draw(GasUtils.addGas(getInventory().get(1), leftTank.getGas()), true);
+            //TODO: look at other places that call drawGas and the likes and see if they need saving
+            boolean needsSaving = TileUtils.drawGas(inventory.get(1), leftTank);
+            needsSaving |= TileUtils.drawGas(inventory.get(2), rightTank);
+            if (needsSaving) {
                 MekanismUtils.saveChunk(this);
             }
-            if (!getInventory().get(2).isEmpty() && rightTank.getStored() > 0) {
-                rightTank.draw(GasUtils.addGas(getInventory().get(2), rightTank.getGas()), true);
-                MekanismUtils.saveChunk(this);
+            double prev = getEnergy();
+            cachedRecipe = getUpdatedCache(0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
-            SeparatorRecipe recipe = getRecipe();
+            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+            clientEnergyUsed = prev - getEnergy();
 
-            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                boolean update = getBaseUsage() != recipe.energyUsage;
-                BASE_ENERGY_PER_TICK = recipe.energyUsage;
-                if (update) {
-                    recalculateUpgrades(Upgrade.ENERGY);
-                }
-                int operations = operate(recipe);
-                double prev = getEnergy();
-                setEnergy(getEnergy() - getEnergyPerTick() * operations);
-                clientEnergyUsed = prev - getEnergy();
-            } else if (prevEnergy >= getEnergy()) {
-                setActive(false);
-            }
             int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
             handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
             handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
-            prevEnergy = getEnergy();
-
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
                 world.updateComparatorOutputLevel(pos, getBlockType());
@@ -171,45 +153,46 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         }
     }
 
-    public int getUpgradedUsage(SeparatorRecipe recipe) {
-        int possibleProcess;
-        if (leftTank.getGasType() == recipe.recipeOutput.leftGas.getGas()) {
-            possibleProcess = leftTank.getNeeded() / recipe.recipeOutput.leftGas.amount;
-            possibleProcess = Math.min(rightTank.getNeeded() / recipe.recipeOutput.rightGas.amount, possibleProcess);
-        } else {
-            possibleProcess = leftTank.getNeeded() / recipe.recipeOutput.rightGas.amount;
-            possibleProcess = Math.min(rightTank.getNeeded() / recipe.recipeOutput.leftGas.amount, possibleProcess);
-        }
-        possibleProcess = Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
-        possibleProcess = Math.min((int) (getEnergy() / getEnergyPerTick()), possibleProcess);
-        return Math.min(fluidTank.getFluidAmount() / recipe.recipeInput.ingredient.getAmount(), possibleProcess);
+    @Nonnull
+    @Override
+    public Recipe<ElectrolysisRecipe> getRecipes() {
+        return Recipe.ELECTROLYTIC_SEPARATOR;
     }
 
-    public SeparatorRecipe getRecipe() {
-        FluidInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getElectrolyticSeparatorRecipe(getInput());
-        }
+    @Nullable
+    @Override
+    public CachedRecipe<ElectrolysisRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
-    public FluidInput getInput() {
-        return new FluidInput(fluidTank.getFluid());
+    @Nullable
+    @Override
+    public ElectrolysisRecipe getRecipe(int cacheIndex) {
+        FluidStack fluid = fluidTank.getFluid();
+        return fluid.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(fluid));
     }
 
-    public boolean canOperate(SeparatorRecipe recipe) {
-        return recipe != null && recipe.canOperate(fluidTank, leftTank, rightTank);
-    }
-
-    public int operate(SeparatorRecipe recipe) {
-        int operations = getUpgradedUsage(recipe);
-        recipe.operate(fluidTank, leftTank, rightTank, operations);
-        return operations;
-    }
-
-    public boolean canFill(ChemicalPairOutput gases) {
-        return leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
-               && rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount;
+    @Nullable
+    @Override
+    public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
+        //TODO: Is this fine, or do we need it somewhere that will get called in more places than ONLY when the cache is being made
+        boolean update = BASE_ENERGY_PER_TICK != recipe.getEnergyUsage();
+        BASE_ENERGY_PER_TICK = recipe.getEnergyUsage();
+        if (update) {
+            recalculateUpgrades(Upgrade.ENERGY);
+        }
+        return new ElectrolysisCachedRecipe(recipe, InputHelper.getInputHandler(fluidTank), OutputHelper.getOutputHandler(leftTank, rightTank))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+              });
     }
 
     @Override
@@ -219,8 +202,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         } else if (slotID == 0) {
             return !FluidUtil.getFluidContained(itemstack).isPresent();
         } else if (slotID == 1 || slotID == 2) {
-            return itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null
-                   && ((IGasItem) itemstack.getItem()).getGas(itemstack).amount == ((IGasItem) itemstack.getItem()).getMaxGas(itemstack);
+            if (itemstack.getItem() instanceof IGasItem) {
+                IGasItem gasItem = (IGasItem) itemstack.getItem();
+                GasStack gasInItem = gasItem.getGas(itemstack);
+                return !gasInItem.isEmpty() && gasInItem.getAmount() == gasItem.getMaxGas(itemstack);
+            }
         }
         return false;
     }
@@ -228,7 +214,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemstack);
+            return isFluidInputItem(itemstack);
         } else if (slotID == 1) {
             if (itemstack.getItem() instanceof IGasItem) {
                 GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
@@ -374,7 +360,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
+        FluidStack currentFluid = fluidTank.getFluid();
+        if (currentFluid.isEmpty()) {
+            //If we don't have a fluid currently stored, then check if the fluid wanting to be input is valid for this machine
+            return getRecipes().contains(recipe -> recipe.getInput().testType(fluid));
+        }
+        //Otherwise return true if the fluid is the same as the one we already have stored
+        return currentFluid.isFluidEqual(fluid);
     }
 
     @Override
@@ -393,10 +385,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         return 0;
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (side == getLeftSide()) {
@@ -408,12 +401,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return false;
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         if (side == getLeftSide()) {
             return leftTank.getGas() != null && leftTank.getGas().getGas() == type;
         } else if (side == getRightSide()) {
@@ -477,5 +470,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+    }
+
+    public boolean isFluidInputItem(ItemStack itemStack) {
+        return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemStack)).matches(
+              fluidStack -> !fluidStack.isEmpty() && getRecipes().contains(recipe -> recipe.getInput().testType(fluidStack)));
     }
 }

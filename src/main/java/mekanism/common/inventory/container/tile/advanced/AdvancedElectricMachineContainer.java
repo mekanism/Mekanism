@@ -5,8 +5,6 @@ import javax.annotation.Nullable;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,9 +12,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class AdvancedElectricMachineContainer<RECIPE extends AdvancedMachineRecipe<RECIPE>, TILE extends TileEntityAdvancedElectricMachine<RECIPE>> extends MekanismTileContainer<TILE> {
+public abstract class AdvancedElectricMachineContainer<TILE extends TileEntityAdvancedElectricMachine> extends MekanismTileContainer<TILE> {
 
     protected AdvancedElectricMachineContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
         super(type, id, inv, tile);
@@ -83,12 +80,7 @@ public abstract class AdvancedElectricMachineContainer<RECIPE extends AdvancedMa
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        for (AdvancedMachineInput input : tile.getRecipes().keySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
-                return true;
-            }
-        }
-        return false;
+        return tile.getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
     }
 
     @Override

@@ -3,9 +3,15 @@ package mekanism.common.tile;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.TileNetworkList;
+import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.FluidToFluidCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
@@ -14,10 +20,8 @@ import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.FluidInput;
-import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
+import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -26,7 +30,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -39,11 +42,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager {
+public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager,
+      ITileCachedRecipeHolder<FluidToFluidRecipe> {
 
     public static final int MAX_OUTPUT = 10000;
     public static final int MAX_SOLARS = 4;
@@ -62,6 +65,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public double partialOutput = 0;
 
     public float biomeTemp = 0;
+    //TODO: 1.14 potentially convert temperature to a double given we are using a DoubleSupplier anyways
+    // Will make it so we don't have cast issues from the configs. Doing so in 1.12 may be slightly annoying
+    // due to the fact the variables are stored in NBT as floats. Even though it should be able to load the float as a double
     public float temperature = 0;
     public float heatToAbsorb = 0;
 
@@ -79,11 +85,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public int clientSolarAmount;
     public boolean clientStructured;
 
-    public boolean cacheStructure = false;
-
     public float prevScale;
 
     public float totalLoss = 0;
+
+    public CachedRecipe<FluidToFluidRecipe> cachedRecipe;
 
     public TileEntityThermalEvaporationController() {
         super(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER);
@@ -99,36 +105,14 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             }
             if (structured) {
                 updateTemperature();
+                manageBuckets();
             }
-
-            manageBuckets();
-
-            ThermalEvaporationRecipe recipe = getRecipe();
-            if (canOperate(recipe)) {
-                int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
-                double outputRatio = (double) recipe.recipeOutput.output.getAmount() / (double) recipe.recipeInput.ingredient.getAmount();
-                double tempMult = Math.max(0, getTemperature()) * MekanismConfig.general.evaporationTempMultiplier.get();
-                double inputToUse = tempMult * recipe.recipeInput.ingredient.getAmount() * ((float) height / (float) MAX_HEIGHT);
-                inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
-                inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
-
-                lastGain = (float) inputToUse / (float) recipe.recipeInput.ingredient.getAmount();
-                partialInput += inputToUse;
-
-                if (partialInput >= 1) {
-                    int inputInt = (int) Math.floor(partialInput);
-                    inputTank.drain(inputInt, FluidAction.EXECUTE);
-                    partialInput %= 1;
-                    partialOutput += (double) inputInt / recipe.recipeInput.ingredient.getAmount();
-                }
-
-                if (partialOutput >= 1) {
-                    int outputInt = (int) Math.floor(partialOutput);
-                    outputTank.fill(new FluidStack(recipe.recipeOutput.output.getFluid(), outputInt), FluidAction.EXECUTE);
-                    partialOutput %= 1;
-                }
-            } else {
-                lastGain = 0;
+            //Note: This is not in a structured check as we want to make sure it stops if we do not have a structure
+            //TODO: Think through the logic, given we are calling the process so technically if it is not structured, then we
+            // don't actually have it processing so we don't need this outside of the structured? Verify
+            cachedRecipe = getUpdatedCache(0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
             if (structured) {
                 if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
@@ -137,10 +121,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 }
             }
         }
-    }
-
-    public ThermalEvaporationRecipe getRecipe() {
-        return RecipeHandler.getThermalEvaporationRecipe(new FluidInput(inputTank.getFluid()));
     }
 
     @Override
@@ -155,11 +135,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         refresh();
     }
 
-    public boolean hasRecipe(@Nonnull Fluid fluid) {
-        if (fluid == Fluids.EMPTY) {
-            return false;
-        }
-        return Recipe.THERMAL_EVAPORATION_PLANT.containsRecipe(fluid);
+    public boolean hasRecipe(FluidStack fluid) {
+        return getRecipes().contains(recipe -> recipe.getInput().testType(fluid));
     }
 
     protected void refresh() {
@@ -185,12 +162,46 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         }
     }
 
-    public boolean canOperate(ThermalEvaporationRecipe recipe) {
-        if (!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid().isEmpty()) {
-            return false;
-        }
-        return recipe != null && recipe.canOperate(inputTank, outputTank);
+    @Nonnull
+    @Override
+    public Recipe<FluidToFluidRecipe> getRecipes() {
+        return Recipe.THERMAL_EVAPORATION_PLANT;
+    }
 
+    @Nullable
+    @Override
+    public CachedRecipe<FluidToFluidRecipe> getCachedRecipe(int cacheIndex) {
+        return cachedRecipe;
+    }
+
+    @Nullable
+    @Override
+    public FluidToFluidRecipe getRecipe(int cacheIndex) {
+        FluidStack fluid = inputTank.getFluid();
+        return fluid.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(fluid));
+    }
+
+    @Nullable
+    @Override
+    public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
+        //TODO: Have lastGain be set properly, and our setActive -> false set lastGain to zero
+        //TODO: HANDLE ALL THIS STUFF, A good chunk of it can probably go in the getOutputHandler (or in a custom one we pass from here)
+        // But none of it should remain outside of what gets passed in one way or another to the cached reipe
+        return new FluidToFluidCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
+              .setCanHolderFunction(() -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+
+                  double tempMult = Math.max(0, getTemperature()) * MekanismConfig.general.evaporationTempMultiplier.get();
+                  double multiplier = tempMult * height / (float) MAX_HEIGHT;
+                  //TODO: See how close all these checks are to properly calculating usage
+                  //Also set values like lastGain
+                  return Math.min(MekanismUtils.clampToInt(currentMax * multiplier), currentMax);
+              });
     }
 
     private void manageBuckets() {
@@ -205,7 +216,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
                     @Override
                     public boolean isValid(@Nonnull Fluid f) {
-                        return hasRecipe(f);
+                        return hasRecipe(new FluidStack(f, 1));
                     }
                 });
             }
@@ -482,9 +493,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         outputTank.readFromNBT(nbtTags.getCompound("brineTank"));
 
         temperature = nbtTags.getFloat("temperature");
-
-        partialInput = nbtTags.getDouble("partialWater");
-        partialOutput = nbtTags.getDouble("partialBrine");
     }
 
     @Nonnull
@@ -495,9 +503,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         nbtTags.put("brineTank", outputTank.writeToNBT(new CompoundNBT()));
 
         nbtTags.putFloat("temperature", temperature);
-
-        nbtTags.putDouble("partialWater", partialInput);
-        nbtTags.putDouble("partialBrine", partialOutput);
         return nbtTags;
     }
 

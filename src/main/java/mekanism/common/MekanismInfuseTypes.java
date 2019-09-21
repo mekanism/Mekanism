@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.util.ResourceLocation;
@@ -25,6 +26,7 @@ public enum MekanismInfuseTypes implements IInfuseTypeProvider {
         infuseType = new InfuseType(new ResourceLocation(Mekanism.MODID, name), texture);
     }
 
+    @Nonnull
     @Override
     public InfuseType getInfuseType() {
         return infuseType;

@@ -44,7 +44,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
-import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPressureDisperser;
@@ -118,7 +118,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityType<TileEntityPersonalChest> PERSONAL_CHEST = create(MekanismBlock.PERSONAL_CHEST, TileEntityPersonalChest::new);
     public static final TileEntityType<TileEntityPrecisionSawmill> PRECISION_SAWMILL = create(MekanismBlock.PRECISION_SAWMILL, TileEntityPrecisionSawmill::new);
     public static final TileEntityType<TileEntityPressureDisperser> PRESSURE_DISPERSER = create(MekanismBlock.PRESSURE_DISPERSER, TileEntityPressureDisperser::new);
-    public static final TileEntityType<TileEntityPRC> PRESSURIZED_REACTION_CHAMBER = create(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, TileEntityPRC::new);
+    public static final TileEntityType<TileEntityPressurizedReactionChamber> PRESSURIZED_REACTION_CHAMBER = create(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, TileEntityPressurizedReactionChamber::new);
     public static final TileEntityType<TileEntityPurificationChamber> PURIFICATION_CHAMBER = create(MekanismBlock.PURIFICATION_CHAMBER, TileEntityPurificationChamber::new);
     public static final TileEntityType<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = create(MekanismBlock.QUANTUM_ENTANGLOPORTER, TileEntityQuantumEntangloporter::new);
     public static final TileEntityType<TileEntityResistiveHeater> RESISTIVE_HEATER = create(MekanismBlock.RESISTIVE_HEATER, TileEntityResistiveHeater::new);

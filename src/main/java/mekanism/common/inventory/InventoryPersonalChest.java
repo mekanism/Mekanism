@@ -1,6 +1,6 @@
 package mekanism.common.inventory;
 
-import mekanism.common.base.ISustainedInventory;
+import mekanism.api.sustained.ISustainedInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;

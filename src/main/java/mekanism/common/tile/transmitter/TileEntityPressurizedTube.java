@@ -40,22 +40,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     //Read only handler for support with TOP and getting network data instead of this tube's data
     private IGasHandler nullHandler = new IGasHandler() {
         @Override
-        public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+        public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
             return 0;
         }
 
+        @Nonnull
         @Override
         public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
             return null;
         }
 
         @Override
-        public boolean canReceiveGas(Direction side, Gas type) {
+        public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
             return false;
         }
 
         @Override
-        public boolean canDrawGas(Direction side, Gas type) {
+        public boolean canDrawGas(Direction side, @Nonnull Gas type) {
             return false;
         }
 
@@ -92,7 +93,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                 IGasHandler container = connectedAcceptors[side.ordinal()];
                 if (container != null) {
                     GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), false);
-                    if (received != null && received.amount != 0 && takeGas(received, false) == received.amount) {
+                    if (!received.isEmpty() && takeGas(received, false) == received.getAmount()) {
                         container.drawGas(side.getOpposite(), takeGas(received, true), true);
                     }
                 }
@@ -117,7 +118,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public void updateShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
             GasStack last = getSaveShare();
-            if ((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getGas() == last.getGas())) || (last == null && lastWrite != null)) {
+            if ((last != null && !(lastWrite != null && lastWrite.getAmount() == last.getAmount() && lastWrite.getGas() == last.getGas())) || (last == null && lastWrite != null)) {
                 lastWrite = last;
                 markDirty();
             }
@@ -141,7 +142,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork()) {
             if (lastWrite != null && getTransmitter().getTransmitterNetwork().buffer != null) {
                 getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
-                if (getTransmitter().getTransmitterNetwork().buffer.amount <= 0) {
+                if (getTransmitter().getTransmitterNetwork().buffer.getAmount() <= 0) {
                     getTransmitter().getTransmitterNetwork().buffer = null;
                 }
             }
@@ -243,25 +244,26 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         if (getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL) {
             return takeGas(stack, doTransfer);
         }
         return 0;
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         return null;
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         return false;
     }
 

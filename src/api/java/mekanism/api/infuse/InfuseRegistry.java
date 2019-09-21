@@ -3,6 +3,8 @@ package mekanism.api.infuse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -12,12 +14,15 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * @author AidanBrady
  */
 //TODO: Make this act more like GasConversionHandler
+//TODO: Make this be its own recipe type in terms of converting from items to infusion
+// For now not bothering to port the changes made in the 1.12 recipe branch as it will be simpler to do the rewrite from the start
+@ParametersAreNonnullByDefault
 public class InfuseRegistry {
 
     /**
      * The (private) map of ItemStacks and their related InfuseObjects.
      */
-    private static Map<ItemStack, InfuseObject> infuseObjects = new HashMap<>();
+    private static Map<ItemStack, InfusionStack> infuseObjects = new HashMap<>();
 
     /**
      * Registers a block or item that serves as an infuse object.  An infuse object will store a certain type and amount of infuse, and will deliver this amount to the
@@ -27,11 +32,10 @@ public class InfuseRegistry {
      * @param itemStack    - stack the infuse object is linked to -- stack size is ignored
      * @param infuseObject - the infuse object with the type and amount data
      */
-    public static void registerInfuseObject(ItemStack itemStack, InfuseObject infuseObject) {
-        if (getObject(itemStack) != null) {
-            return;
+    public static void registerInfuseObject(ItemStack itemStack, InfusionStack infuseObject) {
+        if (getObject(itemStack).isEmpty()) {
+            infuseObjects.put(itemStack, infuseObject);
         }
-        infuseObjects.put(itemStack, infuseObject);
     }
 
     /**
@@ -41,13 +45,14 @@ public class InfuseRegistry {
      *
      * @return the ItemStack's InfuseObject
      */
-    public static InfuseObject getObject(ItemStack itemStack) {
-        for (Entry<ItemStack, InfuseObject> obj : infuseObjects.entrySet()) {
+    @Nonnull
+    public static InfusionStack getObject(ItemStack itemStack) {
+        for (Entry<ItemStack, InfusionStack> obj : infuseObjects.entrySet()) {
             if (ItemHandlerHelper.canItemStacksStack(obj.getKey(), itemStack)) {
                 return obj.getValue();
             }
         }
-        return null;
+        return InfusionStack.EMPTY;
     }
 
     /**
@@ -55,7 +60,7 @@ public class InfuseRegistry {
      *
      * @return private InfuseObject map
      */
-    public static Map<ItemStack, InfuseObject> getObjectMap() {
+    public static Map<ItemStack, InfusionStack> getObjectMap() {
         return infuseObjects;
     }
 }

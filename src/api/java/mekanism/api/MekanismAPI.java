@@ -5,18 +5,26 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.gas.EmptyGas;
 import mekanism.api.gas.Gas;
+import mekanism.api.infuse.EmptyInfuseType;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.providers.IBlockProvider;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 //TODO: Refactor what packages various things are in
 // Also move more things from main mekanism package to here, for example tier information and stuff
+@Mod.EventBusSubscriber(modid = MekanismAPI.MEKANISM_MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismAPI {
 
     //TODO: Add back support for the other mods API as needed, ideally would be through gradle
@@ -27,6 +35,9 @@ public class MekanismAPI {
     public static final String API_VERSION = "9.8.1";
     public static final String MEKANISM_MODID = "mekanism";
 
+    public static Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");
+
+    //TODO: Override these? And make it so that they return empty if there is no instance??
     public static IForgeRegistry<Gas> GAS_REGISTRY;
     public static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY;
 
@@ -39,6 +50,28 @@ public class MekanismAPI {
     //Ignore all mod blocks
     private static Set<String> cardboardBoxModIgnore = new HashSet<>();
     private static MekanismRecipeHelper helper = null;
+
+    //TODO: Make a new empty gas
+    public static final Gas EMPTY_GAS = new EmptyGas();
+    public static final InfuseType EMPTY_INFUSE_TYPE = new EmptyInfuseType();
+
+    @SubscribeEvent
+    public static void buildRegistry(RegistryEvent.NewRegistry event) {
+        GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(MEKANISM_MODID, "gas")).setType(Gas.class).create();
+        INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(MEKANISM_MODID, "infuse_type")).setType(InfuseType.class).create();
+    }
+
+    @SubscribeEvent
+    public static void registerGases(RegistryEvent.Register<Gas> event) {
+        //Register EMPTY Gas
+        event.getRegistry().register(EMPTY_GAS);
+    }
+
+    @SubscribeEvent
+    public static void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
+        //Register EMPTY InfuseType
+        event.getRegistry().register(EMPTY_INFUSE_TYPE);
+    }
 
     public static boolean isBlockCompatible(@Nonnull Block block) {
         if (cardboardBoxModIgnore.contains(Objects.requireNonNull(block.getRegistryName()).getNamespace())) {

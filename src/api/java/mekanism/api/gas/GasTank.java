@@ -1,5 +1,8 @@
 package mekanism.api.gas;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import net.minecraft.nbt.CompoundNBT;
 
 /**
@@ -9,7 +12,8 @@ import net.minecraft.nbt.CompoundNBT;
  */
 public class GasTank implements GasTankInfo {
 
-    public GasStack stored;
+    @Nonnull
+    public GasStack stored = GasStack.EMPTY;
 
     private int maxGas;
 
@@ -32,11 +36,11 @@ public class GasTank implements GasTankInfo {
      *
      * @return tank stored in the tag compound
      */
+    @Nullable
     public static GasTank readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
         }
-
         GasTank tank = new GasTank();
         tank.read(nbtTags);
         return tank;
@@ -50,22 +54,18 @@ public class GasTank implements GasTankInfo {
      *
      * @return gas taken from this GasTank as a GasStack value
      */
+    @Nonnull
     public GasStack draw(int amount, boolean doDraw) {
-        if (stored == null || amount <= 0) {
-            return null;
+        //TODO: Replace things like doDraw with InputAction based off of FluidAction
+        if (stored.isEmpty()) {
+            return GasStack.EMPTY;
         }
 
         GasStack ret = new GasStack(stored.getGas(), Math.min(getStored(), amount));
-        if (ret.amount > 0) {
-            if (doDraw) {
-                stored.amount -= ret.amount;
-                if (stored.amount <= 0) {
-                    stored = null;
-                }
-            }
-            return ret;
+        if (!ret.isEmpty() && doDraw) {
+            stored.shrink(ret.getAmount());
         }
-        return null;
+        return ret;
     }
 
     /**
@@ -76,21 +76,18 @@ public class GasTank implements GasTankInfo {
      *
      * @return the amount of gas accepted by this tank
      */
-    public int receive(GasStack amount, boolean doReceive) {
-        if (amount == null || (stored != null && !stored.isGasEqual(amount))) {
+    public int receive(@Nonnull GasStack amount, boolean doReceive) {
+        if (amount.isEmpty() || !stored.isGasEqual(amount)) {
             return 0;
         }
-
-        int toFill = Math.min(getMaxGas() - getStored(), amount.amount);
-
+        int toFill = Math.min(getNeeded(), amount.getAmount());
         if (doReceive) {
-            if (stored == null) {
-                stored = amount.copy().withAmount(getStored() + toFill);
+            if (stored.isEmpty()) {
+                stored = new GasStack(amount, toFill);
             } else {
-                stored.amount = Math.min(getMaxGas(), getStored() + amount.amount);
+                stored.grow(toFill);
             }
         }
-
         return toFill;
     }
 
@@ -101,8 +98,8 @@ public class GasTank implements GasTankInfo {
      *
      * @return if this GasTank can accept the defined gas
      */
-    public boolean canReceive(Gas gas) {
-        return getNeeded() != 0 && (stored == null || gas == null || gas == stored.getGas());
+    public boolean canReceive(@Nonnull Gas gas) {
+        return getNeeded() > 0 && canReceiveType(gas);
     }
 
     /**
@@ -112,8 +109,8 @@ public class GasTank implements GasTankInfo {
      *
      * @return if this GasTank can accept the defined gas
      */
-    public boolean canReceiveType(Gas gas) {
-        return stored == null || gas == null || gas == stored.getGas();
+    public boolean canReceiveType(@Nonnull Gas gas) {
+        return stored.isEmpty() || gas == MekanismAPI.EMPTY_GAS || stored.isGasEqual(gas);
     }
 
     /**
@@ -123,8 +120,8 @@ public class GasTank implements GasTankInfo {
      *
      * @return if this GasTank can be drawn of the defined gas
      */
-    public boolean canDraw(Gas gas) {
-        return stored != null && (gas == null || gas == stored.getGas());
+    public boolean canDraw(@Nonnull Gas gas) {
+        return !stored.isEmpty() && stored.isGasEqual(gas);
     }
 
     /**
@@ -158,6 +155,7 @@ public class GasTank implements GasTankInfo {
      *
      * @return - GasStakc held by this tank
      */
+    @Nonnull
     @Override
     public GasStack getGas() {
         return stored;
@@ -168,13 +166,10 @@ public class GasTank implements GasTankInfo {
      *
      * @param stack - value to set this tank's GasStack value to
      */
-    public void setGas(GasStack stack) {
+    public void setGas(@Nonnull GasStack stack) {
         stored = stack;
-        if (stored != null) {
-            stored.amount = Math.min(getMaxGas(), stored.amount);
-            if (stored.amount <= 0) {
-                stored = null;
-            }
+        if (!stored.isEmpty()) {
+            stored.setAmount(Math.min(getMaxGas(), stored.getAmount()));
         }
     }
 
@@ -183,8 +178,9 @@ public class GasTank implements GasTankInfo {
      *
      * @return gas type contained
      */
+    @Nonnull
     public Gas getGasType() {
-        return stored != null ? stored.getGas() : null;
+        return stored.getGas();
     }
 
     /**
@@ -194,7 +190,11 @@ public class GasTank implements GasTankInfo {
      */
     @Override
     public int getStored() {
-        return stored != null ? stored.amount : 0;
+        return stored.getAmount();
+    }
+
+    public boolean isEmpty() {
+        return stored.isEmpty();
     }
 
     /**
@@ -205,7 +205,7 @@ public class GasTank implements GasTankInfo {
      * @return tag compound with this tank's data
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
-        if (stored != null && stored.getGas() != null && stored.amount > 0) {
+        if (!stored.isEmpty()) {
             nbtTags.put("stored", stored.write(new CompoundNBT()));
         }
         nbtTags.putInt("maxGas", maxGas);
@@ -220,10 +220,6 @@ public class GasTank implements GasTankInfo {
     public void read(CompoundNBT nbtTags) {
         if (nbtTags.contains("stored")) {
             stored = GasStack.readFromNBT(nbtTags.getCompound("stored"));
-            if (stored != null && stored.amount <= 0) {
-                //fix any old data that may be broken
-                stored = null;
-            }
         }
         //todo: this is weird, remove in v10?
         if (nbtTags.contains("maxGas") && nbtTags.getInt("maxGas") != 0) {

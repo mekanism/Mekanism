@@ -9,13 +9,16 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.ItemStackToGasCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.OxidationRecipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -31,13 +34,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ISustainedData, ITankManager, IGasHandler {
+public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ISustainedData, ITankManager, IGasHandler {
 
     public static final int MAX_GAS = 10000;
     public GasTank gasTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
-
-    public OxidationRecipe cachedRecipe;
 
     public TileEntityChemicalOxidizer() {
         super(MekanismBlock.CHEMICAL_OXIDIZER, 3, 100);
@@ -48,21 +49,10 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(getInventory().get(2), gasTank);
-            OxidationRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                setEnergy(getEnergy() - getEnergyPerTick());
-                if (operatingTicks < ticksRequired) {
-                    operatingTicks++;
-                } else {
-                    operate(recipe);
-                    operatingTicks = 0;
-                    markDirty();
-                }
-            } else if (prevEnergy >= getEnergy()) {
-                setActive(false);
+            cachedRecipe = getUpdatedCache(0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
-            prevEnergy = getEnergy();
             TileUtils.emitGas(this, gasTank, gasOutput, getRightSide());
         }
     }
@@ -70,7 +60,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return RecipeHandler.getOxidizerRecipe(new ItemStackInput(itemstack)) != null;
+            return getRecipes().contains(recipe -> recipe.getInput().testType(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -98,25 +88,34 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         return InventoryUtils.EMPTY;
     }
 
-    public OxidationRecipe getRecipe() {
-        ItemStackInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
-        }
+    @Override
+    @Nonnull
+    public Recipe<ItemStackToGasRecipe> getRecipes() {
+        return Recipe.CHEMICAL_OXIDIZER;
+    }
+
+    @Nullable
+    @Override
+    public CachedRecipe<ItemStackToGasRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
-    public ItemStackInput getInput() {
-        return new ItemStackInput(getInventory().get(0));
+    @Nullable
+    @Override
+    public ItemStackToGasRecipe getRecipe(int cacheIndex) {
+        ItemStack stack = inventory.get(0);
+        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
     }
 
-    public boolean canOperate(OxidationRecipe recipe) {
-        return recipe != null && recipe.canOperate(getInventory(), gasTank);
-    }
-
-    public void operate(OxidationRecipe recipe) {
-        recipe.operate(getInventory(), gasTank);
-        markDirty();
+    @Nullable
+    @Override
+    public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
+        return new ItemStackToGasCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), OutputHelper.getOutputHandler(gasTank))
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(this::markDirty);
     }
 
     @Override
@@ -188,16 +187,17 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return false;
     }
 
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         return 0;
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
@@ -207,7 +207,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         return side == getRightSide() && gasTank.canDraw(type);
     }
 

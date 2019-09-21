@@ -12,8 +12,6 @@ import net.minecraft.network.PacketBuffer;
 //TODO
 public abstract class TileEntityMachine extends TileEntityMekanism implements IUpgradeTile {
 
-    public double prevEnergy;
-
     public TileComponentUpgrade<TileEntityMachine> upgradeComponent;
 
     public TileEntityMachine(IBlockProvider blockProvider, int upgradeSlot) {

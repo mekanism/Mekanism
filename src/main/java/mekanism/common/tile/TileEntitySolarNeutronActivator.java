@@ -11,6 +11,12 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.GasToGasCachedRecipe;
+import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
@@ -18,15 +24,13 @@ import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.GasInput;
-import mekanism.common.recipe.machines.SolarNeutronRecipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -35,6 +39,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +48,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, IUpgradeTile,
-      IUpgradeInfoHandler, IComparatorSupport {
+      IUpgradeInfoHandler, IComparatorSupport, ITileCachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10000;
     private static final int[] INPUT_SLOT = {0};
@@ -54,7 +59,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public int gasOutput = 256;
 
-    private SolarNeutronRecipe cachedRecipe;
+    private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
     private int currentRedstoneLevel;
     private boolean needsRainCheck;
@@ -79,28 +84,17 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         if (!world.isRemote) {
             TileUtils.receiveGas(getInventory().get(0), inputTank);
             TileUtils.drawGas(getInventory().get(1), outputTank);
-            SolarNeutronRecipe recipe = getRecipe();
-
-            // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
-            // changing this would dramatically affect a lot of setups with Fusion reactors which can take
-            // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
-            // rain checks.
-            boolean seesSun = world.isDaytime() && world.canBlockSeeSky(getPos().up()) && !world.getDimension().isNether();
-            if (needsRainCheck) {
-                seesSun &= !(world.isRaining() || world.isThundering());
-            }
-
-            if (seesSun && canOperate(recipe) && MekanismUtils.canFunction(this)) {
-                setActive(true);
-                operate(recipe);
-            } else {
-                setActive(false);
+            cachedRecipe = getUpdatedCache(0);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
             }
 
             TileUtils.emitGas(this, outputTank, gasOutput, getDirection());
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
             if (world.getDayTime() % 20 == 0) {
+                //TODO: Why do we have to be sending updates to the client anyways?
+                // I believe we send when state changes, and otherwise we only should have to be sending if recipe actually processes
                 Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
@@ -112,30 +106,50 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         }
     }
 
-    public int getUpgradedUsage() {
-        int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-        possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
-        return possibleProcess;
+    @Nonnull
+    @Override
+    public Recipe<GasToGasRecipe> getRecipes() {
+        return Recipe.SOLAR_NEUTRON_ACTIVATOR;
     }
 
-    public SolarNeutronRecipe getRecipe() {
-        GasInput input = getInput();
-        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
-            cachedRecipe = RecipeHandler.getSolarNeutronRecipe(getInput());
-        }
+    @Nullable
+    @Override
+    public CachedRecipe<GasToGasRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
-    public GasInput getInput() {
-        return new GasInput(inputTank.getGas());
+    @Nullable
+    @Override
+    public GasToGasRecipe getRecipe(int cacheIndex) {
+        GasStack gas = inputTank.getGas();
+        return gas.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(gas));
     }
 
-    public boolean canOperate(SolarNeutronRecipe recipe) {
-        return recipe != null && recipe.canOperate(inputTank, outputTank);
-    }
-
-    public void operate(SolarNeutronRecipe recipe) {
-        recipe.operate(inputTank, outputTank, getUpgradedUsage());
+    @Nullable
+    @Override
+    public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
+        BlockPos positionAbove = getPos().up();
+        return new GasToGasCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
+              .setCanHolderFunction(() -> {
+                  // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
+                  // changing this would dramatically affect a lot of setups with Fusion reactors which can take
+                  // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
+                  // rain checks.
+                  boolean seesSun = world.isDaytime() && world.canBlockSeeSky(positionAbove) && !world.getDimension().isNether();
+                  if (needsRainCheck) {
+                      seesSun &= !(world.isRaining() || world.isThundering());
+                  }
+                  return seesSun && MekanismUtils.canFunction(this);
+              })
+              .setActive(this::setActive)
+              .setOnFinish(this::markDirty)
+              .setPostProcessOperations(currentMax -> {
+                  if (currentMax == 0) {
+                      //Short circuit that if we already can't perform any outputs, just return
+                      return 0;
+                  }
+                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+              });
     }
 
     @Override
@@ -183,13 +197,14 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack != null ? stack.getGas() : null)) {
             return inputTank.receive(stack, doTransfer);
         }
         return 0;
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
@@ -199,12 +214,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return side == Direction.DOWN && inputTank.canReceive(type);
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         return side == getDirection() && outputTank.canDraw(type);
     }
 

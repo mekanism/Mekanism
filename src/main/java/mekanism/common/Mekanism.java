@@ -14,7 +14,7 @@ import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.Slurry;
-import mekanism.api.infuse.InfuseObject;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
@@ -366,20 +366,20 @@ public class Mekanism {
             InfuseType obsidian = MekanismInfuseTypes.REFINED_OBSIDIAN.getInfuseType();
 
             //Infuse objects
-            InfuseRegistry.registerInfuseObject(MekanismItem.BIO_FUEL.getItemStack(), new InfuseObject(bio, 5));
-            InfuseRegistry.registerInfuseObject(new ItemStack(Items.CHARCOAL), new InfuseObject(carbon, 10));
-            InfuseRegistry.registerInfuseObject(new ItemStack(Items.CHARCOAL), new InfuseObject(carbon, 20));
-            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.COAL_BLOCK), new InfuseObject(carbon, 90));
-            InfuseRegistry.registerInfuseObject(MekanismBlock.CHARCOAL_BLOCK.getItemStack(), new InfuseObject(carbon, 180));
-            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_CARBON.getItemStack(), new InfuseObject(carbon, 80));
-            InfuseRegistry.registerInfuseObject(new ItemStack(Items.REDSTONE), new InfuseObject(redstone, 10));
-            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.REDSTONE_BLOCK), new InfuseObject(redstone, 90));
-            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_REDSTONE.getItemStack(), new InfuseObject(redstone, 80));
-            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.RED_MUSHROOM), new InfuseObject(fungi, 10));
-            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.BROWN_MUSHROOM), new InfuseObject(fungi, 10));
-            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_DIAMOND.getItemStack(), new InfuseObject(diamond, 80));
-            InfuseRegistry.registerInfuseObject(MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack(), new InfuseObject(obsidian, 10));
-            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_OBSIDIAN.getItemStack(), new InfuseObject(obsidian, 80));
+            InfuseRegistry.registerInfuseObject(MekanismItem.BIO_FUEL.getItemStack(), new InfusionStack(bio, 5));
+            InfuseRegistry.registerInfuseObject(new ItemStack(Items.CHARCOAL), new InfusionStack(carbon, 10));
+            InfuseRegistry.registerInfuseObject(new ItemStack(Items.CHARCOAL), new InfusionStack(carbon, 20));
+            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.COAL_BLOCK), new InfusionStack(carbon, 90));
+            InfuseRegistry.registerInfuseObject(MekanismBlock.CHARCOAL_BLOCK.getItemStack(), new InfusionStack(carbon, 180));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_CARBON.getItemStack(), new InfusionStack(carbon, 80));
+            InfuseRegistry.registerInfuseObject(new ItemStack(Items.REDSTONE), new InfusionStack(redstone, 10));
+            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.REDSTONE_BLOCK), new InfusionStack(redstone, 90));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_REDSTONE.getItemStack(), new InfusionStack(redstone, 80));
+            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.RED_MUSHROOM), new InfusionStack(fungi, 10));
+            InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.BROWN_MUSHROOM), new InfusionStack(fungi, 10));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_DIAMOND.getItemStack(), new InfusionStack(diamond, 80));
+            InfuseRegistry.registerInfuseObject(MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack(), new InfusionStack(obsidian, 10));
+            InfuseRegistry.registerInfuseObject(MekanismItem.ENRICHED_OBSIDIAN.getItemStack(), new InfusionStack(obsidian, 80));
 
             //Metallurgic Infuser Recipes
             RecipeHandler.addMetallurgicInfuserRecipe(carbon, 10, new ItemStack(Items.IRON_INGOT), MekanismItem.ENRICHED_IRON.getItemStack());

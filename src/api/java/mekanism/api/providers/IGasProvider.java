@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 public interface IGasProvider extends IBaseProvider {
 
+    @Nonnull
     Gas getGas();
 
     @Nonnull

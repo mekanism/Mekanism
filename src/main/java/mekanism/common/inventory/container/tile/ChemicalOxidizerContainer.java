@@ -5,8 +5,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,7 +31,7 @@ public class ChemicalOxidizerContainer extends MekanismTileContainer<TileEntityC
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (RecipeHandler.getOxidizerRecipe(new ItemStackInput(slotStack)) != null) {
+            if (tile.getRecipes().contains(recipe -> recipe.getInput().testType(slotStack))) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, true)) {
                         return ItemStack.EMPTY;

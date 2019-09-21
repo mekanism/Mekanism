@@ -1,5 +1,7 @@
 package mekanism.api.gas;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -7,6 +9,10 @@ import net.minecraft.item.ItemStack;
  *
  * @author AidanBrady
  */
+//TODO: Make gas items be handled through capabilities (at the very least in 1.14, given if we suddenly make it only
+// look for the capabilities, and addons only implement the interface they won't return that they have the capability)
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IGasItem {
 
     /**

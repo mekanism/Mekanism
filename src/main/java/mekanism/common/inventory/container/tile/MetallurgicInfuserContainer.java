@@ -2,12 +2,10 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +13,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class MetallurgicInfuserContainer extends MekanismTileContainer<TileEntityMetallurgicInfuser> {
 
@@ -36,7 +33,8 @@ public class MetallurgicInfuserContainer extends MekanismTileContainer<TileEntit
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             if (slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3) {
-                if (InfuseRegistry.getObject(slotStack) != null && (tile.infuseStored.getType() == null || tile.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
+                InfusionStack slotInfusionStack = InfuseRegistry.getObject(slotStack);
+                if (!slotInfusionStack.isEmpty() && (tile.infuseStored.isEmpty() || tile.infuseStored.getType() == slotInfusionStack.getType())) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -74,15 +72,13 @@ public class MetallurgicInfuserContainer extends MekanismTileContainer<TileEntit
     }
 
     public boolean isInputItem(ItemStack itemStack) {
-        if (tile.infuseStored.getType() != null) {
-            return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tile.infuseStored, itemStack)) != null;
+        //If we have a type make sure that the recipe is valid for the type we have stored
+        if (!tile.infuseStored.isEmpty()) {
+            InfusionStack currentInfuseType = new InfusionStack(tile.infuseStored.getType(), tile.infuseStored.getAmount());
+            return tile.getRecipes().contains(recipe -> recipe.getInfusionInput().testType(currentInfuseType) && recipe.getItemInput().testType(itemStack));
         }
-        for (InfusionInput input : Recipe.METALLURGIC_INFUSER.get().keySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(input.inputStack, itemStack)) {
-                return true;
-            }
-        }
-        return false;
+        //Otherwise just look for items that can be used
+        return tile.getRecipes().contains(recipe -> recipe.getItemInput().testType(itemStack));
     }
 
     @Override

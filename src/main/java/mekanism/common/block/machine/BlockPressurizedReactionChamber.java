@@ -22,7 +22,7 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.PressurizedReactionChamberContainer;
-import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -54,8 +54,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityPRC>, ISupportsUpgrades, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPRC>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
+public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityPressurizedReactionChamber>, ISupportsUpgrades, IStateFacing, IStateActive,
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPressurizedReactionChamber>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.prc"));
 
@@ -190,12 +190,12 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     }
 
     @Override
-    public INamedContainerProvider getProvider(TileEntityPRC tile) {
+    public INamedContainerProvider getProvider(TileEntityPressurizedReactionChamber tile) {
         return new ContainerProvider("mekanism.container.pressurized_reaction_chamber", (i, inv, player) -> new PressurizedReactionChamberContainer(i, inv, tile));
     }
 
     @Override
-    public TileEntityType<TileEntityPRC> getTileType() {
+    public TileEntityType<TileEntityPressurizedReactionChamber> getTileType() {
         return MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER;
     }
 }

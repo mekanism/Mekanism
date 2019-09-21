@@ -20,7 +20,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
  * Gas - a class used to set specific properties of gasses when used or seen in-game.
@@ -28,7 +28,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  * @author aidancbrady
  */
 //TODO: Add tags to gas
-public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasProvider {
+public class Gas extends ForgeRegistryEntry<Gas> implements IHasTranslationKey, IGasProvider {
 
     private final ReverseTagWrapper<Gas> reverseTags = new ReverseTagWrapper<>(this, GasTags::getGeneration, GasTags::getCollection);
 
@@ -38,8 +38,6 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
     private Fluid fluid = Fluids.EMPTY;
     private ResourceLocation iconLocation;
     private TextureAtlasSprite sprite;
-
-    private ResourceLocation registryName;
 
     private boolean visible = true;
     private boolean from_fluid = false;
@@ -52,7 +50,7 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      * @param registryName - name or key to associate this Gas with
      */
     public Gas(ResourceLocation registryName, ResourceLocation icon) {
-        this.registryName = registryName;
+        setRegistryName(registryName);
         iconLocation = icon;
         translationKey = Util.makeTranslationKey("gas", getRegistryName());
     }
@@ -72,7 +70,7 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      * Creates a new Gas object that corresponds to the given Fluid
      */
     public Gas(@Nonnull Fluid fluid) {
-        registryName = fluid.getRegistryName();
+        setRegistryName(fluid.getRegistryName());
         iconLocation = fluid.getAttributes().getStillTexture();
         this.fluid = fluid;
         from_fluid = true;
@@ -87,12 +85,17 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      *
      * @return Gas stored in the tag compound
      */
+    @Nonnull
     public static Gas readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
-            return null;
+            return MekanismAPI.EMPTY_GAS;
         }
         //TODO: Different string value
-        return MekanismAPI.GAS_REGISTRY.getValue(new ResourceLocation(nbtTags.getString("gasName")));
+        Gas gas = MekanismAPI.GAS_REGISTRY.getValue(new ResourceLocation(nbtTags.getString("gasName")));
+        if (gas == null) {
+            return MekanismAPI.EMPTY_GAS;
+        }
+        return gas;
     }
 
     /**
@@ -109,13 +112,9 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
      * mods.
      *
      * @param v - new visible state
-     *
-     * @return this Gas object
      */
-    public Gas setVisible(boolean v) {
+    public void setVisible(boolean v) {
         visible = v;
-
-        return this;
     }
 
     /**
@@ -133,18 +132,6 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
     }
 
     /**
-     * Sets the unlocalized name of this Gas.
-     *
-     * @param key - unlocalized name to set
-     *
-     * @return this Gas object
-     */
-    public Gas setTranslationKey(String key) {
-        translationKey = key;
-        return this;
-    }
-
-    /**
      * Gets the IIcon associated with this Gas.
      *
      * @return associated IIcon
@@ -153,7 +140,6 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
         if (from_fluid) {
             return this.getFluid().getAttributes().getStillTexture();
         }
-
         return iconLocation;
     }
 
@@ -175,24 +161,20 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
         return sprite;
     }
 
-    TextureAtlasSprite getSpriteRaw() {
+    public TextureAtlasSprite getSpriteRaw() {
         return sprite;
     }
 
     /**
      * Sets this gas's icon.
-     *
-     * @return this Gas object
      */
-    public Gas registerIcon(TextureStitchEvent.Pre event) {
+    public void registerIcon(TextureStitchEvent.Pre event) {
         event.addSprite(iconLocation);
         from_fluid = false;
-        return this;
     }
 
-    public Gas updateIcon(AtlasTexture map) {
+    public void updateIcon(AtlasTexture map) {
         sprite = map.getSprite(iconLocation);
-        return this;
     }
 
     /**
@@ -229,13 +211,10 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
 
     /**
      * Registers a new fluid out of this Gas or gets one from the FluidRegistry. Uses same registry name as this.
-     *
-     * @return this Gas object
      */
-    public Gas setFluid(@Nonnull Fluid fluid) {
+    public void setFluid(@Nonnull Fluid fluid) {
         //TODO: Don't allow setting it once it is already set?
         this.fluid = fluid;
-        return this;
     }
 
     public void createFluid() {
@@ -254,26 +233,10 @@ public class Gas implements IForgeRegistryEntry<Gas>, IHasTranslationKey, IGasPr
         setFluid(flowingFluid);
     }
 
-    @Override
-    public Gas setRegistryName(ResourceLocation name) {
-        //TODO: Check to make sure there is no name set and throw an error if there already is one set
-        registryName = name;
-        return this;
-    }
-
+    @Nonnull
     @Override
     public Gas getGas() {
         return this;
-    }
-
-    @Override
-    public ResourceLocation getRegistryName() {
-        return registryName;
-    }
-
-    @Override
-    public Class<Gas> getRegistryType() {
-        return Gas.class;
     }
 
     @Override

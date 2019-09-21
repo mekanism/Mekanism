@@ -132,7 +132,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         if (getReactor() != null) {
             if (stack.getGas().isIn(MekanismTags.DEUTERIUM)) {
                 return getReactor().getDeuteriumTank().receive(stack, doTransfer);
@@ -145,18 +145,19 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         return 0;
     }
 
+    @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         return null;
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, Gas type) {
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return type.isIn(MekanismTags.DEUTERIUM) || type.isIn(MekanismTags.TRITIUM) || type.isIn(MekanismTags.FUSION_FUEL);
     }
 
     @Override
-    public boolean canDrawGas(Direction side, Gas type) {
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         return false;
     }
 

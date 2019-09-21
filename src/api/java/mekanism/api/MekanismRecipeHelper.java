@@ -7,6 +7,8 @@ import mekanism.api.infuse.InfuseType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+//TODO: Deprecate all of these, and add more detailed ways to add them using the new recipe system
+// In fact given this is the initial 1.14 version, we don't even have to deprecate them but can instead just directly remove them once we have new ones to add
 public interface MekanismRecipeHelper {
 
     /**
@@ -24,15 +26,6 @@ public interface MekanismRecipeHelper {
      * @param output - output ItemStack
      */
     void addOsmiumCompressorRecipe(ItemStack input, ItemStack output);
-
-    /**
-     * Add a Combiner recipe.
-     *
-     * @param input  - input ItemStack
-     * @param output - output ItemStack
-     */
-    @Deprecated
-    void addCombinerRecipe(ItemStack input, ItemStack output);
 
     /**
      * Add a Combiner recipe.

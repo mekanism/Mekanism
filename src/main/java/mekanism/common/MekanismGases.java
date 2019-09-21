@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.Slurry;
 import mekanism.api.providers.IGasProvider;
@@ -26,7 +27,7 @@ public enum MekanismGases implements IGasProvider {
     FUSION_FUEL("fusion_fuel", 0x7E007D, true),
     LITHIUM("lithium", 0xEBA400, true),
     //TODO: Rename liquid osmium? Also make it not visible again in JEI and the like?
-    LIQUID_OSMIUM("liquid_osmium", 0x52bdca),
+    LIQUID_OSMIUM("liquid_osmium", 0x52BDCA),
 
     //Clean Slurry
     CLEAN_IRON_SLURRY(Resource.IRON),
@@ -77,6 +78,7 @@ public enum MekanismGases implements IGasProvider {
         this.gas = new Slurry(new ResourceLocation(Mekanism.MODID, "dirty_" + resource.getRegistrySuffix() + "_slurry"), resource.tint, (Slurry) clean.getGas());
     }
 
+    @Nonnull
     @Override
     public Gas getGas() {
         return gas;

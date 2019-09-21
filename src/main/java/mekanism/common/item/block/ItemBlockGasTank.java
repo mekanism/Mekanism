@@ -77,13 +77,14 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
               YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
+    @Nonnull
     @Override
-    public GasStack getGas(ItemStack itemstack) {
+    public GasStack getGas(@Nonnull ItemStack itemstack) {
         return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
     }
 
     @Override
-    public void setGas(ItemStack itemstack, GasStack stack) {
+    public void setGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
         if (stack == null || stack.amount == 0) {
             ItemDataUtils.removeData(itemstack, "stored");
         } else {
@@ -121,17 +122,17 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     }
 
     @Override
-    public int getMaxGas(ItemStack itemstack) {
+    public int getMaxGas(@Nonnull ItemStack itemstack) {
         return getTier(itemstack).getStorage();
     }
 
     @Override
-    public int getRate(ItemStack itemstack) {
+    public int getRate(@Nonnull ItemStack itemstack) {
         return getTier(itemstack).getOutput();
     }
 
     @Override
-    public int addGas(ItemStack itemstack, GasStack stack) {
+    public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
@@ -144,8 +145,9 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
         return toUse;
     }
 
+    @Nonnull
     @Override
-    public GasStack removeGas(ItemStack itemstack, int amount) {
+    public GasStack removeGas(@Nonnull ItemStack itemstack, int amount) {
         if (getGas(itemstack) == null) {
             return null;
         }
@@ -162,12 +164,12 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     }
 
     @Override
-    public boolean canReceiveGas(ItemStack itemstack, Gas type) {
+    public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         return getGas(itemstack) == null || getGas(itemstack).getGas() == type;
     }
 
     @Override
-    public boolean canProvideGas(ItemStack itemstack, Gas type) {
+    public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         return getGas(itemstack) != null && (type == null || getGas(itemstack).getGas() == type);
     }
 

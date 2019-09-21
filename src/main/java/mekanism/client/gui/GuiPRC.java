@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -18,7 +20,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.PressurizedReactionChamberContainer;
-import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -31,7 +33,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiPRC extends GuiMekanismTile<TileEntityPRC, PressurizedReactionChamberContainer> {
+public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber, PressurizedReactionChamberContainer> {
 
     public GuiPRC(PressurizedReactionChamberContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -47,7 +49,9 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPRC, PressurizedReactionCh
         addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
         addButton(new GuiUpgradeTab(this, tileEntity, resource));
         addButton(new GuiEnergyInfo(() -> {
-            double extra = tileEntity.getRecipe() != null ? tileEntity.getRecipe().extraEnergy : 0;
+            //TODO: Use a getter for the cached recipe
+            CachedRecipe<PressurizedReactionRecipe> recipe = tileEntity.getUpdatedCache(0);
+            double extra = recipe == null ? 0 : recipe.getRecipe().getEnergyRequired();
             double energyPerTick = MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.getBaseStorage() + extra);
             return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(energyPerTick), "/t"),
                   TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));

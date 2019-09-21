@@ -109,17 +109,17 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
     }
 
     @Override
-    public int getMaxGas(ItemStack itemstack) {
+    public int getMaxGas(@Nonnull ItemStack itemstack) {
         return MekanismConfig.general.maxScubaGas.get();
     }
 
     @Override
-    public int getRate(ItemStack itemstack) {
+    public int getRate(@Nonnull ItemStack itemstack) {
         return TRANSFER_RATE;
     }
 
     @Override
-    public int addGas(ItemStack itemstack, GasStack stack) {
+    public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
@@ -131,8 +131,9 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
         return toUse;
     }
 
+    @Nonnull
     @Override
-    public GasStack removeGas(ItemStack itemstack, int amount) {
+    public GasStack removeGas(@Nonnull ItemStack itemstack, int amount) {
         return null;
     }
 
@@ -157,22 +158,23 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
     }
 
     @Override
-    public boolean canReceiveGas(ItemStack itemstack, Gas type) {
+    public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         return type.isIn(MekanismTags.OXYGEN);
     }
 
     @Override
-    public boolean canProvideGas(ItemStack itemstack, Gas type) {
+    public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         return false;
     }
 
+    @Nonnull
     @Override
-    public GasStack getGas(ItemStack itemstack) {
+    public GasStack getGas(@Nonnull ItemStack itemstack) {
         return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
     }
 
     @Override
-    public void setGas(ItemStack itemstack, GasStack stack) {
+    public void setGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
         if (stack == null || stack.amount == 0) {
             ItemDataUtils.removeData(itemstack, "stored");
         } else {
