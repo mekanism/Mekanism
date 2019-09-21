@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.gas;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -30,6 +31,7 @@ public interface IGasStack extends IIngredient {
     @ZenCodeType.Getter("amount")
     int getAmount();
 
+    @Nonnull
     GasStack getInternal();
 
     @ZenCodeType.Getter("gases")

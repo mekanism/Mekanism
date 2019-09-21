@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -198,7 +199,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        if (canReceiveGas(side, stack != null ? stack.getGas() : null)) {
+        if (canReceiveGas(side, stack.getGas())) {
             return inputTank.receive(stack, doTransfer);
         }
         return 0;
@@ -207,10 +208,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        if (canDrawGas(side, null)) {
+        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
             return outputTank.draw(amount, doTransfer);
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override
@@ -251,10 +252,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (inputTank.getGas() != null) {
+        if (!inputTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new CompoundNBT()));
         }
-        if (outputTank.getGas() != null) {
+        if (!outputTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new CompoundNBT()));
         }
     }

@@ -212,7 +212,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 0) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null;
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack).isEmpty();
         } else if (slotID == 1) {
             return true;
         } else if (slotID == 2) {
@@ -244,7 +244,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (inputTank.getGas() != null) {
+        if (!inputTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new CompoundNBT()));
         }
     }

@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
@@ -18,7 +19,6 @@ import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity;
@@ -140,13 +140,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         return possibleProcess;
     }
 
-    public boolean isValidGas(GasStack g) {
-        return g != null && g.getGas().hasFluid();
+    public boolean isValidGas(@Nonnull GasStack g) {
+        return !g.isEmpty() && g.getGas().hasFluid();
 
     }
 
-    public boolean gasEquals(GasStack gas, @Nonnull FluidStack fluid) {
-        return !fluid.isEmpty() && gas != null && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
+    public boolean gasEquals(@Nonnull GasStack gas, @Nonnull FluidStack fluid) {
+        return !fluid.isEmpty() && !gas.isEmpty() && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
     }
 
     public boolean isValidFluid(@Nonnull Fluid f) {
@@ -266,7 +266,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         if (!fluidTank.getFluid().isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
-        if (gasTank.getGas() != null) {
+        if (!gasTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new CompoundNBT()));
         }
     }

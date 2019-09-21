@@ -812,7 +812,7 @@ public final class MekanismUtils {
      *
      * @return filled gas tank
      */
-    public static ItemStack getFullGasTank(GasTankTier tier, Gas gas) {
+    public static ItemStack getFullGasTank(GasTankTier tier, @Nonnull Gas gas) {
         ItemStack tank = getEmptyGasTank(tier);
         ItemBlockGasTank item = (ItemBlockGasTank) tank.getItem();
         item.setGas(tank, new GasStack(gas, item.MAX_GAS));

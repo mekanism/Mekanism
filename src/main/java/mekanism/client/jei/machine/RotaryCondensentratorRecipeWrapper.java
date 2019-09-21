@@ -20,10 +20,11 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
     public static final int FLUID_AMOUNT = 1;
     @Nonnull
     private Fluid fluidType;
+    @Nonnull
     private Gas gasType;
     private boolean condensentrating;
 
-    public RotaryCondensentratorRecipeWrapper(Fluid fluid, Gas gas, boolean b) {
+    public RotaryCondensentratorRecipeWrapper(@Nonnull Fluid fluid, @Nonnull Gas gas, boolean b) {
         fluidType = fluid;
         gasType = gas;
         condensentrating = b;
@@ -51,6 +52,7 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
         minecraft.fontRenderer.drawString(component.getFormattedText(), 3, 62, 0x404040);
     }
 
+    @Nonnull
     public Gas getGasType() {
         return gasType;
     }

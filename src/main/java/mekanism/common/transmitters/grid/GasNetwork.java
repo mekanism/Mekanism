@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
@@ -29,6 +28,7 @@ import net.minecraftforge.eventbus.api.Event;
  *
  * @author aidancbrady
  */
+//TODO: Should GasStack have @NonNull in the params
 public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> {
 
     public int transferDelay = 0;
@@ -38,12 +38,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     public float gasScale;
 
-    //TODO: Remove refGas?
     @Nonnull
-    public Gas refGas;
-
-    @Nonnull
-    public GasStack buffer;
+    public GasStack buffer = GasStack.EMPTY;
     public int prevStored;
 
     public int prevTransferAmount = 0;
@@ -65,13 +61,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
         if (isRemote()) {
-            if (net.refGas != MekanismAPI.EMPTY_GAS && net.gasScale > gasScale) {
+            if (!net.buffer.isEmpty() && net.gasScale > gasScale) {
                 gasScale = net.gasScale;
-                refGas = net.refGas;
                 buffer = net.buffer;
-
                 net.gasScale = 0;
-                net.refGas = MekanismAPI.EMPTY_GAS;
                 net.buffer = GasStack.EMPTY;
             }
         } else {

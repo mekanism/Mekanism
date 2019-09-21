@@ -69,7 +69,7 @@ public class RecipeUtils {
         }
 
         if (toReturn.getItem() instanceof IGasItem) {
-            GasStack gasFound = null;
+            GasStack gasFound = GasStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
@@ -78,7 +78,7 @@ public class RecipeUtils {
                         if (!((IGasItem) toReturn.getItem()).canReceiveGas(toReturn, stored.getGas())) {
                             return ItemStack.EMPTY;
                         }
-                        if (gasFound == null) {
+                        if (gasFound.isEmpty()) {
                             gasFound = stored;
                         } else {
                             if (gasFound.getGas() != stored.getGas()) {

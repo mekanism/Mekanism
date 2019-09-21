@@ -1,6 +1,6 @@
 package mekanism.common.base.target;
 
-import javax.annotation.Nonnull;
+import mekanism.api.annotations.NonNull;
 import mekanism.common.base.SplitInfo;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.Direction;
@@ -8,9 +8,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class FluidHandlerTarget extends Target<IFluidHandler, Integer, FluidStack> {
+public class FluidHandlerTarget extends Target<IFluidHandler, Integer, @NonNull FluidStack> {
 
-    public FluidHandlerTarget(@Nonnull FluidStack type) {
+    public FluidHandlerTarget(@NonNull FluidStack type) {
         this.extra = type;
     }
 
@@ -20,7 +20,7 @@ public class FluidHandlerTarget extends Target<IFluidHandler, Integer, FluidStac
     }
 
     @Override
-    protected Integer simulate(IFluidHandler handler, Direction side, @Nonnull FluidStack fluidStack) {
+    protected Integer simulate(IFluidHandler handler, Direction side, @NonNull FluidStack fluidStack) {
         return handler.fill(fluidStack, FluidAction.SIMULATE);
     }
 }

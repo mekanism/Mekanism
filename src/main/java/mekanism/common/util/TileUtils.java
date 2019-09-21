@@ -41,6 +41,7 @@ public class TileUtils {
         }
     }
 
+    //TODO: Convert read/write to use GasStack.readFromPacket(dataStream) helper methods for both fluids and gases?
     public static void readTankData(PacketBuffer dataStream, GasTank tank) {
         tank.setGas(GasStack.readFromNBT(dataStream.readCompoundTag()));
     }

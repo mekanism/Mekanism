@@ -18,8 +18,12 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
     public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage) {
         if (MekanismConfig.client.opaqueTransmitters.get()) {
             TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
-            if (transmitter.hasTransmitterNetwork() && transmitter.getTransmitterNetwork().refGas != null && transmitter.getTransmitterNetwork().gasScale != 0) {
-                render(tube, x, y, z, 0);
+            if (transmitter.hasTransmitterNetwork()) {
+                GasNetwork transmitterNetwork = transmitter.getTransmitterNetwork();
+                //TODO: Verify this still works
+                if (!transmitterNetwork.buffer.isEmpty() && transmitterNetwork.gasScale != 0) {
+                    render(tube, x, y, z, 0);
+                }
             }
         }
     }
@@ -27,9 +31,13 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
     @Override
     protected void renderSide(BufferBuilder renderer, Direction side, TileEntityPressurizedTube tube) {
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        Gas gas = tube.getTransmitter().getTransmitterNetwork().refGas;
-        ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
-        c.setRGBFromInt(gas.getTint());
-        renderTransparency(renderer, gas.getSprite(), getModelForSide(tube, side), c);
+        GasStack gasStack = tube.getTransmitter().getTransmitterNetwork().buffer;
+        if (!gasStack.isEmpty()) {
+            //Double check it is not empty
+            Gas gas = gasStack.getGas();
+            ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
+            c.setRGBFromInt(gas.getTint());
+            renderTransparency(renderer, gas.getSprite(), getModelForSide(tube, side), c);
+        }
     }
 }

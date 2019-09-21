@@ -134,7 +134,7 @@ public class MekRecipesCommand extends CommandImpl {
             case "separator":
                 type = Recipe.ELECTROLYTIC_SEPARATOR;
                 for (ElectrolysisRecipe recipe : Recipe.ELECTROLYTIC_SEPARATOR.get()) {
-                    Pair<GasStack, GasStack> output = recipe.getOutput(null);
+                    Pair<@NonNull GasStack, @NonNull GasStack> output = recipe.getOutput(null);
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.separator.addRecipe(%s, %s, %s, %s)",
                           RecipeInfoHelper.getFluidName(recipe.getInput()),
                           recipe.getEnergyUsage(),

@@ -26,6 +26,7 @@ import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -94,7 +95,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Override
     protected void upgradeInventory(TileEntityFactory factory) {
         //Advanced Machine
-        factory.gasTank.setGas(gasTank.getGas());
+        if (factory instanceof TileEntityItemStackGasToItemStackFactory) {
+            ((TileEntityItemStackGasToItemStackFactory) factory).gasTank.setGas(gasTank.getGas());
+        }
 
         NonNullList<ItemStack> factoryInventory = factory.getInventory();
         NonNullList<ItemStack> inventory = getInventory();
@@ -117,7 +120,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         return GasConversionHandler.getItemGas(itemStack, gasTank, this::isValidGas);
     }
 
-    public boolean isValidGas(Gas gas) {
+    public boolean isValidGas(@Nonnull Gas gas) {
         return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
     }
 

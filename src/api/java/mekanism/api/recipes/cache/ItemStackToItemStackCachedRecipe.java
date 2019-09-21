@@ -1,11 +1,11 @@
 package mekanism.api.recipes.cache;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
 //TODO: Look into making some things have a common super class, such as all the ones that have an ItemStack as an input

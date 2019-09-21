@@ -8,14 +8,8 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.FactoryType;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTankInfo;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
-import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.IMekanismRecipe;
@@ -34,7 +28,6 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -43,7 +36,6 @@ import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -59,8 +51,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler,
-      ISpecialConfigData, ITierUpgradeable, ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
+public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
+      ITierUpgradeable, ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
 
     public static final int UPGRADE_SLOT_ID = 0;
     public static final int ENERGY_SLOT_ID = 1;
@@ -324,6 +316,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         }
     }
 
+    //TODO: Move references of checking type against infusion to instanceof the infusing factory
     @Nonnull
     public FactoryType getFactoryType() {
         return type;
@@ -433,47 +426,10 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         return MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
     }
 
-    public boolean isValidGas(@Nonnull Gas gas) {
-        return false;
-    }
-
-    @Nullable
-    public GasStack getItemGas(ItemStack itemStack) {
-        if (type.isAdvancedMachine()) {
-            return GasConversionHandler.getItemGas(itemStack, gasTank, this::isValidGas);
-        }
-        return null;
-    }
-
-    public void handleSecondaryFuel() {
-        ItemStack extra = getInventory().get(EXTRA_SLOT_ID);
-        if (!extra.isEmpty()) {
-            if (type.isAdvancedMachine() && gasTank.getNeeded() > 0) {
-                GasStack gasStack = getItemGas(extra);
-                if (gasStack != null) {
-                    Gas gas = gasStack.getGas();
-                    if (gasTank.canReceive(gas) && gasTank.getNeeded() >= gasStack.getAmount()) {
-                        if (extra.getItem() instanceof IGasItem) {
-                            IGasItem item = (IGasItem) extra.getItem();
-                            gasTank.receive(item.removeGas(extra, gasStack.getAmount()), true);
-                        } else {
-                            gasTank.receive(gasStack, true);
-                            extra.shrink(1);
-                        }
-                    }
-                }
-            } else if (type == FactoryType.INFUSING) {
-                InfusionStack pendingInfusionInput = InfuseRegistry.getObject(extra);
-                if (!pendingInfusionInput.isEmpty()) {
-                    if (infuseStored.isEmpty() || infuseStored.getType() == pendingInfusionInput.getType()) {
-                        if (infuseStored.getAmount() + pendingInfusionInput.getAmount() <= maxInfuse) {
-                            infuseStored.increase(pendingInfusionInput);
-                            extra.shrink(1);
-                        }
-                    }
-                }
-            }
-        }
+    /**
+     * Handles filling the secondary fuel tank based on the item in the extra slot
+     */
+    protected void handleSecondaryFuel() {
     }
 
     public ItemStack getMachineStack() {
@@ -489,8 +445,6 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         } else if (tier == FactoryTier.ADVANCED && slotID >= 10 && slotID <= 14) {
             return true;
         } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
-            return true;
-        } else if (type.isChanceMachine() && slotID == EXTRA_SLOT_ID) {
             return true;
         }
         return false;
@@ -554,10 +508,6 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         return infuseStored.getAmount() * i / maxInfuse;
     }
 
-    public int getScaledGasLevel(int i) {
-        return gasTank.getStored() * i / gasTank.getMaxGas();
-    }
-
     public int getScaledRecipeProgress(int i) {
         return recipeTicks * i / RECIPE_TICKS_REQUIRED;
     }
@@ -569,7 +519,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
             if (type == 0) {
                 sorting = !sorting;
             } else if (type == 1) {
-                gasTank.setGas(null);
+                gasTank.setGas(GasStack.EMPTY);
                 infuseStored.setEmpty();
             }
             return;
@@ -614,8 +564,6 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt("progress" + i);
         }
-        gasTank.read(nbtTags.getCompound("gasTank"));
-        GasUtils.clearIfInvalid(gasTank, this::isValidGas);
     }
 
     @Nonnull
@@ -631,7 +579,6 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.putInt("progress" + i, getProgress(i));
         }
-        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
@@ -739,47 +686,11 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         return ejectorComponent;
     }
 
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        if (canReceiveGas(side, stack.getGas())) {
-            return gasTank.receive(stack, doTransfer);
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        if (configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0)) {
-            return recipeType.canReceiveGas(side, type);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{gasTank};
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
@@ -794,9 +705,6 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (configComponent.isCapabilityDisabled(capability, side, getDirection())) {
             return true;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            //If the gas capability is not disabled, check if this machine even actually supports gas
-            return !recipeType.supportsGas();
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -809,6 +717,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
                 setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage())); // incorporate speed upgrades
                 break;
             case GAS:
+                //TODO: Move gas upgrade to only be in specific factories? At least for calculations?
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                 break;
             case SPEED:
@@ -840,13 +749,11 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         infuseStored.writeSustainedData(itemStack);
-        GasUtils.writeSustainedData(gasTank, itemStack);
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         infuseStored.readSustainedData(itemStack);
-        GasUtils.readSustainedData(gasTank, itemStack);
     }
 
     @Override

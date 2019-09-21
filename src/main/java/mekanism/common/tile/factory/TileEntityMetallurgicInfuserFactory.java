@@ -77,6 +77,22 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
         return true;
     }
 
+    @Override
+    protected void handleSecondaryFuel() {
+        ItemStack extra = getInventory().get(EXTRA_SLOT_ID);
+        if (!extra.isEmpty()) {
+            InfusionStack pendingInfusionInput = InfuseRegistry.getObject(extra);
+            if (!pendingInfusionInput.isEmpty()) {
+                if (infuseStored.isEmpty() || infuseStored.getType() == pendingInfusionInput.getType()) {
+                    if (infuseStored.getAmount() + pendingInfusionInput.getAmount() <= maxInfuse) {
+                        infuseStored.increase(pendingInfusionInput);
+                        extra.shrink(1);
+                    }
+                }
+            }
+        }
+    }
+
     @Nonnull
     @Override
     public Recipe<MetallurgicInfuserRecipe> getRecipes() {

@@ -89,7 +89,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
     @Override
     public void render(int xPosition, int yPosition, @Nullable GasStack gasStack) {
-        if (gasStack == null) {
+        if (gasStack == null || gasStack.isEmpty()) {
             return;
         }
         GlStateManager.enableBlend();
@@ -120,7 +120,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         drawTiledSprite(xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(gas));
     }
 
-    private void drawTiledSprite(int xPosition, int yPosition, int tiledWidth, int tiledHeight, Gas gas, int scaledAmount, TextureAtlasSprite sprite) {
+    private void drawTiledSprite(int xPosition, int yPosition, int tiledWidth, int tiledHeight, @Nonnull Gas gas, int scaledAmount, TextureAtlasSprite sprite) {
         MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         MekanismRenderer.color(gas);
 

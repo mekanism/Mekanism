@@ -70,7 +70,7 @@ public class RecipeInfoHelper {
         //Double Gas output
         else if (recipe instanceof ElectrolysisRecipe) {
             ElectrolysisRecipe castedRecipe = (ElectrolysisRecipe) recipe;
-            Pair<GasStack, GasStack> output = castedRecipe.getOutput(null);
+            Pair<@NonNull GasStack, @NonNull GasStack> output = castedRecipe.getOutput(null);
             return "[" + getGasName(output.getLeft()) + ", " + getGasName(output.getRight()) + "]";
         }
         //item gas output
@@ -98,11 +98,11 @@ public class RecipeInfoHelper {
         return "TODO: THIS SHOULD NOT BE HERE, IF THIS MESSAGE SOMEHOW GETS INTO AN ACTUAL RELEASE PLEASE REPORT IT.";
     }
 
-    public static String getGasName(GasStack stack) {
+    public static String getGasName(@Nonnull GasStack stack) {
         return stack.getAmount() > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.getAmount()) : getGasName(stack.getGas());
     }
 
-    public static String getGasName(Gas gas) {
+    public static String getGasName(@Nonnull Gas gas) {
         return String.format("<gas:%s>", gas.getName());
     }
 

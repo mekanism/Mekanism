@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
@@ -75,10 +76,10 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         int yAxis = mouseY - guiTop;
         if (xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49) {
             GasStack gasStack = tileEntity.gasTank.getGas();
-            if (gasStack != null) {
-                displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
-            } else {
+            if (gasStack.isEmpty()) {
                 displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
+            } else {
+                displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -98,8 +99,8 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         return tileEntity.guiLocation;
     }
 
-    public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas) {
-        if (gas != null) {
+    public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, @Nonnull GasStack gas) {
+        if (!gas.isEmpty()) {
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             MekanismRenderer.color(gas);
             drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, gas.getGas().getSprite(), sizeX, sizeY);

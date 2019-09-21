@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -31,7 +33,7 @@ import net.minecraft.util.ResourceLocation;
 public class GasConversionHandler {
 
     //TODO: Show uses in JEI for fuels that can be turned to gas??
-    private final static Map<Gas, List<IMekanismIngredient<ItemStack>>> gasToIngredients = new HashMap<>();
+    private final static Map<@NonNull Gas, List<IMekanismIngredient<ItemStack>>> gasToIngredients = new HashMap<>();
     private final static Map<IMekanismIngredient<ItemStack>, GasStack> ingredientToGas = new HashMap<>();
 
     public static void addDefaultGasMappings() {
@@ -100,9 +102,9 @@ public class GasConversionHandler {
      * Gets an item gas checking if it will be valid for a specific tank and if the type is also valid.
      */
     @Nonnull
-    public static GasStack getItemGas(ItemStack itemStack, GasTank gasTank, Predicate<Gas> isValidGas) {
+    public static GasStack getItemGas(ItemStack itemStack, GasTank gasTank, Predicate<@NonNull Gas> isValidGas) {
         return getItemGas(itemStack, gasTank.getNeeded(), (gas, quantity) -> {
-            if (gas != null && gasTank.canReceive(gas) && isValidGas.test(gas)) {
+            if (gas != MekanismAPI.EMPTY_GAS && gasTank.canReceive(gas) && isValidGas.test(gas)) {
                 return new GasStack(gas, quantity);
             }
             return GasStack.EMPTY;
@@ -118,7 +120,7 @@ public class GasConversionHandler {
      * @return fuel ticks
      */
     @Nonnull
-    public static GasStack getItemGas(ItemStack itemStack, int needed, BiFunction<Gas, Integer, GasStack> getIfValid) {
+    public static GasStack getItemGas(ItemStack itemStack, int needed, BiFunction<@NonNull Gas, Integer, @NonNull GasStack> getIfValid) {
         if (itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
             GasStack gas = item.getGas(itemStack);
@@ -127,7 +129,7 @@ public class GasConversionHandler {
                 int amount = Math.min(needed, Math.min(gas.getAmount(), item.getRate(itemStack)));
                 if (amount > 0) {
                     GasStack gasStack = getIfValid.apply(gas.getGas(), amount);
-                    if (gasStack != null) {
+                    if (!gasStack.isEmpty()) {
                         return gasStack;
                     }
                 }
@@ -136,7 +138,7 @@ public class GasConversionHandler {
         for (Entry<IMekanismIngredient<ItemStack>, GasStack> entry : ingredientToGas.entrySet()) {
             if (entry.getKey().contains(itemStack)) {
                 GasStack gasStack = getIfValid.apply(entry.getValue().getGas(), entry.getValue().getAmount());
-                if (gasStack != null) {
+                if (!gasStack.isEmpty()) {
                     return gasStack;
                 }
             }
@@ -144,8 +146,8 @@ public class GasConversionHandler {
         return GasStack.EMPTY;
     }
 
-    public static List<ItemStack> getStacksForGas(Gas type) {
-        if (type == null) {
+    public static List<ItemStack> getStacksForGas(@Nonnull Gas type) {
+        if (type == MekanismAPI.EMPTY_GAS) {
             return Collections.emptyList();
         }
         List<ItemStack> stacks = new ArrayList<>();

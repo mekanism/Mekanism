@@ -46,7 +46,7 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
                 GasTankInfo[] tanks = handler.getTankInfo();
                 for (GasTankInfo tank : tanks) {
                     IProgressStyle style = probeInfo.defaultProgressStyle().suffix("mB");
-                    if (tank.getGas() != null) {
+                    if (!tank.getGas().isEmpty()) {
                         Gas gas = tank.getGas().getGas();
                         //TODO: Lang key
                         probeInfo.text(TextStyleClass.NAME + TextComponentUtil.build("Gas: ", gas).getFormattedText());

@@ -253,7 +253,7 @@ public class ClientTickHandler {
                 tank.useGas(chestStack);
                 GasStack received = tank.useGas(chestStack, max - minecraft.player.getAir());
 
-                if (received != null) {
+                if (!received.isEmpty()) {
                     minecraft.player.setAir(minecraft.player.getAir() + received.getAmount());
                 }
                 if (minecraft.player.getAir() == max) {

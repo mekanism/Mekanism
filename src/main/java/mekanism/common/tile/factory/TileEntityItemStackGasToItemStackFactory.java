@@ -4,29 +4,37 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTankInfo;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<ItemStackGasToItemStackRecipe> {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<ItemStackGasToItemStackRecipe> implements IGasHandler {
 
-    /**
-     * How much secondary energy each operation consumes per tick
-     */
-    private double secondaryEnergyPerTick = 0;
-    private int secondaryEnergyThisTick;
+    //TODO: Finish moving references to gasTank to this class
+    //public final GasTank gasTank;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
+        //gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
     }
 
     @Override
@@ -91,9 +99,28 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         return true;
     }
 
-    @Override
     public boolean isValidGas(@Nonnull Gas gas) {
         return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
+    }
+
+    @Override
+    protected void handleSecondaryFuel() {
+        ItemStack extra = getInventory().get(EXTRA_SLOT_ID);
+        if (!extra.isEmpty() && gasTank.getNeeded() > 0) {
+            GasStack gasStack = GasConversionHandler.getItemGas(extra, gasTank, this::isValidGas);
+            if (!gasStack.isEmpty()) {
+                Gas gas = gasStack.getGas();
+                if (gasTank.canReceive(gas) && gasTank.getNeeded() >= gasStack.getAmount()) {
+                    if (extra.getItem() instanceof IGasItem) {
+                        IGasItem item = (IGasItem) extra.getItem();
+                        gasTank.receive(item.removeGas(extra, gasStack.getAmount()), true);
+                    } else {
+                        gasTank.receive(gasStack, true);
+                        extra.shrink(1);
+                    }
+                }
+            }
+        }
     }
 
     @Nonnull
@@ -133,5 +160,78 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
+    }
+
+    public int getScaledGasLevel(int i) {
+        return gasTank.getStored() * i / gasTank.getMaxGas();
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
+        return nbtTags;
+    }
+
+    @Override
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        gasTank.read(nbtTags.getCompound("gasTank"));
+        GasUtils.clearIfInvalid(gasTank, this::isValidGas);
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        super.writeSustainedData(itemStack);
+        GasUtils.writeSustainedData(gasTank, itemStack);
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        super.readSustainedData(itemStack);
+        GasUtils.readSustainedData(gasTank, itemStack);
+    }
+
+    @Override
+    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
+        if (canReceiveGas(side, stack.getGas())) {
+            return gasTank.receive(stack, doTransfer);
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
+        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0) && gasTank.canReceiveType(type) && isValidGas(type);
+    }
+
+    @Nonnull
+    @Override
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+        return GasStack.EMPTY;
+    }
+
+    @Override
+    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public GasTankInfo[] getTankInfo() {
+        return new GasTankInfo[]{gasTank};
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return LazyOptional.empty();
+        }
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        }
+        return super.getCapability(capability, side);
     }
 }

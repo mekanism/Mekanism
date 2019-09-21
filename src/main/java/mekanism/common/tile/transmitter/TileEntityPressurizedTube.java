@@ -36,7 +36,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public GasTank buffer;
 
     @Nonnull
-    public GasStack lastWrite = GasStack.EMPTY;
+    private GasStack lastWrite = GasStack.EMPTY;
 
     //Read only handler for support with TOP and getting network data instead of this tube's data
     private IGasHandler nullHandler = new IGasHandler() {
@@ -48,7 +48,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         @Nonnull
         @Override
         public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-            return null;
+            return GasStack.EMPTY;
         }
 
         @Override

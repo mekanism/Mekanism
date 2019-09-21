@@ -141,7 +141,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
-        return type == MekanismGases.HYDROGEN.getGas();
+        return type.isIn(MekanismTags.HYDROGEN);
     }
 
     @Override

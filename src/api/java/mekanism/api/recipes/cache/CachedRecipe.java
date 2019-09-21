@@ -5,10 +5,10 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.function.BooleanConsumer;
 import mekanism.api.function.IntToIntFunction;
 import mekanism.api.recipes.IMekanismRecipe;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.FactoryType;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -20,6 +21,7 @@ import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -70,12 +72,13 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         if (xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69) {
             displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         } else if (xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83) {
-            if (tileEntity.getFactoryType().isAdvancedMachine()) {
-                GasStack gasStack = tileEntity.gasTank.getGas();
-                if (gasStack.isEmpty()) {
+            if (tileEntity instanceof TileEntityItemStackGasToItemStackFactory) {
+                TileEntityItemStackGasToItemStackFactory itemGasToItemFactory = (TileEntityItemStackGasToItemStackFactory) tileEntity;
+                GasTank gasTank = itemGasToItemFactory.gasTank;
+                if (gasTank.isEmpty()) {
                     displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(gasTank.getGas(), ": " + gasTank.getStored()), xAxis, yAxis);
                 }
             } else if (tileEntity.getFactoryType() == FactoryType.INFUSING) {
                 if (tileEntity.infuseStored.isEmpty()) {
@@ -102,12 +105,14 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
             drawTexturedRect(guiLeft + xPos, guiTop + 33, 176, 52, 8, displayInt);
         }
 
-        if (tileEntity.getFactoryType().isAdvancedMachine()) {
-            if (tileEntity.getScaledGasLevel(160) > 0) {
-                GasStack gas = tileEntity.gasTank.getGas();
+        if (tileEntity instanceof TileEntityItemStackGasToItemStackFactory) {
+            TileEntityItemStackGasToItemStackFactory itemGasToItemFactory = (TileEntityItemStackGasToItemStackFactory) tileEntity;
+            int scaledGas = itemGasToItemFactory.getScaledGasLevel(160);
+            if (scaledGas > 0) {
+                GasStack gas = itemGasToItemFactory.gasTank.getGas();
                 if (!gas.isEmpty()) {
                     MekanismRenderer.color(gas);
-                    displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, gas.getGas().getSprite());
+                    displayGauge(8, 78, scaledGas, 5, gas.getGas().getSprite());
                     MekanismRenderer.resetColor();
                 }
             }

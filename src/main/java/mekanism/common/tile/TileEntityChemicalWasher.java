@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -56,7 +57,6 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     public static final int MAX_GAS = 10000;
     public static final int MAX_FLUID = 10000;
-    public static int WATER_USAGE = 5;
     public FluidTank fluidTank = new FluidTank(MAX_FLUID);
     public GasTank inputTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
@@ -192,7 +192,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        if (canReceiveGas(side, stack != null ? stack.getGas() : null)) {
+        if (canReceiveGas(side, stack.getGas())) {
             return getTank(side).receive(stack, doTransfer);
         }
         return 0;
@@ -201,10 +201,10 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        if (canDrawGas(side, null)) {
+        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
             return getTank(side).draw(amount, doTransfer);
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override
@@ -231,7 +231,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 1) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, null);
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, MekanismAPI.EMPTY_GAS);
         } else if (slotID == 2) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         }
@@ -313,10 +313,10 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         if (!fluidTank.getFluid().isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
-        if (inputTank.getGas() != null) {
+        if (!inputTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new CompoundNBT()));
         }
-        if (outputTank.getGas() != null) {
+        if (!outputTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new CompoundNBT()));
         }
     }

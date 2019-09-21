@@ -13,11 +13,13 @@ import org.apache.commons.lang3.tuple.Pair;
 public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
+    @NonNull
     private final GasStack leftGasOutput;
+    @NonNull
     private final GasStack rightGasOutput;
     private final double energyUsage;
 
-    public ElectrolysisRecipe(FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public ElectrolysisRecipe(FluidStackIngredient input, double energyUsage, @NonNull GasStack leftGasOutput, @NonNull  GasStack rightGasOutput) {
         this.input = input;
         this.energyUsage = energyUsage;
         this.leftGasOutput = leftGasOutput;
@@ -28,10 +30,12 @@ public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull F
         return input;
     }
 
+    @NonNull
     public GasStack getLeftGasOutputRepresentation() {
         return leftGasOutput;
     }
 
+    @NonNull
     public GasStack getRightGasOutputRepresentation() {
         return rightGasOutput;
     }
@@ -41,7 +45,7 @@ public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull F
         return this.input.test(fluidStack);
     }
 
-    public Pair<GasStack, GasStack> getOutput(FluidStack input) {
+    public Pair<@NonNull GasStack, @NonNull GasStack> getOutput(FluidStack input) {
         return Pair.of(leftGasOutput.copy(), rightGasOutput.copy());
     }
 

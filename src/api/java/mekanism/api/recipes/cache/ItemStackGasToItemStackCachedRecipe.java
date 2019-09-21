@@ -2,12 +2,12 @@ package mekanism.api.recipes.cache;
 
 import java.util.function.IntSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
 @FieldsAreNonnullByDefault

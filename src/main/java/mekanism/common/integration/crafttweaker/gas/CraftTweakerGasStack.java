@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.gas;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -12,9 +13,10 @@ import net.minecraft.item.crafting.Ingredient;
 //TODO: Port any other changes to CrT gas stack from recipe rewrite branch
 public class CraftTweakerGasStack implements IGasStack {
 
+    @Nonnull
     private final GasStack stack;
 
-    public CraftTweakerGasStack(GasStack stack) {
+    public CraftTweakerGasStack(@Nonnull GasStack stack) {
         this.stack = stack;
     }
 
@@ -44,6 +46,7 @@ public class CraftTweakerGasStack implements IGasStack {
         return new CraftTweakerGasStack(new GasStack(stack, amount));
     }
 
+    @Nonnull
     @Override
     public GasStack getInternal() {
         return stack;

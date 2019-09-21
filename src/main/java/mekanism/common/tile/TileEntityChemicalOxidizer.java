@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -70,7 +71,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 2) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, null);
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, MekanismAPI.EMPTY_GAS);
         }
         return false;
     }
@@ -171,7 +172,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (gasTank.getGas() != null) {
+        if (!gasTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new CompoundNBT()));
         }
     }
@@ -200,10 +201,10 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        if (canDrawGas(side, null)) {
+        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
             return gasTank.draw(amount, doTransfer);
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override

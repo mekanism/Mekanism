@@ -23,7 +23,7 @@ public class DefaultGasHandler implements IGasHandler {
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override

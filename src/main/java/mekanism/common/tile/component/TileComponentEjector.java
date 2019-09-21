@@ -91,8 +91,8 @@ public class TileComponentEjector implements ITileComponent {
     }
 
     private void ejectGas(Set<Direction> outputSides, GasTank tank) {
-        if (tank.getGas() != null && tank.getStored() > 0) {
-            GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+        if (!tank.isEmpty()) {
+            GasStack toEmit = new GasStack(tank.getGas(), Math.min(GAS_OUTPUT, tank.getStored()));
             int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
             tank.draw(emit, true);
         }

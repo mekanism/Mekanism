@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IGasProvider;
@@ -40,6 +41,7 @@ import net.minecraftforge.fluids.FluidStack;
  *
  * @author AidanBrady, unpairedbracket
  */
+@ParametersAreNonnullByDefault
 public final class RecipeHandler {
 
     /**
@@ -237,6 +239,7 @@ public final class RecipeHandler {
         Recipe.SOLAR_NEUTRON_ACTIVATOR.put(new GasToGasRecipe(inputGas, outputGas));
     }
 
+    //TODO: Move this into its own class if this stuff doesn't just go away becoming a RecipeType
     public static class Recipe<RECIPE_TYPE extends IMekanismRecipe> {
 
         private static List<Recipe> values = new ArrayList<>();

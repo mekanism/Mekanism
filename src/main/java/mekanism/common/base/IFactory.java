@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.common.MekanismBlock;
@@ -94,20 +95,9 @@ public interface IFactory {
             return 0;
         }
 
-        public boolean canReceiveGas(Direction side, Gas type) {
+        public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().canReceiveGas(side, type);
-            }
-            return false;
-        }
-
-        public boolean supportsGas() {
-            return fuelType == MachineFuelType.ADVANCED;
-        }
-
-        public boolean isValidGas(Gas gas) {
-            if (fuelType == MachineFuelType.ADVANCED) {
-                return getTile().isValidGas(gas);
             }
             return false;
         }

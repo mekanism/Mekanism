@@ -240,14 +240,14 @@ public class MekanismRenderer {
         }
     }
 
-    public static void color(@Nullable GasStack gasStack) {
-        if (gasStack != null) {
+    public static void color(@Nonnull GasStack gasStack) {
+        if (!gasStack.isEmpty()) {
             color(gasStack.getGas());
         }
     }
 
-    public static void color(@Nullable Gas gas) {
-        if (gas != null) {
+    public static void color(@Nonnull Gas gas) {
+        if (gas != MekanismAPI.EMPTY_GAS) {
             int color = gas.getTint();
             GlStateManager.color3f(getRed(color), getGreen(color), getBlue(color));
         }

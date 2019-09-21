@@ -12,6 +12,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
@@ -100,5 +101,10 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
+    }
+
+    @Override
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+        return slotID == EXTRA_SLOT_ID || super.canExtractItem(slotID, itemstack, side);
     }
 }

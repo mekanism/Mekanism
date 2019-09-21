@@ -3,9 +3,9 @@ package mekanism.api.recipes;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 

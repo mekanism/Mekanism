@@ -3,6 +3,8 @@ package mekanism.client.gui.chemical;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.Slurry;
@@ -45,7 +47,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     private ItemStack renderStack = ItemStack.EMPTY;
     private int stackSwitch = 0;
     private int stackIndex = 0;
-    private Gas prevGas;
+    @Nonnull
+    private Gas prevGas = MekanismAPI.EMPTY_GAS;
 
     public GuiChemicalCrystallizer(ChemicalCrystallizerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -81,7 +84,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 37, 4, 0x404040);
         GasStack gasStack = tileEntity.inputTank.getGas();
-        if (gasStack != null) {
+        if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
             if (gasStack.getGas() instanceof Slurry) {
                 drawString(TextComponentUtil.build("(", Translation.of(((Slurry) gasStack.getGas()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
@@ -106,8 +109,9 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         return MekanismUtils.getResource(ResourceType.GUI, "chemical_crystallizer.png");
     }
 
+    @Nonnull
     private Gas getInputGas() {
-        return tileEntity.inputTank.getGas() != null ? tileEntity.inputTank.getGas().getGas() : null;
+        return tileEntity.inputTank.getGas().getGas();
     }
 
     private void resetStacks() {
@@ -124,7 +128,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         if (prevGas != getInputGas()) {
             prevGas = getInputGas();
             boolean reset = false;
-            if (prevGas == null || !(prevGas instanceof Slurry) || ((Slurry) prevGas).isDirty()) {
+            if (prevGas == MekanismAPI.EMPTY_GAS || !(prevGas instanceof Slurry) || ((Slurry) prevGas).isDirty()) {
                 reset = true;
                 resetStacks();
             }

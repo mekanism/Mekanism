@@ -407,13 +407,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return !hasFrequency() ? null : frequency.storedGas.draw(amount, doTransfer);
+        return !hasFrequency() ? GasStack.EMPTY : frequency.storedGas.draw(amount, doTransfer);
     }
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.INPUT) {
-            return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
+            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getGasType();
         }
         return false;
     }
@@ -421,7 +421,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.OUTPUT) {
-            return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
+            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getGasType();
         }
         return false;
     }

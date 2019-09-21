@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
@@ -36,7 +35,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             return height - 2;
         }
-        if (infoHandler.getTank().getGas() == null || infoHandler.getTank().getMaxGas() == 0) {
+        if (infoHandler.getTank().isEmpty() || infoHandler.getTank().getMaxGas() == 0) {
             return 0;
         }
         return infoHandler.getTank().getStored() * (height - 2) / infoHandler.getTank().getMaxGas();
@@ -47,8 +46,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             return dummyType.getSprite();
         }
-        return (infoHandler.getTank() != null && infoHandler.getTank().getGas() != null && infoHandler.getTank().getGas().getGas() != null) ?
-               infoHandler.getTank().getGas().getGas().getSprite() : null;
+        return (infoHandler.getTank() != null && !infoHandler.getTank().isEmpty()) ? infoHandler.getTank().getGas().getGas().getSprite() : null;
     }
 
     @Override
@@ -56,11 +54,10 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             return TextComponentUtil.build(dummyType);
         }
-        GasStack gasStack = infoHandler.getTank().getGas();
-        if (gasStack != null) {
-            return TextComponentUtil.build(gasStack, ": " + infoHandler.getTank().getStored());
+        if (infoHandler.getTank().isEmpty()) {
+            return TextComponentUtil.translate("gui.mekanism.empty");
         }
-        return TextComponentUtil.translate("gui.mekanism.empty");
+        return TextComponentUtil.build(infoHandler.getTank().getGas(), ": " + infoHandler.getTank().getStored());
     }
 
     @Override

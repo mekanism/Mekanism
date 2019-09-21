@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -51,7 +52,7 @@ public final class GasUtils {
         return CapabilityUtils.getCapabilityHelper(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
-    public static void clearIfInvalid(GasTank tank, Predicate<Gas> isValid) {
+    public static void clearIfInvalid(GasTank tank, Predicate<@NonNull Gas> isValid) {
         if (MekanismConfig.general.voidInvalidGases.get()) {
             Gas gas = tank.getGasType();
             if (gas != MekanismAPI.EMPTY_GAS && !isValid.test(gas)) {

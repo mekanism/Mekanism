@@ -3,11 +3,11 @@ package mekanism.api.recipes.cache;
 import java.util.Random;
 import java.util.function.IntSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -66,9 +67,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
                 IGasItem item = (IGasItem) itemStack.getItem();
                 GasStack gasStack = item.getGas(itemStack);
                 //Check to make sure it can provide the gas it contains
-                if (gasStack != null && item.canProvideGas(itemStack, gasStack.getGas())) {
+                if (!gasStack.isEmpty() && item.canProvideGas(itemStack, gasStack.getGas())) {
                     Gas gas = gasStack.getGas();
-                    if (gas != null && injectTank.canReceive(gas) && isValidGas(gas)) {
+                    if (injectTank.canReceive(gas) && isValidGas(gas)) {
                         injectTank.receive(GasUtils.removeGas(itemStack, gas, injectTank.getNeeded()), true);
                     }
                 }
@@ -96,7 +97,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 2) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, null);
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, MekanismAPI.EMPTY_GAS);
         }
         return false;
     }
@@ -152,10 +153,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
               .setOnFinish(this::markDirty);
     }
 
-    public void minorOperate() {
-        injectTank.draw(injectUsageThisTick, true);
-    }
-
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
@@ -209,7 +206,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         return side == getLeftSide() && injectTank.canReceive(type) && isValidGas(type);
     }
 
-    private boolean isValidGas(Gas gas) {
+    private boolean isValidGas(@Nonnull Gas gas) {
         return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
     }
 
@@ -253,10 +250,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (injectTank.getGas() != null) {
+        if (!injectTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "injectTank", injectTank.getGas().write(new CompoundNBT()));
         }
-        if (outputTank.getGas() != null) {
+        if (!outputTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new CompoundNBT()));
         }
     }

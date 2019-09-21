@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -269,10 +270,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        if (canDrawGas(side, null)) {
+        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
             return outputGasTank.draw(amount, doTransfer);
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override
@@ -316,10 +317,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         if (!inputFluidTank.getFluid().isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputFluidTank", inputFluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
-        if (inputGasTank.getGas() != null) {
+        if (!inputGasTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputGasTank", inputGasTank.getGas().write(new CompoundNBT()));
         }
-        if (outputGasTank.getGas() != null) {
+        if (!outputGasTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "outputGasTank", outputGasTank.getGas().write(new CompoundNBT()));
         }
     }

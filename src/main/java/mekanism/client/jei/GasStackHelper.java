@@ -2,6 +2,7 @@ package mekanism.client.jei;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
@@ -11,15 +12,15 @@ import mezz.jei.api.ingredients.IIngredientHelper;
 
 public class GasStackHelper implements IIngredientHelper<GasStack> {
 
+    @Nonnull
     @Override
-    @Nullable
     public GasStack getMatch(Iterable<GasStack> ingredients, GasStack toMatch) {
         for (GasStack stack : ingredients) {
             if (toMatch.getGas() == stack.getGas()) {
                 return stack;
             }
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override

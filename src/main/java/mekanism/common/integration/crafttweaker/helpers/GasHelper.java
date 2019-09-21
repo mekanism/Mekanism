@@ -28,10 +28,7 @@ public class GasHelper {
 
     @Nonnull
     public static GasStack toGas(IGasStack iStack) {
-        if (iStack == null) {
-            return GasStack.EMPTY;
-        }
-        return iStack.getInternal();
+        return iStack == null ? GasStack.EMPTY : iStack.getInternal();
     }
 
     @Nullable

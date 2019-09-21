@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -159,7 +160,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return getTooltipComponents(recipe, mouseX, mouseY).stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
     }
 
-    protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<GasStack> stacks, boolean overlay) {
+    protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<GasStack> stacks, boolean overlay) {
         if (stacks.isEmpty()) {
             return;
         }
@@ -172,8 +173,8 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Deprecated
-    protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nullable GasStack stack, boolean overlay) {
-        if (stack == null) {
+    protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull GasStack stack, boolean overlay) {
+        if (stack.isEmpty()) {
             return;
         }
         IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;

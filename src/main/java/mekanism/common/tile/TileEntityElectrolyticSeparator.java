@@ -218,13 +218,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         } else if (slotID == 1) {
             if (itemstack.getItem() instanceof IGasItem) {
                 GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return gasStack == null || gasStack.getGas().isIn(MekanismTags.HYDROGEN);
+                return gasStack.isEmpty() || gasStack.getGas().isIn(MekanismTags.HYDROGEN);
             }
             return false;
         } else if (slotID == 2) {
             if (itemstack.getItem() instanceof IGasItem) {
                 GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return gasStack == null || gasStack.getGas().isIn(MekanismTags.OXYGEN);
+                return gasStack.isEmpty() || gasStack.getGas().isIn(MekanismTags.OXYGEN);
             }
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
@@ -343,10 +343,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (!fluidTank.getFluid().isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
-        if (leftTank.getGas() != null) {
+        if (!leftTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getGas().write(new CompoundNBT()));
         }
-        if (rightTank.getGas() != null) {
+        if (!rightTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getGas().write(new CompoundNBT()));
         }
     }
@@ -397,7 +397,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         } else if (side == getRightSide()) {
             return rightTank.draw(amount, doTransfer);
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override
@@ -408,9 +408,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         if (side == getLeftSide()) {
-            return leftTank.getGas() != null && leftTank.getGas().getGas() == type;
+            return !leftTank.isEmpty() && leftTank.getGas().getGas() == type;
         } else if (side == getRightSide()) {
-            return rightTank.getGas() != null && rightTank.getGas().getGas() == type;
+            return !rightTank.isEmpty() && rightTank.getGas().getGas() == type;
         }
         return false;
     }

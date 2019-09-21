@@ -1,13 +1,15 @@
 package mekanism.common.integration.crafttweaker.gas;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 
 public class CraftTweakerGasDefinition implements IGasDefinition {
 
+    @Nonnull
     private final Gas gas;
 
-    public CraftTweakerGasDefinition(Gas gas) {
+    public CraftTweakerGasDefinition(@Nonnull Gas gas) {
         this.gas = gas;
     }
 

@@ -3,11 +3,11 @@ package mekanism.api.recipes;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraft.item.ItemStack;
 
 /**

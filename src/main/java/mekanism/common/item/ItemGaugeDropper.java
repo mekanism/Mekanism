@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -57,7 +58,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking() && !world.isRemote) {
-            setGas(stack, null);
+            setGas(stack, GasStack.EMPTY);
             FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(CAPACITY, FluidAction.EXECUTE));
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -88,7 +89,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
+        GasStack gasInItem = getGas(itemstack);
+        if (!gasInItem.isEmpty() && gasInItem.getGas() != stack.getGas()) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
@@ -99,10 +101,11 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @Nonnull
     @Override
     public GasStack removeGas(@Nonnull ItemStack itemstack, int amount) {
-        if (getGas(itemstack) == null) {
-            return null;
+        GasStack gasInItem = getGas(itemstack);
+        if (gasInItem.isEmpty()) {
+            return GasStack.EMPTY;
         }
-        Gas type = getGas(itemstack).getGas();
+        Gas type = gasInItem.getGas();
         int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
         setGas(itemstack, new GasStack(type, getStored(itemstack) - gasToUse));
         return new GasStack(type, gasToUse);
@@ -119,7 +122,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     @Override
     public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
-        return getGas(itemstack) != null && (type == null || getGas(itemstack).getGas() == type);
+        GasStack gasInItem = getGas(itemstack);
+        return !gasInItem.isEmpty() && (type == MekanismAPI.EMPTY_GAS || gasInItem.getGas() == type);
     }
 
     private GasStack getGas_do(ItemStack itemstack) {
