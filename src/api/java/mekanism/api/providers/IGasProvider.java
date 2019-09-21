@@ -13,12 +13,6 @@ public interface IGasProvider extends IBaseProvider {
     Gas getGas();
 
     @Nonnull
-    default GasStack getGasStack() {
-        //TODO: Should this default to 1000? or maybe this method should not exist at all
-        return getGasStack(1);
-    }
-
-    @Nonnull
     default GasStack getGasStack(int size) {
         return new GasStack(getGas(), size);
     }

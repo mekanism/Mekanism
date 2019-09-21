@@ -192,7 +192,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismGases.OXYGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, MekanismGases.OXYGEN.getGasStack(((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

@@ -136,7 +136,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                 if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
                     toSave += remain;
                 }
-                return new GasStack(transmitterNetwork.buffer.getGas(), toSave);
+                return new GasStack(transmitterNetwork.buffer, toSave);
             }
         }
         return GasStack.EMPTY;

@@ -89,7 +89,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
             ItemDataUtils.removeData(itemstack, "stored");
         } else {
             int amount = Math.max(0, Math.min(stack.getAmount(), getMaxGas(itemstack)));
-            GasStack gasStack = new GasStack(stack.getGas(), amount);
+            GasStack gasStack = new GasStack(stack, amount);
             ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new CompoundNBT()));
         }
     }
@@ -137,7 +137,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
             return 0;
         }
         if (getTier(itemstack) == GasTankTier.CREATIVE) {
-            setGas(itemstack, new GasStack(stack.getGas(), Integer.MAX_VALUE));
+            setGas(itemstack, new GasStack(stack, Integer.MAX_VALUE));
             return stack.getAmount();
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));

@@ -140,9 +140,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     private void handleTank(GasTank tank, GasMode mode, Direction side, int dumpAmount) {
-        if (tank.getGas() != null) {
+        if (!tank.isEmpty()) {
             if (mode != GasMode.DUMPING) {
-                GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), output));
+                GasStack toSend = new GasStack(tank.getGas(), Math.min(tank.getStored(), output));
                 tank.draw(GasUtils.emit(toSend, this, EnumSet.of(side)), true);
             } else {
                 tank.draw(dumpAmount, true);

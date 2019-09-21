@@ -92,7 +92,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
-        setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
+        setGas(itemstack, new GasStack(stack, getStored(itemstack) + toUse));
         return toUse;
     }
 
@@ -138,7 +138,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
             ItemDataUtils.removeData(itemstack, "gasStack");
         } else {
             int amount = Math.max(0, Math.min(stack.getAmount(), getMaxGas(itemstack)));
-            GasStack gasStack = new GasStack(stack.getGas(), amount);
+            GasStack gasStack = new GasStack(stack, amount);
             ItemDataUtils.setCompound(itemstack, "gasStack", gasStack.write(new CompoundNBT()));
         }
     }

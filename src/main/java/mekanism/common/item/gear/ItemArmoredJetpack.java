@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
@@ -43,7 +42,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismGases.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, MekanismGases.HYDROGEN.getGasStack(((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

@@ -140,7 +140,7 @@ public class FusionReactor {
         amountToInject -= amountToInject % 2;
         getDeuteriumTank().draw(amountToInject / 2, true);
         getTritiumTank().draw(amountToInject / 2, true);
-        getFuelTank().receive(new GasStack(MekanismGases.FUSION_FUEL, amountToInject), true);
+        getFuelTank().receive(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), true);
     }
 
     public int burnFuel() {

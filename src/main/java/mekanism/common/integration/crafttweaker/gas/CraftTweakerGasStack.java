@@ -41,7 +41,7 @@ public class CraftTweakerGasStack implements IGasStack {
 
     @Override
     public IGasStack withAmount(int amount) {
-        return new CraftTweakerGasStack(new GasStack(stack.getGas(), amount));
+        return new CraftTweakerGasStack(new GasStack(stack, amount));
     }
 
     @Override

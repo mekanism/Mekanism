@@ -138,7 +138,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismGases.HYDROGEN, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, MekanismGases.HYDROGEN.getGasStack(((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 

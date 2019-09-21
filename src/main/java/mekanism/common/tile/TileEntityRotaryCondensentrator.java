@@ -109,10 +109,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     double prev = getEnergy();
 
                     setActive(true);
-                    gasTank.receive(new GasStack(MekanismAPI.GAS_REGISTRY.getValue(fluidTank.getFluid().getFluid().getRegistryName()), operations), true);
-                    fluidTank.drain(operations, FluidAction.EXECUTE);
-                    setEnergy(getEnergy() - getEnergyPerTick() * operations);
-                    clientEnergyUsed = prev - getEnergy();
+                    //TODO: Recipe system instead of this
+                    Gas value = MekanismAPI.GAS_REGISTRY.getValue(fluidTank.getFluid().getFluid().getRegistryName());
+                    if (value != null) {
+                        gasTank.receive(new GasStack(value, operations), true);
+                        fluidTank.drain(operations, FluidAction.EXECUTE);
+                        setEnergy(getEnergy() - getEnergyPerTick() * operations);
+                        clientEnergyUsed = prev - getEnergy();
+                    }
                 } else {
                     setActive(false);
                 }

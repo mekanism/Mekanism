@@ -13,7 +13,7 @@ public class GasHandlerTarget extends Target<IGasHandler, Integer, GasStack> {
 
     @Override
     protected void acceptAmount(Direction side, SplitInfo<Integer> splitInfo, Integer amount) {
-        splitInfo.send(handlers.get(side).receiveGas(side, new GasStack(extra.getGas(), amount), true));
+        splitInfo.send(handlers.get(side).receiveGas(side, new GasStack(extra, amount), true));
     }
 
     @Override

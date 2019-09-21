@@ -64,14 +64,15 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
 
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (!getGas(itemstack).isEmpty() && getGas(itemstack).getGas() != stack.getGas()) {
+        GasStack gasInItem = getGas(itemstack);
+        if (!gasInItem.isEmpty() && !gasInItem.isGasEqual(stack)) {
             return 0;
         }
         if (!stack.getGas().isIn(MekanismTags.FUSION_FUEL)) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
-        setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
+        setGas(itemstack, new GasStack(stack, getStored(itemstack) + toUse));
         return toUse;
     }
 
@@ -134,7 +135,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
             return;
         }
         ItemStack filled = new ItemStack(this);
-        setGas(filled, new GasStack(MekanismGases.FUSION_FUEL, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        setGas(filled, MekanismGases.FUSION_FUEL.getGasStack(((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
     }
 }

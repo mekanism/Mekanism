@@ -148,7 +148,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override

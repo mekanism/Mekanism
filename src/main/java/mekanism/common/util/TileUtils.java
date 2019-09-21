@@ -79,7 +79,7 @@ public class TileUtils {
 
     public static void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, Direction facing) {
         if (!tank.isEmpty()) {
-            GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), gasOutput));
+            GasStack toSend = new GasStack(tank.getGas(), Math.min(tank.getStored(), gasOutput));
             tank.draw(GasUtils.emit(toSend, tile, EnumSet.of(facing)), true);
         }
     }

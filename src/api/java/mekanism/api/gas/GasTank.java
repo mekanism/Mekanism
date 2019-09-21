@@ -13,8 +13,7 @@ import net.minecraft.nbt.CompoundNBT;
 public class GasTank implements GasTankInfo {
 
     @Nonnull
-    public GasStack stored = GasStack.EMPTY;
-
+    private GasStack stored = GasStack.EMPTY;
     private int maxGas;
 
     private GasTank() {
@@ -61,7 +60,7 @@ public class GasTank implements GasTankInfo {
             return GasStack.EMPTY;
         }
 
-        GasStack ret = new GasStack(stored.getGas(), Math.min(getStored(), amount));
+        GasStack ret = new GasStack(stored, Math.min(getStored(), amount));
         if (!ret.isEmpty() && doDraw) {
             stored.shrink(ret.getAmount());
         }
@@ -153,8 +152,9 @@ public class GasTank implements GasTankInfo {
     /**
      * Gets the GasStack held by this GasTank.
      *
-     * @return - GasStakc held by this tank
+     * @return - GasStack held by this tank
      */
+    //TODO: Should we make sure this is not a valid entry point for modifying the tank's contents? (Just to ensure that the max gas gets obeyed)
     @Nonnull
     @Override
     public GasStack getGas() {

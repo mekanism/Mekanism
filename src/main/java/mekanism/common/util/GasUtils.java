@@ -135,16 +135,16 @@ public final class GasUtils {
     }
 
     public static void writeSustainedData(GasTank gasTank, ItemStack itemStack) {
-        if (!gasTank.stored.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.stored.write(new CompoundNBT()));
+        if (!gasTank.isEmpty()) {
+            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.getGas().write(new CompoundNBT()));
         }
     }
 
     public static void readSustainedData(GasTank gasTank, ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, "gasStored")) {
-            gasTank.stored = GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored"));
+            gasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored")));
         } else {
-            gasTank.stored = GasStack.EMPTY;
+            gasTank.setGas(GasStack.EMPTY);
         }
     }
 }
