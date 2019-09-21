@@ -3,9 +3,8 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.gas.Gas;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -16,9 +15,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.common.recipe.machines.PurificationRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -32,24 +29,17 @@ public class Purification {
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ItemStack output = IngredientHelper.getItemStack(itemOutput);
-            List<PurificationRecipe> recipes = new ArrayList<>();
-            for (IItemStack stack : ingredientInput.getItems()) {
-                recipes.add(new PurificationRecipe(stack.getInternal(), output));
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasStackIngredient.from(MekanismTags.OXYGEN, 1), output)));
         }
     }
 
     @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
-            Gas gas = GasHelper.toGas(gasInput).getGas();
-            ItemStackOutput output = new ItemStackOutput(IngredientHelper.getItemStack(itemOutput));
-            List<PurificationRecipe> recipes = new ArrayList<>();
-            for (IItemStack stack : ingredientInput.getItems()) {
-                recipes.add(new PurificationRecipe(new AdvancedMachineInput(stack.getInternal(), gas), output));
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER, recipes));
+            ItemStack output = IngredientHelper.getItemStack(itemOutput);
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasStackIngredient(gasInput), output)));
         }
     }
 

@@ -17,16 +17,14 @@ import net.minecraftforge.fluids.FluidStack;
 //TODO: Allow for empty fluid stacks (at least in 1.14 with FluidStack.EMPTY)
 public abstract class FluidStackIngredient implements InputIngredient<@NonNull FluidStack> {
 
-    public static FluidStackIngredient from(@NonNull Fluid instance, int minAmount) {
-        return from(new FluidStack(instance, minAmount));
+    public static FluidStackIngredient from(@NonNull Fluid instance, int amount) {
+        return from(new FluidStack(instance, amount));
     }
 
     public static FluidStackIngredient from(@NonNull FluidStack instance) {
         return new Instance(instance);
     }
 
-    //TODO: Should we also accept a resource location for this.
-    // Would it be clear the resourcelocation is for the tag and not registry name of the fluid
     public static FluidStackIngredient from(@NonNull Tag<Fluid> fluidTag, int minAmount) {
         return new Tagged(fluidTag, minAmount);
     }

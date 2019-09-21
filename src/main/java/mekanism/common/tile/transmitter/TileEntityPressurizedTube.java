@@ -35,7 +35,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     public GasTank buffer;
 
-    public GasStack lastWrite;
+    @Nonnull
+    public GasStack lastWrite = GasStack.EMPTY;
 
     //Read only handler for support with TOP and getting network data instead of this tube's data
     private IGasHandler nullHandler = new IGasHandler() {
@@ -118,32 +119,37 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public void updateShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
             GasStack last = getSaveShare();
-            if ((last != null && !(lastWrite != null && lastWrite.getAmount() == last.getAmount() && lastWrite.getGas() == last.getGas())) || (last == null && lastWrite != null)) {
+            if ((!last.isEmpty() && !(!lastWrite.isEmpty() && lastWrite.getAmount() == last.getAmount() && lastWrite.getGas() == last.getGas())) || (last.isEmpty() && !lastWrite.isEmpty())) {
                 lastWrite = last;
                 markDirty();
             }
         }
     }
 
+    @Nonnull
     private GasStack getSaveShare() {
-        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null) {
-            int remain = getTransmitter().getTransmitterNetwork().buffer.amount % getTransmitter().getTransmitterNetwork().transmittersSize();
-            int toSave = getTransmitter().getTransmitterNetwork().buffer.amount / getTransmitter().getTransmitterNetwork().transmittersSize();
-            if (getTransmitter().getTransmitterNetwork().firstTransmitter().equals(getTransmitter())) {
-                toSave += remain;
+        if (getTransmitter().hasTransmitterNetwork()) {
+            GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
+            if (!transmitterNetwork.buffer.isEmpty()) {
+                int remain = transmitterNetwork.buffer.getAmount() % transmitterNetwork.transmittersSize();
+                int toSave = transmitterNetwork.buffer.getAmount() / transmitterNetwork.transmittersSize();
+                if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
+                    toSave += remain;
+                }
+                return new GasStack(transmitterNetwork.buffer.getGas(), toSave);
             }
-            return new GasStack(getTransmitter().getTransmitterNetwork().buffer.getGas(), toSave);
         }
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override
     public void onChunkUnloaded() {
         if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork()) {
-            if (lastWrite != null && getTransmitter().getTransmitterNetwork().buffer != null) {
-                getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
-                if (getTransmitter().getTransmitterNetwork().buffer.getAmount() <= 0) {
-                    getTransmitter().getTransmitterNetwork().buffer = null;
+            GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
+            if (!transmitterNetwork.buffer.isEmpty() && !lastWrite.isEmpty()) {
+                transmitterNetwork.buffer.shrink(lastWrite.getAmount());
+                if (transmitterNetwork.buffer.getAmount() <= 0) {
+                    transmitterNetwork.buffer = GasStack.EMPTY;
                 }
             }
         }
@@ -160,7 +166,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (nbtTags.contains("cacheGas")) {
             buffer.setGas(GasStack.readFromNBT(nbtTags.getCompound("cacheGas")));
         } else {
-            buffer.setGas(null);
+            buffer.setGas(GasStack.EMPTY);
         }
     }
 
@@ -168,7 +174,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (lastWrite != null && lastWrite.amount > 0) {
+        if (!lastWrite.isEmpty()) {
             nbtTags.put("cacheGas", lastWrite.write(new CompoundNBT()));
         } else {
             nbtTags.remove("cacheGas");
@@ -225,21 +231,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         return tier.getTubeCapacity();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public GasStack getBuffer() {
         if (buffer == null) {
-            return null;
+            return GasStack.EMPTY;
         }
-        GasStack gas = buffer.getGas();
-        return gas == null || gas.amount == 0 ? null : gas;
+        return buffer.getGas();
     }
 
     @Override
     public void takeShare() {
-        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null && lastWrite != null) {
-            getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
-            buffer.setGas(lastWrite);
+        if (getTransmitter().hasTransmitterNetwork()) {
+            GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
+            if (!transmitterNetwork.buffer.isEmpty() && !lastWrite.isEmpty()) {
+                transmitterNetwork.buffer.shrink(lastWrite.getAmount());
+                buffer.setGas(lastWrite);
+            }
         }
     }
 
@@ -254,7 +262,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return null;
+        return GasStack.EMPTY;
     }
 
     @Override

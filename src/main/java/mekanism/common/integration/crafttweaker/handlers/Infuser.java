@@ -4,10 +4,10 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.infuse.InfuseType;
+import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -16,9 +16,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.InfusionInput;
-import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -37,12 +34,8 @@ public class Infuser {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             //TODO: Use bracket handler instead of string for infuseType
             InfuseType type = MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(new ResourceLocation(infuseType));
-            ItemStackOutput output = new ItemStackOutput(IngredientHelper.getItemStack(itemOutput));
-            List<MetallurgicInfuserRecipe> recipes = new ArrayList<>();
-            for (IItemStack stack : ingredientInput.getItems()) {
-                recipes.add(new MetallurgicInfuserRecipe(new InfusionInput(type, infuseAmount, stack.getInternal()), output));
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new MetallurgicInfuserRecipe(
+                  IngredientHelper.toIngredient(ingredientInput), InfusionIngredient.from(type, infuseAmount), IngredientHelper.getItemStack(itemOutput))));
         }
     }
 

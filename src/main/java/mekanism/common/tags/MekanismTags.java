@@ -9,9 +9,51 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
 //TODO: Put Tag Wrappers used throughout in this class
+//TODO: Should this be moved to the API package, Especially if the tag files don't need to exist for these to be valid
 public class MekanismTags {
 
-    public static final Tag<Item> GOLD_DUST = new ItemTags.Wrapper(new ResourceLocation("forge", "dusts/gold"));
+    public static final Tag<Item> DUSTS_COPPER = makeForgeItemTag("dusts/copper");
+    public static final Tag<Item> DUSTS_DIAMOND = makeForgeItemTag("dusts/diamond");
+    public static final Tag<Item> DUSTS_GOLD = makeForgeItemTag("dusts/gold");
+    public static final Tag<Item> DUSTS_IRON = makeForgeItemTag("dusts/iron");
+    public static final Tag<Item> DUSTS_LEAD = makeForgeItemTag("dusts/lead");
+    public static final Tag<Item> DUSTS_LITHIUM = makeForgeItemTag("dusts/lithium");
+    public static final Tag<Item> DUSTS_OBSIDIAN = makeForgeItemTag("dusts/obsidian");
+    public static final Tag<Item> DUSTS_OSMIUM = makeForgeItemTag("dusts/osmium");
+    public static final Tag<Item> DUSTS_REFINED_OBSIDIAN = makeForgeItemTag("dusts/refined_obsidian");
+    public static final Tag<Item> DUSTS_SALT = makeForgeItemTag("dusts/salt");
+    public static final Tag<Item> DUSTS_SILVER = makeForgeItemTag("dusts/silver");
+    public static final Tag<Item> DUSTS_STEEL = makeForgeItemTag("dusts/steel");
+    public static final Tag<Item> DUSTS_SULFUR = makeForgeItemTag("dusts/sulfur");
+    public static final Tag<Item> DUSTS_TIN = makeForgeItemTag("dusts/tin");
+    public static final Tag<Item> DUSTS_WOOD = makeForgeItemTag("dusts/wood");
+
+    public static final Tag<Item> INGOTS_BRONZE = makeForgeItemTag("ingots/bronze");
+    public static final Tag<Item> INGOTS_COPPER = makeForgeItemTag("ingots/copper");
+    public static final Tag<Item> INGOTS_OSMIUM = makeForgeItemTag("ingots/osmium");
+    public static final Tag<Item> INGOTS_REFINED_GLOWSTONE = makeForgeItemTag("ingots/refined_glowstone");
+    public static final Tag<Item> INGOTS_REFINED_OBSIDIAN = makeForgeItemTag("ingots/refined_obsidian");
+    public static final Tag<Item> INGOTS_STEEL = makeForgeItemTag("ingots/steel");
+    public static final Tag<Item> INGOTS_TIN = makeForgeItemTag("ingots/tin");
+
+    //TODO: Data generators
+    public static final Tag<Item> ALLOYS_BASIC = makeItemTag("alloys/basic");
+    public static final Tag<Item> ALLOYS_INFUSED = makeItemTag("alloys/infused");
+    public static final Tag<Item> ALLOYS_REINFORCED = makeItemTag("alloys/reinforced");
+    public static final Tag<Item> ALLOYS_ATOMIC = makeItemTag("alloys/atomic");
+
+    public static final Tag<Item> ENRICHED_CARBON = makeItemTag("enriched/carbon");
+    public static final Tag<Item> ENRICHED_DIAMOND = makeItemTag("enriched/diamond");
+    public static final Tag<Item> ENRICHED_OBSIDIAN = makeItemTag("enriched/obsidian");
+    public static final Tag<Item> ENRICHED_REDSTONE = makeItemTag("enriched/redstone");
+
+    private static Tag<Item> makeForgeItemTag(String name) {
+        return new ItemTags.Wrapper(new ResourceLocation("forge", name));
+    }
+
+    private static Tag<Item> makeItemTag(String name) {
+        return new ItemTags.Wrapper(new ResourceLocation(Mekanism.MODID, name));
+    }
 
     //TODO: Decide if we should not actually have a tag for each gas type
     public static final Tag<Gas> BRINE = makeGasTag("brine");

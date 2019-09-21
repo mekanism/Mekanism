@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
@@ -31,7 +31,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismGases;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -90,7 +90,7 @@ public final class RecipeHandler {
      * @param output - output ItemStack
      */
     public static void addPurificationChamberRecipe(ItemStackIngredient input, ItemStack output) {
-        Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, GasStackIngredient.from(MekanismGases.OXYGEN, 1), output));
+        Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, GasStackIngredient.from(MekanismTags.OXYGEN, 1), output));
     }
 
     /**
@@ -122,8 +122,8 @@ public final class RecipeHandler {
      * @param outputGas    - output Gas
      * @param outputAmount - amount of gas output
      */
-    public static void addChemicalOxidizerRecipe(ItemStackIngredient input, Gas outputGas, int outputAmount) {
-        Recipe.CHEMICAL_OXIDIZER.put(new ItemStackToGasRecipe(input, outputGas, outputAmount));
+    public static void addChemicalOxidizerRecipe(ItemStackIngredient input, IGasProvider outputGas, int outputAmount) {
+        Recipe.CHEMICAL_OXIDIZER.put(new ItemStackToGasRecipe(input, outputGas.getGas(), outputAmount));
     }
 
     public static void addChemicalOxidizerRecipe(ItemStackIngredient input, GasStack output) {
@@ -179,8 +179,8 @@ public final class RecipeHandler {
      * @param input     - input ItemStack
      * @param outputGas - output GasStack
      */
-    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasStackIngredient inputGas, Gas outputGas, int outputAmount) {
-        Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, outputGas, outputAmount));
+    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasStackIngredient inputGas, IGasProvider outputGas, int outputAmount) {
+        Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, outputGas.getGas(), outputAmount));
     }
 
     public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasStackIngredient inputGas, GasStack output) {
@@ -219,9 +219,9 @@ public final class RecipeHandler {
      * @param extraEnergy     - extra energy needed by the recipe
      * @param ticks           - amount of ticks it takes for this recipe to complete
      */
-    public static void addPRCRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, ItemStack outputSolid, Gas outputGas,
+    public static void addPRCRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, ItemStack outputSolid, IGasProvider outputGas,
           int gasOutputAmount, double extraEnergy, int ticks) {
-        Recipe.PRESSURIZED_REACTION_CHAMBER.put(new PressurizedReactionRecipe(inputSolid, inputFluid, inputGas, outputGas, gasOutputAmount, extraEnergy, ticks, outputSolid));
+        Recipe.PRESSURIZED_REACTION_CHAMBER.put(new PressurizedReactionRecipe(inputSolid, inputFluid, inputGas, outputGas.getGas(), gasOutputAmount, extraEnergy, ticks, outputSolid));
     }
 
     public static void addPRCRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, ItemStack outputSolid, GasStack outputGas,

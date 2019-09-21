@@ -4,6 +4,8 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -52,8 +54,8 @@ public final class GasUtils {
     public static void clearIfInvalid(GasTank tank, Predicate<Gas> isValid) {
         if (MekanismConfig.general.voidInvalidGases.get()) {
             Gas gas = tank.getGasType();
-            if (gas != null && !isValid.test(gas)) {
-                tank.setGas(null);
+            if (gas != MekanismAPI.EMPTY_GAS && !isValid.test(gas)) {
+                tank.setGas(GasStack.EMPTY);
             }
         }
     }
@@ -67,10 +69,10 @@ public final class GasUtils {
      *
      * @return the GasStack removed by the IGasItem
      */
-    public static GasStack removeGas(ItemStack itemStack, Gas type, int amount) {
+    public static GasStack removeGas(@Nonnull ItemStack itemStack, @Nonnull Gas type, int amount) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
-            if (type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type)) {
+            if (type != MekanismAPI.EMPTY_GAS && !item.getGas(itemStack).isEmpty() && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type)) {
                 return GasStack.EMPTY;
             }
             return item.removeGas(itemStack, amount);
@@ -86,7 +88,7 @@ public final class GasUtils {
      *
      * @return amount of gas accepted by the IGasItem
      */
-    public static int addGas(ItemStack itemStack, GasStack stack) {
+    public static int addGas(@Nonnull ItemStack itemStack, @Nonnull GasStack stack) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem()).canReceiveGas(itemStack, stack.getGas())) {
             return ((IGasItem) itemStack.getItem()).addGas(itemStack, stack.copy());
         }
@@ -102,8 +104,8 @@ public final class GasUtils {
      *
      * @return the amount of gas emitted
      */
-    public static int emit(GasStack stack, TileEntity from, Set<Direction> sides) {
-        if (stack == null || stack.amount == 0) {
+    public static int emit(@Nonnull GasStack stack, TileEntity from, Set<Direction> sides) {
+        if (stack.isEmpty()) {
             return 0;
         }
 
@@ -127,13 +129,13 @@ public final class GasUtils {
         if (curHandlers > 0) {
             Set<GasHandlerTarget> targets = new HashSet<>();
             targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.amount, stack);
+            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack);
         }
         return 0;
     }
 
     public static void writeSustainedData(GasTank gasTank, ItemStack itemStack) {
-        if (gasTank.stored != null && gasTank.stored.getGas() != null) {
+        if (!gasTank.stored.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.stored.write(new CompoundNBT()));
         }
     }
@@ -142,7 +144,7 @@ public final class GasUtils {
         if (ItemDataUtils.hasData(itemStack, "gasStored")) {
             gasTank.stored = GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored"));
         } else {
-            gasTank.stored = null;
+            gasTank.stored = GasStack.EMPTY;
         }
     }
 }

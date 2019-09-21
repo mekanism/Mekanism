@@ -3,6 +3,7 @@ package mekanism.additions.common;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.voice.VoiceServerManager;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.Version;
@@ -64,22 +65,22 @@ public class MekanismAdditions implements IModule {
     private void commonSetup(FMLCommonSetupEvent event) {
         if (MekanismBlock.ENRICHMENT_CHAMBER.isEnabled()) {
             //Plastic to Slick Plastic
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.BLACK_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.BLACK_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.RED_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.RED_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.GREEN_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.GREEN_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.BROWN_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.BROWN_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.BLUE_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.PURPLE_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.PURPLE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.CYAN_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.CYAN_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.LIGHT_GRAY_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.GRAY_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.PINK_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.PINK_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.LIME_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.LIME_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.YELLOW_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.YELLOW_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.LIGHT_BLUE_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.MAGENTA_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.MAGENTA_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.ORANGE_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.ORANGE_SLICK_PLASTIC_BLOCK.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(AdditionsBlock.WHITE_PLASTIC_BLOCK.getItemStack(), AdditionsBlock.WHITE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.BLACK_PLASTIC_BLOCK), AdditionsBlock.BLACK_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.RED_PLASTIC_BLOCK), AdditionsBlock.RED_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.GREEN_PLASTIC_BLOCK), AdditionsBlock.GREEN_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.BROWN_PLASTIC_BLOCK), AdditionsBlock.BROWN_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.BLUE_PLASTIC_BLOCK), AdditionsBlock.BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.PURPLE_PLASTIC_BLOCK), AdditionsBlock.PURPLE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.CYAN_PLASTIC_BLOCK), AdditionsBlock.CYAN_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.LIGHT_GRAY_PLASTIC_BLOCK), AdditionsBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.GRAY_PLASTIC_BLOCK), AdditionsBlock.GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.PINK_PLASTIC_BLOCK), AdditionsBlock.PINK_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.LIME_PLASTIC_BLOCK), AdditionsBlock.LIME_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.YELLOW_PLASTIC_BLOCK), AdditionsBlock.YELLOW_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.LIGHT_BLUE_PLASTIC_BLOCK), AdditionsBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.MAGENTA_PLASTIC_BLOCK), AdditionsBlock.MAGENTA_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.ORANGE_PLASTIC_BLOCK), AdditionsBlock.ORANGE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(AdditionsBlock.WHITE_PLASTIC_BLOCK), AdditionsBlock.WHITE_SLICK_PLASTIC_BLOCK.getItemStack());
         }
 
         //Set up VoiceServerManager

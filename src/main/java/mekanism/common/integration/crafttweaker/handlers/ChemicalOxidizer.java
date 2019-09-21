@@ -2,10 +2,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IItemStack;
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -16,7 +13,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.OxidationRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -28,12 +24,8 @@ public class ChemicalOxidizer {
     @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasOutput)) {
-            GasStack output = GasHelper.toGas(gasOutput);
-            List<OxidationRecipe> recipes = new ArrayList<>();
-            for (IItemStack stack : ingredientInput.getItems()) {
-                recipes.add(new OxidationRecipe(stack.getInternal(), output));
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_OXIDIZER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_OXIDIZER,
+                  new ItemStackToGasRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGas(gasOutput))));
         }
     }
 

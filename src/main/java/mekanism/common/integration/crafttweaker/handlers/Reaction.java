@@ -3,9 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -16,11 +14,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.PressurizedInput;
-import mekanism.common.recipe.machines.PressurizedRecipe;
-import mekanism.common.recipe.outputs.PressurizedOutput;
 import mekanism.common.temporary.ILiquidStack;
-import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,14 +26,9 @@ public class Reaction {
     @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, ILiquidStack liquidInput, IGasStack gasInput, IItemStack itemOutput, IGasStack gasOutput, double energy, int duration) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, liquidInput, gasInput, itemOutput, gasOutput)) {
-            FluidStack fluidInput = IngredientHelper.toFluid(liquidInput);
-            GasStack gas = GasHelper.toGas(gasInput);
-            PressurizedOutput output = new PressurizedOutput(IngredientHelper.getItemStack(itemOutput), GasHelper.toGas(gasOutput));
-            List<PressurizedRecipe> recipes = new ArrayList<>();
-            for (IItemStack stack : ingredientInput.getItems()) {
-                recipes.add(new PressurizedRecipe(new PressurizedInput(stack.getInternal(), fluidInput, gas), output, energy, duration));
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
+                  new PressurizedReactionRecipe(IngredientHelper.toIngredient(ingredientInput), IngredientHelper.toIngredient(liquidInput),
+                        GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput), energy, duration, IngredientHelper.getItemStack(itemOutput))));
         }
     }
 

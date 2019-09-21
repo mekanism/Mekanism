@@ -46,7 +46,8 @@ public enum MekanismGases implements IGasProvider {
     DIRTY_SILVER_SLURRY(Resource.SILVER, CLEAN_SILVER_SLURRY),
     DIRTY_LEAD_SLURRY(Resource.LEAD, CLEAN_LEAD_SLURRY);
 
-    //TODO: Fix
+    //TODO: Fix, and move to a MekanismFluids class?
+    // Given I am thinking it may make sense to "separate" the direct pairing of gas and fluids
     public static final Fluid HEAVY_WATER = Fluids.WATER;//new Fluid("heavy_water", new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"), new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
 
     private final Gas gas;

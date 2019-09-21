@@ -124,7 +124,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
     @Nonnull
     protected FactoryType type;
 
-    public TileEntityFactory(IBlockProvider blockProvider) {
+    protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider, UPGRADE_SLOT_ID);
         BlockFactory factoryBlock = (BlockFactory) blockProvider.getBlock();
         this.tier = factoryBlock.getTier();

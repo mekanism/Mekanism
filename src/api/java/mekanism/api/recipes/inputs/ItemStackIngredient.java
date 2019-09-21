@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.providers.IItemProvider;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
 import net.minecraftforge.common.crafting.IngredientNBT;
 
 //TODO: Allow for empty item stacks?
@@ -25,7 +25,10 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
     public static ItemStackIngredient from(@NonNull ItemStack stack, int amount) {
         //Support NBT that is on the stack in case it matters
         //It is a protected constructor so pretend we are extending it and implementing it via the {}
-        return from(new IngredientNBT(stack) {}, amount);
+        // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
+        //TODO: Figure out if this note is correct on what we should do
+        Ingredient ingredient = stack.hasTag() ? new IngredientNBT(stack) {} : Ingredient.fromStacks(stack);
+        return from(ingredient, amount);
     }
 
     public static ItemStackIngredient from(@NonNull Block block) {
@@ -46,14 +49,22 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         return from(new ItemStack(item), amount);
     }
 
-    //TODO: Should we instead have it accept a Tag<Item> instead of a resource location
-    public static ItemStackIngredient from(@NonNull ResourceLocation tagLocation) {
-        return from(tagLocation, 1);
+    public static ItemStackIngredient from(@NonNull IItemProvider itemProvider) {
+        return from(itemProvider, 1);
+    }
+
+    public static ItemStackIngredient from(@NonNull IItemProvider itemProvider, int amount) {
+        return from(itemProvider.getItemStack(amount));
     }
 
     //TODO: Should we instead have it accept a Tag<Item> instead of a resource location
-    public static ItemStackIngredient from(@NonNull ResourceLocation tagLocation, int amount) {
-        return from(Ingredient.fromTag(new ItemTags.Wrapper(tagLocation)), amount);
+    public static ItemStackIngredient from(@NonNull Tag<Item> itemTag) {
+        return from(itemTag, 1);
+    }
+
+    //TODO: Should we instead have it accept a Tag<Item> instead of a resource location
+    public static ItemStackIngredient from(@NonNull Tag<Item> itemTag, int amount) {
+        return from(Ingredient.fromTag(itemTag), amount);
     }
 
     public static ItemStackIngredient from(@NonNull Ingredient ingredient) {

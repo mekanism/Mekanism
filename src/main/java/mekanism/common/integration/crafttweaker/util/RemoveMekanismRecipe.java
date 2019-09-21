@@ -1,19 +1,15 @@
 package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
+import mekanism.api.recipes.IMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.MachineOutput;
 
-public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
-      RecipeMapModification<INPUT, RECIPE> {
+public class RemoveMekanismRecipe<RECIPE extends IMekanismRecipe> extends RecipeMapModification<RECIPE> {
 
     private final IngredientWrapper input;
     private final IngredientWrapper output;
 
-    public RemoveMekanismRecipe(String name, Recipe<INPUT, OUTPUT, RECIPE> recipeType, IngredientWrapper output, IngredientWrapper input) {
+    public RemoveMekanismRecipe(String name, Recipe<RECIPE> recipeType, IngredientWrapper output, IngredientWrapper input) {
         super(name, false, recipeType);
         this.input = input;
         this.output = output;
@@ -22,11 +18,12 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
     @Override
     public void apply() {
         //Don't move this into the constructor so that if an addon registers recipes late, we can still remove them
-        map.forEach((key, value) -> {
+        //TODO: Fix removing
+        /*map.forEach((key, value) -> {
             if (IngredientHelper.matches(key, input) && IngredientHelper.matches(value.getOutput(), output)) {
                 recipes.put(key, value);
             }
-        });
+        });*/
         if (recipes.isEmpty()) {
             String warning = "";
             if (input.isEmpty()) {

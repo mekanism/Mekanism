@@ -4,7 +4,6 @@ import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.FactoryType;
 import mekanism.api.gas.GasStack;
-import mekanism.api.infuse.InfuseType;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -73,17 +72,16 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         } else if (xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83) {
             if (tileEntity.getFactoryType().isAdvancedMachine()) {
                 GasStack gasStack = tileEntity.gasTank.getGas();
-                if (gasStack != null) {
-                    displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
-                } else {
+                if (gasStack.isEmpty()) {
                     displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
+                } else {
+                    displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
                 }
             } else if (tileEntity.getFactoryType() == FactoryType.INFUSING) {
-                InfuseType type = tileEntity.infuseStored.getType();
-                if (type != null) {
-                    displayTooltip(TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
-                } else {
+                if (tileEntity.infuseStored.isEmpty()) {
                     displayTooltip(TextComponentUtil.translate("gui.mekanism.empty"), xAxis, yAxis);
+                } else {
+                    displayTooltip(TextComponentUtil.build(tileEntity.infuseStored.getType(), ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
                 }
             }
         }
@@ -107,7 +105,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         if (tileEntity.getFactoryType().isAdvancedMachine()) {
             if (tileEntity.getScaledGasLevel(160) > 0) {
                 GasStack gas = tileEntity.gasTank.getGas();
-                if (gas != null) {
+                if (!gas.isEmpty()) {
                     MekanismRenderer.color(gas);
                     displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, gas.getGas().getSprite());
                     MekanismRenderer.resetColor();

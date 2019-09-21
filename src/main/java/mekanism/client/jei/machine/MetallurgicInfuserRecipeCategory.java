@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseRegistry;
@@ -45,7 +43,13 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     }
 
     public static List<ItemStack> getInfuseStacks(InfuseType type) {
-        return InfuseRegistry.getObjectMap().entrySet().stream().filter(obj -> obj.getValue().getType() == type).map(Entry::getKey).collect(Collectors.toList());
+        List<ItemStack> list = new ArrayList<>();
+        InfuseRegistry.getObjectMap().forEach((key, value) -> {
+            if (value.isInfusionEqual(type)) {
+                list.addAll(key.getRepresentations());
+            }
+        });
+        return list;
     }
 
     public static List<ItemStack> getInfuseStacks(@NonNull List<InfusionStack> infuseObjects) {

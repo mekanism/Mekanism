@@ -3,8 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import java.util.ArrayList;
-import java.util.List;
+import mekanism.api.recipes.CombinerRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -13,10 +12,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.DoubleMachineInput;
-import mekanism.common.recipe.machines.CombinerRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
-import net.minecraft.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -28,16 +23,9 @@ public class Combiner {
     @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IIngredient ingredientExtra, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, ingredientExtra, itemOutput)) {
-            ItemStackOutput output = new ItemStackOutput(IngredientHelper.getItemStack(itemOutput));
-            List<CombinerRecipe> recipes = new ArrayList<>();
-            IItemStack[] extraInputs = ingredientExtra.getItems();
-            for (IItemStack crtStack : ingredientInput.getItems()) {
-                ItemStack stack = crtStack.getInternal();
-                for (IItemStack extra : extraInputs) {
-                    recipes.add(new CombinerRecipe(new DoubleMachineInput(stack, extra.getInternal()), output));
-                }
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.COMBINER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.COMBINER,
+                  new CombinerRecipe(IngredientHelper.toIngredient(ingredientInput), IngredientHelper.toIngredient(ingredientExtra),
+                        IngredientHelper.getItemStack(itemOutput))));
         }
     }
 

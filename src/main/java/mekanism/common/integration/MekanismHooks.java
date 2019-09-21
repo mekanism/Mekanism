@@ -99,13 +99,15 @@ public final class MekanismHooks {
     //TODO: IC2
     /*@Method(modid = MekanismHooks.IC2_MOD_ID)
     private void hookIC2Recipes() {
+        //TODO: Make a compound ingredient/Ingredient based on the set of things in the collection
         for (MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes()) {
-            if (!entry.getInput().getInputs().isEmpty()) {
-                if (!Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0))) {
-                    List<String> names = OreDictCache.getOreDictName(entry.getInput().getInputs().get(0));
+            List<ItemStack> inputs = entry.getInput().getInputs();
+            if (!inputs.isEmpty()) {
+                if (!Recipe.CRUSHER.contains(recipe -> recipe.getInput().testType(inputs.get(0)))) {
+                    List<String> names = OreDictCache.getOreDictName(inputs.get(0));
                     for (String name : names) {
                         if (name.startsWith("ingot") || name.startsWith("crystal")) {
-                            RecipeHandler.addCrusherRecipe(entry.getInput().getInputs().get(0), entry.getOutput().iterator().next());
+                            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(inputs.get(0)), entry.getOutput().iterator().next());
                             break;
                         }
                     }
@@ -159,16 +161,7 @@ public final class MekanismHooks {
     }*/
 
     //TODO: Cyclic
-    /*private void registerCyclicCombinerOreRecipe(String ore, int quantity, ItemStack extra, String outputName) {
-        Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
-        if (outputItem != null) {
-            for (ItemStack stack : OreDictionary.getOres(ore, false)) {
-                RecipeHandler.addCombinerRecipe(StackUtils.size(stack, quantity), extra, new ItemStack(outputItem));
-            }
-        }
-    }
-
-    private void registerCyclicCombinerRecipe(ItemStack input, ItemStack extra, String outputName) {
+    /*private void registerCyclicCombinerRecipe(ItemStackIngredient input, ItemStackIngredient extra, String outputName) {
         Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
         if (outputItem != null) {
             RecipeHandler.addCombinerRecipe(input, extra, new ItemStack(outputItem));
@@ -176,23 +169,23 @@ public final class MekanismHooks {
     }
 
     private void registerCyclicRecipes() {
-        ItemStack netherrack = new ItemStack(Blocks.NETHERRACK);
-        registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), netherrack, "nether_redstone_ore");
-        registerCyclicCombinerOreRecipe("dustIron", 8, netherrack, "nether_iron_ore");
-        registerCyclicCombinerOreRecipe("dustGold", 8, netherrack, "nether_gold_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), netherrack, "nether_coal_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.LAPIS_LAZULI, 5), netherrack, "nether_lapis_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), netherrack, "nether_emerald_ore");
-        registerCyclicCombinerOreRecipe("dustDiamond", 3, netherrack, "nether_diamond_ore");
+        ItemStackIngredient netherrack = ItemStackIngredient.from("netherrack");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustRedstone", 3), netherrack, "nether_redstone_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustIron", 8), netherrack, "nether_iron_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustGold", 8), netherrack, "nether_gold_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from(Items.COAL, 3), netherrack, "nether_coal_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("gemLapis", 5), netherrack, "nether_lapis_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("gemEmerald", 3), netherrack, "nether_emerald_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustDiamond", 3), netherrack, "nether_diamond_ore");
 
-        ItemStack end_stone = new ItemStack(Blocks.END_STONE);
-        registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), end_stone, "end_redstone_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), end_stone, "end_coal_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.LAPIS_LAZULI, 5), end_stone, "end_lapis_ore");
-        registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), end_stone, "end_emerald_ore");
-        registerCyclicCombinerOreRecipe("dustDiamond", 3, end_stone, "end_diamond_ore");
-        registerCyclicCombinerOreRecipe("dustGold", 8, end_stone, "end_gold_ore");
-        registerCyclicCombinerOreRecipe("dustIron", 8, end_stone, "end_iron_ore");
+        ItemStackIngredient end_stone = ItemStackIngredient.from("endstone");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustRedstone", 3), end_stone, "end_redstone_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from(Items.COAL, 3), end_stone, "end_coal_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("gemLapis", 5), end_stone, "end_lapis_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("gemEmerald", 3), end_stone, "end_emerald_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustDiamond", 3), end_stone, "end_diamond_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustGold", 8), end_stone, "end_gold_ore");
+        registerCyclicCombinerRecipe(ItemStackIngredient.from("dustIron", 8), end_stone, "end_iron_ore");
     }*/
 
     //TODO: AE2
@@ -228,70 +221,53 @@ public final class MekanismHooks {
             Optional<ItemStack> certusDust = materialsApi.certusQuartzDust().maybeStack(1);
             Optional<ItemStack> pureCertus = materialsApi.purifiedCertusQuartzCrystal().maybeStack(1);
             Optional<ItemStack> chargedCrystal = materialsApi.certusQuartzCrystalCharged().maybeStack(1);
-            Optional<ItemStack> fluixCrystal = materialsApi.fluixCrystal().maybeStack(1);
             Optional<ItemStack> pureFluix = materialsApi.purifiedFluixCrystal().maybeStack(1);
             Optional<ItemStack> fluixDust = materialsApi.fluixDust().maybeStack(1);
             Optional<ItemStack> certusOre = blocksApi.quartzOre().maybeStack(1);
-            Optional<ItemStack> chargedOre = blocksApi.quartzOreCharged().maybeStack(1);
             Optional<Item> crystalSeed = itemApi.crystalSeed().maybeItem();
             Optional<ItemStack> pureNether = materialsApi.purifiedNetherQuartzCrystal().maybeStack(1);
 
-            if (certusCrystal.isPresent() && certusDust.isPresent()) {
-                RecipeHandler.addCrusherRecipe(certusCrystal.get().copy(), certusDust.get().copy());
-            }
+            //TODO: Change as much of this as possible to using ore dict names
+            certusDust.ifPresent(stack -> RecipeHandler.addCrusherRecipe(ItemStackIngredient.from("crystalCertusQuartz"), stack.copy()));
 
             if (chargedCrystal.isPresent() && certusDust.isPresent()) {
-                RecipeHandler.addCrusherRecipe(chargedCrystal.get().copy(), certusDust.get().copy());
+                RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(chargedCrystal.get().copy()), certusDust.get().copy());
             }
 
-            if (fluixCrystal.isPresent() && fluixDust.isPresent()) {
-                RecipeHandler.addCrusherRecipe(fluixCrystal.get().copy(), fluixDust.get().copy());
-            }
+            fluixDust.ifPresent(stack -> RecipeHandler.addCrusherRecipe(ItemStackIngredient.from("crystalFluix"), stack.copy()));
 
             if (certusOre.isPresent() && certusCrystal.isPresent()) {
-                ItemStack crystalOut = certusCrystal.get().copy();
-                crystalOut.setCount(4);
-                RecipeHandler.addEnrichmentChamberRecipe(certusOre.get().copy(), crystalOut);
+                //cannot use oreCertusQuartz as charged certus ore is also in that entry
+                RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(certusOre.get().copy()), StackUtils.size(certusCrystal.get(), 4));
             }
 
-            if (chargedOre.isPresent() && chargedCrystal.isPresent()) {
-                ItemStack crystalOut = chargedCrystal.get().copy();
-                crystalOut.setCount(4);
-                RecipeHandler.addEnrichmentChamberRecipe(chargedOre.get().copy(), crystalOut);
-            }
+            chargedCrystal.ifPresent(stack -> RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("oreChargedCertusQuartz"), StackUtils.size(stack, 4)));
 
-            if (certusDust.isPresent() && pureCertus.isPresent()) {
-                ItemStack crystalOut = pureCertus.get().copy();
-                RecipeHandler.addEnrichmentChamberRecipe(certusDust.get().copy(), crystalOut);
-            }
+            pureCertus.ifPresent(stack -> {
+                RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("dustCertusQuartz"), stack.copy());
+                RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("crystalCertusQuartz"), stack.copy());
+            });
 
-            if (fluixDust.isPresent() && pureFluix.isPresent()) {
-                ItemStack crystalOut = pureFluix.get().copy();
-                RecipeHandler.addEnrichmentChamberRecipe(fluixDust.get().copy(), crystalOut);
-            }
-
-            if (fluixCrystal.isPresent() && pureFluix.isPresent()) {
-                RecipeHandler.addEnrichmentChamberRecipe(fluixCrystal.get().copy(), pureFluix.get().copy());
-            }
-
-            if (certusCrystal.isPresent() && pureCertus.isPresent()) {
-                RecipeHandler.addEnrichmentChamberRecipe(certusCrystal.get().copy(), pureCertus.get().copy());
-            }
+            pureFluix.ifPresent(stack -> {
+                RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("dustFluix"), stack.copy());
+                RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("crystalFluix"), stack.copy());
+            });
 
             if (crystalSeed.isPresent()) {
                 NonNullList<ItemStack> seeds = NonNullList.create();
                 //there appears to be no way to get this via api, so fall back to unloc names
                 crystalSeed.get().fillItemGroup(ItemGroup.SEARCH, seeds);
                 //Crystal seeds use a meta AND NBT to determine growth state, so we need to ignore the NBT, and use the meta which should be fixed on what stage it's at
-                MachineInput.addCustomItemMatcher(crystalSeed.get().getClass(), (def, test) -> def.getItem() == test.getItem() && def.getMetadata() == test.getMetadata());
+                // Because we want to ignore it we forge pass an Ingredient instance that ignores NBT, as ItemStackIngredient.from(ItemStack) defaults to an ingredient
+                // that supports matching NBT
                 for (ItemStack stack : seeds) {
                     String unloc = crystalSeed.get().getTranslationKey(stack);
                     if (unloc.endsWith("certus") && pureCertus.isPresent()) {
-                        RecipeHandler.addEnrichmentChamberRecipe(stack, pureCertus.get().copy());
+                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Ingredient.fromStacks(stack)), pureCertus.get().copy());
                     } else if (unloc.endsWith("nether") && pureNether.isPresent()) {
-                        RecipeHandler.addEnrichmentChamberRecipe(stack, pureNether.get().copy());
+                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Ingredient.fromStacks(stack)), pureNether.get().copy());
                     } else if (unloc.endsWith("fluix") && pureFluix.isPresent()) {
-                        RecipeHandler.addEnrichmentChamberRecipe(stack, pureFluix.get().copy());
+                        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Ingredient.fromStacks(stack)), pureFluix.get().copy());
                     }
                 }
             }
@@ -351,8 +327,9 @@ public final class MekanismHooks {
         Item oreItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
         Item dropItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
         if (oreItem != null && dropItem != null) {
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(oreItem), new ItemStack(dropItem, type.quantity, ore.itemMeta));
-            RecipeHandler.addCombinerRecipe(new ItemStack(dropItem, type.quantity + 2, ore.itemMeta), new ItemStack(type.baseBlock), new ItemStack(oreItem));
+            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(oreItem), new ItemStack(dropItem, type.quantity, ore.itemMeta));
+            RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(new ItemStack(dropItem, type.quantity + 2, ore.itemMeta)),
+                  ItemStackIngredient.from(type.baseBlockOre), new ItemStack(oreItem));
         }
     }
 
@@ -379,17 +356,17 @@ public final class MekanismHooks {
     }
 
     private enum MAOreType {
-        OVERWORLD("", Blocks.COBBLESTONE, 4),
-        NETHER("nether_", Blocks.NETHERRACK, 6),
-        END("end_", Blocks.END_STONE, 8);
+        OVERWORLD("", "cobblestone", 4),
+        NETHER("nether_", "netherrack", 6),
+        END("end_", "endstone", 8);
 
         private final String orePrefix;
-        private final Block baseBlock;
+        private final String baseBlockOre;
         private final int quantity;
 
-        MAOreType(String prefix, Block base, int quantity) {
+        MAOreType(String prefix, String baseBlockOre, int quantity) {
             orePrefix = prefix;
-            baseBlock = base;
+            this.baseBlockOre = baseBlockOre;
             this.quantity = quantity;
         }
     }*/

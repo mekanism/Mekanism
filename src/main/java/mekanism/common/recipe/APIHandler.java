@@ -10,6 +10,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismGases;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -98,7 +99,7 @@ public class APIHandler implements MekanismRecipeHelper {
     @Override
     public void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output) {
         checkPhase();
-        RecipeHandler.addChemicalDissolutionChamberRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), output);
+        RecipeHandler.addChemicalDissolutionChamberRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(MekanismTags.SULFURIC_ACID, 1), output);
     }
 
     @Override

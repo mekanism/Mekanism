@@ -22,12 +22,12 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         return from(instance.getGas(), instance.getAmount());
     }
 
-    public static GasStackIngredient from(@NonNull IGasProvider instance, int minAmount) {
-        return new Instance(instance.getGas(), minAmount);
+    public static GasStackIngredient from(@NonNull IGasProvider instance, int amount) {
+        return new Instance(instance.getGas(), amount);
     }
 
-    public static GasStackIngredient from(@NonNull Tag<Gas> gasTag, int minAmount) {
-        return new Tagged(gasTag, minAmount);
+    public static GasStackIngredient from(@NonNull Tag<Gas> gasTag, int amount) {
+        return new Tagged(gasTag, amount);
     }
 
     public abstract boolean testType(@NonNull Gas gas);
@@ -37,16 +37,16 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         //TODO: Convert this to storing a GasStack?
         @NonNull
         private final Gas gasInstance;
-        private final int minAmount;
+        private final int amount;
 
-        protected Instance(@NonNull Gas gasInstance, int minAmount) {
+        protected Instance(@NonNull Gas gasInstance, int amount) {
             this.gasInstance = Objects.requireNonNull(gasInstance);
-            this.minAmount = minAmount;
+            this.amount = amount;
         }
 
         @Override
         public boolean test(@NonNull GasStack gasStack) {
-            return testType(gasStack) && gasStack.getAmount() >= minAmount;
+            return testType(gasStack) && gasStack.getAmount() >= amount;
         }
 
         @Override
@@ -61,12 +61,12 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
         @Override
         public @NonNull GasStack getMatchingInstance(@NonNull GasStack gasStack) {
-            return test(gasStack) ? new GasStack(gasInstance, minAmount) : GasStack.EMPTY;
+            return test(gasStack) ? new GasStack(gasInstance, amount) : GasStack.EMPTY;
         }
 
         @Override
         public @NonNull List<@NonNull GasStack> getRepresentations() {
-            return Collections.singletonList(new GasStack(gasInstance, minAmount));
+            return Collections.singletonList(new GasStack(gasInstance, amount));
         }
     }
 

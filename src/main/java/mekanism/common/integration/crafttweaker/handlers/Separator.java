@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
+import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -12,7 +13,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.temporary.ILiquidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -26,7 +26,8 @@ public class Separator {
     public static void addRecipe(ILiquidStack liquidInput, double energy, IGasStack leftGasOutput, IGasStack rightGasOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, leftGasOutput, rightGasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.ELECTROLYTIC_SEPARATOR,
-                  new SeparatorRecipe(IngredientHelper.toFluid(liquidInput), energy, GasHelper.toGas(leftGasOutput), GasHelper.toGas(rightGasOutput))));
+                  new ElectrolysisRecipe(IngredientHelper.toIngredient(liquidInput), energy, GasHelper.toGas(leftGasOutput),
+                        GasHelper.toGas(rightGasOutput))));
         }
     }
 

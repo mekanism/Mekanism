@@ -61,7 +61,12 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
+import mekanism.common.tile.factory.TileEntityCombiningFactory;
 import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
+import mekanism.common.tile.factory.TileEntityItemStackToItemStackFactory;
+import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
+import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -200,41 +205,41 @@ public class MekanismTileEntityTypes {
 
     //Factories
     //Combining
-    public static final TileEntityType<TileEntityFactory> BASIC_COMBINING_FACTORY = create(MekanismBlock.BASIC_COMBINING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_COMBINING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_COMBINING_FACTORY = create(MekanismBlock.ADVANCED_COMBINING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_COMBINING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_COMBINING_FACTORY = create(MekanismBlock.ELITE_COMBINING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_COMBINING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_COMBINING_FACTORY = create(MekanismBlock.BASIC_COMBINING_FACTORY, () -> new TileEntityCombiningFactory(MekanismBlock.BASIC_COMBINING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_COMBINING_FACTORY = create(MekanismBlock.ADVANCED_COMBINING_FACTORY, () -> new TileEntityCombiningFactory(MekanismBlock.ADVANCED_COMBINING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_COMBINING_FACTORY = create(MekanismBlock.ELITE_COMBINING_FACTORY, () -> new TileEntityCombiningFactory(MekanismBlock.ELITE_COMBINING_FACTORY));
     //Compressing
-    public static final TileEntityType<TileEntityFactory> BASIC_COMPRESSING_FACTORY = create(MekanismBlock.BASIC_COMPRESSING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_COMPRESSING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_COMPRESSING_FACTORY = create(MekanismBlock.ADVANCED_COMPRESSING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_COMPRESSING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_COMPRESSING_FACTORY = create(MekanismBlock.ELITE_COMPRESSING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_COMPRESSING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_COMPRESSING_FACTORY = create(MekanismBlock.BASIC_COMPRESSING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.BASIC_COMPRESSING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_COMPRESSING_FACTORY = create(MekanismBlock.ADVANCED_COMPRESSING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.ADVANCED_COMPRESSING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_COMPRESSING_FACTORY = create(MekanismBlock.ELITE_COMPRESSING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.ELITE_COMPRESSING_FACTORY));
     //Crushing
-    public static final TileEntityType<TileEntityFactory> BASIC_CRUSHING_FACTORY = create(MekanismBlock.BASIC_CRUSHING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_CRUSHING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_CRUSHING_FACTORY = create(MekanismBlock.ADVANCED_CRUSHING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_CRUSHING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_CRUSHING_FACTORY = create(MekanismBlock.ELITE_CRUSHING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_CRUSHING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_CRUSHING_FACTORY = create(MekanismBlock.BASIC_CRUSHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.BASIC_CRUSHING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_CRUSHING_FACTORY = create(MekanismBlock.ADVANCED_CRUSHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.ADVANCED_CRUSHING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_CRUSHING_FACTORY = create(MekanismBlock.ELITE_CRUSHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.ELITE_CRUSHING_FACTORY));
     //Enriching
-    public static final TileEntityType<TileEntityFactory> BASIC_ENRICHING_FACTORY = create(MekanismBlock.BASIC_ENRICHING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_ENRICHING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_ENRICHING_FACTORY = create(MekanismBlock.ADVANCED_ENRICHING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_ENRICHING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_ENRICHING_FACTORY = create(MekanismBlock.ELITE_ENRICHING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_ENRICHING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_ENRICHING_FACTORY = create(MekanismBlock.BASIC_ENRICHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.BASIC_ENRICHING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_ENRICHING_FACTORY = create(MekanismBlock.ADVANCED_ENRICHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.ADVANCED_ENRICHING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_ENRICHING_FACTORY = create(MekanismBlock.ELITE_ENRICHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.ELITE_ENRICHING_FACTORY));
     //Infusing
-    public static final TileEntityType<TileEntityFactory> BASIC_INFUSING_FACTORY = create(MekanismBlock.BASIC_INFUSING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_INFUSING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_INFUSING_FACTORY = create(MekanismBlock.ADVANCED_INFUSING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_INFUSING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_INFUSING_FACTORY = create(MekanismBlock.ELITE_INFUSING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_INFUSING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_INFUSING_FACTORY = create(MekanismBlock.BASIC_INFUSING_FACTORY, () -> new TileEntityMetallurgicInfuserFactory(MekanismBlock.BASIC_INFUSING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_INFUSING_FACTORY = create(MekanismBlock.ADVANCED_INFUSING_FACTORY, () -> new TileEntityMetallurgicInfuserFactory(MekanismBlock.ADVANCED_INFUSING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_INFUSING_FACTORY = create(MekanismBlock.ELITE_INFUSING_FACTORY, () -> new TileEntityMetallurgicInfuserFactory(MekanismBlock.ELITE_INFUSING_FACTORY));
     //Injecting
-    public static final TileEntityType<TileEntityFactory> BASIC_INJECTING_FACTORY = create(MekanismBlock.BASIC_INJECTING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_INJECTING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_INJECTING_FACTORY = create(MekanismBlock.ADVANCED_INJECTING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_INJECTING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_INJECTING_FACTORY = create(MekanismBlock.ELITE_INJECTING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_INJECTING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_INJECTING_FACTORY = create(MekanismBlock.BASIC_INJECTING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.BASIC_INJECTING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_INJECTING_FACTORY = create(MekanismBlock.ADVANCED_INJECTING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.ADVANCED_INJECTING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_INJECTING_FACTORY = create(MekanismBlock.ELITE_INJECTING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.ELITE_INJECTING_FACTORY));
     //Purifying
-    public static final TileEntityType<TileEntityFactory> BASIC_PURIFYING_FACTORY = create(MekanismBlock.BASIC_PURIFYING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_PURIFYING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_PURIFYING_FACTORY = create(MekanismBlock.ADVANCED_PURIFYING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_PURIFYING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_PURIFYING_FACTORY = create(MekanismBlock.ELITE_PURIFYING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_PURIFYING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_PURIFYING_FACTORY = create(MekanismBlock.BASIC_PURIFYING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.BASIC_PURIFYING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_PURIFYING_FACTORY = create(MekanismBlock.ADVANCED_PURIFYING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.ADVANCED_PURIFYING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_PURIFYING_FACTORY = create(MekanismBlock.ELITE_PURIFYING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlock.ELITE_PURIFYING_FACTORY));
     //Sawing
-    public static final TileEntityType<TileEntityFactory> BASIC_SAWING_FACTORY = create(MekanismBlock.BASIC_SAWING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_SAWING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_SAWING_FACTORY = create(MekanismBlock.ADVANCED_SAWING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_SAWING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_SAWING_FACTORY = create(MekanismBlock.ELITE_SAWING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_SAWING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_SAWING_FACTORY = create(MekanismBlock.BASIC_SAWING_FACTORY, () -> new TileEntitySawingFactory(MekanismBlock.BASIC_SAWING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_SAWING_FACTORY = create(MekanismBlock.ADVANCED_SAWING_FACTORY, () -> new TileEntitySawingFactory(MekanismBlock.ADVANCED_SAWING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_SAWING_FACTORY = create(MekanismBlock.ELITE_SAWING_FACTORY, () -> new TileEntitySawingFactory(MekanismBlock.ELITE_SAWING_FACTORY));
     //Smelting
-    public static final TileEntityType<TileEntityFactory> BASIC_SMELTING_FACTORY = create(MekanismBlock.BASIC_SMELTING_FACTORY, () -> new TileEntityFactory(MekanismBlock.BASIC_SMELTING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ADVANCED_SMELTING_FACTORY = create(MekanismBlock.ADVANCED_SMELTING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ADVANCED_SMELTING_FACTORY));
-    public static final TileEntityType<TileEntityFactory> ELITE_SMELTING_FACTORY = create(MekanismBlock.ELITE_SMELTING_FACTORY, () -> new TileEntityFactory(MekanismBlock.ELITE_SMELTING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> BASIC_SMELTING_FACTORY = create(MekanismBlock.BASIC_SMELTING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.BASIC_SMELTING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ADVANCED_SMELTING_FACTORY = create(MekanismBlock.ADVANCED_SMELTING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.ADVANCED_SMELTING_FACTORY));
+    public static final TileEntityType<TileEntityFactory> ELITE_SMELTING_FACTORY = create(MekanismBlock.ELITE_SMELTING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlock.ELITE_SMELTING_FACTORY));
 
     private static <T extends TileEntity> TileEntityType<T> create(IBlockProvider provider, Supplier<? extends T> factory) {
         return create(provider.getRegistryName(), TileEntityType.Builder.create(factory, provider.getBlock()));

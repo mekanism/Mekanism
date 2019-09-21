@@ -3,9 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.gas.Gas;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -16,9 +14,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.common.recipe.machines.InjectionRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -30,13 +25,9 @@ public class ChemicalInjection {
     @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
-            ItemStackOutput output = new ItemStackOutput(IngredientHelper.getItemStack(itemOutput));
-            Gas gas = GasHelper.toGas(gasInput).getGas();
-            List<InjectionRecipe> recipes = new ArrayList<>();
-            for (IItemStack stack : ingredientInput.getItems()) {
-                recipes.add(new InjectionRecipe(new AdvancedMachineInput(stack.getInternal(), gas), output));
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER,
+                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasStackIngredient(gasInput),
+                        IngredientHelper.getItemStack(itemOutput))));
         }
     }
 

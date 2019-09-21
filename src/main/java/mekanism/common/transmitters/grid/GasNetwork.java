@@ -89,7 +89,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public GasStack getBuffer() {
         return buffer;
@@ -98,12 +98,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
         GasStack gas = transmitter.getBuffer();
-        if (gas == null || gas.getGas() == null || gas.amount == 0) {
+        if (gas.isEmpty()) {
             return;
         }
-        if (buffer == null || buffer.getGas() == null || buffer.amount == 0) {
+        if (buffer.isEmpty()) {
             buffer = gas.copy();
-            gas.amount = 0;
+            gas.setAmount(0);
             return;
         }
 
@@ -122,7 +122,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     public int getGasNeeded() {
-        return getCapacity() - (buffer != null ? buffer.amount : 0);
+        return getCapacity() - buffer.getAmount();
     }
 
     private int tickEmit(GasStack stack) {

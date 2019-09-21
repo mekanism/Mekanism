@@ -51,7 +51,7 @@ public class MekanismGenerators implements IModule {
               MekanismConfig.general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfig.general.ETHENE_BURN_TIME.get());
 
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(MekanismInfuseTypes.CARBON, 10),
-              ItemStackIngredient.from(GeneratorTags.GOLD_DUST, 4), GeneratorsItem.HOHLRAUM.getItemStack());
+              ItemStackIngredient.from(MekanismTags.DUSTS_GOLD, 4), GeneratorsItem.HOHLRAUM.getItemStack());
 
         MinecraftForge.EVENT_BUS.register(this);
 

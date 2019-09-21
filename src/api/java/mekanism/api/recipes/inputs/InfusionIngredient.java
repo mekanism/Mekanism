@@ -18,12 +18,12 @@ import net.minecraft.tags.Tag;
  */
 public abstract class InfusionIngredient implements InputIngredient<@NonNull InfusionStack> {
 
-    public static InfusionIngredient from(@NonNull IInfuseTypeProvider infuseType, int minAmount) {
-        return new Instance(infuseType.getInfuseType(), minAmount);
+    public static InfusionIngredient from(@NonNull IInfuseTypeProvider infuseType, int amount) {
+        return new Instance(infuseType.getInfuseType(), amount);
     }
 
-    public static InfusionIngredient from(@NonNull Tag<InfuseType> infuseTypeTag, int minAmount) {
-        return new Tagged(infuseTypeTag, minAmount);
+    public static InfusionIngredient from(@NonNull Tag<InfuseType> infuseTypeTag, int amount) {
+        return new Tagged(infuseTypeTag, amount);
     }
 
     public boolean test(@NonNull InfusionContainer input) {
@@ -40,18 +40,18 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         @NonNull
         private final InfuseType infuseType;
 
-        private final int minAmount;
+        private final int amount;
         private final InfusionStack infuseObject;
 
-        public Instance(@NonNull InfuseType infuseType, int minAmount) {
+        public Instance(@NonNull InfuseType infuseType, int amount) {
             this.infuseType = infuseType;
-            this.minAmount = minAmount;
-            infuseObject = new InfusionStack(infuseType, minAmount);
+            this.amount = amount;
+            infuseObject = new InfusionStack(infuseType, amount);
         }
 
         @Override
         public boolean test(@NonNull InfusionStack infuseObject) {
-            return testType(infuseObject) && infuseObject.getAmount() >= this.minAmount;
+            return testType(infuseObject) && infuseObject.getAmount() >= this.amount;
         }
 
         @Override
@@ -81,16 +81,16 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
 
         @Nonnull
         private final Tag<InfuseType> tag;
-        private final int minAmount;
+        private final int amount;
 
-        public Tagged(@Nonnull Tag<InfuseType> tag, int minAmount) {
+        public Tagged(@Nonnull Tag<InfuseType> tag, int amount) {
             this.tag = tag;
-            this.minAmount = minAmount;
+            this.amount = amount;
         }
 
         @Override
         public boolean test(@NonNull InfusionStack infusionStack) {
-            return testType(infusionStack) && infusionStack.getAmount() >= minAmount;
+            return testType(infusionStack) && infusionStack.getAmount() >= amount;
         }
 
         @Override
@@ -107,7 +107,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         public @NonNull InfusionStack getMatchingInstance(@NonNull InfusionStack infusionStack) {
             if (test(infusionStack)) {
                 //Our infusion type is in the tag so we make a new stack with the given amount
-                return new InfusionStack(infusionStack, minAmount);
+                return new InfusionStack(infusionStack, amount);
             }
             return InfusionStack.EMPTY;
         }
@@ -118,7 +118,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             //TODO: Can this be cached some how
             List<@NonNull InfusionStack> representations = new ArrayList<>();
             for (InfuseType infuseType : tag.getAllElements()) {
-                representations.add(new InfusionStack(infuseType, minAmount));
+                representations.add(new InfusionStack(infuseType, amount));
             }
             return representations;
         }

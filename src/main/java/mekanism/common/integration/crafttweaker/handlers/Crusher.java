@@ -3,8 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import java.util.ArrayList;
-import java.util.List;
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -13,7 +12,6 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.CrusherRecipe;
 import net.minecraft.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -27,11 +25,8 @@ public class Crusher {
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ItemStack output = IngredientHelper.getItemStack(itemOutput);
-            List<CrusherRecipe> recipes = new ArrayList<>();
-            for (IItemStack stack : ingredientInput.getItems()) {
-                recipes.add(new CrusherRecipe(stack.getInternal(), output));
-            }
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CRUSHER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CRUSHER,
+                  new ItemStackToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), output)));
         }
     }
 

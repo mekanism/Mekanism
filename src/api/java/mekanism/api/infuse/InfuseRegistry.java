@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * Use this class to add a new object that registers as an infuse object.
@@ -22,19 +22,19 @@ public class InfuseRegistry {
     /**
      * The (private) map of ItemStacks and their related InfuseObjects.
      */
-    private static Map<ItemStack, InfusionStack> infuseObjects = new HashMap<>();
+    private static Map<ItemStackIngredient, InfusionStack> infuseObjects = new HashMap<>();
 
     /**
      * Registers a block or item that serves as an infuse object.  An infuse object will store a certain type and amount of infuse, and will deliver this amount to the
      * Metallurgic Infuser's buffer of infuse.  The item's stack size will be decremented when it is placed in the Metallurgic Infuser's infuse slot, and the machine can
      * accept the type and amount of infuse stored in the object.
      *
-     * @param itemStack    - stack the infuse object is linked to -- stack size is ignored
-     * @param infuseObject - the infuse object with the type and amount data
+     * @param ingredient    - stack the infuse object is linked to -- stack size is ignored
+     * @param infusionStack - the infuse object with the type and amount data
      */
-    public static void registerInfuseObject(ItemStack itemStack, InfusionStack infuseObject) {
-        if (getObject(itemStack).isEmpty()) {
-            infuseObjects.put(itemStack, infuseObject);
+    public static void registerInfuseObject(ItemStackIngredient ingredient, InfusionStack infusionStack) {
+        if (!infusionStack.isEmpty() && !infuseObjects.containsKey(ingredient)) {
+            infuseObjects.put(ingredient, infusionStack);
         }
     }
 
@@ -47,8 +47,8 @@ public class InfuseRegistry {
      */
     @Nonnull
     public static InfusionStack getObject(ItemStack itemStack) {
-        for (Entry<ItemStack, InfusionStack> obj : infuseObjects.entrySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(obj.getKey(), itemStack)) {
+        for (Entry<ItemStackIngredient, InfusionStack> obj : infuseObjects.entrySet()) {
+            if (obj.getKey().test(itemStack)) {
                 return obj.getValue();
             }
         }
@@ -60,7 +60,7 @@ public class InfuseRegistry {
      *
      * @return private InfuseObject map
      */
-    public static Map<ItemStack, InfusionStack> getObjectMap() {
+    public static Map<ItemStackIngredient, InfusionStack> getObjectMap() {
         return infuseObjects;
     }
 }
