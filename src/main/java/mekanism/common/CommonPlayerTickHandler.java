@@ -43,7 +43,7 @@ public class CommonPlayerTickHandler {
         if (!tank.isEmpty() && !mask.isEmpty()) {
             if (tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask) {
                 ItemScubaTank scubaTank = (ItemScubaTank) tank.getItem();
-                if (scubaTank.getGas(tank) != null) {
+                if (!scubaTank.getGas(tank).isEmpty()) {
                     return scubaTank.getFlowing(tank);
                 }
             }
@@ -120,7 +120,7 @@ public class CommonPlayerTickHandler {
             tank.useGas(stack);
             GasStack received = tank.useGas(stack, max - player.getAir());
             if (received != null) {
-                player.setAir(player.getAir() + received.amount);
+                player.setAir(player.getAir() + received.getAmount());
             }
             if (player.getAir() == max) {
                 for (EffectInstance effect : player.getActivePotionEffects()) {
@@ -137,7 +137,7 @@ public class CommonPlayerTickHandler {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chest.getItem();
-                if (jetpack.getGas(chest) != null) {
+                if (!jetpack.getGas(chest).isEmpty()) {
                     JetpackMode mode = jetpack.getMode(chest);
                     if (mode == JetpackMode.NORMAL) {
                         return Mekanism.keyMap.has(player, KeySync.ASCEND);

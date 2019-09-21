@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismAPI;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -20,7 +18,6 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,15 +31,13 @@ public class PacketTransmitterUpdate {
 
     private double power;
 
-    private GasStack gasStack;
-    private Gas gasType;
+    @Nonnull
+    private GasStack gasStack = GasStack.EMPTY;
     private boolean didGasTransfer;
 
     @Nonnull
     private FluidStack fluidStack = FluidStack.EMPTY;
     private boolean didFluidTransfer;
-
-    private int amount;
 
     private boolean newNetwork;
     private Collection<IGridTransmitter> transmittersAdded;
@@ -112,8 +107,8 @@ public class PacketTransmitterUpdate {
                 } else if (message.packetType == PacketType.GAS) {
                     if (transmissionType == TransmissionType.GAS) {
                         GasNetwork net = (GasNetwork) transmitter.getTransmitterNetwork();
-                        if (message.gasType != null) {
-                            net.refGas = message.gasType;
+                        if (!message.gasStack.isEmpty()) {
+                            net.refGas = message.gasStack.getGas();
                         }
                         net.buffer = message.gasStack;
                         net.didTransfer = message.didGasTransfer;
@@ -146,22 +141,12 @@ public class PacketTransmitterUpdate {
                 buf.writeDouble(pkt.power);
                 break;
             case GAS:
-                if (pkt.gasStack != null) {
-                    buf.writeBoolean(true);
-                    buf.writeResourceLocation(pkt.gasStack.getGas().getRegistryName());
-                    buf.writeInt(pkt.gasStack.amount);
-                } else {
-                    buf.writeBoolean(false);
-                }
+                pkt.gasStack.writeToPacket(buf);
                 buf.writeBoolean(pkt.didGasTransfer);
                 break;
             case FLUID:
-                if (!pkt.fluidStack.isEmpty()) {
-                    buf.writeBoolean(true);
-                    buf.writeCompoundTag(pkt.fluidStack.writeToNBT(new CompoundNBT()));
-                } else {
-                    buf.writeBoolean(false);
-                }
+                //TODO: Use this in more places
+                pkt.fluidStack.writeToPacket(buf);
                 buf.writeBoolean(pkt.didFluidTransfer);
                 break;
             default:
@@ -182,22 +167,10 @@ public class PacketTransmitterUpdate {
         } else if (packet.packetType == PacketType.ENERGY) {
             packet.power = buf.readDouble();
         } else if (packet.packetType == PacketType.GAS) {
-            if (buf.readBoolean()) {
-                packet.gasType = MekanismAPI.GAS_REGISTRY.getValue(buf.readResourceLocation());
-                packet.amount = buf.readInt();
-            }
+            packet.gasStack = GasStack.readFromPacket(buf);
             packet.didGasTransfer = buf.readBoolean();
-
-            if (packet.gasType != null) {
-                packet.gasStack = new GasStack(packet.gasType, packet.amount);
-            }
         } else if (packet.packetType == PacketType.FLUID) {
-            if (buf.readBoolean()) {
-                packet.fluidStack = FluidStack.loadFluidStackFromNBT(buf.readCompoundTag());
-            } else {
-                packet.fluidStack = FluidStack.EMPTY;
-            }
-
+            packet.fluidStack = FluidStack.readFromPacket(buf);
             packet.didFluidTransfer = buf.readBoolean();
         }
         return packet;

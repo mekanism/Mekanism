@@ -324,7 +324,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum) {
             ItemHohlraum hohlraum = (ItemHohlraum) itemstack.getItem();
-            return hohlraum.getGas(itemstack) != null && hohlraum.getGas(itemstack).amount == hohlraum.getMaxGas(itemstack);
+            return !hohlraum.getGas(itemstack).isEmpty() && hohlraum.getGas(itemstack).getAmount() == hohlraum.getMaxGas(itemstack);
         }
         return false;
     }
@@ -333,7 +333,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum) {
             ItemHohlraum hohlraum = (ItemHohlraum) itemstack.getItem();
-            return hohlraum.getGas(itemstack) == null;
+            return hohlraum.getGas(itemstack).isEmpty();
         }
         return false;
     }

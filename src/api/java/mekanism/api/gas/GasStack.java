@@ -28,6 +28,8 @@ public class GasStack implements IHasTranslationKey {
      * @param gasProvider - provides the gas type of the stack
      * @param amount      - amount of gas to be referenced in this GasStack
      */
+    //TODO: Get rid of uses of this that are just stack.getGas() and use below helper method, to make it so if we ever add NBT or other stuff
+    // it can copy it easier
     public GasStack(@Nonnull IGasProvider gasProvider, int amount) {
         Gas gas = gasProvider.getGas();
         if (MekanismAPI.GAS_REGISTRY.getKey(gas) == null) {
@@ -126,6 +128,7 @@ public class GasStack implements IHasTranslationKey {
      *
      * @return if the GasStacks contain the same gas type
      */
+    //TODO: Use this in places we compare manually. Also should this be renamed ot isTypeEqual
     public boolean isGasEqual(@Nonnull GasStack stack) {
         return isGasEqual(stack.getGas());
     }
@@ -217,6 +220,7 @@ public class GasStack implements IHasTranslationKey {
      *
      * This is included for use in data structures.
      */
+    //TODO: Is this a problem that it does not check size
     @Override
     public final boolean equals(Object o) {
         if (o == this) {

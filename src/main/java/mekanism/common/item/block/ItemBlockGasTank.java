@@ -47,12 +47,12 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
-        if (gasStack == null) {
+        if (gasStack.isEmpty()) {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.empty"), "."));
-        } else if (gasStack.amount == Integer.MAX_VALUE) {
+        } else if (gasStack.getAmount() == Integer.MAX_VALUE) {
             tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GRAY, Translation.of("gui.mekanism.infinite")));
         } else {
-            tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GRAY, gasStack.amount));
+            tooltip.add(TextComponentUtil.build(EnumColor.ORANGE, gasStack, ": ", EnumColor.GRAY, gasStack.getAmount()));
         }
         int cap = getTier(itemstack).getStorage();
         if (cap == Integer.MAX_VALUE) {
@@ -85,10 +85,10 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
 
     @Override
     public void setGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (stack == null || stack.amount == 0) {
+        if (stack.isEmpty()) {
             ItemDataUtils.removeData(itemstack, "stored");
         } else {
-            int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
+            int amount = Math.max(0, Math.min(stack.getAmount(), getMaxGas(itemstack)));
             GasStack gasStack = new GasStack(stack.getGas(), amount);
             ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new CompoundNBT()));
         }
@@ -133,23 +133,23 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
 
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
+        if (!getGas(itemstack).isEmpty() && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
         if (getTier(itemstack) == GasTankTier.CREATIVE) {
             setGas(itemstack, new GasStack(stack.getGas(), Integer.MAX_VALUE));
-            return stack.amount;
+            return stack.getAmount();
         }
-        int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
-        setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
+        int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
+        setGas(itemstack, new GasStack(stack, getStored(itemstack) + toUse));
         return toUse;
     }
 
     @Nonnull
     @Override
     public GasStack removeGas(@Nonnull ItemStack itemstack, int amount) {
-        if (getGas(itemstack) == null) {
-            return null;
+        if (getGas(itemstack).isEmpty()) {
+            return GasStack.EMPTY;
         }
         Gas type = getGas(itemstack).getGas();
         int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
@@ -160,27 +160,27 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     }
 
     private int getStored(ItemStack itemstack) {
-        return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
+        return getGas(itemstack).getAmount();
     }
 
     @Override
     public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
-        return getGas(itemstack) == null || getGas(itemstack).getGas() == type;
+        return getGas(itemstack).isEmpty() || getGas(itemstack).getGas() == type;
     }
 
     @Override
     public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
-        return getGas(itemstack) != null && (type == null || getGas(itemstack).getGas() == type);
+        return !getGas(itemstack).isEmpty() && (type == MekanismAPI.EMPTY_GAS || getGas(itemstack).getGas() == type);
     }
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
-        return getGas(stack) != null; // No bar for empty containers as bars are drawn on top of stack count number
+        return !getGas(stack).isEmpty(); // No bar for empty containers as bars are drawn on top of stack count number
     }
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return 1D - ((getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) getMaxGas(stack));
+        return 1D - ((double) getGas(stack).getAmount() / (double) getMaxGas(stack));
     }
 
     @Override

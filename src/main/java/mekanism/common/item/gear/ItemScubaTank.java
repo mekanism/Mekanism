@@ -53,10 +53,10 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
-        if (gasStack == null) {
+        if (gasStack.isEmpty()) {
             tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.noGas"), "."));
         } else {
-            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.amount));
+            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.getAmount()));
         }
         tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.flowing"), ": ",
               (getFlowing(stack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED), getFlowingComponent(stack)));
@@ -69,7 +69,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return 1D - ((getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) getMaxGas(stack));
+        return 1D - ((double) getGas(stack).getAmount() / (double) getMaxGas(stack));
     }
 
     @Override
@@ -92,19 +92,20 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
     public void useGas(ItemStack itemstack) {
         GasStack gas = getGas(itemstack);
-        if (gas != null) {
-            setGas(itemstack, new GasStack(gas.getGas(), gas.amount - 1));
+        if (!gas.isEmpty()) {
+            setGas(itemstack, new GasStack(gas, gas.getAmount() - 1));
         }
     }
 
+    @Nonnull
     public GasStack useGas(ItemStack itemstack, int amount) {
         GasStack gas = getGas(itemstack);
-        if (gas == null) {
-            return null;
+        if (gas.isEmpty()) {
+            return GasStack.EMPTY;
         }
         Gas type = gas.getGas();
-        int gasToUse = Math.min(gas.amount, Math.min(getRate(itemstack), amount));
-        setGas(itemstack, new GasStack(type, gas.amount - gasToUse));
+        int gasToUse = Math.min(gas.getAmount(), Math.min(getRate(itemstack), amount));
+        setGas(itemstack, new GasStack(type, gas.getAmount() - gasToUse));
         return new GasStack(type, gasToUse);
     }
 
@@ -120,25 +121,25 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
+        if (!getGas(itemstack).isEmpty() && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
         if (!stack.getGas().isIn(MekanismTags.OXYGEN)) {
             return 0;
         }
-        int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
-        setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
+        int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
+        setGas(itemstack, new GasStack(stack, getStored(itemstack) + toUse));
         return toUse;
     }
 
     @Nonnull
     @Override
     public GasStack removeGas(@Nonnull ItemStack itemstack, int amount) {
-        return null;
+        return GasStack.EMPTY;
     }
 
     public int getStored(ItemStack itemstack) {
-        return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
+        return getGas(itemstack).getAmount();
     }
 
     public void toggleFlowing(ItemStack stack) {
@@ -175,11 +176,11 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public void setGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (stack == null || stack.amount == 0) {
+        if (stack.isEmpty()) {
             ItemDataUtils.removeData(itemstack, "stored");
         } else {
-            int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
-            GasStack gasStack = new GasStack(stack.getGas(), amount);
+            int amount = Math.max(0, Math.min(stack.getAmount(), getMaxGas(itemstack)));
+            GasStack gasStack = new GasStack(stack, amount);
             ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new CompoundNBT()));
         }
     }

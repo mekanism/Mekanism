@@ -36,6 +36,8 @@ public class MekanismTags {
     public static final Tag<Item> INGOTS_STEEL = makeForgeItemTag("ingots/steel");
     public static final Tag<Item> INGOTS_TIN = makeForgeItemTag("ingots/tin");
 
+    public static final Tag<Item> STORAGE_BLOCKS_CHARCOAL = makeForgeItemTag("storage_blocks/charcoal");
+
     //TODO: Data generators
     public static final Tag<Item> ALLOYS_BASIC = makeItemTag("alloys/basic");
     public static final Tag<Item> ALLOYS_INFUSED = makeItemTag("alloys/infused");

@@ -74,7 +74,7 @@ public class RecipeUtils {
                 ItemStack itemstack = inv.getStackInSlot(i);
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
                     GasStack stored = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                    if (stored != null) {
+                    if (!stored.isEmpty()) {
                         if (!((IGasItem) toReturn.getItem()).canReceiveGas(toReturn, stored.getGas())) {
                             return ItemStack.EMPTY;
                         }
@@ -84,14 +84,14 @@ public class RecipeUtils {
                             if (gasFound.getGas() != stored.getGas()) {
                                 return ItemStack.EMPTY;
                             }
-                            gasFound.amount += stored.amount;
+                            gasFound.grow(stored.getAmount());
                         }
                     }
                 }
             }
 
             if (gasFound != null) {
-                gasFound.amount = Math.min(((IGasItem) toReturn.getItem()).getMaxGas(toReturn), gasFound.amount);
+                gasFound.setAmount(Math.min(((IGasItem) toReturn.getItem()).getMaxGas(toReturn), gasFound.getAmount()));
                 ((IGasItem) toReturn.getItem()).setGas(toReturn, gasFound);
             }
         }

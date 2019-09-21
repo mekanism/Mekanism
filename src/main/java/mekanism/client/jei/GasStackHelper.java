@@ -3,6 +3,7 @@ package mekanism.client.jei;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.util.text.TextComponentUtil;
@@ -53,12 +54,15 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
 
     @Override
     public String getErrorInfo(@Nullable GasStack ingredient) {
+        if (ingredient == null) {
+            ingredient = GasStack.EMPTY;
+        }
         //TODO: Do this without using toStringHelper
         ToStringHelper toStringHelper = MoreObjects.toStringHelper(GasStack.class);
-        Gas gas = ingredient == null ? null : ingredient.getGas();
-        toStringHelper.add("Gas", gas != null ? TextComponentUtil.build(gas).getFormattedText() : "null");
-        if (ingredient != null) {
-            toStringHelper.add("Amount", ingredient.amount);
+        Gas gas = ingredient.getGas();
+        toStringHelper.add("Gas", gas == MekanismAPI.EMPTY_GAS ? "none" : TextComponentUtil.build(gas).getFormattedText());
+        if (!ingredient.isEmpty()) {
+            toStringHelper.add("Amount", ingredient.getAmount());
         }
         return toStringHelper.toString();
     }
