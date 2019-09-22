@@ -2,21 +2,15 @@ package mekanism.api.infuse;
 
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IInfuseTypeProvider;
-import mekanism.api.text.IHasTranslationKey;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
  * The types of infuse currently available in Mekanism.
@@ -24,20 +18,10 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
  * @author AidanBrady
  */
 //TODO: Allow for tints rather than just different textures
-public class InfuseType extends ForgeRegistryEntry<InfuseType> implements IHasTranslationKey, IInfuseTypeProvider {
+public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvider {
 
     private final ReverseTagWrapper<InfuseType> reverseTags = new ReverseTagWrapper<>(this, InfuseTypeTags::getGeneration, InfuseTypeTags::getCollection);
 
-    /**
-     * This infuse GUI's icon
-     */
-    private ResourceLocation iconLocation;
-
-    /**
-     * The texture representing this infuse type.
-     */
-    private TextureAtlasSprite sprite;
-    private String translationKey;
     private int tint;
 
     public InfuseType(ResourceLocation registryName, int tint) {
@@ -49,44 +33,33 @@ public class InfuseType extends ForgeRegistryEntry<InfuseType> implements IHasTr
         this(registryName, texture, -1);
     }
 
-    public InfuseType(ResourceLocation registryName, ResourceLocation texture, int tint) {
-        setRegistryName(registryName);
-        translationKey = Util.makeTranslationKey("infuse_type", getRegistryName());
-        iconLocation = texture;
+    public InfuseType(ResourceLocation registryName, ResourceLocation iconLocation, int tint) {
+        super(registryName, iconLocation);
         this.tint = tint;
+    }
+
+    @Nonnull
+    public static InfuseType readFromNBT(CompoundNBT nbtTags) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
+            return MekanismAPI.EMPTY_INFUSE_TYPE;
+        }
+        return getFromRegistry(new ResourceLocation(nbtTags.getString("infuseTypeName")));
+    }
+
+    @Nonnull
+    public static InfuseType getFromRegistry(@Nullable ResourceLocation resourceLocation) {
+        if (resourceLocation == null) {
+            return MekanismAPI.EMPTY_INFUSE_TYPE;
+        }
+        InfuseType infuseType = MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(resourceLocation);
+        if (infuseType == null) {
+            return MekanismAPI.EMPTY_INFUSE_TYPE;
+        }
+        return infuseType;
     }
 
     public int getTint() {
         return tint;
-    }
-
-    public ResourceLocation getIcon() {
-        return iconLocation;
-    }
-
-    public TextureAtlasSprite getSprite() {
-        AtlasTexture texMap = Minecraft.getInstance().getTextureMap();
-        if (sprite == null) {
-            sprite = texMap.getAtlasSprite(getIcon().toString());
-        }
-        return sprite;
-    }
-
-    public void registerIcon(TextureStitchEvent.Pre event) {
-        event.addSprite(iconLocation);
-    }
-
-    public void updateIcon(AtlasTexture map) {
-        sprite = map.getSprite(iconLocation);
-    }
-
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getTranslationKey());
-    }
-
-    @Override
-    public String getTranslationKey() {
-        return translationKey;
     }
 
     @Nonnull
@@ -95,28 +68,25 @@ public class InfuseType extends ForgeRegistryEntry<InfuseType> implements IHasTr
         return this;
     }
 
-    @Nonnull
-    public static InfuseType readFromNBT(CompoundNBT nbtTags) {
-        if (nbtTags == null || nbtTags.isEmpty()) {
-            return MekanismAPI.EMPTY_INFUSE_TYPE;
-        }
-        InfuseType infuseType = MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(new ResourceLocation(nbtTags.getString("infuseTypeName")));
-        if (infuseType == null) {
-            return MekanismAPI.EMPTY_INFUSE_TYPE;
-        }
-        return infuseType;
-    }
-
+    @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.putString("infuseTypeName", getRegistryName().toString());
         return nbtTags;
     }
 
+    @Override
     public boolean isIn(Tag<InfuseType> tags) {
         return tags.contains(this);
     }
 
+    @Override
     public Set<ResourceLocation> getTags() {
         return reverseTags.getTagNames();
+    }
+
+    @Nonnull
+    @Override
+    protected String getDefaultTranslationKey() {
+        return Util.makeTranslationKey("infuse_type", getRegistryName());
     }
 }

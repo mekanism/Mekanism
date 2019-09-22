@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.text.EnumColor;
@@ -92,9 +93,9 @@ public class TileComponentEjector implements ITileComponent {
 
     private void ejectGas(Set<Direction> outputSides, GasTank tank) {
         if (!tank.isEmpty()) {
-            GasStack toEmit = new GasStack(tank.getGas(), Math.min(GAS_OUTPUT, tank.getStored()));
+            GasStack toEmit = new GasStack(tank.getStack(), Math.min(GAS_OUTPUT, tank.getStored()));
             int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
-            tank.draw(emit, true);
+            tank.drain(emit, ChemicalAction.EXECUTE);
         }
     }
 

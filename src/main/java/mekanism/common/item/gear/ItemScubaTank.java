@@ -103,7 +103,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
         if (gas.isEmpty()) {
             return GasStack.EMPTY;
         }
-        Gas type = gas.getGas();
+        Gas type = gas.getType();
         int gasToUse = Math.min(gas.getAmount(), Math.min(getRate(itemstack), amount));
         setGas(itemstack, new GasStack(type, gas.getAmount() - gasToUse));
         return new GasStack(type, gasToUse);
@@ -125,7 +125,7 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
         if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
-        if (!stack.getGas().isIn(MekanismTags.OXYGEN)) {
+        if (!stack.getType().isIn(MekanismTags.OXYGEN)) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));

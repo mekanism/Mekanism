@@ -5,10 +5,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
-import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.FactoryType;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.providers.IBlockProvider;
@@ -30,6 +28,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -69,8 +68,6 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
      * An int[] used to track all current operations' progress.
      */
     public int[] progress;
-    public int BASE_MAX_INFUSE = 1000;
-    public int maxInfuse;
     /**
      * How many ticks it takes, by default, to run an operation.
      */
@@ -95,7 +92,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
     /**
      * The amount of infuse this machine has stored.
      */
-    public final InfusionTank infuseStored = new InfusionTank();
+    public final InfusionTank infusionTank;
 
     public final GasTank gasTank;
 
@@ -168,7 +165,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
         gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
-        maxInfuse = BASE_MAX_INFUSE * tier.processes;
+        infusionTank = new InfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
         setRecipeType(recipeType);
     }
 
@@ -275,7 +272,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
                         getInventory().set(3, returnStack);
 
                         setRecipeType(toSet);
-                        gasTank.setGas(GasStack.EMPTY);
+                        gasTank.setEmpty();
                         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                         world.notifyNeighborsOfStateChange(getPos(), getBlockType());
                         MekanismUtils.saveChunk(this);
@@ -505,7 +502,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
     }
 
     public int getScaledInfuseLevel(int i) {
-        return infuseStored.getAmount() * i / maxInfuse;
+        return infusionTank.getStored() * i / infusionTank.getCapacity();
     }
 
     public int getScaledRecipeProgress(int i) {
@@ -519,8 +516,8 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
             if (type == 0) {
                 sorting = !sorting;
             } else if (type == 1) {
-                gasTank.setGas(GasStack.EMPTY);
-                infuseStored.setEmpty();
+                gasTank.setEmpty();
+                infusionTank.setEmpty();
             }
             return;
         }
@@ -533,18 +530,10 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
             sorting = dataStream.readBoolean();
             upgraded = dataStream.readBoolean();
             lastUsage = dataStream.readDouble();
-            int amount = dataStream.readInt();
-            if (amount > 0) {
-                //TODO: Fix this once InfusionTanks keep track of an InfusionStack
-                infuseStored.setAmount(amount);
-                infuseStored.setType(MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(dataStream.readResourceLocation()));
-            } else {
-                infuseStored.setEmpty();
-            }
-
             for (int i = 0; i < tier.processes; i++) {
                 progress[i] = dataStream.readInt();
             }
+            TileUtils.readTankData(dataStream, infusionTank);
             TileUtils.readTankData(dataStream, gasTank);
             if (upgraded) {
                 markDirty();
@@ -560,7 +549,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInt("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
-        infuseStored.read(nbtTags.getCompound("infuseStored"));
+        infusionTank.read(nbtTags.getCompound("infuseStored"));
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt("progress" + i);
@@ -573,8 +562,8 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         super.write(nbtTags);
         nbtTags.putInt("recipeTicks", recipeTicks);
         nbtTags.putBoolean("sorting", sorting);
-        if (!infuseStored.isEmpty()) {
-            nbtTags.put("infuseStored", infuseStored.write(new CompoundNBT()));
+        if (!infusionTank.isEmpty()) {
+            nbtTags.put("infuseStored", infusionTank.write(new CompoundNBT()));
         }
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
@@ -592,17 +581,13 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
         data.add(upgraded);
         data.add(lastUsage);
 
-        data.add(infuseStored.getAmount());
-        if (infuseStored.getAmount() > 0) {
-            data.add(infuseStored.getType().getRegistryName());
-        }
-
         //TODO: Do this better
         int[] progressToSync = new int[progress.length];
         for (int i = 0; i < progress.length; i++) {
             progressToSync[i] = getProgress(i);
         }
         data.add(progressToSync);
+        TileUtils.addTankData(data, infusionTank);
         TileUtils.addTankData(data, gasTank);
         upgraded = false;
         return data;
@@ -749,12 +734,12 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        infuseStored.writeSustainedData(itemStack);
+        infusionTank.writeSustainedData(itemStack);
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        infuseStored.readSustainedData(itemStack);
+        infusionTank.readSustainedData(itemStack);
     }
 
     @Override

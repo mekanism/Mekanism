@@ -48,7 +48,7 @@ public class PressurizedReactionRecipe implements IMekanismRecipe {
 
     public PressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient gasInput, GasStack outputGas,
           double energyRequired, int duration, ItemStack outputDefinition) {
-        this(inputSolid, inputFluid, gasInput, outputGas.getGas(), outputGas.getAmount(), energyRequired, duration, outputDefinition);
+        this(inputSolid, inputFluid, gasInput, outputGas.getType(), outputGas.getAmount(), energyRequired, duration, outputDefinition);
     }
 
     public ItemStackIngredient getInputSolid() {

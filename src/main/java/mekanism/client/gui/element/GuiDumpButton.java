@@ -28,6 +28,7 @@ public class GuiDumpButton extends GuiTileEntityElement<TileEntityMetallurgicInf
 
     @Override
     public void onClick(double mouseX, double mouseY) {
+        //TODO: Change this to using PacketGuiButtonPress or something with a specific dump button
         Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)));
     }
 }

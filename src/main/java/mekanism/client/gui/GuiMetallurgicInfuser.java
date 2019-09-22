@@ -67,25 +67,25 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
             @Nonnull
             @Override
             public TextureAtlasSprite getSprite() {
-                return tileEntity.infuseStored.getType().getSprite();
+                return tileEntity.infusionTank.getType().getSprite();
             }
 
             @Override
             public int getTint() {
-                return tileEntity.infuseStored.getType().getTint();
+                return tileEntity.infusionTank.getType().getTint();
             }
 
             @Override
             public ITextComponent getTooltip() {
-                if (tileEntity.infuseStored.isEmpty()) {
+                if (tileEntity.infusionTank.isEmpty()) {
                     return TextComponentUtil.translate("gui.mekanism.empty");
                 }
-                return TextComponentUtil.build(tileEntity.infuseStored.getType(), ": " + tileEntity.infuseStored.getAmount());
+                return TextComponentUtil.build(tileEntity.infusionTank.getType(), ": " + tileEntity.infusionTank.getStored());
             }
 
             @Override
             public double getLevel() {
-                return (double) tileEntity.infuseStored.getAmount() / (double) TileEntityMetallurgicInfuser.MAX_INFUSE;
+                return (double) tileEntity.infusionTank.getStored() / (double) tileEntity.infusionTank.getCapacity();
             }
         }, resource, 7, 15));
         addButton(new GuiDumpButton(this, tileEntity, resource, 140, 65));

@@ -34,7 +34,7 @@ public class MetallurgicInfuserContainer extends MekanismTileContainer<TileEntit
             stack = slotStack.copy();
             if (slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3) {
                 InfusionStack slotInfusionStack = InfuseRegistry.getObject(slotStack);
-                if (!slotInfusionStack.isEmpty() && (tile.infuseStored.isEmpty() || tile.infuseStored.getType() == slotInfusionStack.getType())) {
+                if (!slotInfusionStack.isEmpty() && (tile.infusionTank.isEmpty() || tile.infusionTank.getType() == slotInfusionStack.getType())) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -73,8 +73,8 @@ public class MetallurgicInfuserContainer extends MekanismTileContainer<TileEntit
 
     public boolean isInputItem(ItemStack itemStack) {
         //If we have a type make sure that the recipe is valid for the type we have stored
-        if (!tile.infuseStored.isEmpty()) {
-            InfusionStack currentInfuseType = new InfusionStack(tile.infuseStored.getType(), tile.infuseStored.getAmount());
+        if (!tile.infusionTank.isEmpty()) {
+            InfusionStack currentInfuseType = new InfusionStack(tile.infusionTank.getType(), tile.infusionTank.getStored());
             return tile.getRecipes().contains(recipe -> recipe.getInfusionInput().testType(currentInfuseType) && recipe.getItemInput().testType(itemStack));
         }
         //Otherwise just look for items that can be used

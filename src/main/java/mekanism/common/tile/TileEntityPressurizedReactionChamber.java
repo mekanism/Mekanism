@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -131,7 +132,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         if (fluid.isEmpty()) {
             return null;
         }
-        GasStack gas = inputGasTank.getGas();
+        GasStack gas = inputGasTank.getStack();
         if (gas.isEmpty()) {
             return null;
         }
@@ -260,18 +261,18 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        if (canReceiveGas(side, stack.getGas())) {
-            return inputGasTank.receive(stack, doTransfer);
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        if (canReceiveGas(side, stack.getType())) {
+            return inputGasTank.fill(stack, action);
         }
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return outputGasTank.draw(amount, doTransfer);
+            return outputGasTank.drain(amount, action);
         }
         return GasStack.EMPTY;
     }
@@ -318,18 +319,18 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
             ItemDataUtils.setCompound(itemStack, "inputFluidTank", inputFluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (!inputGasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "inputGasTank", inputGasTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "inputGasTank", inputGasTank.getStack().write(new CompoundNBT()));
         }
         if (!outputGasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "outputGasTank", outputGasTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "outputGasTank", outputGasTank.getStack().write(new CompoundNBT()));
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "inputFluidTank")));
-        inputGasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputGasTank")));
-        outputGasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputGasTank")));
+        inputGasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputGasTank")));
+        outputGasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputGasTank")));
     }
 
     @Override

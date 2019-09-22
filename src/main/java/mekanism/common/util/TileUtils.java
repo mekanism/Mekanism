@@ -3,8 +3,12 @@ package mekanism.common.util;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.chemical.ChemicalTank;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.infuse.InfusionStack;
+import mekanism.api.infuse.InfusionTank;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,11 +25,11 @@ public class TileUtils {
     // empty tag.
     private static final CompoundNBT EMPTY_TAG_COMPOUND = new CompoundNBT();
 
-    public static void addTankData(TileNetworkList data, GasTank tank) {
+    public static void addTankData(TileNetworkList data, ChemicalTank tank) {
         if (tank.isEmpty()) {
             data.add(EMPTY_TAG_COMPOUND);
         } else {
-            data.add(tank.getGas().write(new CompoundNBT()));
+            data.add(tank.getStack().write(new CompoundNBT()));
         }
     }
 
@@ -41,9 +45,13 @@ public class TileUtils {
         }
     }
 
-    //TODO: Convert read/write to use GasStack.readFromPacket(dataStream) helper methods for both fluids and gases?
+    //TODO: Convert read/write to use GasStack.readFromPacket(dataStream) helper methods for both fluids, gases, and infusion types?
     public static void readTankData(PacketBuffer dataStream, GasTank tank) {
-        tank.setGas(GasStack.readFromNBT(dataStream.readCompoundTag()));
+        tank.setStack(GasStack.readFromNBT(dataStream.readCompoundTag()));
+    }
+
+    public static void readTankData(PacketBuffer dataStream, InfusionTank tank) {
+        tank.setStack(InfusionStack.readFromNBT(dataStream.readCompoundTag()));
     }
 
     public static void readTankData(PacketBuffer dataStream, FluidTank tank) {
@@ -57,8 +65,8 @@ public class TileUtils {
 
     //Returns true if it entered the if statement, basically for use by TileEntityGasTank
     public static boolean receiveGas(ItemStack stack, GasTank tank) {
-        if (!stack.isEmpty() && (tank.isEmpty() || tank.getStored() < tank.getMaxGas())) {
-            tank.receive(GasUtils.removeGas(stack, tank.getGasType(), tank.getNeeded()), true);
+        if (!stack.isEmpty() && (tank.isEmpty() || tank.getStored() < tank.getCapacity())) {
+            tank.fill(GasUtils.removeGas(stack, tank.getType(), tank.getNeeded()), ChemicalAction.EXECUTE);
             return true;
         }
         return false;
@@ -68,20 +76,20 @@ public class TileUtils {
      * @return True if gas was removed
      */
     public static boolean drawGas(ItemStack stack, GasTank tank) {
-        return drawGas(stack, tank, true);
+        return drawGas(stack, tank, ChemicalAction.EXECUTE);
     }
 
-    public static boolean  drawGas(ItemStack stack, GasTank tank, boolean doDraw) {
+    public static boolean drawGas(ItemStack stack, GasTank tank, ChemicalAction action) {
         if (!stack.isEmpty() && !tank.isEmpty()) {
-            return !tank.draw(GasUtils.addGas(stack, tank.getGas()), doDraw).isEmpty();
+            return !tank.drain(GasUtils.addGas(stack, tank.getStack()), action).isEmpty();
         }
         return false;
     }
 
     public static void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, Direction facing) {
         if (!tank.isEmpty()) {
-            GasStack toSend = new GasStack(tank.getGas(), Math.min(tank.getStored(), gasOutput));
-            tank.draw(GasUtils.emit(toSend, tile, EnumSet.of(facing)), true);
+            GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), gasOutput));
+            tank.drain(GasUtils.emit(toSend, tile, EnumSet.of(facing)), ChemicalAction.EXECUTE);
         }
     }
 }

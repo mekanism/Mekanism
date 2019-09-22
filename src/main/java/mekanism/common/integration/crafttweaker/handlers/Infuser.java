@@ -33,8 +33,8 @@ public class Infuser {
         }
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             //TODO: Use bracket handler instead of string for infuseType, and then clean this stuff up
-            InfuseType type = MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(new ResourceLocation(infuseType));
-            if (type != null) {
+            InfuseType type = InfuseType.getFromRegistry(new ResourceLocation(infuseType));
+            if (type != MekanismAPI.EMPTY_INFUSE_TYPE) {
                 CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new MetallurgicInfuserRecipe(
                       IngredientHelper.toIngredient(ingredientInput), InfusionIngredient.from(type, infuseAmount), IngredientHelper.getItemStack(itemOutput))));
             }

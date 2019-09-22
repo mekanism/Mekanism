@@ -2,11 +2,10 @@ package mekanism.api.gas;
 
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 /**
@@ -14,13 +13,9 @@ import net.minecraftforge.registries.IRegistryDelegate;
  *
  * @author aidancbrady
  */
-public class GasStack implements IHasTranslationKey {
+public class GasStack extends ChemicalStack<Gas> {
 
     public static final GasStack EMPTY = new GasStack(MekanismAPI.EMPTY_GAS, 0);
-
-    private boolean isEmpty;
-    private int amount;
-    private IRegistryDelegate<Gas> gasDelegate;
 
     /**
      * Creates a new GasStack with a defined Gas type and quantity.
@@ -31,18 +26,27 @@ public class GasStack implements IHasTranslationKey {
     //TODO: Get rid of uses of this that are just stack.getGas() and use below helper method, to make it so if we ever add NBT or other stuff
     // it can copy it easier
     public GasStack(@Nonnull IGasProvider gasProvider, int amount) {
-        Gas gas = gasProvider.getGas();
+        super(gasProvider.getGas(), amount);
+    }
+
+    public GasStack(@Nonnull GasStack stack, int amount) {
+        this(stack.getType(), amount);
+    }
+
+    @Nonnull
+    @Override
+    protected IRegistryDelegate<Gas> getDelegate(Gas gas) {
         if (MekanismAPI.GAS_REGISTRY.getKey(gas) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a GasStack for an unregistered Gas {} (type {})", gas.getRegistryName(), gas.getClass().getName());
             throw new IllegalArgumentException("Cannot create a GasStack from an unregistered gas");
         }
-        this.gasDelegate = gas.delegate;
-        this.amount = amount;
-        updateEmpty();
+        return gas.delegate;
     }
 
-    public GasStack(@Nonnull GasStack stack, int amount) {
-        this(stack.getGas(), amount);
+    @Nonnull
+    @Override
+    protected Gas getEmptyChemical() {
+        return MekanismAPI.EMPTY_GAS;
     }
 
     /**
@@ -68,41 +72,6 @@ public class GasStack implements IHasTranslationKey {
         return new GasStack(type, amount);
     }
 
-    /**
-     * Gets the Gas type of this GasStack.
-     *
-     * @return this GasStack's Gas type
-     */
-    @Nonnull
-    public final Gas getGas() {
-        return isEmpty ? MekanismAPI.EMPTY_GAS : getRawGas();
-    }
-
-    //TODO: Remove this
-    @Deprecated
-    public GasStack withAmount(int newAmount) {
-        amount = newAmount;
-        return this;
-    }
-
-    /**
-     * Writes this GasStack to a defined tag compound.
-     *
-     * @param nbtTags - tag compound to write to
-     *
-     * @return tag compound with this GasStack's data
-     */
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        getGas().write(nbtTags);
-        nbtTags.putInt("amount", amount);
-        return nbtTags;
-    }
-
-    public void writeToPacket(PacketBuffer buf) {
-        buf.writeRegistryId(getGas());
-        buf.writeVarInt(getAmount());
-    }
-
     public static GasStack readFromPacket(PacketBuffer buf) {
         Gas gas = buf.readRegistryId();
         int amount = buf.readVarInt();
@@ -117,101 +86,19 @@ public class GasStack implements IHasTranslationKey {
      *
      * @return copied GasStack
      */
+    @Nonnull
+    @Override
     public GasStack copy() {
-        return new GasStack(this::getGas, amount);
-    }
-
-    /**
-     * Whether or not this GasStack's gas type is equal to the other defined GasStack.
-     *
-     * @param stack - GasStack to check
-     *
-     * @return if the GasStacks contain the same gas type
-     */
-    //TODO: Use this in places we compare manually
-    public boolean isTypeEqual(@Nonnull GasStack stack) {
-        return isTypeEqual(stack.getGas());
-    }
-
-    public boolean isTypeEqual(@Nonnull Gas gas) {
-        return getGas() == gas;
-    }
-
-    public final Gas getRawGas() {
-        return gasDelegate.get();
-    }
-
-    public boolean isEmpty() {
-        return isEmpty;
-    }
-
-    protected void updateEmpty() {
-        isEmpty = getRawGas() == MekanismAPI.EMPTY_GAS || amount <= 0;
-    }
-
-    public int getAmount() {
-        return isEmpty ? 0 : amount;
-    }
-
-    public void setAmount(int amount) {
-        if (getRawGas() == MekanismAPI.EMPTY_GAS) {
-            throw new IllegalStateException("Can't modify the empty stack.");
-        }
-        this.amount = amount;
-        updateEmpty();
-    }
-
-    public void grow(int amount) {
-        setAmount(this.amount + amount);
-    }
-
-    public void shrink(int amount) {
-        setAmount(this.amount - amount);
-    }
-
-    @Override
-    public String toString() {
-        return "[" + getGas() + ", " + amount + "]";
-    }
-
-    public ITextComponent getDisplayName() {
-        //Wrapper to get display name of the gas type easier
-        return getGas().getDisplayName();
-    }
-
-    @Override
-    public String getTranslationKey() {
-        //Wrapper to get translation key of the gas type easier
-        return getGas().getTranslationKey();
-    }
-
-    /**
-     * Determines if the Gases are equal and this stack is larger.
-     *
-     * @return true if this GasStack contains the other GasStack (same gas and >= amount)
-     */
-    public boolean containsGas(@Nonnull GasStack other) {
-        return isTypeEqual(other) && amount >= other.amount;
-    }
-
-    /**
-     * Determines if the gases and amounts are all equal.
-     *
-     * @param other - the GasStack for comparison
-     *
-     * @return true if the two GasStacks are exactly the same
-     */
-    public boolean isGasStackIdentical(GasStack other) {
-        return isTypeEqual(other) && amount == other.amount;
+        return new GasStack(this, getAmount());
     }
 
     //TODO: Method to check gas in an itemstack (capabilities instead of IGasItem)
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         int code = 1;
-        code = 31 * code + getGas().hashCode();
-        code = 31 * code + amount;
+        code = 31 * code + getType().hashCode();
+        code = 31 * code + getAmount();
         return code;
     }
 
@@ -222,7 +109,7 @@ public class GasStack implements IHasTranslationKey {
      */
     //TODO: Is this a problem that it does not check size
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (o == this) {
             return true;
         }

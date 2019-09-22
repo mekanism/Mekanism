@@ -1,6 +1,7 @@
 package mekanism.api.gas;
 
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.ChemicalAction;
 import net.minecraft.util.Direction;
 
 /**
@@ -8,6 +9,7 @@ import net.minecraft.util.Direction;
  *
  * @author AidanBrady
  */
+//TODO: Figure out if Side in the various methods *can* be null, if not mark it as nonnull, or better yet mark everything here as nonnull by default
 public interface IGasHandler {
 
     GasTankInfo[] NONE = new GasTankInfo[0];
@@ -19,7 +21,7 @@ public interface IGasHandler {
      *
      * @return gas added
      */
-    int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer);
+    int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action);
 
     /**
      * Draws a certain amount of gas from this block.
@@ -28,8 +30,9 @@ public interface IGasHandler {
      *
      * @return gas drawn
      */
+    //TODO: Should we have a method for drawing based on stack?
     @Nonnull
-    GasStack drawGas(Direction side, int amount, boolean doTransfer);
+    GasStack drawGas(Direction side, int amount, ChemicalAction action);
 
     /**
      * Whether or not this block can accept gas from a certain side.
@@ -49,6 +52,7 @@ public interface IGasHandler {
      *
      * @return if block can be drawn of gas
      */
+    //TODO: How to handle checking "ANY" Type, pass empty gas type. Needs to support it properly again
     boolean canDrawGas(Direction side, @Nonnull Gas type);
 
     /**

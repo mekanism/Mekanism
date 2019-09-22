@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -83,23 +84,23 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            TileUtils.drawGas(getInventory().get(0), gasTank, tier != GasTankTier.CREATIVE);
+            TileUtils.drawGas(getInventory().get(0), gasTank, ChemicalAction.get(tier != GasTankTier.CREATIVE));
             if (TileUtils.receiveGas(getInventory().get(1), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
-                gasTank.getGas().setAmount(Integer.MAX_VALUE);
+                gasTank.setStack(new GasStack(gasTank.getStack(), Integer.MAX_VALUE));
             }
             if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
                 if (configComponent.isEjecting(TransmissionType.GAS)) {
-                    GasStack toSend = new GasStack(gasTank.getGas(), Math.min(gasTank.getStored(), tier.getOutput()));
-                    gasTank.draw(GasUtils.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, getDirection(), 2)), tier != GasTankTier.CREATIVE);
+                    GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
+                    gasTank.drain(GasUtils.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, getDirection(), 2)), ChemicalAction.get(tier != GasTankTier.CREATIVE));
                 }
             }
 
             if (tier != GasTankTier.CREATIVE) {
                 if (dumping == GasMode.DUMPING) {
-                    gasTank.draw(tier.getStorage() / 400, true);
+                    gasTank.drain(tier.getStorage() / 400, ChemicalAction.EXECUTE);
                 }
                 if (dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.getOutput()) {
-                    gasTank.draw(tier.getOutput() - gasTank.getNeeded(), true);
+                    gasTank.drain(tier.getOutput() - gasTank.getNeeded(), ChemicalAction.EXECUTE);
                 }
             }
 
@@ -122,7 +123,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             return false;
         }
         tier = GasTankTier.values()[upgradeTier.ordinal()];
-        gasTank.setMaxGas(tier.getStorage());
+        gasTank.setCapacity(tier.getStorage());
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
@@ -145,9 +146,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return itemstack.getItem() instanceof IGasItem && (gasTank.isEmpty() || ((IGasItem) itemstack.getItem()).canReceiveGas(itemstack, gasTank.getGas().getGas()));
+            return itemstack.getItem() instanceof IGasItem && (gasTank.isEmpty() || ((IGasItem) itemstack.getItem()).canReceiveGas(itemstack, gasTank.getType()));
         } else if (slotID == 1) {
-            return itemstack.getItem() instanceof IGasItem && (gasTank.isEmpty() || ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, gasTank.getGas().getGas()));
+            return itemstack.getItem() instanceof IGasItem && (gasTank.isEmpty() || ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, gasTank.getType()));
         }
         return false;
     }
@@ -159,18 +160,18 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
         if (tier == GasTankTier.CREATIVE) {
             return stack.getAmount();
         }
-        return gasTank.receive(stack, doTransfer);
+        return gasTank.fill(stack, action);
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return gasTank.draw(amount, doTransfer && tier != GasTankTier.CREATIVE);
+            return gasTank.drain(amount, action.combine(tier != GasTankTier.CREATIVE));
         }
         return GasStack.EMPTY;
     }
@@ -232,7 +233,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         if (world.isRemote) {
             GasTankTier prevTier = tier;
             tier = GasTankTier.values()[dataStream.readInt()];
-            gasTank.setMaxGas(tier.getStorage());
+            gasTank.setCapacity(tier.getStorage());
             TileUtils.readTankData(dataStream, gasTank);
             dumping = GasMode.values()[dataStream.readInt()];
             if (prevTier != tier) {
@@ -270,7 +271,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getMaxGas());
+        return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
     }
 
     @Override
@@ -297,11 +298,11 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{gasTank.getMaxGas()};
+                return new Object[]{gasTank.getCapacity()};
             case 1:
                 return new Object[]{gasTank.getStored()};
             case 2:
-                return new Object[]{gasTank.getGas()};
+                return new Object[]{gasTank.getStack()};
             default:
                 throw new NoSuchMethodException();
         }

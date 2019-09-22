@@ -22,18 +22,18 @@ public class CraftTweakerGasStack implements IGasStack {
 
     @Override
     public IGasDefinition getDefinition() {
-        return new CraftTweakerGasDefinition(stack.getGas());
+        return new CraftTweakerGasDefinition(stack.getType());
     }
 
     @Override
     public String getName() {
-        return stack.getGas().getName();
+        return stack.getType().getName();
     }
 
     @Override
     public String getDisplayName() {
         //TODO
-        return stack.getGas().getTranslationKey();
+        return stack.getType().getTranslationKey();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CraftTweakerGasStack implements IGasStack {
     @Override
     public String toString() {
         //TODO: MCLiquidStack does not include a multiplication value. Should we mirror that
-        return stack.getAmount() > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.getAmount()) : String.format("<gas:%s>", stack.getGas().getName());
+        return stack.getAmount() > 1 ? String.format("<gas:%s> * %s", stack.getType().getName(), stack.getAmount()) : String.format("<gas:%s>", stack.getType().getName());
     }
 
     @Override

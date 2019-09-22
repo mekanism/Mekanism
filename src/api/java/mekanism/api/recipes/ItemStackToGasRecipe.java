@@ -29,7 +29,7 @@ public class ItemStackToGasRecipe implements IMekanismRecipe, Predicate<@NonNull
     }
 
     public ItemStackToGasRecipe(ItemStackIngredient input, GasStack output) {
-        this(input, output.getGas(), output.getAmount());
+        this(input, output.getType(), output.getAmount());
     }
 
     @Override

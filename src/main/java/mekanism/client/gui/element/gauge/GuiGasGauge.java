@@ -35,10 +35,11 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             return height - 2;
         }
-        if (infoHandler.getTank().isEmpty() || infoHandler.getTank().getMaxGas() == 0) {
+        //TODO: Can capacity ever be zero when tank is not empty?
+        if (infoHandler.getTank().isEmpty() || infoHandler.getTank().getCapacity() == 0) {
             return 0;
         }
-        return infoHandler.getTank().getStored() * (height - 2) / infoHandler.getTank().getMaxGas();
+        return infoHandler.getTank().getStored() * (height - 2) / infoHandler.getTank().getCapacity();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             return dummyType.getSprite();
         }
-        return (infoHandler.getTank() != null && !infoHandler.getTank().isEmpty()) ? infoHandler.getTank().getGas().getGas().getSprite() : null;
+        return (infoHandler.getTank() != null && !infoHandler.getTank().isEmpty()) ? infoHandler.getTank().getType().getSprite() : null;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (infoHandler.getTank().isEmpty()) {
             return TextComponentUtil.translate("gui.mekanism.empty");
         }
-        return TextComponentUtil.build(infoHandler.getTank().getGas(), ": " + infoHandler.getTank().getStored());
+        return TextComponentUtil.build(infoHandler.getTank().getStack(), ": " + infoHandler.getTank().getStored());
     }
 
     @Override
@@ -65,7 +66,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             MekanismRenderer.color(dummyType);
         } else {
-            MekanismRenderer.color(infoHandler.getTank().getGas());
+            MekanismRenderer.color(infoHandler.getTank().getStack());
         }
     }
 

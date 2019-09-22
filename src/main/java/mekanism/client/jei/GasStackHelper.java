@@ -30,7 +30,7 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
 
     @Override
     public String getUniqueId(GasStack ingredient) {
-        return "gas:" + ingredient.getGas().getName();
+        return "gas:" + ingredient.getType().getName();
     }
 
     @Override
@@ -40,12 +40,12 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
 
     @Override
     public String getModId(GasStack ingredient) {
-        return ingredient.getGas().getIcon().getNamespace();
+        return ingredient.getType().getIcon().getNamespace();
     }
 
     @Override
     public String getResourceId(GasStack ingredient) {
-        return ingredient.getGas().getTranslationKey();
+        return ingredient.getType().getTranslationKey();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
         }
         //TODO: Do this without using toStringHelper
         ToStringHelper toStringHelper = MoreObjects.toStringHelper(GasStack.class);
-        Gas gas = ingredient.getGas();
+        Gas gas = ingredient.getType();
         toStringHelper.add("Gas", gas == MekanismAPI.EMPTY_GAS ? "none" : TextComponentUtil.build(gas).getFormattedText());
         if (!ingredient.isEmpty()) {
             toStringHelper.add("Amount", ingredient.getAmount());

@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -132,14 +133,14 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
         if (getReactor() != null) {
-            if (stack.getGas().isIn(MekanismTags.DEUTERIUM)) {
-                return getReactor().getDeuteriumTank().receive(stack, doTransfer);
-            } else if (stack.getGas().isIn(MekanismTags.TRITIUM)) {
-                return getReactor().getTritiumTank().receive(stack, doTransfer);
-            } else if (stack.getGas().isIn(MekanismTags.FUSION_FUEL)) {
-                return getReactor().getFuelTank().receive(stack, doTransfer);
+            if (stack.getType().isIn(MekanismTags.DEUTERIUM)) {
+                return getReactor().getDeuteriumTank().fill(stack, action);
+            } else if (stack.getType().isIn(MekanismTags.TRITIUM)) {
+                return getReactor().getTritiumTank().fill(stack, action);
+            } else if (stack.getType().isIn(MekanismTags.FUSION_FUEL)) {
+                return getReactor().getFuelTank().fill(stack, action);
             }
         }
         return 0;
@@ -147,7 +148,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         return GasStack.EMPTY;
     }
 

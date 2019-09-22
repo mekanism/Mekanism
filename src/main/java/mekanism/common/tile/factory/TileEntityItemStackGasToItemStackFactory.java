@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -48,7 +49,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         if (gasStackFromItem.isEmpty()) {
             return false;
         }
-        Gas gasFromItem = gasStackFromItem.getGas();
+        Gas gasFromItem = gasStackFromItem.getType();
         return getRecipes().contains(recipe -> recipe.getGasInput().testType(gasFromItem));
     }
 
@@ -61,7 +62,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         CachedRecipe<ItemStackGasToItemStackRecipe> cached = getCachedRecipe(process);
         if (cached != null) {
             ItemStackGasToItemStackRecipe cachedRecipe = cached.getRecipe();
-            if (cachedRecipe.getItemInput().testType(fallbackInput) && (gasTank.isEmpty() || cachedRecipe.getGasInput().testType(gasTank.getGasType()))) {
+            if (cachedRecipe.getItemInput().testType(fallbackInput) && (gasTank.isEmpty() || cachedRecipe.getGasInput().testType(gasTank.getType()))) {
                 //Our input matches the recipe we have cached for this slot
                 return true;
             }
@@ -70,8 +71,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
-        GasStack gasStack = gasTank.getGas();
-        Gas gas = gasStack.getGas();
+        GasStack gasStack = gasTank.getStack();
+        Gas gas = gasStack.getType();
         ItemStackGasToItemStackRecipe foundRecipe = getRecipes().findFirst(recipe -> {
             if (recipe.getItemInput().testType(fallbackInput)) {
                 //If we don't have a gas stored ignore checking for a match
@@ -109,13 +110,13 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         if (!extra.isEmpty() && gasTank.getNeeded() > 0) {
             GasStack gasStack = GasConversionHandler.getItemGas(extra, gasTank, this::isValidGas);
             if (!gasStack.isEmpty()) {
-                Gas gas = gasStack.getGas();
+                Gas gas = gasStack.getType();
                 if (gasTank.canReceive(gas) && gasTank.getNeeded() >= gasStack.getAmount()) {
                     if (extra.getItem() instanceof IGasItem) {
                         IGasItem item = (IGasItem) extra.getItem();
-                        gasTank.receive(item.removeGas(extra, gasStack.getAmount()), true);
+                        gasTank.fill(item.removeGas(extra, gasStack.getAmount()), ChemicalAction.EXECUTE);
                     } else {
-                        gasTank.receive(gasStack, true);
+                        gasTank.fill(gasStack, ChemicalAction.EXECUTE);
                         extra.shrink(1);
                     }
                 }
@@ -145,7 +146,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         if (stack.isEmpty()) {
             return null;
         }
-        GasStack gasStack = gasTank.getGas();
+        GasStack gasStack = gasTank.getStack();
         return gasStack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack, gasStack));
     }
 
@@ -163,7 +164,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
     }
 
     public int getScaledGasLevel(int i) {
-        return gasTank.getStored() * i / gasTank.getMaxGas();
+        return gasTank.getStored() * i / gasTank.getCapacity();
     }
 
     @Nonnull
@@ -194,9 +195,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        if (canReceiveGas(side, stack.getGas())) {
-            return gasTank.receive(stack, doTransfer);
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        if (canReceiveGas(side, stack.getType())) {
+            return gasTank.fill(stack, action);
         }
         return 0;
     }
@@ -208,7 +209,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         return GasStack.EMPTY;
     }
 

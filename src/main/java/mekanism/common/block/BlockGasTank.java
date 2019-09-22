@@ -61,8 +61,8 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityGasTank) {
             TileEntityGasTank gasTank = (TileEntityGasTank) tile;
-            gasTank.gasTank.setMaxGas(gasTank.tier.getStorage());
-            gasTank.gasTank.setGas(((ItemBlockGasTank) stack.getItem()).getGas(stack));
+            gasTank.gasTank.setCapacity(gasTank.tier.getStorage());
+            gasTank.gasTank.setStack(((ItemBlockGasTank) stack.getItem()).getGas(stack));
         }
     }
 

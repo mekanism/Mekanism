@@ -54,9 +54,9 @@ public final class GasUtils {
 
     public static void clearIfInvalid(GasTank tank, Predicate<@NonNull Gas> isValid) {
         if (MekanismConfig.general.voidInvalidGases.get()) {
-            Gas gas = tank.getGasType();
+            Gas gas = tank.getType();
             if (gas != MekanismAPI.EMPTY_GAS && !isValid.test(gas)) {
-                tank.setGas(GasStack.EMPTY);
+                tank.setEmpty();
             }
         }
     }
@@ -91,7 +91,7 @@ public final class GasUtils {
      * @return amount of gas accepted by the IGasItem
      */
     public static int addGas(@Nonnull ItemStack itemStack, @Nonnull GasStack stack) {
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem()).canReceiveGas(itemStack, stack.getGas())) {
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem()).canReceiveGas(itemStack, stack.getType())) {
             return ((IGasItem) itemStack.getItem()).addGas(itemStack, stack.copy());
         }
         return 0;
@@ -121,7 +121,7 @@ public final class GasUtils {
 
             //Collect cap
             CapabilityUtils.getCapabilityHelper(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
-                if (handler.canReceiveGas(accessSide, stack.getGas())) {
+                if (handler.canReceiveGas(accessSide, stack.getType())) {
                     target.addHandler(accessSide, handler);
                 }
             });
@@ -138,15 +138,15 @@ public final class GasUtils {
 
     public static void writeSustainedData(GasTank gasTank, ItemStack itemStack) {
         if (!gasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.getStack().write(new CompoundNBT()));
         }
     }
 
     public static void readSustainedData(GasTank gasTank, ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, "gasStored")) {
-            gasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored")));
+            gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored")));
         } else {
-            gasTank.setGas(GasStack.EMPTY);
+            gasTank.setEmpty();
         }
     }
 }

@@ -99,7 +99,7 @@ public class RecipeInfoHelper {
     }
 
     public static String getGasName(@Nonnull GasStack stack) {
-        return stack.getAmount() > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.getAmount()) : getGasName(stack.getGas());
+        return stack.getAmount() > 1 ? String.format("<gas:%s> * %s", stack.getType().getName(), stack.getAmount()) : getGasName(stack.getType());
     }
 
     public static String getGasName(@Nonnull Gas gas) {

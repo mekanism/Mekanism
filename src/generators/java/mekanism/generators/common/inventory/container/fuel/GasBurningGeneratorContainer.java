@@ -31,7 +31,7 @@ public class GasBurningGeneratorContainer extends FuelGeneratorContainer<TileEnt
     protected boolean tryFuel(ItemStack slotStack) {
         if (slotStack.getItem() instanceof IGasItem) {
             GasStack gasStack = ((IGasItem) slotStack.getItem()).getGas(slotStack);
-            return !gasStack.isEmpty() && !FuelHandler.getFuel(gasStack.getGas()).isEmpty();
+            return !gasStack.isEmpty() && !FuelHandler.getFuel(gasStack.getType()).isEmpty();
         }
         return false;
     }

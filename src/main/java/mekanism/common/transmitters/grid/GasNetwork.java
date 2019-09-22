@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
@@ -121,7 +122,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     private int tickEmit(@Nonnull GasStack stack) {
         Set<GasHandlerTarget> availableAcceptors = new HashSet<>();
         int totalHandlers = 0;
-        Gas type = stack.getGas();
+        Gas type = stack.getType();
         for (Coord4D coord : possibleAcceptors) {
             EnumSet<Direction> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
@@ -148,12 +149,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.getAmount(), stack);
     }
 
-    public int emit(@Nonnull GasStack stack, boolean doTransfer) {
+    public int emit(@Nonnull GasStack stack, ChemicalAction action) {
         if (!buffer.isEmpty() && !buffer.isTypeEqual(stack)) {
             return 0;
         }
         int toUse = Math.min(getGasNeeded(), stack.getAmount());
-        if (doTransfer) {
+        if (action.execute()) {
             if (buffer.isEmpty()) {
                 buffer = stack.copy();
                 buffer.setAmount(toUse);

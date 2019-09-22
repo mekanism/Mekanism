@@ -34,7 +34,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
         GasStack gasStack = tube.getTransmitter().getTransmitterNetwork().buffer;
         if (!gasStack.isEmpty()) {
             //Double check it is not empty
-            Gas gas = gasStack.getGas();
+            Gas gas = gasStack.getType();
             ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
             c.setRGBFromInt(gas.getTint());
             renderTransparency(renderer, gas.getSprite(), getModelForSide(tube, side), c);

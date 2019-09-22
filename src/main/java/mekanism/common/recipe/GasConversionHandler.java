@@ -60,7 +60,7 @@ public class GasConversionHandler {
         if (gasStack.isEmpty()) {
             return false;
         }
-        List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.computeIfAbsent(gasStack.getGas(), k -> new ArrayList<>());
+        List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.computeIfAbsent(gasStack.getType(), k -> new ArrayList<>());
         //TODO: Better checking at some point if the ingredient is already in there? Should partial checking happen as well
         ingredients.add(ingredient);
         return ingredientToGas.put(ingredient, gasStack) == null;
@@ -70,7 +70,7 @@ public class GasConversionHandler {
         if (gasStack.isEmpty()) {
             return 0;
         }
-        Gas gas = gasStack.getGas();
+        Gas gas = gasStack.getType();
         if (gasToIngredients.containsKey(gas)) {
             List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.get(gas);
             List<IMekanismIngredient<ItemStack>> toRemove = new ArrayList<>();
@@ -125,10 +125,10 @@ public class GasConversionHandler {
             IGasItem item = (IGasItem) itemStack.getItem();
             GasStack gas = item.getGas(itemStack);
             //Check to make sure it can provide the gas it contains
-            if (!gas.isEmpty() && item.canProvideGas(itemStack, gas.getGas())) {
+            if (!gas.isEmpty() && item.canProvideGas(itemStack, gas.getType())) {
                 int amount = Math.min(needed, Math.min(gas.getAmount(), item.getRate(itemStack)));
                 if (amount > 0) {
-                    GasStack gasStack = getIfValid.apply(gas.getGas(), amount);
+                    GasStack gasStack = getIfValid.apply(gas.getType(), amount);
                     if (!gasStack.isEmpty()) {
                         return gasStack;
                     }
@@ -137,7 +137,7 @@ public class GasConversionHandler {
         }
         for (Entry<IMekanismIngredient<ItemStack>, GasStack> entry : ingredientToGas.entrySet()) {
             if (entry.getKey().contains(itemStack)) {
-                GasStack gasStack = getIfValid.apply(entry.getValue().getGas(), entry.getValue().getAmount());
+                GasStack gasStack = getIfValid.apply(entry.getValue().getType(), entry.getValue().getAmount());
                 if (!gasStack.isEmpty()) {
                     return gasStack;
                 }

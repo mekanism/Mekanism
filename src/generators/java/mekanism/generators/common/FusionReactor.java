@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.LaserManager;
@@ -78,7 +79,7 @@ public class FusionReactor {
             ItemStack hohlraum = controller.getInventory().get(0);
             if (!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
-                return !gasStack.isEmpty() && gasStack.getGas().isIn(MekanismTags.FUSION_FUEL) && gasStack.getAmount() == ItemHohlraum.MAX_GAS;
+                return !gasStack.isEmpty() && gasStack.getType().isIn(MekanismTags.FUSION_FUEL) && gasStack.getAmount() == ItemHohlraum.MAX_GAS;
             }
         }
         return false;
@@ -127,7 +128,7 @@ public class FusionReactor {
     }
 
     public void vaporiseHohlraum() {
-        getFuelTank().receive(((ItemHohlraum) controller.getInventory().get(0).getItem()).getGas(controller.getInventory().get(0)), true);
+        getFuelTank().fill(((ItemHohlraum) controller.getInventory().get(0).getItem()).getGas(controller.getInventory().get(0)), ChemicalAction.EXECUTE);
         lastPlasmaTemperature = plasmaTemperature;
         controller.getInventory().set(0, ItemStack.EMPTY);
         burning = true;
@@ -138,14 +139,14 @@ public class FusionReactor {
         int amountAvailable = 2 * Math.min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
-        getDeuteriumTank().draw(amountToInject / 2, true);
-        getTritiumTank().draw(amountToInject / 2, true);
-        getFuelTank().receive(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), true);
+        getDeuteriumTank().drain(amountToInject / 2, ChemicalAction.EXECUTE);
+        getTritiumTank().drain(amountToInject / 2, ChemicalAction.EXECUTE);
+        getFuelTank().fill(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), ChemicalAction.EXECUTE);
     }
 
     public int burnFuel() {
         int fuelBurned = (int) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
-        getFuelTank().draw(fuelBurned, true);
+        getFuelTank().drain(fuelBurned, ChemicalAction.EXECUTE);
         plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * fuelBurned / plasmaHeatCapacity;
         return fuelBurned;
     }

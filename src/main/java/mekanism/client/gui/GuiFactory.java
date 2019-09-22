@@ -78,13 +78,13 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
                 if (gasTank.isEmpty()) {
                     displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.build(gasTank.getGas(), ": " + gasTank.getStored()), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(gasTank.getStack(), ": " + gasTank.getStored()), xAxis, yAxis);
                 }
             } else if (tileEntity.getFactoryType() == FactoryType.INFUSING) {
-                if (tileEntity.infuseStored.isEmpty()) {
+                if (tileEntity.infusionTank.isEmpty()) {
                     displayTooltip(TextComponentUtil.translate("gui.mekanism.empty"), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.build(tileEntity.infuseStored.getType(), ": " + tileEntity.infuseStored.getAmount()), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(tileEntity.infusionTank.getType(), ": " + tileEntity.infusionTank.getStored()), xAxis, yAxis);
                 }
             }
         }
@@ -109,17 +109,17 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
             TileEntityItemStackGasToItemStackFactory itemGasToItemFactory = (TileEntityItemStackGasToItemStackFactory) tileEntity;
             int scaledGas = itemGasToItemFactory.getScaledGasLevel(160);
             if (scaledGas > 0) {
-                GasStack gas = itemGasToItemFactory.gasTank.getGas();
+                GasStack gas = itemGasToItemFactory.gasTank.getStack();
                 if (!gas.isEmpty()) {
                     MekanismRenderer.color(gas);
-                    displayGauge(8, 78, scaledGas, 5, gas.getGas().getSprite());
+                    displayGauge(8, 78, scaledGas, 5, gas.getType().getSprite());
                     MekanismRenderer.resetColor();
                 }
             }
         } else if (tileEntity.getFactoryType() == FactoryType.INFUSING) {
             if (tileEntity.getScaledInfuseLevel(160) > 0) {
-                MekanismRenderer.color(tileEntity.infuseStored.getType().getTint());
-                displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.getType().getSprite());
+                MekanismRenderer.color(tileEntity.infusionTank.getType().getTint());
+                displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infusionTank.getType().getSprite());
                 MekanismRenderer.resetColor();
             }
         }

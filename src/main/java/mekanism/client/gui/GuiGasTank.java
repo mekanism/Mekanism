@@ -62,7 +62,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
         }
         drawString(component, 45, 40, 0x404040);
         //TODO: 1.14 Convert to GuiElement
-        GasStack gasStack = tileEntity.gasTank.getGas();
+        GasStack gasStack = tileEntity.gasTank.getStack();
         if (!gasStack.isEmpty()) {
             renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.gas"), ": ", gasStack), 45, 49, 0x404040, 112);
         } else {
@@ -81,11 +81,11 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
             // The other option which may make more sense is to make it be a GuiGauge
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
-            drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, tileEntity.gasTank.getGas().getGas().getSprite(), scale, 10);
-            TextureAtlasSprite icon = tileEntity.gasTank.getGas().getGas().getSprite();
+            TextureAtlasSprite icon = tileEntity.gasTank.getType().getSprite();
+            drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);
             if (scale > 0 && icon != null) {
                 minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                MekanismRenderer.color(tileEntity.gasTank.getGas());
+                MekanismRenderer.color(tileEntity.gasTank.getStack());
                 int start = 0;
                 int x = guiLeft + 65;
                 int y = guiTop + 17;

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by Thiakil on 11/11/2017.
  */
+//TODO: Should something like this be made for chemicals more generically?
 public interface GasTankInfo {
 
     /**
@@ -13,7 +14,7 @@ public interface GasTankInfo {
      * @return the stored gas, or null
      */
     @Nonnull
-    GasStack getGas();
+    GasStack getStack();
 
     /**
      * Gets the amount of gas stored by this GasTank.
@@ -23,9 +24,9 @@ public interface GasTankInfo {
     int getStored();
 
     /**
-     * Gets the maximum amount of gas this tank can hold.
+     * Gets the capacity of this tank.
      *
      * @return - max gas
      */
-    int getMaxGas();
+    int getCapacity();
 }

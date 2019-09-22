@@ -78,7 +78,7 @@ public class InventoryFrequency extends Frequency {
         }
         if (nbtTags.contains("storedGas")) {
             storedGas.read(nbtTags.getCompound("storedGas"));
-            storedGas.setMaxGas(MekanismConfig.general.quantumEntangloporterGasBuffer.get());
+            storedGas.setCapacity(MekanismConfig.general.quantumEntangloporterGasBuffer.get());
         }
 
         ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);

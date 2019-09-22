@@ -1,6 +1,7 @@
 package mekanism.common.capabilities;
 
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -16,13 +17,13 @@ public class DefaultGasHandler implements IGasHandler {
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         return GasStack.EMPTY;
     }
 

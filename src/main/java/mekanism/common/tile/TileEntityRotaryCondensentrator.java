@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -81,14 +82,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 }
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
-                if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
-                    (fluidTank.getFluid().isEmpty() || (fluidTank.getFluid().getAmount() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
+                if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getStack()) &&
+                    (fluidTank.getFluid().isEmpty() || (fluidTank.getFluid().getAmount() < MAX_FLUID && gasEquals(gasTank.getStack(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
                     setActive(true);
-                    fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), operations), FluidAction.EXECUTE);
-                    gasTank.draw(operations, true);
+                    fluidTank.fill(new FluidStack(gasTank.getType().getFluid(), operations), FluidAction.EXECUTE);
+                    gasTank.drain(operations, ChemicalAction.EXECUTE);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
                 } else {
@@ -104,15 +105,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&
-                    (gasTank.isEmpty() || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
+                    (gasTank.isEmpty() || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getStack(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
                     setActive(true);
                     //TODO: Recipe system instead of this
-                    Gas value = MekanismAPI.GAS_REGISTRY.getValue(fluidTank.getFluid().getFluid().getRegistryName());
-                    if (value != null) {
-                        gasTank.receive(new GasStack(value, operations), true);
+                    Gas value = Gas.getFromRegistry(fluidTank.getFluid().getFluid().getRegistryName());
+                    if (value != MekanismAPI.EMPTY_GAS) {
+                        gasTank.fill(new GasStack(value, operations), ChemicalAction.EXECUTE);
                         fluidTank.drain(operations, FluidAction.EXECUTE);
                         setEnergy(getEnergy() - getEnergyPerTick() * operations);
                         clientEnergyUsed = prev - getEnergy();
@@ -141,16 +142,16 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     public boolean isValidGas(@Nonnull GasStack g) {
-        return !g.isEmpty() && g.getGas().hasFluid();
+        return !g.isEmpty() && g.getType().hasFluid();
 
     }
 
     public boolean gasEquals(@Nonnull GasStack gas, @Nonnull FluidStack fluid) {
-        return !fluid.isEmpty() && !gas.isEmpty() && gas.getGas().hasFluid() && gas.getGas().getFluid() == fluid.getFluid();
+        return !fluid.isEmpty() && !gas.isEmpty() && gas.getType().hasFluid() && gas.getType().getFluid() == fluid.getFluid();
     }
 
     public boolean isValidFluid(@Nonnull Fluid f) {
-        return MekanismAPI.GAS_REGISTRY.getValue(f.getRegistryName()) != null;
+        return Gas.getFromRegistry(f.getRegistryName()) != MekanismAPI.EMPTY_GAS;
     }
 
     public boolean isValidFluid(@Nonnull FluidStack f) {
@@ -212,14 +213,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        return gasTank.receive(stack, doTransfer);
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        return gasTank.fill(stack, action);
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return gasTank.draw(amount, doTransfer);
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+        return gasTank.drain(amount, action);
     }
 
     @Override
@@ -267,14 +268,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (!gasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getStack().write(new CompoundNBT()));
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
-        gasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
+        gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
     }
 
     @Override
@@ -351,7 +352,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public int getRedstoneLevel() {
         if (mode == 0) {
-            return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getMaxGas());
+            return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
         }
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }

@@ -75,7 +75,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49) {
-            GasStack gasStack = tileEntity.gasTank.getGas();
+            GasStack gasStack = tileEntity.gasTank.getStack();
             if (gasStack.isEmpty()) {
                 displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
             } else {
@@ -90,7 +90,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity.getScaledGasLevel(12) > 0) {
             int displayInt = tileEntity.getScaledGasLevel(12);
-            displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getGas());
+            displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getStack());
         }
     }
 
@@ -103,7 +103,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         if (!gas.isEmpty()) {
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             MekanismRenderer.color(gas);
-            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, gas.getGas().getSprite(), sizeX, sizeY);
+            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, gas.getType().getSprite(), sizeX, sizeY);
             MekanismRenderer.resetColor();
         }
     }

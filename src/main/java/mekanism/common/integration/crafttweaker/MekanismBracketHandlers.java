@@ -22,8 +22,8 @@ public class MekanismBracketHandlers {
             CraftTweakerAPI.logWarning("Gas BEP <item:%s> does not seem to be lower-cased!", tokens);
         }
         //TODO: Make this have both parts of the registry name rather than just being one part
-        Gas gas = MekanismAPI.GAS_REGISTRY.getValue(new ResourceLocation(tokens));
-        if (gas == null) {
+        Gas gas = Gas.getFromRegistry(new ResourceLocation(tokens));
+        if (gas == MekanismAPI.EMPTY_GAS) {
             throw new IllegalArgumentException("Could not get gas with name: <gas:" + tokens + ">! Gas does not appear to exist!");
         }
         return new CraftTweakerGasStack(new GasStack(gas, 1));

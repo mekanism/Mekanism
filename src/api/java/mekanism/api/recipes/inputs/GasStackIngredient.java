@@ -19,7 +19,7 @@ import net.minecraft.tags.Tag;
 public abstract class GasStackIngredient implements InputIngredient<@NonNull GasStack> {
 
     public static GasStackIngredient from(@NonNull GasStack instance) {
-        return from(instance.getGas(), instance.getAmount());
+        return from(instance.getType(), instance.getAmount());
     }
 
     public static GasStackIngredient from(@NonNull IGasProvider instance, int amount) {
@@ -51,7 +51,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
         @Override
         public boolean testType(@NonNull GasStack gasStack) {
-            return testType(Objects.requireNonNull(gasStack).getGas());
+            return testType(Objects.requireNonNull(gasStack).getType());
         }
 
         @Override
@@ -88,7 +88,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
         @Override
         public boolean testType(@NonNull GasStack gasStack) {
-            return testType(Objects.requireNonNull(gasStack).getGas());
+            return testType(Objects.requireNonNull(gasStack).getType());
         }
 
         @Override

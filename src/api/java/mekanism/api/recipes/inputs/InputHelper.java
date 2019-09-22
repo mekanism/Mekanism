@@ -2,6 +2,7 @@ package mekanism.api.recipes.inputs;
 
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionStack;
@@ -106,7 +107,7 @@ public class InputHelper {
 
             @Override
             public @NonNull GasStack getInput() {
-                return gasTank.getGas();
+                return gasTank.getStack();
             }
 
             @Override
@@ -131,7 +132,8 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                gasTank.draw(recipeInput.getAmount() * operations, true);
+                //TODO: Pass this as a GasStack?
+                gasTank.drain(recipeInput.getAmount() * operations, ChemicalAction.EXECUTE);
             }
 
             @Override
@@ -146,6 +148,7 @@ public class InputHelper {
                     //If the input is empty that means there is no ingredient that matches
                     return 0;
                 }
+                //TODO: Simulate the drain?
                 return Math.min(getInput().getAmount() / recipeInput.getAmount(), currentMax);
             }
         };
@@ -192,7 +195,7 @@ public class InputHelper {
                     return 0;
                 }
                 FluidStack recipeInput = getRecipeInput(recipeIngredient);
-                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches
                     return 0;
@@ -203,15 +206,12 @@ public class InputHelper {
         };
     }
 
-    public static IInputHandler<@NonNull InfusionStack> getInputHandler(@Nonnull InfusionTank infuseStorage) {
+    public static IInputHandler<@NonNull InfusionStack> getInputHandler(@Nonnull InfusionTank infusionTank) {
         return new IInputHandler<@NonNull InfusionStack>() {
 
             @Override
             public @NonNull InfusionStack getInput() {
-                if (infuseStorage.isEmpty()) {
-                    return InfusionStack.EMPTY;
-                }
-                return new InfusionStack(infuseStorage.getType(), infuseStorage.getAmount());
+                return infusionTank.getStack();
             }
 
             @Override
@@ -227,25 +227,32 @@ public class InputHelper {
 
             @Override
             public void use(@NonNull InfusionStack recipeInput, int operations) {
-                if (infuseStorage.isEmpty()) {
+                if (recipeInput.isEmpty()) {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                infuseStorage.subtract(new InfusionStack(recipeInput, recipeInput.getAmount() * operations));
+                InfusionStack inputGas = getInput();
+                if (inputGas.isEmpty()) {
+                    //Something went wrong, this if should never really be true if we got to finishProcessing
+                    return;
+                }
+                //TODO: Pass this as a InfusionStack?
+                infusionTank.drain(recipeInput.getAmount() * operations, ChemicalAction.EXECUTE);
             }
 
             @Override
             public int operationsCanSupport(InputIngredient<@NonNull InfusionStack> recipeIngredient, int currentMax) {
-                if (currentMax == 0 || infuseStorage.isEmpty()) {
+                if (currentMax == 0) {
                     //Short circuit that if we already can't perform any operations, just return
                     return 0;
                 }
                 InfusionStack recipeInput = getRecipeInput(recipeIngredient);
-                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputInfusion)
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches
                     return 0;
                 }
+                //TODO: Simulate the drain?
                 return Math.min(getInput().getAmount() / recipeInput.getAmount(), currentMax);
             }
         };

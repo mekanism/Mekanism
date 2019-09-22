@@ -10,6 +10,7 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -400,20 +401,20 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        return !hasFrequency() ? 0 : frequency.storedGas.receive(stack, doTransfer);
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        return !hasFrequency() ? 0 : frequency.storedGas.fill(stack, action);
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
-        return !hasFrequency() ? GasStack.EMPTY : frequency.storedGas.draw(amount, doTransfer);
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+        return !hasFrequency() ? GasStack.EMPTY : frequency.storedGas.drain(amount, action);
     }
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.INPUT) {
-            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getGasType();
+            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
         }
         return false;
     }
@@ -421,7 +422,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.OUTPUT) {
-            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getGasType();
+            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
         }
         return false;
     }

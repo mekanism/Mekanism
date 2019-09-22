@@ -36,7 +36,7 @@ public class ItemStackGasToGasRecipe implements IMekanismRecipe, BiPredicate<@No
     }
 
     public ItemStackGasToGasRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output) {
-        this(itemInput, gasInput, output.getGas(), output.getAmount());
+        this(itemInput, gasInput, output.getType(), output.getAmount());
     }
 
     public ItemStackIngredient getItemInput() {

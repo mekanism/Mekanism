@@ -3,8 +3,8 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
@@ -32,6 +32,7 @@ import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -44,14 +45,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse",
                                                          "getInfuseNeeded"};
-    /**
-     * The maxiumum amount of infuse this machine can store.
-     */
+
     public static final int MAX_INFUSE = 1000;
-    /**
-     * The amount of infuse this machine has stored.
-     */
-    public InfusionTank infuseStored = new InfusionTank();
+    public InfusionTank infusionTank = new InfusionTank(MAX_INFUSE);
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
@@ -77,13 +73,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             ChargeUtils.discharge(4, this);
             ItemStack infuseInput = getInventory().get(1);
             if (!infuseInput.isEmpty()) {
-                InfusionStack pendingInfuseInput = InfuseRegistry.getObject(infuseInput);
-                if (!pendingInfuseInput.isEmpty()) {
-                    if (infuseStored.isEmpty() || infuseStored.getType() == pendingInfuseInput.getType()) {
-                        if (infuseStored.getAmount() + pendingInfuseInput.getAmount() <= MAX_INFUSE) {
-                            infuseStored.increase(pendingInfuseInput);
-                            infuseInput.shrink(1);
-                        }
+                InfusionStack pendingInfusionInput = InfuseRegistry.getObject(infuseInput);
+                if (!pendingInfusionInput.isEmpty()) {
+                    //TODO: Check this still works properly
+                    if (infusionTank.fill(pendingInfusionInput, ChemicalAction.SIMULATE) == pendingInfusionInput.getAmount()) {
+                        //If we can accept it all, then add it and decrease our input
+                        infusionTank.fill(pendingInfusionInput, ChemicalAction.EXECUTE);
+                        infuseInput.shrink(1);
                     }
                 }
             }
@@ -172,17 +168,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             if (infusionStack.isEmpty()) {
                 return false;
             }
-            if (infuseStored.isEmpty()) {
+            if (infusionTank.isEmpty()) {
                 InfuseType type = infusionStack.getType();
                 return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(type));
             }
-            return infusionStack.isTypeEqual(infuseStored.getType());
+            return infusionStack.isTypeEqual(infusionTank.getType());
         } else if (slotID == 0) {
             return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 2) {
             //If we have a type make sure that the recipe is valid for the type we have stored
-            if (!infuseStored.isEmpty()) {
-                return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(infuseStored.getType()) && recipe.getItemInput().testType(itemstack));
+            if (!infusionTank.isEmpty()) {
+                return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(itemstack));
             }
             //Otherwise just look for items that can be used
             return getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
@@ -208,13 +204,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(2);
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infuseStored.getStack(), stack));
+        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infusionTank.getStack(), stack));
     }
 
     @Nullable
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new MetallurgicInfuserCachedRecipe(recipe, InputHelper.getInputHandler(infuseStored), InputHelper.getInputHandler(inventory, 2),
+        return new MetallurgicInfuserCachedRecipe(recipe, InputHelper.getInputHandler(infusionTank), InputHelper.getInputHandler(inventory, 2),
               OutputHelper.getOutputHandler(inventory, 3))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
@@ -226,15 +222,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        infuseStored.read(nbtTags.getCompound("infuseStored"));
+        infusionTank.read(nbtTags.getCompound("infuseStored"));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (!infuseStored.isEmpty()) {
-            nbtTags.put("infuseStored", infuseStored.write(new CompoundNBT()));
+        if (!infusionTank.isEmpty()) {
+            nbtTags.put("infuseStored", infusionTank.write(new CompoundNBT()));
         }
         nbtTags.putBoolean("sideDataStored", true);
         return nbtTags;
@@ -244,34 +240,23 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     public void handlePacketData(PacketBuffer dataStream) {
         if (!world.isRemote) {
             int amount = dataStream.readInt();
+            //TODO: Make this use a specialized "dump" method
             if (amount == 0) {
-                infuseStored.setEmpty();
-            } else {
-                infuseStored.setAmount(amount);
+                infusionTank.setEmpty();
             }
             return;
         }
 
         super.handlePacketData(dataStream);
         if (world.isRemote) {
-            int amount = dataStream.readInt();
-            if (amount > 0) {
-                //TODO: Fix this once InfusionTanks keep track of an InfusionStack
-                infuseStored.setAmount(amount);
-                infuseStored.setType(MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(dataStream.readResourceLocation()));
-            } else {
-                infuseStored.setEmpty();
-            }
+            TileUtils.readTankData(dataStream, infusionTank);
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(infuseStored.getAmount());
-        if (infuseStored.getAmount() > 0) {
-            data.add(infuseStored.getType().getRegistryName());
-        }
+        TileUtils.addTankData(data, infusionTank);
         return data;
     }
 
@@ -297,9 +282,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             case 5:
                 return new Object[]{getNeededEnergy()};
             case 6:
-                return new Object[]{infuseStored};
+                return new Object[]{infusionTank};
             case 7:
-                return new Object[]{MAX_INFUSE - infuseStored.getAmount()};
+                return new Object[]{infusionTank.getNeeded()};
             default:
                 throw new NoSuchMethodException();
         }
@@ -345,11 +330,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        infuseStored.writeSustainedData(itemStack);
+        infusionTank.writeSustainedData(itemStack);
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        infuseStored.readSustainedData(itemStack);
+        infusionTank.readSustainedData(itemStack);
     }
 }

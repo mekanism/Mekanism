@@ -116,7 +116,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         if (scaledAmount > height) {
             scaledAmount = height;
         }
-        Gas gas = gasStack.getGas();
+        Gas gas = gasStack.getType();
         drawTiledSprite(xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(gas));
     }
 
@@ -151,7 +151,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     @Override
     public List<String> getTooltip(@Nonnull GasStack gasStack, ITooltipFlag tooltipFlag) {
         List<String> tooltip = new ArrayList<>();
-        Gas gasType = gasStack.getGas();
+        Gas gasType = gasStack.getType();
         if (gasType == MekanismAPI.EMPTY_GAS) {
             return tooltip;
         }

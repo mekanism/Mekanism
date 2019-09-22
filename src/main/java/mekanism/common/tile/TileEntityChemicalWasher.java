@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -111,7 +112,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Nullable
     @Override
     public FluidGasToGasRecipe getRecipe(int cacheIndex) {
-        GasStack gasStack = inputTank.getGas();
+        GasStack gasStack = inputTank.getStack();
         FluidStack fluid = fluidTank.getFluid();
         return gasStack.isEmpty() || fluid.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(fluid, gasStack));
     }
@@ -191,18 +192,18 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        if (canReceiveGas(side, stack.getGas())) {
-            return getTank(side).receive(stack, doTransfer);
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        if (canReceiveGas(side, stack.getType())) {
+            return getTank(side).fill(stack, action);
         }
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return getTank(side).draw(amount, doTransfer);
+            return getTank(side).drain(amount, action);
         }
         return GasStack.EMPTY;
     }
@@ -314,18 +315,18 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (!inputTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getStack().write(new CompoundNBT()));
         }
         if (!outputTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getStack().write(new CompoundNBT()));
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
-        inputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
-        outputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
+        inputTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
+        outputTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
     }
 
     @Override
@@ -340,7 +341,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getMaxGas());
+        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
     }
 
     public boolean isFluidInputItem(ItemStack itemStack) {

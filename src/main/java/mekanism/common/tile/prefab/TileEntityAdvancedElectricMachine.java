@@ -3,6 +3,7 @@ package mekanism.common.tile.prefab;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -96,7 +97,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     protected void upgradeInventory(TileEntityFactory factory) {
         //Advanced Machine
         if (factory instanceof TileEntityItemStackGasToItemStackFactory) {
-            ((TileEntityItemStackGasToItemStackFactory) factory).gasTank.setGas(gasTank.getGas());
+            ((TileEntityItemStackGasToItemStackFactory) factory).gasTank.setStack(gasTank.getStack());
         }
 
         NonNullList<ItemStack> factoryInventory = factory.getInventory();
@@ -147,9 +148,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
             if (needed >= gasStack.getAmount()) {
                 if (itemStack.getItem() instanceof IGasItem) {
                     IGasItem item = (IGasItem) itemStack.getItem();
-                    gasTank.receive(item.removeGas(itemStack, gasStack.getAmount()), true);
+                    gasTank.fill(item.removeGas(itemStack, gasStack.getAmount()), ChemicalAction.EXECUTE);
                 } else {
-                    gasTank.receive(gasStack, true);
+                    gasTank.fill(gasStack, ChemicalAction.EXECUTE);
                     itemStack.shrink(1);
                 }
             }
@@ -193,7 +194,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         if (stack.isEmpty()) {
             return null;
         }
-        GasStack gasStack = gasTank.getGas();
+        GasStack gasStack = gasTank.getStack();
         if (gasStack.isEmpty()) {
             return null;
         }
@@ -231,7 +232,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         gasTank.read(nbtTags.getCompound("gasTank"));
-        gasTank.setMaxGas(MAX_GAS);
+        gasTank.setCapacity(MAX_GAS);
         GasUtils.clearIfInvalid(gasTank, this::isValidGas);
     }
 
@@ -251,7 +252,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
      * @return scaled secondary energy
      */
     public int getScaledGasLevel(int i) {
-        return gasTank.getStored() * i / gasTank.getMaxGas();
+        return gasTank.getStored() * i / gasTank.getCapacity();
     }
 
     @Override
@@ -263,13 +264,16 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        if (canReceiveGas(side, stack.getType())) {
+            return gasTank.fill(stack, action);
+        }
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         return GasStack.EMPTY;
     }
 

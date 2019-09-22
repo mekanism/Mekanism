@@ -242,7 +242,7 @@ public class MekanismRenderer {
 
     public static void color(@Nonnull GasStack gasStack) {
         if (!gasStack.isEmpty()) {
-            color(gasStack.getGas());
+            color(gasStack.getType());
         }
     }
 

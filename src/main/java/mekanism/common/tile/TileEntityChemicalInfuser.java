@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -89,8 +90,8 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Nullable
     @Override
     public ChemicalInfuserRecipe getRecipe(int cacheIndex) {
-        GasStack leftGas = leftTank.getGas();
-        GasStack rightGas = rightTank.getGas();
+        GasStack leftGas = leftTank.getStack();
+        GasStack rightGas = rightTank.getStack();
         return leftGas.isEmpty() || rightGas.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(leftGas, rightGas));
     }
 
@@ -174,18 +175,18 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
-        if (canReceiveGas(side, stack.getGas())) {
-            return getTank(side).receive(stack, doTransfer);
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        if (canReceiveGas(side, stack.getType())) {
+            return getTank(side).fill(stack, action);
         }
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return getTank(side).draw(amount, doTransfer);
+            return getTank(side).drain(amount, action);
         }
         return GasStack.EMPTY;
     }
@@ -250,21 +251,21 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (!leftTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getStack().write(new CompoundNBT()));
         }
         if (!rightTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getStack().write(new CompoundNBT()));
         }
         if (!centerTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "centerTank", centerTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "centerTank", centerTank.getStack().write(new CompoundNBT()));
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        leftTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
-        rightTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
-        centerTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "centerTank")));
+        leftTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
+        rightTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
+        centerTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "centerTank")));
     }
 
     @Override

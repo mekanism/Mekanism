@@ -41,7 +41,7 @@ public class SlotStorageTank extends Slot {
         }
         if (itemstack.getItem() instanceof IGasItem) {
             IGasItem gasItem = (IGasItem) itemstack.getItem();
-            return gasItem.getGas(itemstack).isEmpty() || types.contains(gasItem.getGas(itemstack).getGas());
+            return gasItem.getGas(itemstack).isEmpty() || types.contains(gasItem.getGas(itemstack).getType());
         }
         return false;
     }

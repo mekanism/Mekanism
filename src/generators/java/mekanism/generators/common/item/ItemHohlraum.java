@@ -68,7 +68,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
         if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
-        if (!stack.getGas().isIn(MekanismTags.FUSION_FUEL)) {
+        if (!stack.getType().isIn(MekanismTags.FUSION_FUEL)) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));

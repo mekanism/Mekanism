@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -142,13 +143,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     private void handleTank(GasTank tank, GasMode mode, Direction side, int dumpAmount) {
         if (!tank.isEmpty()) {
             if (mode != GasMode.DUMPING) {
-                GasStack toSend = new GasStack(tank.getGas(), Math.min(tank.getStored(), output));
-                tank.draw(GasUtils.emit(toSend, this, EnumSet.of(side)), true);
+                GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), output));
+                tank.drain(GasUtils.emit(toSend, this, EnumSet.of(side)), ChemicalAction.EXECUTE);
             } else {
-                tank.draw(dumpAmount, true);
+                tank.drain(dumpAmount, ChemicalAction.EXECUTE);
             }
             if (mode == GasMode.DUMPING_EXCESS && tank.getNeeded() < output) {
-                tank.draw(output - tank.getNeeded(), true);
+                tank.drain(output - tank.getNeeded(), ChemicalAction.EXECUTE);
             }
         }
     }
@@ -218,13 +219,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         } else if (slotID == 1) {
             if (itemstack.getItem() instanceof IGasItem) {
                 GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return gasStack.isEmpty() || gasStack.getGas().isIn(MekanismTags.HYDROGEN);
+                return gasStack.isEmpty() || gasStack.getType().isIn(MekanismTags.HYDROGEN);
             }
             return false;
         } else if (slotID == 2) {
             if (itemstack.getItem() instanceof IGasItem) {
                 GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return gasStack.isEmpty() || gasStack.getGas().isIn(MekanismTags.OXYGEN);
+                return gasStack.isEmpty() || gasStack.getType().isIn(MekanismTags.OXYGEN);
             }
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
@@ -344,18 +345,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (!leftTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getStack().write(new CompoundNBT()));
         }
         if (!rightTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getGas().write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getStack().write(new CompoundNBT()));
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
-        leftTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
-        rightTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
+        leftTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
+        rightTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
     }
 
     @Override
@@ -385,17 +386,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
         if (side == getLeftSide()) {
-            return leftTank.draw(amount, doTransfer);
+            return leftTank.drain(amount, action);
         } else if (side == getRightSide()) {
-            return rightTank.draw(amount, doTransfer);
+            return rightTank.drain(amount, action);
         }
         return GasStack.EMPTY;
     }
@@ -408,9 +409,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         if (side == getLeftSide()) {
-            return !leftTank.isEmpty() && leftTank.getGas().isTypeEqual(type);
+            return !leftTank.isEmpty() && leftTank.getStack().isTypeEqual(type);
         } else if (side == getRightSide()) {
-            return !rightTank.isEmpty() && rightTank.getGas().isTypeEqual(type);
+            return !rightTank.isEmpty() && rightTank.getStack().isTypeEqual(type);
         }
         return false;
     }

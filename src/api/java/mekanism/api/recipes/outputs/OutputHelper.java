@@ -2,6 +2,7 @@ package mekanism.api.recipes.outputs;
 
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
@@ -130,7 +131,7 @@ public class OutputHelper {
             return;
         }
         GasStack output = new GasStack(toOutput, toOutput.getAmount() * operations);
-        gasTank.receive(output, true);
+        gasTank.fill(output, ChemicalAction.EXECUTE);
     }
 
     private static void handleOutput(@Nonnull FluidTank fluidTank, @NonNull FluidStack toOutput, int operations) {
@@ -176,7 +177,7 @@ public class OutputHelper {
         //Copy the stack and make it be max size
         GasStack maxOutput = new GasStack(toOutput, Integer.MAX_VALUE);
         //Then simulate filling the fluid tank so we can see how much actually can fit
-        int amountUsed = gasTank.receive(maxOutput, false);
+        int amountUsed = gasTank.fill(maxOutput, ChemicalAction.SIMULATE);
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }

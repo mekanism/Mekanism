@@ -2,11 +2,10 @@ package mekanism.api.infuse;
 
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IInfuseTypeProvider;
-import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 /**
@@ -14,14 +13,9 @@ import net.minecraftforge.registries.IRegistryDelegate;
  *
  * @author AidanBrady
  */
-//TODO: Rename to InfuseStack and make the variables not be public
-public class InfusionStack implements IHasTranslationKey {
+public class InfusionStack extends ChemicalStack<InfuseType> {
 
     public static final InfusionStack EMPTY = new InfusionStack(MekanismAPI.EMPTY_INFUSE_TYPE, 0);
-
-    private boolean isEmpty;
-    private int amount;
-    private IRegistryDelegate<InfuseType> infusionDelegate;
 
     /**
      * Creates a new InfusionStack with a defined infusion type and quantity.
@@ -30,19 +24,28 @@ public class InfusionStack implements IHasTranslationKey {
      * @param amount             - amount of the infusion type to be referenced in this InfusionStack
      */
     public InfusionStack(@Nonnull IInfuseTypeProvider infuseTypeProvider, int amount) {
-        InfuseType infuseType = infuseTypeProvider.getInfuseType();
+        super(infuseTypeProvider.getInfuseType(), amount);
+    }
+
+    public InfusionStack(@Nonnull InfusionStack stack, int amount) {
+        this(stack.getType(), amount);
+    }
+
+    @Nonnull
+    @Override
+    protected IRegistryDelegate<InfuseType> getDelegate(InfuseType infuseType) {
         if (MekanismAPI.INFUSE_TYPE_REGISTRY.getKey(infuseType) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a InfusionStack for an unregistered InfuseType {} (type {})", infuseType.getRegistryName(),
                   infuseType.getClass().getName());
             throw new IllegalArgumentException("Cannot create a InfusionStack from an unregistered infusion type");
         }
-        this.infusionDelegate = infuseType.delegate;
-        this.amount = amount;
-        updateEmpty();
+        return infuseType.delegate;
     }
 
-    public InfusionStack(@Nonnull InfusionStack stack, int amount) {
-        this(stack.getType(), amount);
+    @Nonnull
+    @Override
+    protected InfuseType getEmptyChemical() {
+        return MekanismAPI.EMPTY_INFUSE_TYPE;
     }
 
     /**
@@ -68,34 +71,6 @@ public class InfusionStack implements IHasTranslationKey {
         return new InfusionStack(type, amount);
     }
 
-    /**
-     * Gets the InfuseType type of this InfusionStack.
-     *
-     * @return this InfusionStack's InfuseType type
-     */
-    @Nonnull
-    public final InfuseType getType() {
-        return isEmpty ? MekanismAPI.EMPTY_INFUSE_TYPE : getRawType();
-    }
-
-    /**
-     * Writes this InfusionStack to a defined tag compound.
-     *
-     * @param nbtTags - tag compound to write to
-     *
-     * @return tag compound with this InfusionStack's data
-     */
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        getType().write(nbtTags);
-        nbtTags.putInt("amount", amount);
-        return nbtTags;
-    }
-
-    public void writeToPacket(PacketBuffer buf) {
-        buf.writeRegistryId(getType());
-        buf.writeVarInt(getAmount());
-    }
-
     public static InfusionStack readFromPacket(PacketBuffer buf) {
         InfuseType infuseType = buf.readRegistryId();
         int amount = buf.readVarInt();
@@ -110,91 +85,10 @@ public class InfusionStack implements IHasTranslationKey {
      *
      * @return copied InfusionStack
      */
+    @Nonnull
+    @Override
     public InfusionStack copy() {
-        return new InfusionStack(this::getType, amount);
-    }
-
-    /**
-     * Whether or not this InfusionStack's infusion type is equal to the other defined InfusionStack.
-     *
-     * @param stack - InfusionStack to check
-     *
-     * @return if the InfusionStacks contain the same infusion type
-     */
-    public boolean isTypeEqual(@Nonnull InfusionStack stack) {
-        return isTypeEqual(stack.getType());
-    }
-
-    public boolean isTypeEqual(@Nonnull InfuseType infuseType) {
-        return getType() == infuseType;
-    }
-
-    public final InfuseType getRawType() {
-        return infusionDelegate.get();
-    }
-
-    public boolean isEmpty() {
-        return isEmpty;
-    }
-
-    protected void updateEmpty() {
-        isEmpty = getRawType() == MekanismAPI.EMPTY_INFUSE_TYPE || amount <= 0;
-    }
-
-    public int getAmount() {
-        return isEmpty ? 0 : amount;
-    }
-
-    public void setAmount(int amount) {
-        if (getRawType() == MekanismAPI.EMPTY_INFUSE_TYPE) {
-            throw new IllegalStateException("Can't modify the empty stack.");
-        }
-        this.amount = amount;
-        updateEmpty();
-    }
-
-    public void grow(int amount) {
-        setAmount(this.amount + amount);
-    }
-
-    public void shrink(int amount) {
-        setAmount(this.amount - amount);
-    }
-
-    @Override
-    public String toString() {
-        return "[" + getType() + ", " + amount + "]";
-    }
-
-    public ITextComponent getDisplayName() {
-        //Wrapper to get display name of the infusion type easier
-        return getType().getDisplayName();
-    }
-
-    @Override
-    public String getTranslationKey() {
-        //Wrapper to get translation key of the infusion type easier
-        return getType().getTranslationKey();
-    }
-
-    /**
-     * Determines if the infusion types are equal and this stack is larger.
-     *
-     * @return true if this InfusionStack contains the other InfusionStack (same infusion type and >= amount)
-     */
-    public boolean containsInfusion(@Nonnull InfusionStack other) {
-        return isTypeEqual(other) && amount >= other.amount;
-    }
-
-    /**
-     * Determines if the infusion types and amounts are all equal.
-     *
-     * @param other - the InfusionStack for comparison
-     *
-     * @return true if the two InfusionStacks are exactly the same
-     */
-    public boolean isInfusionStackIdentical(InfusionStack other) {
-        return isTypeEqual(other) && amount == other.amount;
+        return new InfusionStack(this, getAmount());
     }
 
     //TODO: Method to check infuse type an itemstack can produce/stores? Could allow for a "tank" that can store infusion
@@ -203,7 +97,7 @@ public class InfusionStack implements IHasTranslationKey {
     public final int hashCode() {
         int code = 1;
         code = 31 * code + getType().hashCode();
-        code = 31 * code + amount;
+        code = 31 * code + getAmount();
         return code;
     }
 

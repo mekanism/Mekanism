@@ -41,11 +41,11 @@ public class ElectrolyticSeparatorContainer extends MekanismTileContainer<TileEn
                 } else if (slotStack.getItem() instanceof IGasItem) {
                     GasStack gasStack = ((IGasItem) slotStack.getItem()).getGas(slotStack);
                     if (!gasStack.isEmpty()) {
-                        if (gasStack.getGas().isIn(MekanismTags.HYDROGEN)) {
+                        if (gasStack.getType().isIn(MekanismTags.HYDROGEN)) {
                             if (!mergeItemStack(slotStack, 1, 2, false)) {
                                 return ItemStack.EMPTY;
                             }
-                        } else if (gasStack.getGas().isIn(MekanismTags.OXYGEN)) {
+                        } else if (gasStack.getType().isIn(MekanismTags.OXYGEN)) {
                             if (!mergeItemStack(slotStack, 2, 3, false)) {
                                 return ItemStack.EMPTY;
                             }

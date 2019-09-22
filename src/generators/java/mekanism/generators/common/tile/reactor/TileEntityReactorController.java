@@ -240,9 +240,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 getReactor().setCaseTemp(dataStream.readDouble());
                 getReactor().setInjectionRate(dataStream.readInt());
                 getReactor().setBurning(dataStream.readBoolean());
-                fuelTank.setGas(MekanismGases.FUSION_FUEL.getGasStack(dataStream.readInt()));
-                deuteriumTank.setGas(MekanismGases.DEUTERIUM.getGasStack(dataStream.readInt()));
-                tritiumTank.setGas(MekanismGases.TRITIUM.getGasStack(dataStream.readInt()));
+                fuelTank.setStack(MekanismGases.FUSION_FUEL.getGasStack(dataStream.readInt()));
+                deuteriumTank.setStack(MekanismGases.DEUTERIUM.getGasStack(dataStream.readInt()));
+                tritiumTank.setStack(MekanismGases.TRITIUM.getGasStack(dataStream.readInt()));
                 TileUtils.readTankData(dataStream, waterTank);
                 TileUtils.readTankData(dataStream, steamTank);
             } else if (getReactor() != null) {

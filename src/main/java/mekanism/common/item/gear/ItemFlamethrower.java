@@ -71,7 +71,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
-        if (!stack.getGas().isIn(MekanismTags.HYDROGEN)) {
+        if (!stack.getType().isIn(MekanismTags.HYDROGEN)) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));

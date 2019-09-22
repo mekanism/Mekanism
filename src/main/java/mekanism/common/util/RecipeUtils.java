@@ -75,7 +75,7 @@ public class RecipeUtils {
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
                     GasStack stored = ((IGasItem) itemstack.getItem()).getGas(itemstack);
                     if (!stored.isEmpty()) {
-                        if (!((IGasItem) toReturn.getItem()).canReceiveGas(toReturn, stored.getGas())) {
+                        if (!((IGasItem) toReturn.getItem()).canReceiveGas(toReturn, stored.getType())) {
                             return ItemStack.EMPTY;
                         }
                         if (gasFound.isEmpty()) {

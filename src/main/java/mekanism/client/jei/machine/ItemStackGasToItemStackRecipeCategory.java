@@ -78,7 +78,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         List<GasStack> scaledGases = new ArrayList<>();
         int scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         for (GasStack gas : gasInputs) {
-            gasItemProviders.addAll(GasConversionHandler.getStacksForGas(gas.getGas()));
+            gasItemProviders.addAll(GasConversionHandler.getStacksForGas(gas.getType()));
             //While we are already looping the gases ensure we scale it to get the average amount that will get used over all
             scaledGases.add(new GasStack(gas, scale));
         }

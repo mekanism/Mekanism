@@ -152,7 +152,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
         if (getGas(itemstack).isEmpty()) {
             return GasStack.EMPTY;
         }
-        Gas type = getGas(itemstack).getGas();
+        Gas type = getGas(itemstack).getType();
         int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
         if (getTier(itemstack) != GasTankTier.CREATIVE) {
             setGas(itemstack, new GasStack(type, getStored(itemstack) - gasToUse));

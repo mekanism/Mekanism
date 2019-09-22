@@ -32,7 +32,7 @@ public class ChemicalInfuserRecipe implements IMekanismRecipe, BiPredicate<@NonN
     }
 
     public ChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        this(leftInput, rightInput, output.getGas(), output.getAmount());
+        this(leftInput, rightInput, output.getType(), output.getAmount());
     }
 
     @Override

@@ -83,19 +83,17 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), 37, 4, 0x404040);
-        GasStack gasStack = tileEntity.inputTank.getGas();
+        GasStack gasStack = tileEntity.inputTank.getStack();
         if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
-            if (gasStack.getGas() instanceof Slurry) {
-                drawString(TextComponentUtil.build("(", Translation.of(((Slurry) gasStack.getGas()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
+            if (gasStack.getType() instanceof Slurry) {
+                drawString(TextComponentUtil.build("(", Translation.of(((Slurry) gasStack.getType()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
             } else {
-                //TODO: Use a getter for the cached recipe
                 CachedRecipe<ChemicalCrystallizerRecipe> recipe = tileEntity.getUpdatedCache(0);
                 if (recipe == null) {
                     drawString(TextComponentUtil.build("(", Translation.of("gui.mekanism.noRecipe"), ")"), 29, 24, 0x00CD00);
                 } else {
-                    //TODO: Do something that will avoid risking a null pointer if tank is empty?
-                    ITextComponent name = recipe.getRecipe().getOutput(tileEntity.inputTank.getGas()).getDisplayName();
+                    ITextComponent name = recipe.getRecipe().getOutput(gasStack).getDisplayName();
                     drawString(TextComponentUtil.build("(", name, ")"), 29, 24, 0x00CD00);
                 }
             }
@@ -111,7 +109,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
 
     @Nonnull
     private Gas getInputGas() {
-        return tileEntity.inputTank.getGas().getGas();
+        return tileEntity.inputTank.getType();
     }
 
     private void resetStacks() {

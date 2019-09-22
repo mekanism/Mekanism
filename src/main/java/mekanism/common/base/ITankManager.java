@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.item.ItemGaugeDropper;
@@ -32,7 +33,7 @@ public interface ITankManager {
                     GasTank gasTank = (GasTank) tank;
                     int dropperStored = storedGas.getAmount();
 
-                    if (!storedGas.isTypeEqual(gasTank.getGas())) {
+                    if (!storedGas.isTypeEqual(gasTank.getStack())) {
                         return;
                     }
 
@@ -42,7 +43,7 @@ public interface ITankManager {
                         }
 
                         int toInsert = Math.min(gasTank.getStored(), ItemGaugeDropper.CAPACITY - dropperStored);
-                        GasStack drawn = gasTank.draw(toInsert, true);
+                        GasStack drawn = gasTank.drain(toInsert, ChemicalAction.EXECUTE);
                         if (!drawn.isEmpty()) {
                             dropper.setGas(stack, new GasStack(drawn, dropperStored + drawn.getAmount()));
                         }
@@ -53,11 +54,11 @@ public interface ITankManager {
                         }
 
                         int toExtract = Math.min(gasTank.getNeeded(), dropperStored);
-                        toExtract = gasTank.receive(new GasStack(storedGas, toExtract), true);
+                        toExtract = gasTank.fill(new GasStack(storedGas, toExtract), ChemicalAction.EXECUTE);
                         dropper.setGas(stack, new GasStack(storedGas, dropperStored - toExtract));
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 2) { //Dump the tank
-                        gasTank.setGas(GasStack.EMPTY);
+                        gasTank.setEmpty();
                     }
                 } else if (tank instanceof FluidTank) {
                     FluidTank fluidTank = (FluidTank) tank;
