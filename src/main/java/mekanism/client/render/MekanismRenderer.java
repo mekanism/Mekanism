@@ -361,7 +361,7 @@ public class MekanismRenderer {
         }
 
         for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
-            event.addSprite(type.iconResource);
+            type.registerIcon(event);
         }
 
         FluidRenderer.resetDisplayInts();
@@ -395,7 +395,7 @@ public class MekanismRenderer {
         }
 
         for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
-            type.setIcon(map.getSprite(type.iconResource));
+            type.updateIcon(map);
         }
     }
 

@@ -118,7 +118,9 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
             }
         } else if (tileEntity.getFactoryType() == FactoryType.INFUSING) {
             if (tileEntity.getScaledInfuseLevel(160) > 0) {
-                displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.getType().sprite);
+                MekanismRenderer.color(tileEntity.infuseStored.getType().getTint());
+                displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.getType().getSprite());
+                MekanismRenderer.resetColor();
             }
         }
     }

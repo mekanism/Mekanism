@@ -67,7 +67,12 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
             @Nonnull
             @Override
             public TextureAtlasSprite getSprite() {
-                return tileEntity.infuseStored.getType().sprite;
+                return tileEntity.infuseStored.getType().getSprite();
+            }
+
+            @Override
+            public int getTint() {
+                return tileEntity.infuseStored.getType().getTint();
             }
 
             @Override

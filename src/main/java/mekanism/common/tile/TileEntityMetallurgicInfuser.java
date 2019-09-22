@@ -176,7 +176,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                 InfuseType type = infusionStack.getType();
                 return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(type));
             }
-            return infusionStack.isInfusionEqual(infuseStored.getType());
+            return infusionStack.isTypeEqual(infuseStored.getType());
         } else if (slotID == 0) {
             return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 2) {
@@ -208,7 +208,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(2);
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infuseStored, stack));
+        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infuseStored.getStack(), stack));
     }
 
     @Nullable

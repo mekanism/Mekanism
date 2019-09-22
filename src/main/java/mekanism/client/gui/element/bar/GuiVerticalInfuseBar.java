@@ -3,6 +3,7 @@ package mekanism.client.gui.element.bar;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiVerticalInfuseBar.InfuseInfoProvider;
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +25,9 @@ public class GuiVerticalInfuseBar extends GuiVerticalBar<InfuseInfoProvider> {
         TextureAtlasSprite sprite = getHandler().getSprite();
         if (sprite != null) {
             int displayInt = (int) (getHandler().getLevel() * texHeight);
+            MekanismRenderer.color(getHandler().getTint());
             guiObj.drawTexturedRectFromIcon(x + 1, y + 1 + (texHeight - displayInt), sprite, texWidth, displayInt);
+            MekanismRenderer.resetColor();
         }
     }
 
@@ -33,5 +36,7 @@ public class GuiVerticalInfuseBar extends GuiVerticalBar<InfuseInfoProvider> {
 
         @Nullable
         TextureAtlasSprite getSprite();
+
+        int getTint();
     }
 }

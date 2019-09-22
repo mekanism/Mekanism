@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 //TODO: Rewrite this to be more like GsaTank
-public class InfusionTank implements ISustainedData, InfusionContainer {
+public class InfusionTank implements ISustainedData {
 
     @Nonnull
     private InfuseType type = MekanismAPI.EMPTY_INFUSE_TYPE;
@@ -126,9 +126,7 @@ public class InfusionTank implements ISustainedData, InfusionContainer {
     }
 
     @Nonnull
-    @Override
     public InfuseType getType() {
-        //TODO: Make it return an empty instance
         return amount == 0 ? MekanismAPI.EMPTY_INFUSE_TYPE : type;
     }
 
@@ -137,12 +135,10 @@ public class InfusionTank implements ISustainedData, InfusionContainer {
         return this;
     }
 
-    @Override
     public int getAmount() {
         return type == MekanismAPI.EMPTY_INFUSE_TYPE ? 0 : amount;
     }
 
-    @Override
     public boolean isEmpty() {
         return type == MekanismAPI.EMPTY_INFUSE_TYPE || amount <= 0;
     }
@@ -158,5 +154,11 @@ public class InfusionTank implements ISustainedData, InfusionContainer {
     public void setEmpty() {
         this.amount = 0;
         this.type = MekanismAPI.EMPTY_INFUSE_TYPE;
+    }
+
+    @Nonnull
+    public InfusionStack getStack() {
+        //TODO: does this need a separate empty check, also make this just return our stored stack
+        return new InfusionStack(type, amount);
     }
 }

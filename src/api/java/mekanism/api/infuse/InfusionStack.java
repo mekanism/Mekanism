@@ -15,7 +15,7 @@ import net.minecraftforge.registries.IRegistryDelegate;
  * @author AidanBrady
  */
 //TODO: Rename to InfuseStack and make the variables not be public
-public class InfusionStack implements InfusionContainer, IHasTranslationKey {
+public class InfusionStack implements IHasTranslationKey {
 
     public static final InfusionStack EMPTY = new InfusionStack(MekanismAPI.EMPTY_INFUSE_TYPE, 0);
 
@@ -74,7 +74,6 @@ public class InfusionStack implements InfusionContainer, IHasTranslationKey {
      * @return this InfusionStack's InfuseType type
      */
     @Nonnull
-    @Override
     public final InfuseType getType() {
         return isEmpty ? MekanismAPI.EMPTY_INFUSE_TYPE : getRawType();
     }
@@ -122,12 +121,11 @@ public class InfusionStack implements InfusionContainer, IHasTranslationKey {
      *
      * @return if the InfusionStacks contain the same infusion type
      */
-    public boolean isInfusionEqual(@Nonnull InfusionStack stack) {
-        return isInfusionEqual(stack.getType());
+    public boolean isTypeEqual(@Nonnull InfusionStack stack) {
+        return isTypeEqual(stack.getType());
     }
 
-    //TODO: Rename to isTypeEqual??
-    public boolean isInfusionEqual(@Nonnull InfuseType infuseType) {
+    public boolean isTypeEqual(@Nonnull InfuseType infuseType) {
         return getType() == infuseType;
     }
 
@@ -135,7 +133,6 @@ public class InfusionStack implements InfusionContainer, IHasTranslationKey {
         return infusionDelegate.get();
     }
 
-    @Override
     public boolean isEmpty() {
         return isEmpty;
     }
@@ -144,7 +141,6 @@ public class InfusionStack implements InfusionContainer, IHasTranslationKey {
         isEmpty = getRawType() == MekanismAPI.EMPTY_INFUSE_TYPE || amount <= 0;
     }
 
-    @Override
     public int getAmount() {
         return isEmpty ? 0 : amount;
     }
@@ -187,7 +183,7 @@ public class InfusionStack implements InfusionContainer, IHasTranslationKey {
      * @return true if this InfusionStack contains the other InfusionStack (same infusion type and >= amount)
      */
     public boolean containsInfusion(@Nonnull InfusionStack other) {
-        return isInfusionEqual(other) && amount >= other.amount;
+        return isTypeEqual(other) && amount >= other.amount;
     }
 
     /**
@@ -198,7 +194,7 @@ public class InfusionStack implements InfusionContainer, IHasTranslationKey {
      * @return true if the two InfusionStacks are exactly the same
      */
     public boolean isInfusionStackIdentical(InfusionStack other) {
-        return isInfusionEqual(other) && amount == other.amount;
+        return isTypeEqual(other) && amount == other.amount;
     }
 
     //TODO: Method to check infuse type an itemstack can produce/stores? Could allow for a "tank" that can store infusion
@@ -223,7 +219,7 @@ public class InfusionStack implements InfusionContainer, IHasTranslationKey {
             return true;
         }
         if (o instanceof InfusionStack) {
-            return isInfusionEqual((InfusionStack) o);
+            return isTypeEqual((InfusionStack) o);
         }
         return false;
     }

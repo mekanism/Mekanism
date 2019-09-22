@@ -8,7 +8,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionContainer;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.tags.Tag;
@@ -24,13 +23,6 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
 
     public static InfusionIngredient from(@NonNull Tag<InfuseType> infuseTypeTag, int amount) {
         return new Tagged(infuseTypeTag, amount);
-    }
-
-    public boolean test(@NonNull InfusionContainer input) {
-        if (input.isEmpty()) {
-            return false;
-        }
-        return test(new InfusionStack(input.getType(), input.getAmount()));
     }
 
     public abstract boolean testType(@NonNull InfuseType infuseType);

@@ -5,6 +5,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.text.IHasTranslationKey;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.Tag;
@@ -12,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -26,21 +29,15 @@ public class InfuseType extends ForgeRegistryEntry<InfuseType> implements IHasTr
     private final ReverseTagWrapper<InfuseType> reverseTags = new ReverseTagWrapper<>(this, InfuseTypeTags::getGeneration, InfuseTypeTags::getCollection);
 
     /**
-     * The name of this infusion.
-     */
-    public String name;
-
-    /**
      * This infuse GUI's icon
      */
-    public ResourceLocation iconResource;
+    private ResourceLocation iconLocation;
 
     /**
      * The texture representing this infuse type.
      */
-    public TextureAtlasSprite sprite;
+    private TextureAtlasSprite sprite;
     private String translationKey;
-    //TODO: Actually use the tint
     private int tint;
 
     public InfuseType(ResourceLocation registryName, int tint) {
@@ -55,12 +52,32 @@ public class InfuseType extends ForgeRegistryEntry<InfuseType> implements IHasTr
     public InfuseType(ResourceLocation registryName, ResourceLocation texture, int tint) {
         setRegistryName(registryName);
         translationKey = Util.makeTranslationKey("infuse_type", getRegistryName());
-        iconResource = texture;
+        iconLocation = texture;
         this.tint = tint;
     }
 
-    public void setIcon(TextureAtlasSprite tex) {
-        sprite = tex;
+    public int getTint() {
+        return tint;
+    }
+
+    public ResourceLocation getIcon() {
+        return iconLocation;
+    }
+
+    public TextureAtlasSprite getSprite() {
+        AtlasTexture texMap = Minecraft.getInstance().getTextureMap();
+        if (sprite == null) {
+            sprite = texMap.getAtlasSprite(getIcon().toString());
+        }
+        return sprite;
+    }
+
+    public void registerIcon(TextureStitchEvent.Pre event) {
+        event.addSprite(iconLocation);
+    }
+
+    public void updateIcon(AtlasTexture map) {
+        sprite = map.getSprite(iconLocation);
     }
 
     public ITextComponent getDisplayName() {

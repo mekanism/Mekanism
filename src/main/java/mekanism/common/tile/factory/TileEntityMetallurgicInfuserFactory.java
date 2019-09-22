@@ -56,7 +56,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
         MetallurgicInfuserRecipe foundRecipe = getRecipes().findFirst(recipe -> {
             //Check the infusion type before the ItemStack type as it a quicker easier compare check
             if (stored == 0 || recipe.getInfusionInput().testType(type)) {
-                return recipe.getItemInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(infuseStored, fallbackInput), output);
+                return recipe.getItemInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(infuseStored.getStack(), fallbackInput), output);
             }
             return false;
         });
@@ -103,7 +103,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(getInputSlot(cacheIndex));
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infuseStored, stack));
+        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infuseStored.getStack(), stack));
     }
 
     @Override

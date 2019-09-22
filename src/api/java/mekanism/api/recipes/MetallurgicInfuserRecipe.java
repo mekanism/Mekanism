@@ -7,7 +7,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.InfusionContainer;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
@@ -21,7 +21,7 @@ import net.minecraft.tags.Tag;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<InfusionContainer, ItemStack> {
+public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<InfusionStack, ItemStack> {
 
     private final ItemStackIngredient itemInput;
     private final InfusionIngredient infusionInput;
@@ -34,7 +34,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
     }
 
     @Override
-    public boolean test(InfusionContainer infusionContainer, ItemStack itemStack) {
+    public boolean test(InfusionStack infusionContainer, ItemStack itemStack) {
         return infusionInput.test(infusionContainer) && itemInput.test(itemStack);
     }
 
@@ -42,7 +42,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
         return Collections.singletonList(this.outputDefinition);
     }
 
-    public ItemStack getOutput(InfusionContainer inputInfuse, ItemStack inputItem) {
+    public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {
         return this.outputDefinition.copy();
     }
 
@@ -69,7 +69,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
         }
 
         @Override
-        public ItemStack getOutput(InfusionContainer inputInfuse, ItemStack inputItem) {
+        public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {
             return oreOutput.get();
         }
     }

@@ -46,7 +46,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     public static List<ItemStack> getInfuseStacks(InfuseType type) {
         List<ItemStack> list = new ArrayList<>();
         InfuseRegistry.getObjectMap().forEach((key, value) -> {
-            if (value.isInfusionEqual(type)) {
+            if (value.isTypeEqual(type)) {
                 list.addAll(key.getRepresentations());
             }
         });
@@ -143,7 +143,20 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
                 return null;
             }
             //TODO: Make it so we can cycle
-            return representations.get(0).getType().sprite;
+            return representations.get(0).getType().getSprite();
+        }
+
+        @Override
+        public int getTint() {
+            if (cachedRecipe == null) {
+                return -1;
+            }
+            @NonNull List<@NonNull InfusionStack> representations = cachedRecipe.getInfusionInput().getRepresentations();
+            if (representations.isEmpty()) {
+                return -1;
+            }
+            //TODO: Make it so we can cycle
+            return representations.get(0).getType().getTint();
         }
 
         @Override
