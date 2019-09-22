@@ -102,6 +102,7 @@ public class IngredientHelper {
         return null;//fluid == null ? null : FluidStackIngredient.from(FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount()));
     }
 
+    @Nonnull
     public static ItemStackIngredient toIngredient(@Nonnull IIngredient ingredient) {
         //TODO: Implement
         return null;//ItemStackIngredient.from(CraftTweakerMC.getIngredient(ingredient), ingredient.getAmount());

@@ -179,7 +179,7 @@ public class RenderTickHandler {
                     for (PlayerEntity p : world.getPlayers()) {
                         if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress) {
                             ItemStack currentItem = p.inventory.getCurrentItem();
-                            if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ((ItemFlamethrower) currentItem.getItem()).getGas(currentItem) != null) {
+                            if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && !((ItemFlamethrower) currentItem.getItem()).getGas(currentItem).isEmpty()) {
                                 Pos3D playerPos = new Pos3D(p);
                                 Pos3D flameVec;
                                 double flameXCoord = 0;

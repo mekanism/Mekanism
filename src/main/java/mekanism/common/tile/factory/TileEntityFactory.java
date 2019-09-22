@@ -535,6 +535,7 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
             lastUsage = dataStream.readDouble();
             int amount = dataStream.readInt();
             if (amount > 0) {
+                //TODO: Fix this once InfusionTanks keep track of an InfusionStack
                 infuseStored.setAmount(amount);
                 infuseStored.setType(MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(dataStream.readResourceLocation()));
             } else {

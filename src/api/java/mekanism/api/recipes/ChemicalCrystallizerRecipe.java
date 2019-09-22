@@ -30,7 +30,7 @@ public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@N
         this.outputRepresentation = outputRepresentation.copy();
     }
 
-    public ItemStack getOutput(@NonNull GasStack input) {
+    public ItemStack getOutput(GasStack input) {
         return outputRepresentation.copy();
     }
 

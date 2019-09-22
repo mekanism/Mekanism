@@ -256,6 +256,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         if (world.isRemote) {
             int amount = dataStream.readInt();
             if (amount > 0) {
+                //TODO: Fix this once InfusionTanks keep track of an InfusionStack
                 infuseStored.setAmount(amount);
                 infuseStored.setType(MekanismAPI.INFUSE_TYPE_REGISTRY.getValue(dataStream.readResourceLocation()));
             } else {

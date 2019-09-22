@@ -76,23 +76,23 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (MekanismUtils.isActive(world, pos)) {
+        TileEntityMekanism tile = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tile != null && MekanismUtils.isActive(world, pos)) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + random.nextFloat() * 6.0F / 16.0F;
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
-            if (tileEntity.getDirection() == Direction.WEST) {
+            if (tile.getDirection() == Direction.WEST) {
                 world.addParticle(ParticleTypes.SMOKE, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
                 world.addParticle(ParticleTypes.FLAME, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.getDirection() == Direction.EAST) {
+            } else if (tile.getDirection() == Direction.EAST) {
                 world.addParticle(ParticleTypes.SMOKE, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
                 world.addParticle(ParticleTypes.FLAME, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.getDirection() == Direction.NORTH) {
+            } else if (tile.getDirection() == Direction.NORTH) {
                 world.addParticle(ParticleTypes.SMOKE, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
                 world.addParticle(ParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.getDirection() == Direction.SOUTH) {
+            } else if (tile.getDirection() == Direction.SOUTH) {
                 world.addParticle(ParticleTypes.SMOKE, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
                 world.addParticle(ParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
             }
@@ -105,13 +105,13 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity == null) {
+            return false;
+        }
         if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
-        if (tileEntity.openGui(player)) {
-            return true;
-        }
-        return false;
+        return tileEntity.openGui(player);
     }
 
     @OnlyIn(Dist.CLIENT)

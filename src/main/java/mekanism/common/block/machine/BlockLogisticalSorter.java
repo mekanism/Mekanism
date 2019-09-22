@@ -190,10 +190,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                 }
             }
         }
-        if (tileEntity.openGui(player)) {
-            return true;
-        }
-        return false;
+        return tileEntity.openGui(player);
     }
 
     @OnlyIn(Dist.CLIENT)

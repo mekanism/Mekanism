@@ -37,9 +37,12 @@ public class Purification {
     @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
-            ItemStack output = IngredientHelper.getItemStack(itemOutput);
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
-                  new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasStackIngredient(gasInput), output)));
+            GasStackIngredient gasStackIngredient = GasHelper.toGasStackIngredient(gasInput);
+            if (gasStackIngredient != null) {
+                ItemStack output = IngredientHelper.getItemStack(itemOutput);
+                CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
+                      new ItemStackGasToItemStackRecipe(IngredientHelper.toIngredient(ingredientInput), gasStackIngredient, output)));
+            }
         }
     }
 

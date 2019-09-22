@@ -76,16 +76,15 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-
-        if (MekanismUtils.isActive(world, pos)) {
-            if (tileEntity.getDirection() == Direction.WEST) {
+        TileEntityMekanism tile = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tile != null && MekanismUtils.isActive(world, pos)) {
+            if (tile.getDirection() == Direction.WEST) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + .25, pos.getY() + .2, pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.getDirection() == Direction.EAST) {
+            } else if (tile.getDirection() == Direction.EAST) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + .75, pos.getY() + .2, pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.getDirection() == Direction.NORTH) {
+            } else if (tile.getDirection() == Direction.NORTH) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + .5, pos.getY() + .2, pos.getZ() + .25, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.getDirection() == Direction.SOUTH) {
+            } else if (tile.getDirection() == Direction.SOUTH) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + .5, pos.getY() + .2, pos.getZ() + .75, 0.0D, 0.0D, 0.0D);
             }
         }
@@ -97,13 +96,13 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity == null) {
+            return false;
+        }
         if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
-        if (tileEntity.openGui(player)) {
-            return true;
-        }
-        return false;
+        return tileEntity.openGui(player);
     }
 
     @OnlyIn(Dist.CLIENT)

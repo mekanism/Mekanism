@@ -79,6 +79,9 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity == null) {
+            return false;
+        }
         if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }

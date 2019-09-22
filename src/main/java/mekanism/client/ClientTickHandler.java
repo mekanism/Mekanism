@@ -65,7 +65,7 @@ public class ClientTickHandler {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chest.getItem();
-                if (jetpack.getGas(chest) != null) {
+                if (!jetpack.getGas(chest).isEmpty()) {
                     JetpackMode mode = jetpack.getMode(chest);
                     if (mode == JetpackMode.NORMAL) {
                         return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
@@ -116,7 +116,7 @@ public class ClientTickHandler {
     public static boolean hasFlamethrower(PlayerEntity player) {
         ItemStack currentItem = player.inventory.getCurrentItem();
         if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower) {
-            return ((ItemFlamethrower) currentItem.getItem()).getGas(currentItem) != null;
+            return !((ItemFlamethrower) currentItem.getItem()).getGas(currentItem).isEmpty();
         }
         return false;
     }

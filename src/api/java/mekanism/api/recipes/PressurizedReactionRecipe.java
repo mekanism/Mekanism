@@ -2,6 +2,9 @@ package mekanism.api.recipes;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -15,7 +18,9 @@ import net.minecraft.tags.Tag;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
-
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+@FieldsAreNonnullByDefault
 public class PressurizedReactionRecipe implements IMekanismRecipe {
 
     private final ItemStackIngredient inputSolid;

@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -25,8 +26,11 @@ public class ChemicalCrystallizer {
     @ZenCodeType.Method
     public static void addRecipe(IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER,
-                  new ChemicalCrystallizerRecipe(GasHelper.toGasStackIngredient(gasInput), IngredientHelper.getItemStack(itemOutput))));
+            GasStackIngredient gasStackIngredient = GasHelper.toGasStackIngredient(gasInput);
+            if (gasStackIngredient != null) {
+                CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER,
+                      new ChemicalCrystallizerRecipe(gasStackIngredient, IngredientHelper.getItemStack(itemOutput))));
+            }
         }
     }
 

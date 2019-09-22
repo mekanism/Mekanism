@@ -104,7 +104,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
 
     @Override
     public float getVolume() {
-        return (float) (super.getVolume() * MekanismConfig.client.baseSoundVolume.get());
+        return super.getVolume() * MekanismConfig.client.baseSoundVolume.get();
     }
 
     public enum SoundType {

@@ -68,6 +68,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * @return The transmitter's buffer.
      */
+    //TODO: Can we convert this to being nonnull
     @Nullable
     BUFFER getBuffer();
 

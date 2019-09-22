@@ -26,6 +26,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends TileEntitySidedPipe implements IAlloyInteraction {
 
+    @Nonnull
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public boolean unloaded = true;
@@ -39,6 +40,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         transmitterDelegate = new TransmitterImpl<>(this);
     }
 
+    @Nonnull
     public TransmitterImpl<A, N, BUFFER> getTransmitter() {
         return transmitterDelegate;
     }
@@ -288,7 +290,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.GRID_TRANSMITTER_CAPABILITY) {
-            //TODO: Check about this warning and see if getTransmitter can be annotated as Nonnull or handle the null case here
             return Capabilities.GRID_TRANSMITTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
         }
         if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {

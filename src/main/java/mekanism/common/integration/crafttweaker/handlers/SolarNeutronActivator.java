@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -24,8 +25,11 @@ public class SolarNeutronActivator {
     @ZenCodeType.Method
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR,
-                  new GasToGasRecipe(GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
+            GasStackIngredient gasStackIngredient = GasHelper.toGasStackIngredient(gasInput);
+            if (gasStackIngredient != null) {
+                CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR,
+                      new GasToGasRecipe(gasStackIngredient, GasHelper.toGas(gasOutput))));
+            }
         }
     }
 

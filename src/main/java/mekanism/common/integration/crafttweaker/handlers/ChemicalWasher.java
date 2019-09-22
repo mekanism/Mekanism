@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -25,8 +26,11 @@ public class ChemicalWasher {
     @ZenCodeType.Method
     public static void addRecipe(ILiquidStack fluidInput, IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, fluidInput, gasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
-                  new FluidGasToGasRecipe(IngredientHelper.toIngredient(fluidInput), GasHelper.toGasStackIngredient(gasInput), GasHelper.toGas(gasOutput))));
+            GasStackIngredient gasStackIngredient = GasHelper.toGasStackIngredient(gasInput);
+            if (gasStackIngredient != null) {
+                CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
+                      new FluidGasToGasRecipe(IngredientHelper.toIngredient(fluidInput), gasStackIngredient, GasHelper.toGas(gasOutput))));
+            }
         }
     }
 

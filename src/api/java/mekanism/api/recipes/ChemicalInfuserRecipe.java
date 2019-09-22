@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -15,13 +16,11 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@FieldsAreNonnullByDefault
 public class ChemicalInfuserRecipe implements IMekanismRecipe, BiPredicate<@NonNull GasStack, @NonNull GasStack> {
 
-    @NonNull
     private final GasStackIngredient leftInput;
-    @NonNull
     private final GasStackIngredient rightInput;
-    @NonNull
     private final Gas outputGas;
     private final int outputGasAmount;
 

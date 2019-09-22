@@ -82,6 +82,9 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
         if (!world.isRemote) {
             TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
+            if (bin == null) {
+                return;
+            }
             BlockRayTraceResult mop = MekanismUtils.rayTrace(world, player);
             //TODO: Check to make sure it wasn't a miss?
             if (mop != null && mop.getFace() == bin.getDirection()) {
@@ -111,6 +114,9 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack stack = player.getHeldItem(hand);
         TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
+        if (bin == null) {
+            return false;
+        }
         if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }

@@ -1,14 +1,11 @@
 package mekanism.common.base;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.gas.Gas;
 import mekanism.common.MekanismBlock;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 
 /**
@@ -90,34 +87,15 @@ public interface IFactory {
 
         public int getSecondaryEnergyPerTick() {
             if (fuelType == MachineFuelType.ADVANCED) {
-                return getTile().BASE_SECONDARY_ENERGY_PER_TICK;
+                //TODO: Verify this works properly/move it into the factory code itself
+                return TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
             }
             return 0;
-        }
-
-        public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-            if (fuelType == MachineFuelType.ADVANCED) {
-                return getTile().canReceiveGas(side, type);
-            }
-            return false;
-        }
-
-        public TileEntityAdvancedElectricMachine getTile() {
-            if (cacheTile == null) {
-                //TODO: Use getFactoryType??
-                //cacheTile = (TileEntityAdvancedElectricMachine) type.create();
-                //TODO: Move a bunch of factory stuff out
-            }
-            return cacheTile;
         }
 
         public double getEnergyUsage() {
             //TODO: Get from block
             return 0;//type.getUsage();
-        }
-
-        public int getMaxSecondaryEnergy() {
-            return 200;
         }
 
         public double getEnergyStorage() {

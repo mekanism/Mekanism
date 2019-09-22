@@ -52,7 +52,9 @@ public class MekanismAPI {
     private static MekanismRecipeHelper helper = null;
 
     //TODO: Make a new empty gas
+    @Nonnull
     public static final Gas EMPTY_GAS = new EmptyGas();
+    @Nonnull
     public static final InfuseType EMPTY_INFUSE_TYPE = new EmptyInfuseType();
 
     @SubscribeEvent

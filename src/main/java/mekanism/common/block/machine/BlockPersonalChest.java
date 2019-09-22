@@ -113,13 +113,13 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity == null) {
+            return false;
+        }
         if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
-        if (tileEntity.openGui(player)) {
-            return true;
-        }
-        return false;
+        return tileEntity.openGui(player);
     }
 
     @OnlyIn(Dist.CLIENT)

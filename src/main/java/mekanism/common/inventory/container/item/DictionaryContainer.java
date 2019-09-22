@@ -28,7 +28,7 @@ public class DictionaryContainer extends MekanismItemContainer {
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (slotID >= 0 && slotID <= 26) {
+            if (slotID <= 26) {//slotID >= 0
                 if (!mergeItemStack(slotStack, 27, inventorySlots.size(), false)) {
                     return ItemStack.EMPTY;
                 }

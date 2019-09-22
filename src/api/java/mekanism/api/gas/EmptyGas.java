@@ -1,12 +1,48 @@
 package mekanism.api.gas;
 
+import java.util.Collections;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
-//TODO: Override things so people cannot modify the empty gas, or set fluids etc
 public final class EmptyGas extends Gas {
 
     public EmptyGas() {
         super(new ResourceLocation(MekanismAPI.API_VERSION, "empty_gas"), -1);
+        super.setVisible(false);
+    }
+
+    @Override
+    public void setVisible(boolean v) {
+        //NO-OP
+    }
+
+    @Override
+    public void setFluid(@Nonnull Fluid fluid) {
+        //NO-OP
+    }
+
+    @Override
+    public void createFluid() {
+        //NO-OP
+    }
+
+    @Override
+    public void setTint(int tint) {
+        //NO-OP
+    }
+
+    @Override
+    public boolean isIn(Tag<Gas> tags) {
+        //Empty gas is in no tags
+        return false;
+    }
+
+    @Override
+    public Set<ResourceLocation> getTags() {
+        return Collections.emptySet();
     }
 }

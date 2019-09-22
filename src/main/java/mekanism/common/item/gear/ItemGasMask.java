@@ -50,7 +50,7 @@ public class ItemGasMask extends ItemCustomArmorMekanism {
         if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
             if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank) {
                 ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
-                if (tank.getFlowing(chestStack) && tank.getGas(chestStack) != null) {
+                if (tank.getFlowing(chestStack) && !tank.getGas(chestStack).isEmpty()) {
                     if (event.getSource() == DamageSource.MAGIC) {
                         event.setCanceled(true);
                     }

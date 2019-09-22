@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
+//TODO: Use ItemStack#getOrCreateTag in various places
 public final class ItemDataUtils {
 
     public static final String DATA_ID = "mekData";

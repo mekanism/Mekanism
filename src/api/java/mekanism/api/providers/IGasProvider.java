@@ -27,6 +27,7 @@ public interface IGasProvider extends IBaseProvider {
         return getGas().getTranslationKey();
     }
 
+    @Nonnull
     default Fluid getFluid() {
         Gas gas = getGas();
         return gas.hasFluid() ? gas.getFluid() : Fluids.EMPTY;

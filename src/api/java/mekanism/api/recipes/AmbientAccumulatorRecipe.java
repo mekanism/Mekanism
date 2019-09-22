@@ -1,6 +1,7 @@
 package mekanism.api.recipes;
 
 import java.util.function.IntPredicate;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 
 /**
@@ -13,9 +14,10 @@ public class AmbientAccumulatorRecipe implements IMekanismRecipe, IntPredicate {
 
     private final int ticksRequired;
     private final int dimension;
+    @Nonnull
     private final GasStack output;
 
-    public AmbientAccumulatorRecipe(int dimensionId, int ticksRequired, GasStack output) {
+    public AmbientAccumulatorRecipe(int dimensionId, int ticksRequired, @Nonnull GasStack output) {
         this.dimension = dimensionId;
         this.ticksRequired = ticksRequired;
         this.output = output;
@@ -33,6 +35,7 @@ public class AmbientAccumulatorRecipe implements IMekanismRecipe, IntPredicate {
         return value == dimension;
     }
 
+    @Nonnull
     public GasStack getOutput() {
         return output;
     }

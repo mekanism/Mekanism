@@ -48,10 +48,10 @@ public class BlockLaserFocusMatrix extends BlockTileDrops implements IHasTileEnt
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return true;
+        if (tileEntity == null) {
+            return false;
         }
-        return false;
+        return tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS;
     }
 
     @Nonnull

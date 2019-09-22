@@ -1,6 +1,9 @@
 package mekanism.api.recipes;
 
 import java.util.function.Predicate;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
@@ -10,16 +13,17 @@ import org.apache.commons.lang3.tuple.Pair;
 /**
  * Created by Thiakil on 15/07/2019.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+@FieldsAreNonnullByDefault
 public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
-    @NonNull
     private final GasStack leftGasOutput;
-    @NonNull
     private final GasStack rightGasOutput;
     private final double energyUsage;
 
-    public ElectrolysisRecipe(FluidStackIngredient input, double energyUsage, @NonNull GasStack leftGasOutput, @NonNull  GasStack rightGasOutput) {
+    public ElectrolysisRecipe(FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {
         this.input = input;
         this.energyUsage = energyUsage;
         this.leftGasOutput = leftGasOutput;
@@ -30,12 +34,10 @@ public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull F
         return input;
     }
 
-    @NonNull
     public GasStack getLeftGasOutputRepresentation() {
         return leftGasOutput;
     }
 
-    @NonNull
     public GasStack getRightGasOutputRepresentation() {
         return rightGasOutput;
     }

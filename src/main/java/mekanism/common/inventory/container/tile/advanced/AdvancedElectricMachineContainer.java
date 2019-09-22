@@ -39,7 +39,7 @@ public abstract class AdvancedElectricMachineContainer<TILE extends TileEntityAd
                 } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tile.getItemGas(slotStack) != null) {
+            } else if (!tile.getItemGas(slotStack).isEmpty()) {
                 if (slotID != 1) {
                     if (!mergeItemStack(slotStack, 1, 2, false)) {
                         return ItemStack.EMPTY;

@@ -1,6 +1,6 @@
 package mekanism.api;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 //TODO: Deprecate all of these, and add more detailed ways to add them using the new recipe system
 // In fact given this is the initial 1.14 version, we don't even have to deprecate them but can instead just directly remove them once we have new ones to add
+@ParametersAreNonnullByDefault
 public interface MekanismRecipeHelper {
 
     /**
@@ -94,7 +95,7 @@ public interface MekanismRecipeHelper {
      * @param leftOutput  - left gas to produce when the fluid is electrolyzed
      * @param rightOutput - right gas to produce when the fluid is electrolyzed
      */
-    void addElectrolyticSeparatorRecipe(@Nonnull FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput);
+    void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput);
 
     /**
      * Add a Precision Sawmill recipe.
@@ -149,10 +150,9 @@ public interface MekanismRecipeHelper {
      * @param extraEnergy - extra energy needed by the recipe
      * @param ticks       - amount of ticks it takes for this recipe to complete
      */
-    void addPRCRecipe(ItemStack inputSolid, @Nonnull FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid,
-          GasStack outputGas, double extraEnergy, int ticks);
+    void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks);
 
-    void addThermalEvaporationRecipe(@Nonnull FluidStack inputFluid, @Nonnull FluidStack outputFluid);
+    void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid);
 
     void addSolarNeutronRecipe(GasStack inputGas, GasStack outputGas);
 }

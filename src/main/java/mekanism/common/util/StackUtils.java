@@ -99,14 +99,13 @@ public final class StackUtils {
         return size(orig, newSize);
     }
 
+    //TODO: Figure out what used this or if this can be safely removed now
     public static int hashItemStack(ItemStack stack) {
         if (stack.isEmpty()) {
             return -1;
         }
         ResourceLocation registryName = stack.getItem().getRegistryName();
-        int nameHash = registryName == null ? 0 : registryName.hashCode();
-        //TODO: Is this fine
-        return nameHash;// << 8 | stack.getMetadata();
+        return registryName == null ? 0 : registryName.hashCode();
     }
 
     /**

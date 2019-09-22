@@ -25,37 +25,37 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addEnrichmentChamberRecipe(ItemStack input, ItemStack output) {
+    public void addEnrichmentChamberRecipe(@Nonnull ItemStack input, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
-    public void addOsmiumCompressorRecipe(ItemStack input, ItemStack output) {
+    public void addOsmiumCompressorRecipe(@Nonnull ItemStack input, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addOsmiumCompressorRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1), output);
     }
 
     @Override
-    public void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output) {
+    public void addCombinerRecipe(@Nonnull ItemStack input, @Nonnull ItemStack extra, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(input), ItemStackIngredient.from(extra), output);
     }
 
     @Override
-    public void addCrusherRecipe(ItemStack input, ItemStack output) {
+    public void addCrusherRecipe(@Nonnull ItemStack input, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
-    public void addPurificationChamberRecipe(ItemStack input, ItemStack output) {
+    public void addPurificationChamberRecipe(@Nonnull ItemStack input, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
-    public void addMetallurgicInfuserRecipe(InfuseType infuse, int amount, ItemStack input, ItemStack output) {
+    public void addMetallurgicInfuserRecipe(@Nonnull InfuseType infuse, int amount, @Nonnull ItemStack input, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(infuse, amount), ItemStackIngredient.from(Ingredient.fromStacks(input), input.getCount()), output);
     }
@@ -67,13 +67,13 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addChemicalOxidizerRecipe(ItemStack input, @Nonnull GasStack output) {
+    public void addChemicalOxidizerRecipe(@Nonnull ItemStack input, @Nonnull GasStack output) {
         checkPhase();
         RecipeHandler.addChemicalOxidizerRecipe(ItemStackIngredient.from(input), output);
     }
 
     @Override
-    public void addChemicalInjectionChamberRecipe(ItemStack input, @Nonnull Gas gas, ItemStack output) {
+    public void addChemicalInjectionChamberRecipe(@Nonnull ItemStack input, @Nonnull Gas gas, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(gas, 1), output);
     }
@@ -85,19 +85,19 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput, double chance) {
+    public void addPrecisionSawmillRecipe(@Nonnull ItemStack input, @Nonnull ItemStack primaryOutput, @Nonnull ItemStack secondaryOutput, double chance) {
         checkPhase();
         RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(input), primaryOutput, secondaryOutput, chance);
     }
 
     @Override
-    public void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput) {
+    public void addPrecisionSawmillRecipe(@Nonnull ItemStack input, @Nonnull ItemStack primaryOutput) {
         checkPhase();
         RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(input), primaryOutput);
     }
 
     @Override
-    public void addChemicalDissolutionChamberRecipe(ItemStack input, @Nonnull GasStack output) {
+    public void addChemicalDissolutionChamberRecipe(@Nonnull ItemStack input, @Nonnull GasStack output) {
         checkPhase();
         RecipeHandler.addChemicalDissolutionChamberRecipe(ItemStackIngredient.from(input), GasStackIngredient.from(MekanismTags.SULFURIC_ACID, 1), output);
     }
@@ -109,13 +109,13 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addChemicalCrystallizerRecipe(@Nonnull GasStack input, ItemStack output) {
+    public void addChemicalCrystallizerRecipe(@Nonnull GasStack input, @Nonnull ItemStack output) {
         checkPhase();
         RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(input), output);
     }
 
     @Override
-    public void addPRCRecipe(ItemStack inputSolid, @Nonnull FluidStack inputFluid, @Nonnull GasStack inputGas, ItemStack outputSolid, @Nonnull GasStack outputGas, double extraEnergy, int ticks) {
+    public void addPRCRecipe(@Nonnull ItemStack inputSolid, @Nonnull FluidStack inputFluid, @Nonnull GasStack inputGas, @Nonnull ItemStack outputSolid, @Nonnull GasStack outputGas, double extraEnergy, int ticks) {
         checkPhase();
         RecipeHandler.addPRCRecipe(ItemStackIngredient.from(Ingredient.fromStacks(inputSolid), inputSolid.getCount()), FluidStackIngredient.from(inputFluid),
               GasStackIngredient.from(inputGas), outputSolid, outputGas, extraEnergy, ticks);

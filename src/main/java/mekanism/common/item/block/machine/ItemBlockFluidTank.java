@@ -163,6 +163,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                 //TODO: Handle picking up and putting down, for now just setting it as source only but this is almost certainly wrong
                 RayTraceResult rayTraceResult = rayTrace(world, entityplayer, FluidMode.SOURCE_ONLY);
                 //It can be null if there is nothing in range
+                //TODO: Check if this still the case in 1.14 or if it now properly returns miss
                 if (rayTraceResult != null && rayTraceResult instanceof BlockRayTraceResult) {
                     BlockRayTraceResult pos = (BlockRayTraceResult) rayTraceResult;
                     Coord4D coord = new Coord4D(pos.getPos(), world);

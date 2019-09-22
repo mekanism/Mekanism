@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import javax.annotation.Nonnull;
-import mekanism.api.infuse.InfuseType;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
@@ -73,11 +72,10 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
 
             @Override
             public ITextComponent getTooltip() {
-                InfuseType type = tileEntity.infuseStored.getType();
-                if (type == null) {
+                if (tileEntity.infuseStored.isEmpty()) {
                     return TextComponentUtil.translate("gui.mekanism.empty");
                 }
-                return TextComponentUtil.build(type, ": " + tileEntity.infuseStored.getAmount());
+                return TextComponentUtil.build(tileEntity.infuseStored.getType(), ": " + tileEntity.infuseStored.getAmount());
             }
 
             @Override

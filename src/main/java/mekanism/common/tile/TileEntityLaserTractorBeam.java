@@ -117,10 +117,12 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
         }
     }
 
+    @Override
     public double getEnergy() {
         return collectedEnergy;
     }
 
+    @Override
     public void setEnergy(double energy) {
         collectedEnergy = Math.max(0, Math.min(energy, MAX_ENERGY));
     }

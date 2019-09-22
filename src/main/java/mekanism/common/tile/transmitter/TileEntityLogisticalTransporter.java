@@ -344,6 +344,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public void updateShare() {
     }
 
+    @Nonnull
     @Override
     public TransporterImpl getTransmitter() {
         return (TransporterImpl) transmitterDelegate;
@@ -368,7 +369,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
-            //TODO: Check annotations/nullability
             return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
         }
         return super.getCapability(capability, side);

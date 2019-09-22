@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -24,8 +25,11 @@ public class ChemicalDissolution {
     @ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IGasStack inputGas, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, inputGas, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
-                  new ItemStackGasToGasRecipe(IngredientHelper.toIngredient(ingredientInput), GasHelper.toGasStackIngredient(inputGas), GasHelper.toGas(gasOutput))));
+            GasStackIngredient gasStackIngredient = GasHelper.toGasStackIngredient(inputGas);
+            if (gasStackIngredient != null) {
+                CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
+                      new ItemStackGasToGasRecipe(IngredientHelper.toIngredient(ingredientInput), gasStackIngredient, GasHelper.toGas(gasOutput))));
+            }
         }
     }
 
