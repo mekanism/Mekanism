@@ -73,7 +73,8 @@ public final class GasUtils {
     public static GasStack removeGas(@Nonnull ItemStack itemStack, @Nonnull Gas type, int amount) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
-            if (type != MekanismAPI.EMPTY_GAS && !item.getGas(itemStack).isEmpty() && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type)) {
+            GasStack gasInItem = item.getGas(itemStack);
+            if (type != MekanismAPI.EMPTY_GAS && !gasInItem.isEmpty() && !gasInItem.isTypeEqual(type) || !item.canProvideGas(itemStack, type)) {
                 return GasStack.EMPTY;
             }
             return item.removeGas(itemStack, amount);

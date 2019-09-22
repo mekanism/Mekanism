@@ -76,7 +76,7 @@ public class GasTank implements GasTankInfo {
      * @return the amount of gas accepted by this tank
      */
     public int receive(@Nonnull GasStack amount, boolean doReceive) {
-        if (amount.isEmpty() || !stored.isGasEqual(amount)) {
+        if (amount.isEmpty() || !stored.isTypeEqual(amount)) {
             return 0;
         }
         int toFill = Math.min(getNeeded(), amount.getAmount());
@@ -109,7 +109,7 @@ public class GasTank implements GasTankInfo {
      * @return if this GasTank can accept the defined gas
      */
     public boolean canReceiveType(@Nonnull Gas gas) {
-        return stored.isEmpty() || gas == MekanismAPI.EMPTY_GAS || stored.isGasEqual(gas);
+        return stored.isEmpty() || gas == MekanismAPI.EMPTY_GAS || stored.isTypeEqual(gas);
     }
 
     /**
@@ -120,7 +120,7 @@ public class GasTank implements GasTankInfo {
      * @return if this GasTank can be drawn of the defined gas
      */
     public boolean canDraw(@Nonnull Gas gas) {
-        return !stored.isEmpty() && stored.isGasEqual(gas);
+        return !stored.isEmpty() && stored.isTypeEqual(gas);
     }
 
     /**

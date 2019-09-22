@@ -408,9 +408,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
         if (side == getLeftSide()) {
-            return !leftTank.isEmpty() && leftTank.getGas().getGas() == type;
+            return !leftTank.isEmpty() && leftTank.getGas().isTypeEqual(type);
         } else if (side == getRightSide()) {
-            return !rightTank.isEmpty() && rightTank.getGas().getGas() == type;
+            return !rightTank.isEmpty() && rightTank.getGas().isTypeEqual(type);
         }
         return false;
     }

@@ -51,11 +51,11 @@ public class RotaryCondensentratorContainer extends MekanismTileContainer<TileEn
                 }
             } else if (slotStack.getItem() instanceof IGasItem) {
                 if (slotID != 0 && slotID != 1) {
-                    if (((IGasItem) slotStack.getItem()).canProvideGas(slotStack, tile.gasTank.getGas() != null ? tile.gasTank.getGas().getGas() : null)) {
+                    if (((IGasItem) slotStack.getItem()).canProvideGas(slotStack, tile.gasTank.getGas().getGas())) {
                         if (!mergeItemStack(slotStack, 0, 1, false)) {
                             return ItemStack.EMPTY;
                         }
-                    } else if (((IGasItem) slotStack.getItem()).canReceiveGas(slotStack, tile.gasTank.getGas() != null ? tile.gasTank.getGas().getGas() : null)) {
+                    } else if (((IGasItem) slotStack.getItem()).canReceiveGas(slotStack, tile.gasTank.getGas().getGas())) {
                         if (!mergeItemStack(slotStack, 1, 2, false)) {
                             return ItemStack.EMPTY;
                         }

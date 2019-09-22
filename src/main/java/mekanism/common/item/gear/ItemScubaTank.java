@@ -121,7 +121,8 @@ public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
 
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (!getGas(itemstack).isEmpty() && getGas(itemstack).getGas() != stack.getGas()) {
+        GasStack gasInItem = getGas(itemstack);
+        if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
         if (!stack.getGas().isIn(MekanismTags.OXYGEN)) {

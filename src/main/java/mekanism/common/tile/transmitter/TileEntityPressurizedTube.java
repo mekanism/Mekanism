@@ -119,7 +119,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public void updateShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
             GasStack last = getSaveShare();
-            if ((!last.isEmpty() && !(!lastWrite.isEmpty() && lastWrite.getAmount() == last.getAmount() && lastWrite.getGas() == last.getGas())) || (last.isEmpty() && !lastWrite.isEmpty())) {
+            //TODO: Look to see if this can be cleaned up further
+            if ((!last.isEmpty() && (lastWrite.isEmpty() || !lastWrite.isGasStackIdentical(last))) || (last.isEmpty() && !lastWrite.isEmpty())) {
                 lastWrite = last;
                 markDirty();
             }
@@ -208,7 +209,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         }
         GasStack buffer = getBufferWithFallback();
         GasStack otherBuffer = ((TileEntityPressurizedTube) tileEntity).getBufferWithFallback();
-        return buffer == null || otherBuffer == null || buffer.isGasEqual(otherBuffer);
+        return buffer == null || otherBuffer == null || buffer.isTypeEqual(otherBuffer);
     }
 
     @Override

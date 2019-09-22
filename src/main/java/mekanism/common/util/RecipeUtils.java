@@ -81,7 +81,7 @@ public class RecipeUtils {
                         if (gasFound.isEmpty()) {
                             gasFound = stored;
                         } else {
-                            if (gasFound.getGas() != stored.getGas()) {
+                            if (!gasFound.isTypeEqual(stored)) {
                                 return ItemStack.EMPTY;
                             }
                             gasFound.grow(stored.getAmount());
@@ -90,7 +90,7 @@ public class RecipeUtils {
                 }
             }
 
-            if (gasFound != null) {
+            if (!gasFound.isEmpty()) {
                 gasFound.setAmount(Math.min(((IGasItem) toReturn.getItem()).getMaxGas(toReturn), gasFound.getAmount()));
                 ((IGasItem) toReturn.getItem()).setGas(toReturn, gasFound);
             }

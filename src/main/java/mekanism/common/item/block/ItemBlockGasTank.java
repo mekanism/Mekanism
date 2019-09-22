@@ -133,7 +133,8 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
 
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        if (!getGas(itemstack).isEmpty() && getGas(itemstack).getGas() != stack.getGas()) {
+        GasStack gasInItem = getGas(itemstack);
+        if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
         if (getTier(itemstack) == GasTankTier.CREATIVE) {
@@ -166,13 +167,13 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     @Override
     public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         GasStack gasInItem = getGas(itemstack);
-        return gasInItem.isEmpty() || gasInItem.getGas() == type;
+        return gasInItem.isEmpty() || gasInItem.isTypeEqual(type);
     }
 
     @Override
     public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         GasStack gasInItem = getGas(itemstack);
-        return !gasInItem.isEmpty() && (type == MekanismAPI.EMPTY_GAS || gasInItem.getGas() == type);
+        return !gasInItem.isEmpty() && (type == MekanismAPI.EMPTY_GAS || gasInItem.isTypeEqual(type));
     }
 
     @Override

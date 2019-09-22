@@ -14,9 +14,9 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
 
     @Nonnull
     @Override
-    public GasStack getMatch(Iterable<GasStack> ingredients, GasStack toMatch) {
+    public GasStack getMatch(Iterable<GasStack> ingredients, @Nonnull GasStack toMatch) {
         for (GasStack stack : ingredients) {
-            if (toMatch.getGas() == stack.getGas()) {
+            if (toMatch.isTypeEqual(stack)) {
                 return stack;
             }
         }

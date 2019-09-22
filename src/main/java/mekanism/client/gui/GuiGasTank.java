@@ -76,7 +76,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.gasTank.getGas() != null) {
+        if (!tileEntity.gasTank.isEmpty()) {
             //TODO: 1.14 Convert to GuiElement, and make it draw the gas texture instead of the bar (will make it easier at a glance to see what is going on)
             // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
             // The other option which may make more sense is to make it be a GuiGauge

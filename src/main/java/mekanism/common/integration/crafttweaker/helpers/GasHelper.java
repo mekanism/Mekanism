@@ -21,7 +21,7 @@ public class GasHelper {
             return true;
         }
         if (ingredient instanceof IGasStack) {
-            return toGas((IGasStack) ingredient).isGasEqual(toGas(gasStack));
+            return toGas((IGasStack) ingredient).isTypeEqual(toGas(gasStack));
         }
         return false;
     }

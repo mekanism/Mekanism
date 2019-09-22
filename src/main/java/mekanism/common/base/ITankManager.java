@@ -32,7 +32,7 @@ public interface ITankManager {
                     GasTank gasTank = (GasTank) tank;
                     int dropperStored = storedGas.getAmount();
 
-                    if (!storedGas.isGasEqual(gasTank.getGas())) {
+                    if (!storedGas.isTypeEqual(gasTank.getGas())) {
                         return;
                     }
 

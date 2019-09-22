@@ -226,7 +226,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, boolean doTransfer) {
         boolean wasTankEmpty = fuelTank.isEmpty();
-        if (canReceiveGas(side, stack.getGas()) && (wasTankEmpty || fuelTank.getGas().isGasEqual(stack))) {
+        if (canReceiveGas(side, stack.getGas()) && (wasTankEmpty || fuelTank.getGas().isTypeEqual(stack))) {
             int fuelReceived = fuelTank.receive(stack, doTransfer);
             if (doTransfer && wasTankEmpty && fuelReceived > 0) {
                 output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick * 2;

@@ -118,7 +118,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
         GasStack storedGas = getGas(itemstack);
-        if (!storedGas.isGasEqual(stack)) {
+        if (!storedGas.isTypeEqual(stack)) {
             return 0;
         }
         if (!stack.getGas().isIn(MekanismTags.HYDROGEN)) {

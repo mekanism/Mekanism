@@ -68,7 +68,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
         GasStack gasInItem = getGas(itemstack);
-        if (!gasInItem.isEmpty() && gasInItem.getGas() != stack.getGas()) {
+        if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
         if (!stack.getGas().isIn(MekanismTags.HYDROGEN)) {

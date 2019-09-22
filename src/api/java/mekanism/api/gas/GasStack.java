@@ -128,12 +128,12 @@ public class GasStack implements IHasTranslationKey {
      *
      * @return if the GasStacks contain the same gas type
      */
-    //TODO: Use this in places we compare manually. Also should this be renamed ot isTypeEqual
-    public boolean isGasEqual(@Nonnull GasStack stack) {
-        return isGasEqual(stack.getGas());
+    //TODO: Use this in places we compare manually
+    public boolean isTypeEqual(@Nonnull GasStack stack) {
+        return isTypeEqual(stack.getGas());
     }
 
-    public boolean isGasEqual(@Nonnull Gas gas) {
+    public boolean isTypeEqual(@Nonnull Gas gas) {
         return getGas() == gas;
     }
 
@@ -191,7 +191,7 @@ public class GasStack implements IHasTranslationKey {
      * @return true if this GasStack contains the other GasStack (same gas and >= amount)
      */
     public boolean containsGas(@Nonnull GasStack other) {
-        return isGasEqual(other) && amount >= other.amount;
+        return isTypeEqual(other) && amount >= other.amount;
     }
 
     /**
@@ -202,7 +202,7 @@ public class GasStack implements IHasTranslationKey {
      * @return true if the two GasStacks are exactly the same
      */
     public boolean isGasStackIdentical(GasStack other) {
-        return isGasEqual(other) && amount == other.amount;
+        return isTypeEqual(other) && amount == other.amount;
     }
 
     //TODO: Method to check gas in an itemstack (capabilities instead of IGasItem)
@@ -227,7 +227,7 @@ public class GasStack implements IHasTranslationKey {
             return true;
         }
         if (o instanceof GasStack) {
-            return isGasEqual((GasStack) o);
+            return isTypeEqual((GasStack) o);
         }
         return false;
     }

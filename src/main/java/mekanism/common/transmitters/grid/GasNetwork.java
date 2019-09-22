@@ -71,7 +71,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             if (!net.buffer.isEmpty()) {
                 if (buffer.isEmpty()) {
                     buffer = net.buffer.copy();
-                } else if (buffer.isGasEqual(net.buffer)) {
+                } else if (buffer.isTypeEqual(net.buffer)) {
                     buffer.grow(net.buffer.getAmount());
                 } else if (net.buffer.getAmount() > buffer.getAmount()) {
                     buffer = net.buffer.copy();
@@ -101,7 +101,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
 
         //TODO better multiple buffer impl
-        if (buffer.isGasEqual(gas)) {
+        if (buffer.isTypeEqual(gas)) {
             buffer.grow(gas.getAmount());
         }
         gas.setAmount(0);
@@ -149,7 +149,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     public int emit(@Nonnull GasStack stack, boolean doTransfer) {
-        if (!buffer.isEmpty() && buffer.getGas() != stack.getGas()) {
+        if (!buffer.isEmpty() && !buffer.isTypeEqual(stack)) {
             return 0;
         }
         int toUse = Math.min(getGasNeeded(), stack.getAmount());
@@ -241,12 +241,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public boolean isCompatibleWith(GasNetwork other) {
-        return super.isCompatibleWith(other) && (this.buffer.isEmpty() || other.buffer.isEmpty() || this.buffer.isGasEqual(other.buffer));
+        return super.isCompatibleWith(other) && (this.buffer.isEmpty() || other.buffer.isEmpty() || this.buffer.isTypeEqual(other.buffer));
     }
 
     @Override
     public boolean compatibleWithBuffer(@Nonnull GasStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer.isEmpty() || buffer.isEmpty() || this.buffer.isGasEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.buffer.isEmpty() || buffer.isEmpty() || this.buffer.isTypeEqual(buffer));
     }
 
     public static class GasTransferEvent extends Event {

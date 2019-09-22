@@ -31,11 +31,11 @@ public class SolarNeutronActivatorContainer extends MekanismTileContainer<TileEn
             stack = slotStack.copy();
             if (slotStack.getItem() instanceof IGasItem) {
                 if (slotID != 0 && slotID != 1) {
-                    if (((IGasItem) slotStack.getItem()).canProvideGas(slotStack, tile.inputTank.getGas() != null ? tile.inputTank.getGas().getGas() : null)) {
+                    if (((IGasItem) slotStack.getItem()).canProvideGas(slotStack, tile.inputTank.getGas().getGas())) {
                         if (!mergeItemStack(slotStack, 0, 1, false)) {
                             return ItemStack.EMPTY;
                         }
-                    } else if (((IGasItem) slotStack.getItem()).canReceiveGas(slotStack, tile.outputTank.getGas() != null ? tile.outputTank.getGas().getGas() : null)) {
+                    } else if (((IGasItem) slotStack.getItem()).canReceiveGas(slotStack, tile.outputTank.getGas().getGas())) {
                         if (!mergeItemStack(slotStack, 1, 2, false)) {
                             return ItemStack.EMPTY;
                         }

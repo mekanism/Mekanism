@@ -65,7 +65,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     @Override
     public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
         GasStack gasInItem = getGas(itemstack);
-        if (!gasInItem.isEmpty() && !gasInItem.isGasEqual(stack)) {
+        if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
         if (!stack.getGas().isIn(MekanismTags.FUSION_FUEL)) {
