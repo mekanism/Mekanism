@@ -173,7 +173,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     @Override
     public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         GasStack gasInItem = getGas(itemstack);
-        return !gasInItem.isEmpty() && (type == MekanismAPI.EMPTY_GAS || gasInItem.isTypeEqual(type));
+        return !gasInItem.isEmpty() && (type.isEmptyType() || gasInItem.isTypeEqual(type));
     }
 
     @Override

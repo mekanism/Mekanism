@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.BracketResolver;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import java.util.Locale;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
@@ -23,7 +22,7 @@ public class MekanismBracketHandlers {
         }
         //TODO: Make this have both parts of the registry name rather than just being one part
         Gas gas = Gas.getFromRegistry(new ResourceLocation(tokens));
-        if (gas == MekanismAPI.EMPTY_GAS) {
+        if (gas.isEmptyType()) {
             throw new IllegalArgumentException("Could not get gas with name: <gas:" + tokens + ">! Gas does not appear to exist!");
         }
         return new CraftTweakerGasStack(new GasStack(gas, 1));

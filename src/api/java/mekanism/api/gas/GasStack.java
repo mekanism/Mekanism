@@ -62,7 +62,7 @@ public class GasStack extends ChemicalStack<Gas> {
             return EMPTY;
         }
         Gas type = Gas.readFromNBT(nbtTags);
-        if (type == MekanismAPI.EMPTY_GAS) {
+        if (type.isEmptyType()) {
             return EMPTY;
         }
         int amount = nbtTags.getInt("amount");
@@ -75,7 +75,7 @@ public class GasStack extends ChemicalStack<Gas> {
     public static GasStack readFromPacket(PacketBuffer buf) {
         Gas gas = buf.readRegistryId();
         int amount = buf.readVarInt();
-        if (gas == MekanismAPI.EMPTY_GAS) {
+        if (gas.isEmptyType()) {
             return EMPTY;
         }
         return new GasStack(gas, amount);

@@ -20,7 +20,7 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
     private ResourceLocation iconLocation;
     private TextureAtlasSprite sprite;
 
-    //TODO: Move tint here? Gas doesn't support transparency but infuse type does. Should we just make them both not support it or how should it be handled
+    private int tint = 0xFFFFFF;
 
     protected Chemical(ResourceLocation registryName, ResourceLocation iconLocation) {
         setRegistryName(registryName);
@@ -74,7 +74,27 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
         sprite = map.getSprite(iconLocation);
     }
 
+    /**
+     * Get the tint for rendering the chemical
+     *
+     * @return int representation of color in 0xRRGGBB format
+     */
+    public int getTint() {
+        return tint;
+    }
+
+    /**
+     * Sets the tint for the chemical
+     *
+     * @param tint int representation of color in 0xRRGGBB format
+     */
+    public void setTint(int tint) {
+        this.tint = tint;
+    }
+
     public abstract boolean isIn(Tag<TYPE> tags);
 
     public abstract Set<ResourceLocation> getTags();
+
+    public abstract boolean isEmptyType();
 }

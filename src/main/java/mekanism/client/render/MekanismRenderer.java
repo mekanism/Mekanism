@@ -8,8 +8,9 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -240,15 +241,15 @@ public class MekanismRenderer {
         }
     }
 
-    public static void color(@Nonnull GasStack gasStack) {
-        if (!gasStack.isEmpty()) {
-            color(gasStack.getType());
+    public static <CHEMICAL extends Chemical<CHEMICAL>> void color(@Nonnull ChemicalStack<CHEMICAL> chemicalStack) {
+        if (!chemicalStack.isEmpty()) {
+            color(chemicalStack.getType());
         }
     }
 
-    public static void color(@Nonnull Gas gas) {
-        if (gas != MekanismAPI.EMPTY_GAS) {
-            int color = gas.getTint();
+    public static <CHEMICAL extends Chemical<CHEMICAL>> void color(@Nonnull CHEMICAL chemical) {
+        if (!chemical.isEmptyType()) {
+            int color = chemical.getTint();
             GlStateManager.color3f(getRed(color), getGreen(color), getBlue(color));
         }
     }

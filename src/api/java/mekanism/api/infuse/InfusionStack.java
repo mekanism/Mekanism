@@ -61,7 +61,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
             return EMPTY;
         }
         InfuseType type = InfuseType.readFromNBT(nbtTags);
-        if (type == MekanismAPI.EMPTY_INFUSE_TYPE) {
+        if (type.isEmptyType()) {
             return EMPTY;
         }
         int amount = nbtTags.getInt("amount");
@@ -74,7 +74,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
     public static InfusionStack readFromPacket(PacketBuffer buf) {
         InfuseType infuseType = buf.readRegistryId();
         int amount = buf.readVarInt();
-        if (infuseType == MekanismAPI.EMPTY_INFUSE_TYPE) {
+        if (infuseType.isEmptyType()) {
             return EMPTY;
         }
         return new InfusionStack(infuseType, amount);

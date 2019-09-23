@@ -69,7 +69,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                         gasType = gasInItem.getType();
                     }
                 }
-                if (gasType != MekanismAPI.EMPTY_GAS && !FuelHandler.getFuel(gasType).isEmpty()) {
+                if (!gasType.isEmptyType() && !FuelHandler.getFuel(gasType).isEmpty()) {
                     GasStack removed = GasUtils.removeGas(stack, gasType, fuelTank.getNeeded());
                     boolean isTankEmpty = fuelTank.isEmpty();
                     int fuelReceived = fuelTank.fill(removed, ChemicalAction.EXECUTE);

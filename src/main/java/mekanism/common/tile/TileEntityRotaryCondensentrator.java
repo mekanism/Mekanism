@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
@@ -112,7 +111,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     setActive(true);
                     //TODO: Recipe system instead of this
                     Gas value = Gas.getFromRegistry(fluidTank.getFluid().getFluid().getRegistryName());
-                    if (value != MekanismAPI.EMPTY_GAS) {
+                    if (!value.isEmptyType()) {
                         gasTank.fill(new GasStack(value, operations), ChemicalAction.EXECUTE);
                         fluidTank.drain(operations, FluidAction.EXECUTE);
                         setEnergy(getEnergy() - getEnergyPerTick() * operations);
@@ -151,7 +150,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     public boolean isValidFluid(@Nonnull Fluid f) {
-        return Gas.getFromRegistry(f.getRegistryName()) != MekanismAPI.EMPTY_GAS;
+        return !Gas.getFromRegistry(f.getRegistryName()).isEmptyType();
     }
 
     public boolean isValidFluid(@Nonnull FluidStack f) {

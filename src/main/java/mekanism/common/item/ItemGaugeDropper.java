@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -124,7 +123,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @Override
     public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
         GasStack gasInItem = getGas(itemstack);
-        return !gasInItem.isEmpty() && (type == MekanismAPI.EMPTY_GAS || gasInItem.isTypeEqual(type));
+        return !gasInItem.isEmpty() && (type.isEmptyType() || gasInItem.isTypeEqual(type));
     }
 
     private GasStack getGas_do(ItemStack itemstack) {

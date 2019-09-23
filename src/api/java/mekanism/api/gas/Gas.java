@@ -36,8 +36,6 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     private boolean visible = true;
     private boolean from_fluid = false;
 
-    private int tint = 0xFFFFFF;
-
     /**
      * Creates a new Gas object with a defined name or key value.
      *
@@ -198,24 +196,6 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
         return "Gas: " + getRegistryName();
     }
 
-    /**
-     * Get the tint for rendering the gas
-     *
-     * @return int representation of color in 0xRRGGBB format
-     */
-    public int getTint() {
-        return tint;
-    }
-
-    /**
-     * Sets the tint for the gas
-     *
-     * @param tint int representation of color in 0xRRGGBB format
-     */
-    public void setTint(int tint) {
-        this.tint = tint;
-    }
-
     @Override
     public boolean isIn(Tag<Gas> tags) {
         return tags.contains(this);
@@ -224,6 +204,11 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     @Override
     public Set<ResourceLocation> getTags() {
         return reverseTags.getTagNames();
+    }
+
+    @Override
+    public final boolean isEmptyType() {
+        return this == MekanismAPI.EMPTY_GAS;
     }
 
     @Nonnull

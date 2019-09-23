@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import mekanism.api.MekanismAPI;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.InfusionIngredient;
@@ -34,7 +33,7 @@ public class Infuser {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             //TODO: Use bracket handler instead of string for infuseType, and then clean this stuff up
             InfuseType type = InfuseType.getFromRegistry(new ResourceLocation(infuseType));
-            if (type != MekanismAPI.EMPTY_INFUSE_TYPE) {
+            if (!type.isEmptyType()) {
                 CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new MetallurgicInfuserRecipe(
                       IngredientHelper.toIngredient(ingredientInput), InfusionIngredient.from(type, infuseAmount), IngredientHelper.getItemStack(itemOutput))));
             }

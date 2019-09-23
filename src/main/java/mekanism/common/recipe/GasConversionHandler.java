@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -104,7 +103,7 @@ public class GasConversionHandler {
     @Nonnull
     public static GasStack getItemGas(ItemStack itemStack, GasTank gasTank, Predicate<@NonNull Gas> isValidGas) {
         return getItemGas(itemStack, gasTank.getNeeded(), (gas, quantity) -> {
-            if (gas != MekanismAPI.EMPTY_GAS && gasTank.canReceive(gas) && isValidGas.test(gas)) {
+            if (!gas.isEmptyType() && gasTank.canReceive(gas) && isValidGas.test(gas)) {
                 return new GasStack(gas, quantity);
             }
             return GasStack.EMPTY;
@@ -147,7 +146,7 @@ public class GasConversionHandler {
     }
 
     public static List<ItemStack> getStacksForGas(@Nonnull Gas type) {
-        if (type == MekanismAPI.EMPTY_GAS) {
+        if (type.isEmptyType()) {
             return Collections.emptyList();
         }
         List<ItemStack> stacks = new ArrayList<>();

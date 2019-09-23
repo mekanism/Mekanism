@@ -65,7 +65,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     protected void updateEmpty() {
-        isEmpty = getRaw() == getEmptyChemical() || amount <= 0;
+        isEmpty = getRaw().isEmptyType() || amount <= 0;
     }
 
     public int getAmount() {
@@ -73,7 +73,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     public void setAmount(int amount) {
-        if (getRaw() == getEmptyChemical()) {
+        if (getRaw().isEmptyType()) {
             throw new IllegalStateException("Can't modify the empty stack.");
         }
         this.amount = amount;

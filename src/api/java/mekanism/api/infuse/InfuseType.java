@@ -22,20 +22,13 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
 
     private final ReverseTagWrapper<InfuseType> reverseTags = new ReverseTagWrapper<>(this, InfuseTypeTags::getGeneration, InfuseTypeTags::getCollection);
 
-    private int tint;
-
     public InfuseType(ResourceLocation registryName, int tint) {
-        //TODO: Make a default texture
-        this(registryName, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type/generic"), tint);
+        this(registryName, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
+        setTint(tint);
     }
 
-    public InfuseType(ResourceLocation registryName, ResourceLocation texture) {
-        this(registryName, texture, -1);
-    }
-
-    public InfuseType(ResourceLocation registryName, ResourceLocation iconLocation, int tint) {
+    public InfuseType(ResourceLocation registryName, ResourceLocation iconLocation) {
         super(registryName, iconLocation);
-        this.tint = tint;
     }
 
     @Nonnull
@@ -58,10 +51,6 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
         return infuseType;
     }
 
-    public int getTint() {
-        return tint;
-    }
-
     @Nonnull
     @Override
     public InfuseType getInfuseType() {
@@ -82,6 +71,11 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     @Override
     public Set<ResourceLocation> getTags() {
         return reverseTags.getTagNames();
+    }
+
+    @Override
+    public final boolean isEmptyType() {
+        return this == MekanismAPI.EMPTY_INFUSE_TYPE;
     }
 
     @Nonnull

@@ -6,13 +6,12 @@ import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
-//TODO: Decide if this should instead be
 public enum MekanismInfuseTypes implements IInfuseTypeProvider {
-    CARBON("carbon", new ResourceLocation(Mekanism.MODID, "infuse_type/carbon")),
-    REDSTONE("redstone", new ResourceLocation(Mekanism.MODID, "infuse_type/redstone")),
-    DIAMOND("diamond", new ResourceLocation(Mekanism.MODID, "infuse_type/diamond")),
-    REFINED_OBSIDIAN("refined_obsidian", new ResourceLocation(Mekanism.MODID, "infuse_type/refined_obsidian")),
-    TIN("tin", new ResourceLocation(Mekanism.MODID, "infuse_type/tin")),
+    CARBON("carbon", 0x404040),
+    REDSTONE("redstone", 0xB30505),
+    DIAMOND("diamond", 0x6CEDD8),
+    REFINED_OBSIDIAN("refined_obsidian", 0x7C00ED),
+    TIN("tin", 0xC6C7CC),
     FUNGI("fungi", new ResourceLocation(Mekanism.MODID, "infuse_type/fungi")),
     BIO("bio", new ResourceLocation(Mekanism.MODID, "infuse_type/bio"));
 

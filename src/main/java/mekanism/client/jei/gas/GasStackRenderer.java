@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.text.EnumColor;
@@ -152,7 +151,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     public List<String> getTooltip(@Nonnull GasStack gasStack, ITooltipFlag tooltipFlag) {
         List<String> tooltip = new ArrayList<>();
         Gas gasType = gasStack.getType();
-        if (gasType == MekanismAPI.EMPTY_GAS) {
+        if (gasType.isEmptyType()) {
             return tooltip;
         }
         tooltip.add(TextComponentUtil.build(gasType).getFormattedText());

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -29,7 +30,6 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
@@ -132,36 +132,23 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         @Nullable
         private MetallurgicInfuserRecipe cachedRecipe;
 
-        @Nullable
         @Override
-        public TextureAtlasSprite getSprite() {
+        public InfuseType getType() {
             if (cachedRecipe == null) {
-                return null;
+                return MekanismAPI.EMPTY_INFUSE_TYPE;
             }
             @NonNull List<@NonNull InfusionStack> representations = cachedRecipe.getInfusionInput().getRepresentations();
             if (representations.isEmpty()) {
-                return null;
+                return MekanismAPI.EMPTY_INFUSE_TYPE;
             }
             //TODO: Make it so we can cycle
-            return representations.get(0).getType().getSprite();
-        }
-
-        @Override
-        public int getTint() {
-            if (cachedRecipe == null) {
-                return -1;
-            }
-            @NonNull List<@NonNull InfusionStack> representations = cachedRecipe.getInfusionInput().getRepresentations();
-            if (representations.isEmpty()) {
-                return -1;
-            }
-            //TODO: Make it so we can cycle
-            return representations.get(0).getType().getTint();
+            return representations.get(0).getType();
         }
 
         @Override
         public ITextComponent getTooltip() {
             if (cachedRecipe != null) {
+                //TODO: Make it so we can cycle
                 @NonNull List<@NonNull InfusionStack> representations = cachedRecipe.getInfusionInput().getRepresentations();
                 if (!representations.isEmpty()) {
                     InfusionStack infuse = representations.get(0);

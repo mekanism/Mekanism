@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -55,7 +54,7 @@ public final class GasUtils {
     public static void clearIfInvalid(GasTank tank, Predicate<@NonNull Gas> isValid) {
         if (MekanismConfig.general.voidInvalidGases.get()) {
             Gas gas = tank.getType();
-            if (gas != MekanismAPI.EMPTY_GAS && !isValid.test(gas)) {
+            if (!gas.isEmptyType() && !isValid.test(gas)) {
                 tank.setEmpty();
             }
         }
@@ -74,7 +73,7 @@ public final class GasUtils {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
             GasStack gasInItem = item.getGas(itemStack);
-            if (type != MekanismAPI.EMPTY_GAS && !gasInItem.isEmpty() && !gasInItem.isTypeEqual(type) || !item.canProvideGas(itemStack, type)) {
+            if (!type.isEmptyType() && !gasInItem.isEmpty() && !gasInItem.isTypeEqual(type) || !item.canProvideGas(itemStack, type)) {
                 return GasStack.EMPTY;
             }
             return item.removeGas(itemStack, amount);

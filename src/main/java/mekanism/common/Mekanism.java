@@ -41,6 +41,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.OreDictManager;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
@@ -567,6 +568,7 @@ public class Mekanism {
         //TODO: Bin recipe
         //event.getRegistry().register(new BinRecipe());
         addRecipes();
+        OreDictManager.init();
         GasConversionHandler.addDefaultGasMappings();
 
         //Register the mod's world generators

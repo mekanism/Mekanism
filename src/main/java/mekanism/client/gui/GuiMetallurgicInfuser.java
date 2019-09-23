@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import javax.annotation.Nonnull;
+import mekanism.api.infuse.InfuseType;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
@@ -25,7 +26,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -66,13 +66,8 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         addButton(new GuiVerticalInfuseBar(this, new InfuseInfoProvider() {
             @Nonnull
             @Override
-            public TextureAtlasSprite getSprite() {
-                return tileEntity.infusionTank.getType().getSprite();
-            }
-
-            @Override
-            public int getTint() {
-                return tileEntity.infusionTank.getType().getTint();
+            public InfuseType getType() {
+                return tileEntity.infusionTank.getType();
             }
 
             @Override
