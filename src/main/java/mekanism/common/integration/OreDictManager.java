@@ -307,7 +307,7 @@ public final class OreDictManager {
      * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Credit to CofhCore.
      */
     private static void addLogRecipes() {
-        //TODO: Re-enable
+        //TODO: Re-enable/fix this for third party logs
         /*Container tempContainer = new Container(ContainerType.CRAFTING, 0) {
             @Override
             public boolean canInteractWith(@Nonnull PlayerEntity player) {
@@ -329,6 +329,18 @@ public final class OreDictManager {
         for (ItemStack logEntry : OreDictionary.getOres("logWood", false)) {
             addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1), dummyWorld);
         }*/
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.OAK_LOGS), new ItemStack(Blocks.OAK_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
+              MekanismConfig.general.sawdustChanceLog.get());
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.SPRUCE_LOGS), new ItemStack(Blocks.SPRUCE_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
+              MekanismConfig.general.sawdustChanceLog.get());
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.BIRCH_LOGS), new ItemStack(Blocks.BIRCH_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
+              MekanismConfig.general.sawdustChanceLog.get());
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.JUNGLE_LOGS), new ItemStack(Blocks.JUNGLE_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
+              MekanismConfig.general.sawdustChanceLog.get());
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.ACACIA_LOGS), new ItemStack(Blocks.ACACIA_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
+              MekanismConfig.general.sawdustChanceLog.get());
+        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.DARK_OAK_LOGS), new ItemStack(Blocks.DARK_OAK_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
+              MekanismConfig.general.sawdustChanceLog.get());
         RecipeHandler.addPRCRecipe(ItemStackIngredient.from(ItemTags.LOGS), FluidStackIngredient.from(FluidTags.WATER, 100),
               GasStackIngredient.from(MekanismTags.OXYGEN, 100), ItemStack.EMPTY, MekanismGases.HYDROGEN, 100, 0, 150);
     }
