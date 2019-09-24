@@ -314,13 +314,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        tier = TubeTier.values()[dataStream.readInt()];
+        tier = dataStream.readEnumValue(TubeTier.class);
         super.handlePacketData(dataStream);
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(tier.ordinal());
+        data.add(tier);
         super.getNetworkedData(data);
         return data;
     }

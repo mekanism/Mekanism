@@ -262,8 +262,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             TileUtils.readTankData(dataStream, fluidTank);
             TileUtils.readTankData(dataStream, leftTank);
             TileUtils.readTankData(dataStream, rightTank);
-            dumpLeft = GasMode.values()[dataStream.readInt()];
-            dumpRight = GasMode.values()[dataStream.readInt()];
+            dumpLeft = dataStream.readEnumValue(GasMode.class);
+            dumpRight = dataStream.readEnumValue(GasMode.class);
             clientEnergyUsed = dataStream.readDouble();
         }
     }
@@ -274,8 +274,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         TileUtils.addTankData(data, fluidTank);
         TileUtils.addTankData(data, leftTank);
         TileUtils.addTankData(data, rightTank);
-        data.add(dumpLeft.ordinal());
-        data.add(dumpRight.ordinal());
+        data.add(dumpLeft);
+        data.add(dumpRight);
         data.add(clientEnergyUsed);
         return data;
     }

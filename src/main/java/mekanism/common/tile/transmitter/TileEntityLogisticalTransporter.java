@@ -177,7 +177,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             int type = dataStream.readInt();
             if (type == 0) {
                 super.handlePacketData(dataStream);
-                tier = TransporterTier.values()[dataStream.readInt()];
+                tier = dataStream.readEnumValue(TransporterTier.class);
                 int c = dataStream.readInt();
                 EnumColor prev = getTransmitter().getColor();
                 if (c != -1) {
@@ -208,7 +208,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(0);
         super.getNetworkedData(data);
-        data.add(tier.ordinal());
+        data.add(tier);
         if (getTransmitter().getColor() != null) {
             data.add(TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         } else {

@@ -130,7 +130,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void read(PacketBuffer dataStream) {
-        securityMode = SecurityMode.values()[dataStream.readInt()];
+        securityMode = dataStream.readEnumValue(SecurityMode.class);
 
         if (dataStream.readBoolean()) {
             ownerUUID = dataStream.readUniqueId();
@@ -162,7 +162,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void write(TileNetworkList data) {
-        data.add(securityMode.ordinal());
+        data.add(securityMode);
 
         if (ownerUUID != null) {
             data.add(true);

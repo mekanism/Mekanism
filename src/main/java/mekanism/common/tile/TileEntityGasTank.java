@@ -232,10 +232,10 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         super.handlePacketData(dataStream);
         if (world.isRemote) {
             GasTankTier prevTier = tier;
-            tier = GasTankTier.values()[dataStream.readInt()];
+            tier = dataStream.readEnumValue(GasTankTier.class);
             gasTank.setCapacity(tier.getStorage());
             TileUtils.readTankData(dataStream, gasTank);
-            dumping = GasMode.values()[dataStream.readInt()];
+            dumping = dataStream.readEnumValue(GasMode.class);
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -263,9 +263,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(tier.ordinal());
+        data.add(tier);
         TileUtils.addTankData(data, gasTank);
-        data.add(dumping.ordinal());
+        data.add(dumping);
         return data;
     }
 

@@ -58,7 +58,7 @@ public class TransporterStack {
 
         data.add(progress);
         originalLocation.write(data);
-        data.add(pathType.ordinal());
+        data.add(pathType);
 
         if (pathToTarget.indexOf(transporter.coord()) > 0) {
             data.add(true);
@@ -81,7 +81,7 @@ public class TransporterStack {
 
         progress = dataStream.readInt();
         originalLocation = Coord4D.read(dataStream);
-        pathType = Path.values()[dataStream.readInt()];
+        pathType = dataStream.readEnumValue(Path.class);
 
         if (dataStream.readBoolean()) {
             clientNext = Coord4D.read(dataStream);

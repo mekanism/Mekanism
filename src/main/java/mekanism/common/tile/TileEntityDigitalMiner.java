@@ -531,7 +531,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         running = dataStream.readBoolean();
         silkTouch = dataStream.readBoolean();
         numPowering = dataStream.readInt();
-        searcher.state = State.values()[dataStream.readInt()];
+        searcher.state = dataStream.readEnumValue(State.class);
         clientToMine = dataStream.readInt();
         inverse = dataStream.readBoolean();
         missingStack = dataStream.readItemStack();
@@ -640,7 +640,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         data.add(running);
         data.add(silkTouch);
         data.add(numPowering);
-        data.add(searcher.state.ordinal());
+        data.add(searcher.state);
 
         if (searcher.state == State.SEARCHING) {
             data.add(searcher.found);

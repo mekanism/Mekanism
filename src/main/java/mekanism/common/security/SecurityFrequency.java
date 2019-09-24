@@ -75,7 +75,7 @@ public class SecurityFrequency extends Frequency {
         super.write(data);
 
         data.add(override);
-        data.add(securityMode.ordinal());
+        data.add(securityMode);
 
         data.add(trusted.size());
         for (String s : trusted) {
@@ -91,7 +91,7 @@ public class SecurityFrequency extends Frequency {
         securityMode = SecurityMode.PUBLIC;
 
         override = dataStream.readBoolean();
-        securityMode = SecurityMode.values()[dataStream.readInt()];
+        securityMode = dataStream.readEnumValue(SecurityMode.class);
 
         int size = dataStream.readInt();
 

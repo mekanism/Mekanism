@@ -196,7 +196,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         data.add(collectedEnergy);
         data.add(lastFired);
         data.add(emittingRedstone);
-        data.add(outputMode.ordinal());
+        data.add(outputMode);
         return data;
     }
 
@@ -230,7 +230,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
             collectedEnergy = dataStream.readDouble();
             lastFired = dataStream.readDouble();
             emittingRedstone = dataStream.readBoolean();
-            outputMode = RedstoneOutput.values()[dataStream.readInt()];
+            outputMode = dataStream.readEnumValue(RedstoneOutput.class);
         }
     }
 

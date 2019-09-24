@@ -223,11 +223,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         super.handlePacketData(dataStream);
         if (world.isRemote) {
             FluidTankTier prevTier = tier;
-            tier = FluidTankTier.values()[dataStream.readInt()];
+            tier = dataStream.readEnumValue(FluidTankTier.class);
             fluidTank.setCapacity(tier.getStorage());
 
             valve = dataStream.readInt();
-            editMode = ContainerEditMode.values()[dataStream.readInt()];
+            editMode = dataStream.readEnumValue(ContainerEditMode.class);
             if (valve > 0) {
                 valveFluid = TileUtils.readFluidStack(dataStream);
             } else {
@@ -269,9 +269,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(tier.ordinal());
+        data.add(tier);
         data.add(valve);
-        data.add(editMode.ordinal());
+        data.add(editMode);
         if (valve > 0) {
             TileUtils.addFluidStack(data, valveFluid);
         }

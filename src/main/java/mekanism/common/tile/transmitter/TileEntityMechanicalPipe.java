@@ -275,13 +275,13 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        tier = PipeTier.values()[dataStream.readInt()];
+        tier = dataStream.readEnumValue(PipeTier.class);
         super.handlePacketData(dataStream);
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(tier.ordinal());
+        data.add(tier);
         super.getNetworkedData(data);
         return data;
     }

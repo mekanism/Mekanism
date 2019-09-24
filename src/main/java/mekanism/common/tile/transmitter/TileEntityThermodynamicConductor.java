@@ -121,14 +121,14 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        tier = ConductorTier.values()[dataStream.readInt()];
+        tier = dataStream.readEnumValue(ConductorTier.class);
         super.handlePacketData(dataStream);
         temperature = dataStream.readDouble();
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(tier.ordinal());
+        data.add(tier);
         super.getNetworkedData(data);
         data.add(temperature);
         return data;

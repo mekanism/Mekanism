@@ -248,7 +248,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(getItemCount());
-        data.add(tier.ordinal());
+        data.add(tier);
         if (getItemCount() > 0) {
             data.add(itemType);
         }
@@ -260,7 +260,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
         super.handlePacketData(dataStream);
         if (world.isRemote) {
             clientAmount = dataStream.readInt();
-            tier = BinTier.values()[dataStream.readInt()];
+            tier = dataStream.readEnumValue(BinTier.class);
             if (clientAmount > 0) {
                 itemType = dataStream.readItemStack();
             } else {

@@ -147,7 +147,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
         int amount = dataStream.readInt();
 
         for (int i = 0; i < amount; i++) {
-            upgrades.put(Upgrade.values()[dataStream.readInt()], dataStream.readInt());
+            upgrades.put(dataStream.readEnumValue(Upgrade.class), dataStream.readInt());
         }
         upgradeTicks = dataStream.readInt();
         for (Upgrade upgrade : getSupportedTypes()) {
@@ -159,7 +159,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
     public void write(TileNetworkList data) {
         data.add(upgrades.size());
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-            data.add(entry.getKey().ordinal());
+            data.add(entry.getKey());
             data.add(entry.getValue());
         }
         data.add(upgradeTicks);

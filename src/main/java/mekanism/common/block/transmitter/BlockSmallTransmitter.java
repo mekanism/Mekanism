@@ -52,6 +52,7 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         //TODO: This is probably not performant compared to caching it
         //TODO: Is this even returning the correct value?
+        // Note: we also need to combine using VoxelShapes.or to get overall bounding box shape?
         return VoxelShapes.create(BlockSmallTransmitter.smallSides[6]);
     }
 

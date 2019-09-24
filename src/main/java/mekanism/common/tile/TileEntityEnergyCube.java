@@ -167,7 +167,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
         super.handlePacketData(dataStream);
         if (world.isRemote) {
             EnergyCubeTier prevTier = tier;
-            tier = EnergyCubeTier.values()[dataStream.readInt()];
+            tier = dataStream.readEnumValue(EnergyCubeTier.class);
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -177,7 +177,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(tier.ordinal());
+        data.add(tier);
         return data;
     }
 

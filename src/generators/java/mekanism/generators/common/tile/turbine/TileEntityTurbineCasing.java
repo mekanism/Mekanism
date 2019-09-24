@@ -154,7 +154,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             data.add(structure.electricityStored);
             data.add(structure.clientFlow);
             data.add(structure.lastSteamInput);
-            data.add(structure.dumpMode.ordinal());
+            data.add(structure.dumpMode);
             TileUtils.addFluidStack(data, structure.fluidStored);
             if (isRendering) {
                 structure.complex.write(data);
@@ -190,7 +190,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.electricityStored = dataStream.readDouble();
                 structure.clientFlow = dataStream.readInt();
                 structure.lastSteamInput = dataStream.readInt();
-                structure.dumpMode = GasMode.values()[dataStream.readInt()];
+                structure.dumpMode = dataStream.readEnumValue(GasMode.class);
 
                 structure.fluidStored = TileUtils.readFluidStack(dataStream);
 

@@ -201,7 +201,7 @@ public class TileComponentConfig implements ITileComponent {
         int amount = dataStream.readInt();
 
         for (int i = 0; i < amount; i++) {
-            transmissions.add(TransmissionType.values()[dataStream.readInt()]);
+            transmissions.add(dataStream.readEnumValue(TransmissionType.class));
         }
 
         for (TransmissionType type : transmissions) {
@@ -225,9 +225,7 @@ public class TileComponentConfig implements ITileComponent {
     public void write(TileNetworkList data) {
         data.add(transmissions.size());
 
-        for (TransmissionType type : transmissions) {
-            data.add(type.ordinal());
-        }
+        data.addAll(transmissions);
         for (TransmissionType type : transmissions) {
             data.add(sideConfigs.get(type).asByteArray());
             data.add(ejecting.get(type));

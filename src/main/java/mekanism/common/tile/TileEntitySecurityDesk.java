@@ -136,7 +136,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 }
             } else if (type == 3) {
                 if (frequency != null) {
-                    frequency.securityMode = SecurityMode.values()[dataStream.readInt()];
+                    frequency.securityMode = dataStream.readEnumValue(SecurityMode.class);
                     Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
                 }
             }

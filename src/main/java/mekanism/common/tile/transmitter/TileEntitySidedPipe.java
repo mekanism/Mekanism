@@ -290,7 +290,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             currentTransmitterConnections = dataStream.readByte();
             currentAcceptorConnections = dataStream.readByte();
             for (int i = 0; i < 6; i++) {
-                connectionTypes[i] = ConnectionType.values()[dataStream.readInt()];
+                connectionTypes[i] = dataStream.readEnumValue(ConnectionType.class);
             }
             markDirty();
             MekanismUtils.updateBlock(world, pos);
@@ -306,7 +306,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         data.add(currentTransmitterConnections);
         data.add(currentAcceptorConnections);
         for (int i = 0; i < 6; i++) {
-            data.add(connectionTypes[i].ordinal());
+            data.add(connectionTypes[i]);
         }
         return data;
     }

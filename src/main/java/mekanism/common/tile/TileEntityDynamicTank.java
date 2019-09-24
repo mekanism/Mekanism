@@ -147,7 +147,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         super.getNetworkedData(data);
         if (structure != null) {
             data.add(structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
-            data.add(structure.editMode.ordinal());
+            data.add(structure.editMode);
             TileUtils.addFluidStack(data, structure.fluidStored);
 
             if (isRendering) {
@@ -174,7 +174,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (world.isRemote) {
             if (clientHasStructure) {
                 clientCapacity = dataStream.readInt();
-                structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
+                structure.editMode = dataStream.readEnumValue(ContainerEditMode.class);
                 structure.fluidStored = TileUtils.readFluidStack(dataStream);
 
                 if (isRendering) {

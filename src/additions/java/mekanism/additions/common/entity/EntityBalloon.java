@@ -291,7 +291,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         data.writeDouble(posY);
         data.writeDouble(posZ);
 
-        data.writeInt(color.ordinal());
+        data.writeEnumValue(color);
         if (latched != null) {
             data.writeByte((byte) 1);
             latched.write(data);
@@ -306,7 +306,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public void readSpawnData(PacketBuffer data) {
         setPosition(data.readDouble(), data.readDouble(), data.readDouble());
-        color = EnumColor.values()[data.readInt()];
+        color = data.readEnumValue(EnumColor.class);
         byte type = data.readByte();
         if (type == 1) {
             latched = Coord4D.read(data);

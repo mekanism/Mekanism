@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.item.gear.ItemFlamethrower;
+import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -246,7 +247,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
-        mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInt("mode")];
+        mode = FlamethrowerMode.values()[nbtTags.getInt("mode")];
     }
 
     @Override
@@ -262,11 +263,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     public void writeSpawnData(PacketBuffer dataStream) {
-        dataStream.writeInt(mode.ordinal());
+        dataStream.writeEnumValue(mode);
     }
 
     @Override
     public void readSpawnData(PacketBuffer dataStream) {
-        mode = ItemFlamethrower.FlamethrowerMode.values()[dataStream.readInt()];
+        mode = dataStream.readEnumValue(FlamethrowerMode.class);
     }
 }
