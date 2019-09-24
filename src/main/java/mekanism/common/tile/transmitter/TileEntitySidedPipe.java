@@ -15,6 +15,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
@@ -254,9 +255,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         BlockPos testPos = getPos().offset(side);
-        return CapabilityUtils.getCapabilityHelper(MekanismUtils.getTileEntity(world, testPos), Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).matches(
-              blockableConnection -> blockableConnection.canConnect(side.getOpposite())
-        );
+        LazyOptionalHelper<IBlockableConnection> blockableConnection = CapabilityUtils.getCapabilityHelper(MekanismUtils.getTileEntity(world, testPos),
+              Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite());
+        return !blockableConnection.isPresent() || blockableConnection.matches(connection -> connection.canConnect(side.getOpposite()));
     }
 
     @Override
@@ -532,19 +533,14 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                     }
                     hitSide = side;
                 }
+                connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
+                sendDesc = true;
+                onModeChange(Direction.byIndex(hitSide.ordinal()));
 
-                if (hitSide != null) {
-                    connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
-                    sendDesc = true;
-                    onModeChange(Direction.byIndex(hitSide.ordinal()));
-
-                    refreshConnections();
-                    notifyTileChange();
-                    player.sendMessage(TextComponentUtil.build(Translation.of("tooltip.configurator.modeChange"), " ", connectionTypes[hitSide.ordinal()]));
-                    return ActionResultType.SUCCESS;
-                } else {
-                    return ActionResultType.PASS;
-                }
+                refreshConnections();
+                notifyTileChange();
+                player.sendMessage(TextComponentUtil.build(Translation.of("tooltip.configurator.modeChange"), " ", connectionTypes[hitSide.ordinal()]));
+                return ActionResultType.SUCCESS;
             }
         }
         return ActionResultType.SUCCESS;
