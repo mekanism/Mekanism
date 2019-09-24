@@ -35,16 +35,12 @@ public enum MekanismGases implements IGasProvider {
     CLEAN_OSMIUM_SLURRY(Resource.OSMIUM),
     CLEAN_COPPER_SLURRY(Resource.COPPER),
     CLEAN_TIN_SLURRY(Resource.TIN),
-    CLEAN_SILVER_SLURRY(Resource.SILVER),
-    CLEAN_LEAD_SLURRY(Resource.LEAD),
     //Dirty Slurry
     DIRTY_IRON_SLURRY(Resource.IRON, CLEAN_IRON_SLURRY),
     DIRTY_GOLD_SLURRY(Resource.GOLD, CLEAN_GOLD_SLURRY),
     DIRTY_OSMIUM_SLURRY(Resource.OSMIUM, CLEAN_OSMIUM_SLURRY),
     DIRTY_COPPER_SLURRY(Resource.COPPER, CLEAN_COPPER_SLURRY),
-    DIRTY_TIN_SLURRY(Resource.TIN, CLEAN_TIN_SLURRY),
-    DIRTY_SILVER_SLURRY(Resource.SILVER, CLEAN_SILVER_SLURRY),
-    DIRTY_LEAD_SLURRY(Resource.LEAD, CLEAN_LEAD_SLURRY);
+    DIRTY_TIN_SLURRY(Resource.TIN, CLEAN_TIN_SLURRY);
 
     //TODO: Fix, and move to a MekanismFluids class?
     // Given I am thinking it may make sense to "separate" the direct pairing of gas and fluids

@@ -11,9 +11,6 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.Slurry;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
@@ -430,50 +427,6 @@ public class Mekanism {
         if (MekanismBlock.CHEMICAL_CRYSTALLIZER.isEnabled()) {
             RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismTags.LITHIUM, 100), MekanismItem.SULFUR_DUST.getItemStack());
             RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismTags.BRINE, 15), MekanismItem.SALT.getItemStack());
-        }
-
-        //T4 Processing Recipes
-        for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
-            if (gas instanceof Slurry && ((Slurry) gas).isDirty()) {
-                Slurry slurry = (Slurry) gas;
-                if (MekanismBlock.CHEMICAL_WASHER.isEnabled()) {
-                    RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(slurry, 1),
-                          new GasStack(slurry.getCleanSlurry(), 1));
-                }
-
-                if (MekanismBlock.CHEMICAL_CRYSTALLIZER.isEnabled()) {
-                    //do the crystallizer only if it's one of our gases!
-                    Resource gasResource = Resource.getFromName(slurry.getName());
-                    if (gasResource != null) {
-                        //TODO: Better way to do this
-                        MekanismItem crystal = null;
-                        switch (gasResource) {
-                            case IRON:
-                                crystal = MekanismItem.IRON_CRYSTAL;
-                                break;
-                            case GOLD:
-                                crystal = MekanismItem.GOLD_CRYSTAL;
-                                break;
-                            case OSMIUM:
-                                crystal = MekanismItem.OSMIUM_CRYSTAL;
-                                break;
-                            case COPPER:
-                                crystal = MekanismItem.COPPER_CRYSTAL;
-                                break;
-                            case TIN:
-                                crystal = MekanismItem.TIN_CRYSTAL;
-                                break;
-                            case SILVER:
-                                crystal = MekanismItem.SILVER_CRYSTAL;
-                                break;
-                            case LEAD:
-                                crystal = MekanismItem.LEAD_CRYSTAL;
-                                break;
-                        }
-                        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(slurry.getCleanSlurry(), 200), crystal.getItemStack());
-                    }
-                }
-            }
         }
 
         //Pressurized Reaction Chamber Recipes

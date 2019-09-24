@@ -5,8 +5,6 @@
     "mekanism:clean_gold_slurry",
     "mekanism:clean_osmium_slurry",
     "mekanism:clean_copper_slurry",
-    "mekanism:clean_tin_slurry",
-    "mekanism:clean_silver_slurry",
-    "mekanism:clean_lead_slurry"
+    "mekanism:clean_tin_slurry"
   ]
 }

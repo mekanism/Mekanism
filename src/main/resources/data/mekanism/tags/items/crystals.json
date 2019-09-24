@@ -1,12 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#mekanism:crystals/iron",
-    "#mekanism:crystals/gold",
-    "#mekanism:crystals/osmium",
     "#mekanism:crystals/copper",
-    "#mekanism:crystals/tin",
-    "#mekanism:crystals/silver",
-    "#mekanism:crystals/lead"
+    "#mekanism:crystals/gold",
+    "#mekanism:crystals/iron",
+    "#mekanism:crystals/osmium",
+    "#mekanism:crystals/tin"
   ]
 }

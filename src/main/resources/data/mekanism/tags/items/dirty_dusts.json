@@ -1,12 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#mekanism:dirty_dusts/iron",
-    "#mekanism:dirty_dusts/gold",
-    "#mekanism:dirty_dusts/osmium",
     "#mekanism:dirty_dusts/copper",
-    "#mekanism:dirty_dusts/tin",
-    "#mekanism:dirty_dusts/silver",
-    "#mekanism:dirty_dusts/lead"
+    "#mekanism:dirty_dusts/gold",
+    "#mekanism:dirty_dusts/iron",
+    "#mekanism:dirty_dusts/osmium",
+    "#mekanism:dirty_dusts/tin"
   ]
 }

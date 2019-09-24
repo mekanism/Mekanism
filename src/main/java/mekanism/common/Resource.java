@@ -8,9 +8,7 @@ public enum Resource implements INamedResource {
     GOLD("gold", 0xF2CD67),
     OSMIUM("osmium", 0x1E79C3),
     COPPER("copper", 0xAA4B19),
-    TIN("tin", 0xCCCCD9),
-    SILVER("silver", 0xBFC9CD),
-    LEAD("lead", 0x3D3D41);
+    TIN("tin", 0xCCCCD9);
 
     public final int tint;
     private final String name;

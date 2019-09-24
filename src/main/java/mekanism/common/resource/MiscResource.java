@@ -1,16 +1,21 @@
 package mekanism.common.resource;
 
 public enum MiscResource implements INamedResource {
-    DIAMOND("diamond"),
-    STEEL("steel"),
-    REFINED_OBSIDIAN("refined_obsidian"),
-    OBSIDIAN("obsidian"),
     BRONZE("bronze"),
-    REFINED_GLOWSTONE("refined_glowstone"),
-    SULFUR("sulfur"),
-    LITHIUM("lithium"),
     CARBON("carbon"),
-    REDSTONE("redstone");
+    CHARCOAL("charcoal"),
+    COAL("coal"),
+    DIAMOND("diamond"),
+    EMERALD("emerald"),
+    LAPIS_LAZULI("lapis_lazuli"),
+    LITHIUM("lithium"),
+    OBSIDIAN("obsidian"),
+    QUARTZ("quartz"),
+    REDSTONE("redstone"),
+    REFINED_GLOWSTONE("refined_glowstone"),
+    REFINED_OBSIDIAN("refined_obsidian"),
+    STEEL("steel"),
+    SULFUR("sulfur");
 
     private final String registrySuffix;
 

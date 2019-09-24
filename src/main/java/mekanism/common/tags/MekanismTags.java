@@ -12,17 +12,21 @@ import net.minecraft.util.ResourceLocation;
 //TODO: Should this be moved to the API package, Especially if the tag files don't need to exist for these to be valid
 public class MekanismTags {
 
+    public static final Tag<Item> DUSTS_BRONZE = makeForgeItemTag("dusts/bronze");
+    public static final Tag<Item> DUSTS_CHARCOAL = makeForgeItemTag("dusts/charcoal");
+    public static final Tag<Item> DUSTS_COAL = makeForgeItemTag("dusts/coal");
     public static final Tag<Item> DUSTS_COPPER = makeForgeItemTag("dusts/copper");
     public static final Tag<Item> DUSTS_DIAMOND = makeForgeItemTag("dusts/diamond");
+    public static final Tag<Item> DUSTS_EMERALD = makeForgeItemTag("dusts/emerald");
     public static final Tag<Item> DUSTS_GOLD = makeForgeItemTag("dusts/gold");
     public static final Tag<Item> DUSTS_IRON = makeForgeItemTag("dusts/iron");
-    public static final Tag<Item> DUSTS_LEAD = makeForgeItemTag("dusts/lead");
+    public static final Tag<Item> DUSTS_LAPIS_LAZULI = makeForgeItemTag("dusts/lapis_lazuli");
     public static final Tag<Item> DUSTS_LITHIUM = makeForgeItemTag("dusts/lithium");
     public static final Tag<Item> DUSTS_OBSIDIAN = makeForgeItemTag("dusts/obsidian");
     public static final Tag<Item> DUSTS_OSMIUM = makeForgeItemTag("dusts/osmium");
+    public static final Tag<Item> DUSTS_QUARTZ = makeForgeItemTag("dusts/quartz");
     public static final Tag<Item> DUSTS_REFINED_OBSIDIAN = makeForgeItemTag("dusts/refined_obsidian");
     public static final Tag<Item> DUSTS_SALT = makeForgeItemTag("dusts/salt");
-    public static final Tag<Item> DUSTS_SILVER = makeForgeItemTag("dusts/silver");
     public static final Tag<Item> DUSTS_STEEL = makeForgeItemTag("dusts/steel");
     public static final Tag<Item> DUSTS_SULFUR = makeForgeItemTag("dusts/sulfur");
     public static final Tag<Item> DUSTS_TIN = makeForgeItemTag("dusts/tin");
@@ -36,6 +40,10 @@ public class MekanismTags {
     public static final Tag<Item> INGOTS_STEEL = makeForgeItemTag("ingots/steel");
     public static final Tag<Item> INGOTS_TIN = makeForgeItemTag("ingots/tin");
 
+    public static final Tag<Item> ORES_COPPER = makeForgeItemTag("ores/copper");
+    public static final Tag<Item> ORES_OSMIUM = makeForgeItemTag("ores/osmium");
+    public static final Tag<Item> ORES_TIN = makeForgeItemTag("ores/tin");
+
     public static final Tag<Item> STORAGE_BLOCKS_CHARCOAL = makeForgeItemTag("storage_blocks/charcoal");
 
     //TODO: Data generators
@@ -48,6 +56,30 @@ public class MekanismTags {
     public static final Tag<Item> ENRICHED_DIAMOND = makeItemTag("enriched/diamond");
     public static final Tag<Item> ENRICHED_OBSIDIAN = makeItemTag("enriched/obsidian");
     public static final Tag<Item> ENRICHED_REDSTONE = makeItemTag("enriched/redstone");
+
+    public static final Tag<Item> CLUMPS_COPPER = makeItemTag("clumps/copper");
+    public static final Tag<Item> CLUMPS_GOLD = makeItemTag("clumps/gold");
+    public static final Tag<Item> CLUMPS_IRON = makeItemTag("clumps/iron");
+    public static final Tag<Item> CLUMPS_OSMIUM = makeItemTag("clumps/osmium");
+    public static final Tag<Item> CLUMPS_TIN = makeItemTag("clumps/tin");
+
+    public static final Tag<Item> CRYSTALS_COPPER = makeItemTag("crystals/copper");
+    public static final Tag<Item> CRYSTALS_GOLD = makeItemTag("crystals/gold");
+    public static final Tag<Item> CRYSTALS_IRON = makeItemTag("crystals/iron");
+    public static final Tag<Item> CRYSTALS_OSMIUM = makeItemTag("crystals/osmium");
+    public static final Tag<Item> CRYSTALS_TIN = makeItemTag("crystals/tin");
+
+    public static final Tag<Item> DIRTY_DUSTS_COPPER = makeItemTag("dirty_dusts/copper");
+    public static final Tag<Item> DIRTY_DUSTS_GOLD = makeItemTag("dirty_dusts/gold");
+    public static final Tag<Item> DIRTY_DUSTS_IRON = makeItemTag("dirty_dusts/iron");
+    public static final Tag<Item> DIRTY_DUSTS_OSMIUM = makeItemTag("dirty_dusts/osmium");
+    public static final Tag<Item> DIRTY_DUSTS_TIN = makeItemTag("dirty_dusts/tin");
+
+    public static final Tag<Item> SHARDS_COPPER = makeItemTag("shards/copper");
+    public static final Tag<Item> SHARDS_GOLD = makeItemTag("shards/gold");
+    public static final Tag<Item> SHARDS_IRON = makeItemTag("shards/iron");
+    public static final Tag<Item> SHARDS_OSMIUM = makeItemTag("shards/osmium");
+    public static final Tag<Item> SHARDS_TIN = makeItemTag("shards/tin");
 
     private static Tag<Item> makeForgeItemTag(String name) {
         return new ItemTags.Wrapper(new ResourceLocation("forge", name));

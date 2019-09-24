@@ -1,12 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#mekanism:clumps/iron",
-    "#mekanism:clumps/gold",
-    "#mekanism:clumps/osmium",
     "#mekanism:clumps/copper",
-    "#mekanism:clumps/tin",
-    "#mekanism:clumps/silver",
-    "#mekanism:clumps/lead"
+    "#mekanism:clumps/gold",
+    "#mekanism:clumps/iron",
+    "#mekanism:clumps/osmium",
+    "#mekanism:clumps/tin"
   ]
 }

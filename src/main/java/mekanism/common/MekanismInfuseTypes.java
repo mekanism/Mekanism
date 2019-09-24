@@ -11,7 +11,7 @@ public enum MekanismInfuseTypes implements IInfuseTypeProvider {
     REDSTONE("redstone", 0xB30505),
     DIAMOND("diamond", 0x6CEDD8),
     REFINED_OBSIDIAN("refined_obsidian", 0x7C00ED),
-    TIN("tin", 0xC6C7CC),
+    TIN("tin", 0xCCCCD9),
     FUNGI("fungi", new ResourceLocation(Mekanism.MODID, "infuse_type/fungi")),
     BIO("bio", new ResourceLocation(Mekanism.MODID, "infuse_type/bio"));
 
