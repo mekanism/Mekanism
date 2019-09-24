@@ -4,6 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotExtra;
+import mekanism.common.inventory.slot.SlotInput;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -29,30 +31,18 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
     @Override
     protected void addSlots() {
         addSlot(new SlotDischarge(tile, 1, 7, 13));
+        //TODO: Mark these two side slots to not be auto generated gui images for
         addSlot(new Slot(tile, 2, 180, 75));
         addSlot(new Slot(tile, 3, 180, 112));
-        addSlot(new Slot(tile, 4, 7, 57));
-        if (tile.tier == FactoryTier.BASIC) {
-            for (int i = 0; i < tile.tier.processes; i++) {
-                addSlot(new FactoryInputSlot(tile, getInputSlotIndex(i), 55 + (i * 38), 13, i));
-            }
-            for (int i = 0; i < tile.tier.processes; i++) {
-                addSlot(new SlotOutput(tile, getOutputSlotIndex(i), 55 + (i * 38), 57));
-            }
-        } else if (tile.tier == FactoryTier.ADVANCED) {
-            for (int i = 0; i < tile.tier.processes; i++) {
-                addSlot(new FactoryInputSlot(tile, getInputSlotIndex(i), 35 + (i * 26), 13, i));
-            }
-            for (int i = 0; i < tile.tier.processes; i++) {
-                addSlot(new SlotOutput(tile, getOutputSlotIndex(i), 35 + (i * 26), 57));
-            }
-        } else if (tile.tier == FactoryTier.ELITE) {
-            for (int i = 0; i < tile.tier.processes; i++) {
-                addSlot(new FactoryInputSlot(tile, getInputSlotIndex(i), 29 + (i * 19), 13, i));
-            }
-            for (int i = 0; i < tile.tier.processes; i++) {
-                addSlot(new SlotOutput(tile, getOutputSlotIndex(i), 29 + (i * 19), 57));
-            }
+        addSlot(new SlotExtra(tile, 4, 7, 57));
+        //TODO: Ultimate factory move other slots around, and shift these leftwards
+        int baseX = tile.tier == FactoryTier.BASIC ? 55 : tile.tier == FactoryTier.ADVANCED ? 35 : tile.tier == FactoryTier.ELITE ? 29 : 10;
+        int baseXMult = tile.tier == FactoryTier.BASIC ? 38 : tile.tier == FactoryTier.ADVANCED ? 26 : 19;
+        for (int i = 0; i < tile.tier.processes; i++) {
+            addSlot(new FactoryInputSlot(tile, getInputSlotIndex(i), baseX + (i * baseXMult), 13, i));
+        }
+        for (int i = 0; i < tile.tier.processes; i++) {
+            addSlot(new SlotOutput(tile, getOutputSlotIndex(i), baseX + (i * baseXMult), 57));
         }
     }
 
@@ -163,7 +153,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
         return 5 + processNumber;
     }
 
-    private class FactoryInputSlot extends Slot {
+    private class FactoryInputSlot extends SlotInput {
 
         /**
          * The index of the processes slot. 0 <= processNumber < tileEntity.tier.processes For matching the input to output slot

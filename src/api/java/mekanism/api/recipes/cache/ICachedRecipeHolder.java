@@ -10,7 +10,6 @@ public interface ICachedRecipeHolder<RECIPE extends IMekanismRecipe> {
 
     @Nullable
     default CachedRecipe<RECIPE> getUpdatedCache(int cacheIndex) {
-        //TODO: Should this get the current cache by the cache index instead of having it passed here??
         CachedRecipe<RECIPE> currentCache = getCachedRecipe(cacheIndex);
         //If there is no cached recipe or the input doesn't match, attempt to get the recipe based on the input
         if (currentCache == null || !currentCache.isInputValid()) {

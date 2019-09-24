@@ -1,6 +1,0 @@
-{
-  "parent": "mekanism:block/machine",
-  "textures": {
-    "down": "mekanism:block/factory/elite/bottom"
-  }
-}

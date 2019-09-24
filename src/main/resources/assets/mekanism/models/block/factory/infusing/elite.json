@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/factory/elite",
+  "parent": "mekanism:block/factory/base",
   "textures": {
     "sides": "mekanism:block/factory/elite/infusing/right",
     "front": "mekanism:block/factory/elite/infusing/front",

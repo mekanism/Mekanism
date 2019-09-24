@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/smelting/ultimate",
+  "textures": {
+    "front": "mekanism:block/factory/ultimate/smelting/front_active",
+    "south": "mekanism:block/factory/ultimate/smelting/back_active",
+    "west": "mekanism:block/factory/ultimate/smelting/right_active",
+    "east": "mekanism:block/factory/ultimate/smelting/left_active",
+    "up": "mekanism:block/factory/ultimate/smelting/top_active"
+  }
+}

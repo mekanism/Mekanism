@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/factory/advanced",
+  "parent": "mekanism:block/factory/base",
   "textures": {
     "sides": "mekanism:block/factory/advanced/enriching/right",
     "front": "mekanism:block/factory/advanced/enriching/front",

@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/factory/basic",
+  "parent": "mekanism:block/factory/base",
   "textures": {
     "sides": "mekanism:block/factory/basic/smelting/right",
     "front": "mekanism:block/factory/basic/smelting/front",

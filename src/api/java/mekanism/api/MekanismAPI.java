@@ -51,7 +51,6 @@ public class MekanismAPI {
     private static Set<String> cardboardBoxModIgnore = new HashSet<>();
     private static MekanismRecipeHelper helper = null;
 
-    //TODO: Make a new empty gas
     @Nonnull
     public static final Gas EMPTY_GAS = new EmptyGas();
     @Nonnull

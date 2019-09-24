@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "down": "mekanism:block/factory/bottom"
+  }
+}

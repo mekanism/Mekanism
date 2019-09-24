@@ -229,6 +229,16 @@ public enum MekanismBlock implements IBlockProvider {
     ELITE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.INFUSING), ItemBlockFactory::new),
     ELITE_SAWING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.SAWING), ItemBlockFactory::new),
 
+    ULTIMATE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.SMELTING), ItemBlockFactory::new),
+    ULTIMATE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.ENRICHING), ItemBlockFactory::new),
+    ULTIMATE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.CRUSHING), ItemBlockFactory::new),
+    ULTIMATE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.COMPRESSING), ItemBlockFactory::new),
+    ULTIMATE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.COMBINING), ItemBlockFactory::new),
+    ULTIMATE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.PURIFYING), ItemBlockFactory::new),
+    ULTIMATE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.INJECTING), ItemBlockFactory::new),
+    ULTIMATE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.INFUSING), ItemBlockFactory::new),
+    ULTIMATE_SAWING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.SAWING), ItemBlockFactory::new),
+
     METALLURGIC_INFUSER(new BlockMetallurgicInfuser(), ItemBlockMetallurgicInfuser::new),
     PURIFICATION_CHAMBER(new BlockPurificationChamber(), ItemBlockPurificationChamber::new),
     ENERGIZED_SMELTER(new BlockEnergizedSmelter(), ItemBlockEnergizedSmelter::new),
@@ -440,6 +450,28 @@ public enum MekanismBlock implements IBlockProvider {
                         return ELITE_INFUSING_FACTORY;
                     case SAWING:
                         return ELITE_SAWING_FACTORY;
+                }
+                break;
+            case ULTIMATE:
+                switch (type) {
+                    case SMELTING:
+                        return ULTIMATE_SMELTING_FACTORY;
+                    case ENRICHING:
+                        return ULTIMATE_ENRICHING_FACTORY;
+                    case CRUSHING:
+                        return ULTIMATE_CRUSHING_FACTORY;
+                    case COMPRESSING:
+                        return ULTIMATE_COMPRESSING_FACTORY;
+                    case COMBINING:
+                        return ULTIMATE_COMBINING_FACTORY;
+                    case PURIFYING:
+                        return ULTIMATE_PURIFYING_FACTORY;
+                    case INJECTING:
+                        return ULTIMATE_INJECTING_FACTORY;
+                    case INFUSING:
+                        return ULTIMATE_INFUSING_FACTORY;
+                    case SAWING:
+                        return ULTIMATE_SAWING_FACTORY;
                 }
                 break;
         }

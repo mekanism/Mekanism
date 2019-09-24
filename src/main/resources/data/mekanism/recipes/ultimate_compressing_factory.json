@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:ultimate_compressing_factory"
+  },
+  "pattern": [
+    "ACA",
+    "dOd",
+    "ACA"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "block": "mekanism:elite_compressing_factory"
+    }
+  ],
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "d": {
+      "tag": "forge:gems/diamond"
+    },
+    "O": {
+      "item": "mekanism:elite_compressing_factory"
+    }
+  }
+}

@@ -270,6 +270,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_CRUSHING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY;
@@ -280,6 +282,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_COMBINING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_COMBINING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_COMBINING_FACTORY;
@@ -290,6 +294,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_COMPRESSING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY;
@@ -300,6 +306,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_ENRICHING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY;
@@ -310,6 +318,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_INFUSING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_INFUSING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_INFUSING_FACTORY;
@@ -320,6 +330,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_INJECTING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_INJECTING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_INJECTING_FACTORY;
@@ -330,6 +342,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_PURIFYING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY;
@@ -340,6 +354,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_SAWING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_SAWING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_SAWING_FACTORY;
@@ -351,6 +367,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                         return MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY;
                     case ELITE:
                         return MekanismTileEntityTypes.ELITE_SMELTING_FACTORY;
+                    case ULTIMATE:
+                        return MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY;
                     case BASIC:
                     default:
                         return MekanismTileEntityTypes.BASIC_SMELTING_FACTORY;

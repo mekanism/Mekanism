@@ -137,6 +137,10 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
                 inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
                 outputSlots = new int[]{12, 13, 14, 15, 16, 17, 18};
                 break;
+            case ULTIMATE:
+                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11, 12, 13};
+                outputSlots = new int[]{14, 15, 16, 17, 18, 19, 20, 21, 22};
+                break;
             case BASIC:
             default:
                 inputSlots = new int[]{5, 6, 7};
@@ -171,7 +175,8 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1 || tier == FactoryTier.ELITE) {
+        int upgradeOrdinal = upgradeTier.ordinal();
+        if (upgradeOrdinal != tier.ordinal() + 1 || upgradeOrdinal  > FactoryTier.values().length) {
             return false;
         }
 
@@ -357,6 +362,8 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
                 inputSlots = new int[]{5, 6, 7, 8, 9};
             } else if (tier == FactoryTier.ELITE) {
                 inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
+            } else if (tier == FactoryTier.ULTIMATE) {
+                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11, 12, 13};
             } else {
                 //If something went wrong finding the tier don't sort it
                 return;
@@ -443,6 +450,8 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
             return true;
         } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
             return true;
+        } else if (tier == FactoryTier.ULTIMATE && slotID >= 14 && slotID <= 22) {
+            return true;
         }
         return false;
     }
@@ -459,7 +468,8 @@ public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends 
     }
 
     private boolean isInputSlot(int slotID) {
-        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7 : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE && slotID <= 11);
+        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7 : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE ? slotID <= 11 :
+                               tier == FactoryTier.ULTIMATE && slotID <= 13);
     }
 
     @Override

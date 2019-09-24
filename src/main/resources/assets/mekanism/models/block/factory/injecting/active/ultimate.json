@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/injecting/ultimate",
+  "textures": {
+    "front": "mekanism:block/factory/ultimate/injecting/front_active",
+    "south": "mekanism:block/factory/ultimate/injecting/back_active",
+    "west": "mekanism:block/factory/ultimate/injecting/right_active",
+    "east": "mekanism:block/factory/ultimate/injecting/left_active",
+    "up": "mekanism:block/factory/ultimate/injecting/top_active"
+  }
+}

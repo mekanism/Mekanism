@@ -188,6 +188,17 @@
   "block.mekanism.elite_infusing_factory": "Elite Infusing Factory",
   "block.mekanism.elite_sawing_factory": "Elite Sawing Factory",
 
+  "_comment": "Ultimate Factories",
+  "block.mekanism.ultimate_smelting_factory": "Ultimate Smelting Factory",
+  "block.mekanism.ultimate_enriching_factory": "Ultimate Enriching Factory",
+  "block.mekanism.ultimate_crushing_factory": "Ultimate Crushing Factory",
+  "block.mekanism.ultimate_compressing_factory": "Ultimate Compressing Factory",
+  "block.mekanism.ultimate_combining_factory": "Ultimate Combining Factory",
+  "block.mekanism.ultimate_purifying_factory": "Ultimate Purifying Factory",
+  "block.mekanism.ultimate_injecting_factory": "Ultimate Injecting Factory",
+  "block.mekanism.ultimate_infusing_factory": "Ultimate Infusing Factory",
+  "block.mekanism.ultimate_sawing_factory": "Ultimate Sawing Factory",
+
   "_comment": "Infuse types",
   "infuse_type.mekanism.carbon": "Carbon",
   "infuse_type.mekanism.tin": "Tin",

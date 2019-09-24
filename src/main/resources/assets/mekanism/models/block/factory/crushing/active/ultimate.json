@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/crushing/ultimate",
+  "textures": {
+    "front": "mekanism:block/factory/ultimate/crushing/front_active",
+    "south": "mekanism:block/factory/ultimate/crushing/back_active",
+    "west": "mekanism:block/factory/ultimate/crushing/right_active",
+    "east": "mekanism:block/factory/ultimate/crushing/left_active",
+    "up": "mekanism:block/factory/ultimate/crushing/top_active"
+  }
+}

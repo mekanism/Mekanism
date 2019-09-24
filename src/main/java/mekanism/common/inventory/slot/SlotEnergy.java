@@ -5,9 +5,13 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotEnergy {
+public abstract class SlotEnergy extends Slot {
 
-    public static class SlotCharge extends Slot {
+    protected SlotEnergy(IInventory inventory, int index, int x, int y) {
+        super(inventory, index, x, y);
+    }
+
+    public static class SlotCharge extends SlotEnergy {
 
         public SlotCharge(IInventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
@@ -19,7 +23,7 @@ public class SlotEnergy {
         }
     }
 
-    public static class SlotDischarge extends Slot {
+    public static class SlotDischarge extends SlotEnergy {
 
         public SlotDischarge(IInventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
