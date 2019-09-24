@@ -48,7 +48,7 @@ public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@N
      * @return Representation of output, MUST NOT be modified
      */
     public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(outputDefinition);
+        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
     }
 
     public static class ItemStackToItemStackRecipeOre extends ItemStackToItemStackRecipe {

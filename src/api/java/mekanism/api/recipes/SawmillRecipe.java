@@ -41,11 +41,11 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
     }
 
     public List<ItemStack> getMainOutputDefinition() {
-        return Collections.singletonList(mainOutputDefinition);
+        return mainOutputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(mainOutputDefinition);
     }
 
     public List<ItemStack> getSecondaryOutputDefinition() {
-        return Collections.singletonList(secondaryOutputDefinition);
+        return secondaryOutputDefinition.isEmpty() ? Collections.emptyList() :  Collections.singletonList(secondaryOutputDefinition);
     }
 
     public double getSecondaryChance() {

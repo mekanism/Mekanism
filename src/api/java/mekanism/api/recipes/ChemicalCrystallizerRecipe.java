@@ -35,7 +35,7 @@ public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@N
     }
 
     public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(outputRepresentation);
+        return outputRepresentation.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputRepresentation);
     }
 
     @Override

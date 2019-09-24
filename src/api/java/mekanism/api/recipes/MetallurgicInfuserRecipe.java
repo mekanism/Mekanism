@@ -39,7 +39,7 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
     }
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(this.outputDefinition);
+        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
     }
 
     public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {

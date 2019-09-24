@@ -55,7 +55,7 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
     }
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(outputDefinition);
+        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
     }
 
     public static class ItemStackGasToItemStackRecipeOre extends ItemStackGasToItemStackRecipe {

@@ -54,7 +54,7 @@ public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull Ite
      * @return Representation of output, MUST NOT be modified
      */
     public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(outputDefinition);
+        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
     }
 
     public static class CombinerRecipeOre extends CombinerRecipe {

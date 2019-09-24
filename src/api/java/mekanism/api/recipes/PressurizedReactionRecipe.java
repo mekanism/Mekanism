@@ -76,6 +76,9 @@ public class PressurizedReactionRecipe implements IMekanismRecipe {
     }
 
     public @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
+        if (outputDefinition.isEmpty()) {
+            return Pair.of(Collections.emptyList(), this.gasOutputDefinition);
+        }
         return Pair.of(Collections.singletonList(this.outputDefinition), this.gasOutputDefinition);
     }
 
