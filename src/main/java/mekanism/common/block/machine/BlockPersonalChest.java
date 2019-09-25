@@ -13,6 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
@@ -50,9 +51,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Why is the personal chest electric
-//TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
+//TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityPersonalChest>, IStateFacing, IHasInventory, IHasSecurity,
-      IHasTileEntity<TileEntityPersonalChest>, IBlockDisableable, IStateWaterLogged {
+      IHasTileEntity<TileEntityPersonalChest>, IBlockDisableable, IStateWaterLogged, IStateActive {
 
     private BooleanValue enabledReference;
 

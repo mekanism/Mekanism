@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityLaser;
@@ -51,8 +52,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-//TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IBlockDisableable {
+//TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
+public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound,
+      IBlockDisableable, IStateActive {
 
     //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);

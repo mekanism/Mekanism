@@ -11,6 +11,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityChargepad;
@@ -47,9 +48,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-//TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
+//TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockChargepad extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityChargepad>, IBlockSound,
-      IBlockDisableable {
+      IBlockDisableable, IStateActive {
 
     //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     // It does not contain the back pane currently
