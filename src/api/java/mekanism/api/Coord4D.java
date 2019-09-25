@@ -323,7 +323,7 @@ public class Coord4D {
      * @return the chunk of this Coord4D
      */
     public boolean exists(IWorldReader world) {
-        return world.isBlockLoaded(new BlockPos(x, y, z));//world.getChunkProvider() == null || world.getChunkProvider().getLoadedChunk(x >> 4, z >> 4) != null;
+        return world.isAreaLoaded(new BlockPos(x, y, z), 0);//world.getChunkProvider() == null || world.getChunkProvider().getLoadedChunk(x >> 4, z >> 4) != null;
     }
 
     /**

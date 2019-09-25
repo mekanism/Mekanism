@@ -33,7 +33,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public Coord4D coord() {
-        return new Coord4D(getTileEntity().getPos(), getTileEntity().getWorld());
+        return new Coord4D(getTileEntity().getPos(), world());
     }
 
     @Override

@@ -40,7 +40,6 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/blank.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
-        infuseBar = new GuiVerticalInfuseBar(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15);
     }
 
     public static List<ItemStack> getInfuseStacks(InfuseType type) {
@@ -79,7 +78,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
                 return (double) timer.getValue() / 20F;
             }
         }, ProgressBar.MEDIUM, this, guiLocation, 70, 46));
-        guiElements.add(infuseBar);
+        guiElements.add(infuseBar = new GuiVerticalInfuseBar(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15));
     }
 
     @Override

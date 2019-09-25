@@ -64,7 +64,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     }
 
     public TileEntity getMainTile() {
-        if (receivedCoords && world.isBlockLoaded(getMainPos())) {
+        if (receivedCoords && world.isAreaLoaded(getMainPos(), 0)) {
             return world.getTileEntity(getMainPos());
         }
         return null;

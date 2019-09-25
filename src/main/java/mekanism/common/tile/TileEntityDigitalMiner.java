@@ -419,7 +419,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public TileEntity getEjectInv() {
         final Direction side = getOppositeDirection();
         final BlockPos pos = getPos().up().offset(side, 2);
-        if (world.isBlockLoaded(pos)) {
+        if (world.isAreaLoaded(pos, 0)) {
             return world.getTileEntity(pos);
         }
         return null;
@@ -778,7 +778,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public TileEntity getEjectTile() {
         final Direction side = getOppositeDirection();
         final BlockPos pos = getPos().up().offset(side);
-        if (world.isBlockLoaded(pos)) {
+        if (world.isAreaLoaded(pos, 0)) {
             return world.getTileEntity(pos);
         }
         return null;

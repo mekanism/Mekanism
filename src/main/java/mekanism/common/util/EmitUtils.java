@@ -90,7 +90,7 @@ public class EmitUtils {
             for (Direction side : sides) {
                 //Validate we have a block loaded in world, prevents ghost chunk loading
                 final BlockPos pos = center.offset(side);
-                if (world.isBlockLoaded(pos)) {
+                if (world.isAreaLoaded(pos, 0)) {
                     //Get tile and provide if not null
                     final TileEntity tileEntity = world.getTileEntity(pos);
                     if (tileEntity != null) {

@@ -506,7 +506,7 @@ public final class MekanismUtils {
      * @param pos   Position of the block
      */
     public static void updateBlock(World world, BlockPos pos) {
-        if (!world.isBlockLoaded(pos)) {
+        if (!world.isAreaLoaded(pos, 0)) {
             return;
         }
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
@@ -988,9 +988,9 @@ public final class MekanismUtils {
         return ret != null ? ret : "<???>";
     }
 
-    public static TileEntity getTileEntitySafe(IBlockReader worldIn, BlockPos pos) {
+    public static TileEntity getTileEntitySafe(IBlockReader world, BlockPos pos) {
         //TODO: Remove this/replace with getTileEntity
-        return worldIn.getTileEntity(pos);//worldIn instanceof Region ? ((Region) worldIn).getTileEntity(pos, Chunk.CreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+        return world.getTileEntity(pos);//world instanceof Region ? ((Region) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK) : world.getTileEntity(pos);
     }
 
     /**
@@ -1003,7 +1003,8 @@ public final class MekanismUtils {
      */
     @Nullable
     public static TileEntity getTileEntity(IWorldReader world, BlockPos pos) {
-        if (world != null && world.isBlockLoaded(pos)) {
+        if (world != null && world.isAreaLoaded(pos, 0)) {
+            //TODO: This freezes if being called from onLoad
             return world.getTileEntity(pos);
         }
         return null;
