@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanismadditions:cyan_plastic_slab",
+    "count": 6
+  },
+  "pattern": [
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanismadditions:cyan_slick_plastic"
+    }
+  }
+}

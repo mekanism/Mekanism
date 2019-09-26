@@ -13,7 +13,7 @@
       "tag": "mekanism:alloys/atomic"
     },
     "D": {
-      "item": "minecraft:diamond"
+      "tag": "forge:gems/diamond"
     },
     "G": {
       "tag": "forge:ingots/gold"

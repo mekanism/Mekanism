@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanismadditions:blue_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "tag": "forge:leather"
+    },
+    {
+      "tag": "forge:string"
+    },
+    {
+      "tag": "forge:dyes/blue"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

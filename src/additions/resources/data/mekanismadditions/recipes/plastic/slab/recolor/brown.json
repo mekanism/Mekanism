@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismadditions:brown_plastic_slab",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:slabs/plastic"
+    },
+    "D": {
+      "tag": "forge:dyes/brown"
+    }
+  }
+}

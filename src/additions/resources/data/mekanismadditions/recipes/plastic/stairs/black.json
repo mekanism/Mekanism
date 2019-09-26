@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanismadditions:black_plastic_stairs",
+    "count": 4
+  },
+  "pattern": [
+    "P  ",
+    "PP ",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanismadditions:black_slick_plastic"
+    }
+  }
+}

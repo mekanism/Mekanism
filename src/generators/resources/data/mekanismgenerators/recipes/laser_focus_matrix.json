@@ -14,7 +14,7 @@
       "item": "mekanismgenerators:reactor_glass"
     },
     "L": {
-      "item": "minecraft:redstone_block"
+      "tag": "forge:storage_blocks/redstone"
     }
   }
 }

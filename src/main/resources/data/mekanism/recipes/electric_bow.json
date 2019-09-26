@@ -13,7 +13,7 @@
       "tag": "mekanism:alloys/infused"
     },
     "B": {
-      "item": "minecraft:string"
+      "tag": "forge:string"
     },
     "E": {
       "item": "mekanism:energy_tablet"

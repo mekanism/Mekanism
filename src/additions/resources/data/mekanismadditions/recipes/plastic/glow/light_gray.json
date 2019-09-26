@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanismadditions:light_gray_plastic_glow",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "item": "mekanismadditions:light_gray_plastic"
+    },
+    {
+      "item": "mekanismadditions:light_gray_plastic"
+    },
+    {
+      "item": "mekanismadditions:light_gray_plastic"
+    },
+    {
+      "tag": "forge:dusts/glowstone"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

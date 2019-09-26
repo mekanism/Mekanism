@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanismadditions:black_balloon",
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "tag": "forge:leather"
+    },
+    {
+      "tag": "forge:string"
+    },
+    {
+      "tag": "forge:dyes/black"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

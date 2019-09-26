@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanismadditions:purple_plastic_fence_gate"
+  },
+  "pattern": [
+    "SBS",
+    "SBS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "mekanismadditions:purple_plastic"
+    },
+    "S": {
+      "tag": "forge:rods/plastic"
+    }
+  }
+}

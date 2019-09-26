@@ -13,7 +13,7 @@
       "item": "minecraft:tnt"
     },
     "*": {
-      "item": "minecraft:obsidian"
+      "tag": "forge:obsidian"
     }
   }
 }
