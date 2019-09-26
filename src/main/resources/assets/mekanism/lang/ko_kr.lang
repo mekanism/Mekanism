@@ -6,26 +6,26 @@
 tile.ObsidianTNT.name=옵시디언 TNT
 item.EnrichedAlloy.name=강화 합금
 item.ReinforcedAlloy.name=강화된 합금
-item.AtomicAlloy.name=Atomic 합금
-item.ElectricBow.name=전기 Bow
-item.EnrichedIron.name=Enriched 철
-item.CompressedCarbon.name=압축된 Carbon
-item.CompressedRedstone.name=압축된 Redstone
+item.AtomicAlloy.name=아토믹 합금
+item.ElectricBow.name=전기 활
+item.EnrichedIron.name=농축된 철
+item.CompressedCarbon.name=압축된 탄소
+item.CompressedRedstone.name=압축된 레드스톤
 item.CompressedDiamond.name=압축된 다이아몬드
 item.CompressedObsidian.name=압축된 옵시디언
 item.Jetpack.name=제트팩
-item.ScubaTank.name=Scuba 탱크
+item.ScubaTank.name=스쿠버 탱크
 item.GasMask.name=가스 마스크
-item.HDPERod.name=HDPE 길
+item.HDPERod.name=HDPE 막대기
 
 # Control Circuits
 item.BasicControlCircuit.name=기본 조작 회로
 item.AdvancedControlCircuit.name=고급 조작 회로
 item.EliteControlCircuit.name=엘리트 조작 회로
-item.UltimateControlCircuit.name=울티베이트 조작 회로
+item.UltimateControlCircuit.name=얼티메이트 조작 회로
 
 # Bounding Block
-tile.BoundingBlock.name=Bounding 블럭
+tile.BoundingBlock.name=바운딩 블럭
 
 # Salt
 tile.SaltBlock.name=소금 블럭
@@ -33,11 +33,11 @@ tile.SaltBlock.name=소금 블럭
 # Basic Block
 tile.BasicBlock.OsmiumBlock.name=오스뮴 블럭
 tile.BasicBlock.BronzeBlock.name=청동 블럭
-tile.BasicBlock.RefinedObsidian.name=강화된 옵시디언
+tile.BasicBlock.RefinedObsidian.name=정제된 옵시디언
 tile.BasicBlock.CharcoalBlock.name=목탄 블럭
-tile.BasicBlock.RefinedGlowstone.name=강화된 발광석
+tile.BasicBlock.RefinedGlowstone.name=정제된 발광석
 tile.BasicBlock.SteelBlock.name=강철 블럭
-tile.BasicBlock.SteelCasing.name=강철 Casing
+tile.BasicBlock.SteelCasing.name=강철 케이싱
 tile.BasicBlock.DynamicTank.name=다이나믹 탱크
 tile.BasicBlock.DynamicValve.name=다이나믹 밸브
 tile.BasicBlock.CopperBlock.name=구리 블럭
@@ -48,7 +48,7 @@ tile.MachineBlock.Teleporter.name=텔레포터
 tile.MachineBlock.ElectricPump.name=전기 펌프
 tile.MachineBlock.Chargepad.name=차지패드
 tile.MachineBlock.LogisticalSorter.name=논리 정렬기
-tile.MachineBlock.DigitalMiner.name=디지털 마이너
+tile.MachineBlock.DigitalMiner.name=디지털 채굴기
 
 # Plastic
 tile.PlasticBlock.name=플라스틱 블럭
@@ -76,13 +76,13 @@ tile.OreBlock.TinOre.name=주석 광석
 tile.Transmitter.BasicUniversalCable.name=기본 범용 케이블
 tile.Transmitter.AdvancedUniversalCable.name=고급 범용 케이블
 tile.Transmitter.EliteUniversalCable.name=엘리트 범용 케이블
-tile.Transmitter.UltimateUniversalCable.name=궁극의 범용 케이블
+tile.Transmitter.UltimateUniversalCable.name=궁극 범용 케이블
 tile.Transmitter.BasicMechanicalPipe.name=기본 기계적 파이프
-tile.Transmitter.AdvancedMechanicalPipe.name=고급 기계적 파이프
-tile.Transmitter.EliteMechanicalPipe.name=엘리트 기계적 파이프
-tile.Transmitter.UltimateMechanicalPipe.name=궁극의 기계적 파이프
-tile.Transmitter.RestrictiveTransporter.name=제한적 수송기
-tile.Transmitter.DiversionTransporter.name=우회적 수송기
+tile.Transmitter.AdvancedMechanicalPipe.name=고급 기계 파이프
+tile.Transmitter.EliteMechanicalPipe.name=엘리트 기계 파이프
+tile.Transmitter.UltimateMechanicalPipe.name=궁극 기계 파이프
+tile.Transmitter.RestrictiveTransporter.name=제한 수송기
+tile.Transmitter.DiversionTransporter.name=우회 수송기
 
 # Glow Panel
 tile.GlowPanel.name=발광 패널
@@ -91,13 +91,13 @@ tile.GlowPanel.name=발광 패널
 tile.EnergyCubeBasic.name=기본 에너지 큐브
 tile.EnergyCubeAdvanced.name=고급 에너지 큐브
 tile.EnergyCubeElite.name=엘리트 에너지 큐브
-tile.EnergyCubeUltimate.name=궁극의 에너지 큐브
+tile.EnergyCubeUltimate.name=궁극 에너지 큐브
 
 # 가루
 item.ironDust.name=철 가루
 item.goldDust.name=금 가루
 item.osmiumDust.name=오스뮴 가루
-item.obsidianDust.name=강화된 옵시디언 가루
+item.obsidianDust.name=정제된 옵시디언 가루
 item.diamondDust.name=다이아몬드 가루
 item.steelDust.name=강철 가루
 item.copperDust.name=구리 가루
@@ -228,8 +228,8 @@ tooltip.inventory=인벤토리
 tooltip.storedEnergy=저장 전력
 tooltip.locked=잠겨 있음
 tooltip.recipeType=레시피 속성
-tooltip.forDetails=더 자세한 정도
-mekanism.tooltip.fireMode=파이어 모드: %s
+tooltip.forDetails=더 자세한 정보
+mekanism.tooltip.fireMode=발사 모드: %s
 tooltip.items=아이템
 tooltip.blocks=블럭
 tooltip.universal=범용
@@ -241,13 +241,13 @@ tooltip.mode=모드
 tooltip.efficiency=효율
 tooltip.yes=예
 tooltip.no=아니오
-tooltip.blockData=블럭 data
+tooltip.blockData=블럭 데이터
 tooltip.block=블럭
 
 mekanism.tooltip.disassembler.normal=기본
 mekanism.tooltip.disassembler.slow=느림
 mekanism.tooltip.disassembler.fast=빠름
-mekanism.tooltip.disassembler.vein=vein
+mekanism.tooltip.disassembler.vein=광맥 채굴
 mekanism.tooltip.disassembler.off=꺼짐
 
 tooltip.balloon=풍선
@@ -260,7 +260,7 @@ control.high=높음
 control.low=낮음
 control.disabled.desc=언제나 실행
 control.high.desc=신호가 있으면 실행
-control.low.desc=신호가 없는 실행
+control.low.desc=신호가 없으면 실행
 
 # Container edit modes
 fluidedit.both=양방향
@@ -327,13 +327,13 @@ tile.Generator.SolarGenerator.name=태양열 발전기
 tile.Generator.GasGenerator.name=가스 발전기
 tile.Generator.BioGenerator.name=바이오연료 발전기
 tile.Generator.AdvancedSolarGenerator.name=고급 태양열 발전기
-tile.Generator.WindGenerator.name=풍차
+tile.Generator.WindGenerator.name=풍력 발전기
 
 # Gui text
 gui.heatGenerator.fuel=연료
 gui.solarGenerator.sun=태양
 gui.bioGenerator.bioFuel=바이오연료
-gui.electrolyticSeparator.dump=덤프
+gui.electrolyticSeparator.dump=버리기
 
 # TOOLS
 #########
