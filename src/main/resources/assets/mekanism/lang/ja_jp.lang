@@ -333,7 +333,7 @@ gas.cleanLead=純粋な鉛の懸濁液
 
 # BC Fuel Gases
 gas.fuel=気化燃料
-gas.oil=気化石油
+gas.oil=気化原油
 
 # Fluids
 fluid.liquidhydrogen=液体水素
@@ -996,7 +996,7 @@ itemGroup.tabMekanism=Mekanism
 
 # Items
 item.SolarPanel.name=ソーラーパネル
-item.Hohlraum.name=ホーラム
+item.Hohlraum.name=ホールラウム
 item.TurbineBlade.name=タービンの羽
 
 # Generators
