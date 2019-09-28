@@ -13,6 +13,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 
 /**
@@ -56,6 +57,13 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
         return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        itemInput.write(buffer);
+        gasInput.write(buffer);
+        buffer.writeItemStack(outputDefinition);
     }
 
     public static class ItemStackGasToItemStackRecipeOre extends ItemStackGasToItemStackRecipe {

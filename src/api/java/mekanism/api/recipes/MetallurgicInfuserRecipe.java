@@ -13,6 +13,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 
 /**
@@ -52,6 +53,13 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
 
     public ItemStackIngredient getItemInput() {
         return this.itemInput;
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        itemInput.write(buffer);
+        infusionInput.write(buffer);
+        buffer.writeItemStack(outputDefinition);
     }
 
     public static class MetallurgicInfuserRecipeOre extends MetallurgicInfuserRecipe {

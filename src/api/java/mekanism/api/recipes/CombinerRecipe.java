@@ -11,6 +11,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 
 /**
@@ -55,6 +56,13 @@ public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull Ite
      */
     public List<ItemStack> getOutputDefinition() {
         return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        mainInput.write(buffer);
+        extraInput.write(buffer);
+        buffer.writeItemStack(outputDefinition);
     }
 
     public static class CombinerRecipeOre extends CombinerRecipe {

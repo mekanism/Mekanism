@@ -10,6 +10,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
 /**
  * Inputs: ItemStack + GasStack Output: GasStack
@@ -58,5 +59,13 @@ public class ItemStackGasToGasRecipe implements IMekanismRecipe, BiPredicate<@No
 
     public GasStack getOutputDefinition() {
         return new GasStack(outputGas, outputGasAmount);
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        itemInput.write(buffer);
+        gasInput.write(buffer);
+        buffer.writeRegistryId(outputGas);
+        buffer.writeInt(outputGasAmount);
     }
 }

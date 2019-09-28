@@ -1,16 +1,26 @@
 package mekanism.api.recipes.inputs;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTags;
 import mekanism.api.providers.IGasProvider;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Thiakil on 11/07/2019.
@@ -23,7 +33,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
     }
 
     public static GasStackIngredient from(@NonNull IGasProvider instance, int amount) {
-        return new Instance(instance.getGas(), amount);
+        return new Single(instance.getGas(), amount);
     }
 
     public static GasStackIngredient from(@NonNull Tag<Gas> gasTag, int amount) {
@@ -32,14 +42,102 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
     public abstract boolean testType(@NonNull Gas gas);
 
-    public static class Instance extends GasStackIngredient {
+    public static GasStackIngredient read(PacketBuffer buffer) {
+        //TODO: Allow supporting serialization of different types than just the ones we implement?
+        IngredientType type = buffer.readEnumValue(IngredientType.class);
+        if (type == IngredientType.SINGLE) {
+            return Single.read(buffer);
+        } else if (type == IngredientType.TAGGED) {
+            return Tagged.read(buffer);
+        }
+        return Multi.read(buffer);
+    }
+
+    //TODO: Should we not let this be null?
+    public static GasStackIngredient deserialize(@Nullable JsonElement json) {
+        if (json == null || json.isJsonNull()) {
+            throw new JsonSyntaxException("Ingredient cannot be null");
+        }
+        if (json.isJsonArray()) {
+            JsonArray jsonArray = json.getAsJsonArray();
+            int size = jsonArray.size();
+            if (size == 0) {
+                throw new JsonSyntaxException("Ingredient array cannot be empty, at least one ingredient must be defined");
+            } else if (size > 1) {
+                GasStackIngredient[] ingredients = new GasStackIngredient[size];
+                for (int i = 0; i < size; i++) {
+                    //Read all the ingredients
+                    ingredients[i] = deserialize(jsonArray.get(i));
+                }
+                return createMulti(ingredients);
+            }
+            //If we only have a single element, just set our json as that so that we don't have to use Multi for efficiency reasons
+            json = jsonArray.get(0);
+        }
+        if (!json.isJsonObject()) {
+            throw new JsonSyntaxException("Expected item to be object or array of objects");
+        }
+        JsonObject jsonObject = json.getAsJsonObject();
+        int amount = 1;
+        if (!jsonObject.has("count")) {
+            throw new JsonSyntaxException("Expected to receive a count that is greater than zero");
+        }
+        JsonElement count = jsonObject.get("count");
+        if (!JSONUtils.isNumber(count)) {
+            throw new JsonSyntaxException("Expected count to be a number greater than zero.");
+        }
+        amount = count.getAsJsonPrimitive().getAsInt();
+        if (amount < 1) {
+            throw new JsonSyntaxException("Expected count to be greater than zero.");
+        }
+        if (jsonObject.has("gas") && jsonObject.has("tag")) {
+            throw new JsonParseException("An ingredient entry is either a tag or an item, not both");
+        } else if (jsonObject.has("gas")) {
+            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "gas"));
+            Gas gas = Gas.getFromRegistry(resourceLocation);
+            if (gas.isEmptyType()) {
+                throw new JsonSyntaxException("Invalid gas type '" + resourceLocation + "'");
+            }
+            return from(gas, amount);
+        } else if (jsonObject.has("tag")) {
+            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
+            Tag<Gas> tag = GasTags.getCollection().get(resourceLocation);
+            if (tag == null) {
+                throw new JsonSyntaxException("Unknown gas tag '" + resourceLocation + "'");
+            }
+            return from(tag, amount);
+        }
+        throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a gas.");
+    }
+
+    public static GasStackIngredient createMulti(GasStackIngredient... ingredients) {
+        if (ingredients.length == 0) {
+            //TODO: Throw error
+        } else if (ingredients.length == 1) {
+            return ingredients[0];
+        }
+        List<GasStackIngredient> cleanedIngredients = new ArrayList<>();
+        for (GasStackIngredient ingredient : ingredients) {
+            if (ingredient instanceof Multi) {
+                //Don't worry about if our inner ingredients are multi as well, as if this is the only external method for
+                // creating a multi ingredient, then we are certified they won't be of a higher depth
+                cleanedIngredients.addAll(Arrays.asList(((Multi) ingredient).ingredients));
+            } else {
+                cleanedIngredients.add(ingredient);
+            }
+        }
+        //There should be more than a single item or we would have split out earlier
+        return new Multi(cleanedIngredients.toArray(new GasStackIngredient[0]));
+    }
+
+    public static class Single extends GasStackIngredient {
 
         //TODO: Convert this to storing a GasStack?
         @NonNull
         private final Gas gasInstance;
         private final int amount;
 
-        protected Instance(@NonNull Gas gasInstance, int amount) {
+        protected Single(@NonNull Gas gasInstance, int amount) {
             this.gasInstance = Objects.requireNonNull(gasInstance);
             this.amount = amount;
         }
@@ -68,22 +166,32 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         public @NonNull List<@NonNull GasStack> getRepresentations() {
             return Collections.singletonList(new GasStack(gasInstance, amount));
         }
+
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeRegistryId(gasInstance);
+            buffer.writeInt(amount);
+        }
+
+        public static Single read(PacketBuffer buffer) {
+            return new Single(buffer.readRegistryId(), buffer.readInt());
+        }
     }
 
     public static class Tagged extends GasStackIngredient {
 
         @Nonnull
         private final Tag<Gas> tag;
-        private final int minAmount;
+        private final int amount;
 
-        public Tagged(@Nonnull Tag<Gas> tag, int minAmount) {
+        public Tagged(@Nonnull Tag<Gas> tag, int amount) {
             this.tag = tag;
-            this.minAmount = minAmount;
+            this.amount = amount;
         }
 
         @Override
         public boolean test(@NonNull GasStack gasStack) {
-            return testType(gasStack) && gasStack.getAmount() >= minAmount;
+            return testType(gasStack) && gasStack.getAmount() >= amount;
         }
 
         @Override
@@ -100,7 +208,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         public @NonNull GasStack getMatchingInstance(@NonNull GasStack gasStack) {
             if (test(gasStack)) {
                 //Our gas is in the tag so we make a new stack with the given amount
-                return new GasStack(gasStack, minAmount);
+                return new GasStack(gasStack, amount);
             }
             return GasStack.EMPTY;
         }
@@ -111,9 +219,21 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             //TODO: Can this be cached some how
             List<@NonNull GasStack> representations = new ArrayList<>();
             for (Gas gas : tag.getAllElements()) {
-                representations.add(new GasStack(gas, minAmount));
+                representations.add(new GasStack(gas, amount));
             }
             return representations;
+        }
+
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeEnumValue(IngredientType.TAGGED);
+            buffer.writeResourceLocation(tag.getId());
+            buffer.writeInt(amount);
+        }
+
+        public static Tagged read(PacketBuffer buffer) {
+            //TODO: Should this only check already defined tags??
+            return new Tagged(new GasTags.Wrapper(buffer.readResourceLocation()), buffer.readInt());
         }
     }
 
@@ -163,5 +283,29 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             }
             return representations;
         }
+
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeEnumValue(IngredientType.MULTI);
+            buffer.writeInt(ingredients.length);
+            for (GasStackIngredient ingredient : ingredients) {
+                ingredient.write(buffer);
+            }
+        }
+
+        public static GasStackIngredient read(PacketBuffer buffer) {
+            //TODO: Verify this works
+            GasStackIngredient[] ingredients = new GasStackIngredient[buffer.readInt()];
+            for (int i = 0; i < ingredients.length; i++) {
+                ingredients[i] = GasStackIngredient.read(buffer);
+            }
+            return createMulti(ingredients);
+        }
+    }
+
+    private enum IngredientType {
+        SINGLE,
+        TAGGED,
+        MULTI
     }
 }

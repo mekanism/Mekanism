@@ -6,6 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -38,5 +39,11 @@ public class FluidToFluidRecipe implements IMekanismRecipe, Predicate<@NonNull F
     @Contract(value = "_->new", pure = true)
     public FluidStack getOutput(FluidStack input) {
         return this.outputRepresentation.copy();
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        input.write(buffer);
+        outputRepresentation.writeToPacket(buffer);
     }
 }

@@ -7,6 +7,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -53,5 +54,13 @@ public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull F
 
     public double getEnergyUsage() {
         return energyUsage;
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        input.write(buffer);
+        buffer.writeDouble(energyUsage);
+        leftGasOutput.writeToPacket(buffer);
+        rightGasOutput.writeToPacket(buffer);
     }
 }

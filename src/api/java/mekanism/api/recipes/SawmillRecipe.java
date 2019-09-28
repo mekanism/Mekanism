@@ -11,6 +11,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -54,6 +55,14 @@ public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemSt
 
     public ItemStackIngredient getInput() {
         return input;
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        input.write(buffer);
+        buffer.writeItemStack(mainOutputDefinition);
+        buffer.writeItemStack(secondaryOutputDefinition);
+        buffer.writeDouble(secondaryChance);
     }
 
     //TODO: nextChanceOutput() method so that we can have a more accurate calculation for OutputHelper

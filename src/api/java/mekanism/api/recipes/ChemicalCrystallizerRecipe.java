@@ -12,6 +12,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 
 /**
@@ -20,6 +21,7 @@ import net.minecraft.tags.Tag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
+//TODO: Rename this to GasToItemStackIngredient
 public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
@@ -45,6 +47,12 @@ public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@N
 
     public GasStackIngredient getInput() {
         return input;
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        input.write(buffer);
+        buffer.writeItemStack(outputRepresentation);
     }
 
     public static class ChemicalCrystallizerRecipeOre extends ChemicalCrystallizerRecipe {

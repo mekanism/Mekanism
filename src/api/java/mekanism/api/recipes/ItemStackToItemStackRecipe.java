@@ -11,6 +11,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 
 /**
@@ -24,8 +25,8 @@ public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@N
     private final ItemStackIngredient mainInput;
     private ItemStack outputDefinition;
 
-    public ItemStackToItemStackRecipe(ItemStackIngredient mainInput, ItemStack outputDefinition) {
-        this.mainInput = mainInput;
+    public ItemStackToItemStackRecipe(ItemStackIngredient input, ItemStack outputDefinition) {
+        this.mainInput = input;
         this.outputDefinition = outputDefinition.copy();
     }
 
@@ -49,6 +50,12 @@ public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@N
      */
     public List<ItemStack> getOutputDefinition() {
         return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        mainInput.write(buffer);
+        buffer.writeItemStack(outputDefinition);
     }
 
     public static class ItemStackToItemStackRecipeOre extends ItemStackToItemStackRecipe {

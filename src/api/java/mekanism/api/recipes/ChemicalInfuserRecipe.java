@@ -10,6 +10,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
+import net.minecraft.network.PacketBuffer;
 
 /**
  * Created by Thiakil on 13/07/2019.
@@ -54,5 +55,13 @@ public class ChemicalInfuserRecipe implements IMekanismRecipe, BiPredicate<@NonN
 
     public List<GasStack> getOutputDefinition() {
         return Collections.singletonList(new GasStack(outputGas, outputGasAmount));
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        leftInput.write(buffer);
+        rightInput.write(buffer);
+        buffer.writeRegistryId(outputGas);
+        buffer.writeInt(outputGasAmount);
     }
 }

@@ -8,6 +8,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -46,5 +47,12 @@ public class FluidGasToGasRecipe implements IMekanismRecipe, BiPredicate<@NonNul
     @Contract(value = "_, _ -> new", pure = true)
     public GasStack getOutput(FluidStack fluidStack, GasStack input) {
         return outputRepresentation.copy();
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        fluidInput.write(buffer);
+        gasInput.write(buffer);
+        outputRepresentation.writeToPacket(buffer);
     }
 }

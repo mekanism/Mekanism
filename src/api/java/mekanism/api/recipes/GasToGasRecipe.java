@@ -7,6 +7,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
+import net.minecraft.network.PacketBuffer;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -41,5 +42,11 @@ public class GasToGasRecipe implements IMekanismRecipe, Predicate<@NonNull GasSt
     @Contract(value = "_ -> new", pure = true)
     public GasStack getOutput(GasStack input) {
         return outputRepresentation.copy();
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        input.write(buffer);
+        outputRepresentation.writeToPacket(buffer);
     }
 }

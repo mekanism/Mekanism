@@ -3,6 +3,7 @@ package mekanism.api.recipes;
 import java.util.function.IntPredicate;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
+import net.minecraft.network.PacketBuffer;
 
 /**
  * Ambient Accumulator Recipe
@@ -46,5 +47,12 @@ public class AmbientAccumulatorRecipe implements IMekanismRecipe, IntPredicate {
 
     public int getDimension() {
         return dimension;
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        buffer.writeInt(dimension);
+        buffer.writeInt(ticksRequired);
+        output.writeToPacket(buffer);
     }
 }

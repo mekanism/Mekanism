@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enrichment_chamber",
+  "output": {
+    "item": "mekanism:dust_obsidian",
+    "count": 4
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:obsidian"
+    }
+  }
+}

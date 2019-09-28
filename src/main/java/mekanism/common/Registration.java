@@ -5,6 +5,8 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.recipe.MekanismRecipeEnabledCondition;
+import mekanism.common.recipe.MekanismRecipeSerializers;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
@@ -66,9 +68,10 @@ public class Registration {
 
     @SubscribeEvent
     public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-        //TODO: Register recipe serializers
-        //event.getRegistry().register(ShapedMekanismRecipe.CRAFTING_SHAPED);
-        //TODO: Is this the correct place to register this
+        MekanismRecipeType.registerRecipeTypes(event.getRegistry());
+        MekanismRecipeSerializers.registerRecipeSerializers(event.getRegistry());
+        //TODO: Register a custom shaped crafting recipe serializer if needed
+        //TODO: Move this to MekanismRecipeSerializers??
         CraftingHelper.register(MekanismRecipeEnabledCondition.Serializer.INSTANCE);
     }
 

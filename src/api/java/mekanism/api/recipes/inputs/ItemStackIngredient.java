@@ -1,16 +1,23 @@
 package mekanism.api.recipes.inputs;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.providers.IItemProvider;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.IngredientNBT;
 
 //TODO: Allow for empty item stacks?
@@ -75,6 +82,77 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         return new Single(ingredient, amount);
     }
 
+    public static ItemStackIngredient read(PacketBuffer buffer) {
+        //TODO: Allow supporting serialization of different types than just the ones we implement?
+        IngredientType type = buffer.readEnumValue(IngredientType.class);
+        if (type == IngredientType.SINGLE) {
+            return Single.read(buffer);
+        }
+        return Multi.read(buffer);
+    }
+
+    //TODO: Should we not let this be null?
+    public static ItemStackIngredient deserialize(@Nullable JsonElement json) {
+        if (json == null || json.isJsonNull()) {
+            throw new JsonSyntaxException("Ingredient cannot be null");
+        }
+        if (json.isJsonArray()) {
+            JsonArray jsonArray = json.getAsJsonArray();
+            int size = jsonArray.size();
+            if (size == 0) {
+                throw new JsonSyntaxException("Ingredient array cannot be empty, at least one ingredient must be defined");
+            } else if (size > 1) {
+                ItemStackIngredient[] ingredients = new ItemStackIngredient[size];
+                for (int i = 0; i < size; i++) {
+                    //Read all the ingredients
+                    ingredients[i] = deserialize(jsonArray.get(i));
+                }
+                return createMulti(ingredients);
+            }
+            //If we only have a single element, just set our json as that so that we don't have to use Multi for efficiency reasons
+            json = jsonArray.get(0);
+        }
+        if (!json.isJsonObject()) {
+            throw new JsonSyntaxException("Expected item to be object or array of objects");
+        }
+        JsonObject jsonObject = json.getAsJsonObject();
+        int amount = 1;
+        if (jsonObject.has("count")) {
+            JsonElement count = jsonObject.get("count");
+            if (!JSONUtils.isNumber(count)) {
+                throw new JsonSyntaxException("Expected count to be a number that is one or larger.");
+            }
+            amount = count.getAsJsonPrimitive().getAsInt();
+            if (amount < 1) {
+                throw new JsonSyntaxException("Expected count to larger than or equal to one");
+            }
+        }
+        JsonElement jsonelement = JSONUtils.isJsonArray(jsonObject, "ingredient") ? JSONUtils.getJsonArray(jsonObject, "ingredient") :
+                                  JSONUtils.getJsonObject(jsonObject, "ingredient");
+        Ingredient ingredient = Ingredient.deserialize(jsonelement);
+        return from(ingredient, amount);
+    }
+
+    public static ItemStackIngredient createMulti(ItemStackIngredient... ingredients) {
+        if (ingredients.length == 0) {
+            //TODO: Throw error
+        } else if (ingredients.length == 1) {
+            return ingredients[0];
+        }
+        List<ItemStackIngredient> cleanedIngredients = new ArrayList<>();
+        for (ItemStackIngredient ingredient : ingredients) {
+            if (ingredient instanceof Multi) {
+                //Don't worry about if our inner ingredients are multi as well, as if this is the only external method for
+                // creating a multi ingredient, then we are certified they won't be of a higher depth
+                cleanedIngredients.addAll(Arrays.asList(((Multi) ingredient).ingredients));
+            } else {
+                cleanedIngredients.add(ingredient);
+            }
+        }
+        //There should be more than a single item or we would have split out earlier
+        return new Multi(cleanedIngredients.toArray(new ItemStackIngredient[0]));
+    }
+
     public static class Single extends ItemStackIngredient {
 
         @NonNull
@@ -120,6 +198,17 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             }
             return representations;
         }
+
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeEnumValue(IngredientType.SINGLE);
+            ingredient.write(buffer);
+            buffer.writeInt(amount);
+        }
+
+        public static Single read(PacketBuffer buffer) {
+            return new Single(Ingredient.read(buffer), buffer.readInt());
+        }
     }
 
     //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
@@ -163,5 +252,28 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             }
             return representations;
         }
+
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeEnumValue(IngredientType.MULTI);
+            buffer.writeInt(ingredients.length);
+            for (ItemStackIngredient ingredient : ingredients) {
+                ingredient.write(buffer);
+            }
+        }
+
+        public static ItemStackIngredient read(PacketBuffer buffer) {
+            //TODO: Verify this works
+            ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readInt()];
+            for (int i = 0; i < ingredients.length; i++) {
+                ingredients[i] = ItemStackIngredient.read(buffer);
+            }
+            return createMulti(ingredients);
+        }
+    }
+
+    private enum IngredientType {
+        SINGLE,
+        MULTI
     }
 }

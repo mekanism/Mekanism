@@ -3,6 +3,7 @@ package mekanism.common.recipe;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -32,8 +33,13 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismBlock;
+import mekanism.common.recipe.impl.ItemStackToItemStackIRecipe;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -239,7 +245,45 @@ public final class RecipeHandler {
         Recipe.SOLAR_NEUTRON_ACTIVATOR.put(new GasToGasRecipe(inputGas, outputGas));
     }
 
+    public static class RecipeWrapper<RECIPE_TYPE extends IRecipe<IInventory> & IMekanismRecipe> {
+
+        public static final RecipeWrapper<ItemStackToItemStackIRecipe> ENERGIZED_SMELTER = new RecipeWrapper<>(MekanismRecipeType.ENERGIZED_SMELTER);
+        public static final RecipeWrapper<ItemStackToItemStackIRecipe> ENRICHMENT_CHAMBER = new RecipeWrapper<>(MekanismRecipeType.ENRICHMENT_CHAMBER);
+        public static final RecipeWrapper<ItemStackToItemStackIRecipe> CRUSHER = new RecipeWrapper<>(MekanismRecipeType.CRUSHER);
+
+        private IRecipeType<RECIPE_TYPE> recipeType;
+
+        private RecipeWrapper(IRecipeType<RECIPE_TYPE> recipeType) {
+            this.recipeType = recipeType;
+        }
+
+        @Nonnull
+        public List<RECIPE_TYPE> getRecipes(@Nullable World world, @Nonnull IInventory inventory) {
+            if (world == null) {
+                return Collections.emptyList();
+            }
+            //TODO: Cache this stuff by dimension. Update it when /reload is run or things
+            //TODO: make an "IgnoredIInventory" so that we make sure it is clear that the IInventory is not used by the recipes
+            return world.getRecipeManager().getRecipes(recipeType, inventory, world);
+        }
+
+        public Stream<RECIPE_TYPE> stream(@Nullable World world, @Nonnull IInventory inventory) {
+            return getRecipes(world, inventory).stream();
+        }
+
+        @Nullable
+        public RECIPE_TYPE findFirst(@Nullable World world, @Nonnull IInventory inventory, Predicate<? super RECIPE_TYPE> matchCriteria) {
+            return stream(world, inventory).filter(matchCriteria).findFirst().orElse(null);
+        }
+
+        public boolean contains(@Nullable World world, @Nonnull IInventory inventory, Predicate<? super RECIPE_TYPE> matchCriteria) {
+            return stream(world, inventory).anyMatch(matchCriteria);
+        }
+    }
+
     //TODO: Move this into its own class if this stuff doesn't just go away becoming a RecipeType
+    //TODO: Replace this stuff with RecipeWrapper
+    @Deprecated
     public static class Recipe<RECIPE_TYPE extends IMekanismRecipe> {
 
         private static List<Recipe> values = new ArrayList<>();
@@ -309,11 +353,11 @@ public final class RecipeHandler {
 
         @Nullable
         public RECIPE_TYPE findFirst(Predicate<RECIPE_TYPE> matchCriteria) {
-            return recipes.stream().filter(matchCriteria).findFirst().orElse(null);
+            return stream().filter(matchCriteria).findFirst().orElse(null);
         }
 
         public boolean contains(Predicate<RECIPE_TYPE> matchCriteria) {
-            return recipes.stream().anyMatch(matchCriteria);
+            return stream().anyMatch(matchCriteria);
         }
     }
 }

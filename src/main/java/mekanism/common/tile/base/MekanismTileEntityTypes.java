@@ -79,7 +79,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
-//TODO: Evaluate various subclasses as potentially they can be removed if all can be done via constructor
+//TODO: Allow for registry overrides?
 public class MekanismTileEntityTypes {
 
     private static final List<TileEntityType<?>> types = new ArrayList<>();

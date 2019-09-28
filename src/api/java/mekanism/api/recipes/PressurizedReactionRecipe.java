@@ -14,6 +14,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
@@ -84,6 +85,18 @@ public class PressurizedReactionRecipe implements IMekanismRecipe {
 
     public @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
         return Pair.of(this.outputDefinition.copy(), this.gasOutputDefinition.copy());
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        inputSolid.write(buffer);
+        inputFluid.write(buffer);
+        gasInput.write(buffer);
+        buffer.writeRegistryId(outputGas);
+        buffer.writeInt(outputGasAmount);
+        buffer.writeDouble(energyRequired);
+        buffer.writeInt(duration);
+        buffer.writeItemStack(outputDefinition);
     }
 
     public static class PressurizedReactionRecipeOre extends PressurizedReactionRecipe {
