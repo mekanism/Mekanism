@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:white_dye",
+    "count": 2
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:lily_of_the_valley"
+    }
+  }
+}

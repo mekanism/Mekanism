@@ -13,6 +13,10 @@ import net.minecraft.util.ResourceLocation;
 public class MekanismTags {
 
     //TODO: Add a tag for glowstone blocks and clay blocks??
+    //TODO: Evaluate the bio fuel recipes, and maybe add sweet berry bush/coral to it (and maybe bamboo sapling). Also add missing flowers that don't get
+    // caught by the small flowers tag
+    //TODO: Enriching recipes for flowers -> dye
+    //TODO: Add combiner recipes for increased dye combination rates?
 
     public static final Tag<Item> DUSTS_BRONZE = makeForgeItemTag("dusts/bronze");
     public static final Tag<Item> DUSTS_CHARCOAL = makeForgeItemTag("dusts/charcoal");

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "output": {
+    "item": "mekanism:dust_bronze"
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:ingots/bronze"
+    }
+  }
+}

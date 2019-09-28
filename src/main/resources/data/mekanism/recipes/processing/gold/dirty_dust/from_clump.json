@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "output": {
+    "item": "mekanism:dirty_dust_gold"
+  },
+  "input": {
+    "ingredient": {
+      "tag": "mekanism:clumps/gold"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "output": {
+    "item": "minecraft:sand"
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:gravel"
+    }
+  }
+}

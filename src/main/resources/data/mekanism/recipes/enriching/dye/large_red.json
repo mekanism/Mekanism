@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:red_dye",
+    "count": 4
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:rose_bush"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:pink_dye",
+    "count": 2
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pink_tulip"
+    }
+  }
+}

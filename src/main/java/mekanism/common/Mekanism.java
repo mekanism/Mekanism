@@ -206,57 +206,6 @@ public class Mekanism {
                   MekanismItem.REFINED_GLOWSTONE_INGOT.getItemStack());
         }
 
-        //Crusher Recipes
-        if (MekanismBlock.CRUSHER.isEnabled()) {
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.INGOTS_IRON), MekanismItem.IRON_DUST.getItemStack());
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.INGOTS_GOLD), MekanismItem.GOLD_DUST.getItemStack());
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.GRAVEL), new ItemStack(Blocks.SAND));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.STONE), new ItemStack(Blocks.COBBLESTONE));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.COBBLESTONE), new ItemStack(Blocks.GRAVEL));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.CRACKED_STONE_BRICKS), new ItemStack(Blocks.STONE));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.STONE_BRICKS), new ItemStack(Blocks.CRACKED_STONE_BRICKS));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.CHISELED_STONE_BRICKS), new ItemStack(Blocks.STONE_BRICKS));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.FLINT), new ItemStack(Items.GUNPOWDER));
-            //TODO: Multiple ingredients passed to it directly? Or just make tags for these. given the base forge sandstone tag has both normal and red
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.SANDSTONE), new ItemStack(Blocks.SAND, 2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.CHISELED_SANDSTONE), new ItemStack(Blocks.SAND, 2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.CUT_SANDSTONE), new ItemStack(Blocks.SAND, 2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.SMOOTH_SANDSTONE), new ItemStack(Blocks.SAND, 2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.RED_SANDSTONE), new ItemStack(Blocks.RED_SAND, 2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.CHISELED_RED_SANDSTONE), new ItemStack(Blocks.RED_SAND, 2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.CUT_RED_SANDSTONE), new ItemStack(Blocks.RED_SAND, 2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.SMOOTH_RED_SANDSTONE), new ItemStack(Blocks.RED_SAND, 2));
-
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(ItemTags.WOOL), new ItemStack(Items.STRING, 4));
-
-            //BioFuel Crusher Recipes
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.GRASS), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.SUGAR_CANE), MekanismItem.BIO_FUEL.getItemStack(2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.SEEDS), MekanismItem.BIO_FUEL.getItemStack(2));
-            //TODO: This also includes nether wart which we did not have a recipe for in 1.12.
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.CROPS), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.APPLE), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.BREAD), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.ROTTEN_FLESH), MekanismItem.BIO_FUEL.getItemStack(2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.MELON), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.PUMPKIN), MekanismItem.BIO_FUEL.getItemStack(6));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.BAKED_POTATO), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.POISONOUS_POTATO), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.CACTUS), MekanismItem.BIO_FUEL.getItemStack(2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(ItemTags.SAPLINGS), MekanismItem.BIO_FUEL.getItemStack(2));
-            //TODO: Remove this TODO, it is mainly here to make it easier to see what new ones got added that the recipe rewrite branch does not have
-            // Also evaluate these numbers as I believe they are probably wrong/unbalanced
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.MUSHROOMS), MekanismItem.BIO_FUEL.getItemStack(1));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(ItemTags.LEAVES, 10), MekanismItem.BIO_FUEL.getItemStack(1));
-            //TODO: Should flowers instead produce their dye when crushed? (Or maybe use the enricher for that)
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(ItemTags.SMALL_FLOWERS), MekanismItem.BIO_FUEL.getItemStack(1));
-            //TODO: Should this be bamboo sapling instead or can that not be gotten as an item
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Blocks.BAMBOO), MekanismItem.BIO_FUEL.getItemStack(2));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.SWEET_BERRIES), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Items.KELP), MekanismItem.BIO_FUEL.getItemStack(2));
-            //TODO: Coral, and sweet berry bush?
-        }
-
         //Purification Chamber Recipes
         if (MekanismBlock.PURIFICATION_CHAMBER.isEnabled()) {
             RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(Tags.Items.GRAVEL), new ItemStack(Items.FLINT));

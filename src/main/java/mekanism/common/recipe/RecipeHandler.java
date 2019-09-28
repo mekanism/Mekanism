@@ -48,18 +48,6 @@ import net.minecraftforge.fluids.FluidStack;
 public final class RecipeHandler {
 
     /**
-     * Add an Enrichment Chamber recipe.
-     *
-     * @param input  - input ItemStack
-     * @param output - output ItemStack
-     */
-    @Deprecated
-    public static void addEnrichmentChamberRecipe(ItemStackIngredient input, ItemStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.ENRICHMENT_CHAMBER.put(new ItemStackToItemStackRecipe(input, output));
-    }
-
-    /**
      * Add an Osmium Compressor recipe.
      *
      * @param input  - input ItemStack
@@ -82,18 +70,6 @@ public final class RecipeHandler {
     public static void addCombinerRecipe(ItemStackIngredient input, ItemStackIngredient extra, ItemStack output) {
         //TODO: API way of adding recipes
         //Recipe.COMBINER.put(new CombinerRecipe(input, extra, output));
-    }
-
-    /**
-     * Add a Crusher recipe.
-     *
-     * @param input  - input ItemStack
-     * @param output - output ItemStack
-     */
-    @Deprecated
-    public static void addCrusherRecipe(ItemStackIngredient input, ItemStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.CRUSHER.put(new ItemStackToItemStackRecipe(input, output));
     }
 
     /**

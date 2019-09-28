@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "output": {
+    "item": "minecraft:stone"
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cracked_stone_bricks"
+    }
+  }
+}

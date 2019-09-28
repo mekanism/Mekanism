@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "output": {
+    "item": "mekanism:bio_fuel",
+    "count": 6
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pumpkin"
+    }
+  }
+}

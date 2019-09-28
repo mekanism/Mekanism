@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:crushing",
+  "output": {
+    "item": "minecraft:red_sand",
+    "count": 2
+  },
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:red_sandstone"
+      },
+      {
+        "item": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "item": "minecraft:cut_red_sandstone"
+      },
+      {
+        "item": "minecraft:smooth_red_sandstone"
+      }
+    ]
+  }
+}

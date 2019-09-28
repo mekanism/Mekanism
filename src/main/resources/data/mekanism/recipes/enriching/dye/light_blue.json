@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:light_blue_dye",
+    "count": 2
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:blue_orchid"
+    }
+  }
+}
