@@ -50,7 +50,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
             return 0;
         }
 
-        GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
+        GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getInputGas());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
         if (recipeGas.isEmpty()) {
             return 0;
@@ -63,7 +63,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
         currentMax = fluidInputHandler.operationsCanSupport(recipe.getInputFluid(), currentMax);
 
         //Calculate the current max based on the gas input
-        currentMax = gasInputHandler.operationsCanSupport(recipe.getGasInput(), currentMax);
+        currentMax = gasInputHandler.operationsCanSupport(recipe.getInputGas(), currentMax);
 
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeItem, recipeFluid, recipeGas), currentMax);
@@ -99,7 +99,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
         }
 
         //Now check the gas input
-        GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
+        GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getInputGas());
         if (recipeGas.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;

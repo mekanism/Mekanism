@@ -28,13 +28,13 @@ public abstract class ItemStackGasToItemStackRecipe extends MekanismRecipe imple
 
     private final ItemStackIngredient itemInput;
     private final GasStackIngredient gasInput;
-    private final ItemStack outputDefinition;
+    private final ItemStack output;
 
-    public ItemStackGasToItemStackRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputDefinition) {
+    public ItemStackGasToItemStackRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(id);
         this.itemInput = itemInput;
         this.gasInput = gasInput;
-        this.outputDefinition = outputDefinition;
+        this.output = output;
     }
 
     public ItemStackIngredient getItemInput() {
@@ -46,7 +46,7 @@ public abstract class ItemStackGasToItemStackRecipe extends MekanismRecipe imple
     }
 
     public ItemStack getOutput(ItemStack inputItem, GasStack inputGas) {
-        return outputDefinition.copy();
+        return output.copy();
     }
 
     @Override
@@ -55,13 +55,13 @@ public abstract class ItemStackGasToItemStackRecipe extends MekanismRecipe imple
     }
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
-        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
+        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         itemInput.write(buffer);
         gasInput.write(buffer);
-        buffer.writeItemStack(outputDefinition);
+        buffer.writeItemStack(output);
     }
 }

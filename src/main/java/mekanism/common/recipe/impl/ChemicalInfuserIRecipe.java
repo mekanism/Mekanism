@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.MekanismBlock;
@@ -14,8 +14,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ChemicalInfuserIRecipe extends ChemicalInfuserRecipe {
 
-    public ChemicalInfuserIRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, Gas outputGas, int outputGasAmount) {
-        super(id, leftInput, rightInput, outputGas, outputGasAmount);
+    public ChemicalInfuserIRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
+        super(id, leftInput, rightInput, output);
     }
 
     @Nonnull

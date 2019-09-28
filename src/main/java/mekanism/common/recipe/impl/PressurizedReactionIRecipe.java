@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
@@ -16,9 +16,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class PressurizedReactionIRecipe extends PressurizedReactionRecipe {
 
-    public PressurizedReactionIRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient gasInput, Gas outputGas,
-          int outputGasAmount, double energyRequired, int duration, ItemStack output) {
-        super(id, inputSolid, inputFluid, gasInput, outputGas, outputGasAmount, energyRequired, duration, output);
+    public PressurizedReactionIRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+          double energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
+        super(id, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
     }
 
     @Nonnull

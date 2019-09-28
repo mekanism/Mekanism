@@ -2,6 +2,7 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -26,14 +27,27 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
         JsonElement input = JSONUtils.isJsonArray(json, "input") ? JSONUtils.getJsonArray(json, "input") :
                             JSONUtils.getJsonObject(json, "input");
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
-        ItemStack mainOutput = SerializerHelper.getItemStack(json, "mainOutput");
+        ItemStack mainOutput = ItemStack.EMPTY;
         ItemStack secondaryOutput = ItemStack.EMPTY;
         double secondaryChance = 0;
-        //TODO: Secondary output is optional if secondary chance is specified
-        if (json.has("secondaryOutput")) {
+        if (json.has("secondaryOutput") || json.has("secondaryChance")) {
+            if (json.has("mainOutput")) {
+                //Allow for the main output to be optional if we have a secondary output
+                mainOutput = SerializerHelper.getItemStack(json, "mainOutput");
+            }
+            //If we have either json element for secondary information, assume we have both and fail if we can't get one of them
+            JsonElement chance = json.get("secondaryChance");
+            if (!JSONUtils.isNumber(chance)) {
+                throw new JsonSyntaxException("Expected secondaryChance to be a number greater than zero.");
+            }
+            secondaryChance = chance.getAsJsonPrimitive().getAsDouble();
+            if (secondaryChance <= 0) {
+                throw new JsonSyntaxException("Expected secondaryChance to be greater than zero.");
+            }
             secondaryOutput = SerializerHelper.getItemStack(json, "secondaryOutput");
-            //TODO: Get the secondary chance
-            //secondaryChance =;
+        } else {
+            //If we don't have a secondary output require a main output
+            mainOutput = SerializerHelper.getItemStack(json, "mainOutput");
         }
         return this.factory.create(recipeId, inputIngredient, mainOutput, secondaryOutput, secondaryChance);
     }

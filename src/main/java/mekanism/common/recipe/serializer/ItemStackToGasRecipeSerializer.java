@@ -3,8 +3,7 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
-import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -27,18 +26,15 @@ public class ItemStackToGasRecipeSerializer<T extends ItemStackToGasRecipe> exte
         JsonElement input = JSONUtils.isJsonArray(json, "input") ? JSONUtils.getJsonArray(json, "input") :
                             JSONUtils.getJsonObject(json, "input");
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
-        //TODO
-        Gas outputGas = MekanismAPI.EMPTY_GAS;
-        int outputGasAmount = 0;
-        return this.factory.create(recipeId, inputIngredient, outputGas, outputGasAmount);
+        GasStack output = SerializerHelper.getGasStack(json, "output");
+        return this.factory.create(recipeId, inputIngredient, output);
     }
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
-        Gas outputGas = buffer.readRegistryId();
-        int outputGasAmount = buffer.readInt();
-        return this.factory.create(recipeId, inputIngredient, outputGas, outputGasAmount);
+        GasStack output = GasStack.readFromPacket(buffer);
+        return this.factory.create(recipeId, inputIngredient, output);
     }
 
     @Override
@@ -48,6 +44,6 @@ public class ItemStackToGasRecipeSerializer<T extends ItemStackToGasRecipe> exte
 
     public interface IFactory<T extends ItemStackToGasRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient input, Gas outputGas, int outputGasAmount);
+        T create(ResourceLocation id, ItemStackIngredient input, GasStack output);
     }
 }

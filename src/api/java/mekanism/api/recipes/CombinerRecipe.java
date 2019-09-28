@@ -22,13 +22,13 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
 
     private final ItemStackIngredient mainInput;
     private final ItemStackIngredient extraInput;
-    private ItemStack outputDefinition;
+    private ItemStack output;
 
-    public CombinerRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack outputDefinition) {
+    public CombinerRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
         super(id);
         this.mainInput = mainInput;
         this.extraInput = extraInput;
-        this.outputDefinition = outputDefinition.copy();
+        this.output = output.copy();
     }
 
     @Override
@@ -45,7 +45,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     }
 
     public ItemStack getOutput(@NonNull ItemStack input, @NonNull ItemStack extra) {
-        return outputDefinition.copy();
+        return output.copy();
     }
 
     /**
@@ -54,13 +54,13 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
      * @return Representation of output, MUST NOT be modified
      */
     public List<ItemStack> getOutputDefinition() {
-        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
+        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         mainInput.write(buffer);
         extraInput.write(buffer);
-        buffer.writeItemStack(outputDefinition);
+        buffer.writeItemStack(output);
     }
 }

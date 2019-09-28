@@ -6,7 +6,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
@@ -25,31 +24,22 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe {
 
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
-    private final GasStackIngredient gasInput;
-    protected final Gas outputGas;
-    protected final int outputGasAmount;
+    private final GasStackIngredient inputGas;
     private final double energyRequired;
     private final int duration;
-    private final ItemStack outputDefinition;
-    private final GasStack gasOutputDefinition;
+    private final ItemStack outputItem;
+    private final GasStack outputGas;
 
-    public PressurizedReactionRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient gasInput, Gas outputGas,
-          int outputGasAmount, double energyRequired, int duration, ItemStack outputDefinition) {
+    public PressurizedReactionRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+          double energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
         super(id);
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
-        this.gasInput = gasInput;
-        this.outputGas = outputGas;
-        this.outputGasAmount = outputGasAmount;
+        this.inputGas = inputGas;
         this.energyRequired = energyRequired;
         this.duration = duration;
-        this.outputDefinition = outputDefinition;
-        this.gasOutputDefinition = new GasStack(this.outputGas, this.outputGasAmount);
-    }
-
-    public PressurizedReactionRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient gasInput, GasStack outputGas,
-          double energyRequired, int duration, ItemStack outputDefinition) {
-        this(id, inputSolid, inputFluid, gasInput, outputGas.getType(), outputGas.getAmount(), energyRequired, duration, outputDefinition);
+        this.outputItem = outputItem;
+        this.outputGas = outputGas;
     }
 
     public ItemStackIngredient getInputSolid() {
@@ -60,8 +50,8 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe {
         return inputFluid;
     }
 
-    public GasStackIngredient getGasInput() {
-        return gasInput;
+    public GasStackIngredient getInputGas() {
+        return inputGas;
     }
 
     public double getEnergyRequired() {
@@ -73,29 +63,28 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe {
     }
 
     public boolean test(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.gasInput.test(gas);
+        return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputGas.test(gas);
     }
 
     public @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
-        if (outputDefinition.isEmpty()) {
-            return Pair.of(Collections.emptyList(), this.gasOutputDefinition);
+        if (outputItem.isEmpty()) {
+            return Pair.of(Collections.emptyList(), this.outputGas);
         }
-        return Pair.of(Collections.singletonList(this.outputDefinition), this.gasOutputDefinition);
+        return Pair.of(Collections.singletonList(this.outputItem), this.outputGas);
     }
 
     public @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return Pair.of(this.outputDefinition.copy(), this.gasOutputDefinition.copy());
+        return Pair.of(this.outputItem.copy(), this.outputGas.copy());
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         inputSolid.write(buffer);
         inputFluid.write(buffer);
-        gasInput.write(buffer);
-        buffer.writeRegistryId(outputGas);
-        buffer.writeInt(outputGasAmount);
+        inputGas.write(buffer);
         buffer.writeDouble(energyRequired);
         buffer.writeInt(duration);
-        buffer.writeItemStack(outputDefinition);
+        buffer.writeItemStack(outputItem);
+        outputGas.writeToPacket(buffer);
     }
 }

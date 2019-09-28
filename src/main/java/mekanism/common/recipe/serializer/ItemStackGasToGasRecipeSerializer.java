@@ -3,8 +3,7 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
-import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -31,19 +30,16 @@ public class ItemStackGasToGasRecipeSerializer<T extends ItemStackGasToGasRecipe
         JsonElement gasInput = JSONUtils.isJsonArray(json, "gasInput") ? JSONUtils.getJsonArray(json, "gasInput") :
                                JSONUtils.getJsonObject(json, "gasInput");
         GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
-        //TODO
-        Gas outputGas = MekanismAPI.EMPTY_GAS;
-        int outputGasAmount = 0;
-        return this.factory.create(recipeId, itemIngredient, gasIngredient, outputGas, outputGasAmount);
+        GasStack output = SerializerHelper.getGasStack(json, "output");
+        return this.factory.create(recipeId, itemIngredient, gasIngredient, output);
     }
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
         GasStackIngredient gasInput = GasStackIngredient.read(buffer);
-        Gas outputGas = buffer.readRegistryId();
-        int outputGasAmount = buffer.readInt();
-        return this.factory.create(recipeId, itemInput, gasInput, outputGas, outputGasAmount);
+        GasStack output = GasStack.readFromPacket(buffer);
+        return this.factory.create(recipeId, itemInput, gasInput, output);
     }
 
     @Override
@@ -53,6 +49,6 @@ public class ItemStackGasToGasRecipeSerializer<T extends ItemStackGasToGasRecipe
 
     public interface IFactory<T extends ItemStackGasToGasRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, Gas outputGas, int outputGasAmount);
+        T create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output);
     }
 }

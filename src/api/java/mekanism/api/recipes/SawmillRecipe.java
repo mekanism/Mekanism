@@ -22,15 +22,15 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     protected static final Random RANDOM = new Random();
 
     private final ItemStackIngredient input;
-    private final ItemStack mainOutputDefinition;
-    private final ItemStack secondaryOutputDefinition;
+    private final ItemStack mainOutput;
+    private final ItemStack secondaryOutput;
     private final double secondaryChance;
 
-    public SawmillRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutputDefinition, ItemStack secondaryOutputDefinition, double secondaryChance) {
+    public SawmillRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
         super(id);
         this.input = input;
-        this.mainOutputDefinition = mainOutputDefinition;
-        this.secondaryOutputDefinition = secondaryOutputDefinition;
+        this.mainOutput = mainOutput;
+        this.secondaryOutput = secondaryOutput;
         this.secondaryChance = secondaryChance;
     }
 
@@ -44,11 +44,11 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     }
 
     public List<ItemStack> getMainOutputDefinition() {
-        return mainOutputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(mainOutputDefinition);
+        return mainOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(mainOutput);
     }
 
     public List<ItemStack> getSecondaryOutputDefinition() {
-        return secondaryOutputDefinition.isEmpty() ? Collections.emptyList() :  Collections.singletonList(secondaryOutputDefinition);
+        return secondaryOutput.isEmpty() ? Collections.emptyList() :  Collections.singletonList(secondaryOutput);
     }
 
     public double getSecondaryChance() {
@@ -62,8 +62,8 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        buffer.writeItemStack(mainOutputDefinition);
-        buffer.writeItemStack(secondaryOutputDefinition);
+        buffer.writeItemStack(mainOutput);
+        buffer.writeItemStack(secondaryOutput);
         buffer.writeDouble(secondaryChance);
     }
 
@@ -77,19 +77,19 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
         }
 
         public ItemStack getMainOutput() {
-            return mainOutputDefinition.copy();
+            return mainOutput.copy();
         }
 
         /**
          * Used for checking the maximum amount we can get as a secondary for purposes of seeing if we have space to process
          */
         public ItemStack getMaxSecondaryOutput() {
-            return secondaryChance > 0 ? secondaryOutputDefinition.copy() : ItemStack.EMPTY;
+            return secondaryChance > 0 ? secondaryOutput.copy() : ItemStack.EMPTY;
         }
 
         public ItemStack getSecondaryOutput() {
             if (rand <= secondaryChance) {
-                return secondaryOutputDefinition.copy();
+                return secondaryOutput.copy();
             }
             return ItemStack.EMPTY;
         }
@@ -99,7 +99,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
             if (secondaryChance > 0) {
                 double rand = RANDOM.nextDouble();
                 if (rand <= secondaryChance) {
-                    return secondaryOutputDefinition.copy();
+                    return secondaryOutput.copy();
                 }
             }
             return ItemStack.EMPTY;

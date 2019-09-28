@@ -62,7 +62,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     public void setIngredients(PressurizedReactionRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInputSolid().getRepresentations()));
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getInputFluid().getRepresentations()));
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getGasInput().getRepresentations()));
+        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInputGas().getRepresentations()));
         @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(outputDefinition.getLeft()));
         ingredients.setOutput(MekanismJEI.TYPE_GAS, outputDefinition.getRight());
@@ -82,7 +82,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         fluidStacks.init(0, true, 3, 0, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
+        initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.getInputGas().getRepresentations(), true);
         initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, outputDefinition.getRight(), true);
     }
 }

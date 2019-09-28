@@ -2,6 +2,7 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -28,8 +29,17 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
         FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
         GasStack leftGasOutput = SerializerHelper.getGasStack(json, "leftGasOutput");
         GasStack rightGasOutput = SerializerHelper.getGasStack(json, "rightGasOutput");
-        //TODO
         double energyUsage = 0;
+        if (json.has("energyUsage")) {
+            JsonElement energy = json.get("energyUsage");
+            if (!JSONUtils.isNumber(energy)) {
+                throw new JsonSyntaxException("Expected energyUsage to be a non negative number.");
+            }
+            energyUsage = energy.getAsJsonPrimitive().getAsDouble();
+            if (energyUsage < 0) {
+                throw new JsonSyntaxException("Expected secondaryChance to be non negative.");
+            }
+        }
         return this.factory.create(recipeId, inputIngredient, energyUsage, leftGasOutput, rightGasOutput);
     }
 

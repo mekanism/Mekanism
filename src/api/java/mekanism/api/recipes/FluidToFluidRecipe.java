@@ -17,12 +17,12 @@ import org.jetbrains.annotations.Contract;
 public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
-    private final FluidStack outputRepresentation;
+    private final FluidStack output;
 
-    public FluidToFluidRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack outputRepresentation) {
+    public FluidToFluidRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
         super(id);
         this.input = input;
-        this.outputRepresentation = outputRepresentation;
+        this.output = output;
     }
 
     @Override
@@ -35,17 +35,17 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     }
 
     public FluidStack getOutputRepresentation() {
-        return outputRepresentation;
+        return output;
     }
 
     @Contract(value = "_->new", pure = true)
     public FluidStack getOutput(FluidStack input) {
-        return this.outputRepresentation.copy();
+        return this.output.copy();
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        outputRepresentation.writeToPacket(buffer);
+        output.writeToPacket(buffer);
     }
 }

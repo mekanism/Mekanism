@@ -24,13 +24,13 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
 
     private final ItemStackIngredient itemInput;
     private final InfusionIngredient infusionInput;
-    private final ItemStack outputDefinition;
+    private final ItemStack output;
 
-    public MetallurgicInfuserRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {
+    public MetallurgicInfuserRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output) {
         super(id);
         this.itemInput = itemInput;
         this.infusionInput = infusionInput;
-        this.outputDefinition = outputDefinition.copy();
+        this.output = output.copy();
     }
 
     @Override
@@ -39,11 +39,11 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
     }
 
     public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
-        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
+        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
     }
 
     public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {
-        return this.outputDefinition.copy();
+        return this.output.copy();
     }
 
     public InfusionIngredient getInfusionInput() {
@@ -58,6 +58,6 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
     public void write(PacketBuffer buffer) {
         itemInput.write(buffer);
         infusionInput.write(buffer);
-        buffer.writeItemStack(outputDefinition);
+        buffer.writeItemStack(output);
     }
 }

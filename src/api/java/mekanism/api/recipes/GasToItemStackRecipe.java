@@ -22,20 +22,20 @@ import net.minecraft.util.ResourceLocation;
 public abstract class GasToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
-    private final ItemStack outputRepresentation;
+    private final ItemStack output;
 
-    public GasToItemStackRecipe(ResourceLocation id, GasStackIngredient input, ItemStack outputRepresentation) {
+    public GasToItemStackRecipe(ResourceLocation id, GasStackIngredient input, ItemStack output) {
         super(id);
         this.input = input;
-        this.outputRepresentation = outputRepresentation.copy();
+        this.output = output.copy();
     }
 
     public ItemStack getOutput(GasStack input) {
-        return outputRepresentation.copy();
+        return output.copy();
     }
 
     public List<ItemStack> getOutputDefinition() {
-        return outputRepresentation.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputRepresentation);
+        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
     }
 
     @Override
@@ -50,6 +50,6 @@ public abstract class GasToItemStackRecipe extends MekanismRecipe implements Pre
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        buffer.writeItemStack(outputRepresentation);
+        buffer.writeItemStack(output);
     }
 }

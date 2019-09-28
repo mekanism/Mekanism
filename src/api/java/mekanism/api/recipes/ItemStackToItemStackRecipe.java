@@ -20,26 +20,26 @@ import net.minecraft.util.ResourceLocation;
 @FieldsAreNonnullByDefault
 public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
 
-    private final ItemStackIngredient mainInput;
-    private ItemStack outputDefinition;
+    private final ItemStackIngredient input;
+    private ItemStack output;
 
-    public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack outputDefinition) {
+    public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
         super(id);
-        this.mainInput = input;
-        this.outputDefinition = outputDefinition.copy();
+        this.input = input;
+        this.output = output.copy();
     }
 
     @Override
     public boolean test(@NonNull ItemStack input) {
-        return mainInput.test(input);
+        return this.input.test(input);
     }
 
     public ItemStackIngredient getInput() {
-        return mainInput;
+        return input;
     }
 
     public ItemStack getOutput(@NonNull ItemStack input) {
-        return outputDefinition.copy();
+        return output.copy();
     }
 
     /**
@@ -48,12 +48,12 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
      * @return Representation of output, MUST NOT be modified
      */
     public List<ItemStack> getOutputDefinition() {
-        return outputDefinition.isEmpty() ? Collections.emptyList() : Collections.singletonList(outputDefinition);
+        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
-        mainInput.write(buffer);
-        buffer.writeItemStack(outputDefinition);
+        input.write(buffer);
+        buffer.writeItemStack(output);
     }
 }

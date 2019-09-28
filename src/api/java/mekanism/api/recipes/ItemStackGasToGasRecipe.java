@@ -5,7 +5,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -27,19 +26,13 @@ public abstract class ItemStackGasToGasRecipe extends MekanismRecipe implements 
 
     private final ItemStackIngredient itemInput;
     private final GasStackIngredient gasInput;
-    private final Gas outputGas;
-    private final int outputGasAmount;
+    private final GasStack output;
 
-    public ItemStackGasToGasRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, Gas outputGas, int outputGasAmount) {
+    public ItemStackGasToGasRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output) {
         super(id);
         this.itemInput = itemInput;
         this.gasInput = gasInput;
-        this.outputGas = outputGas;
-        this.outputGasAmount = outputGasAmount;
-    }
-
-    public ItemStackGasToGasRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output) {
-        this(id, itemInput, gasInput, output.getType(), output.getAmount());
+        this.output = output;
     }
 
     public ItemStackIngredient getItemInput() {
@@ -51,7 +44,7 @@ public abstract class ItemStackGasToGasRecipe extends MekanismRecipe implements 
     }
 
     public GasStack getOutput(ItemStack inputItem, GasStack inputGas) {
-        return new GasStack(outputGas, outputGasAmount);
+        return output.copy();
     }
 
     @Override
@@ -60,14 +53,13 @@ public abstract class ItemStackGasToGasRecipe extends MekanismRecipe implements 
     }
 
     public GasStack getOutputDefinition() {
-        return new GasStack(outputGas, outputGasAmount);
+        return output;
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         itemInput.write(buffer);
         gasInput.write(buffer);
-        buffer.writeRegistryId(outputGas);
-        buffer.writeInt(outputGasAmount);
+        output.writeToPacket(buffer);
     }
 }

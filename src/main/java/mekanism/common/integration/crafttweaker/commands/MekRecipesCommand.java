@@ -215,7 +215,7 @@ public class MekRecipesCommand extends CommandImpl {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.reaction.addRecipe(%s, %s, %s, %s, %s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInputSolid()),
                           RecipeInfoHelper.getFluidName(recipe.getInputFluid()),
-                          RecipeInfoHelper.getGasName(recipe.getGasInput().getRepresentations()),
+                          RecipeInfoHelper.getGasName(recipe.getInputGas().getRepresentations()),
                           RecipeInfoHelper.getItemName(output.getLeft()),
                           RecipeInfoHelper.getGasName(output.getRight()),
                           recipe.getEnergyRequired(),

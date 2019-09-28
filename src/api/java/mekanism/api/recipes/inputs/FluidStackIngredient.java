@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
@@ -96,8 +97,9 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             if (fluid == null || fluid == Fluids.EMPTY) {
                 throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
             }
-            //TODO: Allow for fluid NBT?
-            return from(fluid, amount);
+            //TODO: Add support for reading NBT of fluid
+            CompoundNBT nbt = null;
+            return from(new FluidStack(fluid, amount, nbt));
         } else if (jsonObject.has("tag")) {
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
             Tag<Fluid> tag = FluidTags.getCollection().get(resourceLocation);

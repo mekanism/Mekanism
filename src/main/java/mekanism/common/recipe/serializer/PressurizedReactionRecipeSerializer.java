@@ -2,9 +2,9 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
-import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
@@ -33,30 +33,55 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
         JsonElement inputFluid = JSONUtils.isJsonArray(json, "inputFluid") ? JSONUtils.getJsonArray(json, "inputFluid") :
                                  JSONUtils.getJsonObject(json, "inputFluid");
         FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(inputFluid);
-        JsonElement gasInput = JSONUtils.isJsonArray(json, "gasInput") ? JSONUtils.getJsonArray(json, "gasInput") :
-                               JSONUtils.getJsonObject(json, "gasInput");
-        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
-        //TODO: Output is optional IFF output gas exists
-        //TODO
-        Gas outputGas = MekanismAPI.EMPTY_GAS;
-        int outputGasAmount = 0;
+        JsonElement inputGas = JSONUtils.isJsonArray(json, "inputGas") ? JSONUtils.getJsonArray(json, "inputGas") :
+                               JSONUtils.getJsonObject(json, "inputGas");
+        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(inputGas);
         double energyRequired = 0;
-        int duration = 1;
-        ItemStack output = SerializerHelper.getItemStack(json, "output");
-        return this.factory.create(recipeId, solidIngredient, fluidIngredient, gasIngredient, outputGas, outputGasAmount, energyRequired, duration, output);
+        if (json.has("energyRequired")) {
+            JsonElement energy = json.get("energyRequired");
+            if (!JSONUtils.isNumber(energy)) {
+                throw new JsonSyntaxException("Expected energyRequired to be a non negative number.");
+            }
+            energyRequired = energy.getAsJsonPrimitive().getAsDouble();
+            if (energyRequired < 0) {
+                throw new JsonSyntaxException("Expected energyRequired to be non negative.");
+            }
+        }
+
+        int duration;
+        JsonElement ticks = json.get("duration");
+        if (!JSONUtils.isNumber(ticks)) {
+            throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
+        }
+        duration = ticks.getAsJsonPrimitive().getAsInt();
+        if (duration <= 0) {
+            throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
+        }
+        ItemStack outputItem = ItemStack.EMPTY;
+        GasStack outputGas = GasStack.EMPTY;
+        if (json.has("outputItem")) {
+            outputItem = SerializerHelper.getItemStack(json, "outputItem");
+            if (json.has("outputGas")) {
+                //The gas is optional given we have an output item
+                outputGas = SerializerHelper.getGasStack(json, "outputGas");
+            }
+        } else {
+            //If we don't have an output item, we are required to have an output gas
+            outputGas = SerializerHelper.getGasStack(json, "outputGas");
+        }
+        return this.factory.create(recipeId, solidIngredient, fluidIngredient, gasIngredient, energyRequired, duration, outputItem, outputGas);
     }
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
         FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
-        GasStackIngredient gasInput = GasStackIngredient.read(buffer);
-        Gas outputGas = buffer.readRegistryId();
-        int outputGasAmount = buffer.readInt();
+        GasStackIngredient inputGas = GasStackIngredient.read(buffer);
         double energyRequired = buffer.readDouble();
         int duration = buffer.readInt();
-        ItemStack output = buffer.readItemStack();
-        return this.factory.create(recipeId, inputSolid, inputFluid, gasInput, outputGas, outputGasAmount, energyRequired, duration, output);
+        ItemStack outputItem = buffer.readItemStack();
+        GasStack outputGas = GasStack.readFromPacket(buffer);
+        return this.factory.create(recipeId, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
     }
 
     @Override
@@ -66,7 +91,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
 
     public interface IFactory<T extends PressurizedReactionRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient gasInput, Gas outputGas,
-              int outputGasAmount, double energyRequired, int duration, ItemStack output);
+        T create(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, double energyRequired, int duration,
+              ItemStack outputItem, GasStack outputGas);
     }
 }

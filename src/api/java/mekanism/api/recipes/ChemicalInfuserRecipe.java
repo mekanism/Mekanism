@@ -7,7 +7,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import net.minecraft.network.PacketBuffer;
@@ -23,19 +22,13 @@ public abstract class ChemicalInfuserRecipe extends MekanismRecipe implements Bi
 
     private final GasStackIngredient leftInput;
     private final GasStackIngredient rightInput;
-    private final Gas outputGas;
-    private final int outputGasAmount;
+    private final GasStack output;
 
-    public ChemicalInfuserRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, Gas outputGas, int outputGasAmount) {
+    public ChemicalInfuserRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
         super(id);
         this.leftInput = leftInput;
         this.rightInput = rightInput;
-        this.outputGas = outputGas;
-        this.outputGasAmount = outputGasAmount;
-    }
-
-    public ChemicalInfuserRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        this(id, leftInput, rightInput, output.getType(), output.getAmount());
+        this.output = output;
     }
 
     @Override
@@ -44,7 +37,7 @@ public abstract class ChemicalInfuserRecipe extends MekanismRecipe implements Bi
     }
 
     public GasStack getOutput(GasStack input1, GasStack input2) {
-        return new GasStack(outputGas, outputGasAmount);
+        return output.copy();
     }
 
     public GasStackIngredient getLeftInput() {
@@ -56,14 +49,13 @@ public abstract class ChemicalInfuserRecipe extends MekanismRecipe implements Bi
     }
 
     public List<GasStack> getOutputDefinition() {
-        return Collections.singletonList(new GasStack(outputGas, outputGasAmount));
+        return Collections.singletonList(output);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         leftInput.write(buffer);
         rightInput.write(buffer);
-        buffer.writeRegistryId(outputGas);
-        buffer.writeInt(outputGasAmount);
+        output.writeToPacket(buffer);
     }
 }

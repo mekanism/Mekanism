@@ -20,12 +20,12 @@ import org.jetbrains.annotations.Contract;
 public abstract class GasToGasRecipe extends MekanismRecipe implements Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
-    private final GasStack outputRepresentation;
+    private final GasStack output;
 
-    public GasToGasRecipe(ResourceLocation id, GasStackIngredient input, GasStack outputRepresentation) {
+    public GasToGasRecipe(ResourceLocation id, GasStackIngredient input, GasStack output) {
         super(id);
         this.input = input;
-        this.outputRepresentation = outputRepresentation;
+        this.output = output;
     }
 
     @Override
@@ -38,17 +38,17 @@ public abstract class GasToGasRecipe extends MekanismRecipe implements Predicate
     }
 
     public GasStack getOutputRepresentation() {
-        return outputRepresentation;
+        return output;
     }
 
     @Contract(value = "_ -> new", pure = true)
     public GasStack getOutput(GasStack input) {
-        return outputRepresentation.copy();
+        return output.copy();
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        outputRepresentation.writeToPacket(buffer);
+        output.writeToPacket(buffer);
     }
 }

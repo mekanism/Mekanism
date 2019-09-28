@@ -20,13 +20,13 @@ public abstract class FluidGasToGasRecipe extends MekanismRecipe implements BiPr
 
     private final GasStackIngredient gasInput;
     private final FluidStackIngredient fluidInput;
-    private final GasStack outputRepresentation;
+    private final GasStack output;
 
-    public FluidGasToGasRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack outputRepresentation) {
+    public FluidGasToGasRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack output) {
         super(id);
         this.fluidInput = fluidInput;
         this.gasInput = gasInput;
-        this.outputRepresentation = outputRepresentation;
+        this.output = output;
     }
 
     @Override
@@ -43,18 +43,18 @@ public abstract class FluidGasToGasRecipe extends MekanismRecipe implements BiPr
     }
 
     public GasStack getOutputRepresentation() {
-        return outputRepresentation;
+        return output;
     }
 
     @Contract(value = "_, _ -> new", pure = true)
     public GasStack getOutput(FluidStack fluidStack, GasStack input) {
-        return outputRepresentation.copy();
+        return output.copy();
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         fluidInput.write(buffer);
         gasInput.write(buffer);
-        outputRepresentation.writeToPacket(buffer);
+        output.writeToPacket(buffer);
     }
 }

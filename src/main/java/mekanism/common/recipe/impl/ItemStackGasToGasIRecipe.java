@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -15,8 +15,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ItemStackGasToGasIRecipe extends ItemStackGasToGasRecipe {
 
-    public ItemStackGasToGasIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, Gas outputGas, int outputGasAmount) {
-        super(id, itemInput, gasInput, outputGas, outputGasAmount);
+    public ItemStackGasToGasIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output) {
+        super(id, itemInput, gasInput, output);
     }
 
     @Nonnull
