@@ -2,11 +2,11 @@ package mekanism.api.recipes.cache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 
 //TODO: JavaDocs
 // Note: The cacheIndex is for purposes of what cache it will be stored in
-public interface ICachedRecipeHolder<RECIPE extends IMekanismRecipe> {
+public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
 
     @Nullable
     default CachedRecipe<RECIPE> getUpdatedCache(int cacheIndex) {

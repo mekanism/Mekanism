@@ -3,8 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.common.recipe.impl.FluidToFluidIRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class FluidToFluidRecipeSerializer<T extends FluidToFluidIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class FluidToFluidRecipeSerializer<T extends FluidToFluidRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -42,7 +42,7 @@ public class FluidToFluidRecipeSerializer<T extends FluidToFluidIRecipe> extends
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends FluidToFluidIRecipe> {
+    public interface IFactory<T extends FluidToFluidRecipe> {
 
         T create(ResourceLocation id, FluidStackIngredient input, FluidStack output);
     }

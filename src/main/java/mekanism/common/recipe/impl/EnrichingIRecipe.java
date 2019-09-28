@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.MekanismRecipeSerializers;
@@ -10,7 +11,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class EnrichingIRecipe extends ItemStackToItemStackIRecipe {
+public class EnrichingIRecipe extends ItemStackToItemStackRecipe {
 
     public EnrichingIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
         super(id, input, output);
@@ -18,14 +19,14 @@ public class EnrichingIRecipe extends ItemStackToItemStackIRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackToItemStackIRecipe> getType() {
-        return MekanismRecipeType.ENRICHMENT_CHAMBER;
+    public IRecipeType<ItemStackToItemStackRecipe> getType() {
+        return MekanismRecipeType.ENRICHING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackToItemStackIRecipe> getSerializer() {
-        return MekanismRecipeSerializers.ENRICHMENT_CHAMBER;
+    public IRecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
+        return MekanismRecipeSerializers.ENRICHING;
     }
 
     @Nonnull

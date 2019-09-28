@@ -1,9 +1,9 @@
 package mekanism.common.integration.crafttweaker.util;
 
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 
-public class RemoveAllMekanismRecipe<RECIPE extends IMekanismRecipe> extends RecipeMapModification<RECIPE> {
+public class RemoveAllMekanismRecipe<RECIPE extends MekanismRecipe> extends RecipeMapModification<RECIPE> {
 
     public RemoveAllMekanismRecipe(String name, Recipe<RECIPE> recipeType) {
         super(name, false, recipeType);

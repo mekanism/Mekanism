@@ -4,19 +4,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCrystallizerRecipe> {
+public class GasToItemStackCachedRecipe extends CachedRecipe<GasToItemStackRecipe> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
-    public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, IInputHandler<@NonNull GasStack> inputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
+    public GasToItemStackCachedRecipe(GasToItemStackRecipe recipe, IInputHandler<@NonNull GasStack> inputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
         this.inputHandler = inputHandler;
         this.outputHandler = outputHandler;

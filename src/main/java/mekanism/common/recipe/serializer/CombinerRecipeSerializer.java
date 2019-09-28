@@ -3,8 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.impl.CombinerIRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -12,7 +12,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class CombinerRecipeSerializer<T extends CombinerIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -46,7 +46,7 @@ public class CombinerRecipeSerializer<T extends CombinerIRecipe> extends ForgeRe
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends CombinerIRecipe> {
+    public interface IFactory<T extends CombinerRecipe> {
 
         T create(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output);
     }

@@ -6,11 +6,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.integration.crafttweaker.helpers.RecipeInfoHelper;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 
-public abstract class RecipeMapModification<RECIPE extends IMekanismRecipe> implements IAction {
+public abstract class RecipeMapModification<RECIPE extends MekanismRecipe> implements IAction {
 
     protected final Set<RECIPE> recipes;
     protected final Recipe<RECIPE> recipeType;

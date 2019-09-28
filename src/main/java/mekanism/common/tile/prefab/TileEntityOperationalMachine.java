@@ -3,7 +3,7 @@ package mekanism.common.tile.prefab;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
@@ -13,7 +13,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public abstract class TileEntityOperationalMachine<RECIPE extends IMekanismRecipe> extends TileEntityMachine implements IComparatorSupport,
+public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityMachine implements IComparatorSupport,
       ITileCachedRecipeHolder<RECIPE> {
 
     private int operatingTicks;

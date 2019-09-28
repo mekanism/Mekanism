@@ -3,9 +3,9 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -13,7 +13,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -47,7 +47,7 @@ public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserIRec
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends MetallurgicInfuserIRecipe> {
+    public interface IFactory<T extends MetallurgicInfuserRecipe> {
 
         T create(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output);
     }

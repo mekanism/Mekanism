@@ -5,16 +5,16 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
+import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.impl.ItemStackGasToGasIRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ItemStackGasToGasRecipeSerializer<T extends ItemStackGasToGasIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class ItemStackGasToGasRecipeSerializer<T extends ItemStackGasToGasRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -51,7 +51,7 @@ public class ItemStackGasToGasRecipeSerializer<T extends ItemStackGasToGasIRecip
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends ItemStackGasToGasIRecipe> {
+    public interface IFactory<T extends ItemStackGasToGasRecipe> {
 
         T create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, Gas outputGas, int outputGasAmount);
     }

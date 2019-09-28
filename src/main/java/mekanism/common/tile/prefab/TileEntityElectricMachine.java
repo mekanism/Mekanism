@@ -14,7 +14,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
-import mekanism.common.recipe.impl.ItemStackToItemStackIRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -74,10 +73,10 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     }
 
     @Nonnull
-    public abstract RecipeWrapper<ItemStackToItemStackIRecipe> getRecipeWrapper();
+    public abstract RecipeWrapper<ItemStackToItemStackRecipe> getRecipeWrapper();
 
     public boolean containsRecipe(Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeWrapper().contains(world, this, matchCriteria);
+        return getRecipeWrapper().contains(world, matchCriteria);
     }
 
     @Override
@@ -104,7 +103,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
-        return stack.isEmpty() ? null : getRecipeWrapper().findFirst(world, this, recipe -> recipe.test(stack));
+        return stack.isEmpty() ? null : getRecipeWrapper().findFirst(world, recipe -> recipe.test(stack));
     }
 
     @Nullable

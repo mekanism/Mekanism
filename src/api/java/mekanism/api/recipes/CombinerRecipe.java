@@ -8,11 +8,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.outputs.OreDictSupplier;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Inputs: ItemStack (main item) + ItemStack (material to combine with) Output: ItemStack (combined)
@@ -20,13 +18,14 @@ import net.minecraft.tags.Tag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull ItemStack> {
+public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NonNull ItemStack, @NonNull ItemStack> {
 
     private final ItemStackIngredient mainInput;
     private final ItemStackIngredient extraInput;
     private ItemStack outputDefinition;
 
-    public CombinerRecipe(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack outputDefinition) {
+    public CombinerRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack outputDefinition) {
+        super(id);
         this.mainInput = mainInput;
         this.extraInput = extraInput;
         this.outputDefinition = outputDefinition.copy();
@@ -63,25 +62,5 @@ public class CombinerRecipe implements IMekanismRecipe, BiPredicate<@NonNull Ite
         mainInput.write(buffer);
         extraInput.write(buffer);
         buffer.writeItemStack(outputDefinition);
-    }
-
-    public static class CombinerRecipeOre extends CombinerRecipe {
-
-        private final OreDictSupplier outputSupplier;
-
-        public CombinerRecipeOre(ItemStackIngredient mainInput, ItemStackIngredient extraInput, Tag<Item> outputTag) {
-            super(mainInput, extraInput, ItemStack.EMPTY);
-            this.outputSupplier = new OreDictSupplier(outputTag);
-        }
-
-        @Override
-        public ItemStack getOutput(@NonNull ItemStack input, @NonNull ItemStack extra) {
-            return this.outputSupplier.get();
-        }
-
-        @Override
-        public List<ItemStack> getOutputDefinition() {
-            return this.outputSupplier.getPossibleOutputs();
-        }
     }
 }

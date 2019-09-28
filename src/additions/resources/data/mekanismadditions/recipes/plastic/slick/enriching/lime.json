@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "mekanismadditions:lime_slick_plastic"
+  },
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:lime_plastic"
+    }
+  }
+}

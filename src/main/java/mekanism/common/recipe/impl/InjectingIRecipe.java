@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismBlock;
@@ -11,7 +12,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class InjectingIRecipe extends ItemStackGasToItemStackIRecipe {
+public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
 
     public InjectingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(id, itemInput, gasInput, output);
@@ -19,14 +20,14 @@ public class InjectingIRecipe extends ItemStackGasToItemStackIRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackGasToItemStackIRecipe> getType() {
-        return MekanismRecipeType.CHEMICAL_INJECTION_CHAMBER;
+    public IRecipeType<ItemStackGasToItemStackRecipe> getType() {
+        return MekanismRecipeType.CHEMICAL_INJECTING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackGasToItemStackIRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CHEMICAL_INJECTION_CHAMBER;
+    public IRecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
+        return MekanismRecipeSerializers.CHEMICAL_INJECTING;
     }
 
     @Nonnull

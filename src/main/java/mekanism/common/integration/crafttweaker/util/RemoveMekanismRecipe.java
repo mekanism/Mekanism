@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 
-public class RemoveMekanismRecipe<RECIPE extends IMekanismRecipe> extends RecipeMapModification<RECIPE> {
+public class RemoveMekanismRecipe<RECIPE extends MekanismRecipe> extends RecipeMapModification<RECIPE> {
 
     private final IngredientWrapper input;
     private final IngredientWrapper output;

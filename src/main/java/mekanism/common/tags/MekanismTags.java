@@ -12,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 //TODO: Should this be moved to the API package, Especially if the tag files don't need to exist for these to be valid
 public class MekanismTags {
 
+    //TODO: Add a tag for glowstone blocks and clay blocks??
+
     public static final Tag<Item> DUSTS_BRONZE = makeForgeItemTag("dusts/bronze");
     public static final Tag<Item> DUSTS_CHARCOAL = makeForgeItemTag("dusts/charcoal");
     public static final Tag<Item> DUSTS_COAL = makeForgeItemTag("dusts/coal");

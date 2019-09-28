@@ -8,6 +8,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -17,14 +18,15 @@ import org.apache.commons.lang3.tuple.Pair;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ElectrolysisRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
+public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
     private final GasStack leftGasOutput;
     private final GasStack rightGasOutput;
     private final double energyUsage;
 
-    public ElectrolysisRecipe(FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public ElectrolysisRecipe(ResourceLocation id, FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {
+        super(id);
         this.input = input;
         this.energyUsage = energyUsage;
         this.leftGasOutput = leftGasOutput;

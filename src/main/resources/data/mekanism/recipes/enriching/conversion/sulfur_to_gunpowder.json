@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:gunpowder"
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/sulfur"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismBlock;
@@ -11,7 +12,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class PurifyingIRecipe extends ItemStackGasToItemStackIRecipe {
+public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
 
     public PurifyingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(id, itemInput, gasInput, output);
@@ -19,14 +20,14 @@ public class PurifyingIRecipe extends ItemStackGasToItemStackIRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackGasToItemStackIRecipe> getType() {
-        return MekanismRecipeType.PURIFICATION_CHAMBER;
+    public IRecipeType<ItemStackGasToItemStackRecipe> getType() {
+        return MekanismRecipeType.PURIFYING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackGasToItemStackIRecipe> getSerializer() {
-        return MekanismRecipeSerializers.PURIFICATION_CHAMBER;
+    public IRecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
+        return MekanismRecipeSerializers.PURIFYING;
     }
 
     @Nonnull

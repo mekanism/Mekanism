@@ -10,11 +10,9 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.outputs.OreDictSupplier;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Inputs: ItemStack + GasStack Output: ItemStack
@@ -26,13 +24,14 @@ import net.minecraft.tags.Tag;
 @MethodsReturnNonnullByDefault
 //TODO: Make a note of the fact this recipe uses the size of the gas input as a base, but still for the most part will end up multiplying it
 // by a per tick usage
-public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
+public abstract class ItemStackGasToItemStackRecipe extends MekanismRecipe implements BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
 
     private final ItemStackIngredient itemInput;
     private final GasStackIngredient gasInput;
     private final ItemStack outputDefinition;
 
-    public ItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputDefinition) {
+    public ItemStackGasToItemStackRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputDefinition) {
+        super(id);
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.outputDefinition = outputDefinition;
@@ -64,25 +63,5 @@ public class ItemStackGasToItemStackRecipe implements IMekanismRecipe, BiPredica
         itemInput.write(buffer);
         gasInput.write(buffer);
         buffer.writeItemStack(outputDefinition);
-    }
-
-    public static class ItemStackGasToItemStackRecipeOre extends ItemStackGasToItemStackRecipe {
-
-        private final OreDictSupplier outputSupplier;
-
-        public ItemStackGasToItemStackRecipeOre(ItemStackIngredient itemInput, GasStackIngredient gasInput, Tag<Item> outputTag) {
-            super(itemInput, gasInput, ItemStack.EMPTY);
-            this.outputSupplier = new OreDictSupplier(outputTag);
-        }
-
-        @Override
-        public ItemStack getOutput(ItemStack inputItem, GasStack inputGas) {
-            return this.outputSupplier.get();
-        }
-
-        @Override
-        public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
-            return this.outputSupplier.getPossibleOutputs();
-        }
     }
 }

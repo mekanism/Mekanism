@@ -117,14 +117,14 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
         JsonObject jsonObject = json.getAsJsonObject();
         int amount = 1;
-        if (jsonObject.has("count")) {
-            JsonElement count = jsonObject.get("count");
+        if (jsonObject.has("amount")) {
+            JsonElement count = jsonObject.get("amount");
             if (!JSONUtils.isNumber(count)) {
-                throw new JsonSyntaxException("Expected count to be a number that is one or larger.");
+                throw new JsonSyntaxException("Expected amount to be a number that is one or larger.");
             }
             amount = count.getAsJsonPrimitive().getAsInt();
             if (amount < 1) {
-                throw new JsonSyntaxException("Expected count to larger than or equal to one");
+                throw new JsonSyntaxException("Expected amount to larger than or equal to one");
             }
         }
         JsonElement jsonelement = JSONUtils.isJsonArray(jsonObject, "ingredient") ? JSONUtils.getJsonArray(jsonObject, "ingredient") :

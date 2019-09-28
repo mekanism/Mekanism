@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "mekanism:hdpe_sheet"
+  },
+  "input": {
+    "ingredient": {
+      "item": "mekanism:hdpe_pellet"
+    },
+    "amount": 3
+  }
+}

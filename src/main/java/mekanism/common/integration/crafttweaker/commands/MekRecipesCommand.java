@@ -8,14 +8,14 @@ import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
@@ -51,12 +51,12 @@ public class MekRecipesCommand extends CommandImpl {
         }*/
         String subCommand = context.getInput();//args[0];
         CraftTweakerAPI.logInfo(subCommand + ":");
-        Recipe<? extends IMekanismRecipe> type;
+        Recipe<? extends MekanismRecipe> type;
         //TODO: Don't use null for getting the output values
         switch (subCommand) {
             case "crystallizer":
                 type = Recipe.CHEMICAL_CRYSTALLIZER;
-                for (ChemicalCrystallizerRecipe recipe : Recipe.CHEMICAL_CRYSTALLIZER.get()) {
+                for (GasToItemStackRecipe recipe : Recipe.CHEMICAL_CRYSTALLIZER.get()) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.chemical.crystallizer.addRecipe(%s, %s)",
                           RecipeInfoHelper.getGasName(recipe.getInput().getRepresentations()),
                           RecipeInfoHelper.getItemName(recipe.getOutput(null))

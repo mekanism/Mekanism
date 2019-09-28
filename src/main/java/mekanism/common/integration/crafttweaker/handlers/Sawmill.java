@@ -1,19 +1,7 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IItemStack;
-import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
-import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
-import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
-import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
-import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
-import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import net.minecraft.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -23,7 +11,8 @@ public class Sawmill {
     public static final String NAME = Mekanism.MOD_NAME + " Sawmill";
 
     //TODO: Make this be two methods to make sure optional chance is not optional if there is a secondary output?
-    @ZenCodeType.Method
+    //TODO: CrT Integration
+    /*@ZenCodeType.Method
     public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput, @ZenCodeType.Optional IItemStack optionalItemOutput, @ZenCodeType.Optional double optionalChance) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ItemStackIngredient input = IngredientHelper.toIngredient(ingredientInput);
@@ -49,5 +38,5 @@ public class Sawmill {
     @ZenCodeType.Method
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL));
-    }
+    }*/
 }

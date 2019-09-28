@@ -2,68 +2,67 @@ package mekanism.common.recipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.GasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
-import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
-import mekanism.common.recipe.impl.CombinerIRecipe;
-import mekanism.common.recipe.impl.ElectrolysisIRecipe;
-import mekanism.common.recipe.impl.FluidGasToGasIRecipe;
-import mekanism.common.recipe.impl.FluidToFluidIRecipe;
-import mekanism.common.recipe.impl.GasToGasIRecipe;
-import mekanism.common.recipe.impl.ItemStackGasToGasIRecipe;
-import mekanism.common.recipe.impl.ItemStackGasToItemStackIRecipe;
-import mekanism.common.recipe.impl.ItemStackToGasIRecipe;
-import mekanism.common.recipe.impl.ItemStackToItemStackIRecipe;
-import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
-import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
-import mekanism.common.recipe.impl.SawmillIRecipe;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.registries.IForgeRegistry;
 
-//TODO: Decide on these names, should they match what RecipeHandler used?
-//TODO: Extend ForgeRegistryEntry ??
-public class MekanismRecipeType<T extends IRecipe<?> & IMekanismRecipe> implements IRecipeType<T> {
+//TODO: Should this be moved to API package?
+//TODO: Decide on final names and put them in all the places that use them
+public class MekanismRecipeType<T extends MekanismRecipe> implements IRecipeType<T> {
 
-    private static final List<MekanismRecipeType<? extends IRecipe<?>>> types = new ArrayList<>();
+    private static final List<MekanismRecipeType<? extends MekanismRecipe>> types = new ArrayList<>();
 
-    public static final IRecipeType<ItemStackToItemStackIRecipe> CRUSHER = create("crusher");
-    public static final IRecipeType<ItemStackToItemStackIRecipe> ENRICHMENT_CHAMBER = create("enrichment_chamber");
-    public static final IRecipeType<ItemStackToItemStackIRecipe> ENERGIZED_SMELTER = create("energized_smelter");
+    public static final IRecipeType<ItemStackToItemStackRecipe> CRUSHING = create("crushing");
+    public static final IRecipeType<ItemStackToItemStackRecipe> ENRICHING = create("enriching");
+    public static final IRecipeType<ItemStackToItemStackRecipe> SMELTING = create("smelting");
 
-    public static final IRecipeType<ChemicalCrystallizerIRecipe> CHEMICAL_CRYSTALLIZER = create("chemical_crystallizer");
+    public static final IRecipeType<ChemicalInfuserRecipe> CHEMICAL_INFUSING = create("chemical_infusing");
 
-    public static final IRecipeType<ChemicalInfuserIRecipe> CHEMICAL_INFUSER = create("chemical_infuser");
+    public static final IRecipeType<CombinerRecipe> COMBINING = create("combining");
 
-    public static final IRecipeType<CombinerIRecipe> COMBINER = create("combiner");
+    public static final IRecipeType<ElectrolysisRecipe> SEPARATING = create("separating");
 
-    public static final IRecipeType<ElectrolysisIRecipe> ELECTROLYTIC_SEPARATOR = create("electrolytic_separator");
+    public static final IRecipeType<FluidGasToGasRecipe> WASHING = create("washing");
 
-    public static final IRecipeType<FluidGasToGasIRecipe> CHEMICAL_WASHER = create("chemical_washer");
+    public static final IRecipeType<FluidToFluidRecipe> EVAPORATING = create("evaporating");
 
-    public static final IRecipeType<FluidToFluidIRecipe> THERMAL_EVAPORATION_PLANT = create("thermal_evaporation_plant");
+    public static final IRecipeType<GasToGasRecipe> SOLAR_NEUTRON_ACTIVATOR = create("solar_neutron_activator");
 
-    public static final IRecipeType<GasToGasIRecipe> SOLAR_NEUTRON_ACTIVATOR = create("solar_neutron_activator");
+    public static final IRecipeType<GasToItemStackRecipe> CRYSTALLIZING = create("crystallizing");
 
-    public static final IRecipeType<ItemStackGasToGasIRecipe> CHEMICAL_DISSOLUTION_CHAMBER = create("chemical_dissolution_chamber");
+    public static final IRecipeType<ItemStackGasToGasRecipe> DISSOLUTION = create("dissolution");
 
-    public static final IRecipeType<ItemStackGasToItemStackIRecipe> OSMIUM_COMPRESSOR = create("osmium_compressor");
-    public static final IRecipeType<ItemStackGasToItemStackIRecipe> PURIFICATION_CHAMBER = create("purification_chamber");
-    public static final IRecipeType<ItemStackGasToItemStackIRecipe> CHEMICAL_INJECTION_CHAMBER = create("chemical_injection_chamber");
+    public static final IRecipeType<ItemStackGasToItemStackRecipe> COMPRESSING = create("compressing");
+    public static final IRecipeType<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying");
+    public static final IRecipeType<ItemStackGasToItemStackRecipe> CHEMICAL_INJECTING = create("chemical_injecting");
 
-    public static final IRecipeType<ItemStackToGasIRecipe> CHEMICAL_OXIDIZER = create("chemical_oxidizer");
+    public static final IRecipeType<ItemStackToGasRecipe> OXIDIZING = create("oxidizing");
 
-    public static final IRecipeType<MetallurgicInfuserIRecipe> METALLURGIC_INFUSER = create("metallurgic_infuser");
+    public static final IRecipeType<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = create("metallurgic_infusing");
 
-    public static final IRecipeType<PressurizedReactionIRecipe> PRESSURIZED_REACTION_CHAMBER = create("pressurized_reaction_chamber");
+    public static final IRecipeType<PressurizedReactionRecipe> REACTION = create("reaction");
 
-    public static final IRecipeType<SawmillIRecipe> PRECISION_SAWMILL = create("precision_sawmill");
+    public static final IRecipeType<SawmillRecipe> SAWING = create("sawing");
 
-    private static <T extends IRecipe<?> & IMekanismRecipe> MekanismRecipeType<T> create(String name) {
+    private static <T extends MekanismRecipe> MekanismRecipeType<T> create(String name) {
         MekanismRecipeType<T> type = new MekanismRecipeType<>(name);
         types.add(type);
         return type;

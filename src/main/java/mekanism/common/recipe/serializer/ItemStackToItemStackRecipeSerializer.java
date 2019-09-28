@@ -3,8 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.impl.ItemStackToItemStackIRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -12,7 +12,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStackIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStackRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -42,7 +42,7 @@ public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStack
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends ItemStackToItemStackIRecipe> {
+    public interface IFactory<T extends ItemStackToItemStackRecipe> {
 
         T create(ResourceLocation id, ItemStackIngredient input, ItemStack output);
     }

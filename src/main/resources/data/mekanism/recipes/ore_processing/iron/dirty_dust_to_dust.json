@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "mekanism:dust_iron"
+  },
+  "input": {
+    "ingredient": {
+      "tag": "mekanism:dirty_dusts/iron"
+    }
+  }
+}

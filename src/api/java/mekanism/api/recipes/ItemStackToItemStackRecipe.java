@@ -8,11 +8,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.outputs.OreDictSupplier;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Inputs: ItemStack (item) Output: ItemStack (transformed)
@@ -20,12 +18,13 @@ import net.minecraft.tags.Tag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
+public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
 
     private final ItemStackIngredient mainInput;
     private ItemStack outputDefinition;
 
-    public ItemStackToItemStackRecipe(ItemStackIngredient input, ItemStack outputDefinition) {
+    public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack outputDefinition) {
+        super(id);
         this.mainInput = input;
         this.outputDefinition = outputDefinition.copy();
     }
@@ -56,25 +55,5 @@ public class ItemStackToItemStackRecipe implements IMekanismRecipe, Predicate<@N
     public void write(PacketBuffer buffer) {
         mainInput.write(buffer);
         buffer.writeItemStack(outputDefinition);
-    }
-
-    public static class ItemStackToItemStackRecipeOre extends ItemStackToItemStackRecipe {
-
-        private final OreDictSupplier outputSupplier;
-
-        public ItemStackToItemStackRecipeOre(ItemStackIngredient mainInput, Tag<Item> outputTag) {
-            super(mainInput, ItemStack.EMPTY);
-            this.outputSupplier = new OreDictSupplier(outputTag);
-        }
-
-        @Override
-        public ItemStack getOutput(@NonNull ItemStack input) {
-            return this.outputSupplier.get();
-        }
-
-        @Override
-        public List<ItemStack> getOutputDefinition() {
-            return this.outputSupplier.getPossibleOutputs();
-        }
     }
 }

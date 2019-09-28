@@ -194,27 +194,6 @@ public class Mekanism {
      * Adds all in-game crafting, smelting and machine recipes.
      */
     public static void addRecipes() {
-        //Enrichment Chamber Recipes
-        if (MekanismBlock.ENRICHMENT_CHAMBER.isEnabled()) {
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Tags.Items.OBSIDIAN), MekanismItem.OBSIDIAN_DUST.getItemStack(4));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(ItemTags.COALS), MekanismItem.ENRICHED_CARBON.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE), MekanismItem.ENRICHED_REDSTONE.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Blocks.MOSSY_COBBLESTONE), new ItemStack(Blocks.COBBLESTONE));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Blocks.STONE), new ItemStack(Blocks.CRACKED_STONE_BRICKS));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Tags.Items.SAND), new ItemStack(Blocks.GRAVEL));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Tags.Items.GRAVEL), new ItemStack(Blocks.COBBLESTONE));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Tags.Items.GUNPOWDER), new ItemStack(Items.FLINT));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Blocks.CRACKED_STONE_BRICKS), new ItemStack(Blocks.STONE_BRICKS));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Blocks.STONE_BRICKS), new ItemStack(Blocks.CHISELED_STONE_BRICKS));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Blocks.MOSSY_STONE_BRICKS), new ItemStack(Blocks.STONE_BRICKS));
-            //TODO: Add a tag for glowstone blocks and clay blocks??
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Blocks.GLOWSTONE), new ItemStack(Items.GLOWSTONE_DUST, 4));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Blocks.CLAY), new ItemStack(Items.CLAY_BALL, 4));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(MekanismBlock.SALT_BLOCK), MekanismItem.SALT.getItemStack(4));
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(Tags.Items.GEMS_DIAMOND), MekanismItem.ENRICHED_DIAMOND.getItemStack());
-            RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from(MekanismItem.HDPE_PELLET, 3), MekanismItem.HDPE_SHEET.getItemStack());
-        }
-
         //Combiner recipes
         if (MekanismBlock.COMBINER.isEnabled()) {
             RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(Items.FLINT), ItemStackIngredient.from(Tags.Items.COBBLESTONE), new ItemStack(Blocks.GRAVEL));

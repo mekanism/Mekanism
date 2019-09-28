@@ -11,6 +11,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Thiakil on 13/07/2019.
@@ -18,22 +19,23 @@ import net.minecraft.network.PacketBuffer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ChemicalInfuserRecipe implements IMekanismRecipe, BiPredicate<@NonNull GasStack, @NonNull GasStack> {
+public abstract class ChemicalInfuserRecipe extends MekanismRecipe implements BiPredicate<@NonNull GasStack, @NonNull GasStack> {
 
     private final GasStackIngredient leftInput;
     private final GasStackIngredient rightInput;
     private final Gas outputGas;
     private final int outputGasAmount;
 
-    public ChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, Gas outputGas, int outputGasAmount) {
+    public ChemicalInfuserRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, Gas outputGas, int outputGasAmount) {
+        super(id);
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.outputGas = outputGas;
         this.outputGasAmount = outputGasAmount;
     }
 
-    public ChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        this(leftInput, rightInput, output.getType(), output.getAmount());
+    public ChemicalInfuserRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
+        this(id, leftInput, rightInput, output.getType(), output.getAmount());
     }
 
     @Override

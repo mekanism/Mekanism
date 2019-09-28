@@ -10,11 +10,9 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.outputs.OreDictSupplier;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Thiakil on 14/07/2019.
@@ -22,13 +20,14 @@ import net.minecraft.tags.Tag;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<InfusionStack, ItemStack> {
+public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements BiPredicate<InfusionStack, ItemStack> {
 
     private final ItemStackIngredient itemInput;
     private final InfusionIngredient infusionInput;
     private final ItemStack outputDefinition;
 
-    public MetallurgicInfuserRecipe(ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {
+    public MetallurgicInfuserRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {
+        super(id);
         this.itemInput = itemInput;
         this.infusionInput = infusionInput;
         this.outputDefinition = outputDefinition.copy();
@@ -60,25 +59,5 @@ public class MetallurgicInfuserRecipe implements IMekanismRecipe, BiPredicate<In
         itemInput.write(buffer);
         infusionInput.write(buffer);
         buffer.writeItemStack(outputDefinition);
-    }
-
-    public static class MetallurgicInfuserRecipeOre extends MetallurgicInfuserRecipe {
-
-        private final OreDictSupplier oreOutput;
-
-        public MetallurgicInfuserRecipeOre(ItemStackIngredient itemInput, InfusionIngredient infusionInput, Tag<Item> outputTag) {
-            super(itemInput, infusionInput, ItemStack.EMPTY);
-            this.oreOutput = new OreDictSupplier(outputTag);
-        }
-
-        @Override
-        public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
-            return oreOutput.getPossibleOutputs();
-        }
-
-        @Override
-        public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {
-            return oreOutput.get();
-        }
     }
 }

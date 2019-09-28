@@ -10,7 +10,7 @@ import mekanism.api.block.FactoryType;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
@@ -50,7 +50,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class TileEntityFactory<RECIPE extends IMekanismRecipe> extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
       ITierUpgradeable, ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
 
     public static final int UPGRADE_SLOT_ID = 0;

@@ -1,27 +1,37 @@
-package mekanism.common.recipe.impl;
+package mekanism.api.recipes;
 
 import javax.annotation.Nonnull;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.inventory.IInventory;
+import mekanism.api.inventory.IgnoredIInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public abstract class ItemStackGasToItemStackIRecipe extends ItemStackGasToItemStackRecipe implements IRecipe<IInventory> {
+public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {
 
     private final ResourceLocation id;
 
-    public ItemStackGasToItemStackIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(itemInput, gasInput, output);
+    protected MekanismRecipe(ResourceLocation id) {
         this.id = id;
     }
 
+    /**
+     * Writes this recipe to a PacketBuffer.
+     *
+     * @param buffer The buffer to write to.
+     */
+    public abstract void write(PacketBuffer buffer);
+
+    @Nonnull
     @Override
-    public boolean matches(@Nonnull IInventory inv, @Nonnull World world) {
-        //TODO: Check if this matches properly, maybe require some IInventory that gives more information about slots
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Override
+    public boolean matches(@Nonnull IgnoredIInventory inv, @Nonnull World world) {
+        //TODO: Check if this matches properly?
         return true;
     }
 
@@ -35,7 +45,7 @@ public abstract class ItemStackGasToItemStackIRecipe extends ItemStackGasToItemS
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull IInventory inv) {
+    public ItemStack getCraftingResult(@Nonnull IgnoredIInventory inv) {
         //TODO
         return ItemStack.EMPTY;
     }
@@ -51,11 +61,5 @@ public abstract class ItemStackGasToItemStackIRecipe extends ItemStackGasToItemS
     public ItemStack getRecipeOutput() {
         //TODO
         return ItemStack.EMPTY;
-    }
-
-    @Nonnull
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 }

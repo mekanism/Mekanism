@@ -1,6 +1,6 @@
 package mekanism.client.jei;
 
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
@@ -51,7 +51,7 @@ public class RecipeRegistryHelper {
         }
     }
 
-    public static <RECIPE extends IMekanismRecipe> void register(IRecipeRegistration registry, MekanismBlock mekanismBlock, Recipe<RECIPE> type) {
+    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, MekanismBlock mekanismBlock, Recipe<RECIPE> type) {
         if (mekanismBlock.isEnabled()) {
             registry.addRecipes(type.get(), mekanismBlock.getRegistryName());
         }

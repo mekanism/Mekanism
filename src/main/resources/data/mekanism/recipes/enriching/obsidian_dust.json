@@ -1,5 +1,5 @@
 {
-  "type": "mekanism:enrichment_chamber",
+  "type": "mekanism:enriching",
   "output": {
     "item": "mekanism:dust_obsidian",
     "count": 4

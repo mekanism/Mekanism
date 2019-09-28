@@ -5,10 +5,10 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
+import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -16,7 +16,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -64,7 +64,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionIR
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends PressurizedReactionIRecipe> {
+    public interface IFactory<T extends PressurizedReactionRecipe> {
 
         T create(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient gasInput, Gas outputGas,
               int outputGasAmount, double energyRequired, int duration, ItemStack output);

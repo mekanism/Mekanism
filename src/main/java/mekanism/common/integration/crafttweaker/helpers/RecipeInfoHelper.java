@@ -7,14 +7,14 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.AmbientAccumulatorRecipe;
-import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
@@ -35,11 +35,11 @@ public class RecipeInfoHelper {
     private RecipeInfoHelper() {
     }
 
-    public static String getRecipeInfo(IMekanismRecipe recipe) {
+    public static String getRecipeInfo(MekanismRecipe recipe) {
         //TODO: Don't use nulls
         //Item input
-        if (recipe instanceof ChemicalCrystallizerRecipe) {
-            return getItemName(((ChemicalCrystallizerRecipe) recipe).getOutput(null));
+        if (recipe instanceof GasToItemStackRecipe) {
+            return getItemName(((GasToItemStackRecipe) recipe).getOutput(null));
         } else if (recipe instanceof CombinerRecipe) {
             return getItemName(((CombinerRecipe) recipe).getOutput(null, null));
         } else if (recipe instanceof ItemStackGasToItemStackRecipe) {

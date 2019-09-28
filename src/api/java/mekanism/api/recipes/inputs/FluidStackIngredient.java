@@ -77,17 +77,16 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             throw new JsonSyntaxException("Expected item to be object or array of objects");
         }
         JsonObject jsonObject = json.getAsJsonObject();
-        int amount = 1;
-        if (!jsonObject.has("count")) {
-            throw new JsonSyntaxException("Expected to receive a count that is greater than zero");
+        if (!jsonObject.has("amount")) {
+            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
-        JsonElement count = jsonObject.get("count");
+        JsonElement count = jsonObject.get("amount");
         if (!JSONUtils.isNumber(count)) {
-            throw new JsonSyntaxException("Expected count to be a number greater than zero.");
+            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
-        amount = count.getAsJsonPrimitive().getAsInt();
+        int amount = count.getAsJsonPrimitive().getAsInt();
         if (amount < 1) {
-            throw new JsonSyntaxException("Expected count to be greater than zero.");
+            throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
         if (jsonObject.has("fluid") && jsonObject.has("tag")) {
             throw new JsonParseException("An ingredient entry is either a tag or an item, not both");

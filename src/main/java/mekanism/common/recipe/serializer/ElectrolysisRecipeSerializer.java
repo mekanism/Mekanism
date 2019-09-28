@@ -4,15 +4,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.common.recipe.impl.ElectrolysisIRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ElectrolysisRecipeSerializer<T extends ElectrolysisIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -47,7 +47,7 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisIRecipe> extends
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends ElectrolysisIRecipe> {
+    public interface IFactory<T extends ElectrolysisRecipe> {
 
         T create(ResourceLocation id, FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput);
     }

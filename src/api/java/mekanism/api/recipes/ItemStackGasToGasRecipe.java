@@ -11,6 +11,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Inputs: ItemStack + GasStack Output: GasStack
@@ -22,22 +23,23 @@ import net.minecraft.network.PacketBuffer;
 @MethodsReturnNonnullByDefault
 //TODO: Make a note of the fact this recipe uses the size of the gas input as a base, but still for the most part will end up multiplying it
 // by a per tick usage
-public class ItemStackGasToGasRecipe implements IMekanismRecipe, BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
+public abstract class ItemStackGasToGasRecipe extends MekanismRecipe implements BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
 
     private final ItemStackIngredient itemInput;
     private final GasStackIngredient gasInput;
     private final Gas outputGas;
     private final int outputGasAmount;
 
-    public ItemStackGasToGasRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, Gas outputGas, int outputGasAmount) {
+    public ItemStackGasToGasRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, Gas outputGas, int outputGasAmount) {
+        super(id);
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.outputGas = outputGas;
         this.outputGasAmount = outputGasAmount;
     }
 
-    public ItemStackGasToGasRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output) {
-        this(itemInput, gasInput, output.getType(), output.getAmount());
+    public ItemStackGasToGasRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output) {
+        this(id, itemInput, gasInput, output.getType(), output.getAmount());
     }
 
     public ItemStackIngredient getItemInput() {

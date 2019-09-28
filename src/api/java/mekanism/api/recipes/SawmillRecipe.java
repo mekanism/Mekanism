@@ -12,20 +12,22 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class SawmillRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
+public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
 
-    protected static Random RANDOM = new Random();
+    protected static final Random RANDOM = new Random();
 
     private final ItemStackIngredient input;
     private final ItemStack mainOutputDefinition;
     private final ItemStack secondaryOutputDefinition;
     private final double secondaryChance;
 
-    public SawmillRecipe(ItemStackIngredient input, ItemStack mainOutputDefinition, ItemStack secondaryOutputDefinition, double secondaryChance) {
+    public SawmillRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutputDefinition, ItemStack secondaryOutputDefinition, double secondaryChance) {
+        super(id);
         this.input = input;
         this.mainOutputDefinition = mainOutputDefinition;
         this.secondaryOutputDefinition = secondaryOutputDefinition;

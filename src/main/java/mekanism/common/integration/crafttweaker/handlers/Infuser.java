@@ -1,21 +1,7 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IItemStack;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
-import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
-import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
-import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
-import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
-import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -24,7 +10,8 @@ public class Infuser {
 
     public static final String NAME = Mekanism.MOD_NAME + " Metallurgic Infuser";
 
-    @ZenCodeType.Method
+    //TODO: CrT Integration
+    /*@ZenCodeType.Method
     public static void addRecipe(String infuseType, int infuseAmount, IIngredient ingredientInput, IItemStack itemOutput) {
         if (infuseType == null || infuseType.isEmpty()) {
             CraftTweakerAPI.logError(String.format("Required parameters missing for %s Recipe.", NAME));
@@ -51,5 +38,5 @@ public class Infuser {
     @ZenCodeType.Method
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER));
-    }
+    }*/
 }

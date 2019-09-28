@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "mekanism:enriched_carbon"
+  },
+  "input": {
+    "ingredient": {
+      "tag": "minecraft:coals"
+    }
+  }
+}

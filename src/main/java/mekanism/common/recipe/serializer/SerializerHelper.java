@@ -5,43 +5,30 @@ import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class SerializerHelper {
 
     public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
-        //Forge: Check if primitive string to keep vanilla or a object which can contain a count field.
         if (!json.has(key)) {
-            throw new JsonSyntaxException("Missing '" + key + "', expected to find a string or object");
+            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
         }
-        ItemStack itemStack;
-        if (json.get(key).isJsonObject()) {
-            itemStack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, key));
-        } else {
-            //TODO: Do we even want to support the primitive string like vanilla does for items
-            String result = JSONUtils.getString(json, key);
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(result));
-            if (item == null || item == Items.AIR) {
-                throw new IllegalStateException("Item: " + result + " does not exist");
-            }
-            itemStack = new ItemStack(item);
+        if (!json.get(key).isJsonObject()) {
+            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
         }
-        return itemStack;
+        return ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, key));
     }
 
     public static GasStack getGasStack(@Nonnull JsonObject json, @Nonnull String key) {
         if (!json.has(key)) {
-            throw new JsonSyntaxException("Missing '" + key + "', expected to find a string or object");
+            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
         }
         if (!json.get(key).isJsonObject()) {
-            //TODO: Error
+            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
         }
         ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, "gas"));
         Gas gas = Gas.getFromRegistry(resourceLocation);
@@ -55,10 +42,10 @@ public class SerializerHelper {
 
     public static FluidStack getFluidStack(@Nonnull JsonObject json, @Nonnull String key) {
         if (!json.has(key)) {
-            throw new JsonSyntaxException("Missing '" + key + "', expected to find a string or object");
+            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
         }
         if (!json.get(key).isJsonObject()) {
-            //TODO: Error
+            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
         }
         ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, "fluid"));
         //TODO: Amount, and fluid NBT??

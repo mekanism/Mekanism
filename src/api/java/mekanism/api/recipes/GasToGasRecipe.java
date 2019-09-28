@@ -8,6 +8,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -16,12 +17,13 @@ import org.jetbrains.annotations.Contract;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class GasToGasRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack> {
+public abstract class GasToGasRecipe extends MekanismRecipe implements Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
     private final GasStack outputRepresentation;
 
-    public GasToGasRecipe(GasStackIngredient input, GasStack outputRepresentation) {
+    public GasToGasRecipe(ResourceLocation id, GasStackIngredient input, GasStack outputRepresentation) {
+        super(id);
         this.input = input;
         this.outputRepresentation = outputRepresentation;
     }

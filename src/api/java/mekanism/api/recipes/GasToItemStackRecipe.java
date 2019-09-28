@@ -9,11 +9,9 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.api.recipes.outputs.OreDictSupplier;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Thiakil on 14/07/2019.
@@ -21,13 +19,13 @@ import net.minecraft.tags.Tag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-//TODO: Rename this to GasToItemStackIngredient
-public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@NonNull GasStack> {
+public abstract class GasToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
     private final ItemStack outputRepresentation;
 
-    public ChemicalCrystallizerRecipe(GasStackIngredient input, ItemStack outputRepresentation) {
+    public GasToItemStackRecipe(ResourceLocation id, GasStackIngredient input, ItemStack outputRepresentation) {
+        super(id);
         this.input = input;
         this.outputRepresentation = outputRepresentation.copy();
     }
@@ -53,25 +51,5 @@ public class ChemicalCrystallizerRecipe implements IMekanismRecipe, Predicate<@N
     public void write(PacketBuffer buffer) {
         input.write(buffer);
         buffer.writeItemStack(outputRepresentation);
-    }
-
-    public static class ChemicalCrystallizerRecipeOre extends ChemicalCrystallizerRecipe {
-
-        private final OreDictSupplier outputSupplier;
-
-        public ChemicalCrystallizerRecipeOre(GasStackIngredient input, Tag<Item> outputTag) {
-            super(input, ItemStack.EMPTY);
-            this.outputSupplier = new OreDictSupplier(outputTag);
-        }
-
-        @Override
-        public ItemStack getOutput(@NonNull GasStack input) {
-            return outputSupplier.get();
-        }
-
-        @Override
-        public List<ItemStack> getOutputDefinition() {
-            return outputSupplier.getPossibleOutputs();
-        }
     }
 }

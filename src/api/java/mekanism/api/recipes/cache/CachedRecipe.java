@@ -8,12 +8,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.function.BooleanConsumer;
 import mekanism.api.function.IntToIntFunction;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 //TODO: JavaDocs
-public abstract class CachedRecipe<RECIPE extends IMekanismRecipe> {
+public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
 
     protected final RECIPE recipe;
 

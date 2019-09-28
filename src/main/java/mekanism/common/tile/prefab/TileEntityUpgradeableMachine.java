@@ -1,13 +1,13 @@
 package mekanism.common.tile.prefab;
 
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.recipes.IMekanismRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class TileEntityUpgradeableMachine<RECIPE extends IMekanismRecipe> extends TileEntityBasicMachine<RECIPE> implements ITierUpgradeable {
+public abstract class TileEntityUpgradeableMachine<RECIPE extends MekanismRecipe> extends TileEntityBasicMachine<RECIPE> implements ITierUpgradeable {
 
     /**
      * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.

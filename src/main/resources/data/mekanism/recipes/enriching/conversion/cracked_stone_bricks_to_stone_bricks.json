@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:stone_bricks"
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cracked_stone_bricks"
+    }
+  }
+}

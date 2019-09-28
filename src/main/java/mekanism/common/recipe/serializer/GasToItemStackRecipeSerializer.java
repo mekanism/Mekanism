@@ -3,8 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -12,11 +12,11 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ChemicalCrystallizerRecipeSerializer<T extends ChemicalCrystallizerIRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class GasToItemStackRecipeSerializer<T extends GasToItemStackRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
-    public ChemicalCrystallizerRecipeSerializer(IFactory<T> factory) {
+    public GasToItemStackRecipeSerializer(IFactory<T> factory) {
         this.factory = factory;
     }
 
@@ -42,7 +42,7 @@ public class ChemicalCrystallizerRecipeSerializer<T extends ChemicalCrystallizer
         recipe.write(buffer);
     }
 
-    public interface IFactory<T extends ChemicalCrystallizerIRecipe> {
+    public interface IFactory<T extends GasToItemStackRecipe> {
 
         T create(ResourceLocation id, GasStackIngredient input, ItemStack output);
     }

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:quartz",
+    "count": 6
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:ores/quartz"
+    }
+  }
+}

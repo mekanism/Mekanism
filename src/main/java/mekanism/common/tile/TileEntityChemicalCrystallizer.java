@@ -11,9 +11,9 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ChemicalCrystallizerCachedRecipe;
+import mekanism.api.recipes.cache.GasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
@@ -40,7 +40,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<ChemicalCrystallizerRecipe> implements IGasHandler, ISideConfiguration, ISustainedData,
+public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<GasToItemStackRecipe> implements IGasHandler, ISideConfiguration, ISustainedData,
       ITankManager, IConfigCardAccess {
 
     public static final int MAX_GAS = 10000;
@@ -85,19 +85,19 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     @Nonnull
-    public Recipe<ChemicalCrystallizerRecipe> getRecipes() {
+    public Recipe<GasToItemStackRecipe> getRecipes() {
         return Recipe.CHEMICAL_CRYSTALLIZER;
     }
 
     @Nullable
     @Override
-    public CachedRecipe<ChemicalCrystallizerRecipe> getCachedRecipe(int cacheIndex) {
+    public CachedRecipe<GasToItemStackRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
     @Nullable
     @Override
-    public ChemicalCrystallizerRecipe getRecipe(int cacheIndex) {
+    public GasToItemStackRecipe getRecipe(int cacheIndex) {
         GasStack gasStack = inputTank.getStack();
         if (gasStack.isEmpty()) {
             return null;
@@ -107,8 +107,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Nullable
     @Override
-    public CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
-        return new ChemicalCrystallizerCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(inventory, 1))
+    public CachedRecipe<GasToItemStackRecipe> createNewCachedRecipe(@Nonnull GasToItemStackRecipe recipe, int cacheIndex) {
+        return new GasToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(inventory, 1))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

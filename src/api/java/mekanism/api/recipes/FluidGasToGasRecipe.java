@@ -9,19 +9,21 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class FluidGasToGasRecipe implements IMekanismRecipe, BiPredicate<@NonNull FluidStack, @NonNull GasStack> {
+public abstract class FluidGasToGasRecipe extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull GasStack> {
 
     private final GasStackIngredient gasInput;
     private final FluidStackIngredient fluidInput;
     private final GasStack outputRepresentation;
 
-    public FluidGasToGasRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack outputRepresentation) {
+    public FluidGasToGasRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack outputRepresentation) {
+        super(id);
         this.fluidInput = fluidInput;
         this.gasInput = gasInput;
         this.outputRepresentation = outputRepresentation;

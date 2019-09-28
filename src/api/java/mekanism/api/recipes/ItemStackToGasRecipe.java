@@ -10,6 +10,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Thiakil on 14/07/2019.
@@ -17,20 +18,21 @@ import net.minecraft.network.PacketBuffer;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackToGasRecipe implements IMekanismRecipe, Predicate<@NonNull ItemStack> {
+public abstract class ItemStackToGasRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
 
     private final ItemStackIngredient input;
     private final Gas outputGas;
     private final int outputGasAmount;
 
-    public ItemStackToGasRecipe(ItemStackIngredient input, Gas outputGas, int outputGasAmount) {
+    public ItemStackToGasRecipe(ResourceLocation id, ItemStackIngredient input, Gas outputGas, int outputGasAmount) {
+        super(id);
         this.input = input;
         this.outputGas = outputGas;
         this.outputGasAmount = outputGasAmount;
     }
 
-    public ItemStackToGasRecipe(ItemStackIngredient input, GasStack output) {
-        this(input, output.getType(), output.getAmount());
+    public ItemStackToGasRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
+        this(id, input, output.getType(), output.getAmount());
     }
 
     @Override

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "output": {
+    "item": "minecraft:clay_ball",
+    "count": 4
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:clay"
+    }
+  }
+}

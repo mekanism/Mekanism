@@ -8,7 +8,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.Slurry;
-import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -89,7 +89,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
             if (gasStack.getType() instanceof Slurry) {
                 drawString(TextComponentUtil.build("(", Translation.of(((Slurry) gasStack.getType()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
             } else {
-                CachedRecipe<ChemicalCrystallizerRecipe> recipe = tileEntity.getUpdatedCache(0);
+                CachedRecipe<GasToItemStackRecipe> recipe = tileEntity.getUpdatedCache(0);
                 if (recipe == null) {
                     drawString(TextComponentUtil.build("(", Translation.of("gui.mekanism.noRecipe"), ")"), 29, 24, 0x00CD00);
                 } else {

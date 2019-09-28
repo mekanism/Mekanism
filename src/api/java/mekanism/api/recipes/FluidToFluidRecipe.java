@@ -7,18 +7,20 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidToFluidRecipe implements IMekanismRecipe, Predicate<@NonNull FluidStack> {
+public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
     private final FluidStack outputRepresentation;
 
-    public FluidToFluidRecipe(FluidStackIngredient input, FluidStack outputRepresentation) {
+    public FluidToFluidRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack outputRepresentation) {
+        super(id);
         this.input = input;
         this.outputRepresentation = outputRepresentation;
     }
