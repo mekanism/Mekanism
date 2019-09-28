@@ -42,7 +42,7 @@ public class PressurizedReactionChamberContainer extends MekanismTileContainer<T
                 } else if (!mergeItemStack(slotStack, 3, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tile.getRecipes().contains(recipe -> recipe.getInputSolid().testType(slotStack))) {
+            } else if (tile.containsRecipe(recipe -> recipe.getInputSolid().testType(slotStack))) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

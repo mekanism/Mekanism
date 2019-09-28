@@ -12,7 +12,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -76,9 +76,9 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return getRecipes().contains(recipe -> recipe.getMainInput().testType(itemstack));
+            return containsRecipe(recipe -> recipe.getMainInput().testType(itemstack));
         } else if (slotID == 1) {
-            return getRecipes().contains(recipe -> recipe.getExtraInput().testType(itemstack));
+            return containsRecipe(recipe -> recipe.getExtraInput().testType(itemstack));
         } else if (slotID == 2) {
             return false;
         } else if (slotID == 3) {
@@ -91,8 +91,8 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
     @Nonnull
     @Override
-    public Recipe<CombinerRecipe> getRecipes() {
-        return Recipe.COMBINER;
+    public RecipeWrapper<CombinerRecipe> getRecipeWrapper() {
+        return RecipeWrapper.COMBINING;
     }
 
     @Nullable
@@ -106,7 +106,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     public CombinerRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
         ItemStack extraStack = inventory.get(1);
-        return stack.isEmpty() || extraStack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack, extraStack));
+        return stack.isEmpty() || extraStack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack, extraStack));
     }
 
     @Nullable

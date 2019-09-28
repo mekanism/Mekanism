@@ -24,7 +24,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -170,7 +170,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             }
             if (infusionTank.isEmpty()) {
                 InfuseType type = infusionStack.getType();
-                return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(type));
+                return containsRecipe(recipe -> recipe.getInfusionInput().testType(type));
             }
             return infusionStack.isTypeEqual(infusionTank.getType());
         } else if (slotID == 0) {
@@ -178,10 +178,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         } else if (slotID == 2) {
             //If we have a type make sure that the recipe is valid for the type we have stored
             if (!infusionTank.isEmpty()) {
-                return getRecipes().contains(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(itemstack));
+                return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(itemstack));
             }
             //Otherwise just look for items that can be used
-            return getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
+            return containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
         } else if (slotID == 4) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -190,8 +190,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Nonnull
     @Override
-    public Recipe<MetallurgicInfuserRecipe> getRecipes() {
-        return Recipe.METALLURGIC_INFUSER;
+    public RecipeWrapper<MetallurgicInfuserRecipe> getRecipeWrapper() {
+        return RecipeWrapper.METALLURGIC_INFUSING;
     }
 
     @Nullable
@@ -204,7 +204,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(2);
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infusionTank.getStack(), stack));
+        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(infusionTank.getStack(), stack));
     }
 
     @Nullable

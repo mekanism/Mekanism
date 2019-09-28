@@ -27,7 +27,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -99,8 +99,8 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Nonnull
     @Override
-    public Recipe<FluidGasToGasRecipe> getRecipes() {
-        return Recipe.CHEMICAL_WASHER;
+    public RecipeWrapper<FluidGasToGasRecipe> getRecipeWrapper() {
+        return RecipeWrapper.WASHING;
     }
 
     @Nullable
@@ -114,7 +114,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public FluidGasToGasRecipe getRecipe(int cacheIndex) {
         GasStack gasStack = inputTank.getStack();
         FluidStack fluid = fluidTank.getFluid();
-        return gasStack.isEmpty() || fluid.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(fluid, gasStack));
+        return gasStack.isEmpty() || fluid.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(fluid, gasStack));
     }
 
     @Nullable
@@ -185,7 +185,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         if (getTank(side) == inputTank) {
-            return getTank(side).canReceive(type) && getRecipes().contains(recipe -> recipe.getGasInput().testType(type));
+            return getTank(side).canReceive(type) && containsRecipe(recipe -> recipe.getGasInput().testType(type));
         }
         return false;
     }
@@ -290,7 +290,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         FluidStack currentFluid = fluidTank.getFluid();
         if (currentFluid.isEmpty()) {
             //If we don't have a fluid currently stored, then check if the fluid wanting to be input is valid for this machine
-            return getRecipes().contains(recipe -> recipe.getFluidInput().testType(fluid));
+            return containsRecipe(recipe -> recipe.getFluidInput().testType(fluid));
         }
         //Otherwise return true if the fluid is the same as the one we already have stored
         return currentFluid.isFluidEqual(fluid);
@@ -346,6 +346,6 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     public boolean isFluidInputItem(ItemStack itemStack) {
         return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemStack)).matches(
-              fluidStack -> !fluidStack.isEmpty() && getRecipes().contains(recipe -> recipe.getFluidInput().testType(fluidStack)));
+              fluidStack -> !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.getFluidInput().testType(fluidStack)));
     }
 }

@@ -24,7 +24,7 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
@@ -83,10 +83,10 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         }
     }
 
-    @Override
     @Nonnull
-    public Recipe<GasToItemStackRecipe> getRecipes() {
-        return Recipe.CHEMICAL_CRYSTALLIZER;
+    @Override
+    public RecipeWrapper<GasToItemStackRecipe> getRecipeWrapper() {
+        return RecipeWrapper.CRYSTALLIZING;
     }
 
     @Nullable
@@ -102,7 +102,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         if (gasStack.isEmpty()) {
             return null;
         }
-        return getRecipes().findFirst(recipe -> recipe.test(gasStack));
+        return findFirstRecipe(recipe -> recipe.test(gasStack));
     }
 
     @Nullable
@@ -149,7 +149,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
         return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0) && inputTank.canReceive(type) &&
-               Recipe.CHEMICAL_CRYSTALLIZER.contains(recipe -> recipe.getInput().testType(type));
+               containsRecipe(recipe -> recipe.getInput().testType(type));
     }
 
     @Override
@@ -202,7 +202,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         if (slotID == 0) {
             if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
                 GasStack gasInItem = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return !gasInItem.isEmpty() && Recipe.CHEMICAL_CRYSTALLIZER.contains(recipe -> recipe.getInput().testType(gasInItem));
+                return !gasInItem.isEmpty() && containsRecipe(recipe -> recipe.getInput().testType(gasInItem));
             }
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);

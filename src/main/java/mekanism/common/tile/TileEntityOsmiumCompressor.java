@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.util.Direction;
 
@@ -16,8 +16,8 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 
     @Nonnull
     @Override
-    public Recipe<ItemStackGasToItemStackRecipe> getRecipes() {
-        return Recipe.OSMIUM_COMPRESSOR;
+    public RecipeWrapper<ItemStackGasToItemStackRecipe> getRecipeWrapper() {
+        return RecipeWrapper.COMPRESSING;
     }
 
     @Override

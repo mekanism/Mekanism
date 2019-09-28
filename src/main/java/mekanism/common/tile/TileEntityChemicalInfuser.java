@@ -23,7 +23,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -77,8 +77,8 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Nonnull
     @Override
-    public Recipe<ChemicalInfuserRecipe> getRecipes() {
-        return Recipe.CHEMICAL_INFUSER;
+    public RecipeWrapper<ChemicalInfuserRecipe> getRecipeWrapper() {
+        return RecipeWrapper.CHEMICAL_INFUSING;
     }
 
     @Nullable
@@ -92,7 +92,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     public ChemicalInfuserRecipe getRecipe(int cacheIndex) {
         GasStack leftGas = leftTank.getStack();
         GasStack rightGas = rightTank.getStack();
-        return leftGas.isEmpty() || rightGas.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(leftGas, rightGas));
+        return leftGas.isEmpty() || rightGas.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(leftGas, rightGas));
     }
 
     @Nullable

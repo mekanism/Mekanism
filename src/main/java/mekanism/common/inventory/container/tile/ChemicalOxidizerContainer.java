@@ -31,7 +31,7 @@ public class ChemicalOxidizerContainer extends MekanismTileContainer<TileEntityC
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (tile.getRecipes().contains(recipe -> recipe.getInput().testType(slotStack))) {
+            if (tile.containsRecipe(recipe -> recipe.getInput().testType(slotStack))) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, true)) {
                         return ItemStack.EMPTY;

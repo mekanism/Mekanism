@@ -122,7 +122,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     }
 
     public boolean isValidGas(@Nonnull Gas gas) {
-        return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
+        return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override
@@ -172,7 +172,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         } else if (slotID == 4) {
             return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 0) {
-            return getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
+            return containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (slotID == 1) {
@@ -198,7 +198,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         if (gasStack.isEmpty()) {
             return null;
         }
-        return getRecipes().findFirst(recipe -> recipe.test(stack, gasStack));
+        return findFirstRecipe(recipe -> recipe.test(stack, gasStack));
     }
 
     @Nullable

@@ -8,7 +8,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -22,7 +22,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityFactory<Ite
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return getRecipes().contains(recipe -> recipe.getInput().testType(stack));
+        return containsRecipe(recipe -> recipe.getInput().testType(stack));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityFactory<Ite
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
-        ItemStackToItemStackRecipe foundRecipe = getRecipes().findFirst(
+        ItemStackToItemStackRecipe foundRecipe = findFirstRecipe(
               recipe -> recipe.getInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput), output));
         if (foundRecipe == null) {
             //We could not find any valid recipe for the given item that matches the items in the current output slots
@@ -66,16 +66,16 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityFactory<Ite
 
     @Nonnull
     @Override
-    public Recipe<ItemStackToItemStackRecipe> getRecipes() {
+    public RecipeWrapper<ItemStackToItemStackRecipe> getRecipeWrapper() {
         switch (type) {
             case ENRICHING:
-                return Recipe.ENRICHMENT_CHAMBER;
+                return RecipeWrapper.ENRICHING;
             case CRUSHING:
-                return Recipe.CRUSHER;
+                return RecipeWrapper.CRUSHING;
             case SMELTING:
             default:
                 //TODO: Make it so that it throws an error if it is not one of the three types
-                return Recipe.ENERGIZED_SMELTER;
+                return RecipeWrapper.SMELTING;
         }
     }
 
@@ -83,7 +83,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityFactory<Ite
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(getInputSlot(cacheIndex));
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
+        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Override

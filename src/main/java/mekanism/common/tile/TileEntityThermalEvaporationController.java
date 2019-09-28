@@ -20,7 +20,7 @@ import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -136,7 +136,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean hasRecipe(FluidStack fluid) {
-        return getRecipes().contains(recipe -> recipe.getInput().testType(fluid));
+        return containsRecipe(recipe -> recipe.getInput().testType(fluid));
     }
 
     protected void refresh() {
@@ -164,8 +164,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Nonnull
     @Override
-    public Recipe<FluidToFluidRecipe> getRecipes() {
-        return Recipe.THERMAL_EVAPORATION_PLANT;
+    public RecipeWrapper<FluidToFluidRecipe> getRecipeWrapper() {
+        return RecipeWrapper.EVAPORATING;
     }
 
     @Nullable
@@ -178,7 +178,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public FluidToFluidRecipe getRecipe(int cacheIndex) {
         FluidStack fluid = inputTank.getFluid();
-        return fluid.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(fluid));
+        return fluid.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(fluid));
     }
 
     @Nullable

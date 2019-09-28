@@ -20,7 +20,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -62,7 +62,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return getRecipes().contains(recipe -> recipe.getInput().testType(itemstack));
+            return containsRecipe(recipe -> recipe.getInput().testType(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -90,10 +90,10 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
         return InventoryUtils.EMPTY;
     }
 
-    @Override
     @Nonnull
-    public Recipe<ItemStackToGasRecipe> getRecipes() {
-        return Recipe.CHEMICAL_OXIDIZER;
+    @Override
+    public RecipeWrapper<ItemStackToGasRecipe> getRecipeWrapper() {
+        return RecipeWrapper.OXIDIZING;
     }
 
     @Nullable
@@ -106,7 +106,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public ItemStackToGasRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
+        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Nullable

@@ -86,7 +86,7 @@ public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializer<ItemStackGasToItemStackRecipe> COMPRESSING = create("compressing", new ItemStackGasToItemStackRecipeSerializer<>(CompressingIRecipe::new));
     public static final IRecipeSerializer<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying", new ItemStackGasToItemStackRecipeSerializer<>(PurifyingIRecipe::new));
-    public static final IRecipeSerializer<ItemStackGasToItemStackRecipe> CHEMICAL_INJECTING = create("chemical_injecting", new ItemStackGasToItemStackRecipeSerializer<>(InjectingIRecipe::new));
+    public static final IRecipeSerializer<ItemStackGasToItemStackRecipe> INJECTING = create("injecting", new ItemStackGasToItemStackRecipeSerializer<>(InjectingIRecipe::new));
 
     public static final IRecipeSerializer<ItemStackToGasRecipe> OXIDIZING = create("oxidizing", new ItemStackToGasRecipeSerializer<>(ItemStackToGasIRecipe::new));
 

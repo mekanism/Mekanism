@@ -269,7 +269,7 @@ public final class RecipeHandler {
         public static final RecipeWrapper<GasToGasRecipe> SOLAR_NEUTRON_ACTIVATOR = new RecipeWrapper<>(MekanismRecipeType.SOLAR_NEUTRON_ACTIVATOR);
         public static final RecipeWrapper<GasToItemStackRecipe> CRYSTALLIZING = new RecipeWrapper<>(MekanismRecipeType.CRYSTALLIZING);
         public static final RecipeWrapper<ItemStackGasToGasRecipe> DISSOLUTION = new RecipeWrapper<>(MekanismRecipeType.DISSOLUTION);
-        public static final RecipeWrapper<ItemStackGasToItemStackRecipe> CHEMICAL_INJECTING = new RecipeWrapper<>(MekanismRecipeType.CHEMICAL_INJECTING);
+        public static final RecipeWrapper<ItemStackGasToItemStackRecipe> INJECTING = new RecipeWrapper<>(MekanismRecipeType.INJECTING);
         public static final RecipeWrapper<ItemStackGasToItemStackRecipe> COMPRESSING = new RecipeWrapper<>(MekanismRecipeType.COMPRESSING);
         public static final RecipeWrapper<ItemStackGasToItemStackRecipe> PURIFYING = new RecipeWrapper<>(MekanismRecipeType.PURIFYING);
         public static final RecipeWrapper<ItemStackToGasRecipe> OXIDIZING = new RecipeWrapper<>(MekanismRecipeType.OXIDIZING);
@@ -300,11 +300,11 @@ public final class RecipeHandler {
         }
 
         @Nullable
-        public RECIPE_TYPE findFirst(@Nullable World world, Predicate<? super RECIPE_TYPE> matchCriteria) {
+        public RECIPE_TYPE findFirst(@Nullable World world, Predicate<RECIPE_TYPE> matchCriteria) {
             return stream(world).filter(matchCriteria).findFirst().orElse(null);
         }
 
-        public boolean contains(@Nullable World world, Predicate<? super RECIPE_TYPE> matchCriteria) {
+        public boolean contains(@Nullable World world, Predicate<RECIPE_TYPE> matchCriteria) {
             return stream(world).anyMatch(matchCriteria);
         }
     }

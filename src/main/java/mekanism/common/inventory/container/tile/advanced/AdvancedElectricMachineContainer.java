@@ -80,7 +80,7 @@ public abstract class AdvancedElectricMachineContainer<TILE extends TileEntityAd
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        return tile.getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
+        return tile.containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
     }
 
     @Override

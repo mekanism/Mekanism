@@ -12,7 +12,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -74,7 +74,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         if (slotID == 3) {
             return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 0) {
-            return getRecipes().contains(recipe -> recipe.getInput().testType(itemstack));
+            return containsRecipe(recipe -> recipe.getInput().testType(itemstack));
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -83,8 +83,8 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
 
     @Override
     @Nonnull
-    public Recipe<SawmillRecipe> getRecipes() {
-        return Recipe.PRECISION_SAWMILL;
+    public RecipeWrapper<SawmillRecipe> getRecipeWrapper() {
+        return RecipeWrapper.SAWING;
     }
 
     @Nullable
@@ -97,7 +97,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     @Override
     public SawmillRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
+        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Nullable

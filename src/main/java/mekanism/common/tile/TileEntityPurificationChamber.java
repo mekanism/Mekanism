@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.util.Direction;
 
@@ -16,8 +16,8 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 
     @Nonnull
     @Override
-    public Recipe<ItemStackGasToItemStackRecipe> getRecipes() {
-        return Recipe.PURIFICATION_CHAMBER;
+    public RecipeWrapper<ItemStackGasToItemStackRecipe> getRecipeWrapper() {
+        return RecipeWrapper.PURIFYING;
     }
 
     @Override

@@ -38,7 +38,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -153,23 +153,23 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
         //Register the recipes and their catalysts if enabled
-        RecipeRegistryHelper.register(registry, MekanismBlock.ENRICHMENT_CHAMBER, Recipe.ENRICHMENT_CHAMBER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.CRUSHER, Recipe.CRUSHER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.COMBINER, Recipe.COMBINER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.PURIFICATION_CHAMBER, Recipe.PURIFICATION_CHAMBER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.OSMIUM_COMPRESSOR, Recipe.OSMIUM_COMPRESSOR);
-        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, Recipe.CHEMICAL_INJECTION_CHAMBER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.PRECISION_SAWMILL, Recipe.PRECISION_SAWMILL);
-        RecipeRegistryHelper.register(registry, MekanismBlock.METALLURGIC_INFUSER, Recipe.METALLURGIC_INFUSER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_CRYSTALLIZER, Recipe.CHEMICAL_CRYSTALLIZER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, Recipe.CHEMICAL_DISSOLUTION_CHAMBER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_INFUSER, Recipe.CHEMICAL_INFUSER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_OXIDIZER, Recipe.CHEMICAL_OXIDIZER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_WASHER, Recipe.CHEMICAL_WASHER);
-        RecipeRegistryHelper.register(registry, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, Recipe.SOLAR_NEUTRON_ACTIVATOR);
-        RecipeRegistryHelper.register(registry, MekanismBlock.ELECTROLYTIC_SEPARATOR, Recipe.ELECTROLYTIC_SEPARATOR);
-        RecipeRegistryHelper.register(registry, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, Recipe.THERMAL_EVAPORATION_PLANT);
-        RecipeRegistryHelper.register(registry, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, Recipe.PRESSURIZED_REACTION_CHAMBER);
+        RecipeRegistryHelper.register(registry, MekanismBlock.ENRICHMENT_CHAMBER, RecipeWrapper.ENRICHING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.CRUSHER, RecipeWrapper.CRUSHING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.COMBINER, RecipeWrapper.COMBINING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.PURIFICATION_CHAMBER, RecipeWrapper.PURIFYING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.OSMIUM_COMPRESSOR, RecipeWrapper.COMPRESSING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, RecipeWrapper.INJECTING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.PRECISION_SAWMILL, RecipeWrapper.SAWING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.METALLURGIC_INFUSER, RecipeWrapper.METALLURGIC_INFUSING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_CRYSTALLIZER, RecipeWrapper.CRYSTALLIZING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, RecipeWrapper.DISSOLUTION);
+        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_INFUSER, RecipeWrapper.CHEMICAL_INFUSING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_OXIDIZER, RecipeWrapper.OXIDIZING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_WASHER, RecipeWrapper.WASHING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, RecipeWrapper.SOLAR_NEUTRON_ACTIVATOR);
+        RecipeRegistryHelper.register(registry, MekanismBlock.ELECTROLYTIC_SEPARATOR, RecipeWrapper.SEPARATING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, RecipeWrapper.EVAPORATING);
+        RecipeRegistryHelper.register(registry, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, RecipeWrapper.REACTION);
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerSmelter(registry);
     }

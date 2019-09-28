@@ -44,7 +44,7 @@ public class PrecisionSawmillContainer extends MekanismTileContainer<TileEntityP
                 } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tile.getRecipes().contains(recipe -> recipe.getInput().testType(slotStack))) {
+            } else if (tile.containsRecipe(recipe -> recipe.getInput().testType(slotStack))) {
                 if (slotID != 0 && slotID != 1) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

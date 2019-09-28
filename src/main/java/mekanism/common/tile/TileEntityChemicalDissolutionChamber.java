@@ -22,7 +22,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
@@ -88,7 +88,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 1) {
-            return getRecipes().contains(recipe -> recipe.getItemInput().testType(itemstack));
+            return containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -116,10 +116,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         return InventoryUtils.EMPTY;
     }
 
-    @Override
     @Nonnull
-    public Recipe<ItemStackGasToGasRecipe> getRecipes() {
-        return Recipe.CHEMICAL_DISSOLUTION_CHAMBER;
+    @Override
+    public RecipeWrapper<ItemStackGasToGasRecipe> getRecipeWrapper() {
+        return RecipeWrapper.DISSOLUTION;
     }
 
     @Nullable
@@ -139,7 +139,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         if (gasStack.isEmpty()) {
             return null;
         }
-        return getRecipes().findFirst(recipe -> recipe.test(stack, gasStack));
+        return findFirstRecipe(recipe -> recipe.test(stack, gasStack));
     }
 
     @Nullable
@@ -208,7 +208,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     }
 
     private boolean isValidGas(@Nonnull Gas gas) {
-        return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
+        return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override

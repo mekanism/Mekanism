@@ -83,11 +83,11 @@ public class CombinerContainer extends MekanismTileContainer<TileEntityCombiner>
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        return tile.getRecipes().contains(recipe -> recipe.getMainInput().testType(itemstack));
+        return tile.containsRecipe(recipe -> recipe.getMainInput().testType(itemstack));
     }
 
     private boolean isExtraItem(ItemStack itemstack) {
-        return tile.getRecipes().contains(recipe -> recipe.getExtraInput().testType(itemstack));
+        return tile.containsRecipe(recipe -> recipe.getExtraInput().testType(itemstack));
     }
 
     @Override

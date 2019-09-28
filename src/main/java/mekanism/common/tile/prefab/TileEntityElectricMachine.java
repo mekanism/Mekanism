@@ -1,6 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
@@ -13,7 +12,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -72,13 +70,6 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         }
     }
 
-    @Nonnull
-    public abstract RecipeWrapper<ItemStackToItemStackRecipe> getRecipeWrapper();
-
-    public boolean containsRecipe(Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeWrapper().contains(world, matchCriteria);
-    }
-
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 2) {
@@ -103,7 +94,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(0);
-        return stack.isEmpty() ? null : getRecipeWrapper().findFirst(world, recipe -> recipe.test(stack));
+        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Nullable

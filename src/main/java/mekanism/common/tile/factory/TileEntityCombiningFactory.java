@@ -8,7 +8,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -21,12 +21,12 @@ public class TileEntityCombiningFactory extends TileEntityFactory<CombinerRecipe
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return getRecipes().contains(recipe -> recipe.getMainInput().testType(stack));
+        return containsRecipe(recipe -> recipe.getMainInput().testType(stack));
     }
 
     @Override
     public boolean isValidExtraItem(@Nonnull ItemStack stack) {
-        return getRecipes().contains(recipe -> recipe.getExtraInput().testType(stack));
+        return containsRecipe(recipe -> recipe.getExtraInput().testType(stack));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TileEntityCombiningFactory extends TileEntityFactory<CombinerRecipe
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         ItemStack extra = inventory.get(EXTRA_SLOT_ID);
-        CombinerRecipe foundRecipe = getRecipes().findFirst(recipe -> {
+        CombinerRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getMainInput().testType(fallbackInput)) {
                 if (extra.isEmpty() || recipe.getExtraInput().testType(extra)) {
                     return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput, extra), output);
@@ -76,8 +76,8 @@ public class TileEntityCombiningFactory extends TileEntityFactory<CombinerRecipe
 
     @Nonnull
     @Override
-    public Recipe<CombinerRecipe> getRecipes() {
-        return Recipe.COMBINER;
+    public RecipeWrapper<CombinerRecipe> getRecipeWrapper() {
+        return RecipeWrapper.COMBINING;
     }
 
     @Nullable
@@ -88,7 +88,7 @@ public class TileEntityCombiningFactory extends TileEntityFactory<CombinerRecipe
             return null;
         }
         ItemStack extra = inventory.get(EXTRA_SLOT_ID);
-        return extra.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack, extra));
+        return extra.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack, extra));
     }
 
     @Override

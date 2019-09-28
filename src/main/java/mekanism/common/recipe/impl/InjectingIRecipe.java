@@ -21,13 +21,13 @@ public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public IRecipeType<ItemStackGasToItemStackRecipe> getType() {
-        return MekanismRecipeType.CHEMICAL_INJECTING;
+        return MekanismRecipeType.INJECTING;
     }
 
     @Nonnull
     @Override
     public IRecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CHEMICAL_INJECTING;
+        return MekanismRecipeSerializers.INJECTING;
     }
 
     @Nonnull

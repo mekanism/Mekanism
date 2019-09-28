@@ -29,7 +29,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -110,8 +110,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    public Recipe<GasToGasRecipe> getRecipes() {
-        return Recipe.SOLAR_NEUTRON_ACTIVATOR;
+    public RecipeWrapper<GasToGasRecipe> getRecipeWrapper() {
+        return RecipeWrapper.SOLAR_NEUTRON_ACTIVATOR;
     }
 
     @Nullable
@@ -124,7 +124,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public GasToGasRecipe getRecipe(int cacheIndex) {
         GasStack gas = inputTank.getStack();
-        return gas.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(gas));
+        return gas.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(gas));
     }
 
     @Nullable

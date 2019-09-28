@@ -12,7 +12,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -25,13 +25,13 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return getRecipes().contains(recipe -> recipe.getItemInput().testType(stack));
+        return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
     }
 
     @Override
     public boolean isValidExtraItem(@Nonnull ItemStack stack) {
         InfusionStack infuse = InfuseRegistry.getObject(stack);
-        return !infuse.isEmpty() && Recipe.METALLURGIC_INFUSER.contains(recipe -> recipe.getInfusionInput().testType(infuse.getType()));
+        return !infuse.isEmpty() && containsRecipe(recipe -> recipe.getInfusionInput().testType(infuse.getType()));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         int stored = infusionTank.getStored();
         InfuseType type = infusionTank.getType();
-        MetallurgicInfuserRecipe foundRecipe = getRecipes().findFirst(recipe -> {
+        MetallurgicInfuserRecipe foundRecipe = findFirstRecipe(recipe -> {
             //Check the infusion type before the ItemStack type as it a quicker easier compare check
             if (stored == 0 || recipe.getInfusionInput().testType(type)) {
                 return recipe.getItemInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(infusionTank.getStack(), fallbackInput), output);
@@ -96,15 +96,15 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
 
     @Nonnull
     @Override
-    public Recipe<MetallurgicInfuserRecipe> getRecipes() {
-        return Recipe.METALLURGIC_INFUSER;
+    public RecipeWrapper<MetallurgicInfuserRecipe> getRecipeWrapper() {
+        return RecipeWrapper.METALLURGIC_INFUSING;
     }
 
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(getInputSlot(cacheIndex));
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(infusionTank.getStack(), stack));
+        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(infusionTank.getStack(), stack));
     }
 
     @Override

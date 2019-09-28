@@ -7,7 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.util.Direction;
@@ -25,8 +25,8 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 
     @Nonnull
     @Override
-    public Recipe<ItemStackGasToItemStackRecipe> getRecipes() {
-        return Recipe.CHEMICAL_INJECTION_CHAMBER;
+    public RecipeWrapper<ItemStackGasToItemStackRecipe> getRecipeWrapper() {
+        return RecipeWrapper.INJECTING;
     }
 
     @Override

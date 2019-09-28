@@ -9,7 +9,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.SawmillCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -23,7 +23,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return getRecipes().contains(recipe -> recipe.getInput().testType(stack));
+        return containsRecipe(recipe -> recipe.getInput().testType(stack));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         ItemStack extra = inventory.get(EXTRA_SLOT_ID);
-        SawmillRecipe foundRecipe = getRecipes().findFirst(recipe -> {
+        SawmillRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getInput().testType(fallbackInput)) {
                 ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
                 if (ItemHandlerHelper.canItemStacksStack(chanceOutput.getMainOutput(), output)) {
@@ -80,15 +80,15 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
     @Nonnull
     @Override
-    public Recipe<SawmillRecipe> getRecipes() {
-        return Recipe.PRECISION_SAWMILL;
+    public RecipeWrapper<SawmillRecipe> getRecipeWrapper() {
+        return RecipeWrapper.SAWING;
     }
 
     @Nullable
     @Override
     public SawmillRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inventory.get(getInputSlot(cacheIndex));
-        return stack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack));
+        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Override

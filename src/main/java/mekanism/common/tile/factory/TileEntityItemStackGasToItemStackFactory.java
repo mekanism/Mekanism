@@ -17,7 +17,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.GasConversionHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return getRecipes().contains(recipe -> recipe.getItemInput().testType(stack));
+        return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
             return false;
         }
         Gas gasFromItem = gasStackFromItem.getType();
-        return getRecipes().contains(recipe -> recipe.getGasInput().testType(gasFromItem));
+        return containsRecipe(recipe -> recipe.getGasInput().testType(gasFromItem));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         GasStack gasStack = gasTank.getStack();
         Gas gas = gasStack.getType();
-        ItemStackGasToItemStackRecipe foundRecipe = getRecipes().findFirst(recipe -> {
+        ItemStackGasToItemStackRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getItemInput().testType(fallbackInput)) {
                 //If we don't have a gas stored ignore checking for a match
                 if (gasStack.isEmpty() || recipe.getGasInput().testType(gas)) {
@@ -101,7 +101,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
     }
 
     public boolean isValidGas(@Nonnull Gas gas) {
-        return getRecipes().contains(recipe -> recipe.getGasInput().testType(gas));
+        return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override
@@ -126,16 +126,16 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
 
     @Nonnull
     @Override
-    public Recipe<ItemStackGasToItemStackRecipe> getRecipes() {
+    public RecipeWrapper<ItemStackGasToItemStackRecipe> getRecipeWrapper() {
         switch (type) {
             case INJECTING:
-                return Recipe.CHEMICAL_INJECTION_CHAMBER;
+                return RecipeWrapper.INJECTING;
             case PURIFYING:
-                return Recipe.PURIFICATION_CHAMBER;
+                return RecipeWrapper.PURIFYING;
             case COMPRESSING:
             default:
                 //TODO: Make it so that it throws an error if it is not one of the three types
-                return Recipe.OSMIUM_COMPRESSOR;
+                return RecipeWrapper.COMPRESSING;
         }
     }
 
@@ -147,7 +147,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
             return null;
         }
         GasStack gasStack = gasTank.getStack();
-        return gasStack.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(stack, gasStack));
+        return gasStack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack, gasStack));
     }
 
     @Override

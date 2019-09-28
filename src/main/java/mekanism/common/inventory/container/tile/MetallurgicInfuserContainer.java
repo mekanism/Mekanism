@@ -75,10 +75,10 @@ public class MetallurgicInfuserContainer extends MekanismTileContainer<TileEntit
         //If we have a type make sure that the recipe is valid for the type we have stored
         if (!tile.infusionTank.isEmpty()) {
             InfusionStack currentInfuseType = new InfusionStack(tile.infusionTank.getType(), tile.infusionTank.getStored());
-            return tile.getRecipes().contains(recipe -> recipe.getInfusionInput().testType(currentInfuseType) && recipe.getItemInput().testType(itemStack));
+            return tile.containsRecipe(recipe -> recipe.getInfusionInput().testType(currentInfuseType) && recipe.getItemInput().testType(itemStack));
         }
         //Otherwise just look for items that can be used
-        return tile.getRecipes().contains(recipe -> recipe.getItemInput().testType(itemStack));
+        return tile.containsRecipe(recipe -> recipe.getItemInput().testType(itemStack));
     }
 
     @Override

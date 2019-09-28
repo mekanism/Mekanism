@@ -28,7 +28,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -156,8 +156,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Nonnull
     @Override
-    public Recipe<ElectrolysisRecipe> getRecipes() {
-        return Recipe.ELECTROLYTIC_SEPARATOR;
+    public RecipeWrapper<ElectrolysisRecipe> getRecipeWrapper() {
+        return RecipeWrapper.SEPARATING;
     }
 
     @Nullable
@@ -170,7 +170,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public ElectrolysisRecipe getRecipe(int cacheIndex) {
         FluidStack fluid = fluidTank.getFluid();
-        return fluid.isEmpty() ? null : getRecipes().findFirst(recipe -> recipe.test(fluid));
+        return fluid.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(fluid));
     }
 
     @Nullable
@@ -364,7 +364,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         FluidStack currentFluid = fluidTank.getFluid();
         if (currentFluid.isEmpty()) {
             //If we don't have a fluid currently stored, then check if the fluid wanting to be input is valid for this machine
-            return getRecipes().contains(recipe -> recipe.getInput().testType(fluid));
+            return containsRecipe(recipe -> recipe.getInput().testType(fluid));
         }
         //Otherwise return true if the fluid is the same as the one we already have stored
         return currentFluid.isFluidEqual(fluid);
@@ -475,6 +475,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     public boolean isFluidInputItem(ItemStack itemStack) {
         return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemStack)).matches(
-              fluidStack -> !fluidStack.isEmpty() && getRecipes().contains(recipe -> recipe.getInput().testType(fluidStack)));
+              fluidStack -> !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.getInput().testType(fluidStack)));
     }
 }

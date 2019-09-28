@@ -52,7 +52,7 @@ public class MekanismRecipeType<T extends MekanismRecipe> implements IRecipeType
 
     public static final IRecipeType<ItemStackGasToItemStackRecipe> COMPRESSING = create("compressing");
     public static final IRecipeType<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying");
-    public static final IRecipeType<ItemStackGasToItemStackRecipe> CHEMICAL_INJECTING = create("chemical_injecting");
+    public static final IRecipeType<ItemStackGasToItemStackRecipe> INJECTING = create("injecting");
 
     public static final IRecipeType<ItemStackToGasRecipe> OXIDIZING = create("oxidizing");
 
