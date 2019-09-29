@@ -111,7 +111,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Nonnull
     @Override
     public RecipeWrapper<GasToGasRecipe> getRecipeWrapper() {
-        return RecipeWrapper.SOLAR_NEUTRON_ACTIVATOR;
+        return RecipeWrapper.ACTIVATING;
     }
 
     @Nullable

@@ -1,7 +1,7 @@
 {
   "type": "mekanism:crushing",
   "output": {
-    "item": "mekanism:dust_refined_glowstone"
+    "item": "minecraft:glowstone"
   },
   "input": {
     "ingredient": {

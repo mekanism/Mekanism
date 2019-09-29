@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:dissolution",
+  "output": {
+    "gas": "mekanism:dirty_iron_slurry",
+    "amount": 1000
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ores/iron"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:sulfuric_acid",
+    "amount": 1
+  }
+}

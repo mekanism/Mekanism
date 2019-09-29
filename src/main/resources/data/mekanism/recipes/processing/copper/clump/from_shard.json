@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:purifying",
+  "output": {
+    "item": "mekanism:clump_copper"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:shards/copper"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:oxygen",
+    "amount": 1
+  }
+}

@@ -78,7 +78,7 @@ public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializer<FluidToFluidRecipe> EVAPORATING = create("evaporating", new FluidToFluidRecipeSerializer<>(FluidToFluidIRecipe::new));
 
-    public static final IRecipeSerializer<GasToGasRecipe> SOLAR_NEUTRON_ACTIVATOR = create("solar_neutron_activator", new GasToGasRecipeSerializer<>(GasToGasIRecipe::new));
+    public static final IRecipeSerializer<GasToGasRecipe> ACTIVATING = create("activating", new GasToGasRecipeSerializer<>(GasToGasIRecipe::new));
 
     public static final IRecipeSerializer<GasToItemStackRecipe> CRYSTALLIZING = create("crystallizing", new GasToItemStackRecipeSerializer<>(ChemicalCrystallizerIRecipe::new));
 

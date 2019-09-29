@@ -26,6 +26,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Should this be moved to API package?
 //TODO: Decide on final names and put them in all the places that use them
+//TODO: Instead of having RecipeWrapper, Move that stuff in here?
 public class MekanismRecipeType<T extends MekanismRecipe> implements IRecipeType<T> {
 
     private static final List<MekanismRecipeType<? extends MekanismRecipe>> types = new ArrayList<>();
@@ -44,7 +45,7 @@ public class MekanismRecipeType<T extends MekanismRecipe> implements IRecipeType
 
     public static final IRecipeType<FluidToFluidRecipe> EVAPORATING = create("evaporating");
 
-    public static final IRecipeType<GasToGasRecipe> SOLAR_NEUTRON_ACTIVATOR = create("solar_neutron_activator");
+    public static final IRecipeType<GasToGasRecipe> ACTIVATING = create("activating");
 
     public static final IRecipeType<GasToItemStackRecipe> CRYSTALLIZING = create("crystallizing");
 

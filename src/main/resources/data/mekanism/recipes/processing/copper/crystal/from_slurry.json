@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crystallizing",
+  "output": {
+    "item": "mekanism:crystal_copper"
+  },
+  "input": {
+    "gas": "mekanism:clean_copper_slurry",
+    "amount": 200
+  }
+}

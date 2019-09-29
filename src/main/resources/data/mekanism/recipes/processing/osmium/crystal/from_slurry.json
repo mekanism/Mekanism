@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crystallizing",
+  "output": {
+    "item": "mekanism:crystal_osmium"
+  },
+  "input": {
+    "gas": "mekanism:clean_osmium_slurry",
+    "amount": 200
+  }
+}

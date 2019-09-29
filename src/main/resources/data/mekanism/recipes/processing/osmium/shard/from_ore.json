@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:injecting",
+  "output": {
+    "item": "mekanism:shard_osmium",
+    "count": 4
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ores/osmium"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:hydrogen_chloride",
+    "amount": 1
+  }
+}

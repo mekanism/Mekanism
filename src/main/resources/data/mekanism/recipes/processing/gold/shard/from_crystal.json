@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "output": {
+    "item": "mekanism:shard_gold"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:crystals/gold"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:hydrogen_chloride",
+    "amount": 1
+  }
+}

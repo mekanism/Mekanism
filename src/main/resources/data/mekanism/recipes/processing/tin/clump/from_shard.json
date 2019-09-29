@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:purifying",
+  "output": {
+    "item": "mekanism:clump_tin"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:shards/tin"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:oxygen",
+    "amount": 1
+  }
+}

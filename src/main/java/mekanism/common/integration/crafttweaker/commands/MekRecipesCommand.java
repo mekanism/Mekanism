@@ -220,7 +220,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "solarneutronactivator":
-                for (GasToGasRecipe recipe : RecipeWrapper.SOLAR_NEUTRON_ACTIVATOR.getRecipes(world)) {
+                for (GasToGasRecipe recipe : RecipeWrapper.ACTIVATING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.solarneutronactivator.addRecipe(%s, %s)",
                           RecipeInfoHelper.getGasName(recipe.getInput().getRepresentations()),
                           RecipeInfoHelper.getGasName(recipe.getOutput(null))

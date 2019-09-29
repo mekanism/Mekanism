@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:washing",
+  "output": {
+    "gas": "mekanism:clean_copper_slurry",
+    "amount": 1
+  },
+  "fluidInput": {
+    "fluid": "minecraft:water",
+    "amount": 5
+  },
+  "gasInput": {
+    "gas": "mekanism:dirty_copper_slurry",
+    "amount": 1
+  }
+}

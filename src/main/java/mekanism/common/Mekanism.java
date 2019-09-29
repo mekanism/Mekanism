@@ -66,7 +66,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -200,25 +199,6 @@ public class Mekanism {
             RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(Items.COAL, 3), ItemStackIngredient.from(Tags.Items.COBBLESTONE), new ItemStack(Blocks.COAL_ORE));
         }
 
-        //Osmium Compressor Recipes
-        if (MekanismBlock.OSMIUM_COMPRESSOR.isEnabled()) {
-            RecipeHandler.addOsmiumCompressorRecipe(ItemStackIngredient.from(Tags.Items.DUSTS_GLOWSTONE), GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
-                  MekanismItem.REFINED_GLOWSTONE_INGOT.getItemStack());
-        }
-
-        //Purification Chamber Recipes
-        if (MekanismBlock.PURIFICATION_CHAMBER.isEnabled()) {
-            RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(Tags.Items.GRAVEL), new ItemStack(Items.FLINT));
-        }
-
-        //Chemical Injection Chamber Recipes
-        if (MekanismBlock.CHEMICAL_INJECTION_CHAMBER.isEnabled()) {
-            RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(Blocks.DIRT), GasStackIngredient.from(MekanismTags.STEAM, 1), new ItemStack(Blocks.CLAY));
-            RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(Blocks.TERRACOTTA), GasStackIngredient.from(MekanismTags.STEAM, 1), new ItemStack(Blocks.CLAY));
-            RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(Tags.Items.INGOTS_BRICK), GasStackIngredient.from(MekanismTags.STEAM, 1), new ItemStack(Items.CLAY_BALL));
-            RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(Tags.Items.GUNPOWDER), GasStackIngredient.from(MekanismTags.HYDROGEN_CHLORIDE, 1), MekanismItem.SULFUR_DUST.getItemStack());
-        }
-
         //Precision Sawmill Recipes
         if (MekanismBlock.PRECISION_SAWMILL.isEnabled()) {
             RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(Blocks.LADDER, 3), new ItemStack(Items.STICK, 7));
@@ -325,38 +305,6 @@ public class Mekanism {
             RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(obsidian, 10), ItemStackIngredient.from(MekanismTags.ALLOYS_REINFORCED), MekanismItem.ATOMIC_ALLOY.getItemStack());
         }
 
-        //Chemical Infuser Recipes
-        if (MekanismBlock.CHEMICAL_INFUSER.isEnabled()) {
-            RecipeHandler.addChemicalInfuserRecipe(GasStackIngredient.from(MekanismTags.OXYGEN, 1), GasStackIngredient.from(MekanismTags.SULFUR_DIOXIDE, 2),
-                  MekanismGases.SULFUR_TRIOXIDE.getGasStack(2));
-            RecipeHandler.addChemicalInfuserRecipe(GasStackIngredient.from(MekanismTags.SULFUR_TRIOXIDE, 1), GasStackIngredient.from(MekanismTags.STEAM, 1),
-                  MekanismGases.SULFURIC_ACID.getGasStack(1));
-            RecipeHandler.addChemicalInfuserRecipe(GasStackIngredient.from(MekanismTags.HYDROGEN, 1), GasStackIngredient.from(MekanismTags.CHLORINE, 1),
-                  MekanismGases.HYDROGEN_CHLORIDE.getGasStack(1));
-            RecipeHandler.addChemicalInfuserRecipe(GasStackIngredient.from(MekanismTags.DEUTERIUM, 1), GasStackIngredient.from(MekanismTags.TRITIUM, 1),
-                  MekanismGases.FUSION_FUEL.getGasStack(2));
-        }
-
-        //Electrolytic Separator Recipes
-        if (MekanismBlock.ELECTROLYTIC_SEPARATOR.isEnabled()) {
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidStackIngredient.from(FluidTags.WATER, 2), 2 * MekanismConfig.general.FROM_H2.get(),
-                  MekanismGases.HYDROGEN.getGasStack(2), MekanismGases.OXYGEN.getGasStack(1));
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidStackIngredient.from(MekanismGases.BRINE.getFluid(), 10), 2 * MekanismConfig.general.FROM_H2.get(),
-                  MekanismGases.SODIUM.getGasStack(1), MekanismGases.CHLORINE.getGasStack(1));
-            RecipeHandler.addElectrolyticSeparatorRecipe(FluidStackIngredient.from(MekanismGases.HEAVY_WATER, 2), MekanismConfig.usage.heavyWaterElectrolysis.get(),
-                  MekanismGases.DEUTERIUM.getGasStack(2), MekanismGases.OXYGEN.getGasStack(1));
-        }
-
-        //Thermal Evaporation Plant Recipes
-        RecipeHandler.addThermalEvaporationRecipe(FluidStackIngredient.from(FluidTags.WATER, 10), new FluidStack(MekanismGases.BRINE.getFluid(), 1));
-        RecipeHandler.addThermalEvaporationRecipe(FluidStackIngredient.from(MekanismGases.BRINE.getFluid(), 10), new FluidStack(MekanismGases.LITHIUM.getFluid(), 1));
-
-        //Chemical Crystallizer Recipes
-        if (MekanismBlock.CHEMICAL_CRYSTALLIZER.isEnabled()) {
-            RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismTags.LITHIUM, 100), MekanismItem.SULFUR_DUST.getItemStack());
-            RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismTags.BRINE, 15), MekanismItem.SALT.getItemStack());
-        }
-
         //Pressurized Reaction Chamber Recipes
         if (MekanismBlock.PRESSURIZED_REACTION_CHAMBER.isEnabled()) {
             RecipeHandler.addPRCRecipe(ItemStackIngredient.from(MekanismItem.SUBSTRATE, 2), FluidStackIngredient.from(FluidTags.WATER, 10),
@@ -367,11 +315,6 @@ public class Mekanism {
                   GasStackIngredient.from(MekanismTags.ETHENE, 100), MekanismItem.SUBSTRATE.getItemStack(8), MekanismGases.OXYGEN.getGasStack(10), 200, 400);
             RecipeHandler.addPRCRecipe(ItemStackIngredient.from(ItemTags.COALS), FluidStackIngredient.from(FluidTags.WATER, 100),
                   GasStackIngredient.from(MekanismTags.OXYGEN, 100), MekanismItem.SULFUR_DUST.getItemStack(), MekanismGases.HYDROGEN.getGasStack(100), 0, 100);
-        }
-
-        //Solar Neutron Activator Recipes
-        if (MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.isEnabled()) {
-            RecipeHandler.addSolarNeutronRecipe(GasStackIngredient.from(MekanismTags.LITHIUM, 1), MekanismGases.TRITIUM.getGasStack(1));
         }
 
         //Fuel Gases

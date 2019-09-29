@@ -18,6 +18,8 @@ public class MekanismTags {
     //TODO: Enriching recipes for flowers -> dye
     //TODO: Add combiner recipes for increased dye combination rates?
 
+    //TODO: Make electrolitic separator recipes actually scale with the config value energy in case From H2 changes
+
     public static final Tag<Item> DUSTS_BRONZE = makeForgeItemTag("dusts/bronze");
     public static final Tag<Item> DUSTS_CHARCOAL = makeForgeItemTag("dusts/charcoal");
     public static final Tag<Item> DUSTS_COAL = makeForgeItemTag("dusts/coal");
@@ -95,7 +97,8 @@ public class MekanismTags {
         return new ItemTags.Wrapper(new ResourceLocation(Mekanism.MODID, name));
     }
 
-    //TODO: Decide if we should not actually have a tag for each gas type
+    //TODO: We probably should remove the built in gas tags as there is no need for us to have 1:1 matchings for all the built in gases
+    // as any addon that depends on mekanism has no reason to add their own variant
     public static final Tag<Gas> BRINE = makeGasTag("brine");
     public static final Tag<Gas> CHLORINE = makeGasTag("chlorine");
     public static final Tag<Gas> DEUTERIUM = makeGasTag("deuterium");

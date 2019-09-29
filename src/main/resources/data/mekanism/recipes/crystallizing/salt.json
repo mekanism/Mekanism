@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crystallizing",
+  "output": {
+    "item": "mekanism:salt"
+  },
+  "input": {
+    "gas": "mekanism:brine",
+    "amount": 15
+  }
+}

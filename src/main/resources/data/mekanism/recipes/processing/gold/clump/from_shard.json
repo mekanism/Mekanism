@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:purifying",
+  "output": {
+    "item": "mekanism:clump_gold"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:shards/gold"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:oxygen",
+    "amount": 1
+  }
+}

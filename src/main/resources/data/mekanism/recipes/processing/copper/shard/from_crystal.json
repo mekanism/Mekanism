@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "output": {
+    "item": "mekanism:shard_copper"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:crystals/copper"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:hydrogen_chloride",
+    "amount": 1
+  }
+}

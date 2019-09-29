@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "output": {
+    "item": "minecraft:clay"
+  },
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:terracotta"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:steam",
+    "amount": 1
+  }
+}

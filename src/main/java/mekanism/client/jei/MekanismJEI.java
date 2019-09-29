@@ -166,7 +166,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_INFUSER, RecipeWrapper.CHEMICAL_INFUSING);
         RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_OXIDIZER, RecipeWrapper.OXIDIZING);
         RecipeRegistryHelper.register(registry, MekanismBlock.CHEMICAL_WASHER, RecipeWrapper.WASHING);
-        RecipeRegistryHelper.register(registry, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, RecipeWrapper.SOLAR_NEUTRON_ACTIVATOR);
+        RecipeRegistryHelper.register(registry, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, RecipeWrapper.ACTIVATING);
         RecipeRegistryHelper.register(registry, MekanismBlock.ELECTROLYTIC_SEPARATOR, RecipeWrapper.SEPARATING);
         RecipeRegistryHelper.register(registry, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, RecipeWrapper.EVAPORATING);
         RecipeRegistryHelper.register(registry, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, RecipeWrapper.REACTION);

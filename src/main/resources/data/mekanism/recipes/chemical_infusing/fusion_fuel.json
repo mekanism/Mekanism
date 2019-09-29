@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:chemical_infusing",
+  "output": {
+    "gas": "mekanism:fusion_fuel",
+    "amount": 1
+  },
+  "leftInput": {
+    "gas": "mekanism:deuterium",
+    "amount": 1
+  },
+  "rightInput": {
+    "gas": "mekanism:tritium",
+    "amount": 1
+  }
+}

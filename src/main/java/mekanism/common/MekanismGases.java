@@ -7,6 +7,8 @@ import mekanism.api.providers.IGasProvider;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum MekanismGases implements IGasProvider {
@@ -44,7 +46,16 @@ public enum MekanismGases implements IGasProvider {
 
     //TODO: Fix, and move to a MekanismFluids class?
     // Given I am thinking it may make sense to "separate" the direct pairing of gas and fluids
-    public static final Fluid HEAVY_WATER = Fluids.WATER;//new Fluid("heavy_water", new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"), new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
+    public static final Fluid HEAVY_WATER = makeHeavyWater();
+
+    private static Fluid makeHeavyWater() {
+        ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> HEAVY_WATER, () -> HEAVY_WATER,
+              FluidAttributes.builder(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"),
+                    new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water")));
+        ForgeFlowingFluid flowingFluid = new ForgeFlowingFluid.Source(properties);
+        flowingFluid.setRegistryName(new ResourceLocation(Mekanism.MODID, "heavy_water"));
+        return flowingFluid;
+    }
 
     private final Gas gas;
 
@@ -96,7 +107,7 @@ public enum MekanismGases implements IGasProvider {
         }
 
         //TODO: Fix
-        //ForgeRegistries.FLUIDS.register(HEAVY_WATER);
+        registry.register(HEAVY_WATER);
         //TODO: Buckets
         /*FluidRegistry.enableUniversalBucket();
         FluidRegistry.addBucketForFluid(HEAVY_WATER);

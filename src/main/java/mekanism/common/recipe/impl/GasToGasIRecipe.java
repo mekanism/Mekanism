@@ -21,13 +21,13 @@ public class GasToGasIRecipe extends GasToGasRecipe {
     @Nonnull
     @Override
     public IRecipeType<GasToGasRecipe> getType() {
-        return MekanismRecipeType.SOLAR_NEUTRON_ACTIVATOR;
+        return MekanismRecipeType.ACTIVATING;
     }
 
     @Nonnull
     @Override
     public IRecipeSerializer<GasToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.SOLAR_NEUTRON_ACTIVATOR;
+        return MekanismRecipeSerializers.ACTIVATING;
     }
 
     @Nonnull

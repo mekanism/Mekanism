@@ -37,7 +37,6 @@ import mekanism.common.MekanismBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Class used to handle machine recipes. This is used for both adding and fetching recipes.
@@ -46,18 +45,6 @@ import net.minecraftforge.fluids.FluidStack;
  */
 @ParametersAreNonnullByDefault
 public final class RecipeHandler {
-
-    /**
-     * Add an Osmium Compressor recipe.
-     *
-     * @param input  - input ItemStack
-     * @param output - output ItemStack
-     */
-    @Deprecated
-    public static void addOsmiumCompressorRecipe(ItemStackIngredient input, GasStackIngredient gasInput, ItemStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.OSMIUM_COMPRESSOR.put(new ItemStackGasToItemStackRecipe(input, gasInput, output));
-    }
 
     /**
      * Add a Combiner recipe.
@@ -73,18 +60,6 @@ public final class RecipeHandler {
     }
 
     /**
-     * Add a Purification Chamber recipe.
-     *
-     * @param input  - input ItemStack
-     * @param output - output ItemStack
-     */
-    @Deprecated
-    public static void addPurificationChamberRecipe(ItemStackIngredient input, ItemStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.PURIFICATION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, GasStackIngredient.from(MekanismTags.OXYGEN, 1), output));
-    }
-
-    /**
      * Add a Metallurgic Infuser recipe.
      *
      * @param infusionIngredient - which Infuse to use
@@ -95,63 +70,6 @@ public final class RecipeHandler {
     public static void addMetallurgicInfuserRecipe(InfusionIngredient infusionIngredient, ItemStackIngredient input, ItemStack output) {
         //TODO: API way of adding recipes
         //Recipe.METALLURGIC_INFUSER.put(new MetallurgicInfuserRecipe(input, infusionIngredient, output));
-    }
-
-    /**
-     * Add a Chemical Infuser recipe.
-     *
-     * @param leftInput  - left GasStack to input
-     * @param rightInput - right GasStack to input
-     * @param output     - output GasStack
-     */
-    @Deprecated
-    public static void addChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_INFUSER.put(new ChemicalInfuserRecipe(leftInput, rightInput, output));
-    }
-
-    /**
-     * Add a Chemical Oxidizer recipe.
-     *
-     * @param input        - input ItemStack
-     * @param outputGas    - output Gas
-     * @param outputAmount - amount of gas output
-     */
-    @Deprecated
-    public static void addChemicalOxidizerRecipe(ItemStackIngredient input, IGasProvider outputGas, int outputAmount) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_OXIDIZER.put(new ItemStackToGasRecipe(input, outputGas.getGas(), outputAmount));
-    }
-
-    @Deprecated
-    public static void addChemicalOxidizerRecipe(ItemStackIngredient input, GasStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_OXIDIZER.put(new ItemStackToGasRecipe(input, output));
-    }
-
-    /**
-     * Add a Chemical Injection Chamber recipe.
-     *
-     * @param input  - input ItemStack
-     * @param output - output ItemStack
-     */
-    @Deprecated
-    public static void addChemicalInjectionChamberRecipe(ItemStackIngredient input, GasStackIngredient gas, ItemStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_INJECTION_CHAMBER.put(new ItemStackGasToItemStackRecipe(input, gas, output));
-    }
-
-    /**
-     * Add an Electrolytic Separator recipe.
-     *
-     * @param fluid       - FluidStack to electrolyze
-     * @param leftOutput  - left gas to produce when the fluid is electrolyzed
-     * @param rightOutput - right gas to produce when the fluid is electrolyzed
-     */
-    @Deprecated
-    public static void addElectrolyticSeparatorRecipe(FluidStackIngredient fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
-        //TODO: API way of adding recipes
-        //Recipe.ELECTROLYTIC_SEPARATOR.put(new ElectrolysisRecipe(fluid, energy, leftOutput, rightOutput));
     }
 
     /**
@@ -180,48 +98,6 @@ public final class RecipeHandler {
     }
 
     /**
-     * Add a Chemical Dissolution Chamber recipe.
-     *
-     * @param input     - input ItemStack
-     * @param outputGas - output GasStack
-     */
-    @Deprecated
-    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasStackIngredient inputGas, IGasProvider outputGas, int outputAmount) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, outputGas.getGas(), outputAmount));
-    }
-
-    @Deprecated
-    public static void addChemicalDissolutionChamberRecipe(ItemStackIngredient input, GasStackIngredient inputGas, GasStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(new ItemStackGasToGasRecipe(input, inputGas, output));
-    }
-
-    /**
-     * Add a Chemical Washer recipe.
-     *
-     * @param input  - input GasStack
-     * @param output - output GasStack
-     */
-    @Deprecated
-    public static void addChemicalWasherRecipe(FluidStackIngredient fluidInput, GasStackIngredient input, GasStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_WASHER.put(new FluidGasToGasRecipe(fluidInput, input, output));
-    }
-
-    /**
-     * Add a Chemical Crystallizer recipe.
-     *
-     * @param input  - input GasStack
-     * @param output - output ItemStack
-     */
-    @Deprecated
-    public static void addChemicalCrystallizerRecipe(GasStackIngredient input, ItemStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.CHEMICAL_CRYSTALLIZER.put(new GasToItemStackRecipe(input, output));
-    }
-
-    /**
      * Add a Pressurized Reaction Chamber recipe.
      *
      * @param inputSolid      - input ItemStack
@@ -247,18 +123,6 @@ public final class RecipeHandler {
         //Recipe.PRESSURIZED_REACTION_CHAMBER.put(new PressurizedReactionRecipe(inputSolid, inputFluid, inputGas, outputGas, extraEnergy, ticks, outputSolid));
     }
 
-    @Deprecated
-    public static void addThermalEvaporationRecipe(FluidStackIngredient inputFluid, FluidStack outputFluid) {
-        //TODO: API way of adding recipes
-        //Recipe.THERMAL_EVAPORATION_PLANT.put(new FluidToFluidRecipe(inputFluid, outputFluid));
-    }
-
-    @Deprecated
-    public static void addSolarNeutronRecipe(GasStackIngredient inputGas, GasStack outputGas) {
-        //TODO: API way of adding recipes
-        //Recipe.SOLAR_NEUTRON_ACTIVATOR.put(new GasToGasRecipe(inputGas, outputGas));
-    }
-
     public static class RecipeWrapper<RECIPE_TYPE extends MekanismRecipe> {
 
         public static final RecipeWrapper<ChemicalInfuserRecipe> CHEMICAL_INFUSING = new RecipeWrapper<>(MekanismRecipeType.CHEMICAL_INFUSING);
@@ -266,7 +130,7 @@ public final class RecipeHandler {
         public static final RecipeWrapper<ElectrolysisRecipe> SEPARATING = new RecipeWrapper<>(MekanismRecipeType.SEPARATING);
         public static final RecipeWrapper<FluidGasToGasRecipe> WASHING = new RecipeWrapper<>(MekanismRecipeType.WASHING);
         public static final RecipeWrapper<FluidToFluidRecipe> EVAPORATING = new RecipeWrapper<>(MekanismRecipeType.EVAPORATING);
-        public static final RecipeWrapper<GasToGasRecipe> SOLAR_NEUTRON_ACTIVATOR = new RecipeWrapper<>(MekanismRecipeType.SOLAR_NEUTRON_ACTIVATOR);
+        public static final RecipeWrapper<GasToGasRecipe> ACTIVATING = new RecipeWrapper<>(MekanismRecipeType.ACTIVATING);
         public static final RecipeWrapper<GasToItemStackRecipe> CRYSTALLIZING = new RecipeWrapper<>(MekanismRecipeType.CRYSTALLIZING);
         public static final RecipeWrapper<ItemStackGasToGasRecipe> DISSOLUTION = new RecipeWrapper<>(MekanismRecipeType.DISSOLUTION);
         public static final RecipeWrapper<ItemStackGasToItemStackRecipe> INJECTING = new RecipeWrapper<>(MekanismRecipeType.INJECTING);

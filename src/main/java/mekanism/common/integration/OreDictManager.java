@@ -56,86 +56,19 @@ public final class OreDictManager {
                   StackUtils.size(oreDict.get(0), 1), 1F);
         }*/
 
-        RecipeHandler.addChemicalOxidizerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_SULFUR), MekanismGases.SULFUR_DIOXIDE, 100);
-
-        RecipeHandler.addChemicalOxidizerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_SALT), MekanismGases.BRINE, 15);
-
-        ItemStackIngredient dustRefinedObsidian = ItemStackIngredient.from(MekanismTags.DUSTS_REFINED_OBSIDIAN);
-        RecipeHandler.addOsmiumCompressorRecipe(dustRefinedObsidian, GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1), MekanismItem.REFINED_OBSIDIAN_INGOT.getItemStack());
-
         //Iron
-        RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(MekanismTags.SHARDS_IRON), MekanismItem.IRON_CLUMP.getItemStack());
-        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(MekanismTags.CRYSTALS_IRON),
-              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), MekanismItem.IRON_SHARD.getItemStack());
-        ItemStackIngredient ironOreIngredient = ItemStackIngredient.from(Tags.Items.ORES_IRON);
-        RecipeHandler.addPurificationChamberRecipe(ironOreIngredient, MekanismItem.IRON_CLUMP.getItemStack(3));
-        RecipeHandler.addChemicalInjectionChamberRecipe(ironOreIngredient, GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              MekanismItem.IRON_SHARD.getItemStack(4));
-        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismGases.CLEAN_IRON_SLURRY, 200), MekanismItem.IRON_CRYSTAL.getItemStack());
-        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(MekanismGases.DIRTY_IRON_SLURRY, 1),
-              MekanismGases.CLEAN_IRON_SLURRY.getGasStack(1));
-        RecipeHandler.addChemicalDissolutionChamberRecipe(ironOreIngredient, GasStackIngredient.from(MekanismTags.SULFURIC_ACID, 1),
-              MekanismGases.DIRTY_IRON_SLURRY, 1000);
         RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_IRON, 8), ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               new ItemStack(Blocks.IRON_ORE));
         //Gold
-        RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(MekanismTags.SHARDS_GOLD), MekanismItem.GOLD_CLUMP.getItemStack());
-        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(MekanismTags.CRYSTALS_GOLD),
-              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), MekanismItem.GOLD_SHARD.getItemStack());
-        ItemStackIngredient goldOreIngredient = ItemStackIngredient.from(Tags.Items.ORES_GOLD);
-        RecipeHandler.addPurificationChamberRecipe(goldOreIngredient, MekanismItem.GOLD_CLUMP.getItemStack(3));
-        RecipeHandler.addChemicalInjectionChamberRecipe(goldOreIngredient, GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              MekanismItem.GOLD_SHARD.getItemStack(4));
-        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismGases.CLEAN_GOLD_SLURRY, 200), MekanismItem.GOLD_CRYSTAL.getItemStack());
-        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(MekanismGases.DIRTY_GOLD_SLURRY, 1),
-              MekanismGases.CLEAN_GOLD_SLURRY.getGasStack(1));
-        RecipeHandler.addChemicalDissolutionChamberRecipe(goldOreIngredient, GasStackIngredient.from(MekanismTags.SULFURIC_ACID, 1),
-              MekanismGases.DIRTY_GOLD_SLURRY, 1000);
         RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_GOLD, 8), ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               new ItemStack(Blocks.GOLD_ORE));
         //Osmium
-        RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(MekanismTags.SHARDS_OSMIUM), MekanismItem.OSMIUM_CLUMP.getItemStack());
-        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(MekanismTags.CRYSTALS_OSMIUM),
-              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), MekanismItem.OSMIUM_SHARD.getItemStack());
-        ItemStackIngredient osmiumOreIngredient = ItemStackIngredient.from(MekanismTags.ORES_OSMIUM);
-        RecipeHandler.addPurificationChamberRecipe(osmiumOreIngredient, MekanismItem.OSMIUM_CLUMP.getItemStack(3));
-        RecipeHandler.addChemicalInjectionChamberRecipe(osmiumOreIngredient, GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              MekanismItem.OSMIUM_SHARD.getItemStack(4));
-        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismGases.CLEAN_OSMIUM_SLURRY, 200), MekanismItem.OSMIUM_CRYSTAL.getItemStack());
-        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(MekanismGases.DIRTY_OSMIUM_SLURRY, 1),
-              MekanismGases.CLEAN_OSMIUM_SLURRY.getGasStack(1));
-        RecipeHandler.addChemicalDissolutionChamberRecipe(osmiumOreIngredient, GasStackIngredient.from(MekanismTags.SULFURIC_ACID, 1),
-              MekanismGases.DIRTY_OSMIUM_SLURRY, 1000);
         RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_OSMIUM, 8), ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               MekanismBlock.OSMIUM_ORE.getItemStack());
         //Copper
-        RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(MekanismTags.SHARDS_COPPER), MekanismItem.COPPER_CLUMP.getItemStack());
-        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(MekanismTags.CRYSTALS_COPPER),
-              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), MekanismItem.COPPER_SHARD.getItemStack());
-        ItemStackIngredient copperOreIngredient = ItemStackIngredient.from(MekanismTags.ORES_COPPER);
-        RecipeHandler.addPurificationChamberRecipe(copperOreIngredient, MekanismItem.COPPER_CLUMP.getItemStack(3));
-        RecipeHandler.addChemicalInjectionChamberRecipe(copperOreIngredient, GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              MekanismItem.COPPER_SHARD.getItemStack(4));
-        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismGases.CLEAN_COPPER_SLURRY, 200), MekanismItem.COPPER_CRYSTAL.getItemStack());
-        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(MekanismGases.DIRTY_COPPER_SLURRY, 1),
-              MekanismGases.CLEAN_COPPER_SLURRY.getGasStack(1));
-        RecipeHandler.addChemicalDissolutionChamberRecipe(copperOreIngredient, GasStackIngredient.from(MekanismTags.SULFURIC_ACID, 1),
-              MekanismGases.DIRTY_COPPER_SLURRY, 1000);
         RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_COPPER, 8), ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               MekanismBlock.COPPER_ORE.getItemStack());
         //Tin
-        RecipeHandler.addPurificationChamberRecipe(ItemStackIngredient.from(MekanismTags.SHARDS_TIN), MekanismItem.TIN_CLUMP.getItemStack());
-        RecipeHandler.addChemicalInjectionChamberRecipe(ItemStackIngredient.from(MekanismTags.CRYSTALS_TIN),
-              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), MekanismItem.TIN_SHARD.getItemStack());
-        ItemStackIngredient tinOreIngredient = ItemStackIngredient.from(MekanismTags.ORES_TIN);
-        RecipeHandler.addPurificationChamberRecipe(tinOreIngredient, MekanismItem.TIN_CLUMP.getItemStack(3));
-        RecipeHandler.addChemicalInjectionChamberRecipe(tinOreIngredient, GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              MekanismItem.TIN_SHARD.getItemStack(4));
-        RecipeHandler.addChemicalCrystallizerRecipe(GasStackIngredient.from(MekanismGases.CLEAN_TIN_SLURRY, 200), MekanismItem.TIN_CRYSTAL.getItemStack());
-        RecipeHandler.addChemicalWasherRecipe(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(MekanismGases.DIRTY_TIN_SLURRY, 1),
-              MekanismGases.CLEAN_TIN_SLURRY.getGasStack(1));
-        RecipeHandler.addChemicalDissolutionChamberRecipe(tinOreIngredient, GasStackIngredient.from(MekanismTags.SULFURIC_ACID, 1),
-              MekanismGases.DIRTY_TIN_SLURRY, 1000);
         RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_TIN, 8), ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               MekanismBlock.TIN_ORE.getItemStack());
 
@@ -224,8 +157,6 @@ public final class OreDictManager {
         if (oreDict.size() > 0) {
             RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.SAND), StackUtils.size(oreDict.get(0), 1));
         }*/
-
-        RecipeHandler.addChemicalOxidizerRecipe(ItemStackIngredient.from(MekanismTags.DUSTS_LITHIUM), MekanismGases.LITHIUM, 100);
 
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(MekanismInfuseTypes.DIAMOND, 10), ItemStackIngredient.from(MekanismTags.DUSTS_OBSIDIAN),
               MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack());

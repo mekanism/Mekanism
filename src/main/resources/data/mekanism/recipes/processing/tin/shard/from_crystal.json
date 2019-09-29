@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "output": {
+    "item": "mekanism:shard_tin"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:crystals/tin"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:hydrogen_chloride",
+    "amount": 1
+  }
+}

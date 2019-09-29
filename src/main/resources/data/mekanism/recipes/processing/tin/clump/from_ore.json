@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "output": {
+    "item": "mekanism:clump_tin",
+    "count": 3
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ores/tin"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:oxygen",
+    "amount": 1
+  }
+}

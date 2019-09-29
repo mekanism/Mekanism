@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "output": {
+    "item": "mekanism:clump_osmium",
+    "count": 3
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ores/osmium"
+    }
+  },
+  "gasInput": {
+    "gas": "mekanism:oxygen",
+    "amount": 1
+  }
+}

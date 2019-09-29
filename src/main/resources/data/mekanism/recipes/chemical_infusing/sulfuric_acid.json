@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:chemical_infusing",
+  "output": {
+    "gas": "mekanism:sulfuric_acid",
+    "amount": 1
+  },
+  "leftInput": {
+    "gas": "mekanism:sulfur_trioxide",
+    "amount": 1
+  },
+  "rightInput": {
+    "gas": "mekanism:steam",
+    "amount": 1
+  }
+}
