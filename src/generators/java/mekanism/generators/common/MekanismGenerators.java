@@ -1,16 +1,12 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.recipes.inputs.InfusionIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismInfuseTypes;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
@@ -49,9 +45,6 @@ public class MekanismGenerators implements IModule {
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
         FuelHandler.addGas(MekanismTags.ETHENE, MekanismConfig.general.ETHENE_BURN_TIME.get(),
               MekanismConfig.general.FROM_H2.get() + MekanismGeneratorsConfig.generators.bioGeneration.get() * 2 * MekanismConfig.general.ETHENE_BURN_TIME.get());
-
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(MekanismInfuseTypes.CARBON, 10),
-              ItemStackIngredient.from(MekanismTags.DUSTS_GOLD, 4), GeneratorsItem.HOHLRAUM.getItemStack());
 
         MinecraftForge.EVENT_BUS.register(this);
 

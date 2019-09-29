@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "output": {
+    "item": "mekanismgenerators:hohlraum"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:dusts/gold"
+    },
+    "amount": 4
+  },
+  "infusionInput": {
+    "infuse_type": "mekanism:carbon",
+    "amount": 10
+  }
+}

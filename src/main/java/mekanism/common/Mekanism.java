@@ -12,9 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
@@ -257,42 +255,24 @@ public class Mekanism {
         }
 
         if (MekanismBlock.METALLURGIC_INFUSER.isEnabled()) {
-            InfuseType carbon = MekanismInfuseTypes.CARBON.getInfuseType();
-            InfuseType bio = MekanismInfuseTypes.BIO.getInfuseType();
-            InfuseType redstone = MekanismInfuseTypes.REDSTONE.getInfuseType();
-            InfuseType fungi = MekanismInfuseTypes.FUNGI.getInfuseType();
-            InfuseType diamond = MekanismInfuseTypes.DIAMOND.getInfuseType();
-            InfuseType obsidian = MekanismInfuseTypes.REFINED_OBSIDIAN.getInfuseType();
-
             //TODO: Make this be a proper recipe system
             //Infuse objects
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismItem.BIO_FUEL), new InfusionStack(bio, 5));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.COAL), new InfusionStack(carbon, 10));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.COAL), new InfusionStack(MekanismInfuseTypes.CARBON, 10));
             //TODO: Figure out why charcoal is twice as good as coal, if we make it be the same we can instead use the coals tag
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.CHARCOAL), new InfusionStack(carbon, 20));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.COAL_BLOCK), new InfusionStack(carbon, 90));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismBlock.CHARCOAL_BLOCK), new InfusionStack(carbon, 180));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_CARBON), new InfusionStack(carbon, 80));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE), new InfusionStack(redstone, 10));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.REDSTONE_BLOCK), new InfusionStack(redstone, 90));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_REDSTONE), new InfusionStack(redstone, 80));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.MUSHROOMS), new InfusionStack(fungi, 10));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_DIAMOND), new InfusionStack(diamond, 80));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_REFINED_OBSIDIAN), new InfusionStack(obsidian, 10));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_OBSIDIAN), new InfusionStack(obsidian, 80));
-
-            //Metallurgic Infuser Recipes
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(carbon, 10), ItemStackIngredient.from(Tags.Items.INGOTS_IRON), MekanismItem.ENRICHED_IRON.getItemStack());
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(carbon, 10), ItemStackIngredient.from(MekanismItem.ENRICHED_IRON), MekanismItem.STEEL_DUST.getItemStack());
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(redstone, 10), ItemStackIngredient.from(Tags.Items.INGOTS_IRON), MekanismItem.INFUSED_ALLOY.getItemStack());
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(fungi, 10), ItemStackIngredient.from(Blocks.DIRT), new ItemStack(Blocks.MYCELIUM));
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(bio, 10), ItemStackIngredient.from(Blocks.COBBLESTONE), new ItemStack(Blocks.MOSSY_COBBLESTONE));
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(bio, 10), ItemStackIngredient.from(Blocks.STONE_BRICKS), new ItemStack(Blocks.MOSSY_STONE_BRICKS));
-            //TODO: Should this be any sand?
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(bio, 10), ItemStackIngredient.from(Blocks.SAND), new ItemStack(Blocks.DIRT));
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(bio, 10), ItemStackIngredient.from(Blocks.DIRT), new ItemStack(Blocks.PODZOL));
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(diamond, 10), ItemStackIngredient.from(MekanismTags.ALLOYS_INFUSED), MekanismItem.REINFORCED_ALLOY.getItemStack());
-            RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(obsidian, 10), ItemStackIngredient.from(MekanismTags.ALLOYS_REINFORCED), MekanismItem.ATOMIC_ALLOY.getItemStack());
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.CHARCOAL), new InfusionStack(MekanismInfuseTypes.CARBON, 20));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.COAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 90));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismBlock.CHARCOAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 180));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_CARBON), new InfusionStack(MekanismInfuseTypes.CARBON, 80));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 10));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.REDSTONE_BLOCK), new InfusionStack(MekanismInfuseTypes.REDSTONE, 90));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 80));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 10));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 80));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_REFINED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 10));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 80));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismItem.BIO_FUEL), new InfusionStack(MekanismInfuseTypes.BIO, 5));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.MUSHROOMS), new InfusionStack(MekanismInfuseTypes.FUNGI, 10));
+            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_TIN), new InfusionStack(MekanismInfuseTypes.TIN, 10));
         }
 
         //Fuel Gases

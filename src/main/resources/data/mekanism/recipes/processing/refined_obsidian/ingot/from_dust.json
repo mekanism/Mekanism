@@ -1,11 +1,11 @@
 {
   "type": "mekanism:compressing",
   "output": {
-    "item": "mekanism:dust_refined_obsidian"
+    "item": "mekanism:ingot_refined_obsidian"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:dusts/obsidian"
+      "tag": "forge:dusts/refined_obsidian"
     }
   },
   "gasInput": {

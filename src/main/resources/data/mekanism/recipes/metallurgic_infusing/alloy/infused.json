@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "output": {
+    "item": "mekanism:alloy_infused"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "infusionInput": {
+    "infuse_type": "mekanism:redstone",
+    "amount": 10
+  }
+}

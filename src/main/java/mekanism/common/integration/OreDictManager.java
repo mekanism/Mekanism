@@ -2,15 +2,10 @@ package mekanism.common.integration;
 
 import java.util.Arrays;
 import java.util.List;
-import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfusionStack;
-import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.MekanismInfuseTypes;
 import mekanism.common.MekanismItem;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -80,24 +75,11 @@ public final class OreDictManager {
         oreDict = OreDictionary.getOres("gemApatite", false);
         if (oreDict.size() > 0) {
             RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("oreApatite"), StackUtils.size(oreDict.get(0), 4));
-        }*/
+        }
 
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(MekanismInfuseTypes.TIN, 10), ItemStackIngredient.from(MekanismTags.INGOTS_COPPER, 3),
-              MekanismItem.BRONZE_INGOT.getItemStack(4));
+        RecipeHandler.addCrusherRecipe(ItemStackIngredient.from("ingotRedstone"), new ItemStack(Items.REDSTONE));
 
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(MekanismInfuseTypes.REDSTONE, 10), ItemStackIngredient.from(MekanismTags.INGOTS_OSMIUM),
-              MekanismItem.BASIC_CONTROL_CIRCUIT.getItemStack());
-
-        //TODO: Re-enable
-        //RecipeHandler.addCrusherRecipe(ItemStackIngredient.from("ingotRedstone"), new ItemStack(Items.REDSTONE));
-
-        //TODO: IC2
-        /*if (Mekanism.hooks.IC2Loaded) {
-            addIC2BronzeRecipe();
-        }*/
-
-        //TODO: Re-enable
-        /*oreDict = OreDictionary.getOres("dustSaltpeter", false);
+        oreDict = OreDictionary.getOres("dustSaltpeter", false);
         if (oreDict.size() > 0) {
             RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.GUNPOWDER), StackUtils.size(oreDict.get(0), 1));
             RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("dustSaltpeter"), new ItemStack(Items.GUNPOWDER));
@@ -108,12 +90,10 @@ public final class OreDictManager {
             RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(Tags.Items.SAND), StackUtils.size(oreDict.get(0), 1));
         }*/
 
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(MekanismInfuseTypes.DIAMOND, 10), ItemStackIngredient.from(MekanismTags.DUSTS_OBSIDIAN),
-              MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack());
-
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 10));
-
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_TIN), new InfusionStack(MekanismInfuseTypes.TIN, 10));
+        //TODO: IC2
+        /*if (Mekanism.hooks.IC2Loaded) {
+            addIC2BronzeRecipe();
+        }*/
     }
 
     //TODO: IC2

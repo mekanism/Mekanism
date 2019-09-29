@@ -23,7 +23,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackToGasRecipe> {
 
     public ItemStackToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/chemical_oxidizer.png", MekanismBlock.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
+        super(helper, "mekanism:gui/blank.png", MekanismBlock.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mekanism.common.recipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 
@@ -12,19 +11,6 @@ import net.minecraft.item.ItemStack;
  */
 @ParametersAreNonnullByDefault
 public final class RecipeHandler {
-
-    /**
-     * Add a Metallurgic Infuser recipe.
-     *
-     * @param infusionIngredient - which Infuse to use
-     * @param input              - input ItemStack
-     * @param output             - output ItemStack
-     */
-    @Deprecated
-    public static void addMetallurgicInfuserRecipe(InfusionIngredient infusionIngredient, ItemStackIngredient input, ItemStack output) {
-        //TODO: API way of adding recipes
-        //Recipe.METALLURGIC_INFUSER.put(new MetallurgicInfuserRecipe(input, infusionIngredient, output));
-    }
 
     /**
      * Add a Precision Sawmill recipe.
