@@ -2,15 +2,6 @@ package mekanism.common.integration;
 
 import java.util.Arrays;
 import java.util.List;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.MekanismItem;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.recipe.RecipeHandler;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ItemTags;
-import net.minecraftforge.common.Tags;
 
 public final class OreDictManager {
 
@@ -18,18 +9,10 @@ public final class OreDictManager {
     private static final List<String> minorCompatGem = Arrays.asList("Amber", "Malachite", "Peridot", "Ruby", "Sapphire", "Tanzanite", "Topaz");
 
     public static void init() {
-        addLogRecipes();
-
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.PLANKS), new ItemStack(Items.STICK, 6),
-              MekanismItem.SAWDUST.getItemStack(), MekanismConfig.general.sawdustChancePlank.get());
-
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.WOODEN_SLABS), new ItemStack(Items.STICK, 3), MekanismItem.SAWDUST.getItemStack(),
-              MekanismConfig.general.sawdustChancePlank.get() / 2);
-
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(Tags.Items.RODS_WOODEN), MekanismItem.SAWDUST.getItemStack());
-
         //TODO: Re-enable
-        /*RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("oreNetherSteel"), MekanismItem.STEEL_DUST.getItemStack(4));
+        /*addLogRecipes();
+
+        RecipeHandler.addEnrichmentChamberRecipe(ItemStackIngredient.from("oreNetherSteel"), MekanismItem.STEEL_DUST.getItemStack(4));
 
         oreDict = OreDictionary.getOres("itemRubber", false);
         if (oreDict.size() > 0) {
@@ -129,18 +112,6 @@ public final class OreDictManager {
         for (ItemStack logEntry : OreDictionary.getOres("logWood", false)) {
             addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1), dummyWorld);
         }*/
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.OAK_LOGS), new ItemStack(Blocks.OAK_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
-              MekanismConfig.general.sawdustChanceLog.get());
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.SPRUCE_LOGS), new ItemStack(Blocks.SPRUCE_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
-              MekanismConfig.general.sawdustChanceLog.get());
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.BIRCH_LOGS), new ItemStack(Blocks.BIRCH_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
-              MekanismConfig.general.sawdustChanceLog.get());
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.JUNGLE_LOGS), new ItemStack(Blocks.JUNGLE_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
-              MekanismConfig.general.sawdustChanceLog.get());
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.ACACIA_LOGS), new ItemStack(Blocks.ACACIA_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
-              MekanismConfig.general.sawdustChanceLog.get());
-        RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(ItemTags.DARK_OAK_LOGS), new ItemStack(Blocks.DARK_OAK_PLANKS, 6), MekanismItem.SAWDUST.getItemStack(),
-              MekanismConfig.general.sawdustChanceLog.get());
     }
 
     //TODO: Re-enable

@@ -93,7 +93,6 @@ public class GeneralConfig implements IMekanismConfig {
     public final BooleanValue destroyDisabledBlocks;
     public final BooleanValue voidInvalidGases;
     public final IntValue digitalMinerMaxRadius;
-    public final DoubleValue sawdustChancePlank;
     public final DoubleValue sawdustChanceLog;
     public EnumValue<EnergyType> energyUnit;
     public EnumValue<TempType> tempUnit;
@@ -206,8 +205,6 @@ public class GeneralConfig implements IMekanismConfig {
         digitalMinerMaxRadius = builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability "
                                                 + "and/or performance. We strongly recommend you leave it at the default value.)")
               .defineInRange("digitalMinerMaxRadius", 32, 1, Integer.MAX_VALUE);
-        sawdustChancePlank = builder.comment("Chance of producing sawdust per operation in the precision sawmill when turning planks into sticks.").worldRestart()
-              .defineInRange("sawdustChancePlank", 0.25D, 0, 1);
         sawdustChanceLog = builder.comment("Chance of producing sawdust per operation in the precision sawmill when turning logs into planks.").worldRestart()
               .defineInRange("sawdustChanceLog", 1D, 0, 1);
         energyUnit = builder.comment("Displayed energy type in Mekanism GUIs.").defineEnum("energyType", EnergyType.FE);

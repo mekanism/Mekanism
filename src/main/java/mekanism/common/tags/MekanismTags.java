@@ -14,7 +14,7 @@ public class MekanismTags {
 
     //TODO: Add a tag for glowstone blocks and clay blocks??
     //TODO: Evaluate the bio fuel recipes, and maybe add sweet berry bush/coral to it (and maybe bamboo sapling). Also add missing flowers that don't get
-    // caught by the small flowers tag\
+    // caught by the small flowers tag
 
     //TODO: Make electrolytic separator recipes actually scale with the config value energy in case From H2 changes
 

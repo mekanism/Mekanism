@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "mainOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:rods/wooden"
+    }
+  }
+}

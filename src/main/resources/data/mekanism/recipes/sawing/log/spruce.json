@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "mainOutput": {
+    "item": "minecraft:spruce_planks",
+    "count": 6
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.25,
+  "input": {
+    "ingredient": {
+      "tag": "minecraft:spruce_logs"
+    }
+  }
+}

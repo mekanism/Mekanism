@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "mainOutput": {
+    "item": "minecraft:oak_planks",
+    "count": 4
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:crafting_table"
+    }
+  }
+}
