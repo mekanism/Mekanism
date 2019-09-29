@@ -2,7 +2,6 @@ package mekanism.common.integration;
 
 import java.util.stream.Stream;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
 
 public class IMCHandler {
@@ -12,7 +11,8 @@ public class IMCHandler {
         messages.forEach(msg -> {
             //Make sure we are the correct receiver
             if (msg.getModId().equals(Mekanism.MODID)) {
-                boolean found = false;
+                //TODO: Fix IMC integration
+                /*boolean found = false;
                 boolean delete = false;
                 String method = msg.getMethod();
 
@@ -31,7 +31,7 @@ public class IMCHandler {
                 }
                 if (!found) {
                     Mekanism.logger.error(msg.getSenderModId() + " sent unknown IMC message with method '" + msg.getMethod() + "'.");
-                }
+                }*/
             }
         });
     }

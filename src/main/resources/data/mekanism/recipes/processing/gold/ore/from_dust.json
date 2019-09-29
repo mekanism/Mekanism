@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "output": {
+    "item": "minecraft:gold_ore"
+  },
+  "mainInput": {
+    "ingredient": {
+      "tag": "forge:dusts/gold"
+    },
+    "amount": 8
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone"
+    }
+  }
+}

@@ -29,7 +29,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -110,8 +110,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    public RecipeWrapper<GasToGasRecipe> getRecipeWrapper() {
-        return RecipeWrapper.ACTIVATING;
+    public MekanismRecipeType<GasToGasRecipe> getRecipeType() {
+        return MekanismRecipeType.ACTIVATING;
     }
 
     @Nullable

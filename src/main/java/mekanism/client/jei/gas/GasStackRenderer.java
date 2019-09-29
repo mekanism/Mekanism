@@ -1,6 +1,7 @@
 package mekanism.client.jei.gas;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -28,6 +29,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
+    private static final NumberFormat nf = NumberFormat.getIntegerInstance();
     private static final int TEX_WIDTH = 16;
     private static final int TEX_HEIGHT = 16;
     private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of gas are still visible
@@ -157,9 +159,10 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         tooltip.add(TextComponentUtil.build(gasType).getFormattedText());
         ITextComponent component = null;
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount.with.capacity", gasStack.getAmount(), capacityMb));
+            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.jei.amount.with.capacity", nf.format(gasStack.getAmount()),
+                  nf.format(capacityMb)));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("jei.tooltip.liquid.amount", gasStack.getAmount()));
+            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.jei.amount", nf.format(gasStack.getAmount())));
         }
         if (component != null) {
             tooltip.add(component.getFormattedText());

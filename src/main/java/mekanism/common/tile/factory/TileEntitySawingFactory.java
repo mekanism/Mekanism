@@ -9,7 +9,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.SawmillCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -80,8 +80,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
     @Nonnull
     @Override
-    public RecipeWrapper<SawmillRecipe> getRecipeWrapper() {
-        return RecipeWrapper.SAWING;
+    public MekanismRecipeType<SawmillRecipe> getRecipeType() {
+        return MekanismRecipeType.SAWING;
     }
 
     @Nullable

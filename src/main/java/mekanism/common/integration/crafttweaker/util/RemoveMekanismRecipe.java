@@ -2,14 +2,14 @@ package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.MekanismRecipeType;
 
 public class RemoveMekanismRecipe<RECIPE extends MekanismRecipe> extends RecipeMapModification<RECIPE> {
 
     private final IngredientWrapper input;
     private final IngredientWrapper output;
 
-    public RemoveMekanismRecipe(String name, Recipe<RECIPE> recipeType, IngredientWrapper output, IngredientWrapper input) {
+    public RemoveMekanismRecipe(String name, MekanismRecipeType<RECIPE> recipeType, IngredientWrapper output, IngredientWrapper input) {
         super(name, false, recipeType);
         this.input = input;
         this.output = output;

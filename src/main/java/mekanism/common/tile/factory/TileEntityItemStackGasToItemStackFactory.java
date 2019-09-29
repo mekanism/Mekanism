@@ -17,7 +17,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.GasConversionHandler;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -126,16 +126,16 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
 
     @Nonnull
     @Override
-    public RecipeWrapper<ItemStackGasToItemStackRecipe> getRecipeWrapper() {
+    public MekanismRecipeType<ItemStackGasToItemStackRecipe> getRecipeType() {
         switch (type) {
             case INJECTING:
-                return RecipeWrapper.INJECTING;
+                return MekanismRecipeType.INJECTING;
             case PURIFYING:
-                return RecipeWrapper.PURIFYING;
+                return MekanismRecipeType.PURIFYING;
             case COMPRESSING:
             default:
                 //TODO: Make it so that it throws an error if it is not one of the three types
-                return RecipeWrapper.COMPRESSING;
+                return MekanismRecipeType.COMPRESSING;
         }
     }
 

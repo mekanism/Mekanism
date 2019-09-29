@@ -904,6 +904,10 @@
   "tooltip.mekanism.control.low.desc": "Active without signal",
   "tooltip.mekanism.control.pulse.desc": "Only active upon first receiving signal",
 
+  "_comment": "JEI Gas hover tooltips",
+  "tooltip.mekanism.jei.amount.with.capacity": "%s / %s mB",
+  "tooltip.mekanism.jei.amount": "%s mB",
+
   "_comment": "Container edit modes",
   "mekanism.fluidedit.both": "Both",
   "mekanism.fluidedit.fill": "Fill",

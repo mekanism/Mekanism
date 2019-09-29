@@ -12,7 +12,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -96,8 +96,8 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
 
     @Nonnull
     @Override
-    public RecipeWrapper<MetallurgicInfuserRecipe> getRecipeWrapper() {
-        return RecipeWrapper.METALLURGIC_INFUSING;
+    public MekanismRecipeType<MetallurgicInfuserRecipe> getRecipeType() {
+        return MekanismRecipeType.METALLURGIC_INFUSING;
     }
 
     @Nullable

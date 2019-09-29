@@ -14,8 +14,6 @@ import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
@@ -56,8 +54,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
@@ -193,12 +189,6 @@ public class Mekanism {
      * Adds all in-game crafting, smelting and machine recipes.
      */
     public static void addRecipes() {
-        //Combiner recipes
-        if (MekanismBlock.COMBINER.isEnabled()) {
-            RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(Items.FLINT), ItemStackIngredient.from(Tags.Items.COBBLESTONE), new ItemStack(Blocks.GRAVEL));
-            RecipeHandler.addCombinerRecipe(ItemStackIngredient.from(Items.COAL, 3), ItemStackIngredient.from(Tags.Items.COBBLESTONE), new ItemStack(Blocks.COAL_ORE));
-        }
-
         //Precision Sawmill Recipes
         if (MekanismBlock.PRECISION_SAWMILL.isEnabled()) {
             RecipeHandler.addPrecisionSawmillRecipe(ItemStackIngredient.from(Blocks.LADDER, 3), new ItemStack(Items.STICK, 7));
@@ -303,18 +293,6 @@ public class Mekanism {
             RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(bio, 10), ItemStackIngredient.from(Blocks.DIRT), new ItemStack(Blocks.PODZOL));
             RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(diamond, 10), ItemStackIngredient.from(MekanismTags.ALLOYS_INFUSED), MekanismItem.REINFORCED_ALLOY.getItemStack());
             RecipeHandler.addMetallurgicInfuserRecipe(InfusionIngredient.from(obsidian, 10), ItemStackIngredient.from(MekanismTags.ALLOYS_REINFORCED), MekanismItem.ATOMIC_ALLOY.getItemStack());
-        }
-
-        //Pressurized Reaction Chamber Recipes
-        if (MekanismBlock.PRESSURIZED_REACTION_CHAMBER.isEnabled()) {
-            RecipeHandler.addPRCRecipe(ItemStackIngredient.from(MekanismItem.SUBSTRATE, 2), FluidStackIngredient.from(FluidTags.WATER, 10),
-                  GasStackIngredient.from(MekanismTags.HYDROGEN, 100), MekanismItem.SUBSTRATE.getItemStack(), MekanismGases.ETHENE.getGasStack(100), 0, 100);
-            RecipeHandler.addPRCRecipe(ItemStackIngredient.from(MekanismItem.SUBSTRATE), FluidStackIngredient.from(MekanismGases.ETHENE.getFluid(), 50),
-                  GasStackIngredient.from(MekanismTags.OXYGEN, 10), MekanismItem.HDPE_PELLET.getItemStack(), MekanismGases.OXYGEN.getGasStack(5), 1000, 60);
-            RecipeHandler.addPRCRecipe(ItemStackIngredient.from(MekanismItem.SUBSTRATE), FluidStackIngredient.from(FluidTags.WATER, 200),
-                  GasStackIngredient.from(MekanismTags.ETHENE, 100), MekanismItem.SUBSTRATE.getItemStack(8), MekanismGases.OXYGEN.getGasStack(10), 200, 400);
-            RecipeHandler.addPRCRecipe(ItemStackIngredient.from(ItemTags.COALS), FluidStackIngredient.from(FluidTags.WATER, 100),
-                  GasStackIngredient.from(MekanismTags.OXYGEN, 100), MekanismItem.SULFUR_DUST.getItemStack(), MekanismGases.HYDROGEN.getGasStack(100), 0, 100);
         }
 
         //Fuel Gases

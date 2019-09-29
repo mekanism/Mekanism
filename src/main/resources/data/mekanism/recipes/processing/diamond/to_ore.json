@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "output": {
+    "item": "minecraft:diamond_ore"
+  },
+  "mainInput": {
+    "ingredient": {
+      "tag": "forge:dusts/diamond"
+    },
+    "amount": 3
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone"
+    }
+  }
+}

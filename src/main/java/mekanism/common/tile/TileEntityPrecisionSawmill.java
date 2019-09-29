@@ -12,7 +12,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -83,8 +83,8 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
 
     @Override
     @Nonnull
-    public RecipeWrapper<SawmillRecipe> getRecipeWrapper() {
-        return RecipeWrapper.SAWING;
+    public MekanismRecipeType<SawmillRecipe> getRecipeType() {
+        return MekanismRecipeType.SAWING;
     }
 
     @Nullable

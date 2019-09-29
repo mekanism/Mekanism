@@ -20,7 +20,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -92,8 +92,8 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Nonnull
     @Override
-    public RecipeWrapper<ItemStackToGasRecipe> getRecipeWrapper() {
-        return RecipeWrapper.OXIDIZING;
+    public MekanismRecipeType<ItemStackToGasRecipe> getRecipeType() {
+        return MekanismRecipeType.OXIDIZING;
     }
 
     @Nullable

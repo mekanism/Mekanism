@@ -23,7 +23,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -77,8 +77,8 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Nonnull
     @Override
-    public RecipeWrapper<ChemicalInfuserRecipe> getRecipeWrapper() {
-        return RecipeWrapper.CHEMICAL_INFUSING;
+    public MekanismRecipeType<ChemicalInfuserRecipe> getRecipeType() {
+        return MekanismRecipeType.CHEMICAL_INFUSING;
     }
 
     @Nullable

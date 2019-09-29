@@ -24,7 +24,7 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
@@ -85,8 +85,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Nonnull
     @Override
-    public RecipeWrapper<GasToItemStackRecipe> getRecipeWrapper() {
-        return RecipeWrapper.CRYSTALLIZING;
+    public MekanismRecipeType<GasToItemStackRecipe> getRecipeType() {
+        return MekanismRecipeType.CRYSTALLIZING;
     }
 
     @Nullable

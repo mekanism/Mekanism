@@ -107,7 +107,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * This machine's recipe type.
      */
+    //TODO: Remove this and factor recipe specific things to their proper subclasses. Also move any factory type information to FactoryType
     @Nonnull
+    @Deprecated
     private RecipeType recipeType;
 
     @Nonnull
@@ -322,11 +324,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Nonnull
     public FactoryType getFactoryType() {
         return type;
-    }
-
-    @Nonnull
-    public RecipeType getRecipeType() {
-        return recipeType;
     }
 
     public void setRecipeType(@Nonnull RecipeType type) {

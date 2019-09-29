@@ -12,7 +12,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -91,8 +91,8 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
     @Nonnull
     @Override
-    public RecipeWrapper<CombinerRecipe> getRecipeWrapper() {
-        return RecipeWrapper.COMBINING;
+    public MekanismRecipeType<CombinerRecipe> getRecipeType() {
+        return MekanismRecipeType.COMBINING;
     }
 
     @Nullable

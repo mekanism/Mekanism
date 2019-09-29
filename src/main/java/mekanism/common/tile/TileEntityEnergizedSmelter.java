@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine {
@@ -14,7 +14,7 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine {
 
     @Nonnull
     @Override
-    public RecipeWrapper<ItemStackToItemStackRecipe> getRecipeWrapper() {
-        return RecipeWrapper.SMELTING;
+    public MekanismRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
+        return MekanismRecipeType.SMELTING;
     }
 }

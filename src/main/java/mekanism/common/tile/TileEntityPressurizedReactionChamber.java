@@ -27,7 +27,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemUpgrade;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
@@ -111,8 +111,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Nonnull
     @Override
-    public RecipeWrapper<PressurizedReactionRecipe> getRecipeWrapper() {
-        return RecipeWrapper.REACTION;
+    public MekanismRecipeType<PressurizedReactionRecipe> getRecipeType() {
+        return MekanismRecipeType.REACTION;
     }
 
     @Nullable

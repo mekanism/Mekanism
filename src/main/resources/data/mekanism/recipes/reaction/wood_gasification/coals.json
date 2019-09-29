@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:reaction",
+  "outputItem": {
+    "item": "mekanism:dust_sulfur"
+  },
+  "outputGas": {
+    "gas": "mekanism:hydrogen",
+    "amount": 100
+  },
+  "duration": 100,
+  "inputSolid": {
+    "ingredient": {
+      "tag": "minecraft:coals"
+    }
+  },
+  "inputFluid": {
+    "tag": "minecraft:water",
+    "amount": 100
+  },
+  "inputGas": {
+    "gas": "mekanism:oxygen",
+    "amount": 100
+  }
+}

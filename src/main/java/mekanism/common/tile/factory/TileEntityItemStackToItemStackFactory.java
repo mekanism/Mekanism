@@ -8,7 +8,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -66,16 +66,16 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityFactory<Ite
 
     @Nonnull
     @Override
-    public RecipeWrapper<ItemStackToItemStackRecipe> getRecipeWrapper() {
+    public MekanismRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
         switch (type) {
             case ENRICHING:
-                return RecipeWrapper.ENRICHING;
+                return MekanismRecipeType.ENRICHING;
             case CRUSHING:
-                return RecipeWrapper.CRUSHING;
+                return MekanismRecipeType.CRUSHING;
             case SMELTING:
             default:
                 //TODO: Make it so that it throws an error if it is not one of the three types
-                return RecipeWrapper.SMELTING;
+                return MekanismRecipeType.SMELTING;
         }
     }
 

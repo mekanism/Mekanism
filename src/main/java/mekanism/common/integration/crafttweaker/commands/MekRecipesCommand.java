@@ -25,7 +25,7 @@ import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.text.EnumColor;
 import mekanism.common.integration.crafttweaker.helpers.RecipeInfoHelper;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,7 @@ public class MekRecipesCommand extends CommandImpl {
         //TODO: Don't use null for getting the output values
         switch (subCommand) {
             case "crystallizer":
-                for (GasToItemStackRecipe recipe : RecipeWrapper.CRYSTALLIZING.getRecipes(world)) {
+                for (GasToItemStackRecipe recipe : MekanismRecipeType.CRYSTALLIZING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.chemical.crystallizer.addRecipe(%s, %s)",
                           RecipeInfoHelper.getGasName(recipe.getInput().getRepresentations()),
                           RecipeInfoHelper.getItemName(recipe.getOutput(null))
@@ -65,7 +65,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "dissolution":
-                for (ItemStackGasToGasRecipe recipe : RecipeWrapper.DISSOLUTION.getRecipes(world)) {
+                for (ItemStackGasToGasRecipe recipe : MekanismRecipeType.DISSOLUTION.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.chemical.dissolution.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getItemInput()),
                           RecipeInfoHelper.getGasName(recipe.getGasInput().getRepresentations()),
@@ -74,7 +74,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "chemicalInfuser":
-                for (ChemicalInfuserRecipe recipe : RecipeWrapper.CHEMICAL_INFUSING.getRecipes(world)) {
+                for (ChemicalInfuserRecipe recipe : MekanismRecipeType.CHEMICAL_INFUSING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.chemical.infuser.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getGasName(recipe.getLeftInput().getRepresentations()),
                           RecipeInfoHelper.getGasName(recipe.getRightInput().getRepresentations()),
@@ -83,7 +83,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "injection":
-                for (ItemStackGasToItemStackRecipe recipe : RecipeWrapper.INJECTING.getRecipes(world)) {
+                for (ItemStackGasToItemStackRecipe recipe : MekanismRecipeType.INJECTING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.chemical.injection.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getItemInput()),
                           RecipeInfoHelper.getGasName(recipe.getGasInput().getRepresentations()),
@@ -92,7 +92,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "oxidizer":
-                for (ItemStackToGasRecipe recipe : RecipeWrapper.OXIDIZING.getRecipes(world)) {
+                for (ItemStackToGasRecipe recipe : MekanismRecipeType.OXIDIZING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.chemical.oxidizer.addRecipe(%s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInput()),
                           RecipeInfoHelper.getGasName(recipe.getOutput(null))
@@ -100,7 +100,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "washer":
-                for (FluidGasToGasRecipe recipe : RecipeWrapper.WASHING.getRecipes(world)) {
+                for (FluidGasToGasRecipe recipe : MekanismRecipeType.WASHING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.chemical.washer.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getFluidName(recipe.getFluidInput()),
                           RecipeInfoHelper.getGasName(recipe.getGasInput().getRepresentations()),
@@ -109,7 +109,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "combiner":
-                for (CombinerRecipe recipe : RecipeWrapper.COMBINING.getRecipes(world)) {
+                for (CombinerRecipe recipe : MekanismRecipeType.COMBINING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.combiner.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getMainInput()),
                           RecipeInfoHelper.getItemName(recipe.getExtraInput()),
@@ -118,7 +118,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "crusher":
-                for (ItemStackToItemStackRecipe recipe : RecipeWrapper.CRUSHING.getRecipes(world)) {
+                for (ItemStackToItemStackRecipe recipe : MekanismRecipeType.CRUSHING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.crusher.addRecipe(%s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInput()),
                           RecipeInfoHelper.getItemName(recipe.getOutput(null))
@@ -126,7 +126,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "separator":
-                for (ElectrolysisRecipe recipe : RecipeWrapper.SEPARATING.getRecipes(world)) {
+                for (ElectrolysisRecipe recipe : MekanismRecipeType.SEPARATING.getRecipes(world)) {
                     Pair<@NonNull GasStack, @NonNull GasStack> output = recipe.getOutput(null);
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.separator.addRecipe(%s, %s, %s, %s)",
                           RecipeInfoHelper.getFluidName(recipe.getInput()),
@@ -137,7 +137,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "smelter":
-                for (ItemStackToItemStackRecipe  recipe : RecipeWrapper.SMELTING.getRecipes(world)) {
+                for (ItemStackToItemStackRecipe  recipe : MekanismRecipeType.SMELTING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.smelter.addRecipe(%s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInput()),
                           RecipeInfoHelper.getItemName(recipe.getOutput(null))
@@ -145,7 +145,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "enrichment":
-                for (ItemStackToItemStackRecipe  recipe : RecipeWrapper.ENRICHING.getRecipes(world)) {
+                for (ItemStackToItemStackRecipe  recipe : MekanismRecipeType.ENRICHING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.enrichment.addRecipe(%s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInput()),
                           RecipeInfoHelper.getItemName(recipe.getOutput(null))
@@ -153,7 +153,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "metallurgicInfuser":
-                for (MetallurgicInfuserRecipe recipe : RecipeWrapper.METALLURGIC_INFUSING.getRecipes(world)) {
+                for (MetallurgicInfuserRecipe recipe : MekanismRecipeType.METALLURGIC_INFUSING.getRecipes(world)) {
                     //TODO: If we make a bracket handler and allow for compound infusion stuff in CrT recipes
                     // Then we can replace this with a call to that
                     @NonNull List<InfusionStack> infuseObjects = recipe.getInfusionInput().getRepresentations();
@@ -169,7 +169,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "compressor":
-                for (ItemStackGasToItemStackRecipe  recipe : RecipeWrapper.COMPRESSING.getRecipes(world)) {
+                for (ItemStackGasToItemStackRecipe  recipe : MekanismRecipeType.COMPRESSING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.compressor.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getItemInput()),
                           RecipeInfoHelper.getGasName(recipe.getGasInput().getRepresentations()),
@@ -178,7 +178,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "sawmill":
-                for (SawmillRecipe recipe : RecipeWrapper.SAWING.getRecipes(world)) {
+                for (SawmillRecipe recipe : MekanismRecipeType.SAWING.getRecipes(world)) {
                     ChanceOutput output = recipe.getOutput(null);
                     ItemStack secondaryOutput = output.getMaxSecondaryOutput();
                     if (recipe.getSecondaryChance() > 0 && !secondaryOutput.isEmpty()) {
@@ -197,7 +197,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "prc":
-                for (PressurizedReactionRecipe recipe : RecipeWrapper.REACTION.getRecipes(world)) {
+                for (PressurizedReactionRecipe recipe : MekanismRecipeType.REACTION.getRecipes(world)) {
                     @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> output = recipe.getOutput(null, null, null);
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.reaction.addRecipe(%s, %s, %s, %s, %s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInputSolid()),
@@ -211,7 +211,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "purification":
-                for (ItemStackGasToItemStackRecipe recipe : RecipeWrapper.PURIFYING.getRecipes(world)) {
+                for (ItemStackGasToItemStackRecipe recipe : MekanismRecipeType.PURIFYING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.purification.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getItemInput()),
                           RecipeInfoHelper.getGasName(recipe.getGasInput().getRepresentations()),
@@ -220,7 +220,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "solarneutronactivator":
-                for (GasToGasRecipe recipe : RecipeWrapper.ACTIVATING.getRecipes(world)) {
+                for (GasToGasRecipe recipe : MekanismRecipeType.ACTIVATING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.solarneutronactivator.addRecipe(%s, %s)",
                           RecipeInfoHelper.getGasName(recipe.getInput().getRepresentations()),
                           RecipeInfoHelper.getGasName(recipe.getOutput(null))
@@ -228,7 +228,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "thermalevaporation":
-                for (FluidToFluidRecipe recipe : RecipeWrapper.EVAPORATING.getRecipes(world)) {
+                for (FluidToFluidRecipe recipe : MekanismRecipeType.EVAPORATING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.thermalevaporation.addRecipe(%s, %s)",
                           RecipeInfoHelper.getFluidName(recipe.getInput()),
                           RecipeInfoHelper.getFluidName(recipe.getOutput(null))

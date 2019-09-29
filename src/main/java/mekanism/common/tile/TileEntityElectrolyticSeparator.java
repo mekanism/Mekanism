@@ -28,7 +28,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -156,8 +156,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Nonnull
     @Override
-    public RecipeWrapper<ElectrolysisRecipe> getRecipeWrapper() {
-        return RecipeWrapper.SEPARATING;
+    public MekanismRecipeType<ElectrolysisRecipe> getRecipeType() {
+        return MekanismRecipeType.SEPARATING;
     }
 
     @Nullable

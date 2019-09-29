@@ -24,7 +24,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -190,8 +190,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Nonnull
     @Override
-    public RecipeWrapper<MetallurgicInfuserRecipe> getRecipeWrapper() {
-        return RecipeWrapper.METALLURGIC_INFUSING;
+    public MekanismRecipeType<MetallurgicInfuserRecipe> getRecipeType() {
+        return MekanismRecipeType.METALLURGIC_INFUSING;
     }
 
     @Nullable

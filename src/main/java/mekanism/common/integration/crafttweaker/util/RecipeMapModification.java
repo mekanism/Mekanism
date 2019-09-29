@@ -1,6 +1,5 @@
 package mekanism.common.integration.crafttweaker.util;
 
-import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.actions.IAction;
 import java.util.HashSet;
 import java.util.Objects;
@@ -8,16 +7,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.integration.crafttweaker.helpers.RecipeInfoHelper;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.MekanismRecipeType;
 
 public abstract class RecipeMapModification<RECIPE extends MekanismRecipe> implements IAction {
 
     protected final Set<RECIPE> recipes;
-    protected final Recipe<RECIPE> recipeType;
+    protected final MekanismRecipeType<RECIPE> recipeType;
     protected final String name;
     protected boolean add;
 
-    protected RecipeMapModification(String name, boolean add, Recipe<RECIPE> recipeType) {
+    protected RecipeMapModification(String name, boolean add, MekanismRecipeType<RECIPE> recipeType) {
         this.name = name;
         this.recipeType = recipeType;
         this.add = add;
@@ -26,13 +25,13 @@ public abstract class RecipeMapModification<RECIPE extends MekanismRecipe> imple
 
     @Override
     public void apply() {
-        if (!recipes.isEmpty()) {
+        //TODO: Fix
+        /*if (!recipes.isEmpty()) {
             if (add) {
                 for (RECIPE recipe : recipes) {
                     if (!recipeType.put(recipe)) {
                         //TODO: Failed to add warning
-                        /*CraftTweakerAPI.logInfo(String.format("Overwritten %s Recipe for %s", name,
-                              RecipeInfoHelper.getRecipeInfo(new AbstractMap.SimpleEntry<>(entry.getKey(), value))));*/
+                        //CraftTweakerAPI.logInfo(String.format("Overwritten %s Recipe for %s", name, RecipeInfoHelper.getRecipeInfo(new AbstractMap.SimpleEntry<>(entry.getKey(), value))));
                     }
                 }
             } else {
@@ -43,7 +42,7 @@ public abstract class RecipeMapModification<RECIPE extends MekanismRecipe> imple
                     }
                 }
             }
-        }
+        }*/
     }
 
     private String getRecipeInfo() {

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:reaction",
+  "outputGas": {
+    "gas": "mekanism:hydrogen",
+    "amount": 20
+  },
+  "duration": 30,
+  "inputSolid": {
+    "ingredient": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "inputFluid": {
+    "tag": "minecraft:water",
+    "amount": 20
+  },
+  "inputGas": {
+    "gas": "mekanism:oxygen",
+    "amount": 20
+  }
+}

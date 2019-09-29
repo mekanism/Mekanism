@@ -20,7 +20,7 @@ import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -164,8 +164,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Nonnull
     @Override
-    public RecipeWrapper<FluidToFluidRecipe> getRecipeWrapper() {
-        return RecipeWrapper.EVAPORATING;
+    public MekanismRecipeType<FluidToFluidRecipe> getRecipeType() {
+        return MekanismRecipeType.EVAPORATING;
     }
 
     @Nullable

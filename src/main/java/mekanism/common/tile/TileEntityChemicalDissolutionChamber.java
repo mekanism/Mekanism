@@ -22,7 +22,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
@@ -118,8 +118,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Nonnull
     @Override
-    public RecipeWrapper<ItemStackGasToGasRecipe> getRecipeWrapper() {
-        return RecipeWrapper.DISSOLUTION;
+    public MekanismRecipeType<ItemStackGasToGasRecipe> getRecipeType() {
+        return MekanismRecipeType.DISSOLUTION;
     }
 
     @Nullable

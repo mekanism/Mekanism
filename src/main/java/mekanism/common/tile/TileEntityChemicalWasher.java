@@ -27,7 +27,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.RecipeHandler.RecipeWrapper;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -99,8 +99,8 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Nonnull
     @Override
-    public RecipeWrapper<FluidGasToGasRecipe> getRecipeWrapper() {
-        return RecipeWrapper.WASHING;
+    public MekanismRecipeType<FluidGasToGasRecipe> getRecipeType() {
+        return MekanismRecipeType.WASHING;
     }
 
     @Nullable
