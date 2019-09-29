@@ -6,6 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.function.TriPredicate;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
@@ -19,8 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-//TODO: TriPredicate?
-public abstract class PressurizedReactionRecipe extends MekanismRecipe {
+public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NonNull ItemStack, @NonNull FluidStack, @NonNull GasStack> {
 
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
@@ -62,6 +62,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe {
         return duration;
     }
 
+    @Override
     public boolean test(ItemStack solid, FluidStack liquid, GasStack gas) {
         return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputGas.test(gas);
     }

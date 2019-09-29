@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.network.PacketBuffer;
 
+//TODO: Make implementations override equals and hashcode?
 public interface InputIngredient<TYPE> extends Predicate<TYPE> {
 
     /**

@@ -7,6 +7,7 @@ import mekanism.common.util.RecipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 
+//TODO: Make our recipes that care about keeping energy and stuff and mark them as "Special" in the same way repair recipes work for grabbing data
 public class MekanismIngredient extends Ingredient {
 
     private final ItemStack stack;

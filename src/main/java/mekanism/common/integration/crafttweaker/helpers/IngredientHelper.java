@@ -12,10 +12,6 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
-import mekanism.common.recipe.ingredients.IMekanismIngredient;
-import mekanism.common.recipe.ingredients.IngredientMekIngredientWrapper;
-import mekanism.common.recipe.ingredients.ItemStackMekIngredient;
-import mekanism.common.recipe.ingredients.TagMekIngredient;
 import mekanism.common.temporary.ILiquidStack;
 import mekanism.common.temporary.IngredientAny;
 import mekanism.common.temporary.MCLiquidStack;
@@ -75,13 +71,13 @@ public class IngredientHelper {
         return matches(getIngredient(input), toMatch);
     }
 
-    public static IMekanismIngredient<ItemStack> getMekanismIngredient(IIngredient ingredient) {
+    public static ItemStackIngredient getMekanismIngredient(IIngredient ingredient) {
         if (ingredient instanceof MCTag) {
-            return new TagMekIngredient(((MCTag) ingredient).getItemTag());
+            return ItemStackIngredient.from(((MCTag) ingredient).getItemTag());
         } else if (ingredient instanceof IItemStack) {
-            return new ItemStackMekIngredient(getItemStack((IItemStack) ingredient));
+            return ItemStackIngredient.from(getItemStack((IItemStack) ingredient));
         }
-        return new IngredientMekIngredientWrapper(ingredient.asVanillaIngredient());
+        return ItemStackIngredient.from(ingredient.asVanillaIngredient());
     }
 
     public static FluidStack toFluid(ILiquidStack fluid) {

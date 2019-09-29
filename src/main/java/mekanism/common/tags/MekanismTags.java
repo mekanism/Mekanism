@@ -50,6 +50,7 @@ public class MekanismTags {
     public static final Tag<Item> ORES_OSMIUM = makeForgeItemTag("ores/osmium");
     public static final Tag<Item> ORES_TIN = makeForgeItemTag("ores/tin");
 
+    public static final Tag<Item> STORAGE_BLOCKS_OSMIUM = makeForgeItemTag("storage_blocks/osmium");
     public static final Tag<Item> STORAGE_BLOCKS_CHARCOAL = makeForgeItemTag("storage_blocks/charcoal");
 
     //TODO: Data generators

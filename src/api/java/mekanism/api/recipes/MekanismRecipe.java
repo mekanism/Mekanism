@@ -8,6 +8,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+//TODO: Make implementations override equals and hashcode?
 public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {
 
     private final ResourceLocation id;

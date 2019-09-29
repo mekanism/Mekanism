@@ -14,69 +14,52 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.providers.IGasProvider;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismGases;
-import mekanism.common.recipe.ingredients.IMekanismIngredient;
-import mekanism.common.recipe.ingredients.ItemStackMekIngredient;
-import mekanism.common.recipe.ingredients.TagMekIngredient;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
 
 //TODO: Move the conversion handler to API??
 public class GasConversionHandler {
 
     //TODO: Show uses in JEI for fuels that can be turned to gas??
-    private final static Map<@NonNull Gas, List<IMekanismIngredient<ItemStack>>> gasToIngredients = new HashMap<>();
-    private final static Map<IMekanismIngredient<ItemStack>, GasStack> ingredientToGas = new HashMap<>();
+    private final static Map<@NonNull Gas, List<ItemStackIngredient>> gasToIngredients = new HashMap<>();
+    private final static Map<ItemStackIngredient, GasStack> ingredientToGas = new HashMap<>();
 
     public static void addDefaultGasMappings() {
-        ItemTags.Wrapper sulfur = new ItemTags.Wrapper(new ResourceLocation("forge", "dusts/sulfur"));
-        ItemTags.Wrapper salt = new ItemTags.Wrapper(new ResourceLocation("forge", "dusts/salt"));
-        ItemTags.Wrapper osmiumIngot = new ItemTags.Wrapper(new ResourceLocation("forge", "ingots/osmium"));
-        ItemTags.Wrapper osmiumBlock = new ItemTags.Wrapper(new ResourceLocation("forge", "storage_blocks/osmium"));
-        addGasMapping(new ItemStack(Items.FLINT), MekanismGases.OXYGEN, 10);
-        addGasMapping(sulfur, MekanismGases.SULFURIC_ACID, 2);
-        addGasMapping(salt, MekanismGases.HYDROGEN_CHLORIDE, 2);
-        addGasMapping(osmiumIngot, MekanismGases.LIQUID_OSMIUM, 200);
-        addGasMapping(osmiumBlock, MekanismGases.LIQUID_OSMIUM, 1_800);
+        addGasMapping(ItemStackIngredient.from(Items.FLINT), MekanismGases.OXYGEN.getGasStack(10));
+        addGasMapping(ItemStackIngredient.from(MekanismTags.DUSTS_SULFUR), MekanismGases.SULFURIC_ACID.getGasStack(2));
+        addGasMapping(ItemStackIngredient.from(MekanismTags.DUSTS_SALT), MekanismGases.HYDROGEN_CHLORIDE.getGasStack(2));
+        addGasMapping(ItemStackIngredient.from(MekanismTags.INGOTS_OSMIUM), MekanismGases.LIQUID_OSMIUM.getGasStack(200));
+        addGasMapping(ItemStackIngredient.from(MekanismTags.STORAGE_BLOCKS_OSMIUM), MekanismGases.LIQUID_OSMIUM.getGasStack(1_800));
     }
 
-    public static boolean addGasMapping(@Nonnull ItemStack stack, @Nonnull IGasProvider gasProvider, int amount) {
-        return addGasMapping(new ItemStackMekIngredient(stack), new GasStack(gasProvider, amount));
-    }
-
-    public static boolean addGasMapping(@Nonnull Tag<Item> tag, @Nonnull IGasProvider gasProvider, int amount) {
-        return addGasMapping(new TagMekIngredient(tag), new GasStack(gasProvider, amount));
-    }
-
-    public static boolean addGasMapping(@Nonnull IMekanismIngredient<ItemStack> ingredient, @Nonnull GasStack gasStack) {
+    public static boolean addGasMapping(@Nonnull ItemStackIngredient ingredient, @Nonnull GasStack gasStack) {
         if (gasStack.isEmpty()) {
             return false;
         }
-        List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.computeIfAbsent(gasStack.getType(), k -> new ArrayList<>());
+        List<ItemStackIngredient> ingredients = gasToIngredients.computeIfAbsent(gasStack.getType(), k -> new ArrayList<>());
         //TODO: Better checking at some point if the ingredient is already in there? Should partial checking happen as well
         ingredients.add(ingredient);
         return ingredientToGas.put(ingredient, gasStack) == null;
     }
 
-    public static int removeGasMapping(@Nonnull IMekanismIngredient<ItemStack> ingredient, @Nonnull GasStack gasStack) {
+    public static int removeGasMapping(@Nonnull ItemStackIngredient ingredient, @Nonnull GasStack gasStack) {
         if (gasStack.isEmpty()) {
             return 0;
         }
         Gas gas = gasStack.getType();
         if (gasToIngredients.containsKey(gas)) {
-            List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.get(gas);
-            List<IMekanismIngredient<ItemStack>> toRemove = new ArrayList<>();
-            for (IMekanismIngredient<ItemStack> stored : ingredients) {
+            List<ItemStackIngredient> ingredients = gasToIngredients.get(gas);
+            List<ItemStackIngredient> toRemove = new ArrayList<>();
+            for (ItemStackIngredient stored : ingredients) {
                 if (stored.equals(ingredient)) {
                     //TODO: Better comparision??? Doesn't really matter until we have better duplication handling
                     // or have proper handling for if something is registered as an ore dict and as an item
+                    // Note: I am not even sure it currently properly matches, given I don't think we override equals
                     toRemove.add(stored);
                     ingredientToGas.remove(stored);
                 }
@@ -134,8 +117,9 @@ public class GasConversionHandler {
                 }
             }
         }
-        for (Entry<IMekanismIngredient<ItemStack>, GasStack> entry : ingredientToGas.entrySet()) {
-            if (entry.getKey().contains(itemStack)) {
+        for (Entry<ItemStackIngredient, GasStack> entry : ingredientToGas.entrySet()) {
+            //TODO: Double check if this should be this or testType
+            if (entry.getKey().test(itemStack)) {
                 GasStack gasStack = getIfValid.apply(entry.getValue().getType(), entry.getValue().getAmount());
                 if (!gasStack.isEmpty()) {
                     return gasStack;
@@ -153,13 +137,12 @@ public class GasConversionHandler {
         //Always include the gas tank of the type
         stacks.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, type));
         //See if there are any gas to item mappings
-        List<IMekanismIngredient<ItemStack>> ingredients = gasToIngredients.get(type);
+        List<ItemStackIngredient> ingredients = gasToIngredients.get(type);
         if (ingredients == null) {
             return stacks;
         }
-        //TODO: Maybe check for duplicates if things are in oredict and not? For the most part things assume there are no duplication at the moment
-        for (IMekanismIngredient<ItemStack> ingredient : ingredients) {
-            stacks.addAll(ingredient.getMatching());
+        for (ItemStackIngredient ingredient : ingredients) {
+            stacks.addAll(ingredient.getRepresentations());
         }
         return stacks;
     }
