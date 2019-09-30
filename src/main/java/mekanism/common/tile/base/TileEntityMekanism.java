@@ -696,7 +696,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
-        return hasInventory() && !isRemoved() && this.world.isAreaLoaded(this.pos, 0);//prevent Containers from remaining valid after the chunk has unloaded;
+        return (hasInventory() || hasGui()) && !isRemoved() && this.world.isAreaLoaded(this.pos, 0);//prevent Containers from remaining valid after the chunk has unloaded;
     }
 
     @Nonnull

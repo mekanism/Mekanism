@@ -4,9 +4,9 @@ import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum TubeTier implements ITier {
     BASIC(256, 64),
-    ADVANCED(1024, 256),
-    ELITE(4096, 1024),
-    ULTIMATE(16384, 4096);
+    ADVANCED(1_024, 256),
+    ELITE(4_096, 1_024),
+    ULTIMATE(16_384, 4_096);
 
     private final int baseCapacity;
     private final int basePull;

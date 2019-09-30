@@ -128,9 +128,9 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
         return tileEntity.openGui(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
+    @OnlyIn(Dist.CLIENT)
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }

@@ -3,10 +3,10 @@ package mekanism.common.tier;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum BinTier implements ITier {
-    BASIC(4096),
-    ADVANCED(8192),
-    ELITE(32768),
-    ULTIMATE(262144),
+    BASIC(4_096),
+    ADVANCED(8_192),
+    ELITE(32_768),
+    ULTIMATE(262_144),
     CREATIVE(Integer.MAX_VALUE);
 
     private final int baseStorage;

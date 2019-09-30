@@ -3,10 +3,10 @@ package mekanism.common.tier;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum FluidTankTier implements ITier {
-    BASIC(14000, 400),
-    ADVANCED(28000, 800),
-    ELITE(56000, 1600),
-    ULTIMATE(112000, 3200),
+    BASIC(14_000, 400),
+    ADVANCED(28_000, 800),
+    ELITE(56_000, 1_600),
+    ULTIMATE(112_000, 3_200),
     CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
     private final int baseStorage;

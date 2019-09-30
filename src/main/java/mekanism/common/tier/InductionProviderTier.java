@@ -3,10 +3,10 @@ package mekanism.common.tier;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum InductionProviderTier implements ITier {
-    BASIC(64000),
-    ADVANCED(512000),
-    ELITE(4096000),
-    ULTIMATE(32768000);
+    BASIC(64_000),
+    ADVANCED(512_000),
+    ELITE(4_096_000),
+    ULTIMATE(32_768_000);
 
     private final double baseOutput;
     private final BaseTier baseTier;

@@ -3,10 +3,10 @@ package mekanism.common.tier;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum PipeTier implements ITier {
-    BASIC(1000, 100),
-    ADVANCED(4000, 400),
-    ELITE(16000, 1600),
-    ULTIMATE(64000, 6400);
+    BASIC(1_000, 100),
+    ADVANCED(4_000, 400),
+    ELITE(16_000, 1_600),
+    ULTIMATE(64_000, 6_400);
 
     private final int baseCapacity;
     private final int basePull;

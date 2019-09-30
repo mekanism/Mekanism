@@ -5,10 +5,10 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum GasTankTier implements ITier, IStringSerializable {
-    BASIC(64000, 256),
-    ADVANCED(128000, 512),
-    ELITE(256000, 1028),
-    ULTIMATE(512000, 2056),
+    BASIC(64_000, 256),
+    ADVANCED(128_000, 512),
+    ELITE(256_000, 1_028),
+    ULTIMATE(512_000, 2_056),
     CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
     private final int baseStorage;

@@ -36,6 +36,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileComponentEjector implements ITileComponent {
 
+    //TODO: Figure out why these limits for output rates are here/if there should be an upgrade that modifies the output rates
     private static final int GAS_OUTPUT = 256;
     private static final int FLUID_OUTPUT = 256;
     private TileEntityMekanism tileEntity;

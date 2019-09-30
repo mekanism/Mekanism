@@ -6,7 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 public enum ConductorTier implements ITier {
     BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
     ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1)),
-    ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
+    ELITE(5, 1, 8_000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
     ULTIMATE(5, 1, 100_000, new ColourRGBA(0.2, 0.2, 0.2, 1));
 
     private final ColourRGBA baseColour;
