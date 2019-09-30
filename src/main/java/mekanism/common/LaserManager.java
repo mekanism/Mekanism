@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.particle.LaserParticleData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -32,13 +33,11 @@ import net.minecraftforge.event.world.BlockEvent;
 
 public class LaserManager {
 
-    public static LaserInfo fireLaser(TileEntity from, Direction direction, double energy, World world) {
-        return fireLaser(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
-    }
-
-    public static LaserInfo fireLaser(Pos3D from, Direction direction, double energy, World world) {
+    public static LaserInfo fireLaser(TileEntity source, Direction direction, double energy, World world) {
+        Pos3D from = new Pos3D(source).centre().translate(direction, 0.501);
+        ServerWorld serverWorld = (ServerWorld) world;
         Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-        PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, new BlockPos(from)).get();
+        PlayerEntity dummy = Mekanism.proxy.getDummyPlayer(serverWorld, new BlockPos(from)).get();
         //TODO: Verify this is correct
         BlockRayTraceResult mop = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
         if (mop.getType() != Type.MISS) {
@@ -64,6 +63,11 @@ public class LaserManager {
                 e.attackEntityFrom(DamageSource.GENERIC, (float) energy / 1000F);
             }
         }
+
+        //Tell the clients to render the laser
+        LaserParticleData data = new LaserParticleData(direction, to.distance(from), energy);
+        serverWorld.getPlayers().forEach(player ->
+              serverWorld.spawnParticle(player, data, true, from.x, from.y, from.z, 1, 0.0D, 0.0D, 0.0D, 0));
         return new LaserInfo(mop, foundEntity);
     }
 
@@ -96,26 +100,18 @@ public class LaserManager {
         return ret;
     }
 
-    public static BlockRayTraceResult fireLaserClient(TileEntity from, Direction direction, double energy, World world) {
-        return fireLaserClient(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
-    }
-
-    public static BlockRayTraceResult fireLaserClient(Pos3D from, Direction direction, double energy, World world) {
+    //TODO: Remove, have server tell client about the effects
+    @Deprecated
+    public static BlockRayTraceResult fireLaserClient(TileEntity source, Direction direction, double energy, World world) {
+        Pos3D from = new Pos3D(source).centre().translate(direction, 0.501);
         Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
         //TODO: Verify this is correct
-        BlockRayTraceResult mop = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, Minecraft.getInstance().player));
-        if (mop.getType() != Type.MISS) {
-            to = new Pos3D(mop.getHitVec());
-        }
-        from.translate(direction, -0.501);
-        //TODO: Replace this with the built in Particle Type system. so that the renderParticle method actually gets called
-        Mekanism.proxy.renderLaser(world, from, to, direction, energy);
-        return mop;
+        return world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, Minecraft.getInstance().player));
     }
 
     //TODO: Should this be removed?
     public static boolean isReceptor(TileEntity tile, Direction side) {
-        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side).isPresent();
+        return tile != null && tile.getCapability(Capabilities.LASER_RECEPTOR_CAPABILITY, side).isPresent();
     }
 
     public static class LaserInfo {

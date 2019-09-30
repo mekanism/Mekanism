@@ -55,16 +55,11 @@ public class MekanismRenderer {
 
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
-    public static TextureAtlasSprite laserIcon;
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;
     private static AtlasTexture texMap = null;
-
-    /*public static void init() {
-        MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
-    }*/
 
     @SuppressWarnings("unchecked")
     public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
@@ -351,7 +346,6 @@ public class MekanismRenderer {
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/laser"));
 
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
 
@@ -382,7 +376,6 @@ public class MekanismRenderer {
         whiteIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
         energyIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
         heatIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
-        laserIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/laser"));
 
         TransmitterModel.getIcons(map);
 

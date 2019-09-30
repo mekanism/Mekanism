@@ -9,6 +9,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public final class CapabilityUtils {
 
+    //TODO: Ones that only use a simple ifPresent don't need to be done through the helper
     //TODO: Add contract param back?
     //@Contract("null, _, _ -> null; _, null, _ -> null")
     @Nonnull

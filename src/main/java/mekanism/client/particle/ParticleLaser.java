@@ -1,10 +1,14 @@
-package mekanism.client.entity;
+package mekanism.client.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.MekanismRenderer.RenderState;
+import mekanism.common.particle.LaserParticleData;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -20,8 +24,8 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ParticleLaser extends SpriteTexturedParticle {
 
-    private double length;
-    private Direction direction;
+    private final Direction direction;
+    private final double length;
 
     public ParticleLaser(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
@@ -29,22 +33,18 @@ public class ParticleLaser extends SpriteTexturedParticle {
         particleRed = 1;
         particleGreen = 0;
         particleBlue = 0;
-        particleAlpha = 0.1F;
+        //TODO: Figure out why alpha no longer works (Note: If it is set to a low value like 0.1F it just makes the laser invisible)
+        //particleAlpha = 0.1F;
         particleScale = (float) Math.min(energy / 50000, 0.6);
         length = end.distance(start);
         direction = dir;
-        sprite = MekanismRenderer.laserIcon;
     }
 
-    //TODO: Fix the rendering, currently is partially disabled to not cause crashes
     @Override
     public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull ActiveRenderInfo renderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ,
           float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
-        if (tessellator.getBuffer().isDrawing) {
-            //TODO: Should state be cached
-            tessellator.draw();
-        }
+        RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
         GlStateManager.pushMatrix();
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
@@ -67,15 +67,14 @@ public class ParticleLaser extends SpriteTexturedParticle {
         }
         drawLaser(buffer, tessellator);
         GlStateManager.popMatrix();
-        //buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        //TODO: Restart the rendering if they were rendering when we started
+        MekanismRenderer.resumeRenderer(tessellator, renderState);
     }
 
     private void drawLaser(BufferBuilder buffer, Tessellator tessellator) {
-        float uMin = sprite.getInterpolatedU(0);
-        float uMax = sprite.getInterpolatedU(16);
-        float vMin = sprite.getInterpolatedV(0);
-        float vMax = sprite.getInterpolatedV(16);
+        float uMin = getMinU();
+        float uMax = getMaxU();
+        float vMin = getMinV();
+        float vMax = getMaxV();
         GlStateManager.disableCull();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 45);
@@ -97,7 +96,25 @@ public class ParticleLaser extends SpriteTexturedParticle {
     @Nonnull
     @Override
     public IParticleRenderType getRenderType() {
-        //TODO: Check this, the FX layer returned 1
         return IParticleRenderType.CUSTOM;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static class Factory implements IParticleFactory<LaserParticleData> {
+
+        private final IAnimatedSprite spriteSet;
+
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Override
+        public ParticleLaser makeParticle(LaserParticleData data, @Nonnull World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            Pos3D start = new Pos3D(x, y, z);
+            Pos3D end = start.translate(data.direction, data.distance);
+            ParticleLaser particleLaser = new ParticleLaser(world, start, end, data.direction, data.energy);
+            particleLaser.selectSpriteRandomly(this.spriteSet);
+            return particleLaser;
+        }
     }
 }

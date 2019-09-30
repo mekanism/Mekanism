@@ -4,6 +4,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.particle.MekanismParticleType;
 import mekanism.common.recipe.MekanismRecipeEnabledCondition;
 import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -15,6 +16,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -88,5 +90,10 @@ public class Registration {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         MekanismEntityTypes.registerEntities(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
+        MekanismParticleType.registerParticles(event.getRegistry());
     }
 }

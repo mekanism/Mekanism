@@ -3,11 +3,9 @@ package mekanism.client;
 import java.io.File;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.api.Pos3D;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.client.entity.ParticleLaser;
 import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
@@ -29,10 +27,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -258,11 +254,6 @@ public class ClientProxy extends CommonProxy {
             return context.get().getSender();
         }
         return Minecraft.getInstance().player;
-    }
-
-    @Override
-    public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {
-        Minecraft.getInstance().particles.addEffect(new ParticleLaser(world, from, to, direction, energy));
     }
 
     @Override

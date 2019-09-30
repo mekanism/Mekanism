@@ -71,6 +71,7 @@ public class TileEntityLaser extends TileEntityMekanism {
                             LaserManager.breakBlock(hitCoord, true, world, pos);
                             diggingProgress = 0;
                         }
+                        //TODO: Else tell client to spawn hit effect, instead of having there be client side onUpdate code for TileEntityLaser
                     }
                 }
                 setEnergy(getEnergy() - MekanismConfig.usage.laser.get());

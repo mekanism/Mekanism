@@ -269,7 +269,6 @@ public class Mekanism {
             logger.info("Didn't detect MCMP, ignoring compatibility package");
         }*/
 
-        Mekanism.proxy.preInit();
         Capabilities.registerCapabilities();
     }
 

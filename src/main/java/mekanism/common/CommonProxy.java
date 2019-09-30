@@ -5,7 +5,6 @@ import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
-import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketPortableTeleporter;
@@ -13,10 +12,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -93,9 +90,6 @@ public class CommonProxy/* implements IGuiProvider*/ {
     public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
     }
 
-    public void preInit() {
-    }
-
     public double getReach(PlayerEntity player) {
         if (player instanceof ServerPlayerEntity) {
             return player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
@@ -142,9 +136,6 @@ public class CommonProxy/* implements IGuiProvider*/ {
 
     public PlayerEntity getPlayer(Supplier<Context> context) {
         return context.get().getSender();
-    }
-
-    public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {
     }
 
     public Object getFontRenderer() {
