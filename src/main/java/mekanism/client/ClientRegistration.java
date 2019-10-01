@@ -168,14 +168,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        //MekanismRenderer.init();
-
-        //TODO: Remove need for this by using blockstate multipart tags to combine different possible positions
-        // See how fences do it
-        /*OBJLoader.INSTANCE.addDomain(Mekanism.MODID);
-        ModelLoaderRegistry.registerLoader(MekanismOBJLoader.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(MekanismOBJLoader.INSTANCE);*/
-
         //Note: The JavaDocs of the below methods specifies to register this here rather than during the EntityType registration
 
         //Register entity rendering handlers

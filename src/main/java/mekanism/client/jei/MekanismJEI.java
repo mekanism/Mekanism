@@ -115,8 +115,6 @@ public class MekanismJEI implements IModPlugin {
     //TODO: Reimplement the blacklist?
     /*@Override
     public void register(IModRegistry registry) {
-        registry.addAdvancedGuiHandlers(new GuiElementHandler());
-
         //Blacklist
         IIngredientBlacklist ingredientBlacklist = registry.getJeiHelpers().getIngredientBlacklist();
         //TODO: Why do these still show up in JEI (Is it due to an error with category types?)
