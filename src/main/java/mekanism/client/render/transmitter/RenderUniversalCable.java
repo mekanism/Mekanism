@@ -20,6 +20,7 @@ public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniv
     @Override
     protected void renderSide(BufferBuilder renderer, Direction side, TileEntityUniversalCable cable) {
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
+        renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower),
+              cable.getBlockState(), cable.getModelData());
     }
 }

@@ -515,6 +515,9 @@ public final class MekanismUtils {
         // For example the laser, or charge pad.
         //TODO: Render update
         //world.markBlockRangeForRenderUpdate(pos, pos);
+        BlockState blockState = world.getBlockState(pos);
+        //TODO: Fix this as it is not ideal to just pretend the block was previously air to force it to update
+        world.func_225319_b(pos, Blocks.AIR.getDefaultState(), blockState);
         TileEntity tileEntity = world.getTileEntity(pos);
         if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             updateAllLightTypes(world, pos);

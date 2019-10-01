@@ -24,17 +24,7 @@ public final class PipeUtils {
         if (tile == null || CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
             return false;
         }
-        return CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).matches(container -> {
-            //TODO: Check this
-            int tanks = container.getTanks();
-            for (int i = 0; i < tanks; i++) {
-                FluidStack fluidInTank = container.getFluidInTank(i);
-                if (!fluidInTank.isEmpty()) {
-                    return true;
-                }
-            }
-            return false;
-        });
+        return CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).matches(container -> container.getTanks() > 0);
     }
 
     /**

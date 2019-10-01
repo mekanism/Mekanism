@@ -718,7 +718,7 @@
   "tooltip.mekanism.configurator.empty": "Empty",
   "tooltip.mekanism.configurator.rotate": "Rotate",
   "tooltip.mekanism.configurator.wrench": "Wrench",
-  "tooltip.mekanism.configurator.pumpReset": "Reset Electric Pump calculation",
+  "tooltip.mekanism.configurator.pump_reset": "Reset Electric Pump calculation",
   "tooltip.mekanism.configurator.toggle_diverter": "Diverter mode changed to",
   "tooltip.mekanism.configurator.toggle_mode": "%s behavior bumped to",
   "tooltip.mekanism.configurator.view_mode": "Current %s behavior",

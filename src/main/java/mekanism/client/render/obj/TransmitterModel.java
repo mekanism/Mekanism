@@ -13,12 +13,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
-import mekanism.api.IColor;
 import mekanism.api.text.EnumColor;
+import mekanism.client.model.data.ModelProperties;
+import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateColor;
-import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.BlockState;
@@ -39,6 +37,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -67,7 +66,7 @@ public class TransmitterModel extends OBJBakedModelBase {
     private static TextureAtlasSprite[] transporter_side_color = new TextureAtlasSprite[2];
     private Map<Integer, List<BakedQuad>> modelCache = new HashMap<>();
     private TransmitterModel itemCache;
-    private BlockState tempState;
+    private IModelData tempModelData;
     @Nullable
     private EnumColor color;
     private TextureAtlasSprite particle;
@@ -124,32 +123,31 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
+    public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         if (side != null) {
             return ImmutableList.of();
         }
+        if (state == null) {
+            System.out.println("NULL STATE");
+        }
 
-        if (state != null && tempState == null) {
-            BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-            EnumColor color = null;
+        if (state != null && tempModelData == null) {
+            if (extraData.hasProperty(ModelProperties.DOWN_CONNECTION) && extraData.hasProperty(ModelProperties.UP_CONNECTION) &&
+                extraData.hasProperty(ModelProperties.NORTH_CONNECTION) && extraData.hasProperty(ModelProperties.SOUTH_CONNECTION) &&
+                extraData.hasProperty(ModelProperties.WEST_CONNECTION) && extraData.hasProperty(ModelProperties.EAST_CONNECTION)) {
+                ConnectionType down = extraData.getData(ModelProperties.DOWN_CONNECTION);
+                ConnectionType up = extraData.getData(ModelProperties.UP_CONNECTION);
+                ConnectionType north = extraData.getData(ModelProperties.NORTH_CONNECTION);
+                ConnectionType south = extraData.getData(ModelProperties.SOUTH_CONNECTION);
+                ConnectionType west = extraData.getData(ModelProperties.WEST_CONNECTION);
+                ConnectionType east = extraData.getData(ModelProperties.EAST_CONNECTION);
 
-            if (state.getBlock() instanceof IStateColor && layer == BlockRenderLayer.TRANSLUCENT) {
-                //Only try getting the color property for ones that will have a color
-
-                //TODO: Make it be part of extended state
-                IColor iColor = EnumColor.NONE;//(IColor) state.get(BlockStateHelper.colorProperty);
-                if (iColor != EnumColor.NONE) {
-                    color = (EnumColor) iColor;
+                BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+                EnumColor color = null;
+                if (extraData.hasProperty(ModelProperties.COLOR) && layer == BlockRenderLayer.TRANSLUCENT) {
+                    //Only try getting the color property for ones that will have a color
+                    color = extraData.getData(ModelProperties.COLOR);
                 }
-            }
-
-            try {
-                ConnectionType down = state.get(BlockStateHelper.downConnectionProperty);
-                ConnectionType up = state.get(BlockStateHelper.upConnectionProperty);
-                ConnectionType north = state.get(BlockStateHelper.northConnectionProperty);
-                ConnectionType south = state.get(BlockStateHelper.southConnectionProperty);
-                ConnectionType west = state.get(BlockStateHelper.westConnectionProperty);
-                ConnectionType east = state.get(BlockStateHelper.eastConnectionProperty);
 
                 int hash = 1;
                 hash = hash * 31 + layer.ordinal();
@@ -166,16 +164,18 @@ public class TransmitterModel extends OBJBakedModelBase {
                 if (!modelCache.containsKey(hash)) {
                     TransmitterModel model = new TransmitterModel(baseModel, getModel(), new OBJState(getVisibleGroups(down, up, north, south, west, east), true),
                           vertexFormat, textureMap, transformationMap);
-                    model.tempState = state;
+                    model.tempModelData = extraData;
                     model.color = color;
-                    modelCache.put(hash, model.getQuads(state, side, rand));
+                    modelCache.put(hash, model.getQuads(state, side, rand, extraData));
                 }
 
                 return modelCache.get(hash);
-            } catch (Exception ignored) {
             }
+            //TODO: print error about missing data?
         }
-
+        //TODO: Pass the extraData to the super method as well. The issue is that otherwise it ends up missing a bunch of data due to
+        // an incomplete override of the getQuads with IModelData
+        //return super.getQuads(state, side, rand, extraData);
         return super.getQuads(state, side, rand);
     }
 
@@ -192,7 +192,7 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     @Override
     public float[] getOverrideColor(Face f, String groupName) {
-        if (tempState != null && color != null && MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
+        if (tempModelData != null && color != null && MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
             return new float[]{color.getColor(0), color.getColor(1), color.getColor(2), 1};
         }
         return null;
@@ -206,8 +206,8 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     @Override
     public TextureAtlasSprite getOverrideTexture(Face f, String groupName) {
-        if (tempState != null) {
-            boolean sideIconOverride = getIconStatus(f, tempState) > 0;
+        if (tempModelData != null) {
+            boolean sideIconOverride = getIconStatus(f, tempModelData) > 0;
 
             if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
                 int opaqueVal = MekanismConfig.client.opaqueTransmitters.get() ? 1 : 0;
@@ -234,23 +234,26 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     @Override
     public boolean shouldRotate(Face f, String groupName) {
-        if (tempState != null) {
-            return groupName.endsWith("NONE") && getIconStatus(f, tempState) == 2;
+        if (tempModelData != null) {
+            return groupName.endsWith("NONE") && getIconStatus(f, tempModelData) == 2;
         }
         return false;
     }
 
-    public byte getIconStatus(Face f, @Nonnull BlockState state) {
-        return getIconStatus(Direction.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z), state);
+    public byte getIconStatus(Face f, @Nonnull IModelData modelData) {
+        return getIconStatus(Direction.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z), modelData);
     }
 
-    public byte getIconStatus(Direction side, @Nonnull BlockState state) {
-        boolean hasDown = state.get(BlockStateHelper.downConnectionProperty) != ConnectionType.NONE;
-        boolean hasUp = state.get(BlockStateHelper.upConnectionProperty) != ConnectionType.NONE;
-        boolean hasNorth = state.get(BlockStateHelper.northConnectionProperty) != ConnectionType.NONE;
-        boolean hasSouth = state.get(BlockStateHelper.southConnectionProperty) != ConnectionType.NONE;
-        boolean hasWest = state.get(BlockStateHelper.westConnectionProperty) != ConnectionType.NONE;
-        boolean hasEast = state.get(BlockStateHelper.eastConnectionProperty) != ConnectionType.NONE;
+    public byte getIconStatus(Direction side, @Nonnull IModelData modelData) {
+        if (modelData instanceof TransmitterModelData.Diversion) {
+            return (byte) 0;
+        }
+        boolean hasDown = modelData.getData(ModelProperties.DOWN_CONNECTION) != ConnectionType.NONE;
+        boolean hasUp = modelData.getData(ModelProperties.UP_CONNECTION) != ConnectionType.NONE;
+        boolean hasNorth = modelData.getData(ModelProperties.NORTH_CONNECTION) != ConnectionType.NONE;
+        boolean hasSouth = modelData.getData(ModelProperties.SOUTH_CONNECTION) != ConnectionType.NONE;
+        boolean hasWest = modelData.getData(ModelProperties.WEST_CONNECTION) != ConnectionType.NONE;
+        boolean hasEast = modelData.getData(ModelProperties.EAST_CONNECTION) != ConnectionType.NONE;
         boolean hasConnection = false;
         if (side == Direction.DOWN) {
             hasConnection = hasDown;
@@ -265,7 +268,7 @@ public class TransmitterModel extends OBJBakedModelBase {
         } else if (side == Direction.EAST) {
             hasConnection = hasEast;
         }
-        if (!hasConnection && !(state.getBlock() instanceof BlockDiversionTransporter)) {
+        if (!hasConnection) {
             if (hasDown && hasUp && side != Direction.DOWN && side != Direction.UP) {
                 return (byte) 1;
             } else if (hasNorth && hasSouth && (side == Direction.DOWN || side == Direction.UP)) {

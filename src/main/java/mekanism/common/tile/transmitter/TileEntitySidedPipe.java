@@ -13,6 +13,7 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.LazyOptionalHelper;
@@ -66,6 +67,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
     public TileEntity[] cachedAcceptors = new TileEntity[6];
+
+    @Nullable
+    private TransmitterModelData modelData;
 
     public TileEntitySidedPipe(TileEntityType<? extends TileEntitySidedPipe> type) {
         super(type);
@@ -293,6 +297,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             for (int i = 0; i < 6; i++) {
                 connectionTypes[i] = dataStream.readEnumValue(ConnectionType.class);
             }
+            requestModelDataUpdate();
+            //TODO: Figure out why we are marking it dirty on the clientside??
             markDirty();
             MekanismUtils.updateBlock(world, pos);
         }
@@ -319,6 +325,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         for (int i = 0; i < 6; i++) {
             connectionTypes[i] = ConnectionType.values()[nbtTags.getInt("connection" + i)];
         }
+        //TODO: Do we need to update the model here
     }
 
     @Nonnull
@@ -481,10 +488,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public void onLoad() {
         onWorldJoin();
-        if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
+        //TODO: Temporarily commented out to stop crashing from starting world with pipes in it
+        // For the most part is seems to be working just fine without this, except some spots still behave strangely
+        /*if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
             //Mark the transmitters as invalidated if they do not match what we have stored/calculated
             refreshConnections();
-        }
+        }//*/
         super.onLoad();
     }
 
@@ -493,6 +502,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     public void onNeighborBlockChange(Direction side) {
+        //TODO: Figure out why does this not check the side specific one
         refreshConnections();
     }
 
@@ -539,7 +549,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
                 refreshConnections();
                 notifyTileChange();
-                player.sendMessage(TextComponentUtil.build(Translation.of("tooltip.configurator.modeChange"), " ", connectionTypes[hitSide.ordinal()]));
+                player.sendMessage(TextComponentUtil.build(Translation.of("tooltip.mekanism.configurator.mode_change"), " ", connectionTypes[hitSide.ordinal()]));
                 return ActionResultType.SUCCESS;
             }
         }
@@ -581,9 +591,37 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             refreshConnections();
             notifyTileChange();
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                  Translation.of("tooltip.configurator.redstoneSensitivity"), " ", EnumColor.INDIGO, OnOff.of(redstoneReactive), "."));
+                  Translation.of("tooltip.mekanism.configurator.redstone_sensitivity"), " ", EnumColor.INDIGO, OnOff.of(redstoneReactive), "."));
         }
         return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    public void requestModelDataUpdate() {
+        updateModelData();
+        super.requestModelDataUpdate();
+    }
+
+    @Nonnull
+    @Override
+    public TransmitterModelData getModelData() {
+        if (modelData == null) {
+            modelData = initModelData();
+        }
+        return modelData;
+    }
+
+    protected void updateModelData() {
+        TransmitterModelData modelData = getModelData();
+        //Update the data, using information about if there is actually a connection on a given side
+        for (Direction side : Direction.values()) {
+            modelData.setConnectionData(side, getConnectionType(side));
+        }
+    }
+
+    @Nonnull
+    protected TransmitterModelData initModelData() {
+        return new TransmitterModelData();
     }
 
     public void notifyTileChange() {

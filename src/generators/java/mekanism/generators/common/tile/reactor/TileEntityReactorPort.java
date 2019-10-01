@@ -363,7 +363,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         if (!world.isRemote) {
             fluidEject = !fluidEject;
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                  Translation.of("tooltip.configurator.reactorPortEject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(fluidEject), "."));
+                  Translation.of("tooltip.mekanism.configurator.reactor_port_eject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(fluidEject), "."));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

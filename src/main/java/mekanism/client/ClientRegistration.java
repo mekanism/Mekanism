@@ -109,6 +109,11 @@ import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
+import mekanism.client.render.transmitter.RenderLogisticalTransporter;
+import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.client.render.transmitter.RenderPressurizedTube;
+import mekanism.client.render.transmitter.RenderThermodynamicConductor;
+import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityRobit;
@@ -145,6 +150,13 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -206,14 +218,14 @@ public class ClientRegistration {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySolarNeutronActivator.class, new RenderSolarNeutronActivator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTeleporter.class, new RenderTeleporter());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermalEvaporationController.class, new RenderThermalEvaporationController());
-        //TODO
-        /*ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLogisticalTransporter.class, new RenderLogisticalTransporter());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLogisticalTransporter.class, new RenderLogisticalTransporter());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMechanicalPipe.class, new RenderMechanicalPipe());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPressurizedTube.class, new RenderPressurizedTube());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRestrictiveTransporter.class, new RenderLogisticalTransporter());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermodynamicConductor.class, new RenderThermodynamicConductor());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityUniversalCable.class, new RenderUniversalCable());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDiversionTransporter.class, new RenderLogisticalTransporter());*/
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDiversionTransporter.class, new RenderLogisticalTransporter());
     }
 
     @SubscribeEvent

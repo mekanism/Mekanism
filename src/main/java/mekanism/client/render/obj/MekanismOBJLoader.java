@@ -94,7 +94,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
         modelRegistry.put(model, createBakedObjItemModel(bakedModel, objFile, new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
               DefaultVertexFormats.ITEM, textures));
 
-        ModelResourceLocation normalModel = new ModelResourceLocation(resource, "normal");
+        ModelResourceLocation normalModel = new ModelResourceLocation(resource, "");
         IBakedModel bakedNormal = modelRegistry.get(normalModel);
         modelRegistry.put(normalModel, createBakedObjItemModel(bakedNormal, objFile, new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
               DefaultVertexFormats.ITEM, textures));

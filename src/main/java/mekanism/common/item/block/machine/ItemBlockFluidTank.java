@@ -108,7 +108,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("gui.mekanism.overridden"), ")"));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.portableTank.bucketMode", YesNo.of(getBucketMode(itemstack)))));
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.portableTank.bucketMode", YesNo.of(getBucketMode(itemstack)).getTextComponent())));
         ListNBT inventory = getInventory(itemstack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.inventory"), ": ", EnumColor.GRAY,
               YesNo.of(inventory != null && !inventory.isEmpty())));

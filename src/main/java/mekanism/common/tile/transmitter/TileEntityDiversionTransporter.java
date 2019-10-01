@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.TransmitterType;
@@ -103,13 +104,13 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
                 description = Translation.of("tooltip.mekanism.control.low.desc");
                 break;
             default:
-                description = Translation.of("mekanism.none");
+                description = Translation.of("gui.mekanism.none");
                 break;
         }
         refreshConnections();
         notifyTileChange();
         player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-              Translation.of("tooltip.configurator.toggleDiverter"), ": ", EnumColor.RED, description));
+              Translation.of("tooltip.mekanism.configurator.toggle_diverter"), ": ", EnumColor.RED, description));
         Mekanism.packetHandler.sendUpdatePacket(this);
         return ActionResultType.SUCCESS;
     }
@@ -127,5 +128,11 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     @Override
     public EnumColor getRenderColor() {
         return null;
+    }
+
+    @Nonnull
+    @Override
+    protected TransmitterModelData.Diversion initModelData() {
+        return new TransmitterModelData.Diversion();
     }
 }

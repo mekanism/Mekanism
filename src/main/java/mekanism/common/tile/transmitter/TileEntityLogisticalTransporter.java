@@ -12,6 +12,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
@@ -186,6 +187,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
                     getTransmitter().setColor(null);
                 }
                 if (prev != getTransmitter().getColor()) {
+                    //TODO: Only make it so it needs to request an update once instead of potentially doing it in the super as well
+                    requestModelDataUpdate();
                     MekanismUtils.updateBlock(world, pos);
                 }
                 getTransmitter().readFromPacket(dataStream);
@@ -297,8 +300,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         Mekanism.packetHandler.sendUpdatePacket(this);
         EnumColor color = getTransmitter().getColor();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("tooltip.configurator.toggleColor"), ": ",
-              (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
+              Translation.of("tooltip.mekanism.configurator.toggle_color"), ": ", (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
         return ActionResultType.SUCCESS;
     }
 
@@ -306,8 +309,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         super.onRightClick(player, side);
         EnumColor color = getTransmitter().getColor();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("tooltip.configurator.viewColor"), ": ",
-              (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
+        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
+              Translation.of("tooltip.mekanism.configurator.view_color"), ": ", (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
         return ActionResultType.SUCCESS;
     }
 
@@ -372,5 +375,22 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    protected void updateModelData() {
+        super.updateModelData();
+        TransmitterModelData modelData = getModelData();
+        if (modelData instanceof TransmitterModelData.Colorable) {
+            TransmitterModelData.Colorable colorable = (TransmitterModelData.Colorable) modelData;
+            colorable.setColor(getRenderColor());
+        }
+    }
+
+    //TODO: Set color against the data
+    @Nonnull
+    @Override
+    protected TransmitterModelData initModelData() {
+        return new TransmitterModelData.Colorable();
     }
 }

@@ -3,7 +3,6 @@ package mekanism.common.block.transmitter;
 import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.states.IStateConnection;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.MekanismUtils;
@@ -24,7 +23,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public abstract class BlockTransmitter extends BlockTileDrops implements IStateConnection {
+public abstract class BlockTransmitter extends BlockTileDrops {
 
     protected BlockTransmitter(String name) {
         super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));

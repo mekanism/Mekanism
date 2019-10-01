@@ -55,6 +55,7 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
         return VoxelShapes.create(BlockLargeTransmitter.largeSides[6]);
     }
 
+    //TODO: Implement this as it seems to be incorrect (for the edges)
     /*@Nonnull
     @Override
     @Deprecated

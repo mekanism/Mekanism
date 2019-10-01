@@ -88,7 +88,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
                             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                  Translation.of("tooltip.configurator.viewMode", TextComponentUtil.build(transmissionType)), ": ", initial.color, initial,
+                                  Translation.of("tooltip.mekanism.configurator.view_mode", TextComponentUtil.build(transmissionType)), ": ", initial.color, initial,
                                   " (", initial.color.getColoredName(), ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
@@ -97,7 +97,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                                     MekanismUtils.incrementOutput(config, transmissionType, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
                                     SideData data = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
                                     player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                          Translation.of("tooltip.configurator.toggleMode", TextComponentUtil.build(transmissionType)), ": ", data.color, data,
+                                          Translation.of("tooltip.mekanism.configurator.toggle_mode", TextComponentUtil.build(transmissionType)), ": ", data.color, data,
                                           " (", data.color.getColoredName(), ")"));
                                     if (config instanceof TileEntityMekanism) {
                                         Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
@@ -260,9 +260,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
         @Override
         public ITextComponent getTextComponent() {
             if (this.transmissionType != null) {
-                return TextComponentUtil.build(color, Translation.of("tooltip.configurator." + name), " (", transmissionType, ")");
+                return TextComponentUtil.build(color, Translation.of("tooltip.mekanism.configurator." + name), " (", transmissionType, ")");
             }
-            return TextComponentUtil.build(color, Translation.of("tooltip.configurator." + name));
+            return TextComponentUtil.build(color, Translation.of("tooltip.mekanism.configurator." + name));
         }
 
         public EnumColor getColor() {

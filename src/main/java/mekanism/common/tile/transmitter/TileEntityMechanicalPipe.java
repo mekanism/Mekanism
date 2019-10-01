@@ -128,7 +128,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (nbtTags.contains("cacheFluid")) {
             buffer.setFluid(FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("cacheFluid")));
         } else {
-            buffer.setFluid(null);
+            buffer.setFluid(FluidStack.EMPTY);
         }
     }
 

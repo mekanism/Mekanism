@@ -78,7 +78,7 @@ public final class MultipartUtils {
     }
 
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB bounds, int subHit, Object hitInfo) {
-        BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(bounds.offset(pos)), start, end, pos);
+        BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(bounds), start, end, pos);
         if (result == null) {
             return null;
         }

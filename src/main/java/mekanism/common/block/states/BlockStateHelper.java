@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IColor;
-import mekanism.api.text.EnumColor;
-import mekanism.common.block.property.PropertyColor;
-import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
@@ -37,16 +33,6 @@ public class BlockStateHelper {
     public static final DirectionProperty facingProperty = BlockStateProperties.FACING;
     public static final DirectionProperty horizontalFacingProperty = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty activeProperty = BooleanProperty.create("active");
-    //NOTE: This currently is only using the set of colors the transporter supports as it is the only thing that needs this
-    // There is a method to create this supporting all colors but it is currently unused
-    public static final PropertyColor colorProperty = PropertyColor.createTransporter("color");
-    //Sided pipe properties
-    public static final PropertyConnection downConnectionProperty = PropertyConnection.create("down");
-    public static final PropertyConnection upConnectionProperty = PropertyConnection.create("up");
-    public static final PropertyConnection northConnectionProperty = PropertyConnection.create("north");
-    public static final PropertyConnection southConnectionProperty = PropertyConnection.create("south");
-    public static final PropertyConnection westConnectionProperty = PropertyConnection.create("west");
-    public static final PropertyConnection eastConnectionProperty = PropertyConnection.create("east");
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
     //Water Logged: TODO should we add some generic fluid logging property? Evaluate once fluids are in forge again
@@ -69,20 +55,8 @@ public class BlockStateHelper {
         if (block instanceof IStateActive) {
             properties.add(activeProperty);
         }
-        //TODO: Make color be an extended state
-        /*if (block instanceof IStateColor) {
-            properties.add(colorProperty);
-        }*/
         if (block instanceof IStateStorage) {
             properties.add(storageProperty);
-        }
-        if (block instanceof IStateConnection) {
-            properties.add(downConnectionProperty);
-            properties.add(upConnectionProperty);
-            properties.add(northConnectionProperty);
-            properties.add(southConnectionProperty);
-            properties.add(westConnectionProperty);
-            properties.add(eastConnectionProperty);
         }
         if (block instanceof IStateWaterLogged) {
             properties.add(WATERLOGGED);
@@ -144,23 +118,9 @@ public class BlockStateHelper {
             //TODO: False by default??
             state = state.with(activeProperty, ((IStateActive) block).isActive(tile));
         }
-        if (block instanceof IStateColor) {
-            //TODO: move this to https://github.com/MinecraftForge/MinecraftForge/pull/5564
-            state = state.with(BlockStateHelper.colorProperty, getColor(tile));
-        }
         if (block instanceof IStateStorage) {
             //TODO: Do this based on if something is getting boxed up
             state = state.with(storageProperty, isStoring(tile));
-        }
-        if (block instanceof IStateConnection) {
-            //TODO: Move this to https://github.com/MinecraftForge/MinecraftForge/pull/5564
-            //Add all the different connection types
-            state = state.with(downConnectionProperty, getStateConnection(tile, Direction.DOWN));
-            state = state.with(upConnectionProperty, getStateConnection(tile, Direction.UP));
-            state = state.with(northConnectionProperty, getStateConnection(tile, Direction.NORTH));
-            state = state.with(southConnectionProperty, getStateConnection(tile, Direction.SOUTH));
-            state = state.with(westConnectionProperty, getStateConnection(tile, Direction.WEST));
-            state = state.with(eastConnectionProperty, getStateConnection(tile, Direction.EAST));
         }*/
         return state;
     }
@@ -191,15 +151,6 @@ public class BlockStateHelper {
 
     private static BlockState rotate(IStateFacing blockFacing, DirectionProperty property, BlockState state, Rotation rotation) {
         return blockFacing.setDirection(state, rotation.rotate(state.get(property)));
-    }
-
-    @Nonnull
-    private static IColor getColor(@Nonnull TileEntity tile) {
-        EnumColor color = null;
-        if (tile instanceof TileEntitySidedPipe) {
-            color = ((TileEntitySidedPipe) tile).getRenderColor();
-        }
-        return color == null ? EnumColor.NONE : color;
     }
 
     private static boolean isStoring(@Nonnull TileEntity tile) {

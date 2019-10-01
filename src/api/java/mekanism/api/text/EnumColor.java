@@ -1,8 +1,6 @@
 package mekanism.api.text;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import mekanism.api.IColor;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.IStringSerializable;
@@ -15,7 +13,7 @@ import net.minecraft.util.text.TranslationTextComponent;
  *
  * @author AidanBrady
  */
-public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
+public enum EnumColor implements IStringSerializable {
     BLACK("\u00a70", "black", "Black", "black", new int[]{0, 0, 0}, TextFormatting.BLACK, DyeColor.BLACK),
     DARK_BLUE("\u00a71", "darkBlue", "Blue", "blue", new int[]{0, 0, 170}, TextFormatting.DARK_BLUE, DyeColor.BLUE),
     DARK_GREEN("\u00a72", "darkGreen", "Green", "green", new int[]{0, 170, 0}, TextFormatting.DARK_GREEN, DyeColor.GREEN),
@@ -38,19 +36,6 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
 
     public static EnumColor[] DYES = new EnumColor[]{BLACK, RED, DARK_GREEN, BROWN, DARK_BLUE, PURPLE, DARK_AQUA, GRAY, DARK_GRAY, BRIGHT_PINK, BRIGHT_GREEN, YELLOW,
                                                      INDIGO, PINK, ORANGE, WHITE};
-
-    //TODO: Switch more things over to using this
-    public static final IColor NONE = new IColor<IColor>() {
-        @Override
-        public String getRegistryPrefix() {
-            return "none";
-        }
-
-        @Override
-        public int compareTo(@Nonnull IColor o) {
-            return o == this ? 0 : -1;
-        }
-    };
 
     /**
      * The color code that will be displayed
@@ -129,10 +114,5 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
     @Override
     public String toString() {
         return code;
-    }
-
-    @Override
-    public String getRegistryPrefix() {
-        return registry_prefix;
     }
 }

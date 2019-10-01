@@ -20,6 +20,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEn
     @Override
     public void renderSide(BufferBuilder renderer, Direction side, TileEntityThermodynamicConductor cable) {
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
+        renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()),
+              cable.getBlockState(), cable.getModelData());
     }
 }

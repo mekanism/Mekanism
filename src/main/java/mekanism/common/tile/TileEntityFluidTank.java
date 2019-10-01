@@ -139,7 +139,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
             FluidStack ret = FluidContainerUtils.handleContainerItem(this, getInventory(), editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 
-            if (ret != null) {
+            if (!ret.isEmpty()) {
                 fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.getAmount())));
                 if (tier == FluidTankTier.CREATIVE) {
                     FluidStack fluid = fluidTank.getFluid();
@@ -153,7 +153,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
                     }
                 }
             } else if (tier != FluidTankTier.CREATIVE) {
-                fluidTank.setFluid(null);
+                fluidTank.setFluid(FluidStack.EMPTY);
             }
         }
     }
