@@ -26,6 +26,7 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -267,7 +268,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains("tier")) {
-            tier = TransporterTier.values()[nbtTags.getInt("tier")];
+            tier = EnumUtils.TRANSPORTER_TIERS[nbtTags.getInt("tier")];
         }
         getTransmitter().readFromNBT(nbtTags);
     }
@@ -360,7 +361,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public boolean upgrade(int tierOrdinal) {
         if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = TransporterTier.values()[tier.ordinal() + 1];
+            tier = EnumUtils.TRANSPORTER_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;

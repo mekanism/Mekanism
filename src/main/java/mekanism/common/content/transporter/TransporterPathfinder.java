@@ -23,6 +23,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.transmitters.grid.InventoryNetwork.AcceptorData;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -196,7 +197,7 @@ public final class TransporterPathfinder {
 
         private Direction findSide() {
             if (transportStack.idleDir == null) {
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     TileEntity tile = start.offset(side).getTileEntity(world);
                     if (transportStack.canInsertToTransporter(tile, side)) {
                         return side;
@@ -329,7 +330,7 @@ public final class TransporterPathfinder {
 
             int blockCount = 0;
 
-            for (Direction direction : Direction.values()) {
+            for (Direction direction : EnumUtils.DIRECTIONS) {
                 Coord4D neighbor = start.offset(direction);
                 if (!transportStack.canInsertToTransporter(neighbor.getTileEntity(world), direction) &&
                     (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, direction, neighbor.getTileEntity(world)))) {
@@ -342,7 +343,7 @@ public final class TransporterPathfinder {
 
             double maxSearchDistance = start.distanceTo(finalNode) * 2;
             List<Direction> directionsToCheck = new ArrayList<>();
-            Coord4D[] neighbors = new Coord4D[Direction.values().length];
+            Coord4D[] neighbors = new Coord4D[EnumUtils.DIRECTIONS.length];
             TileEntity[] neighborEntities = new TileEntity[neighbors.length];
             while (!openSet.isEmpty()) {
                 Coord4D currentNode = null;
@@ -363,7 +364,7 @@ public final class TransporterPathfinder {
                 TileEntity currentNodeTile = currentNode.getTileEntity(world);
                 LazyOptionalHelper<ILogisticalTransporter> capabilityHelper = CapabilityUtils.getCapabilityHelper(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
                 directionsToCheck.clear();
-                for (Direction direction : Direction.values()) {
+                for (Direction direction : EnumUtils.DIRECTIONS) {
                     Coord4D neighbor = currentNode.offset(direction);
                     neighbors[direction.ordinal()] = neighbor;
                     TileEntity neighborEntity = neighbor.getTileEntity(world);

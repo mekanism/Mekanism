@@ -281,14 +281,14 @@ public class ClientTickHandler {
                 wheelStatus += event.getDwheel();
                 int scaledDelta = wheelStatus / 120;
                 wheelStatus = wheelStatus % 120;
-                int newVal = configurator.getState(stack).ordinal() + (scaledDelta % ConfiguratorMode.values().length);
+                int newVal = configurator.getState(stack).ordinal() + (scaledDelta % EnumUtils.CONFIGURATOR_MODES.length);
 
                 if (newVal > 0) {
-                    newVal = newVal % ConfiguratorMode.values().length;
+                    newVal = newVal % EnumUtils.CONFIGURATOR_MODES.length;
                 } else if (newVal < 0) {
-                    newVal = ConfiguratorMode.values().length + newVal;
+                    newVal = EnumUtils.CONFIGURATOR_MODES.length + newVal;
                 }
-                ConfiguratorMode newMode = ConfiguratorMode.values()[newVal];
+                ConfiguratorMode newMode = EnumUtils.CONFIGURATOR_MODES[newVal];
                 configurator.setState(stack, newMode);
                 Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newMode)));
                 event.setCanceled(true);

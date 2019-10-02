@@ -11,6 +11,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -117,7 +118,7 @@ public class TransporterStack {
         originalLocation = Coord4D.read(nbtTags.getCompound("originalLocation"));
 
         if (nbtTags.contains("idleDir")) {
-            idleDir = Direction.values()[nbtTags.getInt("idleDir")];
+            idleDir = EnumUtils.DIRECTIONS[nbtTags.getInt("idleDir")];
         }
         if (nbtTags.contains("homeLocation")) {
             homeLocation = Coord4D.read(nbtTags.getCompound("homeLocation"));

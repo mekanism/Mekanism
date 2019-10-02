@@ -29,6 +29,7 @@ import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -122,7 +123,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = GasTankTier.values()[upgradeTier.ordinal()];
+        tier = EnumUtils.GAS_TANK_TIERS[upgradeTier.ordinal()];
         gasTank.setCapacity(tier.getStorage());
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
@@ -220,8 +221,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
-                int index = (dumping.ordinal() + 1) % GasMode.values().length;
-                dumping = GasMode.values()[index];
+                int index = (dumping.ordinal() + 1) % EnumUtils.GAS_MODES.length;
+                dumping = EnumUtils.GAS_MODES[index];
             }
             for (PlayerEntity player : playersUsing) {
                 Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
@@ -245,9 +246,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        tier = GasTankTier.values()[nbtTags.getInt("tier")];
+        tier = EnumUtils.GAS_TANK_TIERS[nbtTags.getInt("tier")];
         gasTank.read(nbtTags.getCompound("gasTank"));
-        dumping = GasMode.values()[nbtTags.getInt("dumping")];
+        dumping = EnumUtils.GAS_MODES[nbtTags.getInt("dumping")];
     }
 
     @Nonnull

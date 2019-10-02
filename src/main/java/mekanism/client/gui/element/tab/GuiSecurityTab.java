@@ -15,6 +15,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
@@ -135,8 +136,8 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
             UUID owner = getOwner();
             if (owner != null && minecraft.player.getUniqueID().equals(owner)) {
                 SecurityMode current = getSecurity();
-                int ordinalToSet = current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;
-                SecurityMode mode = SecurityMode.values()[ordinalToSet];
+                int ordinalToSet = current.ordinal() < (EnumUtils.SECURITY_MODES.length - 1) ? current.ordinal() + 1 : 0;
+                SecurityMode mode = EnumUtils.SECURITY_MODES[ordinalToSet];
                 if (isItem) {
                     Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, mode));
                 } else {

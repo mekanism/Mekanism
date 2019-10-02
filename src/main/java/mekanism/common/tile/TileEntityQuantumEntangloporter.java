@@ -40,6 +40,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
@@ -81,7 +82,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         super(MekanismBlock.QUANTUM_ENTANGLOPORTER);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
-        for (TransmissionType type : TransmissionType.values()) {
+        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
             if (type != TransmissionType.HEAT) {
                 configComponent.setIOConfig(type);
             } else {

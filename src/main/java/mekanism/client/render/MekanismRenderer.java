@@ -22,6 +22,7 @@ import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.tier.BaseTier;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -340,7 +341,7 @@ public class MekanismRenderer {
         if (!event.getMap().getBasePath().equals("textures")) {
             return;
         }
-        for (TransmissionType type : TransmissionType.values()) {
+        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
             event.addSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay"));
         }
 
@@ -371,7 +372,7 @@ public class MekanismRenderer {
         if (!map.getBasePath().equals("textures")) {
             return;
         }
-        for (TransmissionType type : TransmissionType.values()) {
+        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
             overlays.put(type, map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay")));
         }
 

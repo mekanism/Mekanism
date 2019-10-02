@@ -9,6 +9,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.tile.BoilerStatsContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
@@ -37,7 +38,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Boil
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, resource));
         addButton(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.general.tempUnit.get().ordinal()];
+            TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
             return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));

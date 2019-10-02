@@ -34,6 +34,7 @@ import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -249,9 +250,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (!world.isRemote) {
             byte type = dataStream.readByte();
             if (type == 0) {
-                dumpLeft = GasMode.values()[dumpLeft.ordinal() == GasMode.values().length - 1 ? 0 : dumpLeft.ordinal() + 1];
+                dumpLeft = EnumUtils.GAS_MODES[dumpLeft.ordinal() == EnumUtils.GAS_MODES.length - 1 ? 0 : dumpLeft.ordinal() + 1];
             } else if (type == 1) {
-                dumpRight = GasMode.values()[dumpRight.ordinal() == GasMode.values().length - 1 ? 0 : dumpRight.ordinal() + 1];
+                dumpRight = EnumUtils.GAS_MODES[dumpRight.ordinal() == EnumUtils.GAS_MODES.length - 1 ? 0 : dumpRight.ordinal() + 1];
             }
             return;
         }
@@ -288,8 +289,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         }
         leftTank.read(nbtTags.getCompound("leftTank"));
         rightTank.read(nbtTags.getCompound("rightTank"));
-        dumpLeft = GasMode.values()[nbtTags.getInt("dumpLeft")];
-        dumpRight = GasMode.values()[nbtTags.getInt("dumpRight")];
+        dumpLeft = EnumUtils.GAS_MODES[nbtTags.getInt("dumpLeft")];
+        dumpRight = EnumUtils.GAS_MODES[nbtTags.getInt("dumpRight")];
     }
 
     @Nonnull

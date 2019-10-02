@@ -13,6 +13,7 @@ import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.HeatUtils;
@@ -157,7 +158,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double getBoost() {
         int lavaBoost = 0;
         double netherBoost = 0D;
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             Coord4D coord = Coord4D.get(this).offset(side);
             if (isLava(coord.getPos())) {
                 lavaBoost++;

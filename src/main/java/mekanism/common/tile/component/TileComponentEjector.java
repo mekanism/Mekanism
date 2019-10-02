@@ -20,6 +20,7 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -114,10 +115,10 @@ public class TileComponentEjector implements ITileComponent {
         SideConfig sideConfig = config.getConfig(type);
         List<SideData> outputs = config.getOutputs(type);
         Direction[] facings = MekanismUtils.getBaseOrientations(tileEntity.getDirection());
-        for (int i = 0; i < Direction.values().length; i++) {
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             Direction side = facings[i];
             if (sideConfig.get(side) == outputs.indexOf(data)) {
-                outputSides.add(Direction.values()[i]);
+                outputSides.add(EnumUtils.DIRECTIONS[i]);
             }
         }
         return outputSides;

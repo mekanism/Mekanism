@@ -13,6 +13,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -107,7 +108,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 }
 
                 Coord4D thisCoord = Coord4D.get(this);
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     Coord4D obj = thisCoord.offset(side);
                     if (structure != null && (structure.locations.contains(obj) || structure.internalLocations.contains(obj))) {
                         continue;

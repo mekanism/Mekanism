@@ -49,6 +49,7 @@ import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -481,7 +482,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             component.read(nbtTags);
         }
         if (supportsRedstone() && nbtTags.contains("controlType")) {
-            controlType = RedstoneControl.values()[nbtTags.getInt("controlType")];
+            controlType = EnumUtils.REDSTONE_CONTROLS[nbtTags.getInt("controlType")];
         }
         if (hasInventory()) {
             if (handleInventory()) {

@@ -1,12 +1,13 @@
 package mekanism.common.tier;
 
+import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum TransporterTier implements ITier {
-    BASIC(1, 5),
-    ADVANCED(16, 10),
-    ELITE(32, 20),
-    ULTIMATE(64, 50);
+    BASIC(BaseTier.BASIC, 1, 5),
+    ADVANCED(BaseTier.ADVANCED, 16, 10),
+    ELITE(BaseTier.ELITE, 32, 20),
+    ULTIMATE(BaseTier.ULTIMATE, 64, 50);
 
     private final int basePull;
     private final int baseSpeed;
@@ -14,14 +15,14 @@ public enum TransporterTier implements ITier {
     private IntValue pullReference;
     private IntValue speedReference;
 
-    TransporterTier(int pull, int s) {
+    TransporterTier(BaseTier tier, int pull, int s) {
         basePull = pull;
         baseSpeed = s;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     public static TransporterTier get(BaseTier tier) {
-        for (TransporterTier transmitter : values()) {
+        for (TransporterTier transmitter : EnumUtils.TRANSPORTER_TIERS) {
             if (transmitter.getBaseTier() == tier) {
                 return transmitter;
             }

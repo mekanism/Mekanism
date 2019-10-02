@@ -22,6 +22,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -89,7 +90,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
         if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
+        tier = EnumUtils.ENERGY_CUBE_TIERS[upgradeTier.ordinal()];
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
@@ -184,7 +185,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        tier = EnergyCubeTier.values()[nbtTags.getInt("tier")];
+        tier = EnumUtils.ENERGY_CUBE_TIERS[nbtTags.getInt("tier")];
     }
 
     @Nonnull

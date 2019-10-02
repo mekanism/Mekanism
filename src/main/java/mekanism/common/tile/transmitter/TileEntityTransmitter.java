@@ -13,6 +13,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -122,7 +123,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             if (canHaveIncompatibleNetworks()) {
                 //We only need to check if we can have incompatible networks and if we actually have a network
                 boolean networkUpdated = false;
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
                         //Recheck the side that is now enabled, as we manually merge this
                         // cannot be simplified to a first match is good enough

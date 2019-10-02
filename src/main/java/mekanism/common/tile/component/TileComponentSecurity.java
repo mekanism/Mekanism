@@ -11,6 +11,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -118,7 +119,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        securityMode = SecurityMode.values()[nbtTags.getInt("securityMode")];
+        securityMode = EnumUtils.SECURITY_MODES[nbtTags.getInt("securityMode")];
         if (nbtTags.contains("ownerUUID")) {
             ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
         }

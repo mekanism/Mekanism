@@ -35,6 +35,7 @@ import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -178,7 +179,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
         int upgradeOrdinal = upgradeTier.ordinal();
-        if (upgradeOrdinal != tier.ordinal() + 1 || upgradeOrdinal  > FactoryTier.values().length) {
+        if (upgradeOrdinal != tier.ordinal() + 1 || upgradeOrdinal > EnumUtils.FACTORY_TIERS.length) {
             return false;
         }
 

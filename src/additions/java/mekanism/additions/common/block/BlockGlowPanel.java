@@ -8,6 +8,7 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,7 +34,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
     static {
         AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
         Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             bounds[side.ordinal()] = VoxelShapes.create(MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side.getOpposite())
                   .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
         }

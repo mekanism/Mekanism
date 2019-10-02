@@ -24,6 +24,7 @@ import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
@@ -130,7 +131,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return connections;
         }
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             if (canConnectMutual(side)) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
                 if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(transmitter ->
@@ -183,7 +184,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return connections;
         }
 
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             if (canConnectMutual(side)) {
                 Coord4D coord = new Coord4D(getPos(), getWorld()).offset(side);
                 if (!getWorld().isRemote && !coord.exists(getWorld())) {
@@ -221,7 +222,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         List<AxisAlignedBB> list = new ArrayList<>();
         byte connections = getAllCurrentConnections();
         AxisAlignedBB[] sides = getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides : BlockLargeTransmitter.largeSides;
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             if (connectionMapContainsSide(connections, side)) {
                 list.add(sides[side.ordinal()]);
             }
@@ -305,7 +306,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         super.read(nbtTags);
         redstoneReactive = nbtTags.getBoolean("redstoneReactive");
         for (int i = 0; i < 6; i++) {
-            connectionTypes[i] = ConnectionType.values()[nbtTags.getInt("connection" + i)];
+            connectionTypes[i] = EnumUtils.CONNECTION_TYPES[nbtTags.getInt("connection" + i)];
         }
         //TODO: Do we need to update the model here
     }
@@ -407,7 +408,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     protected void recheckConnections(byte newlyEnabledTransmitters) {
         //If our connectivity changed on a side and it is also a sided pipe, inform it to recheck its connections
         //This fixes pipes not reconnecting cross chunk
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
                 if (tileEntity instanceof TileEntitySidedPipe) {
@@ -503,7 +504,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<Direction> getConnections(ConnectionType type) {
         List<Direction> sides = new ArrayList<>();
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             if (getConnectionType(side) == type) {
                 sides.add(side);
             }
@@ -546,7 +547,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     protected Direction sideHit(int boxIndex) {
         List<Direction> list = new ArrayList<>();
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
                 list.add(side);
@@ -596,7 +597,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     protected void updateModelData() {
         TransmitterModelData modelData = getModelData();
         //Update the data, using information about if there is actually a connection on a given side
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             modelData.setConnectionData(side, getConnectionType(side));
         }
     }

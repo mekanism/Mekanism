@@ -15,6 +15,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -70,7 +71,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             GlStateManager.translatef((float) x, (float) y, (float) z);
 
             boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
-            for (Direction side : Direction.values()) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {

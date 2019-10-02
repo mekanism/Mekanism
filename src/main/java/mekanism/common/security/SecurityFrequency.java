@@ -5,6 +5,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
@@ -60,7 +61,7 @@ public class SecurityFrequency extends Frequency {
         securityMode = SecurityMode.PUBLIC;
 
         override = nbtTags.getBoolean("override");
-        securityMode = SecurityMode.values()[nbtTags.getInt("securityMode")];
+        securityMode = EnumUtils.SECURITY_MODES[nbtTags.getInt("securityMode")];
 
         if (nbtTags.contains("trusted")) {
             ListNBT trustedList = nbtTags.getList("trusted", NBT.TAG_STRING);

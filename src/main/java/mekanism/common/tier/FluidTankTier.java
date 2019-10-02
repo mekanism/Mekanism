@@ -3,11 +3,11 @@ package mekanism.common.tier;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum FluidTankTier implements ITier {
-    BASIC(14_000, 400),
-    ADVANCED(28_000, 800),
-    ELITE(56_000, 1_600),
-    ULTIMATE(112_000, 3_200),
-    CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
+    BASIC(BaseTier.BASIC, 14_000, 400),
+    ADVANCED(BaseTier.ADVANCED, 28_000, 800),
+    ELITE(BaseTier.ELITE, 56_000, 1_600),
+    ULTIMATE(BaseTier.ULTIMATE, 112_000, 3_200),
+    CREATIVE(BaseTier.CREATIVE, Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
     private final int baseStorage;
     private final int baseOutput;
@@ -15,10 +15,10 @@ public enum FluidTankTier implements ITier {
     private IntValue storageReference;
     private IntValue outputReference;
 
-    FluidTankTier(int s, int o) {
+    FluidTankTier(BaseTier tier, int s, int o) {
         baseStorage = s;
         baseOutput = o;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     @Override

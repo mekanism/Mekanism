@@ -19,6 +19,11 @@ import org.apache.logging.log4j.Logger;
 
 public class TransmitterNetworkRegistry {
 
+    /**
+     * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
+     */
+    private static final Direction[] DIRECTIONS = Direction.values();
+
     private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
     private static Logger logger = LogManager.getLogger("MekanismTransmitters");
@@ -228,7 +233,7 @@ public class TransmitterNetworkRegistry {
                     connectedTransmitters.add(transmitter);
                     transmitter.setOrphan(false);
 
-                    for (Direction direction : Direction.values()) {
+                    for (Direction direction : DIRECTIONS) {
                         if (direction.getAxis().isHorizontal() && !transmitter.world().isAreaLoaded(from.getPos().offset(direction), 0)) {
                             continue;
                         }

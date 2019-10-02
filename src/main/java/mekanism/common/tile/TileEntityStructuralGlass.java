@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -70,7 +71,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
                 return;
             }
             iterated.add(pos);
-            for (Direction side : Direction.values()) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D coord = pos.offset(side);
                 TileEntity tile = coord.getTileEntity(world);
                 if (!iterated.contains(coord)) {

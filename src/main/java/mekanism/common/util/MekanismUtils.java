@@ -87,12 +87,12 @@ public final class MekanismUtils {
     /**
      * Pre-calculated cache of translated block orientations
      */
-    private static final Direction[][] baseOrientations = new Direction[Direction.values().length][Direction.values().length];
+    private static final Direction[][] baseOrientations = new Direction[EnumUtils.DIRECTIONS.length][EnumUtils.DIRECTIONS.length];
 
     static {
-        for (int blockFacing = 0; blockFacing < Direction.values().length; blockFacing++) {
-            for (int side = 0; side < Direction.values().length; side++) {
-                baseOrientations[blockFacing][side] = getBaseOrientation(Direction.values()[side], Direction.values()[blockFacing]);
+        for (int blockFacing = 0; blockFacing < EnumUtils.DIRECTIONS.length; blockFacing++) {
+            for (int side = 0; side < EnumUtils.DIRECTIONS.length; side++) {
+                baseOrientations[blockFacing][side] = getBaseOrientation(EnumUtils.DIRECTIONS[side], EnumUtils.DIRECTIONS[blockFacing]);
             }
         }
     }
@@ -362,7 +362,7 @@ public final class MekanismUtils {
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, Coord4D coord) {
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             Coord4D sideCoord = coord.offset(side);
             if (sideCoord.exists(world) && sideCoord.offset(side).exists(world)) {
                 BlockState blockState = sideCoord.getBlockState(world);
@@ -386,7 +386,7 @@ public final class MekanismUtils {
      * @return if the block is directly getting powered
      */
     public static boolean isDirectlyGettingPowered(World world, Coord4D coord) {
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             Coord4D sideCoord = coord.offset(side);
             if (sideCoord.exists(world)) {
                 if (world.getRedstonePower(coord.getPos(), side) > 0) {
@@ -414,7 +414,7 @@ public final class MekanismUtils {
      */
     public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
         BlockState state = coord.getBlockState(world);
-        for (Direction dir : Direction.values()) {
+        for (Direction dir : EnumUtils.DIRECTIONS) {
             Coord4D offset = coord.offset(dir);
             if (offset.exists(world)) {
                 notifyNeighborofChange(world, offset, coord.getPos());

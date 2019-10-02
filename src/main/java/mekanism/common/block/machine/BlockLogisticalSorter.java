@@ -28,6 +28,7 @@ import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterCont
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -78,7 +79,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     static {
         AxisAlignedBB sorter = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
         Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             bounds[side.ordinal()] = VoxelShapes.create(MultipartUtils.rotate(sorter.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side.getOpposite())
                   .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
         }
@@ -104,7 +105,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         if (tile instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
             if (!transporter.hasConnectedInventory()) {
-                for (Direction dir : Direction.values()) {
+                for (Direction dir : EnumUtils.DIRECTIONS) {
                     TileEntity tileEntity = Coord4D.get(transporter).offset(dir).getTileEntity(world);
                     if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                         transporter.setFacing(dir.getOpposite());
@@ -183,7 +184,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                             Direction change = tileEntity.getDirection().rotateY();
                             if (tileEntity instanceof TileEntityLogisticalSorter) {
                                 if (!((TileEntityLogisticalSorter) tileEntity).hasConnectedInventory()) {
-                                    for (Direction dir : Direction.values()) {
+                                    for (Direction dir : EnumUtils.DIRECTIONS) {
                                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
                                         if (InventoryUtils.isItemHandler(tile, dir)) {
                                             change = dir.getOpposite();
@@ -236,7 +237,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
             if (tileEntity instanceof TileEntityLogisticalSorter) {
                 TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tileEntity;
                 if (!sorter.hasConnectedInventory()) {
-                    for (Direction dir : Direction.values()) {
+                    for (Direction dir : EnumUtils.DIRECTIONS) {
                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
                         if (InventoryUtils.isItemHandler(tile, dir)) {
                             sorter.setFacing(dir.getOpposite());

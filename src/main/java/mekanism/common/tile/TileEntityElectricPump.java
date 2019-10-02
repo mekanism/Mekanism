@@ -28,6 +28,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -153,7 +154,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         Collections.shuffle(tempPumpList);
 
         //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
-        for (Direction orientation : Direction.values()) {
+        for (Direction orientation : EnumUtils.DIRECTIONS) {
             Coord4D wrapper = Coord4D.get(this).offset(orientation);
             FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
             if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
@@ -185,7 +186,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             }
 
             //Add all the blocks surrounding this recurring node to the recurring node list
-            for (Direction orientation : Direction.values()) {
+            for (Direction orientation : EnumUtils.DIRECTIONS) {
                 Coord4D side = wrapper.offset(orientation);
                 if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.general.maxPumpRange.get()) {
                     fluid = MekanismUtils.getFluid(world, side, hasFilter());

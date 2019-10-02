@@ -19,6 +19,7 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -75,7 +76,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
         if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = BinTier.values()[upgradeTier.ordinal()];
+        tier = EnumUtils.BIN_TIERS[upgradeTier.ordinal()];
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
@@ -236,7 +237,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         cacheCount = nbtTags.getInt("itemCount");
-        tier = BinTier.values()[nbtTags.getInt("tier")];
+        tier = EnumUtils.BIN_TIERS[nbtTags.getInt("tier")];
         bottomStack = ItemStack.read(nbtTags.getCompound("bottomStack"));
         topStack = ItemStack.read(nbtTags.getCompound("topStack"));
         if (getItemCount() > 0) {

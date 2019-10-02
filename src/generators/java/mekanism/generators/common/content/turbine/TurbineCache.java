@@ -3,6 +3,7 @@ package mekanism.generators.common.content.turbine;
 import javax.annotation.Nonnull;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -33,7 +34,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
             fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("cachedFluid"));
         }
         electricity = nbtTags.getDouble("electricity");
-        dumpMode = GasMode.values()[nbtTags.getInt("dumpMode")];
+        dumpMode = EnumUtils.GAS_MODES[nbtTags.getInt("dumpMode")];
     }
 
     @Override

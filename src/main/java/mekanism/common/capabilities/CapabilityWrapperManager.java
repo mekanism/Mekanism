@@ -2,11 +2,12 @@ package mekanism.common.capabilities;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import java.util.Map;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
 public class CapabilityWrapperManager<IMPL, WRAPPER> {
 
-    private Map<Direction, WRAPPER> wrappers = new Reference2ObjectArrayMap<>(Direction.values().length + 1);
+    private Map<Direction, WRAPPER> wrappers = new Reference2ObjectArrayMap<>(EnumUtils.DIRECTIONS.length + 1);
     private Class<IMPL> typeClass;
     private Class<WRAPPER> wrapperClass;
 

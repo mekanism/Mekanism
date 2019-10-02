@@ -57,7 +57,7 @@ public final class CableUtils {
 
     public static TileEntity[] getConnectedOutputters(TileEntity source, BlockPos pos, World world) {
         TileEntity[] outputters = new TileEntity[]{null, null, null, null, null, null};
-        for (Direction orientation : Direction.values()) {
+        for (Direction orientation : EnumUtils.DIRECTIONS) {
             final TileEntity outputter = MekanismUtils.getTileEntity(world, pos.offset(orientation));
             if (isOutputter(source, outputter, orientation)) {
                 outputters[orientation.ordinal()] = outputter;
@@ -109,7 +109,7 @@ public final class CableUtils {
                 //Fake that we have one target given we know that no sides will overlap
                 // This allows us to have slightly better performance
                 EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     if (emitter.canOutputEnergy(side)) {
                         TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
                         //If it can accept energy or it is a cable

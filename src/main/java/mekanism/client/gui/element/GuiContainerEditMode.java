@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -47,8 +48,8 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
     @Override
     public void onClick(double mouseX, double mouseY) {
         ContainerEditMode current = ((IFluidContainerManager) tileEntity).getContainerEditMode();
-        int ordinalToSet = current.ordinal() < (ContainerEditMode.values().length - 1) ? current.ordinal() + 1 : 0;
-        Mekanism.packetHandler.sendToServer(new PacketContainerEditMode(Coord4D.get(tileEntity), ContainerEditMode.values()[ordinalToSet]));
+        int ordinalToSet = current.ordinal() < (EnumUtils.CONTAINER_EDIT_MODES.length - 1) ? current.ordinal() + 1 : 0;
+        Mekanism.packetHandler.sendToServer(new PacketContainerEditMode(Coord4D.get(tileEntity), EnumUtils.CONTAINER_EDIT_MODES[ordinalToSet]));
     }
 
     @Override

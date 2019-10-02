@@ -15,6 +15,7 @@ import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -48,7 +49,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
         energyCube.render(0.0625F, tier, Minecraft.getInstance().textureManager, true);
 
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
             energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, Minecraft.getInstance().textureManager);
         }

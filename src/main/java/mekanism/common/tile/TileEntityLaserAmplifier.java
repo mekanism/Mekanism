@@ -18,6 +18,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
@@ -215,7 +216,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                     time = dataStream.readInt();
                     break;
                 case 3:
-                    outputMode = RedstoneOutput.values()[outputMode.ordinal() == RedstoneOutput.values().length - 1 ? 0 : outputMode.ordinal() + 1];
+                    outputMode = EnumUtils.REDSTONE_OUTPUTS[outputMode.ordinal() == EnumUtils.REDSTONE_OUTPUTS.length - 1 ? 0 : outputMode.ordinal() + 1];
                     break;
             }
             return;
@@ -244,7 +245,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         time = nbtTags.getInt("time");
         collectedEnergy = nbtTags.getDouble("collectedEnergy");
         lastFired = nbtTags.getDouble("lastFired");
-        outputMode = RedstoneOutput.values()[nbtTags.getInt("outputMode")];
+        outputMode = EnumUtils.REDSTONE_OUTPUTS[nbtTags.getInt("outputMode")];
     }
 
     @Nonnull

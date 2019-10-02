@@ -28,15 +28,15 @@ public class UnitDisplayUtils {
         if (value == 0) {
             return value + " " + unitName;
         }
-        for (int i = 0; i < MeasurementUnit.values().length; i++) {
-            MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
+        for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
+            MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
             if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
             }
-            if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
+            if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
             }
-            MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
+            MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
             if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
             }
@@ -79,17 +79,17 @@ public class UnitDisplayUtils {
         if (value == 0) {
             return value + (isShort ? "" : " ") + unitName;
         }
-        for (int i = 0; i < MeasurementUnit.values().length; i++) {
-            MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
+        for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
+            MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
             if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
             }
 
-            if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
+            if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
             }
 
-            MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
+            MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
             if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
             }

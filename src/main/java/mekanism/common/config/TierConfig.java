@@ -11,6 +11,7 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
+import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
@@ -51,7 +52,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addEnergyCubeCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Energy Cubes").push(ENERGY_CUBE_CATEGORY);
-        for (EnergyCubeTier tier : EnergyCubeTier.values()) {
+        for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             DoubleValue storageReference = builder.comment("Maximum number of Joules " + tierName + " energy cubes can store.")
                   .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseMaxEnergy(), 1, Double.MAX_VALUE);
@@ -64,7 +65,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addFluidTankCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Fluid Tanks").push(FLUID_TANK_CATEGORY);
-        for (FluidTankTier tier : FluidTankTier.values()) {
+        for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             IntValue storageReference = builder.comment("Storage size of " + tierName + " fluid tanks in mB.")
                   .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE);
@@ -77,7 +78,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addGasTankCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Gas Tanks").push(GAS_TANK_CATEGORY);
-        for (GasTankTier tier : GasTankTier.values()) {
+        for (GasTankTier tier : EnumUtils.GAS_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             IntValue storageReference = builder.comment("Storage size of " + tierName + " gas tanks in mB.")
                   .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE);
@@ -90,7 +91,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addBinCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Bins").push(BIN_CATEGORY);
-        for (BinTier tier : BinTier.values()) {
+        for (BinTier tier : EnumUtils.BIN_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             IntValue storageReference = builder.comment("The number of items " + tierName + " bins can store.")
                   .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE);
@@ -101,13 +102,13 @@ public class TierConfig implements IMekanismConfig {
 
     private void addInductionCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Induction").push(INDUCTION_CATEGORY);
-        for (InductionCellTier tier : InductionCellTier.values()) {
+        for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             DoubleValue storageReference = builder.comment("Maximum number of Joules " + tierName + " induction cells can store.")
                   .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseMaxEnergy(), 1, Double.MAX_VALUE);
             tier.setConfigReference(storageReference);
         }
-        for (InductionProviderTier tier : InductionProviderTier.values()) {
+        for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             DoubleValue outputReference = builder.comment("Maximum number of Joules " + tierName + " induction providers can output or accept.")
                   .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Double.MAX_VALUE);
@@ -128,7 +129,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addUniversalCableCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Universal Cables").push(ENERGY_CATEGORY);
-        for (CableTier tier : CableTier.values()) {
+        for (CableTier tier : EnumUtils.CABLE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             IntValue capacityReference = builder.comment("Internal buffer in Joules of each " + tierName + " universal cable.")
                   .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE);
@@ -139,7 +140,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addMechanicalPipeCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Mechanical Pipes").push(FLUID_CATEGORY);
-        for (PipeTier tier : PipeTier.values()) {
+        for (PipeTier tier : EnumUtils.PIPE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             IntValue capacityReference = builder.comment("Capacity of " + tierName + " mechanical pipes in mB.")
                   .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE);
@@ -152,7 +153,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addPressurizedTubesCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Pressurized Tubes").push(GAS_CATEGORY);
-        for (TubeTier tier : TubeTier.values()) {
+        for (TubeTier tier : EnumUtils.TUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             IntValue capacityReference = builder.comment("Capacity of " + tierName + " pressurized tubes in mB.")
                   .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE);
@@ -165,7 +166,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addLogisticalTransportersCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Logistical Transporters").push(ITEMS_CATEGORY);
-        for (TransporterTier tier : TransporterTier.values()) {
+        for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             IntValue pullReference = builder.comment("Item throughput rate of " + tierName + " logistical transporters in items/s.")
                   .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE);
@@ -178,7 +179,7 @@ public class TierConfig implements IMekanismConfig {
 
     private void addThermodynamicConductorsCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Thermodynamic Conductors").push(HEAT_CATEGORY);
-        for (ConductorTier tier : ConductorTier.values()) {
+        for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             DoubleValue conductionReference = builder.comment("Conduction value of " + tierName + " thermodynamic conductors.")
                   .defineInRange(tierName.toLowerCase() + "InverseConduction", tier.getBaseConduction(), 1, Double.MAX_VALUE);

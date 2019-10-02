@@ -20,6 +20,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -173,7 +174,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     }
 
     public ConfiguratorMode getState(ItemStack itemstack) {
-        return ConfiguratorMode.values()[ItemDataUtils.getInt(itemstack, "state")];
+        return EnumUtils.CONFIGURATOR_MODES[ItemDataUtils.getInt(itemstack, "state")];
     }
 
     @Override

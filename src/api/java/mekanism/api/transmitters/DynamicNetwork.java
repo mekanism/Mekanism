@@ -24,6 +24,11 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler {
 
+    /**
+     * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
+     */
+    private static final Direction[] DIRECTIONS = Direction.values();
+
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new HashSet<>();
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new HashSet<>();
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = new HashSet<>();
@@ -55,7 +60,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                         world = transmitter.world();
                     }
 
-                    for (Direction side : Direction.values()) {
+                    for (Direction side : DIRECTIONS) {
                         updateTransmitterOnSide(transmitter, side);
                     }
 

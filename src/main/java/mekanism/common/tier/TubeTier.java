@@ -1,12 +1,13 @@
 package mekanism.common.tier;
 
+import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum TubeTier implements ITier {
-    BASIC(256, 64),
-    ADVANCED(1_024, 256),
-    ELITE(4_096, 1_024),
-    ULTIMATE(16_384, 4_096);
+    BASIC(BaseTier.BASIC, 256, 64),
+    ADVANCED(BaseTier.ADVANCED, 1_024, 256),
+    ELITE(BaseTier.ELITE, 4_096, 1_024),
+    ULTIMATE(BaseTier.ULTIMATE, 16_384, 4_096);
 
     private final int baseCapacity;
     private final int basePull;
@@ -14,14 +15,14 @@ public enum TubeTier implements ITier {
     private IntValue capacityReference;
     private IntValue pullReference;
 
-    TubeTier(int capacity, int pullAmount) {
+    TubeTier(BaseTier tier, int capacity, int pullAmount) {
         baseCapacity = capacity;
         basePull = pullAmount;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     public static TubeTier get(BaseTier tier) {
-        for (TubeTier transmitter : values()) {
+        for (TubeTier transmitter : EnumUtils.TUBE_TIERS) {
             if (transmitter.getBaseTier() == tier) {
                 return transmitter;
             }

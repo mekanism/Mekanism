@@ -1,25 +1,26 @@
 package mekanism.common.tier;
 
+import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 //TODO: Should cable capacity be upped to a double
 public enum CableTier implements ITier {
-    BASIC(3_200),
-    ADVANCED(12_800),
-    ELITE(64_000),
-    ULTIMATE(320_000);
+    BASIC(BaseTier.BASIC, 3_200),
+    ADVANCED(BaseTier.ADVANCED, 12_800),
+    ELITE(BaseTier.ELITE, 64_000),
+    ULTIMATE(BaseTier.ULTIMATE, 320_000);
 
     private final int baseCapacity;
     private final BaseTier baseTier;
     private IntValue capacityReference;
 
-    CableTier(int capacity) {
+    CableTier(BaseTier tier, int capacity) {
         baseCapacity = capacity;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     public static CableTier get(BaseTier tier) {
-        for (CableTier transmitter : values()) {
+        for (CableTier transmitter : EnumUtils.CABLE_TIERS) {
             if (transmitter.getBaseTier() == tier) {
                 return transmitter;
             }

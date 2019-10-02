@@ -1,12 +1,13 @@
 package mekanism.common.tier;
 
+import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum PipeTier implements ITier {
-    BASIC(1_000, 100),
-    ADVANCED(4_000, 400),
-    ELITE(16_000, 1_600),
-    ULTIMATE(64_000, 6_400);
+    BASIC(BaseTier.BASIC, 1_000, 100),
+    ADVANCED(BaseTier.ADVANCED, 4_000, 400),
+    ELITE(BaseTier.ELITE, 16_000, 1_600),
+    ULTIMATE(BaseTier.ULTIMATE, 64_000, 6_400);
 
     private final int baseCapacity;
     private final int basePull;
@@ -14,14 +15,14 @@ public enum PipeTier implements ITier {
     private IntValue capacityReference;
     private IntValue pullReference;
 
-    PipeTier(int capacity, int pullAmount) {
+    PipeTier(BaseTier tier, int capacity, int pullAmount) {
         baseCapacity = capacity;
         basePull = pullAmount;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     public static PipeTier get(BaseTier tier) {
-        for (PipeTier transmitter : values()) {
+        for (PipeTier transmitter : EnumUtils.PIPE_TIERS) {
             if (transmitter.getBaseTier() == tier) {
                 return transmitter;
             }

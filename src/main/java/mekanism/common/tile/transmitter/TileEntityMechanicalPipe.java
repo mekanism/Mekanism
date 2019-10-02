@@ -16,6 +16,7 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -122,7 +123,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains("tier")) {
-            tier = PipeTier.values()[nbtTags.getInt("tier")];
+            tier = EnumUtils.PIPE_TIERS[nbtTags.getInt("tier")];
         }
         buffer.setCapacity(getCapacity());
         if (nbtTags.contains("cacheFluid")) {
@@ -267,7 +268,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public boolean upgrade(int tierOrdinal) {
         if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = PipeTier.values()[tier.ordinal() + 1];
+            tier = EnumUtils.PIPE_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;

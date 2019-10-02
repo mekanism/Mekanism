@@ -27,6 +27,11 @@ import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
  */
 public class Coord4D {
 
+    /**
+     * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
+     */
+    private static final Direction[] DIRECTIONS = Direction.values();
+
     public int x;
     public int y;
     public int z;
@@ -261,7 +266,7 @@ public class Coord4D {
      */
     public Direction sideDifference(Coord4D other) {
         Coord4D diff = difference(other);
-        for (Direction side : Direction.values()) {
+        for (Direction side : DIRECTIONS) {
             if (side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z) {
                 return side;
             }

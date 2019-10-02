@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorsBlock;
@@ -127,7 +128,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
             }
 
             iterated.add(pos);
-            for (Direction side : Direction.values()) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D coord = pos.offset(side);
                 if (!iterated.contains(coord) && coord.getTileEntity(world) instanceof TileEntityReactorBlock) {
                     ((TileEntityReactorBlock) coord.getTileEntity(world)).attempted = true;

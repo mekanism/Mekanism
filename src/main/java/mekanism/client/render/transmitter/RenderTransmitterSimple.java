@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -27,7 +28,7 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.translatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
 
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             renderSide(worldRenderer, side, transmitter);
         }
 

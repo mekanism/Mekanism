@@ -3,19 +3,19 @@ package mekanism.common.tier;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum BinTier implements ITier {
-    BASIC(4_096),
-    ADVANCED(8_192),
-    ELITE(32_768),
-    ULTIMATE(262_144),
-    CREATIVE(Integer.MAX_VALUE);
+    BASIC(BaseTier.BASIC, 4_096),
+    ADVANCED(BaseTier.ADVANCED, 8_192),
+    ELITE(BaseTier.ELITE, 32_768),
+    ULTIMATE(BaseTier.ULTIMATE, 262_144),
+    CREATIVE(BaseTier.CREATIVE, Integer.MAX_VALUE);
 
     private final int baseStorage;
     private final BaseTier baseTier;
     private IntValue storageReference;
 
-    BinTier(int s) {
+    BinTier(BaseTier tier, int s) {
+        baseTier = tier;
         baseStorage = s;
-        baseTier = BaseTier.values()[ordinal()];
     }
 
     @Override

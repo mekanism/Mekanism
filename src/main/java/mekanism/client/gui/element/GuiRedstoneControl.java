@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.network.PacketRedstoneControl;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -37,11 +38,11 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
     public void onClick(double mouseX, double mouseY) {
         IRedstoneControl control = (IRedstoneControl) tileEntity;
         RedstoneControl current = control.getControlType();
-        int ordinalToSet = current.ordinal() < (RedstoneControl.values().length - 1) ? current.ordinal() + 1 : 0;
+        int ordinalToSet = current.ordinal() < (EnumUtils.REDSTONE_CONTROLS.length - 1) ? current.ordinal() + 1 : 0;
         if (ordinalToSet == RedstoneControl.PULSE.ordinal() && !control.canPulse()) {
             ordinalToSet = 0;
         }
-        Mekanism.packetHandler.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+        Mekanism.packetHandler.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), EnumUtils.REDSTONE_CONTROLS[ordinalToSet]));
     }
 
     @Override

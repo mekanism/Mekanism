@@ -3,18 +3,18 @@ package mekanism.common.tier;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum InductionCellTier implements ITier {
-    BASIC(1E9D),
-    ADVANCED(8E9D),
-    ELITE(64E9D),
-    ULTIMATE(512E9D);
+    BASIC(BaseTier.BASIC, 1E9D),
+    ADVANCED(BaseTier.ADVANCED, 8E9D),
+    ELITE(BaseTier.ELITE, 64E9D),
+    ULTIMATE(BaseTier.ULTIMATE, 512E9D);
 
     private final double baseMaxEnergy;
     private final BaseTier baseTier;
     private DoubleValue storageReference;
 
-    InductionCellTier(double max) {
+    InductionCellTier(BaseTier tier, double max) {
         baseMaxEnergy = max;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     @Override

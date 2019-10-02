@@ -1,13 +1,14 @@
 package mekanism.common.tier;
 
 import mekanism.common.ColourRGBA;
+import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum ConductorTier implements ITier {
-    BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
-    ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1)),
-    ELITE(5, 1, 8_000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
-    ULTIMATE(5, 1, 100_000, new ColourRGBA(0.2, 0.2, 0.2, 1));
+    BASIC(BaseTier.BASIC, 5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
+    ADVANCED(BaseTier.ADVANCED, 5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1)),
+    ELITE(BaseTier.ELITE, 5, 1, 8_000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
+    ULTIMATE(BaseTier.ULTIMATE, 5, 1, 100_000, new ColourRGBA(0.2, 0.2, 0.2, 1));
 
     private final ColourRGBA baseColour;
     private final double baseConduction;
@@ -18,17 +19,17 @@ public enum ConductorTier implements ITier {
     private DoubleValue capacityReference;
     private DoubleValue insulationReference;
 
-    ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour) {
+    ConductorTier(BaseTier tier, double inversek, double inverseC, double insulationInversek, ColourRGBA colour) {
         baseConduction = inversek;
         baseHeatCapacity = inverseC;
         baseConductionInsulation = insulationInversek;
 
         baseColour = colour;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     public static ConductorTier get(BaseTier tier) {
-        for (ConductorTier transmitter : values()) {
+        for (ConductorTier transmitter : EnumUtils.CONDUCTOR_TIERS) {
             if (transmitter.getBaseTier() == tier) {
                 return transmitter;
             }

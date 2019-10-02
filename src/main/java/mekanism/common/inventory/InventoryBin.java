@@ -3,6 +3,7 @@ package mekanism.common.inventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -75,7 +76,7 @@ public class InventoryBin {
     }
 
     public BinTier getTier() {
-        return BinTier.values()[((ITierItem) bin.getItem()).getBaseTier(bin).ordinal()];
+        return EnumUtils.BIN_TIERS[((ITierItem) bin.getItem()).getBaseTier(bin).ordinal()];
     }
 
     public int getItemCount() {

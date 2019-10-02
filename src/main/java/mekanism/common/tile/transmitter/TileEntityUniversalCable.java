@@ -23,6 +23,7 @@ import mekanism.common.tier.CableTier;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -156,7 +157,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             buffer.amount = 0;
         }
         if (nbtTags.contains("tier")) {
-            tier = CableTier.values()[nbtTags.getInt("tier")];
+            tier = EnumUtils.CABLE_TIERS[nbtTags.getInt("tier")];
         }
     }
 
@@ -274,7 +275,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     public boolean upgrade(int tierOrdinal) {
         if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = CableTier.values()[tier.ordinal() + 1];
+            tier = EnumUtils.CABLE_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;

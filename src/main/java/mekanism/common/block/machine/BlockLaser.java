@@ -19,6 +19,7 @@ import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
@@ -66,7 +67,7 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     static {
         AxisAlignedBB laser = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
         Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             bounds[side.ordinal()] = VoxelShapes.create(MultipartUtils.rotate(laser.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side.getOpposite())
                   .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
         }

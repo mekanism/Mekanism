@@ -10,6 +10,7 @@ import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -60,7 +61,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         model.render(0.0625F, tileEntity.tier, rendererDispatcher.textureManager, false);
 
         setLightmapDisabled(true);
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             bindTexture(baseTexture);
             model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, rendererDispatcher.textureManager);
         }

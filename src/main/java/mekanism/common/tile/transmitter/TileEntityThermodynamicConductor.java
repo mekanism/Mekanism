@@ -17,6 +17,7 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -97,7 +98,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         super.read(nbtTags);
         temperature = nbtTags.getDouble("temperature");
         if (nbtTags.contains("tier")) {
-            tier = ConductorTier.values()[nbtTags.getInt("tier")];
+            tier = EnumUtils.CONDUCTOR_TIERS[nbtTags.getInt("tier")];
         }
     }
 
@@ -201,7 +202,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public boolean upgrade(int tierOrdinal) {
         if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = ConductorTier.values()[tier.ordinal() + 1];
+            tier = EnumUtils.CONDUCTOR_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;

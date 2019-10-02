@@ -3,6 +3,7 @@ package mekanism.common.block.transmitter;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -52,7 +53,7 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
         }
         //If we don't have a cached version of our shape, then we need to calculate it
         VoxelShape current = getCenter();
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             if (TileEntitySidedPipe.connectionMapContainsSide(connections, side)) {
                 current = VoxelShapes.combineAndSimplify(current, VoxelShapes.create(largeSides[side.ordinal()]), IBooleanFunction.OR);
             }

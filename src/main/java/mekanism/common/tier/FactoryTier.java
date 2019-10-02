@@ -1,17 +1,17 @@
 package mekanism.common.tier;
 
 public enum FactoryTier implements ITier {
-    BASIC(3),
-    ADVANCED(5),
-    ELITE(7),
-    ULTIMATE(9);
+    BASIC(BaseTier.BASIC, 3),
+    ADVANCED(BaseTier.ADVANCED, 5),
+    ELITE(BaseTier.ELITE, 7),
+    ULTIMATE(BaseTier.ULTIMATE, 9);
 
     public final int processes;
     private final BaseTier baseTier;
 
-    FactoryTier(int process) {
+    FactoryTier(BaseTier tier, int process) {
         processes = process;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     @Override

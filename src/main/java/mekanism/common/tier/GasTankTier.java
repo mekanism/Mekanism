@@ -5,11 +5,11 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum GasTankTier implements ITier, IStringSerializable {
-    BASIC(64_000, 256),
-    ADVANCED(128_000, 512),
-    ELITE(256_000, 1_028),
-    ULTIMATE(512_000, 2_056),
-    CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
+    BASIC(BaseTier.BASIC, 64_000, 256),
+    ADVANCED(BaseTier.ADVANCED, 128_000, 512),
+    ELITE(BaseTier.ELITE, 256_000, 1_028),
+    ULTIMATE(BaseTier.ULTIMATE, 512_000, 2_056),
+    CREATIVE(BaseTier.CREATIVE, Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
     private final int baseStorage;
     private final int baseOutput;
@@ -17,10 +17,10 @@ public enum GasTankTier implements ITier, IStringSerializable {
     private IntValue storageReference;
     private IntValue outputReference;
 
-    GasTankTier(int s, int o) {
+    GasTankTier(BaseTier tier, int s, int o) {
         baseStorage = s;
         baseOutput = o;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     @Override

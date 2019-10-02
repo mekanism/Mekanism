@@ -13,6 +13,7 @@ import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
@@ -141,7 +142,7 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
     }
 
     public FreeRunnerMode getMode(ItemStack itemStack) {
-        return FreeRunnerMode.values()[ItemDataUtils.getInt(itemStack, "mode")];
+        return EnumUtils.FREE_RUNNER_MODES[ItemDataUtils.getInt(itemStack, "mode")];
     }
 
     public void setMode(ItemStack itemStack, FreeRunnerMode mode) {

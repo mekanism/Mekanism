@@ -15,6 +15,7 @@ import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -68,7 +69,7 @@ public class TileComponentConfig implements ITileComponent {
         SideConfig config = getConfig(type);
         Direction[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
 
-        for (Direction sideToCheck : Direction.values()) {
+        for (Direction sideToCheck : EnumUtils.DIRECTIONS) {
             if (config.get(translatedFacings[sideToCheck.ordinal()]) == dataIndex) {
                 ret.add(sideToCheck);
             }
@@ -130,7 +131,7 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     public void setConfig(TransmissionType type, byte[] config) {
-        assert config.length == Direction.values().length;
+        assert config.length == EnumUtils.DIRECTIONS.length;
         setConfig(type, config[0], config[1], config[2], config[3], config[4], config[5]);
     }
 

@@ -15,6 +15,7 @@ import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -150,7 +151,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
     }
 
     public JetpackMode getMode(ItemStack stack) {
-        return JetpackMode.values()[ItemDataUtils.getInt(stack, "mode")];
+        return EnumUtils.JETPACK_MODES[ItemDataUtils.getInt(stack, "mode")];
     }
 
     public void setMode(ItemStack stack, JetpackMode mode) {

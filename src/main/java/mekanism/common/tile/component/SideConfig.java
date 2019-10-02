@@ -2,11 +2,12 @@ package mekanism.common.tile.component;
 
 import java.util.Observable;
 import java.util.Observer;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
 public class SideConfig {
 
-    private byte[] directions = new byte[Direction.values().length];
+    private byte[] directions = new byte[EnumUtils.DIRECTIONS.length];
     private Observable observable = new Observable();
 
     public SideConfig() {
@@ -14,7 +15,7 @@ public class SideConfig {
 
     public SideConfig(byte[] b) {
         this(b[0], b[1], b[2], b[3], b[4], b[5]);
-        assert b.length == Direction.values().length;
+        assert b.length == EnumUtils.DIRECTIONS.length;
     }
 
     public SideConfig(byte d, byte u, byte n, byte s, byte w, byte e) {

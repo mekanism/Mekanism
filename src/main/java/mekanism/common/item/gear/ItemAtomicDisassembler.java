@@ -18,6 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -415,7 +416,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 return;
             }
             found.add(pointer);
-            for (Direction side : Direction.values()) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D coord = pointer.offset(side);
                 if (maxRange > 0 && location.distanceTo(coord) > maxRange) {
                     continue;

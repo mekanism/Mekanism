@@ -11,6 +11,7 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -69,7 +70,7 @@ public class ItemNetworkReader extends ItemEnergized {
                             () -> {
                                 Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
 
-                                for (Direction iterSide : Direction.values()) {
+                                for (Direction iterSide : EnumUtils.DIRECTIONS) {
                                     Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
                                     TileEntity tile = coord.getTileEntity(world);
                                     Direction iterSideOpposite = iterSide.getOpposite();

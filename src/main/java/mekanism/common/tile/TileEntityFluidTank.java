@@ -21,6 +21,7 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
@@ -77,7 +78,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = FluidTankTier.values()[upgradeTier.ordinal()];
+        tier = EnumUtils.FLUID_TANK_TIERS[upgradeTier.ordinal()];
         fluidTank.setCapacity(tier.getStorage());
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
@@ -209,8 +210,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        tier = FluidTankTier.values()[nbtTags.getInt("tier")];
-        editMode = ContainerEditMode.values()[nbtTags.getInt("editMode")];
+        tier = EnumUtils.FLUID_TANK_TIERS[nbtTags.getInt("tier")];
+        editMode = EnumUtils.CONTAINER_EDIT_MODES[nbtTags.getInt("editMode")];
         //Needs to be outside the contains check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());
         if (nbtTags.contains("fluidTank")) {

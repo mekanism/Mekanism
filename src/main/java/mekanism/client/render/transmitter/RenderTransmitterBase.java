@@ -8,6 +8,7 @@ import java.util.function.Function;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.BlockState;
@@ -81,7 +82,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 
         int argb = color.argb();
         //TODO: Is there a reason to be going over each side? Given we are getting a model for a specific side anyways
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             for (BakedQuad quad : cc.getQuads(state, side, minecraft.world.getRandom(), modelData)) {
                 renderQuad(renderer, icon, quad, argb);
             }

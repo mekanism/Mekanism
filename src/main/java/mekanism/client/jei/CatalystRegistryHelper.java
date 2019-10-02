@@ -5,6 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.util.EnumUtils;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +48,7 @@ public class CatalystRegistryHelper {
         registry.addRecipeCatalyst(mekanismBlock.getItemStack(), category);
         FactoryType factoryType = mekanismBlock.getFactoryType();
         if (factoryType != null) {
-            for (FactoryTier tier : FactoryTier.values()) {
+            for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
                 MekanismBlock factory = MekanismBlock.getFactory(tier, factoryType);
                 if (factory.isEnabled()) {
                     registry.addRecipeCatalyst(factory.getItemStack(), category);

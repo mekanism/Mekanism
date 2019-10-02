@@ -5,11 +5,11 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum EnergyCubeTier implements ITier, IStringSerializable {
-    BASIC(2_000_000, 800),
-    ADVANCED(8_000_000, 3_200),
-    ELITE(32_000_000, 12_800),
-    ULTIMATE(128_000_000, 51_200),
-    CREATIVE(Double.MAX_VALUE, Double.MAX_VALUE);
+    BASIC(BaseTier.BASIC, 2_000_000, 800),
+    ADVANCED(BaseTier.ADVANCED, 8_000_000, 3_200),
+    ELITE(BaseTier.ELITE, 32_000_000, 12_800),
+    ULTIMATE(BaseTier.ULTIMATE, 128_000_000, 51_200),
+    CREATIVE(BaseTier.CREATIVE, Double.MAX_VALUE, Double.MAX_VALUE);
 
     private final double baseMaxEnergy;
     private final double baseOutput;
@@ -17,10 +17,10 @@ public enum EnergyCubeTier implements ITier, IStringSerializable {
     private DoubleValue storageReference;
     private DoubleValue outputReference;
 
-    EnergyCubeTier(double max, double out) {
+    EnergyCubeTier(BaseTier tier, double max, double out) {
         baseMaxEnergy = max;
         baseOutput = out;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = tier;
     }
 
     @Override

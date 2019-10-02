@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -138,7 +139,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             return;
         }
 
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             Coord4D sideCoord = coord.offset(side);
             if (isViableNode(sideCoord.getPos())) {
                 if (!iteratedNodes.contains(sideCoord)) {
@@ -444,7 +445,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 return;
             }
 
-            for (Direction side : Direction.values()) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D coord = pos.offset(side);
 
                 if (!iterated.contains(coord) && checker.isValid(coord)) {

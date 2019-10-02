@@ -19,6 +19,7 @@ import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -291,7 +292,7 @@ public class TransmitterModel extends OBJBakedModelBase {
         public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
                 }
                 itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), vertexFormat, textureMap, transformationMap);

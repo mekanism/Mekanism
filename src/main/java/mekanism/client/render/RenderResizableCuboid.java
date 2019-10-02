@@ -8,6 +8,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -88,7 +89,7 @@ public class RenderResizableCuboid {
     public static Direction[] getNeighbours(Direction face) {
         Direction[] faces = new Direction[4];
         int ordinal = 0;
-        for (Direction next : Direction.values()) {
+        for (Direction next : EnumUtils.DIRECTIONS) {
             if (next.getAxis() != face.getAxis()) {
                 faces[ordinal] = next;
                 ordinal++;
@@ -166,7 +167,7 @@ public class RenderResizableCuboid {
 
         wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
 
-        for (Direction face : Direction.values()) {
+        for (Direction face : EnumUtils.DIRECTIONS) {
             if (cube.shouldSideRender(face)) {
                 renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
             }
@@ -263,7 +264,7 @@ public class RenderResizableCuboid {
         distances[0] = transVertex.distanceTo(convertMiddle(pos));
 
         int index = 0;
-        Direction[] testArray = allAround ? Direction.values() : getNeighbours(face);
+        Direction[] testArray = allAround ? EnumUtils.DIRECTIONS : getNeighbours(face);
         for (Direction otherFace : testArray) {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));

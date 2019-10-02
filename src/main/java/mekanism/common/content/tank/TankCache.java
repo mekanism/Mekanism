@@ -2,6 +2,7 @@ package mekanism.common.content.tank;
 
 import javax.annotation.Nonnull;
 import mekanism.common.multiblock.MultiblockCache;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +36,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        editMode = ContainerEditMode.values()[nbtTags.getInt("editMode")];
+        editMode = EnumUtils.CONTAINER_EDIT_MODES[nbtTags.getInt("editMode")];
         ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 

@@ -13,6 +13,7 @@ import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -147,7 +148,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     }
 
     public FlamethrowerMode getMode(ItemStack stack) {
-        return FlamethrowerMode.values()[ItemDataUtils.getInt(stack, "mode")];
+        return EnumUtils.FLAMETHROWER_MODES[ItemDataUtils.getInt(stack, "mode")];
     }
 
     public void setMode(ItemStack stack, FlamethrowerMode mode) {

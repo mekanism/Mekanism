@@ -10,6 +10,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -76,7 +77,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
     public void updateController() {
         if (!(this instanceof TileEntityThermalEvaporationController)) {
-            for (Direction side : Direction.values()) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
                 BlockPos checkPos = pos.offset(side);
                 TileEntity check = MekanismUtils.getTileEntity(world, checkPos);
                 if (check instanceof TileEntityThermalEvaporationBlock) {
@@ -170,7 +171,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
                 if (te instanceof TileEntityThermalEvaporationBlock) {
                     ((TileEntityThermalEvaporationBlock) te).attempted = true;
-                    for (Direction side : Direction.values()) {
+                    for (Direction side : EnumUtils.DIRECTIONS) {
                         BlockPos coord = checkPos.offset(side);
                         if (!iterated.contains(coord)) {
                             checkQueue.addLast(coord);

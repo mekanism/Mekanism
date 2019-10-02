@@ -9,6 +9,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -34,7 +35,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         super.onUpdate();
         if (!world.isRemote) {
             if ((master == null) == prevMaster) {
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     Coord4D obj = Coord4D.get(this).offset(side);
                     if (obj.exists(world) && !obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)) {
                         MekanismUtils.notifyNeighborofChange(world, obj, this.pos);
