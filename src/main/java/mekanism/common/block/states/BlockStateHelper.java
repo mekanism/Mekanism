@@ -44,6 +44,10 @@ public class BlockStateHelper {
             //Default things to not being active
             state = state.with(activeProperty, false);
         }
+        if (block instanceof IStateWaterLogged) {
+            //Default the blocks to not being waterlogged, they have code to force waterlogging to true if being placed in water
+            state = state.with(WATERLOGGED, false);
+        }
         return state;
     }
 

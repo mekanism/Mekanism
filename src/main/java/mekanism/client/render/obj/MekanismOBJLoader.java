@@ -88,19 +88,20 @@ public class MekanismOBJLoader implements ICustomModelLoader {
         ResourceLocation resource = new ResourceLocation(Mekanism.MODID, name);
 
         ImmutableMap<String, String> textures = small ? getSmallTextures(name) : getLargeTextures(name);
+        registerModel(modelRegistry, objFile, textures, new ModelResourceLocation(resource, "inventory"));
+        registerModel(modelRegistry, objFile, textures, new ModelResourceLocation(resource, "waterlogged=false"));
+        registerModel(modelRegistry, objFile, textures, new ModelResourceLocation(resource, "waterlogged=true"));
+        //TODO: Is this needed given we have the waterlogged
+        registerModel(modelRegistry, objFile, textures, new ModelResourceLocation(resource, ""));
+    }
 
-        ModelResourceLocation model = new ModelResourceLocation(resource, "inventory");
-        IBakedModel bakedModel = modelRegistry.get(model);
-        modelRegistry.put(model, createBakedObjItemModel(bakedModel, objFile, new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
-              DefaultVertexFormats.ITEM, textures));
-
-        ModelResourceLocation normalModel = new ModelResourceLocation(resource, "");
-        IBakedModel bakedNormal = modelRegistry.get(normalModel);
-        modelRegistry.put(normalModel, createBakedObjItemModel(bakedNormal, objFile, new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
+    private static void registerModel(Map<ResourceLocation, IBakedModel> modelRegistry, String objFile, ImmutableMap<String, String> textures, ModelResourceLocation mrl) {
+        IBakedModel bakedNormal = modelRegistry.get(mrl);
+        modelRegistry.put(mrl, createBakedObjModel(bakedNormal, objFile, new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
               DefaultVertexFormats.ITEM, textures));
     }
 
-    public static OBJBakedModel createBakedObjItemModel(IBakedModel existingModel, String name, IModelState state, VertexFormat format, ImmutableMap<String, String> textures) {
+    public static OBJBakedModel createBakedObjModel(IBakedModel existingModel, String name, IModelState state, VertexFormat format, ImmutableMap<String, String> textures) {
         try {
             Function<ResourceLocation, TextureAtlasSprite> textureGetter = location -> Minecraft.getInstance().getTextureMap().getAtlasSprite(location.toString());
 

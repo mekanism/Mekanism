@@ -66,7 +66,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
                 if (!modelParts.containsKey(key)) {
                     //TODO: Fix this if needed
                     OBJState objState = new OBJState(Collections.singletonList(key), false);
-                    //TODO: The texture flipper desn't even seem
+                    //TODO: The texture flipper desn't even seem to be used
                     modelParts.put(key, objModel.bake(bakery, textureGetterFlipV, new ISprite() {
                         @Nonnull
                         @Override
@@ -89,12 +89,14 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         int argb = color.argb();
         for (Direction side : Direction.values()) {
             for (BakedQuad quad : cc.getQuads(state, side, minecraft.world.getRandom(), modelData)) {
+                //quad = new BakedQuadRetextured(quad, icon);
                 quad = MekanismRenderer.iconTransform(quad, icon);
                 LightUtil.renderQuadColor(renderer, quad, argb);
             }
         }
 
         for (BakedQuad quad : cc.getQuads(state, null, minecraft.world.getRandom(), modelData)) {
+            //quad = new BakedQuadRetextured(quad, icon);
             quad = MekanismRenderer.iconTransform(quad, icon);
             LightUtil.renderQuadColor(renderer, quad, argb);
         }

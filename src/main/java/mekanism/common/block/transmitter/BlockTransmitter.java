@@ -5,6 +5,7 @@ import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
 import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.MekanismUtils;
@@ -32,7 +33,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class BlockTransmitter extends BlockTileDrops {
+public abstract class BlockTransmitter extends BlockTileDrops implements IStateWaterLogged {
 
     protected BlockTransmitter(String name) {
         super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));

@@ -141,16 +141,17 @@ public class MekanismRenderer {
         int[] vertices = new int[quad.getVertexData().length];
         System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
 
+        VertexFormat format = quad.getFormat();
         for (int i = 0; i < 4; ++i) {
-            int j = quad.getFormat().getIntegerSize() * i;
-            int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
+            int j = format.getIntegerSize() * i;
+            int uvIndex = format.getUvOffsetById(0) / 4;
             if (j + uvIndex + 1 < vertices.length) {
                 vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
                 vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
             }
         }
 
-        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), quad.getFormat());
+        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), format);
     }
 
     public static BakedQuad rotate(BakedQuad quad, int amount) {
