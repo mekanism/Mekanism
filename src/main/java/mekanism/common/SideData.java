@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import mekanism.api.gas.GasTank;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -44,7 +45,7 @@ public class SideData implements IHasTranslationKey {
 
     @Override
     public String getTranslationKey() {
-        return "mekanism.sideData." + name;
+        return "side_data.mekanism." + name.toLowerCase(Locale.ROOT);
     }
 
     public boolean hasSlot(int... slots) {

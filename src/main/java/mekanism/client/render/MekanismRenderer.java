@@ -349,6 +349,7 @@ public class MekanismRenderer {
 
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
 
+        //TODO: Figure out why this sometimes causes crashes during startup
         TransmitterModel.addIcons(event);
 
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {

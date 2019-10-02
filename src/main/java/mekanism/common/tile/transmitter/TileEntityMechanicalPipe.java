@@ -39,7 +39,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public FluidTank buffer;
 
     @Nonnull
-    public FluidStack lastWrite = FluidStack.EMPTY;
+    private FluidStack lastWrite = FluidStack.EMPTY;
     public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
@@ -170,7 +170,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         }
         FluidStack buffer = getBufferWithFallback();
         FluidStack otherBuffer = ((TileEntityMechanicalPipe) tileEntity).getBufferWithFallback();
-        return buffer == null || otherBuffer == null || buffer.isFluidEqual(otherBuffer);
+        return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
     }
 
     @Override
@@ -201,10 +201,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void takeShare() {
-        FluidNetwork network = getTransmitter().getTransmitterNetwork();
-        if (getTransmitter().hasTransmitterNetwork() && !network.buffer.isEmpty() && !lastWrite.isEmpty()) {
-            network.buffer.setAmount(network.buffer.getAmount() - lastWrite.getAmount());
-            buffer.setFluid(lastWrite);
+        if (getTransmitter().hasTransmitterNetwork()) {
+            FluidNetwork network = getTransmitter().getTransmitterNetwork();
+            if (!network.buffer.isEmpty() && !lastWrite.isEmpty()) {
+                network.buffer.shrink(lastWrite.getAmount());
+                buffer.setFluid(lastWrite);
+            }
         }
     }
 
@@ -257,7 +259,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     public int takeFluid(@Nonnull FluidStack fluid, FluidAction fluidAction) {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().emit(fluid, FluidAction.SIMULATE);
+            return getTransmitter().getTransmitterNetwork().emit(fluid, fluidAction);
         }
         return buffer.fill(fluid, fluidAction);
     }

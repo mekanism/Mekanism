@@ -236,10 +236,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     @Override
     public GasStack getBuffer() {
-        if (buffer == null) {
-            return GasStack.EMPTY;
-        }
-        return buffer.getStack();
+        return buffer == null ? GasStack.EMPTY : buffer.getStack();
     }
 
     @Override

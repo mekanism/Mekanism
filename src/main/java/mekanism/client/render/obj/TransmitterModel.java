@@ -47,6 +47,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class TransmitterModel extends OBJBakedModelBase {
 
+    //TODO: Move this into one place that is referenced by both this and ItemLayerWrapper
     // Copy from old CTM
     public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
           .put(TransformType.GUI, get(0, 0, 0, 30, 225, 0, 0.625f))

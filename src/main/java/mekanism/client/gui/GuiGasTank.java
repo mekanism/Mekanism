@@ -80,6 +80,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             //TODO: 1.14 Convert to GuiElement, and make it draw the gas texture instead of the bar (will make it easier at a glance to see what is going on)
             // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
             // The other option which may make more sense is to make it be a GuiGauge
+            //TODO: Figure out why it is going from right to left
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
             TextureAtlasSprite icon = tileEntity.gasTank.getType().getSprite();
             drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);

@@ -133,7 +133,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     public int emit(@Nonnull FluidStack fluidToSend, FluidAction fluidAction) {
-        if (fluidToSend.isEmpty() || (!buffer.isEmpty() && buffer.getFluid() != fluidToSend.getFluid())) {
+        if (fluidToSend.isEmpty() || (!buffer.isEmpty() && !buffer.isFluidEqual(fluidToSend))) {
             return 0;
         }
         int toUse = Math.min(getFluidNeeded(), fluidToSend.getAmount());
@@ -142,7 +142,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 buffer = fluidToSend.copy();
                 buffer.setAmount(toUse);
             } else {
-                buffer.setAmount(buffer.getAmount() + toUse);
+                buffer.grow(toUse);
             }
         }
         return toUse;
@@ -216,7 +216,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public ITextComponent getStoredInfo() {
         if (buffer.isEmpty()) {
-            return TextComponentUtil.translate("mekanism.none");
+            return TextComponentUtil.translate("gui.mekanism.none");
         }
         return TextComponentUtil.build(buffer, " (" + buffer.getAmount() + " mB)");
     }

@@ -230,7 +230,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public ITextComponent getStoredInfo() {
         if (buffer.isEmpty()) {
-            return TextComponentUtil.translate("mekanism.none");
+            return TextComponentUtil.translate("gui.mekanism.none");
         }
         return TextComponentUtil.build(buffer, " (" + buffer.getAmount() + ")");
     }
