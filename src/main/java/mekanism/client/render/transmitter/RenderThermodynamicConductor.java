@@ -1,5 +1,6 @@
 package mekanism.client.render.transmitter;
 
+import javax.annotation.Nonnull;
 import mekanism.client.render.ColourTemperature;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
@@ -18,7 +19,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEn
     }
 
     @Override
-    public void renderSide(BufferBuilder renderer, Direction side, TileEntityThermodynamicConductor cable) {
+    public void renderSide(BufferBuilder renderer, Direction side, @Nonnull TileEntityThermodynamicConductor cable) {
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()),
               cable.getBlockState(), cable.getModelData());

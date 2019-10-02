@@ -3,6 +3,7 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -14,7 +15,7 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
 
     protected abstract void renderSide(BufferBuilder renderer, Direction side, T transmitter);
 
-    protected void render(T transmitter, double x, double y, double z, int glow) {
+    protected void render(@Nonnull T transmitter, double x, double y, double z, int glow) {
         GlStateManager.pushMatrix();
         GlStateManager.enableCull();
         GlStateManager.enableBlend();

@@ -4,8 +4,10 @@ import java.util.Collection;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextComponentUtil;
@@ -76,8 +78,10 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
                     //TODO: Capability fix this as it is casting when it shouldn't be because it returns a LazyOptional
-                    IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity().getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY);
-                    if (heatTransmitter != null) {
+                    LazyOptionalHelper<IHeatTransfer> capabilityHelper = CapabilityUtils.getCapabilityHelper(((TransmitterImpl) transmitter).getTileEntity(),
+                          Capabilities.HEAT_TRANSFER_CAPABILITY, null);
+                    if (capabilityHelper.isPresent()) {
+                        IHeatTransfer heatTransmitter = capabilityHelper.getValue();
                         double[] d = heatTransmitter.simulateHeat();
                         newHeatTransferred += d[0];
                         newHeatLost += d[1];

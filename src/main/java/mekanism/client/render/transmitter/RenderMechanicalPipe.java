@@ -210,8 +210,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         return displays;
     }
 
-    public boolean renderFluidInOut(BufferBuilder renderer, Direction side, TileEntityMechanicalPipe pipe) {
-        if (pipe != null && pipe.getTransmitter().hasTransmitterNetwork()) {
+    public boolean renderFluidInOut(BufferBuilder renderer, Direction side, @Nonnull TileEntityMechanicalPipe pipe) {
+        if (pipe.getTransmitter().hasTransmitterNetwork()) {
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
             TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(fn.buffer, FluidType.STILL);

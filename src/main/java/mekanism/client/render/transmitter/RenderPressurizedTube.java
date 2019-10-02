@@ -1,5 +1,6 @@
 package mekanism.client.render.transmitter;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
@@ -16,11 +17,10 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage) {
-        if (MekanismConfig.client.opaqueTransmitters.get()) {
+        if (!MekanismConfig.client.opaqueTransmitters.get()) {
             TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
             if (transmitter.hasTransmitterNetwork()) {
                 GasNetwork transmitterNetwork = transmitter.getTransmitterNetwork();
-                //TODO: Verify this still works
                 if (!transmitterNetwork.buffer.isEmpty() && transmitterNetwork.gasScale != 0) {
                     render(tube, x, y, z, 0);
                 }
@@ -29,7 +29,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
     }
 
     @Override
-    protected void renderSide(BufferBuilder renderer, Direction side, TileEntityPressurizedTube tube) {
+    protected void renderSide(BufferBuilder renderer, Direction side, @Nonnull TileEntityPressurizedTube tube) {
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         GasStack gasStack = tube.getTransmitter().getTransmitterNetwork().buffer;
         if (!gasStack.isEmpty()) {

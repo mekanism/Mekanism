@@ -19,6 +19,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler {
 
@@ -114,9 +116,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public boolean isRemote() {
-        //TODO: Evaluate if this is the correct way to handle the fact that world can be null when register is being called
-        // Also check to make sure that the usage of this method is as expected in all places
-        return world != null && world.isRemote;
+        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
+        return world == null ? EffectiveSide.get() == LogicalSide.CLIENT : world.isRemote;
     }
 
     public abstract void absorbBuffer(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);

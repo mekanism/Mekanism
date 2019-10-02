@@ -110,8 +110,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getTextureAtlasSprite(ResourceLocation spriteLocation) {
-        TextureAtlasSprite sprite = texMap.getSprite(spriteLocation);
-        return sprite != null ? sprite : missingIcon;
+        return texMap.getSprite(spriteLocation);
     }
 
     public static RenderState pauseRenderer(Tessellator tess) {
@@ -138,8 +137,9 @@ public class MekanismRenderer {
     }
 
     public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite) {
-        int[] vertices = new int[quad.getVertexData().length];
-        System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
+        int[] vertexData = quad.getVertexData();
+        int[] vertices = new int[vertexData.length];
+        System.arraycopy(vertexData, 0, vertices, 0, vertices.length);
 
         VertexFormat format = quad.getFormat();
         for (int i = 0; i < 4; ++i) {

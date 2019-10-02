@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
 import net.minecraftforge.client.model.obj.OBJModel.Group;
@@ -121,7 +122,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(BlockState blockState, Direction side, @Nonnull Random rand) {
+    public List<BakedQuad> getQuads(BlockState blockState, Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         if (side != null) {
             return ImmutableList.of();
         }

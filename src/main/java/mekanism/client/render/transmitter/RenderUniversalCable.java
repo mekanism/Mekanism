@@ -1,5 +1,6 @@
 package mekanism.client.render.transmitter;
 
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
@@ -18,7 +19,7 @@ public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniv
     }
 
     @Override
-    protected void renderSide(BufferBuilder renderer, Direction side, TileEntityUniversalCable cable) {
+    protected void renderSide(BufferBuilder renderer, Direction side, @Nonnull TileEntityUniversalCable cable) {
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower),
               cable.getBlockState(), cable.getModelData());

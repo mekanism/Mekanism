@@ -128,10 +128,8 @@ public class TransmitterModel extends OBJBakedModelBase {
         if (side != null) {
             return ImmutableList.of();
         }
-        if (state == null) {
-            System.out.println("NULL STATE");
-        }
 
+        //TODO: Do we still need this state != null?
         if (state != null && tempModelData == null) {
             if (extraData.hasProperty(ModelProperties.DOWN_CONNECTION) && extraData.hasProperty(ModelProperties.UP_CONNECTION) &&
                 extraData.hasProperty(ModelProperties.NORTH_CONNECTION) && extraData.hasProperty(ModelProperties.SOUTH_CONNECTION) &&
@@ -174,10 +172,7 @@ public class TransmitterModel extends OBJBakedModelBase {
             }
             //TODO: print error about missing data?
         }
-        //TODO: Pass the extraData to the super method as well. The issue is that otherwise it ends up missing a bunch of data due to
-        // an incomplete override of the getQuads with IModelData
-        //return super.getQuads(state, side, rand, extraData);
-        return super.getQuads(state, side, rand);
+        return super.getQuads(state, side, rand, extraData);
     }
 
     public List<String> getVisibleGroups(ConnectionType down, ConnectionType up, ConnectionType north, ConnectionType south, ConnectionType west, ConnectionType east) {
