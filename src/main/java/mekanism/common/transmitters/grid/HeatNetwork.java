@@ -77,7 +77,6 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
         if (!isRemote()) {
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
-                    //TODO: Capability fix this as it is casting when it shouldn't be because it returns a LazyOptional
                     LazyOptionalHelper<IHeatTransfer> capabilityHelper = CapabilityUtils.getCapabilityHelper(((TransmitterImpl) transmitter).getTileEntity(),
                           Capabilities.HEAT_TRANSFER_CAPABILITY, null);
                     if (capabilityHelper.isPresent()) {

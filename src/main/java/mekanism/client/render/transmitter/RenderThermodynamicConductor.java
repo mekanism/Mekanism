@@ -12,7 +12,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEn
 
     @Override
     public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage) {
-        if (MekanismConfig.client.opaqueTransmitters.get()) {
+        if (!MekanismConfig.client.opaqueTransmitters.get()) {
             render(transmitter, x, y, z, 15);
         }
     }

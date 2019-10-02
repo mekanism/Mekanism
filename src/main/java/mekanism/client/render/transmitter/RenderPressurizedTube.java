@@ -20,7 +20,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
             TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
             if (transmitter.hasTransmitterNetwork()) {
                 GasNetwork transmitterNetwork = transmitter.getTransmitterNetwork();
-                if (!transmitterNetwork.buffer.isEmpty() && transmitterNetwork.gasScale != 0) {
+                if (!transmitterNetwork.buffer.isEmpty() && transmitterNetwork.gasScale > 0) {
                     render(tube, x, y, z, 0);
                 }
             }
@@ -29,13 +29,10 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     protected void renderSide(BufferBuilder renderer, Direction side, @Nonnull TileEntityPressurizedTube tube) {
-        GasStack gasStack = tube.getTransmitter().getTransmitterNetwork().buffer;
-        if (!gasStack.isEmpty()) {
-            //Double check it is not empty
-            Gas gas = gasStack.getType();
-            ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
-            c.setRGBFromInt(gas.getTint());
-            renderTransparency(renderer, gas.getSprite(), getModelForSide(tube, side), c, tube.getBlockState(), tube.getModelData());
-        }
+        //Double check it is not empty
+        Gas gas = tube.getTransmitter().getTransmitterNetwork().buffer.getType();
+        ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
+        c.setRGBFromInt(gas.getTint());
+        renderTransparency(renderer, gas.getSprite(), getModelForSide(tube, side), c, tube.getBlockState(), tube.getModelData());
     }
 }

@@ -16,8 +16,7 @@ public class HeatUtils {
                 double heatToTransfer = source.getTemp() / invConduction;
                 source.transferHeatTo(-heatToTransfer);
                 sink.transferHeatTo(heatToTransfer);
-                if (!(sink instanceof ICapabilityProvider &&
-                      CapabilityUtils.getCapabilityHelper((ICapabilityProvider) sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent())) {
+                if (!(sink instanceof ICapabilityProvider && ((ICapabilityProvider) sink).getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent())) {
                     heatTransferred[0] += heatToTransfer;
                 }
                 continue;
