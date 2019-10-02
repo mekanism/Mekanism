@@ -95,6 +95,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
     private void renderQuad(BufferBuilder renderer, TextureAtlasSprite icon, BakedQuad quad, int argb) {
         //TODO: Check if retextureQuad or MekanismRenderer#iconTransform is more efficient
         // If it is iconTransform, we have to figure out why it is broken
+        // NOTE: It does not seem that the retexture quad method supports "luminosity" for example with lava
         quad = retextureQuad(quad, icon);
         //quad = MekanismRenderer.iconTransform(quad, icon);
         LightUtil.renderQuadColor(renderer, quad, argb);
