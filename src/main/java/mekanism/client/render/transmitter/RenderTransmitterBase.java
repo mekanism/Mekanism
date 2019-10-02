@@ -87,6 +87,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 
         //TODO: Fix the rendering of contents
         int argb = color.argb();
+        //TODO: Is there a reason to be going over each side? Given we are getting a model for a specific side anyways
         for (Direction side : Direction.values()) {
             for (BakedQuad quad : cc.getQuads(state, side, minecraft.world.getRandom(), modelData)) {
                 quad = MekanismRenderer.iconTransform(quad, icon);

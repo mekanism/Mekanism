@@ -10,7 +10,6 @@ import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.transmitters.grid.GasNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.Direction;
 
 public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPressurizedTube> {
@@ -30,7 +29,6 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     protected void renderSide(BufferBuilder renderer, Direction side, @Nonnull TileEntityPressurizedTube tube) {
-        bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         GasStack gasStack = tube.getTransmitter().getTransmitterNetwork().buffer;
         if (!gasStack.isEmpty()) {
             //Double check it is not empty
