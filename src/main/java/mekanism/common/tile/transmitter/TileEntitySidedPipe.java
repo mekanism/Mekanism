@@ -219,37 +219,19 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<AxisAlignedBB> getCollisionBoxes() {
         List<AxisAlignedBB> list = new ArrayList<>();
+        byte connections = getAllCurrentConnections();
+        AxisAlignedBB[] sides = getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides : BlockLargeTransmitter.largeSides;
         for (Direction side : Direction.values()) {
-            int ord = side.ordinal();
-            byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
-                list.add(getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[ord] : BlockLargeTransmitter.largeSides[ord]);
+                list.add(sides[side.ordinal()]);
             }
         }
-        list.add(getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[6] : BlockLargeTransmitter.largeSides[6]);
+        //Center position
+        list.add(sides[6]);
         return list;
     }
 
     public abstract TransmitterType getTransmitterType();
-
-    public List<AxisAlignedBB> getCollisionBoxes(AxisAlignedBB entityBox) {
-        List<AxisAlignedBB> list = new ArrayList<>();
-        for (Direction side : Direction.values()) {
-            int ord = side.ordinal();
-            byte connections = getAllCurrentConnections();
-            if (connectionMapContainsSide(connections, side)) {
-                AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[ord] : BlockLargeTransmitter.largeSides[ord];
-                if (box.intersects(entityBox)) {
-                    list.add(box);
-                }
-            }
-        }
-        AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[6] : BlockLargeTransmitter.largeSides[6];
-        if (box.intersects(entityBox)) {
-            list.add(box);
-        }
-        return list;
-    }
 
     public abstract boolean isValidAcceptor(TileEntity tile, Direction side);
 

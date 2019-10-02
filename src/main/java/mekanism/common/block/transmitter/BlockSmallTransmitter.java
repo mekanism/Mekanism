@@ -1,19 +1,22 @@
 package mekanism.common.block.transmitter;
 
-import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
 public abstract class BlockSmallTransmitter extends BlockTransmitter {
 
+    private static final Byte2ObjectMap<VoxelShape> cachedShapes = new Byte2ObjectOpenHashMap<>();
+    private static final VoxelShape center;
     public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
-
-    public static AxisAlignedBB smallDefault;
 
     static {
         smallSides[0] = new AxisAlignedBB(0.3, 0.0, 0.3, 0.7, 0.3, 0.7);
@@ -24,42 +27,37 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
         smallSides[5] = new AxisAlignedBB(0.7, 0.3, 0.3, 1.0, 0.7, 0.7);
         smallSides[6] = new AxisAlignedBB(0.3, 0.3, 0.3, 0.7, 0.7, 0.7);
 
-        smallDefault = smallSides[6];
+        center = VoxelShapes.create(smallSides[6]);
     }
 
     protected BlockSmallTransmitter(String name) {
         super(name);
     }
 
-    /*@Override
-    @Deprecated
-    public RayTraceResult collisionRayTrace(BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Vec3d start, @Nonnull Vec3d end) {
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
-        if (tile == null) {
-            return null;
-        }
-        List<AxisAlignedBB> boxes = tile.getCollisionBoxes();
-        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, start, end, boxes);
-        if (result != null && result.valid()) {
-            smallDefault = result.bounds;
-        }
-        return result != null ? result.hit : null;
-    }*/
-
-    @Nonnull
     @Override
-    @Deprecated
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        //TODO: This is probably not performant compared to caching it
-        //TODO: Is this even returning the correct value?
-        // Note: we also need to combine using VoxelShapes.or to get overall bounding box shape?
-        return VoxelShapes.create(BlockSmallTransmitter.smallSides[6]);
+    protected VoxelShape getCenter() {
+        return center;
     }
 
-    /*@Nonnull
     @Override
-    @Deprecated
-    public AxisAlignedBB getSelectedBoundingBox(BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
-        return smallDefault.offset(pos);
-    }*/
+    protected VoxelShape getRealShape(BlockState state, IBlockReader world, BlockPos pos) {
+        TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+        if (tile == null) {
+            //If we failed to get the tile, just give the center shape
+            return getCenter();
+        }
+        byte connections = tile.getAllCurrentConnections();
+        if (cachedShapes.containsKey(connections)) {
+            return cachedShapes.get(connections);
+        }
+        //If we don't have a cached version of our shape, then we need to calculate it
+        VoxelShape current = getCenter();
+        for (Direction side : Direction.values()) {
+            if (TileEntitySidedPipe.connectionMapContainsSide(connections, side)) {
+                current = VoxelShapes.combineAndSimplify(current, VoxelShapes.create(smallSides[side.ordinal()]), IBooleanFunction.OR);
+            }
+        }
+        cachedShapes.put(connections, current);
+        return current;
+    }
 }

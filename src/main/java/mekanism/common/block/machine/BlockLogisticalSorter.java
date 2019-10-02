@@ -53,6 +53,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -71,6 +72,17 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
+
+    private static final VoxelShape[] bounds = new VoxelShape[6];
+
+    static {
+        AxisAlignedBB sorter = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
+        Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
+        for (Direction side : Direction.values()) {
+            bounds[side.ordinal()] = VoxelShapes.create(MultipartUtils.rotate(sorter.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side.getOpposite())
+                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
+        }
+    }
 
     private BooleanValue enabledReference;
 
@@ -240,7 +252,8 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.create(MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), getDirection(state)).offset(0.5, 0.5, 0.5));
+        return bounds[getDirection(state).ordinal()];
+        //return VoxelShapes.create(MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), getDirection(state)).offset(0.5, 0.5, 0.5));
     }
 
     @Nonnull

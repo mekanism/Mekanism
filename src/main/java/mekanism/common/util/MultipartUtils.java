@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.Collection;
 import java.util.Collections;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
@@ -40,10 +41,10 @@ public final class MultipartUtils {
     }
 
     /* taken from MCMP */
-    public static Pair<Vec3d, Vec3d> getRayTraceVectors(PlayerEntity player) {
-        float pitch = player.rotationPitch;
-        float yaw = player.rotationYaw;
-        Vec3d start = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+    public static Pair<Vec3d, Vec3d> getRayTraceVectors(Entity entity) {
+        float pitch = entity.rotationPitch;
+        float yaw = entity.rotationYaw;
+        Vec3d start = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         float f1 = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f3 = -MathHelper.cos(-pitch * 0.017453292F);
@@ -51,12 +52,13 @@ public final class MultipartUtils {
         float f5 = f2 * f3;
         float f6 = f1 * f3;
         double d3 = 5.0D;
-        if (player instanceof ServerPlayerEntity) {
-            d3 = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+        if (entity instanceof ServerPlayerEntity) {
+            d3 = ((ServerPlayerEntity) entity).getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
         }
         Vec3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
         return Pair.of(start, end);
     }
+
 
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, Collection<AxisAlignedBB> boxes) {
         double minDistance = Double.POSITIVE_INFINITY;

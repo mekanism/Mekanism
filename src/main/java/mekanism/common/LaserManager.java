@@ -31,6 +31,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.world.BlockEvent;
 
+//TODO: Make the laser "shrink" the further distance it goes
+// If above a certain level and in water makes it bubble
 public class LaserManager {
 
     public static LaserInfo fireLaser(TileEntity source, Direction direction, double energy, World world) {
