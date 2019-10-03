@@ -23,6 +23,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -41,7 +42,6 @@ public class Registration {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        MekanismConfig.loadFromFiles();
         IForgeRegistry<Item> registry = event.getRegistry();
         MekanismItem.registerItems(registry);
         MekanismBlock.registerItemBlocks(registry);
@@ -93,5 +93,15 @@ public class Registration {
     @SubscribeEvent
     public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
         MekanismParticleType.registerParticles(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void onLoad(ModConfig.Loading configEvent) {
+        MekanismConfig.loadFromFiles();
+    }
+
+    @SubscribeEvent
+    public static void onFileChange(ModConfig.ConfigReloading configEvent) {
+        //TODO: Handle reloading
     }
 }

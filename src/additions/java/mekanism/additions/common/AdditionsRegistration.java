@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(modid = MekanismAdditions.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -20,7 +21,6 @@ public class AdditionsRegistration {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        MekanismAdditionsConfig.loadFromFiles();
         IForgeRegistry<Item> registry = event.getRegistry();
         AdditionsItem.registerItems(registry);
         AdditionsBlock.registerItemBlocks(registry);
@@ -29,5 +29,15 @@ public class AdditionsRegistration {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         AdditionsEntityType.registerEntities(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void onLoad(ModConfig.Loading configEvent) {
+        MekanismAdditionsConfig.loadFromFiles();
+    }
+
+    @SubscribeEvent
+    public static void onFileChange(ModConfig.ConfigReloading configEvent) {
+        //TODO: Handle reloading
     }
 }
