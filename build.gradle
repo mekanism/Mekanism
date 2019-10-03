@@ -153,8 +153,6 @@ minecraft {
     accessTransformers(file('src/main/resources/META-INF/accesstransformer.cfg'),
             file('src/tools/resources/META-INF/accesstransformer.cfg'))
     /*version = "${minecraft_version}-${forge_version}"
-    mappings = "${mappings_version}"
-    runDir = "run"
     useDepAts = true*/
 
     /*replace '${version}', project.version
@@ -168,17 +166,16 @@ minecraft {
 
             mods {
                 mekanism {
-                    source sourceSets.main
-                    source sourceSets.api
+                    sources(sourceSets.main, sourceSets.api)
                 }
                 mekanismadditions {
-                    source sourceSets.additions
+                    source(sourceSets.additions)
                 }
                 mekanismgenerators {
-                    source sourceSets.generators
+                    source(sourceSets.generators)
                 }
                 mekanismtools {
-                    source sourceSets.tools
+                    source(sourceSets.tools)
                 }
             }
         }
@@ -188,17 +185,16 @@ minecraft {
 
             mods {
                 mekanism {
-                    source sourceSets.main
-                    source sourceSets.api
+                    sources(sourceSets.main, sourceSets.api)
                 }
                 mekanismadditions {
-                    source sourceSets.additions
+                    source(sourceSets.additions)
                 }
                 mekanismgenerators {
-                    source sourceSets.generators
+                    source(sourceSets.generators)
                 }
                 mekanismtools {
-                    source sourceSets.tools
+                    source(sourceSets.tools)
                 }
             }
         }
@@ -208,17 +204,16 @@ minecraft {
 
             mods {
                 mekanism {
-                    source sourceSets.main
-                    source sourceSets.api
+                    sources(sourceSets.main, sourceSets.api)
                 }
                 mekanismadditions {
-                    source sourceSets.additions
+                    source(sourceSets.additions)
                 }
                 mekanismgenerators {
-                    source sourceSets.generators
+                    source(sourceSets.generators)
                 }
                 mekanismtools {
-                    source sourceSets.tools
+                    source(sourceSets.tools)
                 }
             }
         }
