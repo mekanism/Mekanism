@@ -298,6 +298,7 @@ task coreJar(type: Jar) {
     dependsOn 'reobfJar'
     classifier "core"
     from sourceSets.main.output
+    from sourceSets.api.output
     from(sourceSets.main.resources.srcDirs) {
         include "META_INF/mods.toml"
 
