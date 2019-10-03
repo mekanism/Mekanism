@@ -11,8 +11,8 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
     credits="unpairedbracket, CyanideX and many others"
     description='''Additions module for Mekanism, contains things that don't quite fit in the other modules.'''
 
-[[dependencies.mekanism]]
+[[dependencies.mekanismadditions]]
     modId="mekanism"
     mandatory=true
-    versionRange="[${version}]"
+    versionRange="[9.8.2]" #TODO Fix the fact this breaks in dev if using [${version}]
     side="BOTH"

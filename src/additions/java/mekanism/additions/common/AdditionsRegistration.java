@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.AdditionsEntityType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -19,6 +20,7 @@ public class AdditionsRegistration {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+        MekanismAdditionsConfig.loadFromFiles();
         IForgeRegistry<Item> registry = event.getRegistry();
         AdditionsItem.registerItems(registry);
         AdditionsBlock.registerItemBlocks(registry);

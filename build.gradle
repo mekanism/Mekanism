@@ -27,6 +27,11 @@ idea {
         //TODO: sourceDirs??
         // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
+        //Exclude directories from being managed
+        for (String excludeDirName in ["run", "out", "logs", "gradle"]) {
+            File excludeDir = new File(projectDir, excludeDirName)
+            excludeDirs.add(excludeDir)
+        }
     }
 }
 
@@ -39,6 +44,14 @@ sourceSets {
         }
     }
     main {
+        java {
+            srcDir 'src/main/java'
+            resources {
+                include '**/**'
+                // copy everything else, but blender files.
+                exclude '**/*.blend'
+            }
+        }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
@@ -226,7 +239,7 @@ dependencies {
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
 
     //TODO: Use proper CrT dependency if this is not the path for maven
-    compileOnly "com.blamejared.crafttweaker:CraftTweaker:1.14.4-5.0.0.75"
+    compileOnly "com.blamejared.crafttweaker:CraftTweaker:${minecraft_version}-${crafttweaker_version}"
 
     // Not updated yet
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
@@ -248,47 +261,33 @@ dependencies {
     }*/
 }
 
+def version_properties = ["version": mod_version, "mc_version": minecraft_version]
+
+//TODO: Does this need to do all the sourcesets
 processResources {
-    inputs.property "version", project.version
-    inputs.property "mc_version", minecraft_version
-
-    //TODO: Does this need to do all the sourcesets
-    from(sourceSets.main.resources.srcDirs) {
-        include "META_INF/mods.toml"
-
-        // replace version and mcversion
-        expand "version": project.version, "mc_version": minecraft_version
-    }
-
-    // copy everything else, thats not blender files. TODO: Remove the need for this
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.blend*'
+    filesMatching('**/mods.toml') {
+        expand version_properties
     }
 }
-/*
-def setMainManifestProps = { Manifest manifest->
-    manifest.attributes (
-            'FMLAT': 'mekanism_at.cfg'
-    )
-}
 
-jar {
-    manifest(setMainManifestProps)
-}*/
-
-//TODO: Do this stuff properly
-jar {
-    manifest {
-        attributes([
+def setMainManifestProps = {
+    Manifest manifest ->
+        manifest.attributes([
                 "Specification-Title"     : "mekanism",
                 "Specification-Vendor"    : "mekanism",
-                "Specification-Version"   : "1",
+                "Specification-Version"   : "${mod_version}",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",
                 "Implementation-Vendor"   : "mekanism",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
-    }
+}
+
+jar {
+    //TODO: Make this be an "All" jar again
+    from sourceSets.main.output
+    from sourceSets.api.output
+    manifest(setMainManifestProps)
 }
 
 //TODO: Sources Jar
@@ -299,13 +298,10 @@ task coreJar(type: Jar) {
     classifier "core"
     from sourceSets.main.output
     from sourceSets.api.output
-    from(sourceSets.main.resources.srcDirs) {
-        include "META_INF/mods.toml"
-
-        // replace version and mcversion
-        expand "version": project.version, "mc_version": minecraft_version
+    filesMatching('**/mods.toml') {
+        expand version_properties
     }
-    //manifest(setMainManifestProps)
+    manifest(setMainManifestProps)
 }
 
 task additionsJar(type: Jar) {
@@ -313,12 +309,11 @@ task additionsJar(type: Jar) {
     dependsOn 'reobfJar'
     classifier "additions"
     from sourceSets.additions.output
-    from(sourceSets.additions.resources.srcDirs) {
-        include "META_INF/mods.toml"
-
-        // replace version and mcversion
-        expand "version": project.version, "mc_version": minecraft_version
+    filesMatching('**/mods.toml') {
+        expand version_properties
     }
+    //TODO: Set Title to be mekanismadditions
+    manifest(setMainManifestProps)
 }
 
 task generatorsJar(type: Jar) {
@@ -326,12 +321,11 @@ task generatorsJar(type: Jar) {
     dependsOn 'reobfJar'
     classifier "generators"
     from sourceSets.generators.output
-    from(sourceSets.generators.resources.srcDirs) {
-        include "META_INF/mods.toml"
-
-        // replace version and mcversion
-        expand "version": project.version, "mc_version": minecraft_version
+    filesMatching('**/mods.toml') {
+        expand version_properties
     }
+    //TODO: Set Title to be mekanismgenerators
+    manifest(setMainManifestProps)
 }
 
 task toolsJar(type: Jar) {
@@ -339,12 +333,11 @@ task toolsJar(type: Jar) {
     dependsOn 'reobfJar'
     classifier "tools"
     from sourceSets.tools.output
-    from(sourceSets.tools.resources.srcDirs) {
-        include "META_INF/mods.toml"
-
-        // replace version and mcversion
-        expand "version": project.version, "mc_version": minecraft_version
+    filesMatching('**/mods.toml') {
+        expand version_properties
     }
+    //TODO: Set Title to be mekanismtools
+    manifest(setMainManifestProps)
 }
 
 task apiJar(type: Jar) {
@@ -408,7 +401,7 @@ uploadArchives {
     }
 }
 
-tasks.curseforge.dependsOn coreJar, toolsJar, generatorsJar, apiJar
+tasks.curseforge.dependsOn coreJar, additionsJar, generatorsJar, toolsJar, apiJar
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"

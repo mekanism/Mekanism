@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.particle.MekanismParticleType;
@@ -42,6 +43,7 @@ public class Registration {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+        MekanismConfig.loadFromFiles();
         IForgeRegistry<Item> registry = event.getRegistry();
         MekanismItem.registerItems(registry);
         MekanismBlock.registerItemBlocks(registry);

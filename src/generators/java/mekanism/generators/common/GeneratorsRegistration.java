@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import net.minecraft.block.Block;
@@ -21,6 +22,8 @@ public class GeneratorsRegistration {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+        MekanismGeneratorsConfig.loadFromFiles();
+
         IForgeRegistry<Item> registry = event.getRegistry();
         GeneratorsItem.registerItems(registry);
         GeneratorsBlock.registerItemBlocks(registry);

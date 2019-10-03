@@ -11,8 +11,8 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
     credits="unpairedbracket, CyanideX and many others"
     description='''Generators module for Mekanism'''
 
-[[dependencies.mekanism]]
+[[dependencies.mekanismgenerators]]
     modId="mekanism"
     mandatory=true
-    versionRange="[${version}]"
+    versionRange="[9.8.2]" #TODO Fix the fact this breaks in dev if using [${version}]
     side="BOTH"

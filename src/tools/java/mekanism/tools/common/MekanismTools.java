@@ -39,7 +39,8 @@ public class MekanismTools implements IModule {
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         //TODO: Is the modEventBus stuff above used instead of this
         //MinecraftForge.EVENT_BUS.register(this);
-        MekanismToolsConfig.loadFromFiles();
+        //TODO: Force load this after other item registration before we register our items?
+        //MekanismToolsConfig.loadFromFiles();
 
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }

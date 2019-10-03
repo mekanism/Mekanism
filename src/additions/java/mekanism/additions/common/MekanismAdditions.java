@@ -39,9 +39,6 @@ public class MekanismAdditions implements IModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::serverStarting);
         modEventBus.addListener(this::serverStopping);
-
-        MekanismAdditionsConfig.loadFromFiles();
-        Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
 
     @Override
@@ -64,6 +61,7 @@ public class MekanismAdditions implements IModule {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             voiceManager = new VoiceServerManager();
         }
+        Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
 
     private void serverStarting(FMLServerStartingEvent event) {

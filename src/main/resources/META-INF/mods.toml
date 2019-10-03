@@ -11,13 +11,12 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
     credits="unpairedbracket, CyanideX and many others"
     description='''Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'''
 
-[[dependencies.minecraft]]
+[[dependencies.mekanism]]
     modId="minecraft"
     mandatory=true
     versionRange="[${mc_version}]"
-    ordering="NONE"
     side="BOTH"
-[[dependencies.forge]]
+[[dependencies.mekanism]]
     modId="forge"
     mandatory=true
     versionRange="[28.1.0,)"
