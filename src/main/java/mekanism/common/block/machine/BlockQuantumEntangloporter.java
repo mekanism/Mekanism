@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
@@ -54,13 +53,10 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockQuantumEntangloporter extends BlockMekanismContainer implements IBlockElectric, IHasGui<TileEntityQuantumEntangloporter>, ISupportsUpgrades,
-      IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IBlockDisableable, IStateActive {
-
-    private BooleanValue enabledReference;
+      IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive {
 
     public BlockQuantumEntangloporter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -192,16 +188,6 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     @Override
     public int getInventorySize() {
         return 1;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
@@ -49,12 +48,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLaserTractorBeam>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
-      IHasTileEntity<TileEntityLaserTractorBeam>, IBlockDisableable, ISupportsComparator {
-
-    private BooleanValue enabledReference;
+      IHasTileEntity<TileEntityLaserTractorBeam>, ISupportsComparator {
 
     public BlockLaserTractorBeam() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -162,16 +158,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
     @Override
     public int getInventorySize() {
         return 27;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

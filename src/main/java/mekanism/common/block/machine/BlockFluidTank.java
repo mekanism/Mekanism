@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -56,17 +55,14 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>,
-      IHasInventory, IHasTileEntity<TileEntityFluidTank>, IBlockDisableable, ISupportsComparator, IHasSecurity, IStateWaterLogged {
+      IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged {
 
     private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
-
-    private BooleanValue enabledReference;
 
     private final FluidTankTier tier;
 
@@ -241,16 +237,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public int getInventorySize() {
         return 2;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

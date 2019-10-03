@@ -184,26 +184,24 @@ public class Mekanism {
      * Adds all in-game crafting, smelting and machine recipes.
      */
     public static void addRecipes() {
-        if (MekanismBlock.METALLURGIC_INFUSER.isEnabled()) {
-            //TODO: Make this be a proper recipe system
-            //Infuse objects
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.COAL), new InfusionStack(MekanismInfuseTypes.CARBON, 10));
-            //TODO: Figure out why charcoal is twice as good as coal, if we make it be the same we can instead use the coals tag
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.CHARCOAL), new InfusionStack(MekanismInfuseTypes.CARBON, 20));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.COAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 90));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismBlock.CHARCOAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 180));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_CARBON), new InfusionStack(MekanismInfuseTypes.CARBON, 80));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 10));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.REDSTONE_BLOCK), new InfusionStack(MekanismInfuseTypes.REDSTONE, 90));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 80));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 10));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 80));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_REFINED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 10));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 80));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismItem.BIO_FUEL), new InfusionStack(MekanismInfuseTypes.BIO, 5));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.MUSHROOMS), new InfusionStack(MekanismInfuseTypes.FUNGI, 10));
-            InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_TIN), new InfusionStack(MekanismInfuseTypes.TIN, 10));
-        }
+        //TODO: Make this be a proper recipe system
+        //Infuse objects
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.COAL), new InfusionStack(MekanismInfuseTypes.CARBON, 10));
+        //TODO: Figure out why charcoal is twice as good as coal, if we make it be the same we can instead use the coals tag
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.CHARCOAL), new InfusionStack(MekanismInfuseTypes.CARBON, 20));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.COAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 90));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismBlock.CHARCOAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 180));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_CARBON), new InfusionStack(MekanismInfuseTypes.CARBON, 80));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 10));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.REDSTONE_BLOCK), new InfusionStack(MekanismInfuseTypes.REDSTONE, 90));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 80));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 10));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 80));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_REFINED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 10));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 80));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismItem.BIO_FUEL), new InfusionStack(MekanismInfuseTypes.BIO, 5));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.MUSHROOMS), new InfusionStack(MekanismInfuseTypes.FUNGI, 10));
+        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_TIN), new InfusionStack(MekanismInfuseTypes.TIN, 10));
 
         //Fuel Gases
         FuelHandler.addGas(MekanismTags.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());

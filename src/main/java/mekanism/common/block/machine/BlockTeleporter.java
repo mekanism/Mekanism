@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
@@ -45,12 +44,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockTeleporter extends BlockMekanismContainer implements IBlockElectric, IHasGui<TileEntityTeleporter>, ISupportsUpgrades, IHasInventory, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityTeleporter>, IBlockDisableable, ISupportsComparator {
-
-    private BooleanValue enabledReference;
+      IHasTileEntity<TileEntityTeleporter>, ISupportsComparator {
 
     public BlockTeleporter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -144,16 +140,6 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     @Override
     public int getInventorySize() {
         return 2;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

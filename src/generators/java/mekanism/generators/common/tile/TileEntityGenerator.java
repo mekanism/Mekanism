@@ -1,16 +1,11 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,15 +29,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            if (MekanismConfig.general.destroyDisabledBlocks.get()) {
-                Block block = getBlockType();
-                if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
-                    //TODO: Better way of doing name?
-                    Mekanism.logger.info("Destroying generator of type '" + block.getClass().getSimpleName() + "' at coords " + Coord4D.get(this) + " as according to config.");
-                    world.removeBlock(getPos(), false);
-                    return;
-                }
-            }
             if (MekanismUtils.canFunction(this)) {
                 CableUtils.emit(this);
             }

@@ -12,6 +12,6 @@ public class MekanismAdditionsConfig {
     }
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        MekanismConfig.registerConfig(modLoadingContext, additions);
+        modLoadingContext.registerConfig(additions.getConfigType(), additions.getConfigSpec());
     }
 }

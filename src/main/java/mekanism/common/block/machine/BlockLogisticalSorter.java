@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -65,15 +64,13 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLogisticalSorter>, ISupportsUpgrades, IStateFacing, IStateActive,
-      IBlockSound, IHasInventory, ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, IBlockDisableable, ISupportsComparator, IHasSecurity {
+      IBlockSound, IHasInventory, ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, ISupportsComparator, IHasSecurity {
 
-    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
-    private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
 
+    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final VoxelShape[] bounds = new VoxelShape[6];
 
     static {
@@ -84,8 +81,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                   .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
         }
     }
-
-    private BooleanValue enabledReference;
 
     public BlockLogisticalSorter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -266,16 +261,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public int getInventorySize() {
         return 2;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

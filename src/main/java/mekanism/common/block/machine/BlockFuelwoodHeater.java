@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
@@ -45,12 +44,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
-public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasGui<TileEntityFuelwoodHeater>, IStateFacing, IStateActive, IHasInventory, IHasSecurity, IBlockDisableable,
+public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasGui<TileEntityFuelwoodHeater>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityFuelwoodHeater> {
-
-    private BooleanValue enabledReference;
 
     public BlockFuelwoodHeater() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -152,16 +148,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
     @Override
     public int getInventorySize() {
         return 1;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

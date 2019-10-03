@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -50,13 +49,10 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockElectricPump extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityElectricPump>, ISupportsUpgrades, IStateFacing,
-      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, IBlockDisableable, ISupportsComparator, IStateActive {
-
-    private BooleanValue enabledReference;
+      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, ISupportsComparator, IStateActive {
 
     public BlockElectricPump() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -168,16 +164,6 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     @Override
     public int getInventorySize() {
         return 4;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

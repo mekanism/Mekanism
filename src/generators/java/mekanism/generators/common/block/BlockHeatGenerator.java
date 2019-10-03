@@ -2,7 +2,6 @@ package mekanism.generators.common.block;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
@@ -41,14 +40,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGui<TileEntityHeatGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntityHeatGenerator>, IBlockDisableable, ISupportsComparator {
+      IHasTileEntity<TileEntityHeatGenerator>, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.heat"));
-
-    private BooleanValue enabledReference;
 
     public BlockHeatGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -135,16 +131,6 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

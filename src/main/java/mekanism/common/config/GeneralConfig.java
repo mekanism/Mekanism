@@ -1,6 +1,5 @@
 package mekanism.common.config;
 
-import mekanism.common.MekanismBlock;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
@@ -90,7 +89,6 @@ public class GeneralConfig implements IMekanismConfig {
     public final BooleanValue blacklistForge;
     public final ConfigValue<Integer> laserRange;
     public final ConfigValue<Integer> laserEnergyNeededPerHardness;
-    public final BooleanValue destroyDisabledBlocks;
     public final BooleanValue voidInvalidGases;
     public final IntValue digitalMinerMaxRadius;
     public final DoubleValue sawdustChanceLog;
@@ -211,12 +209,7 @@ public class GeneralConfig implements IMekanismConfig {
         tempUnit = builder.comment("Displayed temperature unit in Mekanism GUIs.").defineEnum("temperatureUnit", TempType.K);
 
         voidInvalidGases = builder.comment("Should machines void the gas inside of them on load if there is no recipe using that gas.").define("voidInvalidGases", true);
-        destroyDisabledBlocks = builder.comment("If machine is disabled in config, do we set its block to air if it is found in world?").define("destroyDisabledBlocks", true);
 
-        //TODO: Evaluate other mekanism blocks for if support should be added
-        builder.comment("Enabled Machines").push(ENABLED_CATEGORY);
-        MekanismConfig.addEnabledBlocksCategory(builder, MekanismBlock.values());
-        builder.pop();
         //TODO
         builder.pop();
         //configSpec = builder.build();

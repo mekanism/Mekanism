@@ -33,30 +33,26 @@ public class RecipeRegistryHelper {
 
     public static void registerSmelter(IRecipeRegistration registry) {
         MekanismBlock mekanismBlock = MekanismBlock.ENERGIZED_SMELTER;
-        if (mekanismBlock.isEnabled()) {
-            //TODO: Add all smelting recipes
-            //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
-            if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
-                registry.addRecipes(MekanismRecipeType.SMELTING.getRecipes(getWorld()), mekanismBlock.getRegistryName());
-            } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
-                //TODO: Fix this
-                // Only add added recipes
-                /*Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
-                List<MachineRecipeWrapper> smeltingWrapper = new ArrayList<>();
-                for (Entry<ItemStackInput, SmeltingRecipe> entry : smeltingRecipes.entrySet()) {
-                    if (!FurnaceRecipes.instance().getSmeltingList().containsKey(entry.getKey().ingredient)) {
-                        smeltingWrapper.add(new MachineRecipeWrapper<>(entry.getValue()));
-                    }
+        //TODO: Add all smelting recipes
+        //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
+        if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
+            registry.addRecipes(MekanismRecipeType.SMELTING.getRecipes(getWorld()), mekanismBlock.getRegistryName());
+        } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
+            //TODO: Fix this
+            // Only add added recipes
+            /*Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
+            List<MachineRecipeWrapper> smeltingWrapper = new ArrayList<>();
+            for (Entry<ItemStackInput, SmeltingRecipe> entry : smeltingRecipes.entrySet()) {
+                if (!FurnaceRecipes.instance().getSmeltingList().containsKey(entry.getKey().ingredient)) {
+                    smeltingWrapper.add(new MachineRecipeWrapper<>(entry.getValue()));
                 }
-                registry.addRecipes(smeltingWrapper, mekanismBlock.getJEICategory());*/
             }
+            registry.addRecipes(smeltingWrapper, mekanismBlock.getJEICategory());*/
         }
     }
 
     public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, MekanismBlock mekanismBlock, MekanismRecipeType<RECIPE> type) {
-        if (mekanismBlock.isEnabled()) {
-            registry.addRecipes(type.getRecipes(getWorld()), mekanismBlock.getRegistryName());
-        }
+        registry.addRecipes(type.getRecipes(getWorld()), mekanismBlock.getRegistryName());
     }
 
     private static ClientWorld getWorld() {

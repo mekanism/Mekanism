@@ -6,7 +6,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.particle.MekanismParticleType;
-import mekanism.common.recipe.MekanismRecipeEnabledCondition;
 import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tags.MekanismTagManager;
@@ -20,7 +19,6 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -75,8 +73,6 @@ public class Registration {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
         MekanismRecipeSerializers.registerRecipeSerializers(event.getRegistry());
         //TODO: Register a custom shaped crafting recipe serializer if needed
-        //TODO: Move this to MekanismRecipeSerializers??
-        CraftingHelper.register(MekanismRecipeEnabledCondition.Serializer.INSTANCE);
     }
 
     @SubscribeEvent

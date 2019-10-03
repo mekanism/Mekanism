@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasModel;
@@ -52,16 +51,13 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
-public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound,
-      IBlockDisableable, IStateActive {
+public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IStateActive {
 
-    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
-    private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.laser"));
 
+    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final VoxelShape[] bounds = new VoxelShape[6];
 
     static {
@@ -72,8 +68,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
                   .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
         }
     }
-
-    private BooleanValue enabledReference;
 
     public BlockLaser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -196,16 +190,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mekanism.generators.common.block;
 
 import javax.annotation.Nonnull;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
@@ -39,16 +38,13 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui<TileEntitySolarGenerator>, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntitySolarGenerator>, IBlockDisableable {
+      IHasTileEntity<TileEntitySolarGenerator> {
 
     //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final VoxelShape SOLAR_BOUNDS = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
-
-    private BooleanValue enabledReference;
 
     public BlockSolarGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -116,16 +112,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

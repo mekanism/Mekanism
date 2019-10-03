@@ -4,7 +4,6 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.FactoryType;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasFactoryType;
@@ -53,14 +52,11 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityOsmiumCompressor>, IStateFacing, IStateActive, IHasFactoryType,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityOsmiumCompressor>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityOsmiumCompressor>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.compressor"));
-
-    private BooleanValue enabledReference;
 
     public BlockOsmiumCompressor() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -184,16 +180,6 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

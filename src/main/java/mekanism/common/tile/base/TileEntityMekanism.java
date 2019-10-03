@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.TileNetworkList;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
@@ -352,16 +351,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void tick() {
-        if (!world.isRemote && MekanismConfig.general.destroyDisabledBlocks.get()) {
-            Block block = getBlockType();
-            if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
-                //TODO: Better way of doing name?
-                Mekanism.logger.info("Destroying machine of type '" + block.getClass().getSimpleName() + "' at coords " + Coord4D.get(this) + " as according to config.");
-                world.removeBlock(getPos(), false);
-                return;
-            }
-        }
-
         for (ITileComponent component : components) {
             component.tick();
         }

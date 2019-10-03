@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
@@ -48,12 +47,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockFormulaicAssemblicator extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFormulaicAssemblicator>, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFormulaicAssemblicator>, IBlockDisableable {
-
-    private BooleanValue enabledReference;
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFormulaicAssemblicator> {
 
     public BlockFormulaicAssemblicator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -165,16 +161,6 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
     @Override
     public int getInventorySize() {
         return 36;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.FactoryType;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasFactoryType;
@@ -69,13 +68,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFactory>, IStateFacing, IStateActive, IBlockSound,
-      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone, IBlockDisableable,
-      ISupportsComparator {
-
-    private BooleanValue enabledReference;
+      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone, ISupportsComparator {
 
     private final FactoryTier tier;
     private final FactoryType type;
@@ -232,16 +227,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
             default:
                 return BlockEnergizedSmelter.SOUND_EVENT;
         }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

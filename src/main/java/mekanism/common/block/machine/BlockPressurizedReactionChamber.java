@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
@@ -52,14 +51,11 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityPressurizedReactionChamber>, ISupportsUpgrades, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPressurizedReactionChamber>, IBlockSound, ISupportsRedstone, IBlockDisableable, ISupportsComparator {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPressurizedReactionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.prc"));
-
-    private BooleanValue enabledReference;
 
     public BlockPressurizedReactionChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -177,16 +173,6 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

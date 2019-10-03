@@ -12,47 +12,30 @@ import net.minecraft.util.ResourceLocation;
 
 public class CatalystRegistryHelper {
 
-    public static boolean register(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock) {
-        return register(registry, mekanismBlock, mekanismBlock.getRegistryName());
-    }
-
-    public static boolean register(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock, ResourceLocation resourceLocation) {
-        if (!mekanismBlock.isEnabled()) {
-            return false;
-        }
-        registerRecipeItem(registry, mekanismBlock, resourceLocation);
-        return true;
+    public static void register(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock) {
+        registerRecipeItem(registry, mekanismBlock, mekanismBlock.getRegistryName());
     }
 
     public static void registerCondensentrator(IRecipeCatalystRegistration registry) {
-        MekanismBlock mekanismBlock = MekanismBlock.ROTARY_CONDENSENTRATOR;
-        if (!mekanismBlock.isEnabled()) {
-            return;
-        }
         ResourceLocation condensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_condensentrating");
         ResourceLocation decondensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_decondensentrating");
-        registry.addRecipeCatalyst(mekanismBlock.getItemStack(), condensentrating, decondensentrating);
+        registry.addRecipeCatalyst(MekanismBlock.ROTARY_CONDENSENTRATOR.getItemStack(), condensentrating, decondensentrating);
     }
 
     public static void registerSmelter(IRecipeCatalystRegistration registry) {
-        if (!register(registry, MekanismBlock.ENERGIZED_SMELTER)) {
-            return;
-        }
+        register(registry, MekanismBlock.ENERGIZED_SMELTER);
         if (!Mekanism.hooks.CraftTweakerLoaded || !EnergizedSmelter.hasRemovedRecipe()) {
             //Vanilla catalyst
             registerRecipeItem(registry, MekanismBlock.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
         }
     }
 
-    private static void registerRecipeItem(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock, ResourceLocation category) {
+    public static void registerRecipeItem(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock, ResourceLocation category) {
         registry.addRecipeCatalyst(mekanismBlock.getItemStack(), category);
         FactoryType factoryType = mekanismBlock.getFactoryType();
         if (factoryType != null) {
             for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                MekanismBlock factory = MekanismBlock.getFactory(tier, factoryType);
-                if (factory.isEnabled()) {
-                    registry.addRecipeCatalyst(factory.getItemStack(), category);
-                }
+                registry.addRecipeCatalyst(MekanismBlock.getFactory(tier, factoryType).getItemStack(), category);
             }
         }
     }

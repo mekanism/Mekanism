@@ -11,6 +11,7 @@ public class ToolsRegistration {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+        //Setup our config as things like materials are valid by now
         MekanismToolsConfig.loadFromFiles();
         ToolsItem.registerItems(event.getRegistry());
     }

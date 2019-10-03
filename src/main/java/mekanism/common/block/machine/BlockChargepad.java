@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasModel;
@@ -46,18 +45,15 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockChargepad extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityChargepad>, IBlockSound,
-      IBlockDisableable, IStateActive {
+      IStateActive {
 
     //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     // It does not contain the back pane currently
     private static final VoxelShape CHARGEPAD_BOUNDS = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.chargepad"));
-
-    private BooleanValue enabledReference;
 
     public BlockChargepad() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -174,16 +170,6 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
     @Override
     public SoundEvent getSoundEvent() {
         return SOUND_EVENT;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override

@@ -12,6 +12,6 @@ public class MekanismToolsConfig {
     }
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        MekanismConfig.registerConfig(modLoadingContext, tools);
+        modLoadingContext.registerConfig(tools.getConfigType(), tools.getConfigSpec());
     }
 }

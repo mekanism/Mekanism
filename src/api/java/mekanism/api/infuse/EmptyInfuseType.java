@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 public class EmptyInfuseType extends InfuseType {
 
     public EmptyInfuseType() {
-        super(new ResourceLocation(MekanismAPI.API_VERSION, "empty_infuse_type"), -1);
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "empty_infuse_type"), -1);
     }
 
     @Override

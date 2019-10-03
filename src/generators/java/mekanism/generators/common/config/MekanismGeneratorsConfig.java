@@ -12,6 +12,6 @@ public class MekanismGeneratorsConfig {
     }
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        MekanismConfig.registerConfig(modLoadingContext, generators);
+        modLoadingContext.registerConfig(generators.getConfigType(), generators.getConfigSpec());
     }
 }

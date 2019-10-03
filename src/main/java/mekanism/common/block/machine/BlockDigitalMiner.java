@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IBlockDisableable;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -49,12 +48,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityDigitalMiner>, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityDigitalMiner>, IBlockDisableable {
-
-    private BooleanValue enabledReference;
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityDigitalMiner> {
 
     public BlockDigitalMiner() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -167,16 +163,6 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     public int getInventorySize() {
         //TODO: Double check this is correct
         return 29;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabledReference == null ? true : enabledReference.get();
-    }
-
-    @Override
-    public void setEnabledConfigReference(BooleanValue enabledReference) {
-        this.enabledReference = enabledReference;
     }
 
     @Override
