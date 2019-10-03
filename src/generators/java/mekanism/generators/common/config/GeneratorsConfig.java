@@ -12,7 +12,6 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class GeneratorsConfig implements IMekanismConfig {
 
-    private static final String ENABLED_CATEGORY = "enabled_generators";
     private static final String TURBINE_CATEGORY = "turbine";
     private static final String WIND_CATEGORY = "wind_generator";
     private static final String HEAT_CATEGORY = "heat_generator";

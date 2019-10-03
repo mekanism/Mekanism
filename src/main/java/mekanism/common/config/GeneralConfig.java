@@ -14,7 +14,6 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 //TODO: FixME - forge really does not like using floats as config values
 public class GeneralConfig implements IMekanismConfig {
 
-    private static final String ENABLED_CATEGORY = "enabled_machines";
     private static final String WORLD_GEN_CATEGORY = "world_generation";
     private static final String CONVERSION_CATEGORY = "energy_conversion";
     private static final String DISASSEMBLER_CATEGORY = "atomic_disassembler";

@@ -294,7 +294,6 @@ jar {
 
 task coreJar(type: Jar) {
     archiveName = "Mekanism-${project.version}.jar"
-    dependsOn 'reobfJar'
     classifier "core"
     from sourceSets.main.output
     from sourceSets.api.output
@@ -306,7 +305,6 @@ task coreJar(type: Jar) {
 
 task additionsJar(type: Jar) {
     archiveName = "MekanismAdditions-${project.version}.jar"
-    dependsOn 'reobfJar'
     classifier "additions"
     from sourceSets.additions.output
     filesMatching('**/mods.toml') {
@@ -318,7 +316,6 @@ task additionsJar(type: Jar) {
 
 task generatorsJar(type: Jar) {
     archiveName = "MekanismGenerators-${project.version}.jar"
-    dependsOn 'reobfJar'
     classifier "generators"
     from sourceSets.generators.output
     filesMatching('**/mods.toml') {
@@ -330,7 +327,6 @@ task generatorsJar(type: Jar) {
 
 task toolsJar(type: Jar) {
     archiveName = "MekanismTools-${project.version}.jar"
-    dependsOn 'reobfJar'
     classifier "tools"
     from sourceSets.tools.output
     filesMatching('**/mods.toml') {
@@ -356,6 +352,29 @@ artifacts {
     archives additionsJar
     archives generatorsJar
     archives toolsJar
+}
+
+reobf {
+    apiJar {
+        dependsOn createMcpToSrg
+        mappings = createMcpToSrg.outputs.files.singleFile
+    }
+    coreJar {
+        dependsOn createMcpToSrg
+        mappings = createMcpToSrg.outputs.files.singleFile
+    }
+    additionsJar {
+        dependsOn createMcpToSrg
+        mappings = createMcpToSrg.outputs.files.singleFile
+    }
+    generatorsJar {
+        dependsOn createMcpToSrg
+        mappings = createMcpToSrg.outputs.files.singleFile
+    }
+    toolsJar {
+        dependsOn createMcpToSrg
+        mappings = createMcpToSrg.outputs.files.singleFile
+    }
 }
 
 task fullBuild(type: Delete) {
