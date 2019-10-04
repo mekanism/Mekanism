@@ -40,6 +40,7 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.GasConversionHandler;
+import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.tags.MekanismTags;
@@ -50,6 +51,7 @@ import mekanism.common.world.GenHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
@@ -142,6 +144,7 @@ public class Mekanism {
     public static Set<Coord4D> activeVibrators = new HashSet<>();
 
     private MekanismTagManager mekanismTagManager;
+    private RecipeCacheManager recipeCacheManager;
 
     public Mekanism() {
         instance = this;
@@ -180,6 +183,17 @@ public class Mekanism {
         return mekanismTagManager;
     }
 
+    public void setRecipeCacheManager(RecipeCacheManager manager) {
+        if (recipeCacheManager == null) {
+            recipeCacheManager = manager;
+        }
+        //TODO: Else throw error
+    }
+
+    public RecipeCacheManager getRecipeCacheManager() {
+        return recipeCacheManager;
+    }
+
     /**
      * Adds all in-game crafting, smelting and machine recipes.
      */
@@ -208,7 +222,9 @@ public class Mekanism {
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener(mekanismTagManager);
+        IReloadableResourceManager resourceManager = event.getServer().getResourceManager();
+        resourceManager.addReloadListener(getTagManager());
+        resourceManager.addReloadListener(getRecipeCacheManager());
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
@@ -300,16 +316,6 @@ public class Mekanism {
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();
 
-        //Add baby skeleton spawner
-        //TODO: Spawn baby skeletons
-        /*if (MekanismConfig.general.spawnBabySkeletons.get()) {
-            for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
-                if (biome.getSpawns(EntityClassification.MONSTER).size() > 0) {
-                    EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
-                }
-            }
-        }*/
-
         //Load this module
         hooks.hookCommonSetup();
 
@@ -321,14 +327,6 @@ public class Mekanism {
 
         //Fake player info
         logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
-
-        // Add all furnace recipes to the energized smelter
-        // Must happen after CraftTweaker for vanilla stuff has run.
-        //TODO: Needs to be handled after/whenever reload is done
-        /*for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
-            //The vanilla furnace does not support NBT so we use an ingredient that does not to ensure that things behave properly
-            Recipe.ENERGIZED_SMELTER.put(new ItemStackToItemStackRecipe(ItemStackIngredient.from(Ingredient.fromStacks(entry.getKey())), entry.getValue()));
-        }*/
 
         MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 

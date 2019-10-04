@@ -9,6 +9,8 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTags;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfuseTypeTags;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketMekanismTags;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
@@ -45,7 +47,7 @@ public class MekanismTagManager implements IFutureReloadListener {
 
     @Nonnull
     @Override
-    public CompletableFuture<Void> reload(IFutureReloadListener.IStage stage, @Nonnull IResourceManager resourceManager, @Nonnull IProfiler preparationsProfiler,
+    public CompletableFuture<Void> reload(@Nonnull IStage stage, @Nonnull IResourceManager resourceManager, @Nonnull IProfiler preparationsProfiler,
           @Nonnull IProfiler reloadProfiler, @Nonnull Executor backgroundExecutor, @Nonnull Executor gameExecutor) {
         //TODO: Support handling more of these
         CompletableFuture<Map<ResourceLocation, Builder<Gas>>> gasReload = this.gases.reload(resourceManager, backgroundExecutor);
@@ -56,6 +58,8 @@ public class MekanismTagManager implements IFutureReloadListener {
                   this.infuseTypes.registerAll(reloadResults.infuseTypes);
                   GasTags.setCollection(this.gases);
                   InfuseTypeTags.setCollection(this.infuseTypes);
+                  //TODO: Double check this is correct
+                  Mekanism.packetHandler.sendToAll(new PacketMekanismTags(Mekanism.instance.getTagManager()));
               }, gameExecutor);
     }
 

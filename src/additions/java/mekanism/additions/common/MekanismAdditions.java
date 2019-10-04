@@ -61,6 +61,16 @@ public class MekanismAdditions implements IModule {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             voiceManager = new VoiceServerManager();
         }
+        //Add baby skeleton spawner
+        //TODO: Spawn baby skeletons
+        /*if (MekanismAdditionsConfig.additions.spawnBabySkeletons.get()) {
+            for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
+                if (biome.getSpawns(EntityClassification.MONSTER).size() > 0) {
+                    EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
+                }
+            }
+        }*/
+
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
 

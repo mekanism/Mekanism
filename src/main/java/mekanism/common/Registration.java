@@ -8,6 +8,7 @@ import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.particle.MekanismParticleType;
 import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
@@ -73,6 +74,8 @@ public class Registration {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
         MekanismRecipeSerializers.registerRecipeSerializers(event.getRegistry());
         //TODO: Register a custom shaped crafting recipe serializer if needed
+
+        Mekanism.instance.setRecipeCacheManager(new RecipeCacheManager());
     }
 
     @SubscribeEvent

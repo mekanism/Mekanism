@@ -9,6 +9,7 @@ import mekanism.api.Range4D;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
+import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketContainerEditMode;
 import mekanism.common.network.PacketDataRequest;
@@ -159,6 +160,7 @@ public class PacketHandler {
         netHandler.registerMessage(disc++, PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
 
         netHandler.registerMessage(disc++, PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
+        netHandler.registerMessage(disc++, PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
         //TODO
         //netHandler.registerMessage(disc++, PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
     }

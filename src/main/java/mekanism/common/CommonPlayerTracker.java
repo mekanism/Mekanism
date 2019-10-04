@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import mekanism.common.network.PacketBoxBlacklist;
+import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketJetpackData;
@@ -36,6 +37,7 @@ public class CommonPlayerTracker {
             Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(SecurityPacket.FULL, null, null), (ServerPlayerEntity) event.getPlayer());
 
             Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());
+            Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
         }
     }
 
