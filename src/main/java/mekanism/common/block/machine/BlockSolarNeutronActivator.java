@@ -35,6 +35,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -89,6 +90,13 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
                     break;
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override

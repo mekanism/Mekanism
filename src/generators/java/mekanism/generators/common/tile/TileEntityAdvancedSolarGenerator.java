@@ -63,6 +63,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     protected boolean canSeeSky() {
-        return world.canBlockSeeSky(getPos().up(3));
+        //TODO: Verify this is correct at 2, I for some reason had it at 3 before
+        return world.canBlockSeeSky(getPos().up(2));
     }
 }

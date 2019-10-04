@@ -213,4 +213,13 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         //TODO: Check if this is the ideal solution or do we want to offload it to the main block somehow
         return BlockRenderLayer.CUTOUT;
     }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
+        //TODO: FIX THIS/DON'T EVEN OVERWRITE THIS
+        // We need to overwrite this so that it is "opaque" and canBlockSeeSky behaves properly
+        // The ideal way of doing this will be to properly override the VoxelShape for the bounding block based on the
+        // state/world
+        return true;
+    }
 }

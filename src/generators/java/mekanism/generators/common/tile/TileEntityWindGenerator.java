@@ -86,7 +86,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     public float getMultiplier() {
-        if (world.canBlockSeeSky(getPos().add(0, 4, 0))) {
+        if (world.canBlockSeeSky(getPos().up(4))) {
             final float minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
             final float maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
             final float minG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMin.get();
