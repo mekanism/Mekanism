@@ -43,6 +43,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -64,6 +65,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
     private int currentRedstoneLevel;
+    private boolean settingsChecked;
     private boolean needsRainCheck;
 
     public TileComponentUpgrade<TileEntitySolarNeutronActivator> upgradeComponent = new TileComponentUpgrade<>(this, 3);
@@ -73,17 +75,19 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         upgradeComponent.setSupported(Upgrade.ENERGY, false);
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        // Cache the flag to know if rain matters where this block is placed
-        //TODO: I believe this is incorrect but check it
-        needsRainCheck = world.getDimension().getBiome(getPos()).getPrecipitation() != RainType.NONE;
+    protected void recheckSettings() {
+        Biome b = world.getDimension().getBiome(getPos());
+        needsRainCheck = b.getPrecipitation() != RainType.NONE;
+        settingsChecked = true;
     }
 
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
+            if (!settingsChecked) {
+                recheckSettings();
+            }
+
             TileUtils.receiveGas(getInventory().get(0), inputTank);
             TileUtils.drawGas(getInventory().get(1), outputTank);
             cachedRecipe = getUpdatedCache(0);

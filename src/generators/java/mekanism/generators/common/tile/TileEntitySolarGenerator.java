@@ -20,6 +20,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private boolean seesSun;
     private boolean needsRainCheck = true;
     private double peakOutput;
+    private boolean settingsChecked;
 
     public TileEntitySolarGenerator() {
         this(GeneratorsBlock.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get() * 2);
@@ -39,9 +40,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return new int[]{0};
     }
 
-    @Override
-    public void validate() {
-        super.validate();
+    protected void recheckSettings() {
         Biome b = world.getDimension().getBiome(getPos());
 
         // Consider the best temperature to be 0.8; biomes that are higher than that
@@ -57,12 +56,18 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
         peakOutput = getConfiguredMax() * (1.0f + tempEff + humidityEff);
         needsRainCheck = b.getPrecipitation() != RainType.NONE;
+
+        settingsChecked = true;
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
         if (!world.isRemote) {
+            if (!settingsChecked) {
+                recheckSettings();
+            }
+
             ChargeUtils.charge(0, this);
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
