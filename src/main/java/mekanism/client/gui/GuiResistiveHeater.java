@@ -72,7 +72,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
-              MekanismUtils.getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
+              MekanismUtils.getTemperatureDisplay(tileEntity.getTemp(), TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
         renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.usage"), ": ", EnergyDisplay.of(tileEntity.energyUsage), "/t"), 50, 41, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

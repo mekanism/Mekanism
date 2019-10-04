@@ -28,7 +28,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature", "setEnergyUsage"};
     public double energyUsage = 100;
-    public double temperature;
+    private double temperature;
     public double heatToAbsorb = 0;
     //TODO: Figure out sound
     public float soundScale = 1;

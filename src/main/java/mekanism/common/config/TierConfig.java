@@ -186,7 +186,7 @@ public class TierConfig implements IMekanismConfig {
             DoubleValue capacityReference = builder.comment("Heat capacity of " + tierName + " thermodynamic conductors.")
                   .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseHeatCapacity(), 1, Double.MAX_VALUE);
             DoubleValue insulationReference = builder.comment("Insulation value of " + tierName + " thermodynamic conductor.")
-                  .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseConductionInsulation(), 1, Double.MAX_VALUE);
+                  .defineInRange(tierName.toLowerCase() + "Insulation", tier.getBaseConductionInsulation(), 1, Double.MAX_VALUE);
             tier.setConfigReference(conductionReference, capacityReference, insulationReference);
         }
         builder.pop();
