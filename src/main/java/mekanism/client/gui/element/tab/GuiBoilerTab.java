@@ -1,16 +1,14 @@
 package mekanism.client.gui.element.tab;
 
-import java.util.function.Function;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.BoilerStatsContainer;
-import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,19 +22,17 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
     }
 
     public enum BoilerTab implements TabType<TileEntityBoilerCasing> {
-        MAIN("gases.png", "gui.mekanism.main", tile ->
-              new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, tile))),
-        STAT("stats.png", "gui.mekanism.stats", tile ->
-              new ContainerProvider("mekanism.container.boiler_stats", (i, inv, player) -> new BoilerStatsContainer(i, inv, tile)));
+        MAIN("gases.png", "gui.mekanism.main", ClickedTileButton.TAB_MAIN),
+        STAT("stats.png", "gui.mekanism.stats", ClickedTileButton.TAB_STATS);
 
-        private final Function<TileEntityBoilerCasing, INamedContainerProvider> provider;
+        private final ClickedTileButton button;
         private final String description;
         private final String path;
 
-        BoilerTab(String path, String desc, Function<TileEntityBoilerCasing, INamedContainerProvider> provider) {
+        BoilerTab(String path, String desc, ClickedTileButton button) {
             this.path = path;
             description = desc;
-            this.provider = provider;
+            this.button = button;
         }
 
         @Override
@@ -45,8 +41,8 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
         }
 
         @Override
-        public INamedContainerProvider getProvider(TileEntityBoilerCasing tile) {
-            return provider.apply(tile);
+        public void onClick(TileEntityBoilerCasing tile) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile.getPos()));
         }
 
         @Override

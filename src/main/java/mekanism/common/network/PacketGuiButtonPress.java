@@ -12,9 +12,12 @@ import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
+import mekanism.common.inventory.container.tile.BoilerStatsContainer;
+import mekanism.common.inventory.container.tile.MatrixStatsContainer;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
+import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
@@ -26,7 +29,9 @@ import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterC
 import mekanism.common.inventory.container.tile.filter.list.DigitalMinerConfigContainer;
 import mekanism.common.inventory.container.tile.filter.select.DMFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.select.LSFilterSelectContainer;
+import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -47,9 +52,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
  */
 public class PacketGuiButtonPress {
 
-    //TODO: Make a tab button pressed? and have a registry that encodes a resource location as a "key" so that the server and client can know
-    // what one is being talked about without worrying about potential index mismatches
-    // Decide if it makes sense to do this in a separate packet or as part of this
     private ClickedTileButton tileButton;
     private ClickedEntityButton entityButton;
     private boolean hasEntity;
@@ -128,9 +130,6 @@ public class PacketGuiButtonPress {
         return new PacketGuiButtonPress(buf.readEnumValue(ClickedTileButton.class), buf.readBlockPos(), buf.readInt());
     }
 
-
-    //TODO: Add some built in way so that MekanismGenerators has an easy way to do this.
-    // Maybe have it be an interface? Except then we can't just write as enum
     public enum ClickedTileButton {
         BACK_BUTTON((tile, extra) -> {
             //Special handling to basically reset to the tiles default gui container
@@ -230,6 +229,27 @@ public class PacketGuiButtonPress {
             if (tile instanceof TileEntityLogisticalSorter) {
                 return new ContainerProvider("mekanism.container.logistical_sorter_tag_filter", (i, inv, player) ->
                       new LSTagFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
+            }
+            return null;
+        }),
+
+        TAB_MAIN((tile, extra) -> {
+            if (tile instanceof TileEntityInductionCasing) {
+                return new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv,
+                      (TileEntityInductionCasing) tile));
+            } else if (tile instanceof TileEntityBoilerCasing) {
+                return new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new BoilerStatsContainer(i, inv,
+                      (TileEntityBoilerCasing) tile));
+            }
+            return null;
+        }),
+        TAB_STATS((tile, extra) -> {
+            if (tile instanceof TileEntityInductionCasing) {
+                return new ContainerProvider("mekanism.container.matrix_stats", (i, inv, player) -> new MatrixStatsContainer(i, inv,
+                      (TileEntityInductionCasing) tile));
+            } else if (tile instanceof TileEntityBoilerCasing) {
+                return new ContainerProvider("mekanism.container.boiler_stats", (i, inv, player) -> new BoilerStatsContainer(i, inv,
+                      (TileEntityBoilerCasing) tile));
             }
             return null;
         });

@@ -1,18 +1,16 @@
 package mekanism.generators.client.gui.element;
 
-import java.util.function.Function;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
-import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
-import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
-import mekanism.generators.common.inventory.container.turbine.TurbineStatsContainer;
+import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
+import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,19 +24,17 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
     }
 
     public enum TurbineTab implements TabType<TileEntityTurbineCasing> {
-        MAIN("gases.png", "gui.mekanism.main", tile ->
-              new ContainerProvider("mekanism.container.industrial_turbine", (i, inv, player) -> new TurbineContainer(i, inv, tile))),
-        STAT("stats.png", "gui.mekanism.stats", tile ->
-              new ContainerProvider("mekanism.container.turbine_stats", (i, inv, player) -> new TurbineStatsContainer(i, inv, tile)));
+        MAIN("gases.png", "gui.mekanism.main", ClickedGeneratorsTileButton.TAB_MAIN),
+        STAT("stats.png", "gui.mekanism.stats", ClickedGeneratorsTileButton.TAB_STATS);
 
-        private final Function<TileEntityTurbineCasing, INamedContainerProvider> provider;
+        private final ClickedGeneratorsTileButton button;
         private final String description;
         private final String path;
 
-        TurbineTab(String path, String desc, Function<TileEntityTurbineCasing, INamedContainerProvider> provider) {
+        TurbineTab(String path, String desc, ClickedGeneratorsTileButton button) {
             this.path = path;
             description = desc;
-            this.provider = provider;
+            this.button = button;
         }
 
         @Override
@@ -47,8 +43,8 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
         }
 
         @Override
-        public INamedContainerProvider getProvider(TileEntityTurbineCasing tile) {
-            return provider.apply(tile);
+        public void onClick(TileEntityTurbineCasing tile) {
+            Mekanism.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getPos()));
         }
 
         @Override

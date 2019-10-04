@@ -1,16 +1,14 @@
 package mekanism.client.gui.element.tab;
 
-import java.util.function.Function;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.MatrixStatsContainer;
-import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,19 +22,17 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
     }
 
     public enum MatrixTab implements TabType<TileEntityInductionCasing> {
-        MAIN("energy.png", "gui.mekanism.main", tile ->
-              new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv, tile))),
-        STAT("stats.png", "gui.mekanism.stats", tile ->
-              new ContainerProvider("mekanism.container.matrix_stats", (i, inv, player) -> new MatrixStatsContainer(i, inv, tile)));
+        MAIN("energy.png", "gui.mekanism.main", ClickedTileButton.TAB_MAIN),
+        STAT("stats.png", "gui.mekanism.stats", ClickedTileButton.TAB_STATS);
 
-        private final Function<TileEntityInductionCasing, INamedContainerProvider> provider;
+        private final ClickedTileButton button;
         private final String description;
         private final String path;
 
-        MatrixTab(String path, String desc, Function<TileEntityInductionCasing, INamedContainerProvider> provider) {
+        MatrixTab(String path, String desc, ClickedTileButton button) {
             this.path = path;
             description = desc;
-            this.provider = provider;
+            this.button = button;
         }
 
         @Override
@@ -45,8 +41,8 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
         }
 
         @Override
-        public INamedContainerProvider getProvider(TileEntityInductionCasing tile) {
-            return provider.apply(tile);
+        public void onClick(TileEntityInductionCasing tile) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile.getPos()));
         }
 
         @Override

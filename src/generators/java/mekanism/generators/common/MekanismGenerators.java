@@ -10,6 +10,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -47,8 +48,15 @@ public class MekanismGenerators implements IModule {
 
         MinecraftForge.EVENT_BUS.register(this);
 
+        registerPackets();
+
         //Finalization
         Mekanism.logger.info("Loaded MekanismGenerators module.");
+    }
+
+    private void registerPackets() {
+        Mekanism.packetHandler.registerMessage(PacketGeneratorsGuiButtonPress.class, PacketGeneratorsGuiButtonPress::encode, PacketGeneratorsGuiButtonPress::decode,
+              PacketGeneratorsGuiButtonPress::handle);
     }
 
     //TODO: BuildCraft

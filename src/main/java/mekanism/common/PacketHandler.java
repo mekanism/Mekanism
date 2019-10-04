@@ -3,6 +3,8 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -66,6 +68,7 @@ public class PacketHandler {
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Mekanism.MODID, "main_channel"))
           .clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals).networkProtocolVersion(() -> PROTOCOL_VERSION).simpleChannel();
+    private int index = 0;
 
     /**
      * Encodes an Object[] of data into a DataOutputStream.
@@ -132,37 +135,41 @@ public class PacketHandler {
     }
 
     public void initialize() {
-        int disc = 0;
 
-        netHandler.registerMessage(disc++, PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
-        netHandler.registerMessage(disc++, PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
-        netHandler.registerMessage(disc++, PacketItemStack.class, PacketItemStack::encode, PacketItemStack::decode, PacketItemStack::handle);
-        netHandler.registerMessage(disc++, PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
-        netHandler.registerMessage(disc++, PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
-        netHandler.registerMessage(disc++, PacketDataRequest.class, PacketDataRequest::encode, PacketDataRequest::decode, PacketDataRequest::handle);
-        netHandler.registerMessage(disc++, PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
-        netHandler.registerMessage(disc++, PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
-        netHandler.registerMessage(disc++, PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);
-        netHandler.registerMessage(disc++, PacketRedstoneControl.class, PacketRedstoneControl::encode, PacketRedstoneControl::decode, PacketRedstoneControl::handle);
-        netHandler.registerMessage(disc++, PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
-        netHandler.registerMessage(disc++, PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
-        netHandler.registerMessage(disc++, PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
-        netHandler.registerMessage(disc++, PacketJetpackData.class, PacketJetpackData::encode, PacketJetpackData::decode, PacketJetpackData::handle);
-        netHandler.registerMessage(disc++, PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
-        netHandler.registerMessage(disc++, PacketScubaTankData.class, PacketScubaTankData::encode, PacketScubaTankData::decode, PacketScubaTankData::handle);
-        netHandler.registerMessage(disc++, PacketBoxBlacklist.class, PacketBoxBlacklist::encode, PacketBoxBlacklist::decode, PacketBoxBlacklist::handle);
-        netHandler.registerMessage(disc++, PacketContainerEditMode.class, PacketContainerEditMode::encode, PacketContainerEditMode::decode, PacketContainerEditMode::handle);
-        netHandler.registerMessage(disc++, PacketFlamethrowerData.class, PacketFlamethrowerData::encode, PacketFlamethrowerData::decode, PacketFlamethrowerData::handle);
-        netHandler.registerMessage(disc++, PacketDropperUse.class, PacketDropperUse::encode, PacketDropperUse::decode, PacketDropperUse::handle);
-        netHandler.registerMessage(disc++, PacketEntityMove.class, PacketEntityMove::encode, PacketEntityMove::decode, PacketEntityMove::handle);
-        netHandler.registerMessage(disc++, PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
-        netHandler.registerMessage(disc++, PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
-        netHandler.registerMessage(disc++, PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
+        registerMessage(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
+        registerMessage(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
+        registerMessage(PacketItemStack.class, PacketItemStack::encode, PacketItemStack::decode, PacketItemStack::handle);
+        registerMessage(PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
+        registerMessage(PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
+        registerMessage(PacketDataRequest.class, PacketDataRequest::encode, PacketDataRequest::decode, PacketDataRequest::handle);
+        registerMessage(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
+        registerMessage(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
+        registerMessage(PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);
+        registerMessage(PacketRedstoneControl.class, PacketRedstoneControl::encode, PacketRedstoneControl::decode, PacketRedstoneControl::handle);
+        registerMessage(PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
+        registerMessage(PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
+        registerMessage(PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
+        registerMessage(PacketJetpackData.class, PacketJetpackData::encode, PacketJetpackData::decode, PacketJetpackData::handle);
+        registerMessage(PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
+        registerMessage(PacketScubaTankData.class, PacketScubaTankData::encode, PacketScubaTankData::decode, PacketScubaTankData::handle);
+        registerMessage(PacketBoxBlacklist.class, PacketBoxBlacklist::encode, PacketBoxBlacklist::decode, PacketBoxBlacklist::handle);
+        registerMessage(PacketContainerEditMode.class, PacketContainerEditMode::encode, PacketContainerEditMode::decode, PacketContainerEditMode::handle);
+        registerMessage(PacketFlamethrowerData.class, PacketFlamethrowerData::encode, PacketFlamethrowerData::decode, PacketFlamethrowerData::handle);
+        registerMessage(PacketDropperUse.class, PacketDropperUse::encode, PacketDropperUse::decode, PacketDropperUse::handle);
+        registerMessage(PacketEntityMove.class, PacketEntityMove::encode, PacketEntityMove::decode, PacketEntityMove::handle);
+        registerMessage(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
+        registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
+        registerMessage(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
 
-        netHandler.registerMessage(disc++, PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
-        netHandler.registerMessage(disc++, PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
+        registerMessage(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
+        registerMessage(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
         //TODO
-        //netHandler.registerMessage(disc++, PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
+        //registerMessage(PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
+    }
+
+
+    public <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
+        netHandler.registerMessage(index++, type, encoder, decoder, consumer);
     }
 
     /**
