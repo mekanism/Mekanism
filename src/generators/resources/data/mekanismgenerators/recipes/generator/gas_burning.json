@@ -8,12 +8,6 @@
     "PEP"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanismgenerators:gas_burning_generator"
-    }
-  ],
   "key": {
     "P": {
       "tag": "forge:ingots/osmium"

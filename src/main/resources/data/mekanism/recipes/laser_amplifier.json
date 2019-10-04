@@ -8,12 +8,6 @@
     "SSS"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:laser_amplifier"
-    }
-  ],
   "key": {
     "S": {
       "tag": "forge:ingots/steel"

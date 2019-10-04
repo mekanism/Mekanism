@@ -8,12 +8,6 @@
     "IRI"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:electrolytic_separator"
-    }
-  ],
   "key": {
     "R": {
       "tag": "forge:dusts/redstone"

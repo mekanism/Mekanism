@@ -8,12 +8,6 @@
     "RCR"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:elite_purifying_factory"
-    }
-  ],
   "key": {
     "R": {
       "tag": "mekanism:alloys/reinforced"

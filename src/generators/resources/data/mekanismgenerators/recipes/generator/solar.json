@@ -8,12 +8,6 @@
     "PEP"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanismgenerators:solar_generator"
-    }
-  ],
   "key": {
     "P": {
       "tag": "forge:dusts/osmium"

@@ -8,12 +8,6 @@
     "TIT"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:digital_miner"
-    }
-  ],
   "key": {
     "A": {
       "tag": "mekanism:alloys/atomic"

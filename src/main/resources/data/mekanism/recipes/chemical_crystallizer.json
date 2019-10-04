@@ -8,12 +8,6 @@
     "CGC"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:chemical_crystallizer"
-    }
-  ],
   "key": {
     "A": {
       "tag": "mekanism:alloys/atomic"

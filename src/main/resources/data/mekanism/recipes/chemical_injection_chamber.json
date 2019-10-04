@@ -8,12 +8,6 @@
     "RCR"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:chemical_injection_chamber"
-    }
-  ],
   "key": {
     "P": {
       "item": "mekanism:purification_chamber"

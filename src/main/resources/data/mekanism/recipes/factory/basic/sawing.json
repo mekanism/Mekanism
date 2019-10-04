@@ -8,12 +8,6 @@
     "RCR"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:basic_sawing_factory"
-    }
-  ],
   "key": {
     "R": {
       "tag": "mekanism:alloys/basic"

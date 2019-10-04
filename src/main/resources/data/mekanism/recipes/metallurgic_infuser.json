@@ -8,12 +8,6 @@
     "IFI"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:metallurgic_infuser"
-    }
-  ],
   "key": {
     "R": {
       "tag": "forge:dusts/redstone"

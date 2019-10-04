@@ -8,12 +8,6 @@
     "ECE"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:purification_chamber"
-    }
-  ],
   "key": {
     "R": {
       "item": "mekanism:enrichment_chamber"

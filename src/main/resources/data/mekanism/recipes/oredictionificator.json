@@ -8,12 +8,6 @@
     "SWS"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:oredictionificator"
-    }
-  ],
   "key": {
     "B": {
       "item": "mekanism:dictionary"

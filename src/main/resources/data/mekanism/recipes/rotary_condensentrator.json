@@ -8,12 +8,6 @@
     "GCG"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:rotary_condensentrator"
-    }
-  ],
   "key": {
     "C": {
       "tag": "forge:circuits/basic"

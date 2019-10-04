@@ -8,12 +8,6 @@
     "ACA"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:ultimate_smelting_factory"
-    }
-  ],
   "key": {
     "A": {
       "tag": "mekanism:alloys/atomic"

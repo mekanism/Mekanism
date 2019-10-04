@@ -7,12 +7,6 @@
     "F"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:laser_tractor_beam"
-    }
-  ],
   "key": {
     "C": {
       "item": "mekanism:personal_chest"

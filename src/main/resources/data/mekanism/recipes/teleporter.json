@@ -8,12 +8,6 @@
     "COC"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:teleporter"
-    }
-  ],
   "key": {
     "C": {
       "tag": "forge:circuits/basic"

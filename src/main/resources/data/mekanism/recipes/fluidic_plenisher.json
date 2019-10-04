@@ -8,12 +8,6 @@
     "TTT"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:fluidic_plenisher"
-    }
-  ],
   "key": {
     "P": {
       "item": "mekanism:electric_pump"

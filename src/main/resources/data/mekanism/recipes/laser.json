@@ -8,12 +8,6 @@
     "RE "
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:laser"
-    }
-  ],
   "key": {
     "R": {
       "tag": "mekanism:alloys/reinforced"

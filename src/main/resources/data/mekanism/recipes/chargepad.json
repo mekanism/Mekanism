@@ -7,12 +7,6 @@
     "SES"
   ],
   "type": "minecraft:crafting_shaped",
-  "conditions": [
-    {
-      "type": "mekanism:recipe_enabled",
-      "block": "mekanism:chargepad"
-    }
-  ],
   "key": {
     "P": {
       "item": "minecraft:stone_pressure_plate"
