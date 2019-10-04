@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -23,10 +22,8 @@ import mekanism.common.tier.CableTier;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -57,7 +54,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = CableTier.get(baseTier);
+        //TODO: UPGRADING
     }
 
     @Override
@@ -156,9 +153,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
         if (buffer.amount < 0) {
             buffer.amount = 0;
         }
-        if (nbtTags.contains("tier")) {
-            tier = EnumUtils.CABLE_TIERS[nbtTags.getInt("tier")];
-        }
     }
 
     @Nonnull
@@ -166,7 +160,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putDouble("cacheEnergy", lastWrite);
-        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 
@@ -274,26 +267,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
+        //TODO: UPGRADING
+        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
             tier = EnumUtils.CABLE_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;
-        }
+        }*/
         return false;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        tier = dataStream.readEnumValue(CableTier.class);
-        super.handlePacketData(dataStream);
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(tier);
-        super.getNetworkedData(data);
-        return data;
     }
 
     @Nonnull

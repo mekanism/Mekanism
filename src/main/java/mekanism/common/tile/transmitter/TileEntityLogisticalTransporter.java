@@ -26,7 +26,6 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -72,7 +71,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = TransporterTier.get(baseTier);
+        //TODO: UPGRADING
     }
 
     @Override
@@ -179,7 +178,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             int type = dataStream.readInt();
             if (type == 0) {
                 super.handlePacketData(dataStream);
-                tier = dataStream.readEnumValue(TransporterTier.class);
                 int c = dataStream.readInt();
                 EnumColor prev = getTransmitter().getColor();
                 if (c != -1) {
@@ -212,7 +210,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(0);
         super.getNetworkedData(data);
-        data.add(tier);
         if (getTransmitter().getColor() != null) {
             data.add(TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         } else {
@@ -267,9 +264,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("tier")) {
-            tier = EnumUtils.TRANSPORTER_TIERS[nbtTags.getInt("tier")];
-        }
         getTransmitter().readFromNBT(nbtTags);
     }
 
@@ -277,7 +271,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("tier", tier.ordinal());
         if (getTransmitter().getColor() != null) {
             nbtTags.putInt("color", TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         }
@@ -360,12 +353,13 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
+        //TODO: UPGRADING
+        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
             tier = EnumUtils.TRANSPORTER_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;
-        }
+        }*/
         return false;
     }
 

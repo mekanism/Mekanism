@@ -93,6 +93,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
         }
     }
 
+    //TODO: Fix if controller is last block placed the reactor doesn't form
     public void updateController() {
         if (!(this instanceof TileEntityReactorController)) {
             TileEntityReactorController found = new ControllerFinder().find();

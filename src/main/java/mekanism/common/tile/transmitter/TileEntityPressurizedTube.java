@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
@@ -20,10 +19,8 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -83,7 +80,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = TubeTier.get(baseTier);
+        //TODO: UPGRADING
         buffer.setCapacity(getCapacity());
     }
 
@@ -162,9 +159,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("tier")) {
-            tier = EnumUtils.TUBE_TIERS[nbtTags.getInt("tier")];
-        }
         buffer.setCapacity(getCapacity());
         if (nbtTags.contains("cacheGas")) {
             buffer.setStack(GasStack.readFromNBT(nbtTags.getCompound("cacheGas")));
@@ -182,7 +176,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         } else {
             nbtTags.remove("cacheGas");
         }
-        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 
@@ -301,26 +294,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
+        //TODO: UPGRADING
+        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
             tier = EnumUtils.TUBE_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;
-        }
+        }*/
         return false;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        tier = dataStream.readEnumValue(TubeTier.class);
-        super.handlePacketData(dataStream);
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(tier);
-        super.getNetworkedData(data);
-        return data;
     }
 
     @Nonnull

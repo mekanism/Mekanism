@@ -17,7 +17,6 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,7 +46,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = ConductorTier.get(baseTier);
+        //TODO: UPGRADING
     }
 
     @Override
@@ -96,10 +95,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        temperature = nbtTags.getDouble("temperature");
-        if (nbtTags.contains("tier")) {
-            tier = EnumUtils.CONDUCTOR_TIERS[nbtTags.getInt("tier")];
-        }
     }
 
     @Nonnull
@@ -107,7 +102,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putDouble("temperature", temperature);
-        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 
@@ -122,14 +116,12 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        tier = dataStream.readEnumValue(ConductorTier.class);
         super.handlePacketData(dataStream);
         temperature = dataStream.readDouble();
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(tier);
         super.getNetworkedData(data);
         data.add(temperature);
         return data;
@@ -201,12 +193,13 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
+        //TODO: UPGRADING
+        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
             tier = EnumUtils.CONDUCTOR_TIERS[tier.ordinal() + 1];
             markDirtyTransmitters();
             sendDesc = true;
             return true;
-        }
+        }*/
         return false;
     }
 }
