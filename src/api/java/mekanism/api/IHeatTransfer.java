@@ -27,8 +27,6 @@ public interface IHeatTransfer {
 
     double applyTemperatureChange();
 
-    boolean canConnectHeat(Direction side);
-
     @Nullable
     default IHeatTransfer getAdjacent(Direction side) {
         return null;

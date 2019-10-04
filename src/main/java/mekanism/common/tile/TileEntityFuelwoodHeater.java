@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.MekanismBlock;
@@ -12,6 +11,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -151,15 +151,10 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
         return temperature;
     }
 
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return true;
-    }
-
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
+        TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
         return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
     }
 

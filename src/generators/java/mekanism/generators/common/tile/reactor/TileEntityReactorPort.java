@@ -3,7 +3,6 @@ package mekanism.generators.common.tile.reactor;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
@@ -268,15 +267,10 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         return 0;
     }
 
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return getReactor() != null;
-    }
-
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
+        TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
         if (!(adj instanceof TileEntityReactorBlock)) {
             return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
@@ -315,7 +309,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Allow inserting
             return false;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return getReactor() == null;
         }
         return super.isCapabilityDisabled(capability, side);

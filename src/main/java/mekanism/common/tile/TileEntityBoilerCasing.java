@@ -308,11 +308,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return 0;
     }
 
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return structure != null;
-    }
-
     //TODO: Decide if heat capability should be moved to valve only
     @Nonnull
     @Override
@@ -327,6 +322,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
+        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+            return structure == null;
         }
         return super.isCapabilityDisabled(capability, side);
     }

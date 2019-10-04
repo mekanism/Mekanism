@@ -39,9 +39,4 @@ public class DefaultHeatTransfer implements IHeatTransfer {
     public double applyTemperatureChange() {
         return 0;
     }
-
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return false;
-    }
 }

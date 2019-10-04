@@ -126,9 +126,4 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         heatToAbsorb = 0;
         return temperature;
     }
-
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return false;
-    }
 }

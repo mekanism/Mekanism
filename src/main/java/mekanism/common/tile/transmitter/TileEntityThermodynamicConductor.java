@@ -84,7 +84,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).matches(transfer -> transfer.canConnectHeat(side.getOpposite()));
+        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     @Override
@@ -165,11 +165,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
             sendTemp();
         }
         return temperature;
-    }
-
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return true;
     }
 
     @Nullable

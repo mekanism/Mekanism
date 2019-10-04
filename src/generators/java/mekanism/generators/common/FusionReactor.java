@@ -315,6 +315,7 @@ public class FusionReactor {
             if (tile instanceof TileEntityReactorBlock) {
                 reactorBlocks.add((TileEntityReactorBlock) tile);
                 ((TileEntityReactorBlock) tile).setReactor(this);
+                //TODO: Does this need to check capability instead
                 if (tile instanceof IHeatTransfer) {
                     heatTransfers.add((IHeatTransfer) tile);
                 }

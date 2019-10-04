@@ -291,7 +291,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public double getInsulationCoefficient(Direction side) {
-        return canConnectHeat(side) ? 0 : 10000;
+        return side == Direction.DOWN ? 0 : 10000;
     }
 
     @Override
@@ -319,16 +319,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return temperature;
     }
 
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return side == Direction.DOWN;
-    }
-
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        if (canConnectHeat(side)) {
-            TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
+        if (side == Direction.DOWN) {
+            TileEntity adj = MekanismUtils.getTileEntity(world, pos.down());
             return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;
@@ -337,10 +332,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && side == Direction.DOWN) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        if (side != getDirection() && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != getDirection()) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
         }
         return super.getCapability(capability, side);

@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
@@ -152,15 +151,10 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         return temperature;
     }
 
-    @Override
-    public boolean canConnectHeat(Direction side) {
-        return true;
-    }
-
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
+        TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
         return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
     }
 
