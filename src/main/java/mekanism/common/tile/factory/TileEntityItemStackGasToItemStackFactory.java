@@ -224,6 +224,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
         return new GasTankInfo[]{gasTank};
     }
 
+    @Override
+    public boolean hasSecondaryResourceBar() {
+        return true;
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {

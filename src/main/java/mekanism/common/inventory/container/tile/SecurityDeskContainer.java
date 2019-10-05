@@ -67,7 +67,7 @@ public class SecurityDeskContainer extends MekanismTileContainer<TileEntitySecur
     }
 
     @Override
-    protected int getInventoryOffset() {
+    protected int getInventoryYOffset() {
         return 148;
     }
 }

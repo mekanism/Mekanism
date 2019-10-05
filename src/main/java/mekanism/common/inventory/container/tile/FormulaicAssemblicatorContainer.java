@@ -127,7 +127,7 @@ public class FormulaicAssemblicatorContainer extends MekanismTileContainer<TileE
     }
 
     @Override
-    protected int getInventoryOffset() {
+    protected int getInventoryYOffset() {
         return 148;
     }
 }

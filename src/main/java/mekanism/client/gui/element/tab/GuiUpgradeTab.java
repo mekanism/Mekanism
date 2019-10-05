@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiUpgradeTab extends GuiInsetElement<TileEntity> {
 
     public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "upgrade.png"), gui, def, tile, 176, 6, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "upgrade.png"), gui, def, tile, gui.getWidth(), 6, 26, 18);
     }
 
     @Override

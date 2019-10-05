@@ -47,8 +47,12 @@ public abstract class MekanismContainer extends Container {
     protected void openInventory(@Nonnull PlayerInventory inv) {
     }
 
-    protected int getInventoryOffset() {
+    protected int getInventoryYOffset() {
         return 84;
+    }
+
+    protected int getInventoryXOffset() {
+        return 8;
     }
 
     protected void addInventorySlots(@Nonnull PlayerInventory inv) {
@@ -56,15 +60,16 @@ public abstract class MekanismContainer extends Container {
             //Don't include the player's inventory slots
             return;
         }
-        int offset = getInventoryOffset();
+        int yOffset = getInventoryYOffset();
+        int xOffset = getInventoryXOffset();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new Slot(inv, slotX + slotY * 9 + 9, 8 + slotX * 18, offset + slotY * 18));
+                addSlot(new Slot(inv, slotX + slotY * 9 + 9, xOffset + slotX * 18, yOffset + slotY * 18));
             }
         }
-        offset += 58;
+        yOffset += 58;
         for (int slotY = 0; slotY < 9; slotY++) {
-            addSlot(new Slot(inv, slotY, 8 + slotY * 18, offset));
+            addSlot(new Slot(inv, slotY, xOffset + slotY * 18, yOffset));
         }
     }
 

@@ -754,4 +754,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public int getRedstoneLevel() {
         return Container.calcRedstoneFromInventory(this);
     }
+
+    public boolean hasSecondaryResourceBar() {
+        return false;
+    }
 }

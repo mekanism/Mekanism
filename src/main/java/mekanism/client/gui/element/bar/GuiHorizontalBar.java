@@ -12,6 +12,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class GuiHorizontalBar<INFO extends IBarInfoHandler> extends GuiBar<INFO> {
 
     private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "horizontal_bar.png");
+    private static final int TEX_WIDTH = 54;
+    private static final int TEX_HEIGHT = 6;
 
     public GuiHorizontalBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, ResourceLocation def, int x, int y, int width, int height) {
         //TODO: Bump the width by 2? for the border of the bar image? Or maybe remove border
@@ -21,6 +23,7 @@ public abstract class GuiHorizontalBar<INFO extends IBarInfoHandler> extends Gui
     @Override
     public void renderBar() {
         minecraft.textureManager.bindTexture(BAR);
-        guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, 54, 6);
+        //TODO: Stretch it properly
+        guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, TEX_WIDTH, TEX_HEIGHT);
     }
 }

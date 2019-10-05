@@ -19,6 +19,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEn
 
     @Override
     public void renderSide(BufferBuilder renderer, Direction side, @Nonnull TileEntityThermodynamicConductor cable) {
+        //TODO: Fix the fact that this seems to always be whitish
         renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.getTemp(), cable.getBaseColour()),
               cable.getBlockState(), cable.getModelData());
     }

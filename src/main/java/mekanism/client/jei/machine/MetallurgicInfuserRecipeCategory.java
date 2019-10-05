@@ -19,8 +19,8 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.bar.GuiVerticalInfuseBar;
-import mekanism.client.gui.element.bar.GuiVerticalInfuseBar.InfuseInfoProvider;
+import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
+import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.MekanismBlock;
@@ -36,7 +36,7 @@ import net.minecraft.util.text.ITextComponent;
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
     private RecipeInfuseInfoProvider infoProvider;
-    private GuiVerticalInfuseBar infuseBar;
+    private GuiVerticalChemicalBar infuseBar;
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/blank.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
@@ -78,7 +78,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
                 return (double) timer.getValue() / 20F;
             }
         }, ProgressBar.MEDIUM, this, guiLocation, 70, 46));
-        guiElements.add(infuseBar = new GuiVerticalInfuseBar(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15));
+        guiElements.add(infuseBar = new GuiVerticalChemicalBar<>(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15));
     }
 
     @Override
@@ -126,7 +126,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         infoProvider.cachedRecipe = null;
     }
 
-    private static class RecipeInfuseInfoProvider implements InfuseInfoProvider {
+    private static class RecipeInfuseInfoProvider implements ChemicalInfoProvider<InfuseType> {
 
         @Nullable
         private MetallurgicInfuserRecipe cachedRecipe;

@@ -71,7 +71,7 @@ public class OredictionificatorContainer extends MekanismTileContainer<TileEntit
     }
 
     @Override
-    protected int getInventoryOffset() {
+    protected int getInventoryYOffset() {
         return 148;
     }
 }

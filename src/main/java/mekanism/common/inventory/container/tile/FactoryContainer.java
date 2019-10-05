@@ -5,6 +5,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotExtra;
+import mekanism.common.inventory.slot.SlotIgnored;
 import mekanism.common.inventory.slot.SlotInput;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tier.FactoryTier;
@@ -31,12 +32,10 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
     @Override
     protected void addSlots() {
         addSlot(new SlotDischarge(tile, 1, 7, 13));
-        //TODO: Mark these two side slots to not be auto generated gui images for
-        addSlot(new Slot(tile, 2, 180, 75));
-        addSlot(new Slot(tile, 3, 180, 112));
+        addSlot(new SlotIgnored(tile, 2, tile.tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
+        addSlot(new SlotIgnored(tile, 3, tile.tier == FactoryTier.ULTIMATE ? 214 : 180, 112));
         addSlot(new SlotExtra(tile, 4, 7, 57));
-        //TODO: Ultimate factory move other slots around, and shift these leftwards
-        int baseX = tile.tier == FactoryTier.BASIC ? 55 : tile.tier == FactoryTier.ADVANCED ? 35 : tile.tier == FactoryTier.ELITE ? 29 : 10;
+        int baseX = tile.tier == FactoryTier.BASIC ? 55 : tile.tier == FactoryTier.ADVANCED ? 35 : tile.tier == FactoryTier.ELITE ? 29 : 27;//8;
         int baseXMult = tile.tier == FactoryTier.BASIC ? 38 : tile.tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tile.tier.processes; i++) {
             addSlot(new FactoryInputSlot(tile, getInputSlotIndex(i), baseX + (i * baseXMult), 13, i));
@@ -47,8 +46,13 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
     }
 
     @Override
-    protected int getInventoryOffset() {
-        return 95;
+    protected int getInventoryYOffset() {
+        return tile.hasSecondaryResourceBar() ? 95 : 85;
+    }
+
+    @Override
+    protected int getInventoryXOffset() {
+        return tile.tier == FactoryTier.ULTIMATE ? 26 : 8;
     }
 
     @Nonnull

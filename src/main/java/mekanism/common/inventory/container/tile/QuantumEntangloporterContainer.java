@@ -52,7 +52,7 @@ public class QuantumEntangloporterContainer extends MekanismTileContainer<TileEn
     }
 
     @Override
-    protected int getInventoryOffset() {
+    protected int getInventoryYOffset() {
         return 148;
     }
 }

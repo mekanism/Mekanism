@@ -32,7 +32,7 @@ public class PersonalChestTileContainer extends MekanismTileContainer<TileEntity
     }
 
     @Override
-    protected int getInventoryOffset() {
+    protected int getInventoryYOffset() {
         return 148;
     }
 

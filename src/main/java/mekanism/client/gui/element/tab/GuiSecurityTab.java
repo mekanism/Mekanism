@@ -41,12 +41,12 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     private boolean isItem;
 
     public GuiSecurityTab(IGuiWrapper gui, TILE tile, ResourceLocation def) {
-        super(PUBLIC, gui, def, tile, 176, 32, 26, 18);
+        super(PUBLIC, gui, def, tile, gui.getWidth(), 32, 26, 18);
         this.currentHand = Hand.MAIN_HAND;
     }
 
     public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, Hand hand) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "security.png"), gui, def, null, 176, 32, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "security.png"), gui, def, null, gui.getWidth(), 32, 26, 18);
         isItem = true;
         currentHand = hand;
     }

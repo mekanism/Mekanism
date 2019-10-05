@@ -94,6 +94,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
         }
     }
 
+    @Override
+    public boolean hasSecondaryResourceBar() {
+        return true;
+    }
+
     @Nonnull
     @Override
     public MekanismRecipeType<MetallurgicInfuserRecipe> getRecipeType() {

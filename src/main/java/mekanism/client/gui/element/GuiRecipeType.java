@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
 
     public GuiRecipeType(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "recipe_type.png"), gui, def, tile, 176, 70, 26, 63);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "recipe_type.png"), gui, def, tile, gui.getWidth(), 70, 26, 63);
     }
 
     @Override

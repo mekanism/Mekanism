@@ -1,8 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import javax.annotation.Nonnull;
-import mekanism.api.infuse.InfuseType;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
@@ -12,8 +10,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.bar.GuiVerticalInfuseBar;
-import mekanism.client.gui.element.bar.GuiVerticalInfuseBar.InfuseInfoProvider;
+import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
@@ -63,26 +60,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
                 return tileEntity.getScaledProgress();
             }
         }, ProgressBar.MEDIUM, this, resource, 70, 46));
-        addButton(new GuiVerticalInfuseBar(this, new InfuseInfoProvider() {
-            @Nonnull
-            @Override
-            public InfuseType getType() {
-                return tileEntity.infusionTank.getType();
-            }
-
-            @Override
-            public ITextComponent getTooltip() {
-                if (tileEntity.infusionTank.isEmpty()) {
-                    return TextComponentUtil.translate("gui.mekanism.empty");
-                }
-                return TextComponentUtil.build(tileEntity.infusionTank.getType(), ": " + tileEntity.infusionTank.getStored());
-            }
-
-            @Override
-            public double getLevel() {
-                return (double) tileEntity.infusionTank.getStored() / (double) tileEntity.infusionTank.getCapacity();
-            }
-        }, resource, 7, 15));
+        addButton(new GuiVerticalChemicalBar<>(this, GuiVerticalChemicalBar.getProvider(tileEntity.infusionTank), resource, 7, 15));
         addButton(new GuiDumpButton(this, tileEntity, resource, 140, 65));
     }
 

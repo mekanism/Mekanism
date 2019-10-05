@@ -40,6 +40,20 @@ public interface IGuiWrapper {
         return 0;
     }
 
+    default int getWidth() {
+        if (this instanceof ContainerScreen) {
+            return ((ContainerScreen) this).xSize;
+        }
+        return 0;
+    }
+
+    default int getHeight() {
+        if (this instanceof ContainerScreen) {
+            return ((ContainerScreen) this).ySize;
+        }
+        return 0;
+    }
+
     @Nullable
     FontRenderer getFont();
 }
