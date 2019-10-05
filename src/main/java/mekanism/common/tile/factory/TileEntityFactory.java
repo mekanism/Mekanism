@@ -505,8 +505,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return cachedRecipe.getOperatingTicks();
     }
 
-    public int getScaledProgress(int i, int process) {
-        return getProgress(process) * i / ticksRequired;
+    public double getScaledProgress(int i, int process) {
+        return (double) getProgress(process) * i / (double) ticksRequired;
     }
 
     public int getScaledInfuseLevel(int i) {

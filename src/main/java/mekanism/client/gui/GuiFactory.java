@@ -4,11 +4,13 @@ import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiVerticalProgress;
 import mekanism.client.gui.element.bar.GuiHorizontalChemicalBar;
 import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
 import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
@@ -91,6 +93,18 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
             }
         }
 
+        int baseX = tileEntity.tier == FactoryTier.BASIC ? 55 : tileEntity.tier == FactoryTier.ADVANCED ? 35 : tileEntity.tier == FactoryTier.ELITE ? 29 : 27;
+        int baseXMult = tileEntity.tier == FactoryTier.BASIC ? 38 : tileEntity.tier == FactoryTier.ADVANCED ? 26 : 19;
+        for (int i = 0; i < tileEntity.tier.processes; i++) {
+            int cacheIndex = i;
+            addButton(new GuiVerticalProgress(this, new IProgressInfoHandler() {
+                @Override
+                public double getProgress() {
+                    return tileEntity.getScaledProgress(1, cacheIndex);
+                }
+            }, resource, 4 + baseX + (i * baseXMult), 33));
+        }
+
         for (Slot slot : container.inventorySlots) {
             GuiSlot slotElement;
             //Shift the slots by one as the elements include the border of the slot
@@ -131,10 +145,10 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
                     if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                         Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)));
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                        return true;
                     }
                 }
             }
-            return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }

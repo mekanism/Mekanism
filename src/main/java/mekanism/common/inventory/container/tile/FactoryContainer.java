@@ -35,7 +35,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
         addSlot(new SlotIgnored(tile, 2, tile.tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
         addSlot(new SlotIgnored(tile, 3, tile.tier == FactoryTier.ULTIMATE ? 214 : 180, 112));
         addSlot(new SlotExtra(tile, 4, 7, 57));
-        int baseX = tile.tier == FactoryTier.BASIC ? 55 : tile.tier == FactoryTier.ADVANCED ? 35 : tile.tier == FactoryTier.ELITE ? 29 : 27;//8;
+        int baseX = tile.tier == FactoryTier.BASIC ? 55 : tile.tier == FactoryTier.ADVANCED ? 35 : tile.tier == FactoryTier.ELITE ? 29 : 27;
         int baseXMult = tile.tier == FactoryTier.BASIC ? 38 : tile.tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tile.tier.processes; i++) {
             addSlot(new FactoryInputSlot(tile, getInputSlotIndex(i), baseX + (i * baseXMult), 13, i));
