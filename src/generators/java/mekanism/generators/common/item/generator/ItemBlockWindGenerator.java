@@ -1,6 +1,7 @@
 package mekanism.generators.common.item.generator;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -20,6 +21,7 @@ import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.block.BlockWindGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -36,7 +38,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockWindGenerator extends ItemBlockAdvancedTooltip<BlockWindGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockWindGenerator(BlockWindGenerator block) {
-        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderWindGeneratorItem::new));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderWindGeneratorItem::new;
     }
 
     @Override

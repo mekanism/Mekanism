@@ -2,6 +2,7 @@ package mekanism.client;
 
 import java.util.Map;
 import java.util.function.Function;
+import mekanism.api.block.IColoredBlock;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
@@ -70,6 +71,7 @@ import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.particle.ParticleLaser;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
@@ -115,6 +117,7 @@ import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainerTypes;
@@ -157,14 +160,22 @@ import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -351,5 +362,36 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
         Minecraft.getInstance().particles.registerFactory(MekanismParticleType.LASER, ParticleLaser.Factory::new);
+    }
+
+    //TODO: Move this to a utils class
+    private static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, MekanismBlock... blocks) {
+        for (MekanismBlock mekanismBlock : blocks) {
+            blockColors.register(blockColor, mekanismBlock.getBlock());
+            itemColors.register(itemColor, mekanismBlock.getItem());
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
+        registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, worldIn, pos, tintIndex) -> {
+                  Block block = state.getBlock();
+                  if (block instanceof IColoredBlock) {
+                      return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
+                  }
+                  return -1;
+              }, (stack, tintIndex) -> {
+                  Item item = stack.getItem();
+                  if (item instanceof BlockItem) {
+                      Block block = ((BlockItem) item).getBlock();
+                      if (block instanceof IColoredBlock) {
+                          return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
+                      }
+                  }
+                  return -1;
+              },
+              //Fluid Tank
+              MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK, MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK,
+              MekanismBlock.CREATIVE_FLUID_TANK);
     }
 }

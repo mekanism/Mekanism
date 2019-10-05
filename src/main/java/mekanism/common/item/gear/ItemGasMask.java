@@ -1,11 +1,13 @@
 package mekanism.common.item.gear;
 
+import java.util.concurrent.Callable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderGasMask;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -13,20 +15,23 @@ import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ItemGasMask extends ItemCustomArmorMekanism {
 
     public static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
 
     public ItemGasMask() {
-        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, "gas_mask", new Item.Properties().setTEISR(() -> RenderGasMask::new));
+        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, "gas_mask", new Item.Properties().setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderGasMask::new;
     }
 
     @Override
@@ -40,23 +45,6 @@ public class ItemGasMask extends ItemCustomArmorMekanism {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.GASMASK;
         return model;
-    }
-
-    @SubscribeEvent
-    public void onEntityAttacked(LivingAttackEvent event) {
-        LivingEntity base = event.getEntityLiving();
-        ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
-        ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
-        if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
-            if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank) {
-                ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
-                if (tank.getFlowing(chestStack) && !tank.getGas(chestStack).isEmpty()) {
-                    if (event.getSource() == DamageSource.MAGIC) {
-                        event.setCanceled(true);
-                    }
-                }
-            }
-        }
     }
 
     @ParametersAreNonnullByDefault

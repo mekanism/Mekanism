@@ -5,7 +5,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemMekanism extends Item implements IItemMekanism {
+public class ItemMekanism extends Item {
 
     public ItemMekanism(String name) {
         this(Mekanism.MODID, name);

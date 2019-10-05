@@ -92,6 +92,7 @@ public class Mekanism {
     /**
      * Mekanism proxy instance
      */
+    //TODO: Remove need for having a proxy as it is the legacy way of doing things
     //Note: Do not replace with method reference: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#gistcomment-2876130
     public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
     /**
@@ -267,12 +268,9 @@ public class Mekanism {
         }*/
 
         //Load configuration
-        proxy.loadConfiguration();
+        //proxy.loadConfiguration();
         proxy.onConfigSync(false);
         hooks.hookPreInit();
-
-        MinecraftForge.EVENT_BUS.register(MekanismItem.GAS_MASK.getItem());
-        MinecraftForge.EVENT_BUS.register(MekanismItem.FREE_RUNNERS.getItem());
 
         //TODO: Multipart
         /*if (hooks.MCMPLoaded) {

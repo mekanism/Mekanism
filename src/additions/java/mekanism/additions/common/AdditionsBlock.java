@@ -16,7 +16,6 @@ import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.item.block.ItemBlockMekanism;
 import net.minecraft.block.Block;
@@ -204,7 +203,7 @@ public enum AdditionsBlock implements IBlockProvider {
         this(block, ItemBlockMekanism::new);
     }
 
-    <ITEM extends BlockItem & IItemMekanism, BLOCK extends Block> AdditionsBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
+    <BLOCK extends Block> AdditionsBlock(BLOCK block, Function<BLOCK, BlockItem> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
     }

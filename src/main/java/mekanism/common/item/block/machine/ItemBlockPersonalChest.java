@@ -1,6 +1,7 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.block.RenderPersonalChestItem;
@@ -21,6 +22,7 @@ import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -41,7 +43,13 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPersonalChest> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockPersonalChest(BlockPersonalChest block) {
-        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderPersonalChestItem::new));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderPersonalChestItem::new;
     }
 
     @Override

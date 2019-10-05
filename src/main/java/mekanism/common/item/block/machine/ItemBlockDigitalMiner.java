@@ -3,6 +3,7 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.block.RenderDigitalMinerItem;
@@ -25,6 +26,7 @@ import mekanism.common.util.text.Translation;
 import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -41,7 +43,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip<BlockDigitalMiner> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockDigitalMiner(BlockDigitalMiner block) {
-        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderDigitalMinerItem::new));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderDigitalMinerItem::new;
     }
 
     @Override

@@ -34,31 +34,6 @@ public class CommonProxy/* implements IGuiProvider*/ {
     }
 
     /**
-     * Register and load client-only item render information.
-     */
-    public void registerItemRenders() {
-    }
-
-    /**
-     * Register and load client-only block render information.
-     */
-    public void registerBlockRenders() {
-    }
-
-    /**
-     * Set and load the mod's common configuration properties.
-     */
-    public void loadConfiguration() {
-        //TODO??
-        /*MekanismConfigOld.local().general.load(Mekanism.configuration);
-        MekanismConfigOld.local().usage.load(Mekanism.configuration);
-        MekanismConfigOld.local().storage.load(Mekanism.configuration);
-        if (Mekanism.configuration.hasChanged()) {
-            Mekanism.configuration.save();
-        }*/
-    }
-
-    /**
      * Set up and load the utilities this mod uses.
      */
     public void init() {

@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class ItemProxy extends Item implements IItemMekanism {
+public class ItemProxy extends Item {
 
     public ItemProxy() {
         super(new Item.Properties().maxDamage(1));

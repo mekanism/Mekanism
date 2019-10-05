@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,6 +20,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -29,7 +31,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -39,8 +40,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEnergized {
 
@@ -52,7 +51,13 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
     public double MAX_ELECTRICITY = 64000;
 
     public ItemFreeRunners() {
-        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, "free_runners", new Item.Properties().setTEISR(() -> RenderFreeRunners::new));
+        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, "free_runners", new Item.Properties().setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderFreeRunners::new;
     }
 
     @Override
@@ -120,20 +125,6 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
     @Override
     public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
-    }
-
-    @SubscribeEvent
-    public void onEntityAttacked(LivingAttackEvent event) {
-        LivingEntity base = event.getEntityLiving();
-        ItemStack stack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-            ItemFreeRunners boots = (ItemFreeRunners) stack.getItem();
-            if (boots.getMode(stack) == FreeRunnerMode.NORMAL && boots.getEnergy(stack) > 0
-                && event.getSource() == DamageSource.FALL) {
-                boots.setEnergy(stack, boots.getEnergy(stack) - event.getAmount() * 50);
-                event.setCanceled(true);
-            }
-        }
     }
 
     @Override

@@ -1,17 +1,27 @@
 package mekanism.common.item.block;
 
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.client.render.item.block.RenderSecurityDeskItem;
 import mekanism.common.block.basic.BlockSecurityDesk;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> {
 
     public ItemBlockSecurityDesk(BlockSecurityDesk block) {
-        super(block, new Item.Properties().setTEISR(() -> RenderSecurityDeskItem::new));
+        super(block, new Item.Properties().setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderSecurityDeskItem::new;
     }
 
     @Override

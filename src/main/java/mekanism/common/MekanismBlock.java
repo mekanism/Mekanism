@@ -76,7 +76,6 @@ import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.block.transmitter.BlockRestrictiveTransporter;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.block.transmitter.BlockUniversalCable;
-import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.ItemBlockEnergyCube;
@@ -336,10 +335,9 @@ public enum MekanismBlock implements IBlockProvider {
         this(block, ItemBlockMekanism::new);
     }
 
-    <ITEM extends BlockItem & IItemMekanism, BLOCK extends Block> MekanismBlock(@Nonnull BLOCK block, Function<BLOCK, ITEM> itemCreator) {
+    <BLOCK extends Block> MekanismBlock(@Nonnull BLOCK block, Function<BLOCK, BlockItem> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
-        //TODO: Fix all translation keys so that they have mekanism in them
     }
 
     @Nonnull

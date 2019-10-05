@@ -1,6 +1,7 @@
 package mekanism.common.item.block;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
@@ -21,6 +22,7 @@ import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -36,10 +38,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier> {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        //TODO: Figure out if this and the other TEISR's cause issues server side due to the fact this technically will also be called server side
-        // If there is an issue, the easiest way to fix it would be to basically have a proxy class getting the callable of the supplier
-        // Also test () -> () -> new RenderEnergyCubeItem(), because that may not evaluate as early
-        super(block, new Item.Properties().maxStackSize(1).setNoRepair().setTEISR(() -> RenderEnergyCubeItem::new));
+        super(block, new Item.Properties().maxStackSize(1).setNoRepair().setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderEnergyCubeItem::new;
     }
 
     @Nullable

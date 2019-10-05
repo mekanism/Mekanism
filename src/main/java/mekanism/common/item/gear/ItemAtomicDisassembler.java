@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,6 +26,7 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -59,8 +61,13 @@ import net.minecraftforge.event.ForgeEventFactory;
 public class ItemAtomicDisassembler extends ItemEnergized {
 
     public ItemAtomicDisassembler() {
-        super("atomic_disassembler", MekanismConfig.general.disassemblerBatteryCapacity.get(),
-              new Item.Properties().setNoRepair().setTEISR(() -> RenderAtomicDisassembler::new));
+        super("atomic_disassembler", MekanismConfig.general.disassemblerBatteryCapacity.get(), new Item.Properties().setNoRepair().setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderAtomicDisassembler::new;
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
-import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
 import mekanism.generators.common.block.BlockBioGenerator;
@@ -63,7 +62,7 @@ public enum GeneratorsBlock implements IBlockProvider {
     private final BlockItem item;
     private final Block block;
 
-    <ITEM extends BlockItem & IItemMekanism, BLOCK extends Block> GeneratorsBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
+    <BLOCK extends Block> GeneratorsBlock(BLOCK block, Function<BLOCK, BlockItem> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
     }

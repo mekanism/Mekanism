@@ -13,15 +13,17 @@ import mekanism.api.block.IColoredBlock;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -33,25 +35,28 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class AdditionsClientRegistration {
 
     //TODO: Move this to a utils class
-    private static void registerItemColorHandler(IItemColor itemColor, IItemProvider... items) {
+    private static void registerItemColorHandler(ItemColors colors, IItemColor itemColor, IItemProvider... items) {
         for (IItemProvider itemProvider : items) {
-            Minecraft.getInstance().getItemColors().register(itemColor, itemProvider.getItem());
+            colors.register(itemColor, itemProvider.getItem());
         }
     }
 
     //TODO: Move this to a utils class
-    private static void registerBlockColorHandler(IBlockColor blockColor, IItemColor itemColor, AdditionsBlock... blocks) {
-        for (AdditionsBlock AdditionsBlock : blocks) {
-            Minecraft.getInstance().getBlockColors().register(blockColor, AdditionsBlock.getBlock());
-            Minecraft.getInstance().getItemColors().register(itemColor, AdditionsBlock.getItem());
+    private static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, AdditionsBlock... blocks) {
+        for (AdditionsBlock additionsBlock : blocks) {
+            blockColors.register(blockColor, additionsBlock.getBlock());
+            itemColors.register(itemColor, additionsBlock.getItem());
         }
     }
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         new AdditionsKeyHandler();
+    }
 
-        registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
+    @SubscribeEvent
+    public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
+        registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, worldIn, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {
                       return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
@@ -121,7 +126,8 @@ public class AdditionsClientRegistration {
               AdditionsBlock.BLUE_GLOW_PANEL, AdditionsBlock.PURPLE_GLOW_PANEL, AdditionsBlock.CYAN_GLOW_PANEL, AdditionsBlock.LIGHT_GRAY_GLOW_PANEL,
               AdditionsBlock.GRAY_GLOW_PANEL, AdditionsBlock.PINK_GLOW_PANEL, AdditionsBlock.LIME_GLOW_PANEL, AdditionsBlock.YELLOW_GLOW_PANEL,
               AdditionsBlock.LIGHT_BLUE_GLOW_PANEL, AdditionsBlock.MAGENTA_GLOW_PANEL, AdditionsBlock.ORANGE_GLOW_PANEL, AdditionsBlock.WHITE_GLOW_PANEL);
-        registerItemColorHandler((stack, tintIndex) -> {
+
+        registerItemColorHandler(event.getItemColors(), (stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (item instanceof ItemBalloon) {
                       ItemBalloon balloon = (ItemBalloon) item;

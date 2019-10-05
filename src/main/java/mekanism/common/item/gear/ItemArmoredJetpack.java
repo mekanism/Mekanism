@@ -1,5 +1,6 @@
 package mekanism.common.item.gear;
 
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -10,6 +11,7 @@ import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -24,7 +26,13 @@ public class ItemArmoredJetpack extends ItemJetpack {
     public static final ArmoredJetpackMaterial ARMORED_JETPACK_MATERIAL = new ArmoredJetpackMaterial();
 
     public ItemArmoredJetpack() {
-        super(ARMORED_JETPACK_MATERIAL, "jetpack_armored", new Item.Properties().setTEISR(() -> RenderArmoredJetpack::new));
+        super(ARMORED_JETPACK_MATERIAL, "jetpack_armored", new Item.Properties().setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderArmoredJetpack::new;
     }
 
     @Override

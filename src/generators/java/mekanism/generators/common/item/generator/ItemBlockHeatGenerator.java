@@ -1,6 +1,7 @@
 package mekanism.generators.common.item.generator;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -19,6 +20,7 @@ import mekanism.common.util.text.Translation;
 import mekanism.generators.client.render.item.RenderHeatGeneratorItem;
 import mekanism.generators.common.block.BlockHeatGenerator;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,7 +35,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockHeatGenerator extends ItemBlockAdvancedTooltip<BlockHeatGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockHeatGenerator(BlockHeatGenerator block) {
-        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> RenderHeatGeneratorItem::new));
+        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> getTEISR()));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return RenderHeatGeneratorItem::new;
     }
 
     @Override

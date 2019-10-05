@@ -2,7 +2,6 @@ package mekanism.common;
 
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
-import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -168,7 +167,7 @@ public enum MekanismItem implements IItemProvider {
         this(new ItemMekanism(name));
     }
 
-    <ITEM extends Item & IItemMekanism> MekanismItem(@Nonnull ITEM item) {
+    MekanismItem(@Nonnull Item item) {
         //TODO: Should item be a consumer for registration that takes a ItemProperties?
         // If it works would make it easier to ensure creative tab is set properly
         this.item = item;

@@ -15,7 +15,6 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -29,9 +28,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
@@ -39,7 +35,8 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     public ItemBlockCardboardBox(BlockCardboardBox block) {
         super(block, new Item.Properties().maxStackSize(16));
-        MinecraftForge.EVENT_BUS.register(this);
+        //TODO: Listen to event as needed
+        //MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -129,12 +126,13 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         return BlockData.read(ItemDataUtils.getCompound(itemstack, "blockData"));
     }
 
-    @SubscribeEvent
+    //TODO
+    /*@SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event) {
         if (event.getEntity() instanceof ItemEntity && isMonitoring) {
             event.setCanceled(true);
         }
-    }
+    }*/
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
