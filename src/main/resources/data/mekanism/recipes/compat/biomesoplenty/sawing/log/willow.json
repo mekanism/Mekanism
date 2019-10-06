@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "mainOutput": {
+    "item": "biomesoplenty:willow_planks",
+    "count": 6
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.25,
+  "input": {
+    "ingredient": {
+      "tag": "biomesoplenty:willow_logs"
+    }
+  }
+}

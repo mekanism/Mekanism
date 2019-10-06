@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "ilikewood"
+    }
+  ],
+  "mainOutput": {
+    "item": "minecraft:spruce_log"
+  },
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:spruce_wall"
+    }
+  }
+}

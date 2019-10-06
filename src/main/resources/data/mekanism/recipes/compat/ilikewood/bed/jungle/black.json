@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "ilikewood"
+    }
+  ],
+  "mainOutput": {
+    "item": "minecraft:jungle_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:black_wool",
+    "count": 3
+  },
+  "secondaryChance": 1,
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:black_jungle_bed"
+    }
+  }
+}

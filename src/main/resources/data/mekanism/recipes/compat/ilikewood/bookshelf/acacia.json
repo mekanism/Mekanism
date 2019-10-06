@@ -1,7 +1,13 @@
 {
   "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "ilikewood"
+    }
+  ],
   "mainOutput": {
-    "item": "minecraft:oak_planks",
+    "item": "minecraft:acacia_planks",
     "count": 6
   },
   "secondaryOutput": {
@@ -11,7 +17,7 @@
   "secondaryChance": 1,
   "input": {
     "ingredient": {
-      "item": "minecraft:bookshelf"
+      "item": "ilikewood:acacia_bookshelf"
     }
   }
 }

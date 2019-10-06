@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "ilikewood"
+    }
+  ],
+  "mainOutput": {
+    "item": "minecraft:oak_log"
+  },
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:oak_wall"
+    }
+  }
+}

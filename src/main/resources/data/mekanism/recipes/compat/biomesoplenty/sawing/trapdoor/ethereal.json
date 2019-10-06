@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "mainOutput": {
+    "item": "biomesoplenty:ethereal_planks",
+    "count": 3
+  },
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:ethereal_trapdoor"
+    }
+  }
+}

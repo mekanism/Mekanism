@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "ilikewood"
+    }
+  ],
+  "mainOutput": {
+    "item": "minecraft:spruce_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:magenta_wool",
+    "count": 3
+  },
+  "secondaryChance": 1,
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:magenta_spruce_bed"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "mainOutput": {
+    "item": "minecraft:stick",
+    "count": 9
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.375,
+  "input": {
+    "ingredient": {
+      "tag": "minecraft:wooden_stairs"
+    }
+  }
+}

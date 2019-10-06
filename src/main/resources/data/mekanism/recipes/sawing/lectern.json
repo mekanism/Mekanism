@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "mainOutput": {
     "item": "minecraft:oak_planks",
-    "count": 6
+    "count": 8
   },
   "secondaryOutput": {
     "item": "minecraft:book",
@@ -11,7 +11,7 @@
   "secondaryChance": 1,
   "input": {
     "ingredient": {
-      "item": "minecraft:bookshelf"
+      "item": "minecraft:lectern"
     }
   }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "ilikewood"
+    }
+  ],
+  "mainOutput": {
+    "item": "minecraft:birch_planks",
+    "count": 7
+  },
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:birch_barrel"
+    }
+  }
+}

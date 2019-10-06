@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "ilikewood"
+    }
+  ],
+  "mainOutput": {
+    "item": "minecraft:dark_oak_planks",
+    "count": 4
+  },
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:dark_oak_crafting_table"
+    }
+  }
+}
