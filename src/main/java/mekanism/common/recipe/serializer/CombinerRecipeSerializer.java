@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -35,15 +36,25 @@ public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeReg
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        ItemStackIngredient mainInput = ItemStackIngredient.read(buffer);
-        ItemStackIngredient extraInput = ItemStackIngredient.read(buffer);
-        ItemStack output = buffer.readItemStack();
-        return this.factory.create(recipeId, mainInput, extraInput, output);
+        try {
+            ItemStackIngredient mainInput = ItemStackIngredient.read(buffer);
+            ItemStackIngredient extraInput = ItemStackIngredient.read(buffer);
+            ItemStack output = buffer.readItemStack();
+            return this.factory.create(recipeId, mainInput, extraInput, output);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading combiner recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing combiner recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends CombinerRecipe> {

@@ -6,7 +6,6 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
@@ -46,15 +45,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -65,8 +63,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  */
 public class PacketHandler {
 
-    private static final String PROTOCOL_VERSION = Integer.toString(1);
-    private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Mekanism.MODID, "main_channel"))
+    private static final String PROTOCOL_VERSION = "1";//TODO
+    private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Mekanism.MODID, Mekanism.MODID))
           .clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals).networkProtocolVersion(() -> PROTOCOL_VERSION).simpleChannel();
     private int index = 0;
 
@@ -218,46 +216,17 @@ public class PacketHandler {
         netHandler.sendToServer(message);
     }
 
-    /**
-     * Send this message to all players within a defined AABB cuboid.
-     *
-     * @param message   - the message to send
-     * @param cuboid    - the AABB cuboid to send the packet in
-     * @param dimension - the dimension the cuboid is in
-     */
-    public <MSG> void sendToCuboid(MSG message, AxisAlignedBB cuboid, DimensionType dimension) {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server != null && cuboid != null) {
-            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
-                if (player.dimension.equals(dimension) && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ))) {
-                    sendTo(message, player);
-                }
-            }
-        }
-    }
-
     public <TILE extends TileEntity & ITileNetwork> void sendUpdatePacket(TILE tile) {
         sendToAllTracking(new PacketTileEntity(tile), tile);
     }
 
     public <MSG> void sendToAllTracking(MSG message, TileEntity tile) {
-        BlockPos pos = tile.getPos();
-        sendToAllTracking(message, tile.getWorld().getDimension().getType(), pos.getX(), pos.getY(), pos.getZ());
+        sendToAllTracking(message, tile.getWorld(), tile.getPos());
     }
 
-    public <MSG> void sendToAllTracking(MSG message, Coord4D point) {
-        sendToAllTracking(message, point.dimension, point.x, point.y, point.z);
-    }
-
-    public <MSG> void sendToAllTracking(MSG message, DimensionType dimension, double x, double y, double z) {
-        //Range is ignored for sendToAllTracking, and only gets sent to clients that have the location loaded
-        sendToAllTracking(message, new TargetPoint(x, y, z, 1, dimension));
-    }
-
-    public <MSG> void sendToAllTracking(MSG message, TargetPoint point) {
-        //netHandler.sendToAllTracking(message, point);
-        //TODO: Fix this, currently just acting as sendToAll for testing purposes
-        sendToAll(message);
+    public <MSG> void sendToAllTracking(MSG message, World world, BlockPos pos) {
+        //TODO: Safety check this is a server world?
+        ((ServerWorld) world).getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
     }
 
     //TODO: change Network stuff over to using this

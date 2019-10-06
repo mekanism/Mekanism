@@ -307,7 +307,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
                     teleportEntityTo(entity, closestCoords, teleporter);
                 }
                 for (Coord4D coords : frequency.activeCoords) {
-                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), coords);
+                    //TODO: Check
+                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), world, coords.getPos());
                 }
                 setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
                 world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
@@ -318,7 +319,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
         if (entity.world.getDimension().getType().equals(coord.dimension)) {
             entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
-            Mekanism.packetHandler.sendToAllTracking(new PacketEntityMove(entity), new Coord4D(entity));
+            //TODO: Check
+            Mekanism.packetHandler.sendToAllTracking(new PacketEntityMove(entity), world, entity.getPosition());
         } else {
             entity.changeDimension(coord.dimension);
             //TODO: Verify

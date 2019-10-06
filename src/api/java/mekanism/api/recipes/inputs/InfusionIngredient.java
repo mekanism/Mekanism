@@ -167,6 +167,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
 
         @Override
         public void write(PacketBuffer buffer) {
+            buffer.writeEnumValue(IngredientType.SINGLE);
             buffer.writeRegistryId(infuseType);
             buffer.writeInt(amount);
         }

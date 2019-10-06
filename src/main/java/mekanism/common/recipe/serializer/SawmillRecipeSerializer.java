@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -54,16 +55,26 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
-        ItemStack mainOutput = buffer.readItemStack();
-        ItemStack secondaryOutput = buffer.readItemStack();
-        double secondaryChance = buffer.readDouble();
-        return this.factory.create(recipeId, inputIngredient, mainOutput, secondaryOutput, secondaryChance);
+        try {
+            ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
+            ItemStack mainOutput = buffer.readItemStack();
+            ItemStack secondaryOutput = buffer.readItemStack();
+            double secondaryChance = buffer.readDouble();
+            return this.factory.create(recipeId, inputIngredient, mainOutput, secondaryOutput, secondaryChance);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading sawmill recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing sawmill recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends SawmillRecipe> {

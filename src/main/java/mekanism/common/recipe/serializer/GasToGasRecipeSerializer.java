@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
@@ -32,14 +33,24 @@ public class GasToGasRecipeSerializer<T extends GasToGasRecipe> extends ForgeReg
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        GasStackIngredient inputIngredient = GasStackIngredient.read(buffer);
-        GasStack output = GasStack.readFromPacket(buffer);
-        return this.factory.create(recipeId, inputIngredient, output);
+        try {
+            GasStackIngredient inputIngredient = GasStackIngredient.read(buffer);
+            GasStack output = GasStack.readFromPacket(buffer);
+            return this.factory.create(recipeId, inputIngredient, output);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading gas to gas recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing gas to gas recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends GasToGasRecipe> {

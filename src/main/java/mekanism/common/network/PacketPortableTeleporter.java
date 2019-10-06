@@ -136,13 +136,15 @@ public class PacketPortableTeleporter {
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(player)), coords);
+                                    //TODO: Check
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(player)), world, coords.getPos());
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.teleportPlayerTo((ServerPlayerEntity) player, coords, teleporter);
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
                                     }
                                     world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), coords);
+                                    //TODO: Check
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), world, coords.getPos());
                                 } catch (Exception ignored) {
                                 }
                             }

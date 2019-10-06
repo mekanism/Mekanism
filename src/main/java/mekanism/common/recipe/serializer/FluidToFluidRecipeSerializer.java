@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
@@ -32,14 +33,24 @@ public class FluidToFluidRecipeSerializer<T extends FluidToFluidRecipe> extends 
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        FluidStackIngredient inputIngredient = FluidStackIngredient.read(buffer);
-        FluidStack output = FluidStack.readFromPacket(buffer);
-        return this.factory.create(recipeId, inputIngredient, output);
+        try {
+            FluidStackIngredient inputIngredient = FluidStackIngredient.read(buffer);
+            FluidStack output = FluidStack.readFromPacket(buffer);
+            return this.factory.create(recipeId, inputIngredient, output);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading fluid to fluid recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing fluid to fluid recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends FluidToFluidRecipe> {

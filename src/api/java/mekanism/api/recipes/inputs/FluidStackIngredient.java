@@ -163,6 +163,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
         @Override
         public void write(PacketBuffer buffer) {
+            buffer.writeEnumValue(IngredientType.SINGLE);
             fluidInstance.writeToPacket(buffer);
         }
 

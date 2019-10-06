@@ -183,7 +183,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 needsSync.clear();
 
                 // Finally, notify clients and mark chunk for save
-                Mekanism.packetHandler.sendToAllTracking(msg, coord);
+                //TODO: Check
+                Mekanism.packetHandler.sendToAllTracking(msg, getTileEntity().getWorld(), coord.getPos());
                 MekanismUtils.saveChunk(getTileEntity());
             }
         }
@@ -239,8 +240,10 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 int stackId = nextId++;
                 transit.put(stackId, stack);
                 Coord4D coord = coord();
-                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(coord, getTileEntity().makeSyncPacket(stackId, stack)), coord);
-                MekanismUtils.saveChunk(getTileEntity());
+                TileEntityLogisticalTransporter tileEntity = getTileEntity();
+                //TODO: Check
+                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(coord, tileEntity.makeSyncPacket(stackId, stack)), tileEntity.getWorld(), coord.getPos());
+                MekanismUtils.saveChunk(tileEntity);
             }
             return response;
         }

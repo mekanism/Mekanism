@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -32,14 +33,24 @@ public class GasToItemStackRecipeSerializer<T extends GasToItemStackRecipe> exte
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        GasStackIngredient inputIngredient = GasStackIngredient.read(buffer);
-        ItemStack output = buffer.readItemStack();
-        return this.factory.create(recipeId, inputIngredient, output);
+        try {
+            GasStackIngredient inputIngredient = GasStackIngredient.read(buffer);
+            ItemStack output = buffer.readItemStack();
+            return this.factory.create(recipeId, inputIngredient, output);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading gas to itemstack recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing gas to itemstack recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends GasToItemStackRecipe> {

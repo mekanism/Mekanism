@@ -168,6 +168,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
         @Override
         public void write(PacketBuffer buffer) {
+            buffer.writeEnumValue(IngredientType.SINGLE);
             buffer.writeRegistryId(gasInstance);
             buffer.writeInt(amount);
         }

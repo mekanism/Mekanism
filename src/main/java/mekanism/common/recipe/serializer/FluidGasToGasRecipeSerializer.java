@@ -7,6 +7,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
@@ -36,15 +37,25 @@ public class FluidGasToGasRecipeSerializer<T extends FluidGasToGasRecipe> extend
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        FluidStackIngredient fluidInput = FluidStackIngredient.read(buffer);
-        GasStackIngredient gasInput = GasStackIngredient.read(buffer);
-        GasStack output = GasStack.readFromPacket(buffer);
-        return this.factory.create(recipeId, fluidInput, gasInput, output);
+        try {
+            FluidStackIngredient fluidInput = FluidStackIngredient.read(buffer);
+            GasStackIngredient gasInput = GasStackIngredient.read(buffer);
+            GasStack output = GasStack.readFromPacket(buffer);
+            return this.factory.create(recipeId, fluidInput, gasInput, output);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading fluid gas to gas recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing fluid gas to gas recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends FluidGasToGasRecipe> {

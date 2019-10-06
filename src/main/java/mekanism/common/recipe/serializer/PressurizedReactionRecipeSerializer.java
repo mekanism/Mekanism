@@ -9,6 +9,7 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -74,19 +75,29 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
-        FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
-        GasStackIngredient inputGas = GasStackIngredient.read(buffer);
-        double energyRequired = buffer.readDouble();
-        int duration = buffer.readInt();
-        ItemStack outputItem = buffer.readItemStack();
-        GasStack outputGas = GasStack.readFromPacket(buffer);
-        return this.factory.create(recipeId, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
+        try {
+            ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
+            FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
+            GasStackIngredient inputGas = GasStackIngredient.read(buffer);
+            double energyRequired = buffer.readDouble();
+            int duration = buffer.readInt();
+            ItemStack outputItem = buffer.readItemStack();
+            GasStack outputGas = GasStack.readFromPacket(buffer);
+            return this.factory.create(recipeId, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading pressurized reaction recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing pressurized reaction recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends PressurizedReactionRecipe> {

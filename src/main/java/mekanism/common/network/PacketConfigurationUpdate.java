@@ -75,7 +75,8 @@ public class PacketConfigurationUpdate {
 
                     tile.markDirty();
                     capabilityHelper.ifPresent(
-                          network -> Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(message.coord4D, network.getNetworkedData()), message.coord4D)
+                          network -> Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(message.coord4D, network.getNetworkedData()), tile.getWorld(),
+                                message.coord4D.getPos())
                     );
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), message.configIndex, tile.getPos());

@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
@@ -45,16 +46,26 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        FluidStackIngredient input = FluidStackIngredient.read(buffer);
-        double energy = buffer.readDouble();
-        GasStack leftGasOutput = GasStack.readFromPacket(buffer);
-        GasStack rightGasOutput = GasStack.readFromPacket(buffer);
-        return this.factory.create(recipeId, input, energy, leftGasOutput, rightGasOutput);
+        try {
+            FluidStackIngredient input = FluidStackIngredient.read(buffer);
+            double energy = buffer.readDouble();
+            GasStack leftGasOutput = GasStack.readFromPacket(buffer);
+            GasStack rightGasOutput = GasStack.readFromPacket(buffer);
+            return this.factory.create(recipeId, input, energy, leftGasOutput, rightGasOutput);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading electrolysis recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing electrolysis recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends ElectrolysisRecipe> {

@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -36,15 +37,25 @@ public class ItemStackGasToItemStackRecipeSerializer<T extends ItemStackGasToIte
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
-        GasStackIngredient gasInput = GasStackIngredient.read(buffer);
-        ItemStack output = buffer.readItemStack();
-        return this.factory.create(recipeId, itemInput, gasInput, output);
+        try {
+            ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
+            GasStackIngredient gasInput = GasStackIngredient.read(buffer);
+            ItemStack output = buffer.readItemStack();
+            return this.factory.create(recipeId, itemInput, gasInput, output);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error reading itemstack gas to itemstack recipe from packet.", e);
+            throw e;
+        }
     }
 
     @Override
     public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
-        recipe.write(buffer);
+        try {
+            recipe.write(buffer);
+        } catch (Exception e) {
+            Mekanism.logger.error("Error writing itemstack gas to itemstack recipe to packet.", e);
+            throw e;
+        }
     }
 
     public interface IFactory<T extends ItemStackGasToItemStackRecipe> {

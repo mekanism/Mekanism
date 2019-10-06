@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
@@ -55,6 +56,8 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -94,7 +97,13 @@ public class Mekanism {
      */
     //TODO: Remove need for having a proxy as it is the legacy way of doing things
     //Note: Do not replace with method reference: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#gistcomment-2876130
-    public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
+    public static CommonProxy proxy = DistExecutor.runForDist(() -> getClientProxy(), () -> () -> new CommonProxy());
+
+    @OnlyIn(Dist.CLIENT)
+    private static Supplier<CommonProxy> getClientProxy() {
+        //NOTE: This extra method is needed to avoid classloading issues on servers
+        return ClientProxy::new;
+    }
     /**
      * Mekanism mod instance
      */
@@ -326,6 +335,7 @@ public class Mekanism {
         //Fake player info
         logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
 
+        //TODO
         MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 
         //Completion notification
@@ -446,6 +456,7 @@ public class Mekanism {
         event.blacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
         event.blacklistMod("colossalchests");
 
+        //TODO
         BoxBlacklistParser.load();
     }
 
