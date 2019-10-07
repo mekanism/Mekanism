@@ -30,7 +30,7 @@ public class TileEntityLaser extends TileEntityMekanism {
 
     @Override
     public void onUpdate() {
-        if (world.isRemote) {
+        if (isRemote()) {
             if (getActive()) {
                 BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), MekanismConfig.usage.laser.get(), world);
                 Coord4D hitCoord = new Coord4D(mop, world);

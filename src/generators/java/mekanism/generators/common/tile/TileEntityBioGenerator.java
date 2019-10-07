@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -75,19 +76,22 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             }
         }
         if (canOperate()) {
-            if (!world.isRemote) {
+            if (!isRemote()) {
                 setActive(true);
             }
             bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
             setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
-        } else if (!world.isRemote) {
+        } else if (!isRemote()) {
             setActive(false);
         }
-        if (!world.isRemote) {
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+        if (!isRemote()) {
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -148,7 +152,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             bioFuelSlot.fluidStored = dataStream.readInt();
         }
     }

@@ -10,6 +10,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 
@@ -41,6 +42,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected void recheckSettings() {
+        World world = getWorld();
+        if (world == null) {
+            return;
+        }
         Biome b = world.getDimension().getBiome(getPos());
 
         // Consider the best temperature to be 0.8; biomes that are higher than that
@@ -63,7 +68,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (!settingsChecked) {
                 recheckSettings();
             }
@@ -72,7 +77,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
             // significant penalty.
-            seesSun = world.isDaytime() && canSeeSky() && !world.getDimension().isNether();
+            World world = getWorld();
+            if (world != null) {
+                seesSun = world.isDaytime() && canSeeSky() && !world.getDimension().isNether();
+            }
 
             if (canOperate()) {
                 setActive(true);
@@ -84,7 +92,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected boolean canSeeSky() {
-        return world.canBlockSeeSky(getPos());
+        World world = getWorld();
+        return world != null && world.canBlockSeeSky(getPos());
     }
 
     @Override
@@ -109,6 +118,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     public double getProduction() {
+        World world = getWorld();
+        if (world == null) {
+            return 0;
+        }
         // Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
         float brightness = world.getSunBrightness(1.0f);
@@ -153,7 +166,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             seesSun = dataStream.readBoolean();
         }
     }

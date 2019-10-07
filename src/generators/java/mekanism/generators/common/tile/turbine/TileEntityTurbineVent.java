@@ -30,7 +30,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote && structure != null && structure.flowRemaining > 0) {
+        if (!isRemote() && structure != null && structure.flowRemaining > 0) {
             FluidStack fluidStack = new FluidStack(Fluids.WATER, structure.flowRemaining);
             EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class),
                   (tile, side) -> CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
@@ -43,7 +43,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new IFluidTank[]{fakeInfo} : PipeUtils.EMPTY;
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{fakeInfo} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
+        if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
             }

@@ -11,6 +11,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
@@ -32,6 +33,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     public void onLoad() {
         super.onLoad();
 
+        World world = getWorld();
+        if (world == null) {
+            return;
+        }
         // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
         // an initial activity status and the client (in MP) will show the windmills turning while not
         // generating any power
@@ -45,7 +50,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     public void onUpdate() {
         super.onUpdate();
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.charge(0, this);
             // If we're in a blacklisted dimension, there's nothing more to do
             if (isBlacklistDimension) {
@@ -67,8 +72,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-
-        if (world.isRemote) {
+        if (isRemote()) {
             currentMultiplier = dataStream.readFloat();
             isBlacklistDimension = dataStream.readBoolean();
         }
@@ -86,7 +90,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     public float getMultiplier() {
-        if (world.canBlockSeeSky(getPos().up(4))) {
+        World world = getWorld();
+        if (world != null && world.canBlockSeeSky(getPos().up(4))) {
             final float minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
             final float maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
             final float minG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMin.get();
@@ -130,6 +135,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public void onPlace() {
+        World world = getWorld();
+        if (world == null) {
+            return;
+        }
         Coord4D current = Coord4D.get(this);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 1), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 2), current);
@@ -141,6 +150,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public void onBreak() {
+        World world = getWorld();
+        if (world == null) {
+            return;
+        }
         world.removeBlock(getPos().add(0, 1, 0), false);
         world.removeBlock(getPos().add(0, 2, 0), false);
         world.removeBlock(getPos().add(0, 3, 0), false);

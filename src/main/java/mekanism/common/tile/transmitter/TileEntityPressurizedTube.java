@@ -86,7 +86,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void tick() {
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             updateShare();
             IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
             for (Direction side : getConnections(ConnectionType.PULL)) {
@@ -144,7 +144,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void onChunkUnloaded() {
-        if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork()) {
+        if (!isRemote() && getTransmitter().hasTransmitterNetwork()) {
             GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
             if (!transmitterNetwork.buffer.isEmpty() && !lastWrite.isEmpty()) {
                 transmitterNetwork.buffer.shrink(lastWrite.getAmount());

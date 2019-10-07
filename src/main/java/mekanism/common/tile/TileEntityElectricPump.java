@@ -46,6 +46,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -100,7 +101,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(2, this);
             if (!fluidTank.getFluid().isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
@@ -137,10 +138,13 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                     fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), FluidAction.EXECUTE);
                 });
             }
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -223,7 +227,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, fluidTank);
         }
     }

@@ -37,7 +37,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote && ticker == 5 && !attempted && master == null) {
+        if (!isRemote() && ticker == 5 && !attempted && master == null) {
             updateController();
         }
         attempted = false;
@@ -65,7 +65,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
     @Override
     public void onNeighborChange(Block block) {
         super.onNeighborChange(block);
-        if (!world.isRemote) {
+        if (!isRemote()) {
             TileEntityThermalEvaporationController tile = getController();
             if (tile != null) {
                 tile.refresh();
@@ -79,7 +79,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
         if (!(this instanceof TileEntityThermalEvaporationController)) {
             for (Direction side : EnumUtils.DIRECTIONS) {
                 BlockPos checkPos = pos.offset(side);
-                TileEntity check = MekanismUtils.getTileEntity(world, checkPos);
+                TileEntity check = MekanismUtils.getTileEntity(getWorld(), checkPos);
                 if (check instanceof TileEntityThermalEvaporationBlock) {
                     if (check instanceof TileEntityThermalEvaporationController) {
                         ((TileEntityThermalEvaporationController) check).refresh();
@@ -96,7 +96,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
     public TileEntityThermalEvaporationController getController() {
         if (master != null) {
-            TileEntity tile = master.getTileEntity(world);
+            TileEntity tile = master.getTileEntity(getWorld());
             if (tile instanceof TileEntityThermalEvaporationController) {
                 return (TileEntityThermalEvaporationController) tile;
             }
@@ -163,7 +163,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
                 }
                 iterated.add(checkPos);
 
-                TileEntity te = MekanismUtils.getTileEntity(world, checkPos);
+                TileEntity te = MekanismUtils.getTileEntity(getWorld(), checkPos);
                 if (te instanceof TileEntityThermalEvaporationController) {
                     found = (TileEntityThermalEvaporationController) te;
                     return;

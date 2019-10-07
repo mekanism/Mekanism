@@ -13,6 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,18 +35,21 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+        if (!isRemote()) {
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
 
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new IFluidTank[]{fluidTank} : PipeUtils.EMPTY;
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{fluidTank} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -66,18 +70,18 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
+        return (!isRemote() && structure != null) || (isRemote() && clientHasStructure);
     }
 
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidStored, fluid);
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidStored, fluid);
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
+        if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
             }
@@ -88,7 +92,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return !world.isRemote ? structure == null : !clientHasStructure;
+            return !isRemote() ? structure == null : !clientHasStructure;
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -96,7 +100,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {
-        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? SLOTS : InventoryUtils.EMPTY;
+        return (!isRemote() && structure != null) || (isRemote() && clientHasStructure) ? SLOTS : InventoryUtils.EMPTY;
     }
 
     @Override

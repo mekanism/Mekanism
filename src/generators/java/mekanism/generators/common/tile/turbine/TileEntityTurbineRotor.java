@@ -11,6 +11,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +33,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     @Override
     public void onNeighborChange(Block block) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             updateRotors();
         }
     }
@@ -122,9 +123,12 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     private TileEntityTurbineRotor nextRotor(BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityTurbineRotor) {
-            return (TileEntityTurbineRotor) tile;
+        World world = getWorld();
+        if (world != null) {
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileEntityTurbineRotor) {
+                return (TileEntityTurbineRotor) tile;
+            }
         }
         return null;
     }
@@ -136,7 +140,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             int prevBlades = blades;
             int prevPosition = position;
             blades = dataStream.readInt();

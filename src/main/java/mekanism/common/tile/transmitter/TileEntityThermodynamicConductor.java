@@ -171,7 +171,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
-            TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
+            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
             return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;

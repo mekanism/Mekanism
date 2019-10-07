@@ -22,7 +22,7 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
         super.setMultiblock(id);
 
         Coord4D coord = Coord4D.get(this).offset(Direction.DOWN);
-        TileEntity tile = coord.getTileEntity(world);
+        TileEntity tile = coord.getTileEntity(getWorld());
         if (tile instanceof TileEntityTurbineRotor) {
             ((TileEntityTurbineRotor) tile).updateRotors();
         }

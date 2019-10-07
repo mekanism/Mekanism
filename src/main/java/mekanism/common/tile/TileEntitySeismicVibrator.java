@@ -12,6 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,7 +28,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
 
     @Override
     public void onUpdate() {
-        if (world.isRemote) {
+        if (isRemote()) {
             if (getActive()) {
                 clientPiston++;
             }
@@ -65,13 +66,16 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(world, getPos().up(), Coord4D.get(this));
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), Coord4D.get(this));
     }
 
     @Override
     public void onBreak() {
-        world.removeBlock(getPos().up(), false);
-        world.removeBlock(getPos(), false);
+        World world = getWorld();
+        if (world != null) {
+            world.removeBlock(getPos().up(), false);
+            world.removeBlock(getPos(), false);
+        }
     }
 
     @Nonnull

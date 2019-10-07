@@ -148,7 +148,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             }
         }
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (!initCalc) {
                 if (searcher.state == State.FINISHED) {
                     boolean prevRunning = running;
@@ -295,7 +295,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         radius = newRadius;
         // If the radius changed and we're on the server, go ahead and refresh
         // the chunk set
-        if (changed && hasWorld() && world.isRemote) {
+        if (changed && hasWorld() && isRemote()) {
             chunkSet = null;
             getChunkSet();
         }
@@ -413,7 +413,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     public TileEntity getPullInv() {
-        return Coord4D.get(this).translate(0, 2, 0).getTileEntity(world);
+        return Coord4D.get(this).translate(0, 2, 0).getTileEntity(getWorld());
     }
 
     public TileEntity getEjectInv() {
@@ -493,7 +493,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public void openInventory(@Nonnull PlayerEntity player) {
         super.openInventory(player);
-        if (!world.isRemote) {
+        if (!isRemote()) {
             Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
         }
     }
@@ -539,7 +539,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             switch (type) {
                 case 0:
@@ -602,7 +602,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         boolean wasActive = getActive();
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 readBasicData(dataStream);
@@ -626,7 +626,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             }
             //TODO: Does this get handled by TileEntityMekanism
             if (wasActive != getActive()) {
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
             }
         }
     }

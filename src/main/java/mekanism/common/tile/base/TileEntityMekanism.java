@@ -71,12 +71,15 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -228,6 +231,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         isActivatable = hasSound || block instanceof IStateActive;
     }
 
+    public boolean isRemote() {
+        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
+        return getWorld() == null ? EffectiveSide.get() == LogicalSide.CLIENT : getWorld().isRemote();
+    }
+
     public Block getBlockType() {
         //TODO: Should this be getBlockState().getBlock()
         return blockProvider.getBlock();
@@ -298,7 +306,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     }
                     wrenchHandler.wrenchUsed(player, hand, stack, rayTrace);
                     if (player.isSneaking()) {
-                        MekanismUtils.dismantleBlock(state, world, pos, this);
+                        MekanismUtils.dismantleBlock(state, getWorld(), pos, this);
                         return WrenchResult.DISMANTLED;
                     }
                     //Special ITileDirectional handling
@@ -331,7 +339,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public void onLoad() {
         super.onLoad();
-        if (world.isRemote) {
+        if (isRemote()) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
         //TODO: IC2
@@ -355,7 +363,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             component.tick();
         }
 
-        if (hasSound()) {
+        if (isRemote() && hasSound()) {
             updateSound();
         }
         if (isActivatable()) {
@@ -370,7 +378,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
 
         onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (doAutoSync && playersUsing.size() > 0) {
                 PacketTileEntity updateMessage = new PacketTileEntity(this);
                 for (PlayerEntity player : playersUsing) {
@@ -400,7 +408,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (world.isRemote) {
+        if (isRemote()) {
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
@@ -440,7 +448,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         /*if (isElectric() && MekanismUtils.useIC2()) {
             deregister();
         }*/
-        if (hasSound()) {
+        if (isRemote() && hasSound()) {
             updateSound();
         }
     }
@@ -449,7 +457,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public void validate() {
         boolean wasInvalid = this.isRemoved();//workaround for pending tile entity invalidate/revalidate cycle
         super.validate();
-        if (world.isRemote) {
+        if (isRemote()) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
         //TODO: IC2
@@ -562,7 +570,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     public void onNeighborChange(Block block) {
-        if (!world.isRemote && supportsRedstone()) {
+        if (!isRemote() && supportsRedstone()) {
             updatePower();
         }
     }
@@ -626,7 +634,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             Block block = state.getBlock();
             if (block instanceof IStateFacing) {
                 state = ((IStateFacing) block).setDirection(state, direction);
-                world.setBlockState(pos, state);
+                World world = getWorld();
+                if (world != null) {
+                    world.setBlockState(pos, state);
+                }
             }
         }
     }
@@ -844,7 +855,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //TODO: IC2
     /*@Method(modid = MekanismHooks.IC2_MOD_ID)
     public void register() {
-        if (!world.isRemote && !ic2Registered) {
+        if (!isRemote() && !ic2Registered) {
             MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
             ic2Registered = true;
         }
@@ -852,7 +863,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void deregister() {
-        if (!world.isRemote && ic2Registered) {
+        if (!isRemote() && ic2Registered) {
             MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
             ic2Registered = false;
         }

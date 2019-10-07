@@ -59,7 +59,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void tick() {
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             updateShare();
             IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(getPos(), getWorld());
             for (Direction side : getConnections(ConnectionType.PULL)) {
@@ -103,7 +103,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void onChunkUnloaded() {
-        if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork() && !lastWrite.isEmpty()) {
+        if (!isRemote() && getTransmitter().hasTransmitterNetwork() && !lastWrite.isEmpty()) {
             FluidStack buffer = getTransmitter().getTransmitterNetwork().buffer;
             if (!buffer.isEmpty()) {
                 buffer.setAmount(buffer.getAmount() - lastWrite.getAmount());

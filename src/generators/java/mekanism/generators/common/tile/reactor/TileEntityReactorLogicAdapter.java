@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.World;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration {
 
@@ -21,10 +22,13 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             boolean outputting = checkMode();
             if (outputting != prevOutputting) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                World world = getWorld();
+                if (world != null) {
+                    world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                }
             }
             prevOutputting = outputting;
         }
@@ -36,7 +40,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     }
 
     public boolean checkMode() {
-        if (world.isRemote) {
+        if (isRemote()) {
             return prevOutputting;
         }
         if (getReactor() == null || !getReactor().isFormed()) {
@@ -75,7 +79,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 activeCooled = !activeCooled;
@@ -87,7 +91,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             logicType = dataStream.readEnumValue(ReactorLogic.class);
             activeCooled = dataStream.readBoolean();
             prevOutputting = dataStream.readBoolean();

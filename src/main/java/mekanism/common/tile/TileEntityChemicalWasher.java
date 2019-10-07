@@ -43,6 +43,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -74,7 +75,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(3, this);
             ItemStack fluidInputStack = inventory.get(0);
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
@@ -89,10 +90,13 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
             clientEnergyUsed = prev - getEnergy();
             TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -137,7 +141,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             clientEnergyUsed = dataStream.readDouble();
             TileUtils.readTankData(dataStream, fluidTank);
             TileUtils.readTankData(dataStream, inputTank);

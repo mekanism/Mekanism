@@ -59,7 +59,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (playersUsing.size() > 0) {
                 for (PlayerEntity player : playersUsing) {
                     Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
@@ -177,7 +177,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 didProcess = dataStream.readBoolean();
@@ -231,7 +231,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Override
     public void openInventory(@Nonnull PlayerEntity player) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }

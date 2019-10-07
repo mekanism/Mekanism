@@ -71,7 +71,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.charge(0, this);
             ChargeUtils.discharge(1, this);
             if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
@@ -166,11 +166,11 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             EnergyCubeTier prevTier = tier;
             tier = dataStream.readEnumValue(EnergyCubeTier.class);
             if (prevTier != tier) {
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
             }
         }
     }

@@ -55,7 +55,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
 
     @Override
     public void onUpdate() {
-        if (world.isRemote) {
+        if (isRemote()) {
             if (on) {
                 BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
                 Coord4D hitCoord = new Coord4D(mop, world);
@@ -146,7 +146,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                     }
                 }
             }
-            Block.spawnAsEntity(world, pos, drop);
+            Block.spawnAsEntity(getWorld(), pos, drop);
         }
     }
 
@@ -173,7 +173,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             on = dataStream.readBoolean();
             collectedEnergy = dataStream.readDouble();
             lastFired = dataStream.readDouble();

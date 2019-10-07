@@ -48,7 +48,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(getInventory().get(2), gasTank);
             cachedRecipe = getUpdatedCache(0);
@@ -123,7 +123,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, gasTank);
         }
     }

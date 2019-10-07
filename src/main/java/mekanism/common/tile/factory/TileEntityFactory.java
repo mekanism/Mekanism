@@ -47,6 +47,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -182,6 +183,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         if (upgradeOrdinal != tier.ordinal() + 1 || upgradeOrdinal > EnumUtils.FACTORY_TIERS.length) {
             return false;
         }
+        World world = getWorld();
+        if (world == null) {
+            return false;
+        }
 
         //TODO: Upgrading remove this if and fix the block state setting. A bunch of the TileEntity stuff may be able to be moved to the block classes themselves
         if (true) {
@@ -248,7 +253,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (ticker == 1) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
@@ -495,7 +500,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public abstract boolean isValidExtraItem(@Nonnull ItemStack stack);
 
     public int getProgress(int cacheIndex) {
-        if (world.isRemote) {
+        if (isRemote()) {
             return progress[cacheIndex];
         }
         CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[cacheIndex];
@@ -519,7 +524,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 sorting = !sorting;
@@ -532,7 +537,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
             recipeTicks = dataStream.readInt();
             sorting = dataStream.readBoolean();
@@ -545,7 +550,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             TileUtils.readTankData(dataStream, gasTank);
             if (upgraded) {
                 markDirty();
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
                 upgraded = false;
             }
         }

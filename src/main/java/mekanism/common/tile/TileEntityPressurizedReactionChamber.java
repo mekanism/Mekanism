@@ -88,7 +88,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(1, this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
@@ -178,7 +178,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, inputFluidTank);
             TileUtils.readTankData(dataStream, inputGasTank);
             TileUtils.readTankData(dataStream, outputGasTank);

@@ -20,6 +20,7 @@ import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -50,14 +51,17 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             register();
         }*/
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (structure != null) {
                 CableUtils.emit(this);
             }
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -104,7 +108,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void register() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
             if (registered != this) {
                 if (registered != null && ic2Registered) {
@@ -120,7 +124,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void deregister() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
             if (registered != null && ic2Registered) {
                 MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
@@ -175,7 +179,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new IFluidTank[]{fluidTank} : PipeUtils.EMPTY;
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{fluidTank} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -198,7 +202,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         if (fluid.getFluid() == MekanismGases.STEAM.getFluid()) {
-            return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
+            return (!isRemote() && structure != null) || (isRemote() && clientHasStructure);
         }
         return false;
     }
@@ -235,7 +239,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
+        if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
             if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
                 return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
             }

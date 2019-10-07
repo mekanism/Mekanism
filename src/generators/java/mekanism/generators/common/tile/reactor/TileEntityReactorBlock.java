@@ -11,6 +11,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -57,7 +58,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
         if (changed) {
             changed = false;
         }
-        if (!world.isRemote && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed())) {
+        if (!isRemote() && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed())) {
             updateController();
         }
         attempted = false;
@@ -84,7 +85,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     @Override
     public void onAdded() {
         super.onAdded();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (getReactor() != null) {
                 getReactor().formMultiblock(false);
             } else {
@@ -125,6 +126,10 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
 
         public void loop(Coord4D pos) {
             if (iterated.size() > 512 || found != null) {
+                return;
+            }
+            World world = getWorld();
+            if (world == null) {
                 return;
             }
 

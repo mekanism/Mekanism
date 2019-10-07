@@ -6,6 +6,7 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public abstract class TileEntityUpgradeableMachine<RECIPE extends MekanismRecipe> extends TileEntityBasicMachine<RECIPE> implements ITierUpgradeable {
 
@@ -21,6 +22,10 @@ public abstract class TileEntityUpgradeableMachine<RECIPE extends MekanismRecipe
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
         if (upgradeTier != BaseTier.BASIC) {
+            return false;
+        }
+        World world = getWorld();
+        if (world == null) {
             return false;
         }
         //TODO: Grab proper factory. If this is moved into the block from the tile it may make it easier

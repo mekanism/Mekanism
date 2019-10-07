@@ -10,6 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -31,6 +32,10 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public void onPlace() {
+        World world = getWorld();
+        if (world == null) {
+            return;
+        }
         Coord4D current = Coord4D.get(this);
         MekanismUtils.makeBoundingBlock(world, getPos().add(0, 1, 0), current);
         for (int x = -1; x <= 1; x++) {
@@ -42,6 +47,10 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public void onBreak() {
+        World world = getWorld();
+        if (world == null) {
+            return;
+        }
         world.removeBlock(getPos().add(0, 1, 0), false);
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
@@ -64,6 +73,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     @Override
     protected boolean canSeeSky() {
         //TODO: Verify this is correct at 2, I for some reason had it at 3 before
-        return world.canBlockSeeSky(getPos().up(2));
+        World world = getWorld();
+        return world != null && world.canBlockSeeSky(getPos().up(2));
     }
 }

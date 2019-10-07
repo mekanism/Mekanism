@@ -47,6 +47,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
@@ -94,9 +96,14 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         return types[side.ordinal()];
     }
 
+    public boolean isRemote() {
+        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
+        return getWorld() == null ? EffectiveSide.get() == LogicalSide.CLIENT : getWorld().isRemote();
+    }
+
     @Override
     public void tick() {
-        if (getWorld().isRemote) {
+        if (isRemote()) {
             if (delayTicks == 5) {
                 delayTicks = 6; /* don't refresh again */
                 refreshConnections();
@@ -133,7 +140,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (canConnectMutual(side)) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
+                TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
                 if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(transmitter ->
                       TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))) {
                     connections |= 1 << side.ordinal();
@@ -148,7 +155,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         if (canConnectMutual(side)) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
+            TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
             if (isValidAcceptor(tileEntity, side)) {
                 if (cachedAcceptors[side.ordinal()] != tileEntity) {
                     cachedAcceptors[side.ordinal()] = tileEntity;
@@ -169,7 +176,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         if (canConnectMutual(side)) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
+            TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
             return CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(
                   transmitter -> TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)
             );
@@ -187,7 +194,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (canConnectMutual(side)) {
                 Coord4D coord = new Coord4D(getPos(), getWorld()).offset(side);
-                if (!getWorld().isRemote && !coord.exists(getWorld())) {
+                if (!isRemote() && !coord.exists(getWorld())) {
                     forceUpdate = true;
                     continue;
                 }
@@ -242,7 +249,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         BlockPos testPos = getPos().offset(side);
-        LazyOptionalHelper<IBlockableConnection> blockableConnection = CapabilityUtils.getCapabilityHelper(MekanismUtils.getTileEntity(world, testPos),
+        LazyOptionalHelper<IBlockableConnection> blockableConnection = CapabilityUtils.getCapabilityHelper(MekanismUtils.getTileEntity(getWorld(), testPos),
               Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite());
         return !blockableConnection.isPresent() || blockableConnection.matches(connection -> connection.canConnect(side.getOpposite()));
     }
@@ -274,7 +281,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        if (world.isRemote) {
+        if (isRemote()) {
             currentTransmitterConnections = dataStream.readByte();
             currentAcceptorConnections = dataStream.readByte();
             for (int i = 0; i < 6; i++) {
@@ -283,7 +290,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             requestModelDataUpdate();
             //TODO: Figure out why we are marking it dirty on the clientside??
             markDirty();
-            MekanismUtils.updateBlock(world, pos);
+            MekanismUtils.updateBlock(getWorld(), pos);
         }
     }
 
@@ -351,7 +358,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             redstoneSet = true;
         }
 
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             byte possibleTransmitters = getPossibleTransmitterConnections();
             byte possibleAcceptors = getPossibleAcceptorConnections();
             byte newlyEnabledTransmitters = 0;
@@ -378,7 +385,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     public void refreshConnections(Direction side) {
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             boolean possibleTransmitter = getPossibleTransmitterConnection(side);
             boolean possibleAcceptor = getPossibleAcceptorConnection(side);
             boolean transmitterChanged = false;
@@ -410,7 +417,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         //This fixes pipes not reconnecting cross chunk
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
+                TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
                 if (tileEntity instanceof TileEntitySidedPipe) {
                     ((TileEntitySidedPipe) tileEntity).refreshConnections();
                 }
@@ -514,7 +521,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             RayTraceResult hit = reTrace(getWorld(), getPos(), player);
             if (hit == null) {
                 return ActionResultType.PASS;
@@ -569,7 +576,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        if (!getWorld().isRemote && handlesRedstone()) {
+        if (!isRemote() && handlesRedstone()) {
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();

@@ -100,7 +100,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             checkFormula();
             recalculateRecipe();
         }
@@ -108,7 +108,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (formula != null && stockControl && needsOrganize) {
                 needsOrganize = false;
                 organizeStock();
@@ -196,7 +196,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void recalculateRecipe() {
-        if (world != null && !world.isRemote) {
+        if (world != null && !isRemote()) {
             if (formula == null) {
                 for (int i = 0; i < 9; i++) {
                     dummyInv.setInventorySlotContents(i, getInventory().get(SLOT_CRAFT_MATRIX_FIRST + i));
@@ -261,7 +261,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private boolean craftSingle() {
         if (formula != null) {
             boolean canOperate = true;
-            if (!formula.matches(world, getInventory(), SLOT_CRAFT_MATRIX_FIRST)) {
+            if (!formula.matches(getWorld(), getInventory(), SLOT_CRAFT_MATRIX_FIRST)) {
                 canOperate = moveItemsToGrid();
             }
             if (canOperate) {
@@ -316,7 +316,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private void moveItemsToInput(boolean forcePush) {
         for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
             ItemStack recipeStack = getInventory().get(i);
-            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(world, recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)))) {
+            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getWorld(), recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)))) {
                 getInventory().set(i, tryMoveToInput(recipeStack));
             }
         }
@@ -335,7 +335,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void toggleStockControl() {
-        if (!world.isRemote && formula != null) {
+        if (!isRemote() && formula != null) {
             stockControl = !stockControl;
             if (stockControl) {
                 organizeStock();
@@ -489,7 +489,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 toggleAutoMode();
@@ -513,7 +513,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             autoMode = dataStream.readBoolean();
             operatingTicks = dataStream.readInt();
             isRecipe = dataStream.readBoolean();
@@ -526,7 +526,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                             inv.set(i, dataStream.readItemStack());
                         }
                     }
-                    formula = new RecipeFormula(world, inv);
+                    formula = new RecipeFormula(getWorld(), inv);
                 } else {
                     formula = null;
                 }

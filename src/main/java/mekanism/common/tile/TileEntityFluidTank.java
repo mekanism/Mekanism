@@ -37,6 +37,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -87,7 +88,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     @Override
     public void onUpdate() {
-        if (world.isRemote) {
+        if (isRemote()) {
             float targetScale = (float) fluidTank.getFluid().getAmount() / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
@@ -128,7 +129,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     private void activeEmit() {
         if (!fluidTank.getFluid().isEmpty()) {
-            TileEntity tileEntity = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
+            TileEntity tileEntity = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(getWorld());
             CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : FluidAction.EXECUTE);
@@ -161,7 +162,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     public int pushUp(@Nonnull FluidStack fluid, FluidAction fluidAction) {
         Coord4D up = Coord4D.get(this).offset(Direction.UP);
-        TileEntity tileEntity = up.getTileEntity(world);
+        TileEntity tileEntity = up.getTileEntity(getWorld());
         if (tileEntity instanceof TileEntityFluidTank) {
             return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).getIfPresentElse(
                   handler -> PipeUtils.canFill(handler, fluid) ? handler.fill(fluid, fluidAction) : 0,
@@ -222,7 +223,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             FluidTankTier prevTier = tier;
             tier = dataStream.readEnumValue(FluidTankTier.class);
             fluidTank.setCapacity(tier.getStorage());
@@ -238,7 +239,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             TileUtils.readTankData(dataStream, fluidTank);
             if (prevTier != tier) {
                 //TODO: Is this still needed given the block actually will change once we setup upgrading
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
             }
         }
     }
@@ -254,7 +255,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             return Integer.MAX_VALUE;
         }
         Coord4D top = Coord4D.get(this).offset(Direction.UP);
-        TileEntity topTile = top.getTileEntity(world);
+        TileEntity topTile = top.getTileEntity(getWorld());
         if (topTile instanceof TileEntityFluidTank) {
             TileEntityFluidTank topTank = (TileEntityFluidTank) topTile;
             if (!fluidTank.getFluid().isEmpty() && !topTank.fluidTank.getFluid().isEmpty()) {
@@ -292,9 +293,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             setActive(!getActive());
-            world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+            World world = getWorld();
+            if (world != null) {
+                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+            }
         }
         return ActionResultType.SUCCESS;
     }
@@ -354,7 +358,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(Direction.DOWN));
+        TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(Direction.DOWN));
         if (from == Direction.DOWN && getActive() && !(tile instanceof TileEntityFluidTank)) {
             return false;
         }

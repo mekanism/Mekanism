@@ -38,6 +38,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -76,11 +77,14 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public void onUpdate() {
         if (changed) {
-            world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+            World world = getWorld();
+            if (world != null) {
+                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+            }
         }
 
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             CableUtils.emit(this);
             if (fluidEject && getReactor() != null && !getReactor().getSteamTank().getFluid().isEmpty()) {
                 IFluidTank tank = getReactor().getSteamTank();
@@ -270,7 +274,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
+        TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (!(adj instanceof TileEntityReactorBlock)) {
             return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
@@ -336,11 +340,14 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             boolean prevEject = fluidEject;
             fluidEject = dataStream.readBoolean();
             if (prevEject != fluidEject) {
-                MekanismUtils.updateBlock(world, getPos());
+                World world = getWorld();
+                if (world != null) {
+                    MekanismUtils.updateBlock(world, getPos());
+                }
             }
         }
     }
@@ -354,7 +361,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             fluidEject = !fluidEject;
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                   Translation.of("tooltip.mekanism.configurator.reactor_port_eject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(fluidEject), "."));

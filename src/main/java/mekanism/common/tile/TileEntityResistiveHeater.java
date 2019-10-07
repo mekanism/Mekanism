@@ -40,7 +40,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             boolean packet = false;
             ChargeUtils.discharge(0, this);
             double toUse = 0;
@@ -90,14 +90,14 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
             setMaxEnergy(energyUsage * 400);
             return;
         }
 
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             energyUsage = dataStream.readDouble();
             temperature = dataStream.readDouble();
             setMaxEnergy(dataStream.readDouble());
@@ -154,7 +154,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
+        TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
     }
 

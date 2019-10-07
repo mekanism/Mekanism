@@ -48,7 +48,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     public void onUpdate() {
         super.onUpdate();
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (structure != null) {
                 if (isRendering) {
                     structure.lastSteamInput = structure.newSteamInput;
@@ -167,7 +167,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (structure != null) {
                 byte type = dataStream.readByte();
                 if (type == 0) {
@@ -179,7 +179,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             if (clientHasStructure) {
                 structure.volume = dataStream.readInt();
                 structure.lowerVolume = dataStream.readInt();

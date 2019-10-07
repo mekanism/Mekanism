@@ -61,7 +61,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(1, this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

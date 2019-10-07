@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -55,14 +56,17 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         /*if (!ic2Registered && MekanismUtils.useIC2()) {
             register();
         }*/
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (structure != null && mode) {
                 CableUtils.emit(this);
             }
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -88,11 +92,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             boolean prevMode = mode;
             mode = dataStream.readBoolean();
             if (prevMode != mode) {
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
             }
         }
     }
@@ -145,7 +149,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void register() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
             if (registered != this) {
                 if (registered != null && ic2Registered) {
@@ -161,7 +165,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void deregister() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
             if (registered != null && ic2Registered) {
                 MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
@@ -212,7 +216,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             mode = !mode;
             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                   Translation.of("tooltip.mekanism.configurator.inductionPortMode"), " ", (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(mode), "."));
@@ -267,7 +271,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {
         //Inserting into input make it draw power from the item inserted
-        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? mode ? CHARGE_SLOT : DISCHARGE_SLOT : InventoryUtils.EMPTY;
+        return (!isRemote() && structure != null) || (isRemote() && clientHasStructure) ? mode ? CHARGE_SLOT : DISCHARGE_SLOT : InventoryUtils.EMPTY;
     }
 
     @Override
@@ -283,7 +287,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return !world.isRemote ? structure == null : !clientHasStructure;
+            return !isRemote() ? structure == null : !clientHasStructure;
         }
         return super.isCapabilityDisabled(capability, side);
     }

@@ -84,7 +84,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             TileUtils.drawGas(getInventory().get(0), gasTank, ChemicalAction.get(tier != GasTankTier.CREATIVE));
             if (TileUtils.receiveGas(getInventory().get(1), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
                 gasTank.setStack(new GasStack(gasTank.getStack(), Integer.MAX_VALUE));
@@ -218,7 +218,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 int index = (dumping.ordinal() + 1) % EnumUtils.GAS_MODES.length;
@@ -231,14 +231,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             return;
         }
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             GasTankTier prevTier = tier;
             tier = dataStream.readEnumValue(GasTankTier.class);
             gasTank.setCapacity(tier.getStorage());
             TileUtils.readTankData(dataStream, gasTank);
             dumping = dataStream.readEnumValue(GasMode.class);
             if (prevTier != tier) {
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
             }
         }
     }

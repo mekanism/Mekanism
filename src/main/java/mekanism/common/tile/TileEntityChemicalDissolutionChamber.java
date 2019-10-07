@@ -60,7 +60,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(3, this);
             ItemStack itemStack = getInventory().get(0);
             if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
@@ -157,7 +157,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, injectTank);
             TileUtils.readTankData(dataStream, outputTank);
         }

@@ -59,7 +59,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(3, this);
             TileUtils.receiveGas(getInventory().get(0), leftTank);
             TileUtils.receiveGas(getInventory().get(1), rightTank);
@@ -116,7 +116,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             clientEnergyUsed = dataStream.readDouble();
             TileUtils.readTankData(dataStream, leftTank);
             TileUtils.readTankData(dataStream, rightTank);

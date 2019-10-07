@@ -108,7 +108,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (configComponent.isEjecting(TransmissionType.ENERGY)) {
                 CableUtils.emit(this);
             }
@@ -149,7 +149,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public void remove() {
         super.remove();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
                 if (manager != null) {
@@ -176,7 +176,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         } else if (!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwnerUUID())) {
             FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
             Mekanism.privateEntangloporters.put(getSecurity().getOwnerUUID(), manager);
-            manager.createOrLoad(world);
+            manager.createOrLoad(getWorld());
         }
         return Mekanism.privateEntangloporters.get(getSecurity().getOwnerUUID());
     }
@@ -249,7 +249,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 String name = dataStream.readString();
@@ -268,7 +268,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             lastTransferLoss = dataStream.readDouble();
             lastEnvironmentLoss = dataStream.readDouble();
             if (dataStream.readBoolean()) {
@@ -483,7 +483,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
+        TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState == IOState.INPUT) {
             return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }

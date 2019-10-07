@@ -64,7 +64,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(3, this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

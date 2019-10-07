@@ -52,7 +52,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     @Override
     public void handlePacketData(PacketBuffer dataStream) throws Exception {
         super.handlePacketData(dataStream);
-        if (getWorld().isRemote) {
+        if (isRemote()) {
             modes[0] = dataStream.readInt();
             modes[1] = dataStream.readInt();
             modes[2] = dataStream.readInt();

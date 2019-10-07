@@ -72,7 +72,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Override
     public void onUpdate() {
-        if (world.isRemote) {
+        if (isRemote()) {
             if (structure == null) {
                 structure = getNewStructure();
             }
@@ -83,13 +83,13 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             prevStructure = clientHasStructure;
         }
 
-        if (playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote && structure == null))) {
+        if (playersUsing.size() > 0 && ((isRemote() && !clientHasStructure) || (!isRemote() && structure == null))) {
             for (PlayerEntity player : playersUsing) {
                 player.closeScreen();
             }
         }
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (structure == null) {
                 isRendering = false;
                 if (cachedID != null) {
@@ -137,7 +137,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Override
     public void doUpdate() {
-        if (!world.isRemote && (structure == null || !structure.didTick)) {
+        if (!isRemote() && (structure == null || !structure.didTick)) {
             getProtocol().doUpdate();
             if (structure != null) {
                 structure.didTick = true;
@@ -148,7 +148,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public void sendPacketToRenderer() {
         if (structure != null) {
             for (Coord4D obj : structure.locations) {
-                TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(world);
+                TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(getWorld());
                 if (tileEntity != null && tileEntity.isRendering) {
                     Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                 }
@@ -195,7 +195,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             if (structure == null) {
                 structure = getNewStructure();
             }

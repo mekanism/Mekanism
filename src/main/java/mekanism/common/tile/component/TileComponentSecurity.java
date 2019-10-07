@@ -98,7 +98,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void tick() {
-        if (!tileEntity.getWorld().isRemote) {
+        if (!tileEntity.isRemote()) {
             if (frequency == null && ownerUUID != null) {
                 setFrequency(ownerUUID);
             }
@@ -183,7 +183,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void invalidate() {
-        if (!tileEntity.getWorld().isRemote) {
+        if (!tileEntity.isRemote()) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
                 if (manager != null) {

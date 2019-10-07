@@ -61,7 +61,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (world.isRemote) {
+        if (isRemote()) {
             if (clientHasStructure && isRendering) {
                 if (structure != null) {
                     float targetScale = (float) structure.fluidStored.getAmount() / clientCapacity;
@@ -71,7 +71,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
             } else {
                 for (ValveData data : valveViewing) {
-                    TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(world);
+                    TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(getWorld());
                     if (tileEntity != null) {
                         tileEntity.clientHasStructure = false;
                     }
@@ -171,7 +171,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             if (clientHasStructure) {
                 clientCapacity = dataStream.readInt();
                 structure.editMode = dataStream.readEnumValue(ContainerEditMode.class);
@@ -185,7 +185,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                         data.location = Coord4D.read(dataStream);
                         data.side = Direction.byIndex(dataStream.readInt());
                         valveViewing.add(data);
-                        TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(world);
+                        TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(getWorld());
                         if (tileEntity != null) {
                             tileEntity.clientHasStructure = true;
                         }

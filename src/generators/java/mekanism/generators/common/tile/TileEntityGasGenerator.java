@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -56,7 +57,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public void onUpdate() {
         super.onUpdate();
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.charge(1, this);
             ItemStack stack = getInventory().get(0);
             if (!stack.isEmpty() && fuelTank.getStored() < MAX_GAS) {
@@ -107,10 +108,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 clientUsed = 0;
                 setActive(false);
             }
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -206,7 +210,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, fuelTank);
             generationRate = dataStream.readDouble();
             output = dataStream.readDouble();

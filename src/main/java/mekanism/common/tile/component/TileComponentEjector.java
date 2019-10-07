@@ -67,7 +67,7 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void tick() {
-        if (!tileEntity.getWorld().isRemote) {
+        if (!tileEntity.isRemote()) {
             if (tickDelay == 0) {
                 outputItems();
             } else {

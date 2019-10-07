@@ -25,6 +25,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -91,12 +92,12 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (world.isRemote) {
+        if (isRemote()) {
             updateSound();
         }
         if (isFormed()) {
             getReactor().simulate();
-            if (!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1_000_000)) {
+            if (!isRemote() && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1_000_000)) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
                 clientBurning = getReactor().isBurning();
                 clientTemp = getReactor().getPlasmaTemp();
@@ -131,7 +132,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public void remove() {
         super.remove();
-        if (world.isRemote) {
+        if (isRemote()) {
             updateSound();
         }
     }
@@ -211,7 +212,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 if (getReactor() != null) {
@@ -223,14 +224,15 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             boolean formed = dataStream.readBoolean();
+            World world = getWorld();
             if (formed) {
                 if (getReactor() == null || !getReactor().formed) {
                     BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
                     Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6, tile -> tile instanceof TileEntityReactorBlock);
                 }
-                if (getReactor() == null) {
+                if (getReactor() == null && world != null) {
                     setReactor(new FusionReactor(this));
                     MekanismUtils.updateBlock(world, getPos());
                 }
@@ -245,7 +247,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 tritiumTank.setStack(MekanismGases.TRITIUM.getGasStack(dataStream.readInt()));
                 TileUtils.readTankData(dataStream, waterTank);
                 TileUtils.readTankData(dataStream, steamTank);
-            } else if (getReactor() != null) {
+            } else if (getReactor() != null && world != null) {
                 setReactor(null);
                 MekanismUtils.updateBlock(world, getPos());
             }

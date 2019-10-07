@@ -20,6 +20,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
@@ -40,9 +42,14 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         super(type);
     }
 
+    public boolean isRemote() {
+        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
+        return getWorld() == null ? EffectiveSide.get() == LogicalSide.CLIENT : getWorld().isRemote();
+    }
+
     public void setMainLocation(BlockPos pos) {
         receivedCoords = pos != null;
-        if (!world.isRemote) {
+        if (!isRemote()) {
             mainPos = pos;
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
@@ -58,7 +65,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     @Override
     public void validate() {
         super.validate();
-        if (world.isRemote) {
+        if (isRemote()) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
     }
@@ -95,7 +102,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (world.isRemote) {
+        if (isRemote()) {
             mainPos = new BlockPos(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
             prevPower = dataStream.readInt();
             receivedCoords = dataStream.readBoolean();

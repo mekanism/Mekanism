@@ -36,7 +36,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             boolean burning = false;
             if (burnTime > 0) {
                 burnTime--;
@@ -85,7 +85,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             temperature = dataStream.readDouble();
             burnTime = dataStream.readInt();
             maxBurnTime = dataStream.readInt();
@@ -154,7 +154,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
+        TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
     }
 

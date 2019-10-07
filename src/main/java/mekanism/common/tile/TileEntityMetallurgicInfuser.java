@@ -37,6 +37,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -69,7 +70,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(4, this);
             ItemStack infuseInput = getInventory().get(1);
             if (!infuseInput.isEmpty()) {
@@ -96,6 +97,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             return false;
         }
 
+        World world = getWorld();
+        if (world == null) {
+            return false;
+        }
         world.removeBlock(getPos(), false);
         world.setBlockState(getPos(), MekanismBlock.BASIC_INFUSING_FACTORY.getBlock().getDefaultState());
 
@@ -238,7 +243,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int amount = dataStream.readInt();
             //TODO: Make this use a specialized "dump" method
             if (amount == 0) {
@@ -248,7 +253,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         }
 
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, infusionTank);
         }
     }

@@ -98,7 +98,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             updatedThisTick = false;
             if (ticker == 5) {
                 refresh();
@@ -140,7 +140,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     protected void refresh() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (!updatedThisTick) {
                 clearStructure();
                 structured = buildStructure();
@@ -261,7 +261,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public int getActiveSolars() {
-        if (world.isRemote) {
+        if (isRemote()) {
             return clientSolarAmount;
         }
         int ret = 0;
@@ -437,7 +437,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
 
@@ -454,7 +454,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
             if (structured != clientStructured) {
                 inputTank.setCapacity(getMaxFluid());
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
                 if (structured) {
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).

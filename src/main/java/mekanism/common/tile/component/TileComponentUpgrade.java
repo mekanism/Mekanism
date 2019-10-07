@@ -56,7 +56,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
     // This SHOULD continue to directly use te.inventory, as it is needed for Entangleporter upgrades, since it messes with IInventory.
     @Override
     public void tick() {
-        if (!tileEntity.getWorld().isRemote) {
+        if (!tileEntity.isRemote()) {
             NonNullList<ItemStack> inventory = tileEntity.getInventory();
             //TODO: Check this, inventory can be empty with quantum entangloporter with no frequency
             if (!inventory.isEmpty() && !inventory.get(upgradeSlot).isEmpty() && inventory.get(upgradeSlot).getItem() instanceof IUpgradeItem) {

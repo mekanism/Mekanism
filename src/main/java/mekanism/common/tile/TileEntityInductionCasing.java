@@ -45,9 +45,9 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (structure != null && isRendering) {
-                structure.tick(world);
+                structure.tick(getWorld());
                 ChargeUtils.charge(0, this);
                 ChargeUtils.discharge(1, this);
             }
@@ -76,7 +76,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             if (clientHasStructure) {
                 structure.readStructureData(dataStream);
             }

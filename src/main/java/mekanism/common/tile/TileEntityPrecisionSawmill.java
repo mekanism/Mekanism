@@ -60,7 +60,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(1, this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

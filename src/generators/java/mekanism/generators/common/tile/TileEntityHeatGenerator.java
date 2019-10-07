@@ -31,6 +31,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -64,7 +65,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public void onUpdate() {
         super.onUpdate();
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.charge(1, this);
             if (!getInventory().get(0).isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
@@ -101,10 +102,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             lastEnvironmentLoss = loss[1];
             producingEnergy = getEnergy() - prev;
 
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -164,14 +168,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
                 lavaBoost++;
             }
         }
-        if (world.getDimension().isNether()) {
+        World world = getWorld();
+        if (world != null && world.getDimension().isNether()) {
             netherBoost = MekanismGeneratorsConfig.generators.heatGenerationNether.get();
         }
         return (MekanismGeneratorsConfig.generators.heatGenerationLava.get() * lavaBoost) + netherBoost;
     }
 
     private boolean isLava(BlockPos pos) {
-        return world.getBlockState(pos).getBlock() == Blocks.LAVA;
+        World world = getWorld();
+        //TODO: FluidTags.LAVA?
+        return world != null && world.getBlockState(pos).getBlock() == Blocks.LAVA;
     }
 
     public int getFuel(ItemStack itemstack) {
@@ -199,7 +206,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             producingEnergy = dataStream.readDouble();
 
             lastTransferLoss = dataStream.readDouble();
@@ -323,7 +330,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
-            TileEntity adj = MekanismUtils.getTileEntity(world, pos.down());
+            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), pos.down());
             return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;

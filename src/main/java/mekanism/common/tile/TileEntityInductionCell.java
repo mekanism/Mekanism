@@ -33,7 +33,7 @@ public class TileEntityInductionCell extends TileEntityMekanism implements IStri
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             electricityStored = dataStream.readDouble();
         }
     }

@@ -30,7 +30,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             boolean active = false;
             List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class,
                   new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.2, pos.getZ() + 1));
@@ -82,7 +82,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
     public void handlePacketData(PacketBuffer dataStream) {
         boolean wasActive = getActive();
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             //If the state changed play pressure plate sound
             if (wasActive != getActive()) {
                 if (getActive()) {

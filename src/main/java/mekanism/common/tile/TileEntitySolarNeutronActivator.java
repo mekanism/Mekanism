@@ -43,6 +43,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -83,7 +84,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (!settingsChecked) {
                 recheckSettings();
             }
@@ -104,10 +105,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
                 Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -161,7 +165,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
         }
@@ -193,13 +197,16 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(world, Coord4D.get(this).offset(Direction.UP).getPos(), Coord4D.get(this));
+        MekanismUtils.makeBoundingBlock(getWorld(), Coord4D.get(this).offset(Direction.UP).getPos(), Coord4D.get(this));
     }
 
     @Override
     public void onBreak() {
-        world.removeBlock(getPos().up(), false);
-        world.removeBlock(getPos(), false);
+        World world = getWorld();
+        if (world != null) {
+            world.removeBlock(getPos().up(), false);
+            world.removeBlock(getPos(), false);
+        }
     }
 
     @Override

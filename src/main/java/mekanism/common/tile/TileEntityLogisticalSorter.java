@@ -43,6 +43,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -73,7 +74,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             delayTicks = Math.max(0, delayTicks - 1);
             if (delayTicks == 6) {
                 setActive(false);
@@ -135,10 +136,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
             }
 
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -206,7 +210,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 int clickType = dataStream.readInt();
@@ -245,7 +249,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         boolean wasActive = getActive();
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             int type = dataStream.readInt();
 
             if (type == 0) {
@@ -264,7 +268,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 // We do not need to worry about block lighting updates causing lag as
                 // #lightUpdate() returns false meaning that logistical sorters do not give
                 // off actual light.
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
             }
         }
     }
@@ -337,17 +341,17 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public boolean canSendHome(ItemStack stack) {
-        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
+        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(getWorld());
         return InventoryUtils.canInsert(back, null, stack, getOppositeDirection(), true);
     }
 
     public boolean hasConnectedInventory() {
-        TileEntity tile = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
+        TileEntity tile = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(getWorld());
         return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }
 
     public TransitResponse sendHome(ItemStack stack) {
-        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
+        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(getWorld());
         return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), getOppositeDirection(), true);
     }
 
@@ -377,7 +381,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void openInventory(@Nonnull PlayerEntity player) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }

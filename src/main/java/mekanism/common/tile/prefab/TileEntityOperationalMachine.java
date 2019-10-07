@@ -34,7 +34,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     }
 
     public int getOperatingTicks() {
-        if (world.isRemote) {
+        if (isRemote()) {
             return operatingTicks;
         }
         if (cachedRecipe == null) {
@@ -46,7 +46,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             operatingTicks = dataStream.readInt();
             ticksRequired = dataStream.readInt();
         }

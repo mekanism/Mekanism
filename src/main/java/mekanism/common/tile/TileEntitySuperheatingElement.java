@@ -32,20 +32,20 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
 
         super.setMultiblock(id);
 
-        if (packet && !world.isRemote) {
+        if (packet && !isRemote()) {
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
     @Override
     public void onUpdate() {
-        if (world.isRemote) {
+        if (isRemote()) {
             boolean newHot = false;
             if (multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(multiblockUUID) != null) {
                 newHot = SynchronizedBoilerData.clientHotMap.get(multiblockUUID);
             }
             if (prevHot != newHot) {
-                MekanismUtils.updateBlock(world, getPos());
+                MekanismUtils.updateBlock(getWorld(), getPos());
                 prevHot = newHot;
             }
         }

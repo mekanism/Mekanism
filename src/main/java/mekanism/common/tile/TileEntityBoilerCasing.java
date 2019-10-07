@@ -61,7 +61,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (world.isRemote) {
+        if (isRemote()) {
             if (structure != null && clientHasStructure && isRendering) {
                 float targetScale = (float) structure.waterStored.getAmount() / clientWaterCapacity;
                 if (Math.abs(prevWaterScale - targetScale) > 0.01) {
@@ -70,16 +70,14 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             }
             if (!clientHasStructure || !isRendering) {
                 for (ValveData data : valveViewing) {
-                    TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing) data.location.getTileEntity(world);
+                    TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing) data.location.getTileEntity(getWorld());
                     if (tileEntity != null) {
                         tileEntity.clientHasStructure = false;
                     }
                 }
                 valveViewing.clear();
             }
-        }
-
-        if (!world.isRemote) {
+        } else {
             if (structure != null) {
                 if (isRendering) {
                     boolean needsValveUpdate = false;
@@ -239,7 +237,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             if (clientHasStructure) {
                 clientWaterCapacity = dataStream.readInt();
                 clientSteamCapacity = dataStream.readInt();
@@ -266,7 +264,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
                         valveViewing.add(data);
 
-                        TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing) data.location.getTileEntity(world);
+                        TileEntityBoilerCasing tileEntity = (TileEntityBoilerCasing) data.location.getTileEntity(getWorld());
                         if (tileEntity != null) {
                             tileEntity.clientHasStructure = true;
                         }

@@ -52,7 +52,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     @Override
     public void onWorldJoin() {
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
         } else if (lastClientNetwork != null) {
             getTransmitter().setTransmitterNetwork(lastClientNetwork);
@@ -70,7 +70,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             refreshConnections();
         }
 
-        if (getWorld().isRemote) {
+        if (isRemote()) {
             if (!dataRequest) {
                 dataRequest = true;
                 MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(getWorld().getTileEntity(getPos())));
@@ -80,7 +80,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     @Override
     public void onChunkUnloaded() {
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             getTransmitter().takeShare();
         }
         super.onChunkUnloaded();
@@ -89,7 +89,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public void onWorldSeparate() {
         unloaded = true;
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
         } else {
             lastClientNetwork = getTransmitter().getTransmitterNetwork();
@@ -170,7 +170,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     private boolean recheckConnectionPrechecked(Direction side) {
-        final TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
+        final TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (tileEntity instanceof TileEntityTransmitter) {
             N network = getTransmitter().getTransmitterNetwork();
             TileEntityTransmitter other = (TileEntityTransmitter) tileEntity;

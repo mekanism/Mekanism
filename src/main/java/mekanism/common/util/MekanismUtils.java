@@ -468,9 +468,12 @@ public final class MekanismUtils {
      * @param boundingLocation - coordinates of bounding block
      * @param orig             - original block
      */
-    public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
+    public static void makeBoundingBlock(@Nullable World world, BlockPos boundingLocation, Coord4D orig) {
+        if (world == null) {
+            return;
+        }
         world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState());
-        if (!world.isRemote) {
+        if (!world.isRemote()) {
             TileEntity tile = getTileEntity(world, boundingLocation);
             if (tile instanceof TileEntityBoundingBlock) {
                 ((TileEntityBoundingBlock) tile).setMainLocation(orig.getPos());
@@ -505,8 +508,8 @@ public final class MekanismUtils {
      * @param world - world the block is in
      * @param pos   Position of the block
      */
-    public static void updateBlock(World world, BlockPos pos) {
-        if (!world.isAreaLoaded(pos, 0)) {
+    public static void updateBlock(@Nullable World world, BlockPos pos) {
+        if (world == null || !world.isAreaLoaded(pos, 0)) {
             return;
         }
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true

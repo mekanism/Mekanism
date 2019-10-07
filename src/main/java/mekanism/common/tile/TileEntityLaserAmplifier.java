@@ -66,7 +66,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
     @Override
     public void onUpdate() {
-        if (world.isRemote) {
+        if (isRemote()) {
             if (on) {
                 BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
                 Coord4D hitCoord = new Coord4D(mop, world);
@@ -204,7 +204,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             switch (dataStream.readInt()) {
                 case 0:
                     minThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
@@ -224,7 +224,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             on = dataStream.readBoolean();
             minThreshold = dataStream.readDouble();
             maxThreshold = dataStream.readDouble();

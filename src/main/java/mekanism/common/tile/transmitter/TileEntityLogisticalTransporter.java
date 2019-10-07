@@ -87,7 +87,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void onWorldSeparate() {
         super.onWorldSeparate();
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         }
     }
@@ -133,7 +133,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
         // Attempt to pull
         for (Direction side : getConnections(ConnectionType.PULL)) {
-            final TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(side));
+            final TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
             if (tile != null) {
                 TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
 
@@ -188,7 +188,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
                 if (prev != getTransmitter().getColor()) {
                     //TODO: Only make it so it needs to request an update once instead of potentially doing it in the super as well
                     requestModelDataUpdate();
-                    MekanismUtils.updateBlock(world, pos);
+                    MekanismUtils.updateBlock(getWorld(), pos);
                 }
                 getTransmitter().readFromPacket(dataStream);
             } else if (type == SYNC_PACKET) {
@@ -316,7 +316,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        if (!getWorld().isRemote) {
+        if (!isRemote()) {
             for (TransporterStack stack : getTransmitter().getTransit()) {
                 TransporterUtils.drop(getTransmitter(), stack);
             }

@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
@@ -34,6 +33,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -187,7 +187,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             addTicks = Math.max(0, addTicks - 1);
             delayTicks = Math.max(0, delayTicks - 1);
             sortStacks();
@@ -198,7 +198,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
 
             if (delayTicks == 0) {
                 if (!bottomStack.isEmpty() && getActive()) {
-                    TileEntity tile = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
+                    TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
                     TransitResponse response = CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP).getIfPresentElseDo(
                           transporter -> TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0),
                           () -> InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false)
@@ -259,7 +259,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             clientAmount = dataStream.readInt();
             tier = dataStream.readEnumValue(BinTier.class);
             if (clientAmount > 0) {
@@ -267,7 +267,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
             } else {
                 itemType = ItemStack.EMPTY;
             }
-            MekanismUtils.updateBlock(world, getPos());
+            MekanismUtils.updateBlock(getWorld(), getPos());
         }
     }
 
@@ -336,7 +336,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     @Override
     public void markDirty() {
         super.markDirty();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             MekanismUtils.saveChunk(this);
             Mekanism.packetHandler.sendUpdatePacket(this);
             prevCount = getItemCount();
@@ -434,7 +434,10 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         setActive(!getActive());
-        world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+        World world = getWorld();
+        if (world != null) {
+            world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+        }
         return ActionResultType.SUCCESS;
     }
 

@@ -127,7 +127,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(3, this);
             handleSecondaryFuel();
             //TODO: Is there some better way to do this rather than storing it and then doing it like this?
@@ -216,7 +216,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, gasTank);
         }
     }

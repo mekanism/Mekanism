@@ -59,7 +59,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public void tick() {
-        if (getWorld().isRemote) {
+        if (isRemote()) {
             double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
             if (Math.abs(currentPower - targetPower) > 0.01) {
                 currentPower = (9 * currentPower + targetPower) / 10;
@@ -175,7 +175,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public boolean isValidAcceptor(TileEntity acceptor, Direction side) {
-        return CableUtils.isValidAcceptorOnSide(MekanismUtils.getTileEntity(world, getPos()), acceptor, side);
+        return CableUtils.isValidAcceptorOnSide(MekanismUtils.getTileEntity(getWorld(), getPos()), acceptor, side);
     }
 
     @Override

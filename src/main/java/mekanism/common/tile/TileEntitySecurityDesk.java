@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -43,7 +44,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (ownerUUID != null && frequency != null) {
                 ItemStack itemStack = getInventory().get(0);
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof IOwnerItem) {
@@ -119,7 +120,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 if (frequency != null) {
@@ -146,7 +147,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             if (dataStream.readBoolean()) {
                 clientOwner = dataStream.readString();
                 ownerUUID = dataStream.readUniqueId();
@@ -211,7 +212,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @Override
     public void remove() {
         super.remove();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
                 if (manager != null) {
@@ -223,13 +224,16 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(world, getPos().up(), Coord4D.get(this));
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), Coord4D.get(this));
     }
 
     @Override
     public void onBreak() {
-        world.removeBlock(getPos().up(), false);
-        world.removeBlock(getPos(), false);
+        World world = getWorld();
+        if (world != null) {
+            world.removeBlock(getPos().up(), false);
+            world.removeBlock(getPos(), false);
+        }
     }
 
     @Override

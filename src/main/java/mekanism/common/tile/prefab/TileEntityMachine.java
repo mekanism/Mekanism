@@ -33,7 +33,7 @@ public abstract class TileEntityMachine extends TileEntityMekanism implements IU
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             setEnergyPerTick(dataStream.readDouble());
             setMaxEnergy(dataStream.readDouble());
         }

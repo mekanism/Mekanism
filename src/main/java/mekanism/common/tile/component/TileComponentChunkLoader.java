@@ -92,7 +92,7 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     @Override
     public void tick() {
-        if (!tileEntity.getWorld().isRemote) {
+        if (!tileEntity.isRemote()) {
             if (prevCoord == null || !prevCoord.equals(Coord4D.get(tileEntity))) {
                 release();
                 prevCoord = Coord4D.get(tileEntity);
@@ -162,7 +162,7 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     @Override
     public void invalidate() {
-        if (!tileEntity.getWorld().isRemote) {
+        if (!tileEntity.isRemote()) {
             release();
         }
     }

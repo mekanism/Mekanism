@@ -41,6 +41,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -80,7 +81,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(2, this);
             if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
@@ -118,10 +119,13 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 }
             }
 
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -186,7 +190,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (world.isRemote) {
+        if (isRemote()) {
             finishedCalc = dataStream.readBoolean();
             TileUtils.readTankData(dataStream, fluidTank);
         }
@@ -264,7 +268,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         } else if (slotID == 0) {
             //TODO: Is there a better position to use
             return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluidStack ->
-                  fluidStack.getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidStack));
+                  fluidStack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluidStack));
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -332,7 +336,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         //TODO: Is there a better position to use
-        return from == Direction.UP && fluid.getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluid);
+        return from == Direction.UP && fluid.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluid);
     }
 
     @Override

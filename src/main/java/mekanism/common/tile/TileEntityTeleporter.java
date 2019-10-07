@@ -126,7 +126,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             resetBounds();
         }
 
-        if (!world.isRemote) {
+        if (!isRemote()) {
             FrequencyManager manager = getManager(frequency);
             if (manager != null) {
                 if (frequency != null && !frequency.valid) {
@@ -201,7 +201,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         } else if (!Mekanism.privateTeleporters.containsKey(getSecurity().getOwnerUUID())) {
             FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwnerUUID());
             Mekanism.privateTeleporters.put(getSecurity().getOwnerUUID(), manager);
-            manager.createOrLoad(world);
+            manager.createOrLoad(getWorld());
         }
 
         return Mekanism.privateTeleporters.get(getSecurity().getOwnerUUID());
@@ -210,7 +210,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        if (!world.isRemote && frequency != null) {
+        if (!isRemote() && frequency != null) {
             FrequencyManager manager = getManager(frequency);
             if (manager != null) {
                 manager.deactivate(Coord4D.get(this));
@@ -221,7 +221,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     public void remove() {
         super.remove();
-        if (!world.isRemote) {
+        if (!isRemote()) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
                 if (manager != null) {
@@ -285,7 +285,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     public void teleport() {
-        if (world.isRemote) {
+        if (isRemote()) {
             return;
         }
         List<Entity> entitiesInPortal = getToTeleport();
@@ -393,7 +393,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 String name = dataStream.readString();
@@ -412,7 +412,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             if (dataStream.readBoolean()) {
                 frequency = new Frequency(dataStream);
             } else {

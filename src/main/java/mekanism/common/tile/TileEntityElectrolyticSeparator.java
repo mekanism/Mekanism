@@ -46,6 +46,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -109,7 +110,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public void onUpdate() {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             ChargeUtils.discharge(3, this);
             ItemStack fluidInputStack = inventory.get(0);
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
@@ -133,10 +134,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
             handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
             handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                world.updateComparatorOutputLevel(pos, getBlockType());
-                currentRedstoneLevel = newRedstoneLevel;
+            World world = getWorld();
+            if (world != null) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
             }
         }
     }
@@ -247,7 +251,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!world.isRemote) {
+        if (!isRemote()) {
             byte type = dataStream.readByte();
             if (type == 0) {
                 dumpLeft = EnumUtils.GAS_MODES[dumpLeft.ordinal() == EnumUtils.GAS_MODES.length - 1 ? 0 : dumpLeft.ordinal() + 1];
@@ -259,7 +263,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
         super.handlePacketData(dataStream);
 
-        if (world.isRemote) {
+        if (isRemote()) {
             TileUtils.readTankData(dataStream, fluidTank);
             TileUtils.readTankData(dataStream, leftTank);
             TileUtils.readTankData(dataStream, rightTank);
