@@ -351,22 +351,27 @@ artifacts {
 
 reobf {
     apiJar {
+        classpath = sourceSets.api.compileClasspath
         dependsOn createMcpToSrg
         mappings = createMcpToSrg.outputs.files.singleFile
     }
     coreJar {
+        classpath = sourceSets.main.compileClasspath
         dependsOn createMcpToSrg
         mappings = createMcpToSrg.outputs.files.singleFile
     }
     additionsJar {
+        classpath = sourceSets.additions.compileClasspath
         dependsOn createMcpToSrg
         mappings = createMcpToSrg.outputs.files.singleFile
     }
     generatorsJar {
+        classpath = sourceSets.generators.compileClasspath
         dependsOn createMcpToSrg
         mappings = createMcpToSrg.outputs.files.singleFile
     }
     toolsJar {
+        classpath = sourceSets.tools.compileClasspath
         dependsOn createMcpToSrg
         mappings = createMcpToSrg.outputs.files.singleFile
     }
