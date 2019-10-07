@@ -12,6 +12,9 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
     default CachedRecipe<RECIPE> getUpdatedCache(int cacheIndex) {
         CachedRecipe<RECIPE> currentCache = getCachedRecipe(cacheIndex);
         //If there is no cached recipe or the input doesn't match, attempt to get the recipe based on the input
+        //TODO: We probably want something so that we don't have to recheck if the input has not changed since the last check
+        // Maybe make it be !isInputValid AND inputHasChanged to check if the input is the same as the last time isInputValid was called
+        // Note: This still doesn't have a benefit for if currentCache is null, but it will still help overall
         if (currentCache == null || !currentCache.isInputValid()) {
             RECIPE recipe = getRecipe(cacheIndex);
             if (recipe != null) {

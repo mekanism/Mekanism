@@ -1,20 +1,14 @@
 package mekanism.common.base;
 
-import javax.annotation.Nonnull;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
+//TODO: Should we inline SidedInvWrapper? Previously we had to extend to be able to override isItemValid,
+// but all 1.14 versions of forge have the proper impl for isItemValid
 public class ItemHandlerWrapper extends SidedInvWrapper {
 
     public ItemHandlerWrapper(ISidedInventory inv, Direction side) {
         super(inv, side);
-    }
-
-    @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        int sl = getSlot(inv, slot, side);
-        return sl != -1 && inv.isItemValidForSlot(sl, stack);
     }
 }
