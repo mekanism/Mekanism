@@ -1,14 +1,14 @@
 package mekanism.tools.common.config;
 
 import mekanism.common.config.IMekanismConfig;
-import mekanism.tools.common.material.BronzeMaterialDefaults;
-import mekanism.tools.common.material.IMekanismMaterial;
-import mekanism.tools.common.material.LapisLazuliMaterialDefaults;
+import mekanism.tools.common.material.impl.BronzeMaterialDefaults;
+import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.material.impl.LapisLazuliMaterialDefaults;
 import mekanism.tools.common.material.MaterialCreator;
-import mekanism.tools.common.material.OsmiumMaterialDefaults;
-import mekanism.tools.common.material.RefinedGlowstoneMaterialDefaults;
-import mekanism.tools.common.material.RefinedObsidianMaterialDefaults;
-import mekanism.tools.common.material.SteelMaterialDefaults;
+import mekanism.tools.common.material.impl.OsmiumMaterialDefaults;
+import mekanism.tools.common.material.impl.RefinedGlowstoneMaterialDefaults;
+import mekanism.tools.common.material.impl.RefinedObsidianMaterialDefaults;
+import mekanism.tools.common.material.impl.SteelMaterialDefaults;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -18,12 +18,12 @@ public class ToolsConfig implements IMekanismConfig {
     private final ForgeConfigSpec configSpec;
 
     public final DoubleValue armorSpawnRate;
-    public final IMekanismMaterial bronze;
-    public final IMekanismMaterial lapisLazuli;
-    public final IMekanismMaterial osmium;
-    public final IMekanismMaterial refinedGlowstone;
-    public final IMekanismMaterial refinedObsidian;
-    public final IMekanismMaterial steel;
+    public final BaseMekanismMaterial bronze;
+    public final BaseMekanismMaterial lapisLazuli;
+    public final BaseMekanismMaterial osmium;
+    public final BaseMekanismMaterial refinedGlowstone;
+    public final BaseMekanismMaterial refinedObsidian;
+    public final BaseMekanismMaterial steel;
 
     ToolsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();

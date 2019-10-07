@@ -8,7 +8,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.MekanismTools;
-import mekanism.tools.common.material.IMekanismMaterial;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemMekanismAxe extends AxeItem implements IHasRepairType {
 
-    public ItemMekanismAxe(IMekanismMaterial material) {
+    public ItemMekanismAxe(BaseMekanismMaterial material) {
         super(material, material.getAxeDamage(), material.getAxeAtkSpeed(), new Item.Properties().group(Mekanism.tabMekanism));
         setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getRegistryPrefix() + "_axe"));
     }

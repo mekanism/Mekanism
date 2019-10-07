@@ -1,7 +1,8 @@
-package mekanism.tools.common.material;
+package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismItem;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
@@ -9,7 +10,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class RefinedObsidianMaterialDefaults implements IMekanismMaterial {
+public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getSwordDamage() {
@@ -94,7 +95,7 @@ public class RefinedObsidianMaterialDefaults implements IMekanismMaterial {
     }
 
     @Override
-    public int getEnchantability() {
+    public int getCommonEnchantability() {
         //TODO: Used to be 50 for paxel
         return 40;
     }
@@ -148,7 +149,7 @@ public class RefinedObsidianMaterialDefaults implements IMekanismMaterial {
 
     @Nonnull
     @Override
-    public Ingredient getRepairMaterial() {
+    public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromItems(MekanismItem.REFINED_OBSIDIAN_INGOT);
     }
 

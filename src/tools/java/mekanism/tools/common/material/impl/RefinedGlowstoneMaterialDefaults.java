@@ -1,7 +1,8 @@
-package mekanism.tools.common.material;
+package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismItem;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
@@ -9,7 +10,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BronzeMaterialDefaults implements IMekanismMaterial {
+public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getSwordDamage() {
@@ -73,13 +74,13 @@ public class BronzeMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public int getMaxUses() {
-        //TODO: Used to be 1100 for paxel
-        return 800;
+        //TODO: Used to be 450 for paxel
+        return 300;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 16 for paxel
+        //TODO: Used to be 18 for paxel
         return 14;
     }
 
@@ -94,9 +95,9 @@ public class BronzeMaterialDefaults implements IMekanismMaterial {
     }
 
     @Override
-    public int getEnchantability() {
-        //TODO: Used to be 14 for paxel
-        return 10;
+    public int getCommonEnchantability() {
+        //TODO: Used to be 22 for paxel
+        return 18;
     }
 
     @Override
@@ -108,13 +109,13 @@ public class BronzeMaterialDefaults implements IMekanismMaterial {
     public int getDurability(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 455;
+                return 234;
             case LEGS:
-                return 525;
+                return 270;
             case CHEST:
-                return 560;
+                return 288;
             case HEAD:
-                return 385;
+                return 198;
         }
         return 0;
     }
@@ -123,11 +124,11 @@ public class BronzeMaterialDefaults implements IMekanismMaterial {
     public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 2;
+                return 3;
             case LEGS:
-                return 5;
-            case CHEST:
                 return 6;
+            case CHEST:
+                return 7;
             case HEAD:
                 return 3;
         }
@@ -137,7 +138,7 @@ public class BronzeMaterialDefaults implements IMekanismMaterial {
     @Nonnull
     @Override
     public String getRegistryPrefix() {
-        return "bronze";
+        return "refined_glowstone";
     }
 
     @Nonnull
@@ -148,8 +149,8 @@ public class BronzeMaterialDefaults implements IMekanismMaterial {
 
     @Nonnull
     @Override
-    public Ingredient getRepairMaterial() {
-        return Ingredient.fromItems(MekanismItem.BRONZE_INGOT);
+    public Ingredient getCommonRepairMaterial() {
+        return Ingredient.fromItems(MekanismItem.REFINED_GLOWSTONE_INGOT);
     }
 
     @Nonnull

@@ -1,15 +1,16 @@
-package mekanism.tools.common.material;
+package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
+import mekanism.common.MekanismItem;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
+public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getSwordDamage() {
@@ -33,7 +34,7 @@ public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public float getAxeDamage() {
-        return 6;
+        return 2;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public float getPaxelDamage() {
-        return 6;
+        return 4;
     }
 
     @Override
@@ -68,24 +69,24 @@ public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public int getPaxelHarvestLevel() {
-        return 2;
+        return 3;
     }
 
     @Override
     public int getMaxUses() {
-        //TODO: Used to be 250 for paxel
-        return 200;
+        //TODO: Used to be 1100 for paxel
+        return 800;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 6 for paxel
-        return 5;
+        //TODO: Used to be 16 for paxel
+        return 14;
     }
 
     @Override
     public float getAttackDamage() {
-        return 2;
+        return 6;
     }
 
     @Override
@@ -94,9 +95,9 @@ public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
     }
 
     @Override
-    public int getEnchantability() {
-        //TODO: Used to be 10 for paxel
-        return 8;
+    public int getCommonEnchantability() {
+        //TODO: Used to be 14 for paxel
+        return 10;
     }
 
     @Override
@@ -108,13 +109,13 @@ public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
     public int getDurability(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 169;
+                return 455;
             case LEGS:
-                return 195;
+                return 525;
             case CHEST:
-                return 208;
+                return 560;
             case HEAD:
-                return 143;
+                return 385;
         }
         return 0;
     }
@@ -125,11 +126,11 @@ public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
             case FEET:
                 return 2;
             case LEGS:
-                return 6;
-            case CHEST:
                 return 5;
+            case CHEST:
+                return 6;
             case HEAD:
-                return 2;
+                return 3;
         }
         return 0;
     }
@@ -137,19 +138,19 @@ public class LapisLazuliMaterialDefaults implements IMekanismMaterial {
     @Nonnull
     @Override
     public String getRegistryPrefix() {
-        return "lapis_lazuli";
+        return "bronze";
     }
 
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
+        return SoundEvents.ITEM_ARMOR_EQUIP_IRON;
     }
 
     @Nonnull
     @Override
-    public Ingredient getRepairMaterial() {
-        return Ingredient.fromItems(Items.LAPIS_LAZULI);
+    public Ingredient getCommonRepairMaterial() {
+        return Ingredient.fromItems(MekanismItem.BRONZE_INGOT);
     }
 
     @Nonnull

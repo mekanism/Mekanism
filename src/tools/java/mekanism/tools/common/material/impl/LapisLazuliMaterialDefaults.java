@@ -1,15 +1,16 @@
-package mekanism.tools.common.material;
+package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.common.MekanismItem;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
+public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getSwordDamage() {
@@ -33,7 +34,7 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public float getAxeDamage() {
-        return 2;
+        return 6;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public float getPaxelDamage() {
-        return 4;
+        return 6;
     }
 
     @Override
@@ -68,24 +69,24 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
 
     @Override
     public int getPaxelHarvestLevel() {
-        return 3;
+        return 2;
     }
 
     @Override
     public int getMaxUses() {
-        //TODO: Used to be 450 for paxel
-        return 300;
+        //TODO: Used to be 250 for paxel
+        return 200;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 18 for paxel
-        return 14;
+        //TODO: Used to be 6 for paxel
+        return 5;
     }
 
     @Override
     public float getAttackDamage() {
-        return 6;
+        return 2;
     }
 
     @Override
@@ -94,9 +95,9 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
     }
 
     @Override
-    public int getEnchantability() {
-        //TODO: Used to be 22 for paxel
-        return 18;
+    public int getCommonEnchantability() {
+        //TODO: Used to be 10 for paxel
+        return 8;
     }
 
     @Override
@@ -108,13 +109,13 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
     public int getDurability(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 234;
+                return 169;
             case LEGS:
-                return 270;
+                return 195;
             case CHEST:
-                return 288;
+                return 208;
             case HEAD:
-                return 198;
+                return 143;
         }
         return 0;
     }
@@ -123,13 +124,13 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
     public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 3;
+                return 2;
             case LEGS:
                 return 6;
             case CHEST:
-                return 7;
+                return 5;
             case HEAD:
-                return 3;
+                return 2;
         }
         return 0;
     }
@@ -137,19 +138,19 @@ public class RefinedGlowstoneMaterialDefaults implements IMekanismMaterial {
     @Nonnull
     @Override
     public String getRegistryPrefix() {
-        return "refined_glowstone";
+        return "lapis_lazuli";
     }
 
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_IRON;
+        return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
     }
 
     @Nonnull
     @Override
-    public Ingredient getRepairMaterial() {
-        return Ingredient.fromItems(MekanismItem.REFINED_GLOWSTONE_INGOT);
+    public Ingredient getCommonRepairMaterial() {
+        return Ingredient.fromItems(Items.LAPIS_LAZULI);
     }
 
     @Nonnull

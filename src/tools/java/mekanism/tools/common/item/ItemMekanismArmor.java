@@ -11,7 +11,7 @@ import mekanism.common.util.text.Translation;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItem;
-import mekanism.tools.common.material.IMekanismMaterial;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
 
-    public ItemMekanismArmor(IMekanismMaterial material, EquipmentSlotType slot) {
+    public ItemMekanismArmor(BaseMekanismMaterial material, EquipmentSlotType slot) {
         super(material, slot, new Item.Properties().group(Mekanism.tabMekanism));
         String name = null;
         if (slot == EquipmentSlotType.HEAD) {

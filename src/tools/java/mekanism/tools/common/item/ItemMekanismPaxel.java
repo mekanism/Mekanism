@@ -10,7 +10,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.MekanismTools;
-import mekanism.tools.common.material.IMekanismMaterial;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -38,7 +38,7 @@ import net.minecraftforge.common.ToolType;
 
 public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
 
-    public ItemMekanismPaxel(IMekanismMaterial material) {
+    public ItemMekanismPaxel(BaseMekanismMaterial material) {
         super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, new HashSet<>(), new Item.Properties().group(Mekanism.tabMekanism)
               .addToolType(ToolType.AXE, material.getPaxelHarvestLevel()).addToolType(ToolType.PICKAXE, material.getPaxelHarvestLevel())
               .addToolType(ToolType.SHOVEL, material.getPaxelHarvestLevel()));

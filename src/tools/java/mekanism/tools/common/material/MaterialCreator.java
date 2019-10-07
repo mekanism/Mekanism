@@ -10,10 +10,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class MaterialCreator implements IMekanismMaterial {
+public class MaterialCreator extends BaseMekanismMaterial {
 
     @Nonnull
-    private final IMekanismMaterial fallBack;
+    private final BaseMekanismMaterial fallBack;
 
     //TODO: Limits
     private final ConfigValue<Integer> swordDamage;
@@ -43,7 +43,7 @@ public class MaterialCreator implements IMekanismMaterial {
     private final ConfigValue<Integer> chestplateArmor;
     private final ConfigValue<Integer> helmetArmor;
 
-    public MaterialCreator(@Nonnull ForgeConfigSpec.Builder builder, @Nonnull IMekanismMaterial materialDefaults) {
+    public MaterialCreator(@Nonnull ForgeConfigSpec.Builder builder, @Nonnull BaseMekanismMaterial materialDefaults) {
         fallBack = materialDefaults;
         String toolKey = materialDefaults.getRegistryPrefix();
         builder.comment(" Material Settings for " + toolKey).push(toolKey);
@@ -81,7 +81,7 @@ public class MaterialCreator implements IMekanismMaterial {
         harvestLevel = builder.comment("Harvest level of " + toolKey + " tools.").worldRestart()
               .define(toolKey + "HarvestLevel", materialDefaults.getHarvestLevel());
         enchantability = builder.comment("Natural enchantability factor of " + toolKey + " items.").worldRestart()
-              .define(toolKey + "Enchantability", materialDefaults.getEnchantability());
+              .define(toolKey + "Enchantability", materialDefaults.getCommonEnchantability());
         toughness = FloatValue.of(builder.comment("Base armor toughness value of " + toolKey + " armor.").worldRestart()
               .define(toolKey + "Toughness", (double) materialDefaults.getToughness()));
         bootDurability = builder.comment("Maximum durability of " + toolKey + " boots.").worldRestart()
@@ -215,8 +215,8 @@ public class MaterialCreator implements IMekanismMaterial {
     }
 
     @Override
-    public int getEnchantability() {
-        return enchantability == null ? fallBack.getEnchantability() : enchantability.get();
+    public int getCommonEnchantability() {
+        return enchantability == null ? fallBack.getCommonEnchantability() : enchantability.get();
     }
 
     @Override
@@ -232,8 +232,8 @@ public class MaterialCreator implements IMekanismMaterial {
 
     @Nonnull
     @Override
-    public Ingredient getRepairMaterial() {
-        return fallBack.getRepairMaterial();
+    public Ingredient getCommonRepairMaterial() {
+        return fallBack.getCommonRepairMaterial();
     }
 
     @Nonnull
