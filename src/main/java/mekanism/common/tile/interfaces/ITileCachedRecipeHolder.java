@@ -11,6 +11,9 @@ import net.minecraft.world.World;
 
 public interface ITileCachedRecipeHolder<RECIPE extends MekanismRecipe> extends ICachedRecipeHolder<RECIPE> {
 
+    //Note: This is not called getWorld() as we have to implement this separately in the different TEs
+    // and otherwise it won't be found as the other getWorld will be reobfuscated making this one not be
+    // implemented. This implementation allows for wrapping around that getWorld properly in this case.
     @Nullable
     default World getTileWorld() {
         if (this instanceof TileEntity) {

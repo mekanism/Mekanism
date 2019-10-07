@@ -194,7 +194,7 @@ public class TierConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "mekanism-tiers.toml";
+        return "tiers.toml";
     }
 
     @Override

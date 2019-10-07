@@ -1,6 +1,7 @@
 package mekanism.tools.common.material;
 
 import javax.annotation.Nonnull;
+import mekanism.common.config.FloatValue;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
@@ -14,24 +15,25 @@ public class MaterialCreator implements IMekanismMaterial {
     @Nonnull
     private final IMekanismMaterial fallBack;
 
+    //TODO: Limits
     private final ConfigValue<Integer> swordDamage;
-    private final ConfigValue<Float> swordAtkSpeed;
-    private final ConfigValue<Float> shovelDamage;
-    private final ConfigValue<Float> shovelAtkSpeed;
-    private final ConfigValue<Float> axeDamage;
-    private final ConfigValue<Float> axeAtkSpeed;
+    private final FloatValue swordAtkSpeed;
+    private final FloatValue shovelDamage;
+    private final FloatValue shovelAtkSpeed;
+    private final FloatValue axeDamage;
+    private final FloatValue axeAtkSpeed;
     private final ConfigValue<Integer> pickaxeDamage;
-    private final ConfigValue<Float> pickaxeAtkSpeed;
-    private final ConfigValue<Float> hoeAtkSpeed;
+    private final FloatValue pickaxeAtkSpeed;
+    private final FloatValue hoeAtkSpeed;
     private final ConfigValue<Integer> paxelHarvestLevel;
-    private final ConfigValue<Float> paxelDamage;
-    private final ConfigValue<Float> paxelAtkSpeed;
+    private final FloatValue paxelDamage;
+    private final FloatValue paxelAtkSpeed;
     private final ConfigValue<Integer> toolMaxUses;
-    private final ConfigValue<Float> efficiency;
-    private final ConfigValue<Float> attackDamage;
+    private final FloatValue efficiency;
+    private final FloatValue attackDamage;
     private final ConfigValue<Integer> harvestLevel;
     private final ConfigValue<Integer> enchantability;
-    private final ConfigValue<Float> toughness;
+    private final FloatValue toughness;
     private final ConfigValue<Integer> bootDurability;
     private final ConfigValue<Integer> leggingDurability;
     private final ConfigValue<Integer> chestplateDurability;
@@ -48,40 +50,40 @@ public class MaterialCreator implements IMekanismMaterial {
 
         swordDamage = builder.comment("Attack damage modifier of " + toolKey + " swords.").worldRestart()
               .define(toolKey + "SwordDamage", materialDefaults.getSwordDamage());
-        swordAtkSpeed = builder.comment("Attack speed of " + toolKey + " swords.").worldRestart()
-              .define(toolKey + "SwordAtkSpeed", materialDefaults.getSwordAtkSpeed());
-        shovelDamage = builder.comment("Attack damage modifier of " + toolKey + " shovels.").worldRestart()
-              .define(toolKey + "ShovelDamage", materialDefaults.getShovelDamage());
-        shovelAtkSpeed = builder.comment("Attack speed of " + toolKey + " shovels.").worldRestart()
-              .define(toolKey + "ShovelAtkSpeed", materialDefaults.getShovelAtkSpeed());
-        axeDamage = builder.comment("Attack damage modifier of " + toolKey + " axes.").worldRestart()
-              .define(toolKey + "AxeDamage", materialDefaults.getAxeDamage());
-        axeAtkSpeed = builder.comment("Attack speed of " + toolKey + " axes.").worldRestart()
-              .define(toolKey + "AxeAtkSpeed", materialDefaults.getAxeAtkSpeed());
+        swordAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " swords.").worldRestart()
+              .define(toolKey + "SwordAtkSpeed", (double) materialDefaults.getSwordAtkSpeed()));
+        shovelDamage = FloatValue.of(builder.comment("Attack damage modifier of " + toolKey + " shovels.").worldRestart()
+              .define(toolKey + "ShovelDamage", (double) materialDefaults.getShovelDamage()));
+        shovelAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " shovels.").worldRestart()
+              .define(toolKey + "ShovelAtkSpeed", (double) materialDefaults.getShovelAtkSpeed()));
+        axeDamage = FloatValue.of(builder.comment("Attack damage modifier of " + toolKey + " axes.").worldRestart()
+              .define(toolKey + "AxeDamage", (double) materialDefaults.getAxeDamage()));
+        axeAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " axes.").worldRestart()
+              .define(toolKey + "AxeAtkSpeed", (double) materialDefaults.getAxeAtkSpeed()));
         pickaxeDamage = builder.comment("Attack damage modifier of " + toolKey + " pickaxes.").worldRestart()
               .define(toolKey + "PickaxeDamage", materialDefaults.getPickaxeDamage());
-        pickaxeAtkSpeed = builder.comment("Attack speed of " + toolKey + " pickaxes.").worldRestart()
-              .define(toolKey + "PickaxeAtkSpeed", materialDefaults.getPickaxeAtkSpeed());
-        hoeAtkSpeed = builder.comment("Attack speed of " + toolKey + " hoes.").worldRestart()
-              .define(toolKey + "HoeAtkSpeed", materialDefaults.getHoeAtkSpeed());
+        pickaxeAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " pickaxes.").worldRestart()
+              .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
+        hoeAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " hoes.").worldRestart()
+              .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
         paxelHarvestLevel = builder.comment("Harvest level of " + toolKey + " paxels.").worldRestart()
               .define(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel());
-        paxelDamage = builder.comment("Attack damage modifier of " + toolKey + " paxels.").worldRestart()
-              .define(toolKey + "PaxelDamage", materialDefaults.getPaxelDamage());
-        paxelAtkSpeed = builder.comment("Attack speed of " + toolKey + " paxels.").worldRestart()
-              .define(toolKey + "PaxelAtkSpeed", materialDefaults.getPaxelAtkSpeed());
+        paxelDamage = FloatValue.of(builder.comment("Attack damage modifier of " + toolKey + " paxels.").worldRestart()
+              .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage()));
+        paxelAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " paxels.").worldRestart()
+              .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
         toolMaxUses = builder.comment("Maximum durability of " + toolKey + " tools.").worldRestart()
               .define(toolKey + "ToolMaxUses", materialDefaults.getMaxUses());
-        efficiency = builder.comment("Efficiency of " + toolKey + " tools.").worldRestart()
-              .define(toolKey + "Efficiency", materialDefaults.getEfficiency());
-        attackDamage = builder.comment("Base attack damage of " + toolKey + " items.").worldRestart()
-              .define(toolKey + "AttackDamage", materialDefaults.getAttackDamage());
+        efficiency = FloatValue.of(builder.comment("Efficiency of " + toolKey + " tools.").worldRestart()
+              .define(toolKey + "Efficiency", (double) materialDefaults.getEfficiency()));
+        attackDamage = FloatValue.of(builder.comment("Base attack damage of " + toolKey + " items.").worldRestart()
+              .define(toolKey + "AttackDamage", (double) materialDefaults.getAttackDamage()));
         harvestLevel = builder.comment("Harvest level of " + toolKey + " tools.").worldRestart()
               .define(toolKey + "HarvestLevel", materialDefaults.getHarvestLevel());
         enchantability = builder.comment("Natural enchantability factor of " + toolKey + " items.").worldRestart()
               .define(toolKey + "Enchantability", materialDefaults.getEnchantability());
-        toughness = builder.comment("Base armor toughness value of " + toolKey + " armor.").worldRestart()
-              .define(toolKey + "Toughness", materialDefaults.getToughness());
+        toughness = FloatValue.of(builder.comment("Base armor toughness value of " + toolKey + " armor.").worldRestart()
+              .define(toolKey + "Toughness", (double) materialDefaults.getToughness()));
         bootDurability = builder.comment("Maximum durability of " + toolKey + " boots.").worldRestart()
               .define(toolKey + "BootDurability", materialDefaults.getDurability(EquipmentSlotType.FEET));
         leggingDurability = builder.comment("Maximum durability of " + toolKey + " leggings.").worldRestart()

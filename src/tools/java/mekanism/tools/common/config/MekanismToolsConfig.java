@@ -1,6 +1,6 @@
 package mekanism.tools.common.config;
 
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.MekanismConfigHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismToolsConfig {
@@ -8,10 +8,10 @@ public class MekanismToolsConfig {
     public static final ToolsConfig tools = new ToolsConfig();
 
     public static void loadFromFiles() {
-        MekanismConfig.load(tools);
+        MekanismConfigHelper.load(tools);
     }
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        modLoadingContext.registerConfig(tools.getConfigType(), tools.getConfigSpec());
+        MekanismConfigHelper.registerConfig(modLoadingContext, tools);
     }
 }

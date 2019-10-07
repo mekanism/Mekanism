@@ -72,7 +72,7 @@ public class StorageConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "mekanism-machine-storage.toml";
+        return "machine-storage.toml";
     }
 
     @Override

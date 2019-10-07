@@ -83,7 +83,7 @@ public class UsageConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "mekanism-machine-usage.toml";
+        return "machine-usage.toml";
     }
 
     @Override

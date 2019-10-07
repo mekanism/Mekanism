@@ -1,6 +1,6 @@
 package mekanism.additions.common.config;
 
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.MekanismConfigHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismAdditionsConfig {
@@ -8,10 +8,10 @@ public class MekanismAdditionsConfig {
     public static final AdditionsConfig additions = new AdditionsConfig();
 
     public static void loadFromFiles() {
-        MekanismConfig.load(additions);
+        MekanismConfigHelper.load(additions);
     }
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        modLoadingContext.registerConfig(additions.getConfigType(), additions.getConfigSpec());
+        MekanismConfigHelper.registerConfig(modLoadingContext, additions);
     }
 }

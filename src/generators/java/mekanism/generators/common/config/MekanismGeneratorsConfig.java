@@ -1,6 +1,6 @@
 package mekanism.generators.common.config;
 
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.MekanismConfigHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismGeneratorsConfig {
@@ -8,10 +8,10 @@ public class MekanismGeneratorsConfig {
     public static final GeneratorsConfig generators = new GeneratorsConfig();
 
     public static void loadFromFiles() {
-        MekanismConfig.load(generators);
+        MekanismConfigHelper.load(generators);
     }
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        modLoadingContext.registerConfig(generators.getConfigType(), generators.getConfigSpec());
+        MekanismConfigHelper.registerConfig(modLoadingContext, generators);
     }
 }

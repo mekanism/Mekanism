@@ -8,6 +8,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class GeneratorsConfig implements IMekanismConfig {
@@ -18,20 +19,20 @@ public class GeneratorsConfig implements IMekanismConfig {
 
     private final ForgeConfigSpec configSpec;
 
-    //TODO: Limits
-    public final ConfigValue<Float> advancedSolarGeneration;
-    public final ConfigValue<Double> bioGeneration;
-    public final ConfigValue<Double> heatGeneration;
-    public final ConfigValue<Double> heatGenerationLava;
-    public final ConfigValue<Double> heatGenerationNether;
-    public final ConfigValue<Double> solarGeneration;
+    //TODO: Limits on remaining things?
+    public final DoubleValue advancedSolarGeneration;
+    public final DoubleValue bioGeneration;
+    public final DoubleValue heatGeneration;
+    public final DoubleValue heatGenerationLava;
+    public final DoubleValue heatGenerationNether;
+    public final DoubleValue solarGeneration;
     public final ConfigValue<Integer> turbineBladesPerCoil;
     public final ConfigValue<Double> turbineVentGasFlow;
     public final ConfigValue<Double> turbineDisperserGasFlow;
     public final ConfigValue<Integer> condenserRate;
-    public final ConfigValue<Double> energyPerFusionFuel;
-    public final ConfigValue<Double> windGenerationMin;
-    public final ConfigValue<Double> windGenerationMax;
+    public final DoubleValue energyPerFusionFuel;
+    public final DoubleValue windGenerationMin;
+    public final DoubleValue windGenerationMax;
     public final ConfigValue<Integer> windGenerationMinY;
     public final ConfigValue<Integer> windGenerationMaxY;
     public final ConfigValue<List<? extends String>> windGenerationDimBlacklist;
@@ -40,19 +41,22 @@ public class GeneratorsConfig implements IMekanismConfig {
         Builder builder = new Builder();
         builder.comment("Mekanism Generators Config");
 
-        bioGeneration = builder.comment("Amount of energy in Joules the Bio Generator produces per tick.").define("bioGeneration", 350D);
-        energyPerFusionFuel = builder.comment("Affects the Injection Rate, Max Temp, and Ignition Temp.").define("energyPerFusionFuel", 5E6D);
+        bioGeneration = builder.comment("Amount of energy in Joules the Bio Generator produces per tick.")
+              .defineInRange("bioGeneration", 350, 0, Double.MAX_VALUE);
+        energyPerFusionFuel = builder.comment("Affects the Injection Rate, Max Temp, and Ignition Temp.")
+              .defineInRange("energyPerFusionFuel", 5E6, 0, Double.MAX_VALUE);
         solarGeneration = builder.comment("Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .define("solarGeneration", 50D);
+              .defineInRange("solarGeneration", 50, 0, Double.MAX_VALUE);
         advancedSolarGeneration = builder.comment("Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .define("advancedSolarGeneration", 300F);
+              .defineInRange("advancedSolarGeneration", 300, 0, Double.MAX_VALUE);
 
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
         heatGeneration = builder.comment("Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether")
-              .define("heatGeneration", 150D);
-        heatGenerationLava = builder.comment("Multiplier of effectiveness of Lava in the Heat Generator.").define("heatGenerationLava", 5D);
+              .defineInRange("heatGeneration", 150, 0, Double.MAX_VALUE);
+        heatGenerationLava = builder.comment("Multiplier of effectiveness of Lava in the Heat Generator.")
+              .defineInRange("heatGenerationLava", 5, 0, Double.MAX_VALUE);
         heatGenerationNether = builder.comment("Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.")
-              .define("heatGenerationNether", 100D);
+              .defineInRange("heatGenerationNether", 100, 0, Double.MAX_VALUE);
         builder.pop();
 
         builder.comment("Turbine Settings").push(TURBINE_CATEGORY);
@@ -63,8 +67,11 @@ public class GeneratorsConfig implements IMekanismConfig {
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
-        windGenerationMin = builder.comment("Minimum base generation value of the Wind Generator.").define("windGenerationMin", 60D);
-        windGenerationMax = builder.comment("Maximum base generation value of the Wind Generator.").define("windGenerationMax", 480D);
+        windGenerationMin = builder.comment("Minimum base generation value of the Wind Generator.")
+              .defineInRange("windGenerationMin", 60, 0, Double.MAX_VALUE);
+        //TODO: Should this be capped by the min generator?
+        windGenerationMax = builder.comment("Maximum base generation value of the Wind Generator.")
+              .defineInRange("windGenerationMax", 480, 0, Double.MAX_VALUE);
         windGenerationMinY = builder.comment("The minimum Y value that affects the Wind Generators Power generation.").define("windGenerationMinY", 24);
         //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
         windGenerationMaxY = builder.comment("The maximum Y value that affects the Wind Generators Power generation.").define("windGenerationMaxY", 255,
@@ -89,7 +96,7 @@ public class GeneratorsConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "mekanism-generators.toml";
+        return "generators.toml";
     }
 
     @Override

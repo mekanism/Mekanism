@@ -34,7 +34,7 @@ public class AdditionsConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "mekanism-additions.toml";
+        return "additions.toml";
     }
 
     @Override

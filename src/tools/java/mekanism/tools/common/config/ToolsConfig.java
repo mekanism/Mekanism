@@ -46,7 +46,7 @@ public class ToolsConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "mekanism-tools.toml";
+        return "tools.toml";
     }
 
     @Override

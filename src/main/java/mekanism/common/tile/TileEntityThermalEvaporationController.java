@@ -237,8 +237,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (Math.abs(temperature - base) < 0.001) {
             temperature = base;
         }
-        //TODO: 1.14 fix float config handling
-        float incr = (float) Math.sqrt(Math.abs(temperature - base));// * MekanismConfig.general.evaporationHeatDissipation.get();
+        float incr = (float) Math.sqrt(Math.abs(temperature - base)) * MekanismConfig.general.evaporationHeatDissipation.get();
 
         if (temperature > base) {
             incr = -incr;
