@@ -76,8 +76,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
             ChargeUtils.discharge(4, this);
 
             if (mode == 0) {
-                TileUtils.receiveGas(getInventory().get(1), gasTank);
-                if (FluidContainerUtils.isFluidContainer(getInventory().get(2))) {
+                TileUtils.receiveGas(getStackInSlot(1), gasTank);
+                if (FluidContainerUtils.isFluidContainer(getStackInSlot(2))) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
                 }
 
@@ -96,10 +96,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     setActive(false);
                 }
             } else if (mode == 1) {
-                TileUtils.drawGas(getInventory().get(0), gasTank);
+                TileUtils.drawGas(getStackInSlot(0), gasTank);
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
 
-                if (FluidContainerUtils.isFluidContainer(getInventory().get(2))) {
+                if (FluidContainerUtils.isFluidContainer(getStackInSlot(2))) {
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
                 }
 

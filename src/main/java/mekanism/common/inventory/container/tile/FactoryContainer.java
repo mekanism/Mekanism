@@ -171,7 +171,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
 
         @Override
         public boolean isItemValid(ItemStack stack) {
-            ItemStack outputSlotStack = tile.getInventory().get(getOutputSlotIndex(this.processNumber));
+            ItemStack outputSlotStack = tile.getStackInSlot(getOutputSlotIndex(this.processNumber));
             return tile.inputProducesOutput(getInputSlotIndex(this.processNumber), stack, outputSlotStack, false) && super.isItemValid(stack);
         }
     }

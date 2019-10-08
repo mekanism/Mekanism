@@ -85,8 +85,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            TileUtils.drawGas(getInventory().get(0), gasTank, ChemicalAction.get(tier != GasTankTier.CREATIVE));
-            if (TileUtils.receiveGas(getInventory().get(1), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
+            TileUtils.drawGas(getStackInSlot(0), gasTank, ChemicalAction.get(tier != GasTankTier.CREATIVE));
+            if (TileUtils.receiveGas(getStackInSlot(1), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
                 gasTank.setStack(new GasStack(gasTank.getStack(), Integer.MAX_VALUE));
             }
             if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {

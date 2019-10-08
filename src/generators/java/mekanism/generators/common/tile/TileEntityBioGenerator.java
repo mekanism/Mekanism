@@ -50,24 +50,26 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     public void onUpdate() {
         super.onUpdate();
 
-        if (!getInventory().get(0).isEmpty()) {
+        if (!getStackInSlot(0).isEmpty()) {
             ChargeUtils.charge(1, this);
-            FluidStack fluidStack = FluidUtil.getFluidContained(getInventory().get(0)).orElse(FluidStack.EMPTY);
+            FluidStack fluidStack = FluidUtil.getFluidContained(getStackInSlot(0)).orElse(FluidStack.EMPTY);
             if (fluidStack.isEmpty()) {
-                int fuel = getFuel(getInventory().get(0));
+                int fuel = getFuel(getStackInSlot(0));
                 if (fuel > 0) {
                     int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
                     if (fuel <= fuelNeeded) {
                         bioFuelSlot.fluidStored += fuel;
-                        if (!getInventory().get(0).getItem().getContainerItem(getInventory().get(0)).isEmpty()) {
-                            getInventory().set(0, getInventory().get(0).getItem().getContainerItem(getInventory().get(0)));
+                        ItemStack stack = getStackInSlot(0);
+                        ItemStack containerItem = stack.getItem().getContainerItem(stack);
+                        if (!containerItem.isEmpty()) {
+                            getInventory().set(0, containerItem);
                         } else {
-                            getInventory().get(0).shrink(1);
+                            stack.shrink(1);
                         }
                     }
                 }
             } else if (fluidStack.getFluid().getTags().contains(GeneratorTags.BIO_ETHANOL)) {
-                FluidUtil.getFluidHandler(getInventory().get(0)).ifPresent(handler -> {
+                FluidUtil.getFluidHandler(getStackInSlot(0)).ifPresent(handler -> {
                     FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, FluidAction.EXECUTE);
                     if (!drained.isEmpty()) {
                         bioFuelSlot.fluidStored += drained.getAmount();

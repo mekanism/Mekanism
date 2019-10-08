@@ -235,7 +235,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         //Upgrades inventory
         ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < getInventory().size(); slotCount++) {
-            ItemStack stackInSlot = getInventory().get(slotCount);
+            ItemStack stackInSlot = getStackInSlot(slotCount);
             if (!stackInSlot.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.putByte("Slot", (byte) slotCount);

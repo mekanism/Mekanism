@@ -84,7 +84,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Override
     protected void handleSecondaryFuel() {
-        ItemStack extra = getInventory().get(EXTRA_SLOT_ID);
+        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
         if (!extra.isEmpty()) {
             InfusionStack pendingInfusionInput = InfuseRegistry.getObject(extra);
             if (!pendingInfusionInput.isEmpty()) {

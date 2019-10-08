@@ -111,7 +111,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     protected void handleSecondaryFuel() {
-        ItemStack extra = getInventory().get(EXTRA_SLOT_ID);
+        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
         if (!extra.isEmpty() && gasTank.getNeeded() > 0) {
             GasStack gasStack = GasConversionHandler.getItemGas(extra, gasTank, this::isValidGas);
             if (!gasStack.isEmpty()) {

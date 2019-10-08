@@ -83,7 +83,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(2, this);
-            if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
+            if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
                     @Override
                     public boolean isValid(@Nonnull Fluid f) {

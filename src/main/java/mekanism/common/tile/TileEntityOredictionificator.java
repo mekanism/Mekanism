@@ -67,11 +67,11 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             }
 
             didProcess = false;
-            ItemStack inputStack = getInventory().get(0);
+            ItemStack inputStack = getStackInSlot(0);
             if (MekanismUtils.canFunction(this) && !inputStack.isEmpty() && getValidName(inputStack) != null) {
                 ItemStack result = getResult(inputStack);
                 if (!result.isEmpty()) {
-                    ItemStack outputStack = getInventory().get(1);
+                    ItemStack outputStack = getStackInSlot(1);
                     if (outputStack.isEmpty()) {
                         inputStack.shrink(1);
                         if (inputStack.getCount() <= 0) {

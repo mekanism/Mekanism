@@ -91,7 +91,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
                 fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
             }
-            TileUtils.drawGas(getInventory().get(2), outputTank);
+            TileUtils.drawGas(getStackInSlot(2), outputTank);
             double prev = getEnergy();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

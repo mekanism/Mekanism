@@ -67,19 +67,21 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
         if (!isRemote()) {
             ChargeUtils.charge(1, this);
-            if (!getInventory().get(0).isEmpty()) {
-                if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
+            ItemStack stack = getStackInSlot(0);
+            if (!stack.isEmpty()) {
+                if (FluidContainerUtils.isFluidContainer(stack)) {
                     lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(Fluids.LAVA)), FluidAction.EXECUTE);
                 } else {
-                    int fuel = getFuel(getInventory().get(0));
+                    int fuel = getFuel(stack);
                     if (fuel > 0) {
                         int fuelNeeded = lavaTank.getCapacity() - lavaTank.getFluid().getAmount();
                         if (fuel <= fuelNeeded) {
                             lavaTank.fill(new FluidStack(Fluids.LAVA, fuel), FluidAction.EXECUTE);
-                            if (!getInventory().get(0).getItem().getContainerItem(getInventory().get(0)).isEmpty()) {
-                                getInventory().set(0, getInventory().get(0).getItem().getContainerItem(getInventory().get(0)));
+                            ItemStack containerItem = stack.getItem().getContainerItem(stack);
+                            if (!containerItem.isEmpty()) {
+                                getInventory().set(0, containerItem);
                             } else {
-                                getInventory().get(0).shrink(1);
+                                stack.shrink(1);
                             }
                         }
                     }

@@ -42,12 +42,13 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
                 burnTime--;
                 burning = true;
             } else {
-                if (!getInventory().get(0).isEmpty()) {
-                    maxBurnTime = burnTime = getInventory().get(0).getBurnTime() / 2;
+                ItemStack stack = getStackInSlot(0);
+                if (!stack.isEmpty()) {
+                    maxBurnTime = burnTime = stack.getBurnTime() / 2;
                     if (burnTime > 0) {
-                        ItemStack preShrunk = getInventory().get(0).copy();
-                        getInventory().get(0).shrink(1);
-                        if (getInventory().get(0).getCount() == 0) {
+                        ItemStack preShrunk = stack.copy();
+                        stack.shrink(1);
+                        if (stack.getCount() == 0) {
                             getInventory().set(0, preShrunk.getItem().getContainerItem(preShrunk));
                         }
                         burning = true;

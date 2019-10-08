@@ -76,7 +76,7 @@ public class FusionReactor {
 
     public boolean hasHohlraum() {
         if (controller != null) {
-            ItemStack hohlraum = controller.getInventory().get(0);
+            ItemStack hohlraum = controller.getStackInSlot(0);
             if (!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
                 return !gasStack.isEmpty() && gasStack.getType().isIn(MekanismTags.FUSION_FUEL) && gasStack.getAmount() == ItemHohlraum.MAX_GAS;
@@ -128,7 +128,7 @@ public class FusionReactor {
     }
 
     public void vaporiseHohlraum() {
-        getFuelTank().fill(((ItemHohlraum) controller.getInventory().get(0).getItem()).getGas(controller.getInventory().get(0)), ChemicalAction.EXECUTE);
+        getFuelTank().fill(((ItemHohlraum) controller.getStackInSlot(0).getItem()).getGas(controller.getStackInSlot(0)), ChemicalAction.EXECUTE);
         lastPlasmaTemperature = plasmaTemperature;
         controller.getInventory().set(0, ItemStack.EMPTY);
         burning = true;

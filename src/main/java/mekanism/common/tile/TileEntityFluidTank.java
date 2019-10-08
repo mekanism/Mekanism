@@ -108,7 +108,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             }
 
             prevAmount = fluidTank.getFluidAmount();
-            if (!getInventory().get(0).isEmpty()) {
+            if (!getStackInSlot(0).isEmpty()) {
                 manageInventory();
             }
             if (getActive()) {
@@ -138,7 +138,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     private void manageInventory() {
-        if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
+        if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
             FluidStack ret = FluidContainerUtils.handleContainerItem(this, getInventory(), editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 
             if (!ret.isEmpty()) {

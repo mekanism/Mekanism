@@ -140,7 +140,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         if (tileEntity.formula != null) {
             return false;
         }
-        ItemStack formulaStack = tileEntity.getInventory().get(TileEntityFormulaicAssemblicator.SLOT_FORMULA);
+        ItemStack formulaStack = tileEntity.getStackInSlot(TileEntityFormulaicAssemblicator.SLOT_FORMULA);
         return !formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
     }
 

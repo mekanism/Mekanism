@@ -152,7 +152,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     }
 
     public void handleSecondaryFuel() {
-        ItemStack itemStack = getInventory().get(1);
+        ItemStack itemStack = getStackInSlot(1);
         int needed = gasTank.getNeeded();
         if (!itemStack.isEmpty() && needed > 0) {
             GasStack gasStack = getItemGas(itemStack);

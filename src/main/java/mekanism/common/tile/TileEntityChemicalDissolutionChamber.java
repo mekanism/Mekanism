@@ -73,7 +73,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(3, this);
-            ItemStack itemStack = getInventory().get(0);
+            ItemStack itemStack = getStackInSlot(0);
             if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
                 //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though
                 IGasItem item = (IGasItem) itemStack.getItem();
@@ -86,7 +86,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
                     }
                 }
             }
-            TileUtils.drawGas(getInventory().get(2), outputTank);
+            TileUtils.drawGas(getStackInSlot(2), outputTank);
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

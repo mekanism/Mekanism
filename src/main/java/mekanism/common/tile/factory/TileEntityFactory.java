@@ -261,11 +261,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
             handleSecondaryFuel();
             sortInventory();
-            if (!getInventory().get(2).isEmpty() && getInventory().get(3).isEmpty()) {
+            if (!getStackInSlot(2).isEmpty() && getStackInSlot(3).isEmpty()) {
                 RecipeType toSet = null;
 
                 for (RecipeType type : RecipeType.values()) {
-                    if (ItemHandlerHelper.canItemStacksStack(getInventory().get(2), type.getStack())) {
+                    if (ItemHandlerHelper.canItemStacksStack(getStackInSlot(2), type.getStack())) {
                         toSet = type;
                         break;
                     }
@@ -279,7 +279,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
                         upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
                         upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-                        upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(getInventory().get(2)));
+                        upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(getStackInSlot(2)));
 
                         getInventory().set(2, ItemStack.EMPTY);
                         getInventory().set(3, returnStack);
@@ -373,18 +373,18 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
             for (int i = 0; i < inputSlots.length; i++) {
                 int slotID = inputSlots[i];
-                ItemStack stack = getInventory().get(slotID);
+                ItemStack stack = getStackInSlot(slotID);
                 int count = stack.getCount();
-                ItemStack output = getInventory().get(tier.processes + slotID);
+                ItemStack output = getStackInSlot(tier.processes + slotID);
                 for (int j = i + 1; j < inputSlots.length; j++) {
                     int checkSlotID = inputSlots[j];
-                    ItemStack checkStack = getInventory().get(checkSlotID);
+                    ItemStack checkStack = getStackInSlot(checkSlotID);
                     if (Math.abs(count - checkStack.getCount()) < 2 || !InventoryUtils.areItemsStackable(stack, checkStack)) {
                         continue;
                     }
                     //Output/Input will not match; Only check if the input spot is empty otherwise assume it works
                     if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output, true) ||
-                        checkStack.isEmpty() && !inputProducesOutput(slotID, stack, getInventory().get(tier.processes + checkSlotID), true)) {
+                        checkStack.isEmpty() && !inputProducesOutput(slotID, stack, getStackInSlot(tier.processes + checkSlotID), true)) {
                         continue;
                     }
 
@@ -464,7 +464,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         if (slotID == ENERGY_SLOT_ID) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (isInputSlot(slotID)) {
-            return inputProducesOutput(slotID, itemstack, getInventory().get(tier.processes + slotID), false);
+            return inputProducesOutput(slotID, itemstack, getStackInSlot(tier.processes + slotID), false);
         }
         //TODO: Only allow inserting into extra slot if it can go in
         return super.canInsertItem(slotID, itemstack, side);

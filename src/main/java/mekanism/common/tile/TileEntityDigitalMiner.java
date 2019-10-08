@@ -346,7 +346,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             return ItemStack.EMPTY;
         }
         for (int i = 0; i < 27; i++) {
-            ItemStack stack = getInventory().get(i);
+            ItemStack stack = getStackInSlot(i);
             if (!stack.isEmpty() && stack.isItemEqual(filter.replaceStack)) {
                 stack.shrink(1);
                 return StackUtils.size(filter.replaceStack, 1);
@@ -374,7 +374,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public TransitRequest getEjectItemMap() {
         TransitRequest request = new TransitRequest();
         for (int i = 27 - 1; i >= 0; i--) {
-            ItemStack stack = getInventory().get(i);
+            ItemStack stack = getStackInSlot(i);
             if (!stack.isEmpty() && !isReplaceStack(stack)) {
                 request.addItem(stack, i);
             }
@@ -432,7 +432,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
         for (ItemStack stack : stacks) {
             for (int i = 0; i < 27; i++) {
-                ItemStack currentStack = getInventory().get(i);
+                ItemStack currentStack = getStackInSlot(i);
                 if (currentStack.isEmpty()) {
                     getInventory().set(i, stack);
                     break;

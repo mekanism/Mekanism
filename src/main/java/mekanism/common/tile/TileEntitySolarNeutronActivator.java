@@ -98,8 +98,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
                 recheckSettings();
             }
 
-            TileUtils.receiveGas(getInventory().get(0), inputTank);
-            TileUtils.drawGas(getInventory().get(1), outputTank);
+            TileUtils.receiveGas(getStackInSlot(0), inputTank);
+            TileUtils.drawGas(getStackInSlot(1), outputTank);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

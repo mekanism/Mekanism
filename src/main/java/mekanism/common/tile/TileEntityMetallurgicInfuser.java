@@ -83,7 +83,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(4, this);
-            ItemStack infuseInput = getInventory().get(1);
+            ItemStack infuseInput = getStackInSlot(1);
             if (!infuseInput.isEmpty()) {
                 InfusionStack pendingInfusionInput = InfuseRegistry.getObject(infuseInput);
                 if (!pendingInfusionInput.isEmpty()) {

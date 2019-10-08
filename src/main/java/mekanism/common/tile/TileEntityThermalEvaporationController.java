@@ -217,13 +217,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private void manageBuckets() {
         if (!outputTank.getFluid().isEmpty()) {
-            if (FluidContainerUtils.isFluidContainer(getInventory().get(2))) {
+            if (FluidContainerUtils.isFluidContainer(getStackInSlot(2))) {
                 FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
             }
         }
 
         if (structured) {
-            if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
+            if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
                     @Override
                     public boolean isValid(@Nonnull Fluid f) {

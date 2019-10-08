@@ -46,7 +46,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public void onUpdate() {
         if (!isRemote()) {
             if (ownerUUID != null && frequency != null) {
-                ItemStack itemStack = getInventory().get(0);
+                ItemStack itemStack = getStackInSlot(0);
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) itemStack.getItem();
                     if (item.getOwnerUUID(itemStack) != null) {
@@ -59,7 +59,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                     }
                 }
 
-                ItemStack stack = getInventory().get(1);
+                ItemStack stack = getStackInSlot(1);
                 if (!stack.isEmpty() && stack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) stack.getItem();
                     UUID stackOwner = item.getOwnerUUID(stack);

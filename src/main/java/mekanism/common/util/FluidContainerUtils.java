@@ -37,7 +37,7 @@ public final class FluidContainerUtils {
     }
 
     public static FluidStack extractFluid(FluidTank tileTank, TileEntityMekanism tile, int slotID, FluidChecker checker) {
-        return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(tile.getInventory().get(slotID))).getIfPresent(handler -> {
+        return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(tile.getStackInSlot(slotID))).getIfPresent(handler -> {
             FluidStack ret = extractFluid(tileTank.getCapacity() - tileTank.getFluidAmount(), handler, checker);
             tile.getInventory().set(slotID, handler.getContainer());
             return ret;

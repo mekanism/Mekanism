@@ -132,11 +132,11 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
         outer:
         for (ItemStack drop : drops) {
             for (int i = 0; i < getInventory().size(); i++) {
-                if (getInventory().get(i).isEmpty()) {
+                if (getStackInSlot(i).isEmpty()) {
                     getInventory().set(i, drop);
                     continue outer;
                 }
-                ItemStack slot = getInventory().get(i);
+                ItemStack slot = getStackInSlot(i);
                 if (StackUtils.equalsWildcardWithNBT(slot, drop)) {
                     int change = Math.min(drop.getCount(), slot.getMaxStackSize() - slot.getCount());
                     slot.grow(change);
