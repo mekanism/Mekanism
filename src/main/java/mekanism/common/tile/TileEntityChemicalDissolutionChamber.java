@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -14,7 +15,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
@@ -53,9 +56,17 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public int injectUsageThisTick;
     public int gasOutput = 256;
 
+    private final IOutputHandler<@NonNull GasStack> outputHandler;
+    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
+    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, 4, BASE_TICKS_REQUIRED);
         upgradeComponent.setSupported(Upgrade.GAS);
+
+        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        gasInputHandler = InputHelper.getInputHandler(injectTank);
+        outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
     @Override
@@ -131,11 +142,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Nullable
     @Override
     public ItemStackGasToGasRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(0);
+        ItemStack stack = itemInputHandler.getInput();
         if (stack.isEmpty()) {
             return null;
         }
-        GasStack gasStack = injectTank.getStack();
+        GasStack gasStack = gasInputHandler.getInput();
         if (gasStack.isEmpty()) {
             return null;
         }
@@ -145,8 +156,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Nullable
     @Override
     public CachedRecipe<ItemStackGasToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToGasCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(injectTank), () -> injectUsageThisTick,
-              OutputHelper.getOutputHandler(outputTank))
+        return new ItemStackGasToGasCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> injectUsageThisTick, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

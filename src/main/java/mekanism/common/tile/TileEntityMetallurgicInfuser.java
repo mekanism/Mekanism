@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -12,7 +13,9 @@ import mekanism.api.infuse.InfusionTank;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
@@ -52,6 +55,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
+    private final IOutputHandler<@NonNull ItemStack> outputHandler;
+    private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
+    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
+
     public TileEntityMetallurgicInfuser() {
         super(MekanismBlock.METALLURGIC_INFUSER, 0, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
@@ -66,6 +73,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+
+        infusionInputHandler = InputHelper.getInputHandler(infusionTank);
+        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 2);
+        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 3);
     }
 
     @Override
@@ -208,15 +219,21 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(2);
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(infusionTank.getStack(), stack));
+        ItemStack stack = itemInputHandler.getInput();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        InfusionStack infusionStack = infusionInputHandler.getInput();
+        if (infusionStack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(infusionStack, stack));
     }
 
     @Nullable
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new MetallurgicInfuserCachedRecipe(recipe, InputHelper.getInputHandler(infusionTank), InputHelper.getInputHandler(inventory, 2),
-              OutputHelper.getOutputHandler(inventory, 3))
+        return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, itemInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -15,7 +16,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
@@ -53,8 +56,15 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     public double clientEnergyUsed;
 
+    private final IOutputHandler<@NonNull GasStack> outputHandler;
+    private final IInputHandler<@NonNull GasStack> leftInputHandler;
+    private final IInputHandler<@NonNull GasStack> rightInputHandler;
+
     public TileEntityChemicalInfuser() {
         super(MekanismBlock.CHEMICAL_INFUSER, 4);
+        leftInputHandler = InputHelper.getInputHandler(leftTank);
+        rightInputHandler = InputHelper.getInputHandler(rightTank);
+        outputHandler = OutputHelper.getOutputHandler(centerTank);
     }
 
     @Override
@@ -90,16 +100,21 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Nullable
     @Override
     public ChemicalInfuserRecipe getRecipe(int cacheIndex) {
-        GasStack leftGas = leftTank.getStack();
-        GasStack rightGas = rightTank.getStack();
-        return leftGas.isEmpty() || rightGas.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(leftGas, rightGas));
+        GasStack leftGas = leftInputHandler.getInput();
+        if (leftGas.isEmpty()) {
+            return null;
+        }
+        GasStack rightGas = rightInputHandler.getInput();
+        if (rightGas.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(leftGas, rightGas));
     }
 
     @Nullable
     @Override
     public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
-        return new ChemicalInfuserCachedRecipe(recipe, InputHelper.getInputHandler(leftTank), InputHelper.getInputHandler(rightTank),
-              OutputHelper.getOutputHandler(centerTank))
+        return new ChemicalInfuserCachedRecipe(recipe, leftInputHandler, rightInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

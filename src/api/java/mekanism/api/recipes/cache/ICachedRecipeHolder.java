@@ -14,7 +14,9 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
         //If there is no cached recipe or the input doesn't match, attempt to get the recipe based on the input
         //TODO: We probably want something so that we don't have to recheck if the input has not changed since the last check
         // Maybe make it be !isInputValid AND inputHasChanged to check if the input is the same as the last time isInputValid was called
-        // Note: This still doesn't have a benefit for if currentCache is null, but it will still help overall
+        // Note: This still doesn't have a benefit for if currentCache is null, but it will still help overall, or maybe make a method in this interface
+        // that has to be implemented, giving thinking about it there is no reason input/output helpers cannot be final given they are just suppliers
+        // and are always the same for a given machine
         if (currentCache == null || !currentCache.isInputValid()) {
             RECIPE recipe = getRecipe(cacheIndex);
             if (recipe != null) {

@@ -1,5 +1,6 @@
 package mekanism.api.recipes.outputs;
 
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
@@ -9,8 +10,8 @@ import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,44 +32,54 @@ public class OutputHelper {
         };
     }
 
-    //TODO: Generify this up to either IFluidTank or IFluidHandler?
-    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(@Nonnull FluidTank fluidTank) {
+    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(@Nonnull IFluidHandler fluidHandler) {
         return new IOutputHandler<@NonNull FluidStack>() {
 
             @Override
             public void handleOutput(@NonNull FluidStack toOutput, int operations) {
-                OutputHelper.handleOutput(fluidTank, toOutput, operations);
+                OutputHelper.handleOutput(fluidHandler, toOutput, operations);
             }
 
             @Override
             public int operationsRoomFor(@NonNull FluidStack toOutput, int currentMax) {
-                return OutputHelper.operationsRoomFor(fluidTank, toOutput, currentMax);
+                return OutputHelper.operationsRoomFor(fluidHandler, toOutput, currentMax);
             }
         };
     }
 
-    //TODO: 1.14, evaluate making NonNullList<ItemStack> be an IItemHandler instead
-    public static IOutputHandler<@NonNull ItemStack> getOutputHandler(@Nonnull NonNullList<ItemStack> inventory, int slot) {
+    //TODO: 1.14, evaluate making Supplier<NonNullList<ItemStack>> be an IItemHandler instead
+    public static IOutputHandler<@NonNull ItemStack> getOutputHandler(@Nonnull Supplier<NonNullList<ItemStack>> inventorySupplier, int slot) {
         return new IOutputHandler<@NonNull ItemStack>() {
+
+            @Nonnull
+            private NonNullList<ItemStack> getInventory() {
+                return inventorySupplier.get();
+            }
 
             @Override
             public void handleOutput(@NonNull ItemStack toOutput, int operations) {
-                OutputHelper.handleOutput(inventory, slot, toOutput, operations);
+                OutputHelper.handleOutput(getInventory(), slot, toOutput, operations);
             }
 
             @Override
             public int operationsRoomFor(@NonNull ItemStack toOutput, int currentMax) {
-                return OutputHelper.operationsRoomFor(inventory, slot, toOutput, currentMax);
+                return OutputHelper.operationsRoomFor(getInventory(), slot, toOutput, currentMax);
             }
         };
     }
 
-    //TODO: 1.14, evaluate making NonNullList<ItemStack> be an IItemHandler instead
-    public static IOutputHandler<@NonNull ChanceOutput> getOutputHandler(@Nonnull NonNullList<ItemStack> inventory, int slot, int secondarySlot) {
+    //TODO: 1.14, evaluate making Supplier<NonNullList<ItemStack>> be an IItemHandler instead
+    public static IOutputHandler<@NonNull ChanceOutput> getOutputHandler(@Nonnull Supplier<NonNullList<ItemStack>> inventorySupplier, int slot, int secondarySlot) {
         return new IOutputHandler<@NonNull ChanceOutput>() {
+
+            @Nonnull
+            private NonNullList<ItemStack> getInventory() {
+                return inventorySupplier.get();
+            }
 
             @Override
             public void handleOutput(@NonNull ChanceOutput toOutput, int operations) {
+                NonNullList<ItemStack> inventory = getInventory();
                 OutputHelper.handleOutput(inventory, slot, toOutput.getMainOutput(), operations);
                 //TODO: Batch this into a single addition call, by looping over and calculating things?
                 ItemStack secondaryOutput = toOutput.getSecondaryOutput();
@@ -82,31 +93,39 @@ public class OutputHelper {
 
             @Override
             public int operationsRoomFor(@NonNull ChanceOutput toOutput, int currentMax) {
+                NonNullList<ItemStack> inventory = getInventory();
                 currentMax = OutputHelper.operationsRoomFor(inventory, slot, toOutput.getMainOutput(), currentMax);
                 return OutputHelper.operationsRoomFor(inventory, secondarySlot, toOutput.getMaxSecondaryOutput(), currentMax);
             }
         };
     }
 
-    //TODO: 1.14, evaluate making NonNullList<ItemStack> be an IItemHandler instead
-    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(@Nonnull GasTank gasTank, @Nonnull NonNullList<ItemStack> inventory,
-          int slot) {
+    //TODO: 1.14, evaluate making Supplier<NonNullList<ItemStack>> be an IItemHandler instead
+    //TODO: IGasHandler??
+    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(@Nonnull GasTank gasTank,
+          @Nonnull Supplier<NonNullList<ItemStack>> inventorySupplier, int slot) {
         return new IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>>() {
+
+            @Nonnull
+            private NonNullList<ItemStack> getInventory() {
+                return inventorySupplier.get();
+            }
 
             @Override
             public void handleOutput(@NonNull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int operations) {
-                OutputHelper.handleOutput(inventory, slot, toOutput.getLeft(), operations);
+                OutputHelper.handleOutput(getInventory(), slot, toOutput.getLeft(), operations);
                 OutputHelper.handleOutput(gasTank, toOutput.getRight(), operations);
             }
 
             @Override
             public int operationsRoomFor(@NonNull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int currentMax) {
-                currentMax = OutputHelper.operationsRoomFor(inventory, slot, toOutput.getLeft(), currentMax);
+                currentMax = OutputHelper.operationsRoomFor(getInventory(), slot, toOutput.getLeft(), currentMax);
                 return OutputHelper.operationsRoomFor(gasTank, toOutput.getRight(), currentMax);
             }
         };
     }
 
+    //TODO: IGasHandler??
     public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(@Nonnull GasTank leftTank, @Nonnull GasTank rightTank) {
         return new IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>>() {
 
@@ -134,12 +153,12 @@ public class OutputHelper {
         gasTank.fill(output, ChemicalAction.EXECUTE);
     }
 
-    private static void handleOutput(@Nonnull FluidTank fluidTank, @NonNull FluidStack toOutput, int operations) {
+    private static void handleOutput(@Nonnull IFluidHandler fluidHandler, @NonNull FluidStack toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
         }
-        fluidTank.fill(new FluidStack(toOutput, toOutput.getAmount() * operations), FluidAction.EXECUTE);
+        fluidHandler.fill(new FluidStack(toOutput, toOutput.getAmount() * operations), FluidAction.EXECUTE);
     }
 
     //TODO: 1.14, evaluate making NonNullList<ItemStack> be an IItemHandler instead
@@ -182,7 +201,7 @@ public class OutputHelper {
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }
 
-    private static int operationsRoomFor(@Nonnull FluidTank fluidTank, @NonNull FluidStack toOutput, int currentMax) {
+    private static int operationsRoomFor(@Nonnull IFluidHandler fluidHandler, @NonNull FluidStack toOutput, int currentMax) {
         if (currentMax == 0) {
             //Short circuit that if we already can't perform any outputs, just return
             return 0;
@@ -194,7 +213,7 @@ public class OutputHelper {
         //Copy the stack and make it be max size
         FluidStack maxOutput = new FluidStack(toOutput, Integer.MAX_VALUE);
         //Then simulate filling the fluid tank so we can see how much actually can fit
-        int amountUsed = fluidTank.fill(maxOutput, FluidAction.SIMULATE);
+        int amountUsed = fluidHandler.fill(maxOutput, FluidAction.SIMULATE);
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }

@@ -1,5 +1,6 @@
 package mekanism.api.recipes.inputs;
 
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
@@ -10,19 +11,24 @@ import mekanism.api.infuse.InfusionTank;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 
 public class InputHelper {
 
-    //TODO: 1.14, evaluate using the IItemHandler variant instead
-    public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull NonNullList<ItemStack> inventory, int slot) {
+    //TODO: 1.14, Switch to using an IItemHandler so we don't have to have this being a supplier
+    public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull Supplier<NonNullList<ItemStack>> inventory, int slot) {
         return new IInputHandler<@NonNull ItemStack>() {
+
+            @Nonnull
+            private NonNullList<ItemStack> getInventory() {
+                return inventory.get();
+            }
 
             @Override
             public @NonNull ItemStack getInput() {
-                return inventory.get(slot);
+                return getInventory().get(slot);
             }
 
             @Override
@@ -37,6 +43,10 @@ public class InputHelper {
 
             @Override
             public void use(@NonNull ItemStack recipeInput, int operations) {
+                if (operations == 0) {
+                    //Just exit if we are somehow here at zero operations
+                    return;
+                }
                 if (!recipeInput.isEmpty()) {
                     //TODO: Should this be done in some other way than shrink, such as via an IItemHandler, 1.14
                     //TODO: If this would make the stack empty, we should just set the inventory slot to empty instead of using shrink
@@ -60,6 +70,7 @@ public class InputHelper {
         };
     }
 
+    //TODO: Ideally if we can use an IItemHandler, then in theory we don't have to make it a supplier
     public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull IItemHandler inventory, int slot) {
         return new IInputHandler<@NonNull ItemStack>() {
 
@@ -80,6 +91,10 @@ public class InputHelper {
 
             @Override
             public void use(@NonNull ItemStack recipeInput, int operations) {
+                if (operations == 0) {
+                    //Just exit if we are somehow here at zero operations
+                    return;
+                }
                 if (!recipeInput.isEmpty()) {
                     //TODO: Should we check if it failed
                     inventory.extractItem(slot, recipeInput.getCount() * operations, false);
@@ -97,11 +112,13 @@ public class InputHelper {
                     //If the input is empty that means there is no ingredient that matches
                     return 0;
                 }
+                //TODO: Simulate?
                 return Math.min(getInput().getCount() / recipeInput.getCount(), currentMax);
             }
         };
     }
 
+    //TODO: IGasHandler?
     public static IInputHandler<@NonNull GasStack> getInputHandler(@Nonnull GasTank gasTank) {
         return new IInputHandler<@NonNull GasStack>() {
 
@@ -123,6 +140,10 @@ public class InputHelper {
 
             @Override
             public void use(@NonNull GasStack recipeInput, int operations) {
+                if (operations == 0) {
+                    //Just exit if we are somehow here at zero operations
+                    return;
+                }
                 if (recipeInput.isEmpty()) {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
@@ -132,8 +153,7 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                //TODO: Pass this as a GasStack?
-                gasTank.drain(recipeInput.getAmount() * operations, ChemicalAction.EXECUTE);
+                gasTank.drain(new GasStack(recipeInput, recipeInput.getAmount() * operations), ChemicalAction.EXECUTE);
             }
 
             @Override
@@ -154,13 +174,12 @@ public class InputHelper {
         };
     }
 
-    //TODO: Generify this up to either IFluidTank or IFluidHandler?
-    public static IInputHandler<@NonNull FluidStack> getInputHandler(@Nonnull FluidTank fluidTank) {
+    public static IInputHandler<@NonNull FluidStack> getInputHandler(@Nonnull IFluidHandler fluidHandler, int tank) {
         return new IInputHandler<@NonNull FluidStack>() {
 
             @Override
             public @NonNull FluidStack getInput() {
-                return fluidTank.getFluid();
+                return fluidHandler.getFluidInTank(tank);
             }
 
             @Override
@@ -175,6 +194,10 @@ public class InputHelper {
 
             @Override
             public void use(@NonNull FluidStack recipeInput, int operations) {
+                if (operations == 0) {
+                    //Just exit if we are somehow here at zero operations
+                    return;
+                }
                 if (recipeInput.isEmpty()) {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
@@ -184,8 +207,7 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                //TODO: Pass this as a fluidstack?
-                fluidTank.drain(recipeInput.getAmount() * operations, FluidAction.EXECUTE);
+                fluidHandler.drain(new FluidStack(recipeInput, recipeInput.getAmount() * operations), FluidAction.EXECUTE);
             }
 
             @Override
@@ -206,6 +228,7 @@ public class InputHelper {
         };
     }
 
+    //TODO: IInfusionHandler??
     public static IInputHandler<@NonNull InfusionStack> getInputHandler(@Nonnull InfusionTank infusionTank) {
         return new IInputHandler<@NonNull InfusionStack>() {
 
@@ -227,6 +250,10 @@ public class InputHelper {
 
             @Override
             public void use(@NonNull InfusionStack recipeInput, int operations) {
+                if (operations == 0) {
+                    //Just exit if we are somehow here at zero operations
+                    return;
+                }
                 if (recipeInput.isEmpty()) {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
@@ -236,8 +263,7 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                //TODO: Pass this as a InfusionStack?
-                infusionTank.drain(recipeInput.getAmount() * operations, ChemicalAction.EXECUTE);
+                infusionTank.drain(new InfusionStack(recipeInput, recipeInput.getAmount() * operations), ChemicalAction.EXECUTE);
             }
 
             @Override

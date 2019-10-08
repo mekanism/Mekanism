@@ -2,10 +2,13 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -29,6 +32,10 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
+    private final IOutputHandler<@NonNull ItemStack> outputHandler;
+    private final IInputHandler<@NonNull ItemStack> inputHandler;
+    private final IInputHandler<@NonNull ItemStack> extraInputHandler;
+
     /**
      * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
      * (4). The machine will not run if it does not have enough electricity.
@@ -48,6 +55,10 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+
+        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        extraInputHandler = InputHelper.getInputHandler(() -> inventory, 1);
+        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2);
     }
 
     @Override
@@ -104,16 +115,21 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     @Nullable
     @Override
     public CombinerRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(0);
-        ItemStack extraStack = inventory.get(1);
-        return stack.isEmpty() || extraStack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack, extraStack));
+        ItemStack stack = inputHandler.getInput();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        ItemStack extraStack = extraInputHandler.getInput();
+        if (extraStack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(stack, extraStack));
     }
 
     @Nullable
     @Override
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
-        return new CombinerCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(inventory, 1),
-              OutputHelper.getOutputHandler(inventory, 2))
+        return new CombinerCachedRecipe(recipe, inputHandler, extraInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

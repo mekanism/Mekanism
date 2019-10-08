@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -15,7 +16,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
@@ -69,8 +72,15 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     private int currentRedstoneLevel;
     public double clientEnergyUsed;
 
+    private final IOutputHandler<@NonNull GasStack> outputHandler;
+    private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
+    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+
     public TileEntityChemicalWasher() {
         super(MekanismBlock.CHEMICAL_WASHER, 4);
+        fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
+        gasInputHandler = InputHelper.getInputHandler(inputTank);
+        outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
     @Override
@@ -116,15 +126,21 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Nullable
     @Override
     public FluidGasToGasRecipe getRecipe(int cacheIndex) {
-        GasStack gasStack = inputTank.getStack();
-        FluidStack fluid = fluidTank.getFluid();
-        return gasStack.isEmpty() || fluid.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(fluid, gasStack));
+        GasStack gasStack = gasInputHandler.getInput();
+        if (gasStack.isEmpty()) {
+            return null;
+        }
+        FluidStack fluid = fluidInputHandler.getInput();
+        if (fluid.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(fluid, gasStack));
     }
 
     @Nullable
     @Override
     public CachedRecipe<FluidGasToGasRecipe> createNewCachedRecipe(@Nonnull FluidGasToGasRecipe recipe, int cacheIndex) {
-        return new FluidGasToGasCachedRecipe(recipe, InputHelper.getInputHandler(fluidTank), InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
+        return new FluidGasToGasCachedRecipe(recipe, fluidInputHandler, gasInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

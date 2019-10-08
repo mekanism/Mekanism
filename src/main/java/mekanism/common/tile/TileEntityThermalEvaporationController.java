@@ -7,10 +7,13 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidToFluidCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
@@ -89,10 +92,15 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public float totalLoss = 0;
 
-    public CachedRecipe<FluidToFluidRecipe> cachedRecipe;
+    private CachedRecipe<FluidToFluidRecipe> cachedRecipe;
+
+    private final IOutputHandler<@NonNull FluidStack> outputHandler;
+    private final IInputHandler<@NonNull FluidStack> inputHandler;
 
     public TileEntityThermalEvaporationController() {
         super(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER);
+        inputHandler = InputHelper.getInputHandler(inputTank, 0);
+        outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
     @Override
@@ -177,8 +185,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Nullable
     @Override
     public FluidToFluidRecipe getRecipe(int cacheIndex) {
-        FluidStack fluid = inputTank.getFluid();
-        return fluid.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(fluid));
+        FluidStack fluid = inputHandler.getInput();
+        if (fluid.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(fluid));
     }
 
     @Nullable
@@ -186,8 +197,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
         //TODO: Have lastGain be set properly, and our setActive -> false set lastGain to zero
         //TODO: HANDLE ALL THIS STUFF, A good chunk of it can probably go in the getOutputHandler (or in a custom one we pass from here)
-        // But none of it should remain outside of what gets passed in one way or another to the cached reipe
-        return new FluidToFluidCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
+        // But none of it should remain outside of what gets passed in one way or another to the cached recipe
+        return new FluidToFluidCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {

@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -12,8 +13,8 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.GasConversionHandler;
@@ -28,14 +29,18 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<ItemStackGasToItemStackRecipe> implements IGasHandler {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IGasHandler {
 
     //TODO: Finish moving references to gasTank to this class
     //public final GasTank gasTank;
 
+    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         //gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
+
+        gasInputHandler = InputHelper.getInputHandler(gasTank);
     }
 
     @Override
@@ -142,20 +147,20 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityFactory<
     @Nullable
     @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(getInputSlot(cacheIndex));
+        ItemStack stack = inputHandlers[cacheIndex].getInput();
         if (stack.isEmpty()) {
             return null;
         }
-        GasStack gasStack = gasTank.getStack();
-        return gasStack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack, gasStack));
+        GasStack gasStack = gasInputHandler.getInput();
+        if (gasStack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(stack, gasStack));
     }
 
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        int inputSlot = getInputSlot(cacheIndex);
-        int outputSlot = getOutputSlot(cacheIndex);
-        return new ItemStackGasToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inventory, inputSlot), InputHelper.getInputHandler(gasTank),
-              () -> secondaryEnergyThisTick, OutputHelper.getOutputHandler(inventory, outputSlot))
+        return new ItemStackGasToItemStackCachedRecipe(recipe, inputHandlers[cacheIndex], gasInputHandler, () -> secondaryEnergyThisTick, outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

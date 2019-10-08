@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -10,17 +11,20 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<MetallurgicInfuserRecipe> {
+public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> {
+
+    private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
         super(blockProvider);
+        infusionInputHandler = InputHelper.getInputHandler(infusionTank);
     }
 
     @Override
@@ -108,16 +112,20 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityFactory<Metal
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(getInputSlot(cacheIndex));
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(infusionTank.getStack(), stack));
+        ItemStack stack = inputHandlers[cacheIndex].getInput();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        InfusionStack infusionStack = infusionInputHandler.getInput();
+        if (infusionStack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(infusionStack, stack));
     }
 
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        int inputSlot = getInputSlot(cacheIndex);
-        int outputSlot = getOutputSlot(cacheIndex);
-        return new MetallurgicInfuserCachedRecipe(recipe, InputHelper.getInputHandler(infusionTank), InputHelper.getInputHandler(inventory, inputSlot),
-              OutputHelper.getOutputHandler(inventory, outputSlot))
+        return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

@@ -6,15 +6,13 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
-import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Smelting, enriching, crushing
-public class TileEntityItemStackToItemStackFactory extends TileEntityFactory<ItemStackToItemStackRecipe> {
+public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> {
 
     public TileEntityItemStackToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -82,15 +80,16 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityFactory<Ite
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(getInputSlot(cacheIndex));
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+        ItemStack stack = inputHandlers[cacheIndex].getInput();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
-        int inputSlot = getInputSlot(cacheIndex);
-        int outputSlot = getOutputSlot(cacheIndex);
-        return new ItemStackToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inventory, inputSlot), OutputHelper.getOutputHandler(inventory, outputSlot))
+        return new ItemStackToItemStackCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

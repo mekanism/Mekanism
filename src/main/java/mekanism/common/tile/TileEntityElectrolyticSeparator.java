@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -15,7 +16,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
@@ -56,6 +59,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
       IUpgradeInfoHandler, ITankManager, IComparatorSupport, ITileCachedRecipeHolder<ElectrolysisRecipe> {
@@ -98,9 +102,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     //TODO: Remove this
     private double BASE_ENERGY_PER_TICK;
 
+    private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
+    private final IInputHandler<@NonNull FluidStack> inputHandler;
+
     public TileEntityElectrolyticSeparator() {
         super(MekanismBlock.ELECTROLYTIC_SEPARATOR, 4);
         BASE_ENERGY_PER_TICK = super.getBaseUsage();
+
+        inputHandler = InputHelper.getInputHandler(fluidTank, 0);
+        outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
     }
 
     @Override
@@ -174,8 +184,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Nullable
     @Override
     public ElectrolysisRecipe getRecipe(int cacheIndex) {
-        FluidStack fluid = fluidTank.getFluid();
-        return fluid.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(fluid));
+        FluidStack fluid = inputHandler.getInput();
+        if (fluid.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(fluid));
     }
 
     @Nullable
@@ -187,7 +200,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (update) {
             recalculateUpgrades(Upgrade.ENERGY);
         }
-        return new ElectrolysisCachedRecipe(recipe, InputHelper.getInputHandler(fluidTank), OutputHelper.getOutputHandler(leftTank, rightTank))
+        return new ElectrolysisCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

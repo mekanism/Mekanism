@@ -2,11 +2,14 @@ package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -26,6 +29,9 @@ import net.minecraft.util.NonNullList;
 public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMachine<ItemStackToItemStackRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+
+    protected final IInputHandler<@NonNull ItemStack> inputHandler;
+    protected final IOutputHandler<@NonNull ItemStack> outputHandler;
 
     /**
      * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the upgrade slot (3). It will not run if it does not
@@ -47,6 +53,9 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+
+        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2);
     }
 
     @Override
@@ -93,14 +102,14 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(0);
+        ItemStack stack = inputHandler.getInput();
         return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), OutputHelper.getOutputHandler(inventory, 2))
+        return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

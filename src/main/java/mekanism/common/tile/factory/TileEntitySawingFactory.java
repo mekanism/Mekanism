@@ -2,12 +2,15 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.SawmillCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
@@ -17,8 +20,17 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
+    protected final IInputHandler<@NonNull ItemStack>[] inputHandlers;
+    protected final IOutputHandler<@NonNull ChanceOutput>[] outputHandlers;
+
     public TileEntitySawingFactory(IBlockProvider blockProvider) {
         super(blockProvider);
+        inputHandlers = new IInputHandler[tier.processes];
+        outputHandlers = new IOutputHandler[tier.processes];
+        for (int i = 0; i < tier.processes; i++) {
+            inputHandlers[i] = InputHelper.getInputHandler(() -> inventory, getInputSlot(i));
+            outputHandlers[i] = OutputHelper.getOutputHandler(() -> inventory, getOutputSlot(i), EXTRA_SLOT_ID);
+        }
     }
 
     @Override
@@ -87,15 +99,16 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     @Nullable
     @Override
     public SawmillRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(getInputSlot(cacheIndex));
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+        ItemStack stack = inputHandlers[cacheIndex].getInput();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@Nonnull SawmillRecipe recipe, int cacheIndex) {
-        int inputSlot = getInputSlot(cacheIndex);
-        int outputSlot = getOutputSlot(cacheIndex);
-        return new SawmillCachedRecipe(recipe, InputHelper.getInputHandler(inventory, inputSlot), OutputHelper.getOutputHandler(inventory, outputSlot, EXTRA_SLOT_ID))
+        return new SawmillCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -13,7 +14,9 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
@@ -49,6 +52,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> implements IFluidHandlerWrapper, IGasHandler, ISustainedData,
       ITankManager {
@@ -58,6 +62,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     public FluidTank inputFluidTank = new FluidTank(10000);
     public GasTank inputGasTank = new GasTank(10000);
     public GasTank outputGasTank = new GasTank(10000);
+
+    private final IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler;
+    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
+    private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
+    private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
     public TileEntityPressurizedReactionChamber() {
         super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 3, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
@@ -84,6 +93,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
         ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
+
+        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, 0);
+        gasInputHandler = InputHelper.getInputHandler(inputGasTank);
+        outputHandler = OutputHelper.getOutputHandler(outputGasTank, () -> inventory, 2);
     }
 
     @Override
@@ -124,15 +138,15 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Nullable
     @Override
     public PressurizedReactionRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(0);
+        ItemStack stack = itemInputHandler.getInput();
         if (stack.isEmpty()) {
             return null;
         }
-        FluidStack fluid = inputFluidTank.getFluid();
+        FluidStack fluid = fluidInputHandler.getInput();
         if (fluid.isEmpty()) {
             return null;
         }
-        GasStack gas = inputGasTank.getStack();
+        GasStack gas = gasInputHandler.getInput();
         if (gas.isEmpty()) {
             return null;
         }
@@ -148,8 +162,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         if (update) {
             recalculateUpgrades(Upgrade.SPEED);
         }
-        return new PressurizedReactionCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(inputFluidTank),
-              InputHelper.getInputHandler(inputGasTank), OutputHelper.getOutputHandler(outputGasTank, inventory, 2))
+        return new PressurizedReactionCachedRecipe(recipe, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(() -> MekanismUtils.getEnergyPerTick(this, getBaseUsage() + recipe.getEnergyRequired()), this::getEnergy,

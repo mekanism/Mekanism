@@ -2,10 +2,14 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.SawmillCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -29,6 +33,9 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
+    private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
+    private final IInputHandler<@NonNull ItemStack> inputHandler;
+
     public TileEntityPrecisionSawmill() {
         super(MekanismBlock.PRECISION_SAWMILL, 3, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -43,6 +50,9 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+
+        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2, 4);
     }
 
     @Override
@@ -96,14 +106,17 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     @Nullable
     @Override
     public SawmillRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(0);
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+        ItemStack stack = inputHandler.getInput();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@Nonnull SawmillRecipe recipe, int cacheIndex) {
-        return new SawmillCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), OutputHelper.getOutputHandler(inventory, 2, 4))
+        return new SawmillCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

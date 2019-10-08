@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -14,7 +15,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.GasToItemStackCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
@@ -50,6 +53,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
+    private final IOutputHandler<@NonNull ItemStack> outputHandler;
+    private final IInputHandler<@NonNull GasStack> inputHandler;
+
     public TileEntityChemicalCrystallizer() {
         super(MekanismBlock.CHEMICAL_CRYSTALLIZER, 3, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
@@ -69,6 +75,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+
+        inputHandler = InputHelper.getInputHandler(inputTank);
+        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 1);
     }
 
     @Override
@@ -98,7 +107,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Nullable
     @Override
     public GasToItemStackRecipe getRecipe(int cacheIndex) {
-        GasStack gasStack = inputTank.getStack();
+        GasStack gasStack = inputHandler.getInput();
         if (gasStack.isEmpty()) {
             return null;
         }
@@ -108,7 +117,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Nullable
     @Override
     public CachedRecipe<GasToItemStackRecipe> createNewCachedRecipe(@Nonnull GasToItemStackRecipe recipe, int cacheIndex) {
-        return new GasToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(inventory, 1))
+        return new GasToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

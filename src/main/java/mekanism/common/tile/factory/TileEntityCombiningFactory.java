@@ -2,21 +2,25 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityCombiningFactory extends TileEntityFactory<CombinerRecipe> {
+public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> {
+
+    private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
     public TileEntityCombiningFactory(IBlockProvider blockProvider) {
         super(blockProvider);
+        extraInputHandler = InputHelper.getInputHandler(() -> inventory, EXTRA_SLOT_ID);
     }
 
     @Override
@@ -83,20 +87,20 @@ public class TileEntityCombiningFactory extends TileEntityFactory<CombinerRecipe
     @Nullable
     @Override
     public CombinerRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(getInputSlot(cacheIndex));
+        ItemStack stack = inputHandlers[cacheIndex].getInput();
         if (stack.isEmpty()) {
             return null;
         }
-        ItemStack extra = inventory.get(EXTRA_SLOT_ID);
-        return extra.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack, extra));
+        ItemStack extra = extraInputHandler.getInput();
+        if (extra.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(stack, extra));
     }
 
     @Override
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
-        int inputSlot = getInputSlot(cacheIndex);
-        int outputSlot = getOutputSlot(cacheIndex);
-        return new CombinerCachedRecipe(recipe, InputHelper.getInputHandler(inventory, inputSlot), InputHelper.getInputHandler(inventory, EXTRA_SLOT_ID),
-              OutputHelper.getOutputHandler(inventory, outputSlot))
+        return new CombinerCachedRecipe(recipe, inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

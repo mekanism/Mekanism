@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -16,7 +17,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.GasToGasCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
@@ -71,9 +74,15 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public TileComponentUpgrade<TileEntitySolarNeutronActivator> upgradeComponent = new TileComponentUpgrade<>(this, 3);
 
+    private final IOutputHandler<@NonNull GasStack> outputHandler;
+    private final IInputHandler<@NonNull GasStack> inputHandler;
+
     public TileEntitySolarNeutronActivator() {
         super(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
         upgradeComponent.setSupported(Upgrade.ENERGY, false);
+
+        inputHandler = InputHelper.getInputHandler(inputTank);
+        outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
     protected void recheckSettings() {
@@ -131,26 +140,31 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Nullable
     @Override
     public GasToGasRecipe getRecipe(int cacheIndex) {
-        GasStack gas = inputTank.getStack();
-        return gas.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(gas));
+        GasStack gas = inputHandler.getInput();
+        if (gas.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(gas));
+    }
+
+    private boolean canFunction(BlockPos positionAbove) {
+        // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
+        // changing this would dramatically affect a lot of setups with Fusion reactors which can take
+        // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
+        // rain checks.
+        boolean seesSun = world.isDaytime() && world.canBlockSeeSky(positionAbove) && !world.getDimension().isNether();
+        if (needsRainCheck) {
+            seesSun &= !(world.isRaining() || world.isThundering());
+        }
+        return seesSun && MekanismUtils.canFunction(this);
     }
 
     @Nullable
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
         BlockPos positionAbove = getPos().up();
-        return new GasToGasCachedRecipe(recipe, InputHelper.getInputHandler(inputTank), OutputHelper.getOutputHandler(outputTank))
-              .setCanHolderFunction(() -> {
-                  // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
-                  // changing this would dramatically affect a lot of setups with Fusion reactors which can take
-                  // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
-                  // rain checks.
-                  boolean seesSun = world.isDaytime() && world.canBlockSeeSky(positionAbove) && !world.getDimension().isNether();
-                  if (needsRainCheck) {
-                      seesSun &= !(world.isRaining() || world.isThundering());
-                  }
-                  return seesSun && MekanismUtils.canFunction(this);
-              })
+        return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)
+              .setCanHolderFunction(() -> canFunction(positionAbove))
               .setActive(this::setActive)
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {

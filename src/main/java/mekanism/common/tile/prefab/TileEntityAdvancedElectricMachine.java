@@ -3,6 +3,7 @@ package mekanism.common.tile.prefab;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -14,7 +15,9 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
@@ -61,6 +64,10 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     private int gasUsageThisTick;
     public GasTank gasTank;
 
+    protected final IOutputHandler<@NonNull ItemStack> outputHandler;
+    protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
+    protected final IInputHandler<@NonNull GasStack> gasInputHandler;
+
     /**
      * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
      * The machine will not run if it does not have enough electricity, or if it doesn't have enough fuel ticks.
@@ -91,6 +98,10 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         }
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+
+        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        gasInputHandler = InputHelper.getInputHandler(gasTank);
+        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2);
     }
 
     @Override
@@ -190,11 +201,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Nullable
     @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(0);
+        ItemStack stack = itemInputHandler.getInput();
         if (stack.isEmpty()) {
             return null;
         }
-        GasStack gasStack = gasTank.getStack();
+        GasStack gasStack = gasInputHandler.getInput();
         if (gasStack.isEmpty()) {
             return null;
         }
@@ -204,8 +215,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Nullable
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToItemStackCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), InputHelper.getInputHandler(gasTank),
-              () -> gasUsageThisTick, OutputHelper.getOutputHandler(inventory, 2))
+        return new ItemStackGasToItemStackCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> gasUsageThisTick, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalAction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -14,7 +15,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToGasCachedRecipe;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
@@ -42,8 +45,13 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     public GasTank gasTank = new GasTank(MAX_GAS);
     public int gasOutput = 256;
 
+    private final IOutputHandler<@NonNull GasStack> outputHandler;
+    private final IInputHandler<@NonNull ItemStack> inputHandler;
+
     public TileEntityChemicalOxidizer() {
         super(MekanismBlock.CHEMICAL_OXIDIZER, 3, 100);
+        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        outputHandler = OutputHelper.getOutputHandler(gasTank);
     }
 
     @Override
@@ -105,14 +113,17 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Nullable
     @Override
     public ItemStackToGasRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inventory.get(0);
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+        ItemStack stack = inputHandler.getInput();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        return findFirstRecipe(recipe -> recipe.test(stack));
     }
 
     @Nullable
     @Override
     public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackToGasCachedRecipe(recipe, InputHelper.getInputHandler(inventory, 0), OutputHelper.getOutputHandler(gasTank))
+        return new ItemStackToGasCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
