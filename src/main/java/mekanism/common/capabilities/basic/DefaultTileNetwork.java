@@ -1,8 +1,8 @@
-package mekanism.common.capabilities;
+package mekanism.common.capabilities.basic;
 
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 

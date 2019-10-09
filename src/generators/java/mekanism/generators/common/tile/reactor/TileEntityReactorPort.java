@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -136,7 +136,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (getReactor() != null) {
             if (stack.getType().isIn(MekanismTags.DEUTERIUM)) {
                 return getReactor().getDeuteriumTank().fill(stack, action);
@@ -151,7 +151,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return GasStack.EMPTY;
     }
 

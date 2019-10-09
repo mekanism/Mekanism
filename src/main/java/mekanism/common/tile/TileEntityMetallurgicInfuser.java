@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
@@ -88,9 +88,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                 InfusionStack pendingInfusionInput = InfuseRegistry.getObject(infuseInput);
                 if (!pendingInfusionInput.isEmpty()) {
                     //TODO: Check this still works properly
-                    if (infusionTank.fill(pendingInfusionInput, ChemicalAction.SIMULATE) == pendingInfusionInput.getAmount()) {
+                    if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
                         //If we can accept it all, then add it and decrease our input
-                        infusionTank.fill(pendingInfusionInput, ChemicalAction.EXECUTE);
+                        infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
                         infuseInput.shrink(1);
                     }
                 }

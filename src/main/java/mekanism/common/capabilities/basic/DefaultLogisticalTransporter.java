@@ -1,4 +1,4 @@
-package mekanism.common.capabilities;
+package mekanism.common.capabilities.basic;
 
 import java.util.Collection;
 import mekanism.api.Coord4D;
@@ -6,7 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;

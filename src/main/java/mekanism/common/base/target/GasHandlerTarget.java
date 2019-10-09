@@ -1,7 +1,7 @@
 package mekanism.common.base.target;
 
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.common.base.SplitInfo;
@@ -15,11 +15,11 @@ public class GasHandlerTarget extends Target<IGasHandler, Integer, @NonNull GasS
 
     @Override
     protected void acceptAmount(Direction side, SplitInfo<Integer> splitInfo, Integer amount) {
-        splitInfo.send(handlers.get(side).receiveGas(side, new GasStack(extra, amount), ChemicalAction.EXECUTE));
+        splitInfo.send(handlers.get(side).receiveGas(side, new GasStack(extra, amount), Action.EXECUTE));
     }
 
     @Override
     protected Integer simulate(IGasHandler handler, Direction side, @NonNull GasStack gasStack) {
-        return handler.receiveGas(side, gasStack, ChemicalAction.SIMULATE);
+        return handler.receiveGas(side, gasStack, Action.SIMULATE);
     }
 }

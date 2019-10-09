@@ -1,15 +1,14 @@
-package mekanism.api.chemical;
+package mekanism.api;
 
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-//TODO: Rename to tank action or something?
-public enum ChemicalAction {
+public enum Action {
     EXECUTE(FluidAction.EXECUTE),
     SIMULATE(FluidAction.SIMULATE);
 
     private final FluidAction fluidAction;
 
-    ChemicalAction(FluidAction fluidAction) {
+    Action(FluidAction fluidAction) {
         this.fluidAction = fluidAction;
     }
 
@@ -25,15 +24,15 @@ public enum ChemicalAction {
         return fluidAction;
     }
 
-    public ChemicalAction combine(boolean execute) {
+    public Action combine(boolean execute) {
         return get(execute && execute());
     }
 
-    public static ChemicalAction get(boolean execute) {
+    public static Action get(boolean execute) {
         return execute ? EXECUTE : SIMULATE;
     }
 
-    public static ChemicalAction fromFluidAction(FluidAction action) {
+    public static Action fromFluidAction(FluidAction action) {
         if (action == FluidAction.EXECUTE) {
             return EXECUTE;
         } //else FluidAction.SIMULATE

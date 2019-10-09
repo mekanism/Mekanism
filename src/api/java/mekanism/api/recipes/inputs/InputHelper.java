@@ -3,7 +3,7 @@ package mekanism.api.recipes.inputs;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionStack;
@@ -153,7 +153,7 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                gasTank.drain(new GasStack(recipeInput, recipeInput.getAmount() * operations), ChemicalAction.EXECUTE);
+                gasTank.drain(new GasStack(recipeInput, recipeInput.getAmount() * operations), Action.EXECUTE);
             }
 
             @Override
@@ -263,7 +263,7 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                infusionTank.drain(new InfusionStack(recipeInput, recipeInput.getAmount() * operations), ChemicalAction.EXECUTE);
+                infusionTank.drain(new InfusionStack(recipeInput, recipeInput.getAmount() * operations), Action.EXECUTE);
             }
 
             @Override

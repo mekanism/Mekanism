@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
@@ -149,7 +149,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.getAmount(), stack);
     }
 
-    public int emit(@Nonnull GasStack stack, ChemicalAction action) {
+    public int emit(@Nonnull GasStack stack, Action action) {
         if (!buffer.isEmpty() && !buffer.isTypeEqual(stack)) {
             return 0;
         }

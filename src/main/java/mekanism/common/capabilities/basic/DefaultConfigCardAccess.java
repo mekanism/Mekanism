@@ -1,7 +1,7 @@
-package mekanism.common.capabilities;
+package mekanism.common.capabilities.basic;
 
 import mekanism.api.IConfigCardAccess;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultConfigCardAccess implements IConfigCardAccess {

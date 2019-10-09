@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -73,7 +73,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 if (!gasType.isEmptyType() && !FuelHandler.getFuel(gasType).isEmpty()) {
                     GasStack removed = GasUtils.removeGas(stack, gasType, fuelTank.getNeeded());
                     boolean isTankEmpty = fuelTank.isEmpty();
-                    int fuelReceived = fuelTank.fill(removed, ChemicalAction.EXECUTE);
+                    int fuelReceived = fuelTank.fill(removed, Action.EXECUTE);
                     if (fuelReceived > 0 && isTankEmpty) {
                         output = FuelHandler.getFuel(fuelTank.getType()).energyPerTick * 2;
                     }
@@ -229,7 +229,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         boolean wasTankEmpty = fuelTank.isEmpty();
         if (canReceiveGas(side, stack.getType()) && (wasTankEmpty || fuelTank.getStack().isTypeEqual(stack))) {
             int fuelReceived = fuelTank.fill(stack, action);
@@ -272,7 +272,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return GasStack.EMPTY;
     }
 

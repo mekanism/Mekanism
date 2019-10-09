@@ -4,7 +4,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -40,13 +40,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     //Read only handler for support with TOP and getting network data instead of this tube's data
     private IGasHandler nullHandler = new IGasHandler() {
         @Override
-        public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+        public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
             return 0;
         }
 
         @Nonnull
         @Override
-        public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+        public GasStack drawGas(Direction side, int amount, Action action) {
             return GasStack.EMPTY;
         }
 
@@ -92,9 +92,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             for (Direction side : getConnections(ConnectionType.PULL)) {
                 IGasHandler container = connectedAcceptors[side.ordinal()];
                 if (container != null) {
-                    GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), ChemicalAction.SIMULATE);
-                    if (!received.isEmpty() && takeGas(received, ChemicalAction.SIMULATE) == received.getAmount()) {
-                        container.drawGas(side.getOpposite(), takeGas(received, ChemicalAction.EXECUTE), ChemicalAction.EXECUTE);
+                    GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), Action.SIMULATE);
+                    if (!received.isEmpty() && takeGas(received, Action.SIMULATE) == received.getAmount()) {
+                        container.drawGas(side.getOpposite(), takeGas(received, Action.EXECUTE), Action.EXECUTE);
                     }
                 }
             }
@@ -245,7 +245,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL) {
             return takeGas(stack, action);
         }
@@ -254,7 +254,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return GasStack.EMPTY;
     }
 
@@ -268,7 +268,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         return false;
     }
 
-    public int takeGas(GasStack gasStack, ChemicalAction action) {
+    public int takeGas(GasStack gasStack, Action action) {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(gasStack, action);
         }

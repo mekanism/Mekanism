@@ -3,7 +3,7 @@ package mekanism.common.tile.factory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
@@ -89,9 +89,9 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
             InfusionStack pendingInfusionInput = InfuseRegistry.getObject(extra);
             if (!pendingInfusionInput.isEmpty()) {
                 //TODO: Check this still works properly
-                if (infusionTank.fill(pendingInfusionInput, ChemicalAction.SIMULATE) == pendingInfusionInput.getAmount()) {
+                if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
                     //If we can accept it all, then add it and decrease our input
-                    infusionTank.fill(pendingInfusionInput, ChemicalAction.EXECUTE);
+                    infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
                     extra.shrink(1);
                 }
             }

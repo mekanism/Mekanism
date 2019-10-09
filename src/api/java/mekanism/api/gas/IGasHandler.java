@@ -1,7 +1,7 @@
 package mekanism.api.gas;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import net.minecraft.util.Direction;
 
 /**
@@ -21,7 +21,7 @@ public interface IGasHandler {
      *
      * @return gas added
      */
-    int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action);
+    int receiveGas(Direction side, @Nonnull GasStack stack, Action action);
 
     /**
      * Draws a certain amount of gas from this block.
@@ -32,7 +32,7 @@ public interface IGasHandler {
      */
     //TODO: Should we have a method for drawing based on stack?
     @Nonnull
-    GasStack drawGas(Direction side, int amount, ChemicalAction action);
+    GasStack drawGas(Direction side, int amount, Action action);
 
     /**
      * Whether or not this block can accept gas from a certain side.

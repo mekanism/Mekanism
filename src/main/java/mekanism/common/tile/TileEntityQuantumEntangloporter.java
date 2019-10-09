@@ -10,7 +10,7 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -402,13 +402,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         return !hasFrequency() ? 0 : frequency.storedGas.fill(stack, action);
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return !hasFrequency() ? GasStack.EMPTY : frequency.storedGas.drain(amount, action);
     }
 

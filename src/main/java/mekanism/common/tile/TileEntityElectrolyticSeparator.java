@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -159,12 +159,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (!tank.isEmpty()) {
             if (mode != GasMode.DUMPING) {
                 GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), output));
-                tank.drain(GasUtils.emit(toSend, this, EnumSet.of(side)), ChemicalAction.EXECUTE);
+                tank.drain(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE);
             } else {
-                tank.drain(dumpAmount, ChemicalAction.EXECUTE);
+                tank.drain(dumpAmount, Action.EXECUTE);
             }
             if (mode == GasMode.DUMPING_EXCESS && tank.getNeeded() < output) {
-                tank.drain(output - tank.getNeeded(), ChemicalAction.EXECUTE);
+                tank.drain(output - tank.getNeeded(), Action.EXECUTE);
             }
         }
     }
@@ -404,13 +404,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         if (side == getLeftSide()) {
             return leftTank.drain(amount, action);
         } else if (side == getRightSide()) {

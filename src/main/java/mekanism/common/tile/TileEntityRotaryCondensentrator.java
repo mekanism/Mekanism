@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -89,7 +89,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
                     setActive(true);
                     fluidTank.fill(new FluidStack(gasTank.getType().getFluid(), operations), FluidAction.EXECUTE);
-                    gasTank.drain(operations, ChemicalAction.EXECUTE);
+                    gasTank.drain(operations, Action.EXECUTE);
                     setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
                 } else {
@@ -113,7 +113,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     //TODO: Recipe system instead of this
                     Gas value = Gas.getFromRegistry(fluidTank.getFluid().getFluid().getRegistryName());
                     if (!value.isEmptyType()) {
-                        gasTank.fill(new GasStack(value, operations), ChemicalAction.EXECUTE);
+                        gasTank.fill(new GasStack(value, operations), Action.EXECUTE);
                         fluidTank.drain(operations, FluidAction.EXECUTE);
                         setEnergy(getEnergy() - getEnergyPerTick() * operations);
                         clientEnergyUsed = prev - getEnergy();
@@ -216,13 +216,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         return gasTank.fill(stack, action);
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return gasTank.drain(amount, action);
     }
 

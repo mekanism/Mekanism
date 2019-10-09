@@ -3,7 +3,7 @@ package mekanism.common.tile.factory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -119,9 +119,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
                 if (gasTank.canReceive(gas) && gasTank.getNeeded() >= gasStack.getAmount()) {
                     if (extra.getItem() instanceof IGasItem) {
                         IGasItem item = (IGasItem) extra.getItem();
-                        gasTank.fill(item.removeGas(extra, gasStack.getAmount()), ChemicalAction.EXECUTE);
+                        gasTank.fill(item.removeGas(extra, gasStack.getAmount()), Action.EXECUTE);
                     } else {
-                        gasTank.fill(gasStack, ChemicalAction.EXECUTE);
+                        gasTank.fill(gasStack, Action.EXECUTE);
                         extra.shrink(1);
                     }
                 }
@@ -200,7 +200,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
             return gasTank.fill(stack, action);
         }
@@ -214,7 +214,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return GasStack.EMPTY;
     }
 

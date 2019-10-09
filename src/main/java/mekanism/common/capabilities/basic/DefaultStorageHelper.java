@@ -1,4 +1,4 @@
-package mekanism.common.capabilities;
+package mekanism.common.capabilities.basic;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;

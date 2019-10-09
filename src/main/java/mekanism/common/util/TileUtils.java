@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalTank;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -66,7 +66,7 @@ public class TileUtils {
     //Returns true if it entered the if statement, basically for use by TileEntityGasTank
     public static boolean receiveGas(ItemStack stack, GasTank tank) {
         if (!stack.isEmpty() && (tank.isEmpty() || tank.getStored() < tank.getCapacity())) {
-            tank.fill(GasUtils.removeGas(stack, tank.getType(), tank.getNeeded()), ChemicalAction.EXECUTE);
+            tank.fill(GasUtils.removeGas(stack, tank.getType(), tank.getNeeded()), Action.EXECUTE);
             return true;
         }
         return false;
@@ -76,10 +76,10 @@ public class TileUtils {
      * @return True if gas was removed
      */
     public static boolean drawGas(ItemStack stack, GasTank tank) {
-        return drawGas(stack, tank, ChemicalAction.EXECUTE);
+        return drawGas(stack, tank, Action.EXECUTE);
     }
 
-    public static boolean drawGas(ItemStack stack, GasTank tank, ChemicalAction action) {
+    public static boolean drawGas(ItemStack stack, GasTank tank, Action action) {
         if (!stack.isEmpty() && !tank.isEmpty()) {
             return !tank.drain(GasUtils.addGas(stack, tank.getStack()), action).isEmpty();
         }
@@ -89,7 +89,7 @@ public class TileUtils {
     public static void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, Direction facing) {
         if (!tank.isEmpty()) {
             GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), gasOutput));
-            tank.drain(GasUtils.emit(toSend, tile, EnumSet.of(facing)), ChemicalAction.EXECUTE);
+            tank.drain(GasUtils.emit(toSend, tile, EnumSet.of(facing)), Action.EXECUTE);
         }
     }
 }

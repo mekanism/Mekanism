@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.LaserManager;
@@ -128,7 +128,7 @@ public class FusionReactor {
     }
 
     public void vaporiseHohlraum() {
-        getFuelTank().fill(((ItemHohlraum) controller.getStackInSlot(0).getItem()).getGas(controller.getStackInSlot(0)), ChemicalAction.EXECUTE);
+        getFuelTank().fill(((ItemHohlraum) controller.getStackInSlot(0).getItem()).getGas(controller.getStackInSlot(0)), Action.EXECUTE);
         lastPlasmaTemperature = plasmaTemperature;
         controller.getInventory().set(0, ItemStack.EMPTY);
         burning = true;
@@ -139,14 +139,14 @@ public class FusionReactor {
         int amountAvailable = 2 * Math.min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
-        getDeuteriumTank().drain(amountToInject / 2, ChemicalAction.EXECUTE);
-        getTritiumTank().drain(amountToInject / 2, ChemicalAction.EXECUTE);
-        getFuelTank().fill(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), ChemicalAction.EXECUTE);
+        getDeuteriumTank().drain(amountToInject / 2, Action.EXECUTE);
+        getTritiumTank().drain(amountToInject / 2, Action.EXECUTE);
+        getFuelTank().fill(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE);
     }
 
     public int burnFuel() {
         int fuelBurned = (int) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
-        getFuelTank().drain(fuelBurned, ChemicalAction.EXECUTE);
+        getFuelTank().drain(fuelBurned, Action.EXECUTE);
         plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * fuelBurned / plasmaHeatCapacity;
         return fuelBurned;
     }

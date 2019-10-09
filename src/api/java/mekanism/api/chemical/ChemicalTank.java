@@ -1,6 +1,7 @@
 package mekanism.api.chemical;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import net.minecraft.nbt.CompoundNBT;
 
 public abstract class ChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
@@ -36,7 +37,7 @@ public abstract class ChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      * @return ChemicalStack representing the chemical that was removed (or would be, if simulated) from the tank.
      */
     @Nonnull
-    public STACK drain(STACK resource, ChemicalAction action) {
+    public STACK drain(STACK resource, Action action) {
         if (isEmpty() || resource.isEmpty() || !resource.isTypeEqual(stored)) {
             return getEmptyStack();
         }
@@ -53,7 +54,7 @@ public abstract class ChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      */
     //TODO: Go through and evaluate if some of these should call the method that takes a stack as a param
     @Nonnull
-    public STACK drain(int amount, ChemicalAction action) {
+    public STACK drain(int amount, Action action) {
         if (isEmpty()) {
             return getEmptyStack();
         }
@@ -72,7 +73,7 @@ public abstract class ChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      *
      * @return Amount of the chemical that was accepted (or would be, if simulated) by the tank.
      */
-    public int fill(@Nonnull STACK resource, ChemicalAction action) {
+    public int fill(@Nonnull STACK resource, Action action) {
         if (resource.isEmpty()) {
             return 0;
         }

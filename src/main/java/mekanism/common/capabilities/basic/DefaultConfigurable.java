@@ -1,7 +1,7 @@
-package mekanism.common.capabilities;
+package mekanism.common.capabilities.basic;
 
 import mekanism.api.IConfigurable;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;

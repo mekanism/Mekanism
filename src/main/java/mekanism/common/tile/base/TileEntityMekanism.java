@@ -751,11 +751,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     protected IItemHandler getItemHandler(Direction side) {
         return side == null ? nullHandler : itemManager.getWrapper(this, side);
     }
-
-    //TODO: Decide about the existence of this, at the very least I believe this should be able to be cached?
-    protected IItemHandler getInternalItemHandler() {
-        return itemManager.getWrapper(this, null);
-    }
     //End methods ITileContainer
 
     //Methods for implementing ITileElectric

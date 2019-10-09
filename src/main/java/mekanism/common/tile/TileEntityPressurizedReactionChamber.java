@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -274,7 +274,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
             return inputGasTank.fill(stack, action);
         }
@@ -283,7 +283,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
             return outputGasTank.drain(amount, action);
         }

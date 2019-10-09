@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -82,7 +82,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
                 if (!gasStack.isEmpty() && item.canProvideGas(itemStack, gasStack.getType())) {
                     Gas gas = gasStack.getType();
                     if (injectTank.canReceive(gas) && isValidGas(gas)) {
-                        injectTank.fill(GasUtils.removeGas(itemStack, gas, injectTank.getNeeded()), ChemicalAction.EXECUTE);
+                        injectTank.fill(GasUtils.removeGas(itemStack, gas, injectTank.getNeeded()), Action.EXECUTE);
                     }
                 }
             }
@@ -199,7 +199,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
             return injectTank.fill(stack, action);
         }
@@ -208,7 +208,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return GasStack.EMPTY;
     }
 

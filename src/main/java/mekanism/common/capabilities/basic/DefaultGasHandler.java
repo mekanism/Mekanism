@@ -1,12 +1,12 @@
-package mekanism.common.capabilities;
+package mekanism.common.capabilities.basic;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.ChemicalAction;
+import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
+import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -17,13 +17,13 @@ public class DefaultGasHandler implements IGasHandler {
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, ChemicalAction action) {
+    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, ChemicalAction action) {
+    public GasStack drawGas(Direction side, int amount, Action action) {
         return GasStack.EMPTY;
     }
 
