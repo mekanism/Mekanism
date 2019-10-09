@@ -8,9 +8,9 @@ import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_OUTPUT_
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.inventory.slot.SlotSpecific;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.container.slot.SlotOutput;
+import mekanism.common.inventory.container.slot.SlotSpecific;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.ChargeUtils;

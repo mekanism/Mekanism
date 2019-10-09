@@ -17,6 +17,7 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -89,7 +90,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
-      ITileContainer, ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile {
+      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory {
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
 

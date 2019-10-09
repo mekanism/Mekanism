@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotOutput;
+import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.PlayerEntity;

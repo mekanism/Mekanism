@@ -1,4 +1,4 @@
-package mekanism.common.inventory.slot;
+package mekanism.common.inventory.container.slot;
 
 import mekanism.common.base.IUpgradeItem;
 import net.minecraft.inventory.IInventory;

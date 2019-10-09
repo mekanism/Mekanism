@@ -3,7 +3,7 @@ package mekanism.generators.common.inventory.container.fuel;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.FuelHandler;
-import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.entity.player.PlayerInventory;

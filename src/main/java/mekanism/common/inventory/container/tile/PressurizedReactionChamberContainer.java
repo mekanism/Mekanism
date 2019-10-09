@@ -2,8 +2,8 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotOutput;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;

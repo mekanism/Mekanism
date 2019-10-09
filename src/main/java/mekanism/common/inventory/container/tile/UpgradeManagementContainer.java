@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
+import mekanism.common.inventory.container.slot.SlotMachineUpgrade;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

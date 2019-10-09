@@ -2,6 +2,7 @@ package mekanism.api.inventory.slot;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;

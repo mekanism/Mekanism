@@ -1,8 +1,8 @@
 package mekanism.common.inventory.container.tile.energy;
 
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotCharge;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityInductionCasing;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;

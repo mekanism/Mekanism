@@ -1,7 +1,7 @@
 package mekanism.generators.common.inventory.container.fuel;
 
 import mekanism.common.base.LazyOptionalHelper;
-import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityBioGenerator;

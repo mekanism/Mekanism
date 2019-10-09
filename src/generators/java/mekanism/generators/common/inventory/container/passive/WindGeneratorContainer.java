@@ -1,6 +1,6 @@
 package mekanism.generators.common.inventory.container.passive;
 
-import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.PlayerInventory;

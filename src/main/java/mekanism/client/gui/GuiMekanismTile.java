@@ -56,7 +56,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     private SideData getFromSlot(Slot slot) {
-        if (slot.slotNumber < tileEntity.getSizeInventory()) {
+        if (slot.slotNumber < tileEntity.getSlots()) {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
             List<SideData> datas = config.getConfig().getOutputs(TransmissionType.ITEM);
             if (datas != null) {

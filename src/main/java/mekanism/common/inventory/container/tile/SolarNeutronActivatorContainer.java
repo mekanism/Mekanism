@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotStorageTank;
+import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

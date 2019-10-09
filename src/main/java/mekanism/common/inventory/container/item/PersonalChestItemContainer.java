@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.item;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotPersonalChest;
+import mekanism.common.inventory.container.slot.SlotPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

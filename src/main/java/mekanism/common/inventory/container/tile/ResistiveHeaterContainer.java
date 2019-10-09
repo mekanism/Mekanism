@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;

@@ -3,7 +3,6 @@ package mekanism.common.base;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
-import net.minecraft.inventory.IInventory;
 
 /*@InterfaceList({
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
@@ -11,7 +10,7 @@ import net.minecraft.inventory.IInventory;
       @Interface(iface = "ic2.api.energy.tile.IEnergyEmitter", modid = MekanismHooks.IC2_MOD_ID),
       @Interface(iface = "ic2.api.tile.IEnergyStorage", modid = MekanismHooks.IC2_MOD_ID)
 })*/
-public interface IEnergyWrapper extends IStrictEnergyStorage, IStrictEnergyAcceptor, IStrictEnergyOutputter, IInventory {
+public interface IEnergyWrapper extends IStrictEnergyStorage, IStrictEnergyAcceptor, IStrictEnergyOutputter {
 
     double getMaxOutput();
 

@@ -9,6 +9,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IMekWrench;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
@@ -30,7 +32,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.network.PacketBuffer;
@@ -125,25 +126,29 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     return ActionResultType.SUCCESS;
                 }
             } else if (getState(stack) == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof TileEntityMekanism) {
-                    if (SecurityUtils.canAccess(player, tile)) {
-                        //TODO: Switch this to items being handled by TECB, energy handled here (via lambdas?)
-                        IInventory inv = (IInventory) tile;
-                        for (int i = 0; i < inv.getSizeInventory(); i++) {
-                            ItemStack slotStack = inv.getStackInSlot(i);
-                            if (!slotStack.isEmpty()) {
-                                if (getEnergy(stack) < ENERGY_PER_ITEM_DUMP) {
-                                    break;
+                if (tile instanceof IMekanismInventory) {
+                    IMekanismInventory inv = (IMekanismInventory) tile;
+                    if (inv.hasInventory()) {
+                        if (SecurityUtils.canAccess(player, tile)) {
+                            //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
+                            List<IInventorySlot> inventorySlots = inv.getInventorySlots(null);
+                            for (IInventorySlot inventorySlot : inventorySlots) {
+                                ItemStack slotStack = inventorySlot.getStack();
+                                if (!slotStack.isEmpty()) {
+                                    double configuratorEnergy = getEnergy(stack);
+                                    if (configuratorEnergy < ENERGY_PER_ITEM_DUMP) {
+                                        break;
+                                    }
+                                    Block.spawnAsEntity(world, pos, slotStack.copy());
+                                    inventorySlot.setStack(ItemStack.EMPTY);
+                                    setEnergy(stack, configuratorEnergy - ENERGY_PER_ITEM_DUMP);
                                 }
-                                Block.spawnAsEntity(world, pos, slotStack.copy());
-                                inv.setInventorySlotContents(i, ItemStack.EMPTY);
-                                setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
                             }
+                            return ActionResultType.SUCCESS;
+                        } else {
+                            SecurityUtils.displayNoAccess(player);
+                            return ActionResultType.FAIL;
                         }
-                        return ActionResultType.SUCCESS;
-                    } else {
-                        SecurityUtils.displayNoAccess(player);
-                        return ActionResultType.FAIL;
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.ROTATE) { //Rotate

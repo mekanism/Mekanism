@@ -3,16 +3,16 @@ package mekanism.common.util;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
 
 public final class ChargeUtils {
 
@@ -32,29 +32,33 @@ public final class ChargeUtils {
      * @param storer - TileEntity the item is being charged in
      */
     public static void discharge(int slotID, IStrictEnergyStorage storer) {
-        //TODO: Switch to item handler
-        IInventory inv = (TileEntityMekanism) storer;
-        ItemStack stack = inv.getStackInSlot(slotID);
-        if (!stack.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
-            LazyOptional<IEnergyStorage> forgeCapability;
-            if (stack.getItem() instanceof IEnergizedItem) {
-                storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(stack, storer.getMaxEnergy() - storer.getEnergy()));
-            } else if (MekanismUtils.useForge() && (forgeCapability = stack.getCapability(CapabilityEnergy.ENERGY)).isPresent()) {
-                forgeCapability.ifPresent(storage -> {
-                    if (storage.canExtract()) {
-                        int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
-                        storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
-                    }
-                });
+        if (storer instanceof IItemHandler) {
+            if (storer instanceof IMekanismInventory && !((IMekanismInventory) storer).hasInventory()) {
+                return;
             }
-            //TODO: IC2
-            /*else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
-                double gain = IC2Integration.fromEU(ElectricItem.manager.discharge(stack, IC2Integration.toEU(storer.getMaxEnergy() - storer.getEnergy()), 4, true, true, false));
-                storer.setEnergy(storer.getEnergy() + gain);
-            }*/
-            else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= storer.getMaxEnergy()) {
-                storer.setEnergy(storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
-                stack.shrink(1);
+            IItemHandler inv = (IItemHandler) storer;
+            ItemStack stack = inv.getStackInSlot(slotID);
+            if (!stack.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
+                LazyOptional<IEnergyStorage> forgeCapability;
+                if (stack.getItem() instanceof IEnergizedItem) {
+                    storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(stack, storer.getMaxEnergy() - storer.getEnergy()));
+                } else if (MekanismUtils.useForge() && (forgeCapability = stack.getCapability(CapabilityEnergy.ENERGY)).isPresent()) {
+                    forgeCapability.ifPresent(storage -> {
+                        if (storage.canExtract()) {
+                            int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
+                            storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
+                        }
+                    });
+                }
+                //TODO: IC2
+                /*else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
+                    double gain = IC2Integration.fromEU(ElectricItem.manager.discharge(stack, IC2Integration.toEU(storer.getMaxEnergy() - storer.getEnergy()), 4, true, true, false));
+                    storer.setEnergy(storer.getEnergy() + gain);
+                }*/
+                else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= storer.getMaxEnergy()) {
+                    storer.setEnergy(storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
+                    stack.shrink(1);
+                }
             }
         }
     }
@@ -67,8 +71,11 @@ public final class ChargeUtils {
      */
     public static void charge(int slotID, IStrictEnergyStorage storer) {
         //TODO: Switch to item handler
-        IInventory inv = (TileEntityMekanism) storer;
-        charge(inv.getStackInSlot(slotID), storer);
+        if (storer instanceof IItemHandler) {
+            if (!(storer instanceof IMekanismInventory) || ((IMekanismInventory) storer).hasInventory()) {
+                charge(((IItemHandler) storer).getStackInSlot(slotID), storer);
+            }
+        }
     }
 
     /**

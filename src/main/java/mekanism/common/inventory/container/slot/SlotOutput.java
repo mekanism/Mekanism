@@ -1,4 +1,4 @@
-package mekanism.common.inventory.slot;
+package mekanism.common.inventory.container.slot;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;

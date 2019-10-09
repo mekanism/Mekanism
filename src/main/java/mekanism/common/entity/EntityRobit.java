@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
@@ -30,7 +31,6 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -59,7 +59,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: Galaticraft
 //@Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = MekanismHooks.GALACTICRAFT_MOD_ID)
-public class EntityRobit extends CreatureEntity implements IInventory, ISustainedInventory {
+public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory {
 
     private static final DataParameter<Float> ELECTRICITY = EntityDataManager.createKey(EntityRobit.class, DataSerializers.FLOAT);
     private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
