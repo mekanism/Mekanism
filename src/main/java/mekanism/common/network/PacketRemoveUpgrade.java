@@ -2,9 +2,9 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.common.Upgrade;
-import mekanism.common.base.IUpgradeTile;
+import mekanism.api.Upgrade;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -27,10 +27,10 @@ public class PacketRemoveUpgrade {
         }
         context.get().enqueueWork(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-            if (tileEntity instanceof IUpgradeTile && tileEntity instanceof TileEntityMekanism) {
-                IUpgradeTile upgradeTile = (IUpgradeTile) tileEntity;
-                if (upgradeTile.getComponent().getUpgrades(message.upgradeType) > 0) {
-                    if (player.inventory.addItemStackToInventory(message.upgradeType.getStack())) {
+            if (tileEntity instanceof TileEntityMekanism) {
+                TileEntityMekanism upgradeTile = (TileEntityMekanism) tileEntity;
+                if (upgradeTile.supportsUpgrades() && upgradeTile.getComponent().getUpgrades(message.upgradeType) > 0) {
+                    if (player.inventory.addItemStackToInventory(UpgradeUtils.getStack(message.upgradeType))) {
                         upgradeTile.getComponent().removeUpgrade(message.upgradeType);
                     }
                 }

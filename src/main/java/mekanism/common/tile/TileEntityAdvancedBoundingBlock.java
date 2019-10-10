@@ -1,18 +1,18 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
-import mekanism.common.util.InventoryUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -23,144 +23,10 @@ import net.minecraftforge.common.util.LazyOptional;
 /*@InterfaceList({
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })*/
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IMekanismInventory, IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
 
     public TileEntityAdvancedBoundingBlock() {
         super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return true;
-        }
-        return inv.isEmpty();
-    }
-
-    @Override
-    public int getSizeInventory() {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return 0;
-        }
-        return inv.getSizeInventory();
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getStackInSlot(int i) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return ItemStack.EMPTY;
-        }
-        return inv.getStackInSlot(i);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack decrStackSize(int i, int j) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return ItemStack.EMPTY;
-        }
-        return inv.decrStackSize(i, j);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack removeStackFromSlot(int i) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return ItemStack.EMPTY;
-        }
-        return inv.removeStackFromSlot(i);
-    }
-
-    @Override
-    public void setInventorySlotContents(int i, @Nonnull ItemStack itemstack) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return;
-        }
-        inv.setInventorySlotContents(i, itemstack);
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return 0;
-        }
-        return inv.getInventoryStackLimit();
-    }
-
-    @Override
-    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.isUsableByPlayer(entityplayer);
-    }
-
-    @Override
-    public void openInventory(@Nonnull PlayerEntity player) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return;
-        }
-        inv.openInventory(player);
-    }
-
-    @Override
-    public void closeInventory(@Nonnull PlayerEntity player) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return;
-        }
-        inv.closeInventory(player);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.isItemValidForSlot(i, itemstack);
-    }
-
-    @Override
-    public void clear() {
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return InventoryUtils.EMPTY;
-        }
-        return inv.getSlotsForFace(side);
-    }
-
-    @Override
-    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nullable Direction side) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.canInsertItem(i, itemstack, side);
-    }
-
-    @Override
-    public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.canExtractItem(i, itemstack, side);
     }
 
     @Override
@@ -310,5 +176,15 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return super.getCapability(capability, side);
         }
         return inv.getOffsetCapability(capability, side, pos.subtract(getMainPos()));
+    }
+
+    @Nonnull
+    @Override
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        IAdvancedBoundingBlock inv = getInv();
+        if (inv == null) {
+            return Collections.emptyList();
+        }
+        return inv.getInventorySlots(side);
     }
 }

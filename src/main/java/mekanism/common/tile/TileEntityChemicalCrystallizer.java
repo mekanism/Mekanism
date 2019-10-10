@@ -57,7 +57,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
     public TileEntityChemicalCrystallizer() {
-        super(MekanismBlock.CHEMICAL_CRYSTALLIZER, 3, 200);
+        super(MekanismBlock.CHEMICAL_CRYSTALLIZER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
@@ -77,7 +77,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
         inputHandler = InputHelper.getInputHandler(inputTank);
-        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 1);
+        outputHandler = OutputHelper.getOutputHandler(this, 1);
+
+        //TODO: Upgrade slot index: 3
     }
 
     @Override

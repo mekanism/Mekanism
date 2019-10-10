@@ -15,7 +15,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismGases;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -90,13 +90,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
      * The nodes that have full sources near them or in them
      */
     public Set<Coord4D> recurringNodes = new HashSet<>();
-    public TileComponentUpgrade<TileEntityElectricPump> upgradeComponent = new TileComponentUpgrade<>(this, 3);
 
     private int currentRedstoneLevel;
 
     public TileEntityElectricPump() {
         super(MekanismBlock.ELECTRIC_PUMP);
-        upgradeComponent.setSupported(Upgrade.FILTER);
+        //TODO: Upgrade slot index: 3
     }
 
     @Override
@@ -150,7 +149,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     public boolean hasFilter() {
-        return upgradeComponent.getInstalledTypes().contains(Upgrade.FILTER);
+        return upgradeComponent.isUpgradeInstalled(Upgrade.FILTER);
     }
 
     public boolean suck(boolean take) {
@@ -393,11 +392,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
-    }
-
-    @Override
     public Object[] getTanks() {
         return new Object[]{fluidTank};
     }
@@ -418,15 +412,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
-        switch (upgrade) {
-            case SPEED:
-                ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-                setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-            default:
-                break;
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
     }
 

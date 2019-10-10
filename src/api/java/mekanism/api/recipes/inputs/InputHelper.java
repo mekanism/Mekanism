@@ -1,15 +1,13 @@
 package mekanism.api.recipes.inputs;
 
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.Action;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -17,60 +15,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class InputHelper {
 
-    //TODO: 1.14, Switch to using an IItemHandler so we don't have to have this being a supplier
-    public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull Supplier<NonNullList<ItemStack>> inventory, int slot) {
-        return new IInputHandler<@NonNull ItemStack>() {
-
-            @Nonnull
-            private NonNullList<ItemStack> getInventory() {
-                return inventory.get();
-            }
-
-            @Override
-            public @NonNull ItemStack getInput() {
-                return getInventory().get(slot);
-            }
-
-            @Override
-            public @NonNull ItemStack getRecipeInput(InputIngredient<@NonNull ItemStack> recipeIngredient) {
-                ItemStack input = getInput();
-                if (input.isEmpty()) {
-                    //All recipes currently require that we have an input. If we don't then return that we failed
-                    return ItemStack.EMPTY;
-                }
-                return recipeIngredient.getMatchingInstance(input);
-            }
-
-            @Override
-            public void use(@NonNull ItemStack recipeInput, int operations) {
-                if (operations == 0) {
-                    //Just exit if we are somehow here at zero operations
-                    return;
-                }
-                if (!recipeInput.isEmpty()) {
-                    //TODO: Should this be done in some other way than shrink, such as via an IItemHandler, 1.14
-                    //TODO: If this would make the stack empty, we should just set the inventory slot to empty instead of using shrink
-                    getInput().shrink(recipeInput.getCount() * operations);
-                }
-            }
-
-            @Override
-            public int operationsCanSupport(InputIngredient<@NonNull ItemStack> recipeIngredient, int currentMax) {
-                if (currentMax == 0) {
-                    //Short circuit that if we already can't perform any operations, just return
-                    return 0;
-                }
-                ItemStack recipeInput = getRecipeInput(recipeIngredient);
-                if (recipeInput.isEmpty()) {
-                    //If the input is empty that means there is no ingredient that matches
-                    return 0;
-                }
-                return Math.min(getInput().getCount() / recipeInput.getCount(), currentMax);
-            }
-        };
-    }
-
-    //TODO: Ideally if we can use an IItemHandler, then in theory we don't have to make it a supplier
+    //TODO: Add support for using IInventorySlot as a reference for an input handler?? That way we even more directly cache accessing the slot's information
     public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull IItemHandler inventory, int slot) {
         return new IInputHandler<@NonNull ItemStack>() {
 

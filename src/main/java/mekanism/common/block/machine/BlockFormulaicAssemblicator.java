@@ -1,8 +1,11 @@
 package mekanism.common.block.machine;
 
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
@@ -171,5 +174,11 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
     @Override
     public TileEntityType<TileEntityFormulaicAssemblicator> getTileType() {
         return MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Upgrade> getSupportedUpgrade() {
+        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY);
     }
 }

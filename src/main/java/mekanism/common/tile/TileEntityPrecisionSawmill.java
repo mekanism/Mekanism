@@ -37,7 +37,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
     public TileEntityPrecisionSawmill() {
-        super(MekanismBlock.PRECISION_SAWMILL, 3, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
+        super(MekanismBlock.PRECISION_SAWMILL, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
@@ -51,8 +51,10 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 
-        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
-        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2, 4);
+        inputHandler = InputHelper.getInputHandler(this, 0);
+        outputHandler = OutputHelper.getOutputHandler(this, 2, 4);
+
+        //TODO: Upgrade slot index: 3
     }
 
     @Override

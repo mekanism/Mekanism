@@ -1,16 +1,20 @@
 package mekanism.common.tile.prefab;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.Action;
+import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -22,15 +26,16 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -42,7 +47,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -76,7 +80,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
     public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired, int secondaryPerTick) {
-        super(blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "advanced_machine.png"));
+        super(blockProvider, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "advanced_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
@@ -99,15 +103,28 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
-        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        itemInputHandler = InputHelper.getInputHandler(this, 0);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
-        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2);
+        outputHandler = OutputHelper.getOutputHandler(this, 2);
+    }
+
+    @Nonnull
+    @Override
+    protected List<IInventorySlot> getInitialInventory() {
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        List<IInventorySlot> inventory = new ArrayList<>();
+        inventory.add(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item))));
+        inventory.add(new GasInventorySlot(gasTank, this::isValidGas));
+        inventory.add(new OutputInventorySlot());
+        inventory.add(new EnergyInventorySlot());
+        return inventory;
     }
 
     @Override
     protected void upgradeInventory(TileEntityFactory factory) {
+        //TODO: Upgrade
         //Advanced Machine
-        if (factory instanceof TileEntityItemStackGasToItemStackFactory) {
+        /*if (factory instanceof TileEntityItemStackGasToItemStackFactory) {
             ((TileEntityItemStackGasToItemStackFactory) factory).gasTank.setStack(gasTank.getStack());
         }
 
@@ -117,7 +134,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         factoryInventory.set(4, inventory.get(1));
         factoryInventory.set(5 + 3, inventory.get(2));
         factoryInventory.set(1, inventory.get(3));
-        factoryInventory.set(0, inventory.get(4));
+        factoryInventory.set(0, inventory.get(4));*/
     }
 
     /**
@@ -173,22 +190,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     }
 
     public boolean useStatisticalMechanics() {
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 2) {
-            return false;
-        } else if (slotID == 4) {
-            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
-        } else if (slotID == 0) {
-            return containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
-        } else if (slotID == 3) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        } else if (slotID == 1) {
-            return !getItemGas(itemstack).isEmpty();
-        }
         return false;
     }
 
@@ -263,14 +264,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
      */
     public int getScaledGasLevel(int i) {
         return gasTank.getStored() * i / gasTank.getCapacity();
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 3) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 2;
     }
 
     @Override

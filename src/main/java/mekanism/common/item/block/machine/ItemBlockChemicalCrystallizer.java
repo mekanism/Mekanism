@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.block.RenderChemicalCrystallizerItem;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.block.machine.BlockChemicalCrystallizer;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;

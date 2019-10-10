@@ -15,8 +15,8 @@ public abstract class TileEntityUpgradeableMachine<RECIPE extends MekanismRecipe
      *
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityUpgradeableMachine(IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super(blockProvider, upgradeSlot, baseTicksRequired, location);
+    public TileEntityUpgradeableMachine(IBlockProvider blockProvider, int baseTicksRequired, ResourceLocation location) {
+        super(blockProvider, baseTicksRequired, location);
     }
 
     @Override

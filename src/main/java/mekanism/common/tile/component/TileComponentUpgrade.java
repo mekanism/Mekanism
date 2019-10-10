@@ -5,19 +5,20 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
-import mekanism.common.base.IUpgradeTile;
+import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 
-public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile> implements ITileComponent {
+public class TileComponentUpgrade<TILE extends TileEntityMekanism> implements ITileComponent {
 
     /**
      * How long it takes this machine to install an upgrade.
@@ -36,31 +37,21 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
     /**
      * The inventory slot the upgrade slot of this component occupies.
      */
-    private int upgradeSlot;
+    private UpgradeInventorySlot upgradeSlot;
 
-    public TileComponentUpgrade(TILE tile, int slot) {
+    public TileComponentUpgrade(TILE tile, @Nonnull UpgradeInventorySlot slot) {
         tileEntity = tile;
         upgradeSlot = slot;
-        setSupported(Upgrade.SPEED);
-        setSupported(Upgrade.ENERGY);
+        slot.getSupportedUpgrade().forEach(this::setSupported);
         tile.addComponent(this);
     }
 
-    public void readFrom(TileComponentUpgrade upgrade) {
-        upgrades = upgrade.upgrades;
-        supported = upgrade.supported;
-        upgradeSlot = upgrade.upgradeSlot;
-        upgradeTicks = upgrade.upgradeTicks;
-    }
-
-    // This SHOULD continue to directly use te.inventory, as it is needed for Entangleporter upgrades, since it messes with IInventory.
     @Override
     public void tick() {
         if (!tileEntity.isRemote()) {
-            NonNullList<ItemStack> inventory = tileEntity.getInventory();
-            //TODO: Check this, inventory can be empty with quantum entangloporter with no frequency
-            if (!inventory.isEmpty() && !inventory.get(upgradeSlot).isEmpty() && inventory.get(upgradeSlot).getItem() instanceof IUpgradeItem) {
-                Upgrade type = ((IUpgradeItem) inventory.get(upgradeSlot).getItem()).getUpgradeType(inventory.get(upgradeSlot));
+            ItemStack stack = upgradeSlot.getStack();
+            if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem) {
+                Upgrade type = ((IUpgradeItem) stack.getItem()).getUpgradeType(stack);
 
                 if (supports(type) && getUpgrades(type) < type.getMax()) {
                     if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
@@ -68,6 +59,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
                     } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                         upgradeTicks = 0;
                         addUpgrade(type);
+                        //TODO: We are unable to shrink here as
                         inventory.get(upgradeSlot).shrink(1);
                         Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                         tileEntity.markDirty();
@@ -81,12 +73,8 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
         }
     }
 
-    public int getUpgradeSlot() {
+    public UpgradeInventorySlot getUpgradeSlot() {
         return upgradeSlot;
-    }
-
-    public void setUpgradeSlot(int i) {
-        upgradeSlot = i;
     }
 
     public int getScaledUpgradeProgress(int i) {
@@ -127,6 +115,10 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
 
     public boolean supports(Upgrade upgrade) {
         return supported.contains(upgrade);
+    }
+
+    public boolean isUpgradeInstalled(Upgrade upgrade) {
+        return upgrades.containsKey(upgrade);
     }
 
     public Set<Upgrade> getInstalledTypes() {

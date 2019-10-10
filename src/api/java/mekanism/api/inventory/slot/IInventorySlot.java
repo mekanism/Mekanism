@@ -8,7 +8,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-//TODO: Handle persistence somewhere, so that we can load/save the slots in an IMekanismInventory
+//TODO: Handle persistence somewhere, so that we can load/save the slots in an IMekanismInventory.
+// Wherever we handle this we have to make sure to mark it dirty on change Or at least mark the tile dirty
+//TODO: Maybe rename to ISlotHandler
 public interface IInventorySlot {
 
     /**

@@ -21,7 +21,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
@@ -61,12 +61,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
     public TileEntityChemicalDissolutionChamber() {
-        super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, 4, BASE_TICKS_REQUIRED);
+        super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
         upgradeComponent.setSupported(Upgrade.GAS);
 
-        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        itemInputHandler = InputHelper.getInputHandler(this, 0);
         gasInputHandler = InputHelper.getInputHandler(injectTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+
+        //TODO: Upgrade slot index: 4
     }
 
     @Override
@@ -278,15 +280,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        switch (upgrade) {
-            case GAS:
-                injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
-                break;
-            case SPEED:
-                injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
-                break;
-            default:
-                break;
+        if (upgrade == Upgrade.GAS || upgrade == Upgrade.SPEED) {
+            injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
         }
     }
 

@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismKeyHandler;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.component.TileComponentUpgrade;

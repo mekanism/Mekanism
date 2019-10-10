@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.block.machine.BlockLogisticalSorter;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;

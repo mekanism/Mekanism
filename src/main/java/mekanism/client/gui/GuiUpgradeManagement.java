@@ -8,7 +8,7 @@ import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -17,9 +17,11 @@ import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -92,7 +94,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
             renderText(TextComponentUtil.build(selectedType, " ", Translation.of("gui.mekanism.upgrade")), 92, 8, 0.6F, true);
             renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
             int text = 0;
-            for (ITextComponent component : selectedType.getInfo(tileEntity)) {
+            for (ITextComponent component : UpgradeUtils.getInfo(tileEntity, selectedType)) {
                 renderText(component, 92, 22 + (6 * text++), 0.6F, true);
             }
         }
@@ -118,7 +120,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
             drawString(TextComponentUtil.build(upgrade), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
-                displayTooltip(TextComponentUtil.build(Translation.of(upgrade.getDescription()), upgrade.getStack()), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(Translation.of(upgrade.getDescription()), UpgradeUtils.getStack(upgrade)), xAxis, yAxis);
             }
         }
 
@@ -138,10 +140,11 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     }
 
     private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale) {
+        ItemStack stack = UpgradeUtils.getStack(type);
         if (scale) {
-            renderItem(type.getStack(), (int) ((float) x / size), (int) ((float) y / size), size);
+            renderItem(stack, (int) ((float) x / size), (int) ((float) y / size), size);
         } else {
-            renderItem(type.getStack(), x, y, size);
+            renderItem(stack, x, y, size);
         }
     }
 

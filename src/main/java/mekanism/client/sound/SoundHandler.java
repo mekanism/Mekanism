@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;

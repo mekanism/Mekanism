@@ -5,7 +5,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.MekanismUtils;
@@ -24,8 +24,8 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     //TODO: Protected?
     public CachedRecipe<RECIPE> cachedRecipe = null;
 
-    protected TileEntityOperationalMachine(IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired) {
-        super(blockProvider, upgradeSlot);
+    protected TileEntityOperationalMachine(IBlockProvider blockProvider, int baseTicksRequired) {
+        super(blockProvider);
         ticksRequired = BASE_TICKS_REQUIRED = baseTicksRequired;
     }
 
@@ -79,16 +79,9 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        switch (upgrade) {
-            case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage())); // incorporate speed upgrades
-                break;
-            case SPEED:
-                ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                break;
-            default:
-                break;
+        if (upgrade == Upgrade.SPEED) {
+            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+            setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
         }
     }
 

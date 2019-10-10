@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 
+@Deprecated
 public interface ITileContainer extends ISidedInventory, ISustainedInventory {
 
     default boolean hasInventory() {

@@ -17,7 +17,8 @@ public class BasicInventorySlot implements IInventorySlot {
     private final Predicate<@NonNull ItemStack> validator;
     @Nonnull
     private ItemStack current = ItemStack.EMPTY;
-    private final boolean canExtract;
+    private final Predicate<@NonNull ItemStack> canExtract;
+    //TODO: Should the canInsert be removed entirely, as it basically gets covered by the validator
     private final boolean canInsert;
     private final int limit;
 
@@ -26,14 +27,14 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public BasicInventorySlot(int limit) {
-        this(limit, true, true);
+        this(limit, item -> true, true);
     }
 
-    public BasicInventorySlot(boolean canExtract, boolean canInsert) {
+    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, boolean canInsert) {
         this(DEFAULT_LIMIT, canExtract, canInsert);
     }
 
-    public BasicInventorySlot(int limit, boolean canExtract, boolean canInsert) {
+    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, boolean canInsert) {
         this(limit, canExtract, canInsert, stack -> true);
     }
 
@@ -42,14 +43,14 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public BasicInventorySlot(int limit, @Nonnull Predicate<@NonNull ItemStack> validator) {
-        this(limit, true, true, validator);
+        this(limit, item -> true, true, validator);
     }
 
-    public BasicInventorySlot(boolean canExtract, boolean canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
+    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, boolean canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
         this(DEFAULT_LIMIT, canExtract, canInsert, validator);
     }
 
-    public BasicInventorySlot(int limit, boolean canExtract, boolean canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
+    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, boolean canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
         this.limit = limit;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -60,6 +61,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public ItemStack getStack() {
         //TODO: Should we return a copy to ensure that our stack is not modified, we could cache our copy and only update it at given times
+        //TODO: YES it will help expose bugs, and we need to make sure that we are not calling shrink/grow on anything we should not be
         return current;
     }
 
@@ -94,7 +96,6 @@ public class BasicInventorySlot implements IInventorySlot {
         }
         boolean sameType = false;
         if (current.isEmpty() && isItemValid(stack) || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
-            //TODO: Decide if we should make the isItemValid be checked EVEN if it can stack with the current item
             int maxToAdd = stack.getCount();
             //Cap our max size at the limit or the max size of our new stack
             // Note: If we already have a stack then we know it is the same type as our current stack, so the result of getMaxStackSize should be the same
@@ -159,6 +160,6 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     protected boolean canExtract() {
-        return canExtract;
+        return canExtract.test(current);
     }
 }

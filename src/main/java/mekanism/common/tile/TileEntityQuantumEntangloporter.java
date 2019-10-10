@@ -19,7 +19,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData.IOState;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
@@ -65,7 +65,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
       IGasHandler, IHeatTransfer, IComputerIntegration, IChunkLoader, IUpgradeTile {
 
-    private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
     private static final String[] methods = new String[]{"setFrequency"};
     public InventoryFrequency frequency;
     public double heatToAbsorb = 0;
@@ -76,7 +75,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
-    public TileComponentUpgrade<TileEntityQuantumEntangloporter> upgradeComponent;
 
     public TileEntityQuantumEntangloporter() {
         super(MekanismBlock.QUANTUM_ENTANGLOPORTER);
@@ -101,9 +99,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         chunkLoaderComponent = new TileComponentChunkLoader(this);
 
-        upgradeComponent = new TileComponentUpgrade<>(this, 0);
-        upgradeComponent.clearSupportedTypes();
-        upgradeComponent.setSupported(Upgrade.ANCHOR);
+        //TODO: Upgrade slot index: 0
     }
 
     @Override
@@ -590,15 +586,5 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         Set<ChunkPos> ret = new HashSet<>();
         ret.add(new Chunk3D(Coord4D.get(this)).getPos());
         return ret;
-    }
-
-    @Override
-    public TileComponentUpgrade getComponent() {
-        return this.upgradeComponent;
-    }
-
-    @Override
-    public void recalculateUpgrades(Upgrade upgradeType) {
-
     }
 }

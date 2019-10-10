@@ -24,7 +24,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -69,7 +69,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
     public TileEntityPressurizedReactionChamber() {
-        super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 3, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
+        super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
@@ -94,10 +94,12 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
         ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
 
-        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        itemInputHandler = InputHelper.getInputHandler(this, 0);
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputGasTank);
-        outputHandler = OutputHelper.getOutputHandler(outputGasTank, () -> inventory, 2);
+        outputHandler = OutputHelper.getOutputHandler(outputGasTank, this, 2);
+
+        //TODO: Upgrade slot index: 3
     }
 
     @Override

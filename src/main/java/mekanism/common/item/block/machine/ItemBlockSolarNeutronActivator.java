@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;

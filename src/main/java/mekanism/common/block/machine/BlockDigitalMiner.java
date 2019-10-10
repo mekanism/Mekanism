@@ -1,8 +1,11 @@
 package mekanism.common.block.machine;
 
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -173,5 +176,11 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     @Override
     public TileEntityType<TileEntityDigitalMiner> getTileType() {
         return MekanismTileEntityTypes.DIGITAL_MINER;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Upgrade> getSupportedUpgrade() {
+        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR);
     }
 }

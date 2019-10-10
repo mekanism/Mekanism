@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -24,7 +25,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -40,7 +40,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityBin extends TileEntityMekanism implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
+public class TileEntityBin extends TileEntityMekanism implements IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
 
     private static final int[] UPSLOTS = {1};
     private static final int[] DOWNSLOTS = {0};
@@ -368,14 +368,6 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     }
 
     @Override
-    public void openInventory(@Nonnull PlayerEntity player) {
-    }
-
-    @Override
-    public void closeInventory(@Nonnull PlayerEntity player) {
-    }
-
-    @Override
     public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack) {
         return i == 1 && isValid(itemstack);
     }
@@ -383,10 +375,6 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
     @Override
     public boolean isEmpty() {
         return getItemCount() == 0;
-    }
-
-    @Override
-    public void clear() {
     }
 
     @Nonnull
@@ -496,6 +484,7 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            //TODO: Shouldn't this be returning the stack for if slot is not zero???
             return slot != 0 ? ItemStack.EMPTY : tileEntityBin.add(stack, simulate);
         }
 

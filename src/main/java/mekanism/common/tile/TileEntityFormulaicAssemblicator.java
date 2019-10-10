@@ -10,7 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -70,7 +70,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private Optional<ICraftingRecipe> cachedRecipe = Optional.empty();
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
-    public TileComponentUpgrade<TileEntityFormulaicAssemblicator> upgradeComponent;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
@@ -91,7 +90,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{0, 0, 0, 3, 1, 2});
         configComponent.setInputConfig(TransmissionType.ENERGY);
 
-        upgradeComponent = new TileComponentUpgrade<>(this, SLOT_UPGRADE);
+        //TODO: Upgrade slot index: SLOT_UPGRADE
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
@@ -579,29 +578,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
-    }
-
-    @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
     }
 
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
-        switch (upgrade) {
-            case SPEED:
-                ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                break;
-            case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-                setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-                break;
-            default:
-                break;
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+            setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
         }
     }
 

@@ -95,7 +95,7 @@ public abstract class BlockTileDrops extends Block {
         if (tile.supportsRedstone()) {
             ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
         }
-        if (item instanceof ISustainedInventory && tile.hasInventory() && tile.getSizeInventory() > 0) {
+        if (item instanceof ISustainedInventory && tile.hasInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
@@ -150,7 +150,7 @@ public abstract class BlockTileDrops extends Block {
     }*/
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops}. Used together with {@link
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge

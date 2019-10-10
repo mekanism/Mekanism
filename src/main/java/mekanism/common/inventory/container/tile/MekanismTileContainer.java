@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
@@ -47,7 +48,19 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
 
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity player) {
-        return tile == null || tile.isUsableByPlayer(player);
+        if (tile == null) {
+            return true;
+        }
+        //TODO: Do we need to check hasInventory, or is checking hasGui enough
+        if ((tile.hasInventory() || tile.hasGui()) && !tile.isRemoved()) {
+            //prevent Containers from remaining valid after the chunk has unloaded;
+            World world = tile.getWorld();
+            if (world == null) {
+                return false;
+            }
+            return world.isAreaLoaded(tile.getPos(), 0);
+        }
+        return false;
     }
 
     public static <TILE extends TileEntity> TILE getTileFromBuf(PacketBuffer buf, Class<TILE> type) {

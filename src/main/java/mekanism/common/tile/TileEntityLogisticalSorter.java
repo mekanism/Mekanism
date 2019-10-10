@@ -11,7 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -59,7 +59,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public boolean singleItem;
     public int rrIndex = 0;
     public int delayTicks;
-    public TileComponentUpgrade<TileEntityLogisticalSorter> upgradeComponent;
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "setSingleItem"};
     private int currentRedstoneLevel;
 
@@ -67,9 +66,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         super(MekanismBlock.LOGISTICAL_SORTER);
         rapidChangeThreshold = 3;
         doAutoSync = false;
-        upgradeComponent = new TileComponentUpgrade<>(this, 1);
-        upgradeComponent.clearSupportedTypes();
-        upgradeComponent.setSupported(Upgrade.MUFFLING);
+        //TODO: Upgrade slot index: 1
     }
 
     @Override
@@ -605,16 +602,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             return side != null && side != getDirection() && side != getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
-    }
-
-    @Override
-    public void recalculateUpgrades(Upgrade upgradeType) {
-
     }
 
     @Override

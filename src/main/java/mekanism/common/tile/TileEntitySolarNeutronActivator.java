@@ -3,11 +3,13 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
+import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -24,8 +26,6 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
-import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
@@ -39,6 +39,7 @@ import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -72,14 +73,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private boolean settingsChecked;
     private boolean needsRainCheck;
 
-    public TileComponentUpgrade<TileEntitySolarNeutronActivator> upgradeComponent = new TileComponentUpgrade<>(this, 3);
-
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
     public TileEntitySolarNeutronActivator() {
         super(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
-        upgradeComponent.setSupported(Upgrade.ENERGY, false);
+        //TODO: Upgrade slot index: 3
 
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
@@ -298,18 +297,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
-    }
-
-    @Override
-    public void recalculateUpgrades(Upgrade upgradeType) {
-
-    }
-
-    @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Nonnull

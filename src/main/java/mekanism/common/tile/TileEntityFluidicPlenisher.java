@@ -13,7 +13,7 @@ import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -71,12 +71,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      * How many ticks this machine has been operating for.
      */
     public int operatingTicks;
-    public TileComponentUpgrade<TileEntityFluidicPlenisher> upgradeComponent = new TileComponentUpgrade<>(this, 3);
 
     private int currentRedstoneLevel;
 
     public TileEntityFluidicPlenisher() {
         super(MekanismBlock.FLUIDIC_PLENISHER);
+        //TODO: Upgrade slot index: 3
     }
 
     @Override
@@ -383,21 +383,10 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
-    }
-
-    @Override
     public void recalculateUpgrades(Upgrade upgrade) {
-        switch (upgrade) {
-            case SPEED:
-                ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-                setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-            default:
-                break;
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
     }
 

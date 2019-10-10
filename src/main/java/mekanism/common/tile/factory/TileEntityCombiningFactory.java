@@ -20,7 +20,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     public TileEntityCombiningFactory(IBlockProvider blockProvider) {
         super(blockProvider);
-        extraInputHandler = InputHelper.getInputHandler(() -> inventory, EXTRA_SLOT_ID);
+        extraInputHandler = InputHelper.getInputHandler(this, EXTRA_SLOT_ID);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         CachedRecipe<CombinerRecipe> cached = getCachedRecipe(process);
         if (cached != null) {
             CombinerRecipe cachedRecipe = cached.getRecipe();
-            ItemStack extra = inventory.get(EXTRA_SLOT_ID);
+            ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
             if (cachedRecipe.getMainInput().testType(fallbackInput) && (extra.isEmpty() || cachedRecipe.getExtraInput().testType(extra))) {
                 //Our input matches the recipe we have cached for this slot
                 return true;
@@ -52,7 +52,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
-        ItemStack extra = inventory.get(EXTRA_SLOT_ID);
+        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
         CombinerRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getMainInput().testType(fallbackInput)) {
                 if (extra.isEmpty() || recipe.getExtraInput().testType(extra)) {

@@ -20,8 +20,8 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
         for (int i = 0; i < tier.processes; i++) {
-            inputHandlers[i] = InputHelper.getInputHandler(() -> inventory, getInputSlot(i));
-            outputHandlers[i] = OutputHelper.getOutputHandler(() -> inventory, getOutputSlot(i));
+            inputHandlers[i] = InputHelper.getInputHandler(this, getInputSlot(i));
+            outputHandlers[i] = OutputHelper.getOutputHandler(this, getOutputSlot(i));
         }
     }
 }

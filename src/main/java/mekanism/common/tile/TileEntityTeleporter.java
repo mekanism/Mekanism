@@ -11,7 +11,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.basic.BlockTeleporterFrame;
@@ -68,15 +68,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     public byte status = 0;
 
     public TileComponentChunkLoader chunkLoaderComponent;
-    public TileComponentUpgrade<TileEntityTeleporter> upgradeComponent;
 
     public TileEntityTeleporter() {
         super(MekanismBlock.TELEPORTER);
 
         chunkLoaderComponent = new TileComponentChunkLoader(this);
-        upgradeComponent = new TileComponentUpgrade<>(this, 1);
-        upgradeComponent.clearSupportedTypes();
-        upgradeComponent.setSupported(Upgrade.ANCHOR);
+        //TODO: Upgrade slot index: 1
     }
 
     public static void teleportPlayerTo(ServerPlayerEntity player, Coord4D coord, TileEntityTeleporter teleporter) {
@@ -518,16 +515,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         Set<ChunkPos> ret = new HashSet<>();
         ret.add(new Chunk3D(Coord4D.get(this)).getPos());
         return ret;
-    }
-
-    @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
-    }
-
-    @Override
-    public void recalculateUpgrades(Upgrade upgradeType) {
-
     }
 
     @Override

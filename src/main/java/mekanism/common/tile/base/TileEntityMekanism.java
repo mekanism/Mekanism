@@ -1,8 +1,11 @@
 package mekanism.common.tile.base;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -10,6 +13,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
@@ -18,37 +22,40 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.sustained.ISustainedInventory;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.base.ItemHandlerWrapper;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
+import mekanism.common.capabilities.proxy.ProxyItemHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITileActive;
-import mekanism.common.tile.interfaces.ITileContainer;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
+import mekanism.common.tile.interfaces.ITileUpgradable;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -59,7 +66,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -68,7 +74,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -84,13 +89,13 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
-      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory {
+      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable {
+    //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
 
@@ -130,34 +135,18 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private RedstoneControl controlType = RedstoneControl.DISABLED;
     //End variables ITileRedstone
 
+    //Variables for handling ITileUpgradable
+    //TODO: Convert this to being private
+    public TileComponentUpgrade<TileEntityMekanism> upgradeComponent;
+    //End variables ITileUpgradable
+
     //Variables for handling ITileContainer
-    /**
-     * The inventory slot itemstacks used by this block.
-     */
-    public NonNullList<ItemStack> inventory;
+    //TODO: Figure out the proper way to store this here instead of per Tile with inventory
+    // Maybe have one list OR a getter for each side per side, and then if they overlap
+    private List<IInventorySlot> inventory;
 
-    private CapabilityWrapperManager<ISidedInventory, ItemHandlerWrapper> itemManager = new CapabilityWrapperManager<>(ISidedInventory.class, ItemHandlerWrapper.class);
-    /**
-     * Read only itemhandler for the null facing.
-     */
-    private IItemHandler nullHandler = new InvWrapper(this) {
-        @Nonnull
-        @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            //no
-        }
-    };
+    private ProxyItemHandler readOnlyHandler;
+    private Map<Direction, ProxyItemHandler> itemHandlers;
     //End variables ITileContainer
 
     //Variables for handling ITileElectric
@@ -191,7 +180,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Variables for handling ITileSound
     //TODO: Make this final?
     @Nullable
-    private SoundEvent soundEvent;
+    private final SoundEvent soundEvent;
 
     @OnlyIn(Dist.CLIENT)
     private ISound activeSound;
@@ -200,11 +189,20 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End variables ITileSound
 
     public TileEntityMekanism(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<TileEntityMekanism>) blockProvider.getBlock()).getTileType());
+        super(((IHasTileEntity<? extends TileEntity>) blockProvider.getBlock()).getTileType());
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
         if (hasInventory()) {
-            inventory = NonNullList.withSize(((IHasInventory) blockProvider.getBlock()).getInventorySize(), ItemStack.EMPTY);
+            itemHandlers = new EnumMap<>(Direction.class);
+            //TODO: Instantiate this properly, maybe it can be abstracted to the block, but for now
+            inventory = getInitialInventory();//NonNullList.withSize(((IHasInventory) getBlockType()).getInventorySize(), ItemStack.EMPTY);
+            //We want one overall specific list, and then the other caches can be made?
+        } else {
+            inventory = Collections.emptyList();
+        }
+        if (supportsUpgrades()) {
+            //TODO: Make sure to use the upgrade slot where needed and to store it so that it is persistent
+            upgradeComponent = new TileComponentUpgrade<>(this, new UpgradeInventorySlot(getSupportedUpgrade()));
         }
         if (isElectric()) {
             maxEnergy = getBaseStorage();
@@ -215,6 +213,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (hasSound()) {
             soundEvent = ((IBlockSound) blockProvider.getBlock()).getSoundEvent();
+        } else {
+            soundEvent = null;
         }
     }
 
@@ -242,6 +242,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return blockProvider.getBlock();
     }
 
+    @Override
     public final boolean supportsUpgrades() {
         return supportsUpgrades;
     }
@@ -251,14 +252,17 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return isDirectional;
     }
 
+    @Override
     public final boolean supportsRedstone() {
         return supportsRedstone;
     }
 
+    @Override
     public final boolean isElectric() {
         return isElectric;
     }
 
+    @Override
     public final boolean hasSound() {
         return hasSound;
     }
@@ -272,6 +276,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return hasSecurity;
     }
 
+    @Override
     public final boolean isActivatable() {
         return isActivatable;
     }
@@ -419,6 +424,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
             if (isElectric()) {
                 setEnergy(dataStream.readDouble());
+                if (supportsUpgrades()) {
+                    setEnergyPerTick(dataStream.readDouble());
+                    setMaxEnergy(dataStream.readDouble());
+                }
             }
         }
     }
@@ -435,6 +444,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (isElectric()) {
             data.add(getEnergy());
+            if (supportsUpgrades()) {
+                data.add(getEnergyPerTick());
+                data.add(getMaxEnergy());
+            }
         }
         return data;
     }
@@ -485,12 +498,19 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (hasInventory()) {
             if (handleInventory()) {
                 ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
-                inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+                //TODO: We need to make sure the slots are initialized first
+                List<IInventorySlot> inventorySlots = getInventorySlots(null);
+                int size = inventorySlots.size();
                 for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
                     CompoundNBT tagCompound = tagList.getCompound(tagCount);
                     byte slotID = tagCompound.getByte("Slot");
-                    if (slotID >= 0 && slotID < getSizeInventory()) {
-                        setInventorySlotContents(slotID, ItemStack.read(tagCompound));
+                    if (slotID >= 0 && slotID < size) {
+                        IInventorySlot inventorySlot = inventorySlots.get(slotID);
+                        try {
+                            inventorySlot.setStack(ItemStack.read(tagCompound));
+                        } catch (RuntimeException e) {
+                            //TODO: Log error
+                        }
                     }
                 }
             }
@@ -514,7 +534,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (hasInventory()) {
             if (handleInventory()) {
                 ListNBT tagList = new ListNBT();
-                for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
+                for (int slotCount = 0; slotCount < getSlots(); slotCount++) {
                     ItemStack stackInSlot = getStackInSlot(slotCount);
                     if (!stackInSlot.isEmpty()) {
                         CompoundNBT tagCompound = new CompoundNBT();
@@ -679,35 +699,49 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
     //End methods ITileRedstone
 
-    //Methods for implementing ITileContainer
+    //Methods for implementing ITileUpgradable
     @Nonnull
     @Override
-    public NonNullList<ItemStack> getInventory() {
-        return inventory;
+    public Set<Upgrade> getSupportedUpgrade() {
+        if (supportsUpgrades()) {
+            return ((ISupportsUpgrades) getBlockType()).getSupportedUpgrade();
+        }
+        return Collections.emptySet();
     }
 
     @Override
-    public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack) {
-        if (hasInventory()) {
-            getInventory().set(slotID, itemstack);
-            if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
-                itemstack.setCount(getInventoryStackLimit());
+    public TileComponentUpgrade getComponent() {
+        return upgradeComponent;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        //TODO: Defaults for each of the types based on what other things this machine supports??
+        if (upgrade == Upgrade.ENERGY) {
+            //TODO: Is there any case this is not a required sub req?
+            if (isElectric()) {
+                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
+                setEnergyPerTick(MekanismUtils.getBaseEnergyPerTick(this, getBaseUsage()));
+                setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             }
-            markDirty();
         }
     }
+    //End methods ITileUpgradable
 
-    @Override
-    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
-        return (hasInventory() || hasGui()) && !isRemoved() && this.world.isAreaLoaded(this.pos, 0);//prevent Containers from remaining valid after the chunk has unloaded;
+    //Methods for implementing ITileContainer
+    @Nonnull
+    protected List<IInventorySlot> getInitialInventory() {
+        return Collections.emptyList();
     }
 
     @Nonnull
     @Override
-    //TODO: Don't have this be abstract, get it from the block instead by default
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        //TODO
-        return new int[0];
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        if (!hasInventory()) {
+            return Collections.emptyList();
+        }
+        //TODO: How do we handle the other sides "dynamically"
+        return inventory;
     }
 
     @Override
@@ -715,24 +749,31 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (nbtTags == null || nbtTags.isEmpty() || !handleInventory()) {
             return;
         }
-        NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+        //TODO: Make sure our inventory has been initialized??
+        List<IInventorySlot> inventorySlots = getInventorySlots(null);
+        int size = inventorySlots.size();
         for (int slots = 0; slots < nbtTags.size(); slots++) {
             CompoundNBT tagCompound = nbtTags.getCompound(slots);
             byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, ItemStack.read(tagCompound));
+            if (slotID >= 0 && slotID < size) {
+                IInventorySlot inventorySlot = inventorySlots.get(slotID);
+                try {
+                    inventorySlot.setStack(ItemStack.read(tagCompound));
+                } catch (RuntimeException e) {
+                    //TODO: Log error
+                }
             }
         }
-        this.inventory = inventory;
     }
 
     @Override
     public ListNBT getInventory(Object... data) {
         ListNBT tagList = new ListNBT();
         if (handleInventory()) {
-            NonNullList<ItemStack> inventory = getInventory();
-            for (int slots = 0; slots < inventory.size(); slots++) {
-                ItemStack itemStack = inventory.get(slots);
+            List<IInventorySlot> inventorySlots = getInventorySlots(null);
+            for (int slots = 0; slots < inventorySlots.size(); slots++) {
+                IInventorySlot inventorySlot = inventorySlots.get(slots);
+                ItemStack itemStack = inventorySlot.getStack();
                 if (!itemStack.isEmpty()) {
                     CompoundNBT tagCompound = new CompoundNBT();
                     tagCompound.putByte("Slot", (byte) slots);
@@ -749,8 +790,24 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return hasInventory();
     }
 
-    protected IItemHandler getItemHandler(Direction side) {
-        return side == null ? nullHandler : itemManager.getWrapper(this, side);
+    /**
+     * Lazily get and cache an ItemHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
+     */
+    protected IItemHandler getItemHandler(@Nullable Direction side) {
+        if (!hasInventory()) {
+            return null;
+        }
+        if (side == null) {
+            if (readOnlyHandler == null) {
+                readOnlyHandler = new ProxyItemHandler(this, null);
+            }
+            return readOnlyHandler;
+        }
+        ProxyItemHandler itemHandler = itemHandlers.get(side);
+        if (itemHandler == null) {
+            itemHandlers.put(side, itemHandler = new ProxyItemHandler(this, side));
+        }
+        return itemHandler;
     }
     //End methods ITileContainer
 

@@ -1,8 +1,11 @@
 package mekanism.common.block.machine;
 
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
@@ -150,5 +153,11 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     @Override
     public TileEntityType<TileEntityTeleporter> getTileType() {
         return MekanismTileEntityTypes.TELEPORTER;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Upgrade> getSupportedUpgrade() {
+        return EnumSet.of(Upgrade.ANCHOR);
     }
 }

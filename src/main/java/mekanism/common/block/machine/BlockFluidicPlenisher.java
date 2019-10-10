@@ -1,8 +1,11 @@
 package mekanism.common.block.machine;
 
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -173,5 +176,11 @@ public class BlockFluidicPlenisher extends BlockMekanismContainer implements IBl
     @Override
     public TileEntityType<TileEntityFluidicPlenisher> getTileType() {
         return MekanismTileEntityTypes.FLUIDIC_PLENISHER;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Upgrade> getSupportedUpgrade() {
+        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY);
     }
 }

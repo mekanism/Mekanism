@@ -7,7 +7,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -99,12 +98,6 @@ public class TileEntityChargepad extends TileEntityMekanism {
     @Override
     public boolean lightUpdate() {
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return InventoryUtils.EMPTY;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.block.machine.BlockPurificationChamber;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;

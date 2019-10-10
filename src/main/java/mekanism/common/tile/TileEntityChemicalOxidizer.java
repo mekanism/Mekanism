@@ -49,9 +49,11 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
     public TileEntityChemicalOxidizer() {
-        super(MekanismBlock.CHEMICAL_OXIDIZER, 3, 100);
-        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
+        super(MekanismBlock.CHEMICAL_OXIDIZER, 100);
+        inputHandler = InputHelper.getInputHandler(this, 0);
         outputHandler = OutputHelper.getOutputHandler(gasTank);
+
+        //TODO: Upgrade slot index: 3
     }
 
     @Override

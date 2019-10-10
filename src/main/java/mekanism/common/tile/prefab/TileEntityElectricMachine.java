@@ -1,8 +1,11 @@
 package mekanism.common.tile.prefab;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -13,8 +16,10 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -23,8 +28,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 
 public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMachine<ItemStackToItemStackRecipe> {
 
@@ -40,7 +43,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
      * @param ticksRequired - ticks required to operate -- or smelt an item.
      */
     public TileEntityElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
-        super(blockProvider, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
+        super(blockProvider, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
@@ -54,18 +57,30 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
-        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
-        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2);
+        inputHandler = InputHelper.getInputHandler(this, 0);
+        outputHandler = OutputHelper.getOutputHandler(this, 2);
+    }
+
+    @Nonnull
+    @Override
+    protected List<IInventorySlot> getInitialInventory() {
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        List<IInventorySlot> inventory = new ArrayList<>();
+        inventory.add(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getInput().testType(item))));
+        inventory.add(new EnergyInventorySlot());
+        inventory.add(new OutputInventorySlot());
+        return inventory;
     }
 
     @Override
     protected void upgradeInventory(TileEntityFactory factory) {
-        NonNullList<ItemStack> factoryInventory = factory.getInventory();
+        //TODO: Upgrade
+        /*NonNullList<ItemStack> factoryInventory = factory.getInventory();
         NonNullList<ItemStack> inventory = getInventory();
         factoryInventory.set(5, inventory.get(0));
         factoryInventory.set(1, inventory.get(1));
         factoryInventory.set(5 + 3, inventory.get(2));
-        factoryInventory.set(0, inventory.get(3));
+        factoryInventory.set(0, inventory.get(3));*/
     }
 
     @Override
@@ -77,20 +92,6 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
                 cachedRecipe.process();
             }
         }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 2) {
-            return false;
-        } else if (slotID == 3) {
-            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
-        } else if (slotID == 0) {
-            return containsRecipe(recipe -> recipe.getInput().testType(itemstack));
-        } else if (slotID == 1) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
     }
 
     @Nullable
@@ -115,14 +116,6 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 1) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 2;
     }
 
     @Override

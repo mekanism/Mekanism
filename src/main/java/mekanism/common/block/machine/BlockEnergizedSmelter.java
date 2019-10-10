@@ -1,8 +1,11 @@
 package mekanism.common.block.machine;
 
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
@@ -190,5 +193,11 @@ public class BlockEnergizedSmelter extends BlockMekanismContainer implements IBl
     @Override
     public TileEntityType<TileEntityEnergizedSmelter> getTileType() {
         return MekanismTileEntityTypes.ENERGIZED_SMELTER;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Upgrade> getSupportedUpgrade() {
+        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
     }
 }

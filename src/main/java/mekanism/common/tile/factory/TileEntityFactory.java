@@ -17,7 +17,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
@@ -118,7 +118,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected FactoryType type;
 
     protected TileEntityFactory(IBlockProvider blockProvider) {
-        super(blockProvider, UPGRADE_SLOT_ID);
+        super(blockProvider);
         BlockFactory factoryBlock = (BlockFactory) blockProvider.getBlock();
         this.tier = factoryBlock.getTier();
         this.type = factoryBlock.getFactoryType();
@@ -175,6 +175,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
         infusionTank = new InfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
         setRecipeType(recipeType);
+
+        //TODO: Upgrade slot index: UPGRADE_SLOT_ID
     }
 
     @Override

@@ -16,6 +16,7 @@ public class ProxyItemHandler implements IItemHandlerModifiable {
     private final Direction side;
     private final boolean readOnly;
 
+    //TODO: Should this take a supplier for the item handler in case it somehow gets invalidated??
     public ProxyItemHandler(@Nonnull ISidedItemHandler inventory, @Nullable Direction side) {
         this.inventory = inventory;
         this.side = side;

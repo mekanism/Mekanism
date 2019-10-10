@@ -3,8 +3,10 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Action;
+import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
+import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -14,8 +16,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
-import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -29,6 +29,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -67,7 +68,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     private int currentRedstoneLevel;
 
     public TileEntityRotaryCondensentrator() {
-        super(MekanismBlock.ROTARY_CONDENSENTRATOR, 5);
+        super(MekanismBlock.ROTARY_CONDENSENTRATOR);
+        //TODO: Upgrade slot index: 5
     }
 
     @Override
@@ -317,7 +319,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

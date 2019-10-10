@@ -29,8 +29,8 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
      *
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityBasicMachine(IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super(blockProvider, upgradeSlot, baseTicksRequired);
+    public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired, ResourceLocation location) {
+        super(blockProvider, baseTicksRequired);
         guiLocation = location;
     }
 
@@ -42,6 +42,7 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {
+        //TODO
         return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 

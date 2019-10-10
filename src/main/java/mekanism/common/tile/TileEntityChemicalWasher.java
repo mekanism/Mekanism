@@ -3,10 +3,12 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
+import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -22,8 +24,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
-import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -40,6 +40,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -77,17 +78,18 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
     public TileEntityChemicalWasher() {
-        super(MekanismBlock.CHEMICAL_WASHER, 4);
+        super(MekanismBlock.CHEMICAL_WASHER);
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+        //TODO: Upgrade slot index: 4
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(3, this);
-            ItemStack fluidInputStack = inventory.get(0);
+            ItemStack fluidInputStack = getStackInSlot(0);
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
                 fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
             }
@@ -351,7 +353,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

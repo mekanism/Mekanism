@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Upgrade;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;

@@ -22,8 +22,8 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
-import mekanism.common.Upgrade.IUpgradeInfoHandler;
+import mekanism.api.Upgrade;
+import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -34,6 +34,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -61,10 +62,11 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     private final IInputHandler<@NonNull GasStack> rightInputHandler;
 
     public TileEntityChemicalInfuser() {
-        super(MekanismBlock.CHEMICAL_INFUSER, 4);
+        super(MekanismBlock.CHEMICAL_INFUSER);
         leftInputHandler = InputHelper.getInputHandler(leftTank);
         rightInputHandler = InputHelper.getInputHandler(rightTank);
         outputHandler = OutputHelper.getOutputHandler(centerTank);
+        //TODO: Upgrade slot index: 4
     }
 
     @Override
@@ -285,7 +287,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

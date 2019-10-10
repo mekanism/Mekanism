@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.block.machine.BlockQuantumEntangloporter;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.frequency.Frequency;

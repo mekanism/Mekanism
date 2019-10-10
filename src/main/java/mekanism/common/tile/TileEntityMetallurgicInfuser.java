@@ -60,7 +60,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
     public TileEntityMetallurgicInfuser() {
-        super(MekanismBlock.METALLURGIC_INFUSER, 0, 200);
+        super(MekanismBlock.METALLURGIC_INFUSER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
@@ -75,8 +75,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
-        itemInputHandler = InputHelper.getInputHandler(() -> inventory, 2);
-        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 3);
+        itemInputHandler = InputHelper.getInputHandler(this, 2);
+        outputHandler = OutputHelper.getOutputHandler(this, 3);
+
+        //TODO: Upgrade slot index: 0
     }
 
     @Override

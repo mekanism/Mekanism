@@ -1,8 +1,11 @@
 package mekanism.common.block.machine;
 
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Upgrade;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
@@ -162,5 +165,11 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
     @Override
     public TileEntityType<TileEntitySolarNeutronActivator> getTileType() {
         return MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Upgrade> getSupportedUpgrade() {
+        return EnumSet.of(Upgrade.SPEED);
     }
 }

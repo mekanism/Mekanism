@@ -99,7 +99,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
         if (tile.supportsRedstone()) {
             ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
         }
-        if (item instanceof ISustainedInventory && tile.hasInventory() && tile.getSizeInventory() > 0) {
+        if (item instanceof ISustainedInventory && tile.hasInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {

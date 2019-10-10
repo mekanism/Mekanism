@@ -4,9 +4,11 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.Action;
+import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
+import mekanism.api.Upgrade.IUpgradeInfoHandler;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -22,8 +24,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
-import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -44,6 +44,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -106,11 +107,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
     public TileEntityElectrolyticSeparator() {
-        super(MekanismBlock.ELECTROLYTIC_SEPARATOR, 4);
+        super(MekanismBlock.ELECTROLYTIC_SEPARATOR);
         BASE_ENERGY_PER_TICK = super.getBaseUsage();
 
         inputHandler = InputHelper.getInputHandler(fluidTank, 0);
         outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
+
+        //TODO: Upgrade slot index: 4
     }
 
     @Override
@@ -122,14 +125,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(3, this);
-            ItemStack fluidInputStack = inventory.get(0);
+            ItemStack fluidInputStack = getStackInSlot(0);
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
                 fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
             }
 
             //TODO: look at other places that call drawGas and the likes and see if they need saving
-            boolean needsSaving = TileUtils.drawGas(inventory.get(1), leftTank);
-            needsSaving |= TileUtils.drawGas(inventory.get(2), rightTank);
+            boolean needsSaving = TileUtils.drawGas(getStackInSlot(1), leftTank);
+            needsSaving |= TileUtils.drawGas(getStackInSlot(2), rightTank);
             if (needsSaving) {
                 MekanismUtils.saveChunk(this);
             }
@@ -468,22 +471,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override
     public Object[] getTanks() {
         return new Object[]{fluidTank, leftTank, rightTank};
-    }
-
-    @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.ENERGY) {
-            setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-            setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-            setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-        }
     }
 
     @Override

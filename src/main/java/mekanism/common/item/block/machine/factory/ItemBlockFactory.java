@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.capabilities.ItemCapabilityWrapper;

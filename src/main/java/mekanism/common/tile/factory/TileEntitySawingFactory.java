@@ -28,8 +28,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
         for (int i = 0; i < tier.processes; i++) {
-            inputHandlers[i] = InputHelper.getInputHandler(() -> inventory, getInputSlot(i));
-            outputHandlers[i] = OutputHelper.getOutputHandler(() -> inventory, getOutputSlot(i), EXTRA_SLOT_ID);
+            inputHandlers[i] = InputHelper.getInputHandler(this, getInputSlot(i));
+            outputHandlers[i] = OutputHelper.getOutputHandler(this, getOutputSlot(i), EXTRA_SLOT_ID);
         }
     }
 
@@ -57,7 +57,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
-        ItemStack extra = inventory.get(EXTRA_SLOT_ID);
+        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
         SawmillRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getInput().testType(fallbackInput)) {
                 ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);

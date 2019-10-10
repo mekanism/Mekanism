@@ -1,10 +1,13 @@
 package mekanism.common.block.machine;
 
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
+import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -271,5 +274,11 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public TileEntityType<TileEntityLogisticalSorter> getTileType() {
         return MekanismTileEntityTypes.LOGISTICAL_SORTER;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Upgrade> getSupportedUpgrade() {
+        return EnumSet.of(Upgrade.MUFFLING);
     }
 }

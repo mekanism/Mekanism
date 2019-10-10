@@ -2,7 +2,7 @@ package mekanism.common.util.text;
 
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import net.minecraft.util.text.ITextComponent;
 
 public class UpgradeDisplay implements IHasTextComponent {

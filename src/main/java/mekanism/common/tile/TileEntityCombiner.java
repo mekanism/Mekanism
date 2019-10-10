@@ -41,7 +41,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
      * (4). The machine will not run if it does not have enough electricity.
      */
     public TileEntityCombiner() {
-        super(MekanismBlock.COMBINER, 4, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
+        super(MekanismBlock.COMBINER, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
@@ -56,9 +56,11 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
-        inputHandler = InputHelper.getInputHandler(() -> inventory, 0);
-        extraInputHandler = InputHelper.getInputHandler(() -> inventory, 1);
-        outputHandler = OutputHelper.getOutputHandler(() -> inventory, 2);
+        inputHandler = InputHelper.getInputHandler(this, 0);
+        extraInputHandler = InputHelper.getInputHandler(this, 1);
+        outputHandler = OutputHelper.getOutputHandler(this, 2);
+
+        //TODO: Upgrade slot index: 4
     }
 
     @Override

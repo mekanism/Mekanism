@@ -136,27 +136,30 @@ public final class ChargeUtils {
     /**
      * Whether or not a defined ItemStack can be charged with energy in some way. Note: The ItemStack must also have room for more energy.
      *
-     * @param itemstack - ItemStack to check
+     * @param stack - ItemStack to check
      *
      * @return if the ItemStack can be discharged
      */
-    public static boolean canBeCharged(ItemStack itemstack) {
-        if (itemstack.getItem() instanceof IEnergizedItem) {
-            IEnergizedItem energizedItem = (IEnergizedItem) itemstack.getItem();
-            if (energizedItem.canReceive(itemstack)) {
-                if (energizedItem.getMaxEnergy(itemstack) < energizedItem.getEnergy(itemstack)) {
+    public static boolean canBeCharged(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        if (stack.getItem() instanceof IEnergizedItem) {
+            IEnergizedItem energizedItem = (IEnergizedItem) stack.getItem();
+            if (energizedItem.canReceive(stack)) {
+                if (energizedItem.getMaxEnergy(stack) < energizedItem.getEnergy(stack)) {
                     return true;
                 }
             }
         }
         if (MekanismUtils.useForge()) {
-            if (new LazyOptionalHelper<>(itemstack.getCapability(CapabilityEnergy.ENERGY)).matches(capability -> capability.receiveEnergy(1, true) > 0)) {
+            if (new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY)).matches(capability -> capability.receiveEnergy(1, true) > 0)) {
                 return true;
             }
         }
         //TODO: IC2
         /*if (MekanismUtils.useIC2()) {
-            if (isIC2Chargeable(itemstack)) {
+            if (isIC2Chargeable(stack)) {
                 return true;
             }
         }*/
@@ -173,6 +176,9 @@ public final class ChargeUtils {
      * @return if the ItemStack can be outputted
      */
     public static boolean canBeOutputted(ItemStack stack, boolean chargeSlot) {
+        if (stack.isEmpty()) {
+            return false;
+        }
         if (stack.getItem() instanceof IEnergizedItem) {
             IEnergizedItem energized = (IEnergizedItem) stack.getItem();
             if (chargeSlot) {

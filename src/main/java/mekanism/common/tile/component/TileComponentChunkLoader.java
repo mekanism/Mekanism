@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.chunkloading.IChunkLoader;

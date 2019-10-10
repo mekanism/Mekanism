@@ -20,7 +20,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.Upgrade;
+import mekanism.api.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IUpgradeTile;
@@ -128,14 +128,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     private Set<ChunkPos> chunkSet;
 
-    public TileComponentUpgrade<TileEntityDigitalMiner> upgradeComponent = new TileComponentUpgrade<>(this, INV_SLOTS.length);
     public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     public TileEntityDigitalMiner() {
         super(MekanismBlock.DIGITAL_MINER);
         radius = 10;
-        upgradeComponent.setSupported(Upgrade.ANCHOR);
+        //TODO: Upgrade slot index: last
     }
 
     @Override
@@ -724,11 +723,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         return redstone || numPowering > 0;
     }
 
-    @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
-    }
-
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -992,15 +986,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
-        switch (upgrade) {
-            case SPEED:
-                delayLength = MekanismUtils.getTicks(this, BASE_DELAY);
-            case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-                setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-            default:
-                break;
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            delayLength = MekanismUtils.getTicks(this, BASE_DELAY);
         }
     }
 
