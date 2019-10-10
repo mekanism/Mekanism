@@ -31,8 +31,8 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
@@ -58,7 +58,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager,
+public class TileEntityChemicalWasher extends TileEntityMekanism implements IGasHandler, IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager,
       IComparatorSupport, ITileCachedRecipeHolder<FluidGasToGasRecipe> {
 
     public static final int MAX_GAS = 10000;
@@ -369,5 +369,15 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public boolean isFluidInputItem(ItemStack itemStack) {
         return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemStack)).matches(
               fluidStack -> !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.getFluidInput().testType(fluidStack)));
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
     }
 }

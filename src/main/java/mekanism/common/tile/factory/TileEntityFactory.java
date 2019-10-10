@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionTank;
@@ -17,7 +18,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
@@ -29,11 +29,11 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
@@ -42,7 +42,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -52,7 +51,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
       ITierUpgradeable, ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
 
     public static final int UPGRADE_SLOT_ID = 0;
@@ -759,10 +758,20 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public int getRedstoneLevel() {
-        return Container.calcRedstoneFromInventory(this);
+        return InventoryUtils.calcRedstoneFromInventory(this);
     }
 
     public boolean hasSecondaryResourceBar() {
         return false;
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
     }
 }

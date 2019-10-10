@@ -34,8 +34,8 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -62,7 +62,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
+public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
       IUpgradeInfoHandler, ITankManager, IComparatorSupport, ITileCachedRecipeHolder<ElectrolysisRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
@@ -487,5 +487,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     public boolean isFluidInputItem(ItemStack itemStack) {
         return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemStack)).matches(
               fluidStack -> !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.getInput().testType(fluidStack)));
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
     }
 }

@@ -81,8 +81,8 @@ public abstract class BlockTileDrops extends Block {
             securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
             securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
         }
-        if (tile instanceof IUpgradeTile) {
-            ((IUpgradeTile) tile).getComponent().write(ItemDataUtils.getDataMap(itemStack));
+        if (tile.supportsUpgrades()) {
+            tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
         }
         if (tile instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tile;

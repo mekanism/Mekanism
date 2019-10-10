@@ -13,7 +13,17 @@ public class GasInventorySlot extends BasicInventorySlot {
     private static final Predicate<@NonNull ItemStack> extractPredicate = item -> !item.isEmpty() && item.getItem() instanceof IGasItem && ((IGasItem) item.getItem()).getGas(item).isEmpty();
 
     //TODO: Replace GasTank with an IGasHandler??
-    public GasInventorySlot(GasTank gasTank, Predicate<Gas> isValidGas) {
+    private GasInventorySlot(GasTank gasTank, Predicate<Gas> isValidGas) {
+        //TODO: Do we want to make any of the ones that implement this not support conversion and just support grabbing from tanks
         super(extractPredicate, true, item -> !GasConversionHandler.getItemGas(item, gasTank, isValidGas).isEmpty());
+    }
+
+    public static GasInventorySlot input(GasTank gasTank, Predicate<Gas> isValidGas) {
+        return new GasInventorySlot(gasTank, isValidGas);
+    }
+
+    public static GasInventorySlot output(GasTank gasTank) {
+        //TODO: We should probably check that it is an IGasItem and it has a matching gas?
+        return new GasInventorySlot(gasTank, gas -> true);
     }
 }

@@ -293,9 +293,9 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
             tile.getSecurity().setOwnerUUID(ownerUUID == null ? placer.getUniqueID() : ownerUUID);
         }
-        if (tile instanceof IUpgradeTile) {
+        if (tile.supportsUpgrades()) {
             if (ItemDataUtils.hasData(stack, "upgrades")) {
-                ((IUpgradeTile) tile).getComponent().read(ItemDataUtils.getDataMap(stack));
+                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
             }
         }
         if (tile instanceof ISideConfiguration) {

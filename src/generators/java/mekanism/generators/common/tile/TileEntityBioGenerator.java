@@ -11,13 +11,13 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -237,6 +237,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public int getRedstoneLevel() {
-        return Container.calcRedstoneFromInventory(this);
+        return InventoryUtils.calcRedstoneFromInventory(this);
     }
 }

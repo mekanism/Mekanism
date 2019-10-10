@@ -3,10 +3,12 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
+import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -22,13 +24,11 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -44,7 +44,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ISustainedData, IUpgradeInfoHandler, ITankManager,
+public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ISustainedData, IUpgradeInfoHandler, ITankManager,
       ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10000;
@@ -293,5 +293,15 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public Object[] getTanks() {
         return new Object[]{leftTank, rightTank, centerTank};
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
     }
 }

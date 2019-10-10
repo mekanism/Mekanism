@@ -51,8 +51,8 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
         if (tile == null) {
             return true;
         }
-        //TODO: Do we need to check hasInventory, or is checking hasGui enough
-        if ((tile.hasInventory() || tile.hasGui()) && !tile.isRemoved()) {
+        //TODO: Double check this, used to check to see if it had an inventory.
+        if (tile.hasGui() && !tile.isRemoved()) {
             //prevent Containers from remaining valid after the chunk has unloaded;
             World world = tile.getWorld();
             if (world == null) {

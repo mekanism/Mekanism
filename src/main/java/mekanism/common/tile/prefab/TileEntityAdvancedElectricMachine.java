@@ -28,6 +28,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -110,11 +111,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
 
     @Nonnull
     @Override
-    protected List<IInventorySlot> getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory() {
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         List<IInventorySlot> inventory = new ArrayList<>();
         inventory.add(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item))));
-        inventory.add(new GasInventorySlot(gasTank, this::isValidGas));
+        inventory.add(GasInventorySlot.input(gasTank, this::isValidGas));
         inventory.add(new OutputInventorySlot());
         inventory.add(new EnergyInventorySlot());
         return inventory;

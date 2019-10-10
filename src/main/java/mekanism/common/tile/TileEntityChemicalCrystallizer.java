@@ -2,16 +2,15 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.GasToItemStackCachedRecipe;
@@ -27,6 +26,11 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -78,8 +82,18 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(this, 1);
+    }
 
-        //TODO: Upgrade slot index: 3
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(GasInventorySlot.input(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas))));
+        builder.addSlot(new OutputInventorySlot());
+        builder.addSlot(new EnergyInventorySlot());
+        return builder.build();
     }
 
     @Override
@@ -206,37 +220,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
-                GasStack gasInItem = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return !gasInItem.isEmpty() && containsRecipe(recipe -> recipe.getInput().testType(gasInItem));
-            }
-        } else if (slotID == 2) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 0) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack).isEmpty();
-        } else if (slotID == 1) {
-            return true;
-        } else if (slotID == 2) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override

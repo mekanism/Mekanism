@@ -44,6 +44,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism> implements IT
         upgradeSlot = slot;
         slot.getSupportedUpgrade().forEach(this::setSupported);
         tile.addComponent(this);
+        //TODO: Store and load slot contents when saving/writing to disk
     }
 
     @Override

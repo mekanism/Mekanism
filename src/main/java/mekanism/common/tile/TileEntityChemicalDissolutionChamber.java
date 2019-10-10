@@ -2,10 +2,10 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.MekanismAPI;
-import mekanism.api.TileNetworkList;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.Action;
+import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -21,10 +21,15 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
-import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
@@ -35,7 +40,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -67,8 +71,18 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         itemInputHandler = InputHelper.getInputHandler(this, 0);
         gasInputHandler = InputHelper.getInputHandler(injectTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+    }
 
-        //TODO: Upgrade slot index: 4
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(GasInventorySlot.input(injectTank, this::isValidGas), RelativeSide.DOWN);
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item))), RelativeSide.UP, RelativeSide.LEFT);
+        builder.addSlot(GasInventorySlot.output(outputTank), RelativeSide.RIGHT);
+        //TODO: Make this be accessible from some side for automation??
+        builder.addSlot(new EnergyInventorySlot());
+        return builder.build();
     }
 
     @Override
@@ -96,37 +110,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
             }
             TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
         }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 1) {
-            return containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
-        } else if (slotID == 3) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 2) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, MekanismAPI.EMPTY_GAS);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == getLeftSide() || side == Direction.UP) {
-            return new int[]{1};
-        } else if (side == Direction.DOWN) {
-            return new int[]{0};
-        } else if (side == getRightSide()) {
-            return new int[]{2};
-        }
-        return InventoryUtils.EMPTY;
     }
 
     @Nonnull
@@ -292,6 +275,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Override
     public int getRedstoneLevel() {
-        return Container.calcRedstoneFromInventory(this);
+        return InventoryUtils.calcRedstoneFromInventory(this);
     }
 }

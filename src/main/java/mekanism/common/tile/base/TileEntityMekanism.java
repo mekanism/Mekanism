@@ -44,6 +44,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
@@ -143,7 +144,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Variables for handling ITileContainer
     //TODO: Figure out the proper way to store this here instead of per Tile with inventory
     // Maybe have one list OR a getter for each side per side, and then if they overlap
-    private List<IInventorySlot> inventory;
+    private IInventorySlotHolder inventory;
 
     private ProxyItemHandler readOnlyHandler;
     private Map<Direction, ProxyItemHandler> itemHandlers;
@@ -197,8 +198,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             //TODO: Instantiate this properly, maybe it can be abstracted to the block, but for now
             inventory = getInitialInventory();//NonNullList.withSize(((IHasInventory) getBlockType()).getInventorySize(), ItemStack.EMPTY);
             //We want one overall specific list, and then the other caches can be made?
-        } else {
-            inventory = Collections.emptyList();
         }
         if (supportsUpgrades()) {
             //TODO: Make sure to use the upgrade slot where needed and to store it so that it is persistent
@@ -729,19 +728,18 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End methods ITileUpgradable
 
     //Methods for implementing ITileContainer
-    @Nonnull
-    protected List<IInventorySlot> getInitialInventory() {
-        return Collections.emptyList();
+    @Nullable
+    protected IInventorySlotHolder getInitialInventory() {
+        return null;
     }
 
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        if (!hasInventory()) {
+        if (!hasInventory() || inventory == null) {
             return Collections.emptyList();
         }
-        //TODO: How do we handle the other sides "dynamically"
-        return inventory;
+        return inventory.getInventorySlots(side);
     }
 
     @Override

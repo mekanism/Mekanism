@@ -191,6 +191,6 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
 
     @Override
     public int getRedstoneLevel() {
-        return Container.calcRedstoneFromInventory(this);
+        return InventoryUtils.calcRedstoneFromInventory(this);
     }
 }

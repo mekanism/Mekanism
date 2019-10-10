@@ -22,7 +22,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -47,7 +47,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, IUpgradeInfoHandler, ITankManager,
+public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ISustainedData, IFluidHandlerWrapper, IGasHandler, IUpgradeInfoHandler, ITankManager,
       IComparatorSupport {
 
     private static final int[] GAS_SLOTS = {0, 1};
@@ -360,5 +360,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
             return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
         }
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
     }
 }

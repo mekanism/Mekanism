@@ -2,18 +2,19 @@ package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityMachine implements IComparatorSupport,
+public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComparatorSupport,
       ITileCachedRecipeHolder<RECIPE> {
 
     private int operatingTicks;
@@ -87,6 +88,16 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
 
     @Override
     public int getRedstoneLevel() {
-        return Container.calcRedstoneFromInventory(this);
+        return InventoryUtils.calcRedstoneFromInventory(this);
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
     }
 }
