@@ -44,6 +44,7 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
+        //TODO: FIXME readString is clientside only
         modID = dataStream.readString();
     }
 

@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.List;
 import java.util.Random;
-import javax.annotation.Nonnull;
 import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -16,8 +15,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChargepad extends TileEntityMekanism {
 
@@ -98,13 +95,5 @@ public class TileEntityChargepad extends TileEntityMekanism {
     @Override
     public boolean lightUpdate() {
         return true;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 }

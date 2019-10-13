@@ -13,8 +13,12 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -25,8 +29,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 
 public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRecipe> {
 
@@ -59,20 +61,30 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         inputHandler = InputHelper.getInputHandler(this, 0);
         extraInputHandler = InputHelper.getInputHandler(this, 1);
         outputHandler = OutputHelper.getOutputHandler(this, 2);
+    }
 
-        //TODO: Upgrade slot index: 4
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item))));
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item))));
+        builder.addSlot(new OutputInventorySlot());
+        builder.addSlot(new EnergyInventorySlot());
+        return builder.build();
     }
 
     @Override
     protected void upgradeInventory(TileEntityFactory factory) {
-        NonNullList<ItemStack> factoryInventory = factory.getInventory();
+        //TODO: Upgrade
+        /*NonNullList<ItemStack> factoryInventory = factory.getInventory();
         NonNullList<ItemStack> inventory = getInventory();
         //Double Machine
         factoryInventory.set(5, inventory.get(0));
         factoryInventory.set(4, inventory.get(1));
         factoryInventory.set(5 + 3, inventory.get(2));
         factoryInventory.set(1, inventory.get(3));
-        factoryInventory.set(0, inventory.get(4));
+        factoryInventory.set(0, inventory.get(4));*/
     }
 
     @Override
@@ -84,22 +96,6 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
                 cachedRecipe.process();
             }
         }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return containsRecipe(recipe -> recipe.getMainInput().testType(itemstack));
-        } else if (slotID == 1) {
-            return containsRecipe(recipe -> recipe.getExtraInput().testType(itemstack));
-        } else if (slotID == 2) {
-            return false;
-        } else if (slotID == 3) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        } else if (slotID == 4) {
-            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
-        }
-        return false;
     }
 
     @Nonnull
@@ -137,15 +133,6 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
-    }
-
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 3) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 2;
     }
 
     @Override

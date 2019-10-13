@@ -558,8 +558,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
         }
-        if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //TODO: SidedInvWrapper#create for getting our lazy optional
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Note: We don't need to check hasInventory, as we have this cap marked as disabled if we are not an item handler
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getItemHandler(side)));
         }
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
@@ -586,6 +586,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
         if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
+        }
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //TODO: This means we don't need to override in as many spots for disabling the item handler cap
+            //Disable the item handler capability if we have no inventory or we don't have any slots for the given side
+            return !hasInventory() || getInventorySlots(side).isEmpty();
         }
         return false;
     }

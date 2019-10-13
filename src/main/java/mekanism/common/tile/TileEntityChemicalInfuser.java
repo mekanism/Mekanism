@@ -26,6 +26,12 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -67,6 +73,17 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         rightInputHandler = InputHelper.getInputHandler(rightTank);
         outputHandler = OutputHelper.getOutputHandler(centerTank);
         //TODO: Upgrade slot index: 4
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(GasInventorySlot.input(leftTank, this::isValidGas), RelativeSide.LEFT);
+        builder.addSlot(GasInventorySlot.output(centerTank), RelativeSide.FRONT);
+        builder.addSlot(GasInventorySlot.input(rightTank, this::isValidGas), RelativeSide.RIGHT);
+        builder.addSlot(new EnergyInventorySlot(), RelativeSide.DOWN, RelativeSide.UP);
+        return builder.build();
     }
 
     @Override
@@ -231,38 +248,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
             return side == Direction.UP || side == Direction.DOWN || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        return slotID == 3 && ChargeUtils.canBeDischarged(itemstack);
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 0 || slotID == 2) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canReceiveGas(itemstack, MekanismAPI.EMPTY_GAS);
-        } else if (slotID == 1) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, MekanismAPI.EMPTY_GAS);
-        } else if (slotID == 3) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == getLeftSide()) {
-            return new int[]{0};
-        } else if (side == getDirection()) {
-            return new int[]{1};
-        } else if (side == getRightSide()) {
-            return new int[]{2};
-        } else if (side.getAxis() == Axis.Y) {
-            return new int[3];
-        }
-        return InventoryUtils.EMPTY;
     }
 
     @Override

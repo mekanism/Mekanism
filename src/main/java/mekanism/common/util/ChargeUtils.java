@@ -134,6 +134,25 @@ public final class ChargeUtils {
     }
 
     /**
+     * Checks if it is a valid energy item that can be extracted from, but not if it currently has any power stored.
+     * @param itemstack
+     * @return
+     */
+    public static boolean isEnergyItem(ItemStack itemstack) {
+        if (itemstack.getItem() instanceof IEnergizedItem) {
+            if (((IEnergizedItem) itemstack.getItem()).canSend(itemstack)) {
+                return true;
+            }
+        }
+        if (MekanismUtils.useForge()) {
+            if (new LazyOptionalHelper<>(itemstack.getCapability(CapabilityEnergy.ENERGY)).matches(IEnergyStorage::canExtract)) {
+                return true;
+            }
+        }
+        return itemstack.getItem() == Items.REDSTONE;
+    }
+
+    /**
      * Whether or not a defined ItemStack can be charged with energy in some way. Note: The ItemStack must also have room for more energy.
      *
      * @param stack - ItemStack to check

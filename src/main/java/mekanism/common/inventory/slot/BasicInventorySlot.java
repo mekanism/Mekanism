@@ -5,7 +5,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.util.StackUtils;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -17,24 +19,26 @@ public class BasicInventorySlot implements IInventorySlot {
     private final Predicate<@NonNull ItemStack> validator;
     @Nonnull
     private ItemStack current = ItemStack.EMPTY;
+    //TODO: Evaluate the extraction things as inputs should not be able to be extracted from via automation
     private final Predicate<@NonNull ItemStack> canExtract;
-    //TODO: Should the canInsert be removed entirely, as it basically gets covered by the validator
-    private final boolean canInsert;
+    private final Predicate<@NonNull ItemStack> canInsert;
     private final int limit;
+    private final int xPosition;
+    private final int yPosition;
 
     public BasicInventorySlot() {
         this(DEFAULT_LIMIT);
     }
 
     public BasicInventorySlot(int limit) {
-        this(limit, item -> true, true);
+        this(limit, item -> true, item -> true);
     }
 
-    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, boolean canInsert) {
+    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert) {
         this(DEFAULT_LIMIT, canExtract, canInsert);
     }
 
-    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, boolean canInsert) {
+    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert) {
         this(limit, canExtract, canInsert, stack -> true);
     }
 
@@ -43,18 +47,21 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public BasicInventorySlot(int limit, @Nonnull Predicate<@NonNull ItemStack> validator) {
-        this(limit, item -> true, true, validator);
+        this(limit, item -> true, item -> true, validator);
     }
 
-    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, boolean canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
+    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
         this(DEFAULT_LIMIT, canExtract, canInsert, validator);
     }
 
-    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, boolean canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
+    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
         this.limit = limit;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
+        //TODO: Set these properly
+        this.xPosition = 0;
+        this.yPosition = 0;
     }
 
     @Nonnull
@@ -90,12 +97,12 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nonnull
     @Override
     public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
-        if (!canInsert() || stack.isEmpty()) {
-            //"Fail quick" if we can never insert items or the given stack is empty
+        if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack)) {
+            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return ItemStack.EMPTY;
         }
         boolean sameType = false;
-        if (current.isEmpty() && isItemValid(stack) || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
+        if (current.isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
             int maxToAdd = stack.getCount();
             //Cap our max size at the limit or the max size of our new stack
             // Note: If we already have a stack then we know it is the same type as our current stack, so the result of getMaxStackSize should be the same
@@ -122,7 +129,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nonnull
     @Override
     public ItemStack extractItem(int amount, Action action) {
-        if (!canExtract() || current.isEmpty() || amount < 1) {
+        if (current.isEmpty() || amount < 1 || !canExtract.test(current) ) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return ItemStack.EMPTY;
         }
@@ -155,11 +162,10 @@ public class BasicInventorySlot implements IInventorySlot {
         return validator.test(stack);
     }
 
-    protected boolean canInsert() {
-        return canInsert;
-    }
-
-    protected boolean canExtract() {
-        return canExtract.test(current);
+    //TODO: Should we move InventoryContainerSlot to the API and reference that instead
+    @Override
+    public Slot createContainerSlot(int index) {
+        //TODO: Allow for creating different types of slots
+        return new InventoryContainerSlot(this, index, xPosition, yPosition);
     }
 }

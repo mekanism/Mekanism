@@ -10,12 +10,12 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismGases;
-import mekanism.api.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -24,8 +24,13 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
@@ -38,7 +43,6 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -52,7 +56,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -61,10 +64,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IUpgradeTile, ITankManager,
       IComputerIntegration, IComparatorSupport {
-
-    private static final int[] UPSLOTS = {0};
-    private static final int[] DOWNSLOTS = {1};
-    private static final int[] SIDESLOTS = {2};
 
     private static final String[] methods = new String[]{"reset"};
     /**
@@ -95,7 +94,16 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     public TileEntityElectricPump() {
         super(MekanismBlock.ELECTRIC_PUMP);
-        //TODO: Upgrade slot index: 3
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(FluidInventorySlot.output(fluidTank), RelativeSide.UP);
+        builder.addSlot(new OutputInventorySlot(), RelativeSide.DOWN);
+        builder.addSlot(new EnergyInventorySlot(), RelativeSide.BACK);
+        return builder.build();
     }
 
     @Override
@@ -288,38 +296,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            //Only allow empty fluid containers
-            return FluidContainerUtils.isFluidContainer(itemstack) && !FluidUtil.getFluidContained(itemstack).isPresent();
-        } else if (slotID == 2) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 2) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 1;
-    }
-
-    @Override
     public boolean canReceiveEnergy(Direction side) {
         return getOppositeDirection() == side;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == Direction.UP) {
-            return UPSLOTS;
-        } else if (side == Direction.DOWN) {
-            return DOWNSLOTS;
-        }
-        return SIDESLOTS;
     }
 
     @Override

@@ -82,7 +82,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
-        //TODO: Upgrade slot index: 4
     }
 
     @Override
@@ -154,6 +153,10 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
+    }
+
+    public boolean isValidGas(@Nonnull Gas gas) {
+        return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override

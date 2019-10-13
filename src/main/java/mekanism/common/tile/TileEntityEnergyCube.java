@@ -137,6 +137,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         } else if (slotID == 0) {
+            //TODO: MAKE SURE NOT TO LOSE THE FACT THIS IS IN THE CHARGE SLOT
             return ChargeUtils.canBeOutputted(itemstack, true);
         }
         return false;

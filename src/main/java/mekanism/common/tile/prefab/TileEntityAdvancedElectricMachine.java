@@ -1,7 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -14,7 +12,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -29,6 +26,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -113,12 +111,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
-        List<IInventorySlot> inventory = new ArrayList<>();
-        inventory.add(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item))));
-        inventory.add(GasInventorySlot.input(gasTank, this::isValidGas));
-        inventory.add(new OutputInventorySlot());
-        inventory.add(new EnergyInventorySlot());
-        return inventory;
+        // This can probably be done by letting the configurations know the relative side information?
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item))));
+        builder.addSlot(GasInventorySlot.input(gasTank, this::isValidGas));
+        builder.addSlot(new OutputInventorySlot());
+        builder.addSlot(new EnergyInventorySlot());
+        return builder.build();
     }
 
     @Override

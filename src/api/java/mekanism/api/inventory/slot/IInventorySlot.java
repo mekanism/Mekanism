@@ -3,6 +3,7 @@ package mekanism.api.inventory.slot;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -104,4 +105,13 @@ public interface IInventorySlot {
      * IInventorySlot} can never insert the {@link ItemStack} in any situation.
      */
     boolean isItemValid(@Nonnull ItemStack stack);
+
+    /**
+     * Returns a slot with the given index for use in auto adding slots to a container.
+     *
+     * @param index A number representing what index this slot is supposed to have.
+     *
+     * @return A slot for use in a container that represents this {@link IInventorySlot}
+     */
+    Slot createContainerSlot(int index);
 }
