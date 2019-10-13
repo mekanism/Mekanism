@@ -201,7 +201,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (supportsUpgrades()) {
             //TODO: Make sure to use the upgrade slot where needed and to store it so that it is persistent
-            upgradeComponent = new TileComponentUpgrade<>(this, new UpgradeInventorySlot(getSupportedUpgrade()));
+            upgradeComponent = new TileComponentUpgrade<>(this, UpgradeInventorySlot.of(getSupportedUpgrade()));
         }
         if (isElectric()) {
             maxEnergy = getBaseStorage();
@@ -584,6 +584,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
+        //TODO: Disable these caps if it is not electric?
         if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
         }

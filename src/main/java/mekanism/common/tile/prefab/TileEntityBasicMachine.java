@@ -39,13 +39,6 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
         return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
 
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        //TODO
-        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-    }
-
     @Override
     public TileComponentConfig getConfig() {
         return configComponent;

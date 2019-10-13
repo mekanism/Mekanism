@@ -90,9 +90,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.input(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas))));
-        builder.addSlot(new OutputInventorySlot());
-        builder.addSlot(new EnergyInventorySlot());
+        builder.addSlot(GasInventorySlot.input(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), 6, 65));
+        builder.addSlot(OutputInventorySlot.at(131, 57));
+        builder.addSlot(EnergyInventorySlot.discharge(155, 5));
         return builder.build();
     }
 

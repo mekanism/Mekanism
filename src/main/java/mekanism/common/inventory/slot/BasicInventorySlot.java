@@ -5,9 +5,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.util.StackUtils;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -23,45 +23,47 @@ public class BasicInventorySlot implements IInventorySlot {
     private final Predicate<@NonNull ItemStack> canExtract;
     private final Predicate<@NonNull ItemStack> canInsert;
     private final int limit;
-    private final int xPosition;
-    private final int yPosition;
+    protected final int x;
+    protected final int y;
 
-    public BasicInventorySlot() {
-        this(DEFAULT_LIMIT);
+    public BasicInventorySlot(int x, int y) {
+        this(DEFAULT_LIMIT, x, y);
     }
 
-    public BasicInventorySlot(int limit) {
-        this(limit, item -> true, item -> true);
+    public BasicInventorySlot(int limit, int x, int y) {
+        this(limit, item -> true, item -> true, x, y);
     }
 
-    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert) {
-        this(DEFAULT_LIMIT, canExtract, canInsert);
+    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
+        this(DEFAULT_LIMIT, canExtract, canInsert, x, y);
     }
 
-    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert) {
-        this(limit, canExtract, canInsert, stack -> true);
+    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
+        this(limit, canExtract, canInsert, stack -> true, x, y);
     }
 
-    public BasicInventorySlot(@Nonnull Predicate<@NonNull ItemStack> validator) {
-        this(DEFAULT_LIMIT, validator);
+    public BasicInventorySlot(@Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
+        this(DEFAULT_LIMIT, validator, x, y);
     }
 
-    public BasicInventorySlot(int limit, @Nonnull Predicate<@NonNull ItemStack> validator) {
-        this(limit, item -> true, item -> true, validator);
+    public BasicInventorySlot(int limit, @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
+        this(limit, item -> true, item -> true, validator, x, y);
     }
 
-    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
-        this(DEFAULT_LIMIT, canExtract, canInsert, validator);
+    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
+          int x, int y) {
+        this(DEFAULT_LIMIT, canExtract, canInsert, validator, x, y);
     }
 
-    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator) {
+    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+          @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
         this.limit = limit;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
         //TODO: Set these properly
-        this.xPosition = 0;
-        this.yPosition = 0;
+        this.x = x;
+        this.y = y;
     }
 
     @Nonnull
@@ -164,8 +166,12 @@ public class BasicInventorySlot implements IInventorySlot {
 
     //TODO: Should we move InventoryContainerSlot to the API and reference that instead
     @Override
-    public Slot createContainerSlot(int index) {
-        //TODO: Allow for creating different types of slots
-        return new InventoryContainerSlot(this, index, xPosition, yPosition);
+    public InventoryContainerSlot createContainerSlot(int index) {
+        return new InventoryContainerSlot(this, index, x, y, getSlotType());
+    }
+
+    //TODO: Implement this properly in the different subclasses/slot types
+    protected ContainerSlotType getSlotType() {
+        return ContainerSlotType.NORMAL;
     }
 }

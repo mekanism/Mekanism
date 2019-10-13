@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.tile.fluid;
 
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;

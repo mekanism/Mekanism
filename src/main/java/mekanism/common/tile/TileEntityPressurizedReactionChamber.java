@@ -2,10 +2,11 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -24,12 +25,15 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
-import mekanism.api.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.item.ItemUpgrade;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -98,8 +102,19 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputGasTank);
         outputHandler = OutputHelper.getOutputHandler(outputGasTank, this, 2);
+    }
 
-        //TODO: Upgrade slot index: 3
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // This can probably be done by letting the configurations know the relative side information?
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), 54, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(141, 19));
+        builder.addSlot(OutputInventorySlot.at(116, 35));
+        return builder.build();
     }
 
     @Override
@@ -111,18 +126,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
                 cachedRecipe.process();
             }
         }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return containsRecipe(recipe -> recipe.getInputSolid().testType(itemstack));
-        } else if (slotID == 1) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        } else if (slotID == 3) {
-            return itemstack.getItem() instanceof ItemUpgrade;
-        }
-        return false;
     }
 
     @Nonnull
@@ -171,14 +174,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
                     energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 1) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 2 || slotID == 4;
     }
 
     @Override

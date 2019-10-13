@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;

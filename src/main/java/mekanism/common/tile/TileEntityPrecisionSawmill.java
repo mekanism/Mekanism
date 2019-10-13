@@ -14,8 +14,12 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -26,8 +30,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 
 public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<SawmillRecipe> {
 
@@ -53,21 +55,34 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
 
         inputHandler = InputHelper.getInputHandler(this, 0);
         outputHandler = OutputHelper.getOutputHandler(this, 2, 4);
+    }
 
-        //TODO: Upgrade slot index: 3
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // This can probably be done by letting the configurations know the relative side information?
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
+        builder.addSlot(EnergyInventorySlot.discharge(56, 53));
+        builder.addSlot(OutputInventorySlot.at(116, 35));
+        builder.addSlot(OutputInventorySlot.at(132, 35));
+        return builder.build();
     }
 
     @Override
     protected void upgradeInventory(TileEntityFactory factory) {
+        //TODO: Upgrade
         //Chance Machine
-        factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{4, 8, 9, 10};
+        /*factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{4, 8, 9, 10};
 
         NonNullList<ItemStack> factoryInventory = factory.getInventory();
         NonNullList<ItemStack> inventory = getInventory();
         factoryInventory.set(5, inventory.get(0));
         factoryInventory.set(1, inventory.get(1));
         factoryInventory.set(5 + 3, inventory.get(2));
-        factoryInventory.set(0, inventory.get(3));
+        factoryInventory.set(0, inventory.get(3));*/
     }
 
     @Override
@@ -79,18 +94,6 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
                 cachedRecipe.process();
             }
         }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 3) {
-            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
-        } else if (slotID == 0) {
-            return containsRecipe(recipe -> recipe.getInput().testType(itemstack));
-        } else if (slotID == 1) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
     }
 
     @Override
@@ -124,14 +127,6 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 1) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 2 || slotID == 4;
     }
 
     @Override

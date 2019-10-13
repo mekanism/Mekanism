@@ -3,8 +3,6 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -77,12 +75,5 @@ public class ChemicalOxidizerContainer extends MekanismTileContainer<TileEntityC
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 26, 36));
-        addSlot(new SlotDischarge(tile, 1, 155, 5));
-        addSlot(new SlotStorageTank(tile, 2, 155, 25));
     }
 }

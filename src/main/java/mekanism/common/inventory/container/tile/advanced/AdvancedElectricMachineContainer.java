@@ -3,8 +3,6 @@ package mekanism.common.inventory.container.tile.advanced;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -81,13 +79,5 @@ public abstract class AdvancedElectricMachineContainer<TILE extends TileEntityAd
 
     private boolean isInputItem(ItemStack itemstack) {
         return tile.containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 56, 17));
-        addSlot(new Slot(tile, 1, 56, 53));
-        addSlot(new SlotOutput(tile, 2, 116, 35));
-        addSlot(new SlotDischarge(tile, 3, 31, 35));
     }
 }

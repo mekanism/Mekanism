@@ -110,13 +110,14 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item))));
-        builder.addSlot(GasInventorySlot.input(gasTank, this::isValidGas));
-        builder.addSlot(new OutputInventorySlot());
-        builder.addSlot(new EnergyInventorySlot());
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 56, 17));
+        builder.addSlot(GasInventorySlot.input(gasTank, this::isValidGas, 56, 53));
+        builder.addSlot(OutputInventorySlot.at(116, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(31, 35));
         return builder.build();
     }
 

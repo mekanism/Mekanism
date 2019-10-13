@@ -2,8 +2,6 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -82,12 +80,5 @@ public class ElectricPumpContainer extends MekanismTileContainer<TileEntityElect
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 28, 20));
-        addSlot(new SlotOutput(tile, 1, 28, 51));
-        addSlot(new SlotDischarge(tile, 2, 143, 35));
     }
 }

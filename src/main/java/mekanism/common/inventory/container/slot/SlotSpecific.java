@@ -5,6 +5,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+//TODO: Re-evaluate
 public class SlotSpecific extends Slot {
 
     private Class<? extends Item> itemClass;

@@ -13,12 +13,13 @@ import net.minecraft.item.ItemStack;
 public class InventoryContainerSlot extends Slot {
 
     private static IInventory emptyInventory = new Inventory(0);
+    private final ContainerSlotType slotType;
     private final IInventorySlot slot;
 
-    //TODO: Move the x and y position into the IInventorySlot, or at least into BasicInventorySlot
-    public InventoryContainerSlot(IInventorySlot slot, int index, int xPosition, int yPosition) {
-        super(emptyInventory, index, xPosition, yPosition);
+    public InventoryContainerSlot(IInventorySlot slot, int index, int x, int y, ContainerSlotType slotType) {
+        super(emptyInventory, index, x, y);
         this.slot = slot;
+        this.slotType = slotType;
     }
 
     @Override
@@ -72,4 +73,8 @@ public class InventoryContainerSlot extends Slot {
     public boolean isSameInventory(Slot other) {
         return other instanceof SlotItemHandler && ((SlotItemHandler) other).getItemHandler() == this.itemHandler;
     }*/
+
+    public ContainerSlotType getSlotType() {
+        return slotType;
+    }
 }

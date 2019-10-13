@@ -3,8 +3,6 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -79,13 +77,5 @@ public class ChemicalDissolutionChamberContainer extends MekanismTileContainer<T
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotStorageTank(tile, 0, 6, 65));
-        addSlot(new Slot(tile, 1, 26, 36));
-        addSlot(new SlotStorageTank(tile, 2, 155, 25));
-        addSlot(new SlotDischarge(tile, 3, 155, 5));
     }
 }

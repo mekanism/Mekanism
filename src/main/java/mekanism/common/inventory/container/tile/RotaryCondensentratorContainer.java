@@ -3,8 +3,6 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.ChargeUtils;

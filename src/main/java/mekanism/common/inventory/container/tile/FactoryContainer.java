@@ -1,19 +1,16 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotExtra;
-import mekanism.common.inventory.container.slot.SlotIgnored;
-import mekanism.common.inventory.container.slot.SlotInput;
-import mekanism.common.inventory.container.slot.SlotOutput;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -157,15 +154,16 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
         return 5 + processNumber;
     }
 
-    private class FactoryInputSlot extends SlotInput {
+    //TODO: This can probably just be killed off
+    private class FactoryInputSlot extends InventoryContainerSlot {
 
         /**
          * The index of the processes slot. 0 <= processNumber < tileEntity.tier.processes For matching the input to output slot
          */
         private final int processNumber;
 
-        private FactoryInputSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, int processNumber) {
-            super(inventoryIn, index, xPosition, yPosition);
+        private FactoryInputSlot(IInventorySlot slot, int index, int x, int y, int processNumber) {
+            super(slot, index, x, y, ContainerSlotType.INPUT);
             this.processNumber = processNumber;
         }
 

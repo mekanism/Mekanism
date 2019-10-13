@@ -2,9 +2,7 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.base.IUpgradeItem;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotMachineUpgrade;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -68,10 +66,5 @@ public class UpgradeManagementContainer extends MekanismTileContainer<TileEntity
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotMachineUpgrade(tile, ((IUpgradeTile) tile).getComponent().getUpgradeSlot(), 154, 7));
     }
 }

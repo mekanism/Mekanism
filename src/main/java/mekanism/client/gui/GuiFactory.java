@@ -22,12 +22,9 @@ import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.FactoryContainer;
-import mekanism.common.inventory.container.slot.SlotEnergy;
-import mekanism.common.inventory.container.slot.SlotExtra;
-import mekanism.common.inventory.container.slot.SlotIgnored;
-import mekanism.common.inventory.container.slot.SlotInput;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.FactoryTier;
@@ -106,22 +103,27 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         }
 
         for (Slot slot : container.inventorySlots) {
-            GuiSlot slotElement;
-            //Shift the slots by one as the elements include the border of the slot
-            if (slot instanceof SlotIgnored) {
-                continue;
-            } else if (slot instanceof SlotInput) {
-                slotElement = new GuiSlot(SlotType.INPUT, this, resource, slot.xPos - 1, slot.yPos - 1);
-            } else if (slot instanceof SlotOutput) {
-                slotElement = new GuiSlot(SlotType.OUTPUT, this, resource, slot.xPos - 1, slot.yPos - 1);
-            } else if (slot instanceof SlotEnergy) {
-                slotElement = new GuiSlot(SlotType.POWER, this, resource, slot.xPos - 1, slot.yPos - 1).with(SlotOverlay.POWER);
-            } else if (slot instanceof SlotExtra) {
-                slotElement = new GuiSlot(SlotType.EXTRA, this, resource, slot.xPos - 1, slot.yPos - 1);
-            } else {
-                slotElement = new GuiSlot(SlotType.NORMAL, this, resource, slot.xPos - 1, slot.yPos - 1);
+            if (slot instanceof InventoryContainerSlot) {
+                InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
+                ContainerSlotType slotType = containerSlot.getSlotType();
+                if (slotType == ContainerSlotType.IGNORED) {
+                    continue;
+                }
+                GuiSlot slotElement;
+                //Shift the slots by one as the elements include the border of the slot
+                if (slotType == ContainerSlotType.INPUT) {
+                    slotElement = new GuiSlot(SlotType.INPUT, this, resource, slot.xPos - 1, slot.yPos - 1);
+                } else if (slotType == ContainerSlotType.OUTPUT) {
+                    slotElement = new GuiSlot(SlotType.OUTPUT, this, resource, slot.xPos - 1, slot.yPos - 1);
+                } else if (slotType == ContainerSlotType.POWER) {
+                    slotElement = new GuiSlot(SlotType.POWER, this, resource, slot.xPos - 1, slot.yPos - 1).with(SlotOverlay.POWER);
+                } else if (slotType == ContainerSlotType.EXTRA) {
+                    slotElement = new GuiSlot(SlotType.EXTRA, this, resource, slot.xPos - 1, slot.yPos - 1);
+                } else {//slotType == ContainerSlotType.NORMAL
+                    slotElement = new GuiSlot(SlotType.NORMAL, this, resource, slot.xPos - 1, slot.yPos - 1);
+                }
+                addButton(slotElement);
             }
-            addButton(slotElement);
         }
     }
 

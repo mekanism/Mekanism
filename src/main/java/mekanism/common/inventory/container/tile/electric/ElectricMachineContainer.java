@@ -3,8 +3,6 @@ package mekanism.common.inventory.container.tile.electric;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -69,12 +67,5 @@ public abstract class ElectricMachineContainer<TILE extends TileEntityElectricMa
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 56, 17));
-        addSlot(new SlotDischarge(tile, 1, 56, 53));
-        addSlot(new SlotOutput(tile, 2, 116, 35));
     }
 }

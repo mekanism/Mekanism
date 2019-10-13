@@ -4,8 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;

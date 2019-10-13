@@ -15,6 +15,9 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -25,7 +28,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -69,6 +71,18 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
         ejectorComponent = new TileComponentEjector(this);
     }
 
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // This can probably be done by letting the configurations know the relative side information?
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(EnergyInventorySlot.charge(143, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(17, 35));
+        return builder.build();
+    }
+
     @Override
     public void onUpdate() {
         if (!isRemote()) {
@@ -102,16 +116,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return ChargeUtils.canBeCharged(itemstack);
-        } else if (slotID == 1) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return true;
-    }
-
-    @Override
     public boolean canReceiveEnergy(Direction side) {
         return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
@@ -124,23 +128,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     public double getMaxEnergy() {
         return tier.getMaxEnergy();
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 1) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        } else if (slotID == 0) {
-            //TODO: MAKE SURE NOT TO LOSE THE FACT THIS IS IN THE CHARGE SLOT
-            return ChargeUtils.canBeOutputted(itemstack, true);
-        }
-        return false;
     }
 
     @Override
@@ -193,6 +180,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
+        //TODO: We shouldn't be having to save the "tier" to NBT given we have a different TileEntityType per tier?? Same with most of the other things that store tier
         nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }

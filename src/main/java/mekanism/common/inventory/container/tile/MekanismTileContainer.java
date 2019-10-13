@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,6 +67,8 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
 
     @Override
     protected void addSlots() {
+        super.addSlots();
+        //TODO: Overwrite transferStackInSlot with the logic in the IInventorySlots??
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);

@@ -2,8 +2,6 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -74,13 +72,5 @@ public class PrecisionSawmillContainer extends MekanismTileContainer<TileEntityP
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 56, 17));
-        addSlot(new SlotDischarge(tile, 1, 56, 53));
-        addSlot(new SlotOutput(tile, 2, 116, 35));
-        addSlot(new SlotOutput(tile, 4, 132, 35));
     }
 }

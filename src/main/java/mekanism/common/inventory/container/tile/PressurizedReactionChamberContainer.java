@@ -2,8 +2,6 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.container.slot.SlotOutput;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,12 +70,5 @@ public class PressurizedReactionChamberContainer extends MekanismTileContainer<T
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 54, 35));
-        addSlot(new SlotDischarge(tile, 1, 141, 19));
-        addSlot(new SlotOutput(tile, 2, 116, 35));
     }
 }

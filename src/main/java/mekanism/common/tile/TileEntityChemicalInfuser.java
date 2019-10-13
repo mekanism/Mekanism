@@ -14,7 +14,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
@@ -29,14 +28,13 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
-import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -45,7 +43,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -79,10 +76,10 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.input(leftTank, this::isValidGas), RelativeSide.LEFT);
-        builder.addSlot(GasInventorySlot.output(centerTank), RelativeSide.FRONT);
-        builder.addSlot(GasInventorySlot.input(rightTank, this::isValidGas), RelativeSide.RIGHT);
-        builder.addSlot(new EnergyInventorySlot(), RelativeSide.DOWN, RelativeSide.UP);
+        builder.addSlot(GasInventorySlot.input(leftTank, this::isValidGas, 5, 56), RelativeSide.LEFT);
+        builder.addSlot(GasInventorySlot.output(centerTank, 155, 56), RelativeSide.FRONT);
+        builder.addSlot(GasInventorySlot.input(rightTank, this::isValidGas, 80, 65), RelativeSide.RIGHT);
+        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.DOWN, RelativeSide.UP);
         return builder.build();
     }
 
