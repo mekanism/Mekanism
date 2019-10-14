@@ -14,7 +14,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     private final Set<Upgrade> supportedTypes;
 
     private UpgradeInventorySlot(Set<Upgrade> supportedTypes) {
-        super(item -> false, stack -> {
+        super(alwaysFalse, stack -> {
             Item item = stack.getItem();
             if (item instanceof IUpgradeItem) {
                 Upgrade upgradeType = ((IUpgradeItem) item).getUpgradeType(stack);

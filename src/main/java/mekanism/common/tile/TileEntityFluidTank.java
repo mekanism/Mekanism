@@ -17,6 +17,11 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -24,12 +29,10 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -72,6 +75,15 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         super(blockProvider);
         this.tier = ((BlockFluidTank) blockProvider.getBlock()).getTier();
         fluidTank = new FluidTank(this.tier.getStorage());
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(FluidInventorySlot.input(fluidTank, 146, 19), RelativeSide.UP);
+        builder.addSlot(OutputInventorySlot.at(146, 51), RelativeSide.DOWN);
+        return builder.build();
     }
 
     @Override
@@ -170,30 +182,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             );
         }
         return 0;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        return slotID == 1;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return FluidContainerUtils.isFluidContainer(itemstack);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == Direction.DOWN) {
-            return new int[]{1};
-        } else if (side == Direction.UP) {
-            return new int[]{0};
-        }
-        return InventoryUtils.EMPTY;
     }
 
     @Nonnull

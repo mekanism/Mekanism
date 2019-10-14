@@ -12,6 +12,7 @@ public class LazyOptionalHelper<T> {
 
     private LazyOptional<T> lazyOptional;
 
+    //TODO: Replace this with a static method
     public LazyOptionalHelper(@Nonnull LazyOptional<T> lazyOptional) {
         this.lazyOptional = lazyOptional;
     }

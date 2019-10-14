@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -8,7 +7,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -30,23 +28,19 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
@@ -55,8 +49,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, IUpgradeTile,
-      IUpgradeInfoHandler, IComparatorSupport, ITileCachedRecipeHolder<GasToGasRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager,
+      IComparatorSupport, ITileCachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10000;
     private static final int[] INPUT_SLOT = {0};
@@ -294,11 +288,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public Object[] getTanks() {
         return new Object[]{inputTank, outputTank};
-    }
-
-    @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Nonnull

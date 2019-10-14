@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.basic.BlockTeleporterFrame;
@@ -25,7 +24,6 @@ import mekanism.common.network.PacketEntityMove;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
@@ -44,7 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IUpgradeTile, IComparatorSupport {
+public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
     public AxisAlignedBB teleportBounds = null;

@@ -9,11 +9,11 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.api.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -23,7 +23,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -54,7 +53,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
-      IUpgradeTile, IComparatorSupport {
+      IComparatorSupport {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));

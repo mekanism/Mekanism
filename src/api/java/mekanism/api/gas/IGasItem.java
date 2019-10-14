@@ -87,4 +87,9 @@ public interface IGasItem {
      * @return maximum gas
      */
     int getMaxGas(ItemStack itemstack);
+
+    //TODO: This is mainly here to remember to add things like this when porting IGasItem to a capability
+    default int getNeeded(ItemStack itemStack) {
+        return Math.max(0, getMaxGas(itemStack) - getGas(itemStack).getAmount());
+    }
 }

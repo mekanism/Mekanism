@@ -1,13 +1,11 @@
 package mekanism.common.tile;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -28,7 +26,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -38,17 +35,14 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ISustainedData, IUpgradeInfoHandler, ITankManager,
-      ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
+public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ISustainedData, ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10000;
     public GasTank leftTank = new GasTank(MAX_GAS);
@@ -76,11 +70,16 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.input(leftTank, this::isValidGas, 5, 56), RelativeSide.LEFT);
-        builder.addSlot(GasInventorySlot.output(centerTank, 155, 56), RelativeSide.FRONT);
-        builder.addSlot(GasInventorySlot.input(rightTank, this::isValidGas, 80, 65), RelativeSide.RIGHT);
+        //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
+        builder.addSlot(GasInventorySlot.fill(leftTank, this::isValidGas, 5, 56), RelativeSide.LEFT);
+        builder.addSlot(GasInventorySlot.drain(centerTank, 155, 56), RelativeSide.FRONT);
+        builder.addSlot(GasInventorySlot.fill(rightTank, this::isValidGas, 80, 65), RelativeSide.RIGHT);
         builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.DOWN, RelativeSide.UP);
         return builder.build();
+    }
+
+    public boolean isValidGas(@Nonnull Gas gas) {
+        return containsRecipe(recipe -> recipe.getLeftInput().testType(gas) || recipe.getRightInput().testType(gas));
     }
 
     @Override
@@ -265,11 +264,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         leftTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
         rightTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
         centerTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "centerTank")));
-    }
-
-    @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

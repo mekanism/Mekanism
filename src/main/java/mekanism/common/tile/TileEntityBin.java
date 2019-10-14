@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;

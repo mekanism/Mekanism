@@ -1,13 +1,11 @@
 package mekanism.common.tile;
 
 import java.util.EnumSet;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -44,12 +42,10 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -63,7 +59,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
-      IUpgradeInfoHandler, ITankManager, IComparatorSupport, ITileCachedRecipeHolder<ElectrolysisRecipe> {
+      ITankManager, IComparatorSupport, ITileCachedRecipeHolder<ElectrolysisRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
                                                          "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
@@ -467,11 +463,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
             return side != null && side != getDirection() && side != getOppositeDirection() && side != getRightSide();
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

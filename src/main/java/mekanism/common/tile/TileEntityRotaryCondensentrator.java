@@ -1,12 +1,10 @@
 package mekanism.common.tile;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -29,7 +27,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -37,7 +34,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -47,8 +43,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ISustainedData, IFluidHandlerWrapper, IGasHandler, IUpgradeInfoHandler, ITankManager,
-      IComparatorSupport {
+public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ISustainedData, IFluidHandlerWrapper, IGasHandler, ITankManager, IComparatorSupport {
 
     private static final int[] GAS_SLOTS = {0, 1};
     private static final int[] LIQUID_SLOTS = {2, 3};
@@ -315,11 +310,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Override
     public IFluidTank[] getAllTanks() {
         return new IFluidTank[]{fluidTank};
-    }
-
-    @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

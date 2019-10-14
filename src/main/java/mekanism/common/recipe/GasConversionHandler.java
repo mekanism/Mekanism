@@ -22,7 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-//TODO: Move the conversion handler to API??
+//TODO: Convert the conversion stuff to a recipe
 public class GasConversionHandler {
 
     //TODO: Show uses in JEI for fuels that can be turned to gas??
@@ -102,7 +102,7 @@ public class GasConversionHandler {
      * @return fuel ticks
      */
     @Nonnull
-    public static GasStack getItemGas(ItemStack itemStack, int needed, BiFunction<@NonNull Gas, Integer, @NonNull GasStack> getIfValid) {
+    public static GasStack getItemGas(@Nonnull ItemStack itemStack, int needed, BiFunction<@NonNull Gas, Integer, @NonNull GasStack> getIfValid) {
         if (itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
             GasStack gas = item.getGas(itemStack);
@@ -117,6 +117,11 @@ public class GasConversionHandler {
                 }
             }
         }
+        return getGasFromConversion(itemStack, getIfValid);
+    }
+
+    @Nonnull
+    public static GasStack getGasFromConversion(@Nonnull ItemStack itemStack, BiFunction<@NonNull Gas, Integer, @NonNull GasStack> getIfValid) {
         for (Entry<ItemStackIngredient, GasStack> entry : ingredientToGas.entrySet()) {
             //TODO: Double check if this should be this or testType
             if (entry.getKey().test(itemStack)) {
@@ -127,6 +132,16 @@ public class GasConversionHandler {
             }
         }
         return GasStack.EMPTY;
+    }
+
+    @Nonnull
+    public static GasStack getItemGasConversion(ItemStack itemStack, Predicate<@NonNull Gas> isValidGas) {
+        return getGasFromConversion(itemStack, (gas, quantity) -> {
+            if (!gas.isEmptyType() && isValidGas.test(gas)) {
+                return new GasStack(gas, quantity);
+            }
+            return GasStack.EMPTY;
+        });
     }
 
     public static List<ItemStack> getStacksForGas(@Nonnull Gas type) {

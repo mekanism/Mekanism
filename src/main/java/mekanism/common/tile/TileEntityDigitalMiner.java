@@ -16,11 +16,11 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.api.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IUpgradeTile;
@@ -40,7 +40,6 @@ import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
@@ -82,7 +81,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgradeTile, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock,
+public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock,
       ITileFilterHolder<MinerFilter> {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();

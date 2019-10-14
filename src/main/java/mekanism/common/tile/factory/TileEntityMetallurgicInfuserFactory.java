@@ -2,8 +2,8 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.Action;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;

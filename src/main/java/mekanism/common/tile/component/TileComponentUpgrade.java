@@ -7,8 +7,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.api.Upgrade;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
@@ -16,9 +16,9 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
 
-public class TileComponentUpgrade<TILE extends TileEntityMekanism> implements ITileComponent {
+//TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
+public class TileComponentUpgrade implements ITileComponent {
 
     /**
      * How long it takes this machine to install an upgrade.
@@ -31,7 +31,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism> implements IT
     /**
      * TileEntity implementing this component.
      */
-    public TILE tileEntity;
+    private TileEntityMekanism tileEntity;
     private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
     private Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
     /**
@@ -39,7 +39,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism> implements IT
      */
     private UpgradeInventorySlot upgradeSlot;
 
-    public TileComponentUpgrade(TILE tile, @Nonnull UpgradeInventorySlot slot) {
+    public TileComponentUpgrade(TileEntityMekanism tile, @Nonnull UpgradeInventorySlot slot) {
         tileEntity = tile;
         upgradeSlot = slot;
         slot.getSupportedUpgrade().forEach(this::setSupported);

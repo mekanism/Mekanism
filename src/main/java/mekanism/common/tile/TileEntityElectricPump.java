@@ -20,7 +20,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -62,8 +61,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IUpgradeTile, ITankManager,
-      IComputerIntegration, IComparatorSupport {
+public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, ITankManager, IComputerIntegration,
+      IComparatorSupport {
 
     private static final String[] methods = new String[]{"reset"};
     /**
@@ -100,7 +99,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(FluidInventorySlot.output(fluidTank, 28, 20), RelativeSide.UP);
+        builder.addSlot(FluidInventorySlot.drain(fluidTank, 28, 20), RelativeSide.UP);
         builder.addSlot(OutputInventorySlot.at(28, 51), RelativeSide.DOWN);
         builder.addSlot(EnergyInventorySlot.discharge(143, 35), RelativeSide.BACK);
         return builder.build();

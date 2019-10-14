@@ -2,15 +2,14 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.TileNetworkList;
-import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -23,6 +22,9 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
@@ -36,7 +38,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -80,6 +81,18 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         dumping = GasMode.IDLE;
 
         ejectorComponent = new TileComponentEjector(this);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // This can probably be done by letting the configurations know the relative side information?
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(GasInventorySlot.drain(gasTank, 8, 8));
+        builder.addSlot(GasInventorySlot.fill(gasTank, gas -> true, 8, 40));
+        return builder.build();
     }
 
     @Override
@@ -128,36 +141,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 1) {
-            return itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack).isEmpty();
-        } else if (slotID == 0) {
-            if (itemstack.getItem() instanceof IGasItem) {
-                IGasItem itemGas = (IGasItem) itemstack.getItem();
-                GasStack gasInItem = itemGas.getGas(itemstack);
-                return !gasInItem.isEmpty() && gasInItem.getAmount() == itemGas.getMaxGas(itemstack);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return itemstack.getItem() instanceof IGasItem && (gasTank.isEmpty() || ((IGasItem) itemstack.getItem()).canReceiveGas(itemstack, gasTank.getType()));
-        } else if (slotID == 1) {
-            return itemstack.getItem() instanceof IGasItem && (gasTank.isEmpty() || ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, gasTank.getType()));
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override

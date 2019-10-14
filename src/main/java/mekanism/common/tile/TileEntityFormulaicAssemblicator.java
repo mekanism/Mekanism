@@ -6,11 +6,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
+import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
-import mekanism.api.Upgrade;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -19,7 +19,6 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 //TODO: 1.14, Fix dupe bug that probably has to do with container/how it "fake fills" (attempt to drag single item after placing it in center slot)
-public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IUpgradeTile, IConfigCardAccess {
+public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
     public static final int SLOT_UPGRADE = 0;

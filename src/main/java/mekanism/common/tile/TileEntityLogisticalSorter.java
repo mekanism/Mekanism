@@ -11,7 +11,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.api.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -26,7 +25,6 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -49,7 +47,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IUpgradeTile, IComparatorSupport,
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IComparatorSupport,
       ITileFilterHolder<TransporterFilter> {
 
     private HashList<TransporterFilter> filters = new HashList<>();

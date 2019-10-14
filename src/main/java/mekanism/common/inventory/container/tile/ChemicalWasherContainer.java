@@ -3,7 +3,6 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -81,13 +80,5 @@ public class ChemicalWasherContainer extends MekanismTileContainer<TileEntityChe
         }
 
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 180, 71));
-        addSlot(new SlotOutput(tile, 1, 180, 102));
-        addSlot(new SlotStorageTank(tile, 2, 155, 56));
-        addSlot(new SlotDischarge(tile, 3, 155, 5));
     }
 }

@@ -9,7 +9,7 @@ public class OutputInventorySlot extends BasicInventorySlot {
     }
 
     private OutputInventorySlot(int x, int y) {
-        super(item -> true, item -> false, x, y);
+        super(alwaysTrue, alwaysFalse, x, y);
     }
 
     @Override

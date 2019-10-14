@@ -138,7 +138,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     //Variables for handling ITileUpgradable
     //TODO: Convert this to being private
-    public TileComponentUpgrade<TileEntityMekanism> upgradeComponent;
+    public TileComponentUpgrade upgradeComponent;
     //End variables ITileUpgradable
 
     //Variables for handling ITileContainer
@@ -201,7 +201,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (supportsUpgrades()) {
             //TODO: Make sure to use the upgrade slot where needed and to store it so that it is persistent
-            upgradeComponent = new TileComponentUpgrade<>(this, UpgradeInventorySlot.of(getSupportedUpgrade()));
+            upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(getSupportedUpgrade()));
         }
         if (isElectric()) {
             maxEnergy = getBaseStorage();
@@ -736,6 +736,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Methods for implementing ITileContainer
     @Nullable
     protected IInventorySlotHolder getInitialInventory() {
+        //TODO: Go back through and verify all sides are correct/make sense now that it is easier to tell what slot is what
         return null;
     }
 

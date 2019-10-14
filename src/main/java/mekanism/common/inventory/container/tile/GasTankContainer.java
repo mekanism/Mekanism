@@ -3,7 +3,6 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -61,11 +60,5 @@ public class GasTankContainer extends MekanismTileContainer<TileEntityGasTank> {
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotStorageTank(tile, 0, 8, 8));
-        addSlot(new SlotStorageTank(tile, 1, 8, 40));
     }
 }

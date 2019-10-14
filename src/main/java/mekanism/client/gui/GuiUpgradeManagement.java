@@ -4,12 +4,11 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.Upgrade;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.api.Upgrade;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -57,10 +56,6 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
         updateEnabledButtons();
     }
 
-    public <TILE extends TileEntityMekanism & IUpgradeTile> TILE getTile() {
-        return (TILE) tileEntity;
-    }
-
     private boolean overUpgradeType(double xAxis, double yAxis, int xPos, int yPos) {
         return xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12;
     }
@@ -72,7 +67,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
             delay++;
         } else {
             delay = 0;
-            supportedIndex = ++supportedIndex % getTile().getComponent().getSupportedTypes().size();
+            supportedIndex = ++supportedIndex % tileEntity.getComponent().getSupportedTypes().size();
         }
         updateEnabledButtons();
     }
@@ -90,7 +85,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
         if (selectedType == null) {
             renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.noSelection"), "."), 92, 8, 0.8F, true);
         } else {
-            int amount = getTile().getComponent().getUpgrades(selectedType);
+            int amount = tileEntity.getComponent().getUpgrades(selectedType);
             renderText(TextComponentUtil.build(selectedType, " ", Translation.of("gui.mekanism.upgrade")), 92, 8, 0.6F, true);
             renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
             int text = 0;
@@ -98,7 +93,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
                 renderText(component, 92, 22 + (6 * text++), 0.6F, true);
             }
         }
-        Set<Upgrade> supportedTypes = getTile().getComponent().getSupportedTypes();
+        Set<Upgrade> supportedTypes = tileEntity.getComponent().getSupportedTypes();
         if (!supportedTypes.isEmpty()) {
             Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
@@ -151,9 +146,9 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = getTile().getComponent().getScaledUpgradeProgress(14);
+        int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
         drawTexturedRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
-        if (selectedType != null && getTile().getComponent().getUpgrades(selectedType) == 0) {
+        if (selectedType != null && tileEntity.getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
@@ -180,7 +175,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     }
 
     private Set<Upgrade> getCurrentUpgrades() {
-        return getTile().getComponent().getInstalledTypes();
+        return tileEntity.getComponent().getInstalledTypes();
     }
 
     public int getScroll() {

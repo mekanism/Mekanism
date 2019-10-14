@@ -13,13 +13,14 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class BasicInventorySlot implements IInventorySlot {
 
+    protected static final Predicate<@NonNull ItemStack> alwaysTrue = item -> true;
+    protected static final Predicate<@NonNull ItemStack> alwaysFalse = item -> false;
     private static final int DEFAULT_LIMIT = 64;
 
     @Nonnull
     private final Predicate<@NonNull ItemStack> validator;
     @Nonnull
     private ItemStack current = ItemStack.EMPTY;
-    //TODO: Evaluate the extraction things as inputs should not be able to be extracted from via automation
     private final Predicate<@NonNull ItemStack> canExtract;
     private final Predicate<@NonNull ItemStack> canInsert;
     private final int limit;
@@ -31,7 +32,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public BasicInventorySlot(int limit, int x, int y) {
-        this(limit, item -> true, item -> true, x, y);
+        this(limit, alwaysTrue, alwaysTrue, x, y);
     }
 
     public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
@@ -39,7 +40,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
-        this(limit, canExtract, canInsert, stack -> true, x, y);
+        this(limit, canExtract, canInsert, alwaysTrue, x, y);
     }
 
     public BasicInventorySlot(@Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
@@ -47,7 +48,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public BasicInventorySlot(int limit, @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
-        this(limit, item -> true, item -> true, validator, x, y);
+        this(limit, alwaysTrue, alwaysTrue, validator, x, y);
     }
 
     public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
@@ -61,7 +62,6 @@ public class BasicInventorySlot implements IInventorySlot {
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
-        //TODO: Set these properly
         this.x = x;
         this.y = y;
     }
