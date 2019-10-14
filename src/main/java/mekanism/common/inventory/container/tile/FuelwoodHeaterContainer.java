@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.ForgeHooks;
 
 public class FuelwoodHeaterContainer extends MekanismTileContainer<TileEntityFuelwoodHeater> {
 
@@ -27,7 +28,7 @@ public class FuelwoodHeaterContainer extends MekanismTileContainer<TileEntityFue
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (slotStack.getBurnTime() > 0) {
+            if (ForgeHooks.getBurnTime(slotStack) > 0) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

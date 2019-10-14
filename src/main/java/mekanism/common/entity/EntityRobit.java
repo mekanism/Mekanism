@@ -197,7 +197,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
             if (!world.isRemote) {
                 if (furnaceBurnTime == 0 && canSmelt()) {
-                    currentItemBurnTime = furnaceBurnTime = inventory.get(29).getBurnTime();
+                    currentItemBurnTime = furnaceBurnTime = ForgeHooks.getBurnTime(inventory.get(29));
                     if (furnaceBurnTime > 0) {
                         if (!inventory.get(29).isEmpty()) {
                             inventory.get(29).shrink(1);

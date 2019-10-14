@@ -32,6 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -183,8 +184,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return world != null && world.getBlockState(pos).getBlock() == Blocks.LAVA;
     }
 
-    public int getFuel(ItemStack itemstack) {
-        return itemstack.getBurnTime() / 2;
+    public int getFuel(ItemStack stack) {
+        return ForgeHooks.getBurnTime(stack) / 2;
     }
 
     @Nonnull

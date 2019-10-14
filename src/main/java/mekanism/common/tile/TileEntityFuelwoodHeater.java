@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -44,7 +45,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
             } else {
                 ItemStack stack = getStackInSlot(0);
                 if (!stack.isEmpty()) {
-                    maxBurnTime = burnTime = stack.getBurnTime() / 2;
+                    maxBurnTime = burnTime = ForgeHooks.getBurnTime(stack) / 2;
                     if (burnTime > 0) {
                         ItemStack preShrunk = stack.copy();
                         stack.shrink(1);
@@ -112,7 +113,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
 
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
-        return stack.getBurnTime() > 0;
+        return ForgeHooks.getBurnTime(stack) > 0;
     }
 
     @Override
