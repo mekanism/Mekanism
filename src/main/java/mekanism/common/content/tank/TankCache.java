@@ -1,6 +1,9 @@
 package mekanism.common.content.tank;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -13,7 +16,11 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TankCache extends MultiblockCache<SynchronizedTankData> {
 
+    //TODO: REMOVE USAGES OF THIS, and use inventory slots instead
+    @Deprecated
     public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+    @Nonnull
+    private List<IInventorySlot> inventorySlots = Collections.emptyList();
 
     @Nonnull
     public FluidStack fluid = FluidStack.EMPTY;
@@ -22,14 +29,14 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
 
     @Override
     public void apply(SynchronizedTankData data) {
-        data.inventory = inventory;
+        data.setInventoryData(inventorySlots);
         data.fluidStored = fluid;
         data.editMode = editMode;
     }
 
     @Override
     public void sync(SynchronizedTankData data) {
-        inventory = data.inventory;
+        inventorySlots = data.getInventorySlots();
         fluid = data.fluidStored;
         editMode = data.editMode;
     }

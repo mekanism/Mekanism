@@ -65,11 +65,6 @@ public class BlockReactorController extends BlockTileDrops implements IHasGui<Ti
     }
 
     @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityReactorController tile) {
         return new ContainerProvider("mekanismgenerators.container.reactor_controller", (i, inv, player) -> new ReactorControllerContainer(i, inv, tile));
     }

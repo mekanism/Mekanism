@@ -4,7 +4,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
@@ -25,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasInventory, IHasTileEntity<TileEntityInductionCell> {
+public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasTileEntity<TileEntityInductionCell> {
 
     private final InductionCellTier tier;
 
@@ -54,11 +53,6 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
     @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
         return false;
-    }
-
-    @Override
-    public int getInventorySize() {
-        return 2;
     }
 
     @Override

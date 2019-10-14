@@ -159,11 +159,6 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
     }
 
     @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntitySeismicVibrator tile) {
         return new ContainerProvider("mekanism.container.seismic_vibrator", (i, inv, player) -> new SeismicVibratorContainer(i, inv, tile));
     }

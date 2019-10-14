@@ -1,16 +1,16 @@
 package mekanism.common.tile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.LazyOptionalHelper;
-import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
@@ -18,25 +18,18 @@ import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager {
-
-    protected static final int[] SLOTS = {0, 1};
 
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
@@ -101,8 +94,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     public void manageInventory() {
         int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - structure.fluidStored.getAmount();
-        if (FluidContainerUtils.isFluidContainer(structure.inventory.get(0))) {
-            structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
+        ItemStack stack = getStackInSlot(0, null);
+        if (FluidContainerUtils.isFluidContainer(stack)) {
+            List<IInventorySlot> inventorySlots = structure.getInventorySlots();
+            structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inventorySlots.get(0),
+                  inventorySlots.get(1), null);
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
@@ -110,14 +106,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            if (!manageInventory(player, hand, stack)) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-                NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityDynamicTank>) blockProvider.getBlock()).getProvider(this), pos);
-            } else {
+            if (manageInventory(player, hand, stack)) {
                 player.inventory.markDirty();
                 sendPacketToRenderer();
+                return true;
             }
-            return true;
+            return openGui(player);
         }
         return false;
     }
@@ -216,20 +210,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             return;
         }
         structure.editMode = mode;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     public boolean manageInventory(PlayerEntity player, Hand hand, ItemStack itemStack) {

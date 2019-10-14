@@ -167,11 +167,6 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
         return MekanismConfig.storage.chemicalCrystallizer.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

@@ -349,6 +349,8 @@ artifacts {
     archives toolsJar
 }
 
+//TODO: TRY removing some of this now that https://github.com/MinecraftForge/ForgeGradle/issues/615 is merged.
+// Not doing so now as due to ongoing local changes it can't even compile fully right now anyways
 reobf {
     apiJar {
         classpath = sourceSets.api.compileClasspath

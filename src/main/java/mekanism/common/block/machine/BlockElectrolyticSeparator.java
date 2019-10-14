@@ -167,11 +167,6 @@ public class BlockElectrolyticSeparator extends BlockMekanismContainer implement
         return MekanismConfig.storage.electrolyticSeparator.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

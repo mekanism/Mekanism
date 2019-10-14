@@ -93,11 +93,6 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
         return 200_000;
     }
 
-    @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

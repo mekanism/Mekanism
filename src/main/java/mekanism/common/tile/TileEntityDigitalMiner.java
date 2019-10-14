@@ -432,7 +432,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             for (int i = 0; i < 27; i++) {
                 ItemStack currentStack = getStackInSlot(i);
                 if (currentStack.isEmpty()) {
-                    getInventory().set(i, stack);
+                    setStackInSlot(i, stack, null);
                     break;
                 } else if (ItemHandlerHelper.canItemStacksStack(currentStack, stack) && currentStack.getCount() + stack.getCount() <= stack.getMaxStackSize()) {
                     currentStack.grow(stack.getCount());

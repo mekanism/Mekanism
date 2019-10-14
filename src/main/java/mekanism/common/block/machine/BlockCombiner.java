@@ -174,11 +174,6 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
         return MekanismConfig.storage.combiner.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

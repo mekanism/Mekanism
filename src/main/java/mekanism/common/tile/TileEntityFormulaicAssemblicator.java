@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
@@ -274,13 +274,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private boolean moveItemsToGrid() {
         boolean ret = true;
         for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
-            ItemStack recipeStack = getStackInSlot(i);
+            IInventorySlot recipeSlot = getInventorySlot(i, null);
+            if (recipeSlot == null) {
+                continue;
+            }
+            ItemStack recipeStack = recipeSlot.getStack();
             if (formula.isIngredientInPos(world, recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)) {
                 continue;
             }
             if (!recipeStack.isEmpty()) {
                 //Update recipeStack as well so we can check if it is empty without having to get it again
-                getInventory().set(i, recipeStack = tryMoveToInput(recipeStack));
+                recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
                 markDirty();
                 if (!recipeStack.isEmpty()) {
                     ret = false;
@@ -289,10 +293,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 boolean found = false;
                 for (int j = SLOT_INPUT_LAST; j >= SLOT_INPUT_FIRST; j--) {
                     //The stack stored in the stock inventory
-                    ItemStack stockStack = getStackInSlot(j);
+                    IInventorySlot stockSlot = getInventorySlot(j, null);
+                    if (stockSlot == null) {
+                        continue;
+                    }
+                    ItemStack stockStack = stockSlot.getStack();
                     if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i - SLOT_CRAFT_MATRIX_FIRST)) {
-                        getInventory().set(i, StackUtils.size(stockStack, 1));
-                        stockStack.shrink(1);
+                        recipeSlot.setStack(StackUtils.size(stockStack, 1));
+                        if (stockSlot.shrinkStack(1) != 1) {
+                            //TODO: Print error that something went wrong
+                        }
                         markDirty();
                         found = true;
                         break;
@@ -313,9 +323,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private void moveItemsToInput(boolean forcePush) {
         for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
-            ItemStack recipeStack = getStackInSlot(i);
-            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getWorld(), recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)))) {
-                getInventory().set(i, tryMoveToInput(recipeStack));
+            IInventorySlot recipeSlot = getInventorySlot(i, null);
+            if (recipeSlot != null) {
+                ItemStack recipeStack = recipeSlot.getStack();
+                if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getWorld(), recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)))) {
+                    recipeSlot.setStack(tryMoveToInput(recipeStack));
+                }
             }
         }
         markDirty();
@@ -343,22 +356,36 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private void organizeStock() {
         for (int j = SLOT_INPUT_FIRST; j <= SLOT_INPUT_LAST; j++) {
-            for (int i = SLOT_INPUT_LAST; i > j; i--) {
-                ItemStack stockStack = getStackInSlot(i);
-                if (!stockStack.isEmpty()) {
-                    ItemStack compareStack =getStackInSlot(j);
-                    if (compareStack.isEmpty()) {
-                        getInventory().set(j, stockStack);
-                        getInventory().set(i, ItemStack.EMPTY);
-                        markDirty();
-                        return;
-                    } else if (compareStack.getCount() < compareStack.getMaxStackSize()) {
-                        if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
-                            int newCount = compareStack.getCount() + stockStack.getCount();
-                            compareStack.setCount(Math.min(compareStack.getMaxStackSize(), newCount));
-                            stockStack.setCount(Math.max(0, newCount - compareStack.getMaxStackSize()));
-                            markDirty();
-                            return;
+            IInventorySlot compareSlot = getInventorySlot(j, null);
+            if (compareSlot != null) {
+                for (int i = SLOT_INPUT_LAST; i > j; i--) {
+                    IInventorySlot stockSlot = getInventorySlot(i, null);
+                    if (stockSlot != null) {
+                        ItemStack stockStack = stockSlot.getStack();
+                        if (!stockStack.isEmpty()) {
+                            ItemStack compareStack = compareSlot.getStack();
+                            if (compareStack.isEmpty()) {
+                                compareSlot.setStack(stockStack);
+                                stockSlot.setStack(ItemStack.EMPTY);
+                                markDirty();
+                                return;
+                            }
+                            int maxCompareSize = Math.min(compareStack.getMaxStackSize(), compareSlot.getLimit());
+                            if (compareStack.getCount() < maxCompareSize) {
+                                if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
+                                    int newCount = compareStack.getCount() + stockStack.getCount();
+                                    int newCompareSize = Math.min(maxCompareSize, newCount);
+                                    if (compareSlot.setStackSize(newCompareSize) != newCompareSize) {
+                                        //TODO: Print error
+                                    }
+                                    int newStockSize = Math.max(0, newCount - maxCompareSize);
+                                    if (stockSlot.setStackSize(newStockSize) != newStockSize) {
+                                        //TODO: Print error
+                                    }
+                                    markDirty();
+                                    return;
+                                }
+                            }
                         }
                     }
                 }
@@ -369,15 +396,21 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private ItemStack tryMoveToInput(ItemStack stack) {
         stack = stack.copy();
         for (int i = SLOT_INPUT_FIRST; i <= SLOT_INPUT_LAST; i++) {
-            ItemStack stockStack = getStackInSlot(i);
+            IInventorySlot stockSlot = getInventorySlot(i, null);
+            if (stockSlot == null) {
+                continue;
+            }
+            ItemStack stockStack = stockSlot.getStack();
             if (stockStack.isEmpty()) {
-                getInventory().set(i, stack);
+                stockSlot.setStack(stack);
                 return ItemStack.EMPTY;
-            } else if (InventoryUtils.areItemsStackable(stack, stockStack) && stockStack.getCount() < stockStack.getMaxStackSize()) {
-                int toUse = Math.min(stack.getCount(), stockStack.getMaxStackSize() - stockStack.getCount());
-                stockStack.grow(toUse);
+            } else if (InventoryUtils.areItemsStackable(stack, stockStack) && stockStack.getCount() < Math.min(stockStack.getMaxStackSize(), stockSlot.getLimit())) {
+                int toUse = Math.min(stack.getCount(), Math.min(stockStack.getMaxStackSize(), stockSlot.getLimit()) - stockStack.getCount());
+                if (stockSlot.growStack(toUse) != toUse) {
+                    //TODO: Print error that something went wrong
+                }
                 stack.shrink(toUse);
-                if (stack.getCount() == 0) {
+                if (stack.isEmpty()) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -388,19 +421,25 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private boolean tryMoveToOutput(ItemStack stack, boolean doMove) {
         stack = stack.copy();
         for (int i = SLOT_OUTPUT_FIRST; i <= SLOT_OUTPUT_LAST; i++) {
-            ItemStack outputStack = getStackInSlot(i);
+            IInventorySlot outputSlot = getInventorySlot(i, null);
+            if (outputSlot == null) {
+                continue;
+            }
+            ItemStack outputStack = outputSlot.getStack();
             if (outputStack.isEmpty()) {
                 if (doMove) {
-                    getInventory().set(i, stack);
+                    outputSlot.setStack(stack);
                 }
                 return true;
-            } else if (InventoryUtils.areItemsStackable(stack, outputStack) && outputStack.getCount() < outputStack.getMaxStackSize()) {
-                int toUse = Math.min(stack.getCount(), outputStack.getMaxStackSize() - outputStack.getCount());
+            } else if (InventoryUtils.areItemsStackable(stack, outputStack) && outputStack.getCount() < Math.min(outputStack.getMaxStackSize(), outputSlot.getLimit())) {
+                int toUse = Math.min(stack.getCount(), Math.min(outputStack.getMaxStackSize(), outputSlot.getLimit()) - outputStack.getCount());
                 if (doMove) {
-                    outputStack.grow(toUse);
+                    if (outputSlot.growStack(toUse) != toUse) {
+                        //TODO: Print error that something went wrong
+                    }
                 }
                 stack.shrink(toUse);
-                if (stack.getCount() == 0) {
+                if (stack.isEmpty()) {
                     return true;
                 }
             }

@@ -1,5 +1,9 @@
 package mekanism.common.content.matrix;
 
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.multiblock.MultiblockCache;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -9,16 +13,20 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
 
+    //TODO: REMOVE USAGES OF THIS, and use inventory slots instead
+    @Deprecated
     public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+    @Nonnull
+    private List<IInventorySlot> inventorySlots = Collections.emptyList();
 
     @Override
     public void apply(SynchronizedMatrixData data) {
-        data.setInventory(inventory);
+        data.setInventoryData(inventorySlots);
     }
 
     @Override
     public void sync(SynchronizedMatrixData data) {
-        inventory = data.getInventory();
+        inventorySlots = data.getInventorySlots();
     }
 
     @Override

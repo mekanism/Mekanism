@@ -165,11 +165,6 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     }
 
     @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityElectricPump tile) {
         return new ContainerProvider("mekanism.container.electric_pump", (i, inv, player) -> new ElectricPumpContainer(i, inv, tile));
     }

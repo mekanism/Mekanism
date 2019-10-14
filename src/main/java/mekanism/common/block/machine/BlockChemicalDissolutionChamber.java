@@ -167,11 +167,6 @@ public class BlockChemicalDissolutionChamber extends BlockMekanismContainer impl
         return MekanismConfig.storage.chemicalDissolutionChamber.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

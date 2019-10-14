@@ -275,24 +275,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        if (slot == 0) {
-            return ChargeUtils.canBeCharged(stack);
-        } else if (slot == 1) {
-            return ChargeUtils.canBeDischarged(stack);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return !isRemote() ? structure == null : !clientHasStructure;
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
     }

@@ -18,11 +18,6 @@ public class BlockBoilerValve extends BlockBasicMultiblock implements IHasInvent
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityBoilerValve tile) {
         return new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, tile));
     }

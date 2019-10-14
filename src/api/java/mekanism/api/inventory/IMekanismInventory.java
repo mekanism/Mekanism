@@ -8,6 +8,8 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
+//TODO: Go through all the usages of ItemStack setCount, grow, and shrink as any that are from inventories should have the slot change it,
+// rather than forcefully changing it when the API says it shouldn't be modified
 public interface IMekanismInventory extends ISidedItemHandler {
 
     /**

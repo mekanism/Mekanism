@@ -11,7 +11,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 //TODO: Handle persistence somewhere, so that we can load/save the slots in an IMekanismInventory.
 // Wherever we handle this we have to make sure to mark it dirty on change Or at least mark the tile dirty
-//TODO: Maybe rename to ISlotHandler
 public interface IInventorySlot {
 
     /**
@@ -114,4 +113,73 @@ public interface IInventorySlot {
      * @return A slot for use in a container that represents this {@link IInventorySlot}
      */
     Slot createContainerSlot(int index);
+
+    /**
+     * Convenience method for modifying the size of the stored stack.
+     *
+     * If there is a stack stored in this slot, set the size of it to the given amount. Capping at the item's max stack size and the limit of this slot. If the amount is
+     * less than or equal to zero, then this instead sets the stack to the empty stack.
+     *
+     * @param amount The desired size to set the stack to.
+     *
+     * @return Actual size it was set to.
+     *
+     * @apiNote It is recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run.
+     */
+    default int setStackSize(int amount) {
+        ItemStack stack = getStack();
+        if (stack.isEmpty()) {
+            return 0;
+        }
+        if (amount <= 0) {
+            setStack(ItemStack.EMPTY);
+            return 0;
+        }
+        int maxStackSize = Math.min(stack.getMaxStackSize(), getLimit());
+        if (amount > maxStackSize) {
+            amount = maxStackSize;
+        }
+        if (stack.getCount() == amount) {
+            //If our size is not changing don't do anything
+            return amount;
+        }
+        ItemStack newStack = stack.copy();
+        newStack.setCount(amount);
+        setStack(newStack);
+        return amount;
+    }
+
+    /**
+     * Convenience method for growing the size of the stored stack.
+     *
+     * If there is a stack stored in this slot, increase its size by the given amount. Capping at the item's max stack size and the limit of this slot. If the stack
+     * shrinks to an amount of less than or equal to zero, then this instead sets the stack to the empty stack.
+     *
+     * @param amount The desired size to set the stack to.
+     *
+     * @return Actual amount the stack grew.
+     *
+     * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
+     */
+    default int growStack(int amount) {
+        int current = getStack().getCount();
+        int newSize = setStackSize(current + amount);
+        return newSize - current;
+    }
+
+    /**
+     * Convenience method for shrinking the size of the stored stack.
+     *
+     * If there is a stack stored in this slot, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
+     * to the empty stack. If this method is used to grow the stack the size gets capped at the item's max stack size and the limit of this slot.
+     *
+     * @param amount The desired size to set the stack to.
+     *
+     * @return Actual amount the stack grew.
+     *
+     * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
+     */
+    default int shrinkStack(int amount) {
+        return -growStack(-amount);
+    }
 }

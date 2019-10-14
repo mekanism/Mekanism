@@ -11,18 +11,15 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismGases;
-import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -30,8 +27,6 @@ import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer {
 
@@ -135,12 +130,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityBoilerCasing>) blockProvider.getBlock()).getProvider(this), pos);
-            return true;
-        }
-        return false;
+        return structure != null && openGui(player);
     }
 
     @Override
@@ -318,17 +308,9 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return structure == null;
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return InventoryUtils.EMPTY;
     }
 }

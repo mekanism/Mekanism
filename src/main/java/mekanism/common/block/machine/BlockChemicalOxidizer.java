@@ -167,11 +167,6 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
         return MekanismConfig.storage.oxidationChamber.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

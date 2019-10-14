@@ -174,11 +174,6 @@ public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBl
         return MekanismConfig.storage.precisionSawmill.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

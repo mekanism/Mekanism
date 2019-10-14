@@ -7,7 +7,6 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
@@ -15,17 +14,13 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration {
 
@@ -56,12 +51,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityInductionCasing>) blockProvider.getBlock()).getProvider(this), pos);
-            return true;
-        }
-        return false;
+        return structure != null && openGui(player);
     }
 
     @Override
@@ -182,19 +172,5 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 }

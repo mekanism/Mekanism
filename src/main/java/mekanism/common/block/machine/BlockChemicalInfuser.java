@@ -167,11 +167,6 @@ public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlo
         return MekanismConfig.storage.chemicalInfuser.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

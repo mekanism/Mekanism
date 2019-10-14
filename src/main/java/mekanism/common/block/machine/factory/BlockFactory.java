@@ -201,11 +201,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         }
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5 + tier.processes * 2;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

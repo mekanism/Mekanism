@@ -147,11 +147,6 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityOredictionificator tile) {
         return new ContainerProvider("mekanism.container.oredictionificator", (i, inv, player) -> new OredictionificatorContainer(i, inv, tile));
     }

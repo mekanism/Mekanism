@@ -155,11 +155,6 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     }
 
     @Override
-    public int getInventorySize() {
-        return 54;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityPersonalChest tile) {
         return new ContainerProvider("mekanism.container.personal_chest", (i, inv, player) -> new PersonalChestTileContainer(i, inv, tile));
     }

@@ -174,11 +174,6 @@ public class BlockChemicalInjectionChamber extends BlockMekanismContainer implem
         return MekanismConfig.storage.chemicalInjectionChamber.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

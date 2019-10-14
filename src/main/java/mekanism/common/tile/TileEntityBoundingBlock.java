@@ -139,6 +139,8 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         return data;
     }
 
+    //TODO: Do we just want to promote the bounding block to being "advanced" in terms of how things are proxied to the main block, rather than
+    // have the extra stuff only happen with the advanced variant. Or do we want to at least move support for the offset capability stuff. to here
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {

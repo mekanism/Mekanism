@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -10,15 +9,10 @@ import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasInventory, IHasTileEntity<TileEntityBoilerCasing>, IHasGui<TileEntityBoilerCasing> {
+public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasTileEntity<TileEntityBoilerCasing>, IHasGui<TileEntityBoilerCasing> {
 
     public BlockBoilerCasing() {
         super("boiler_casing");
-    }
-
-    @Override
-    public int getInventorySize() {
-        return 2;
     }
 
     @Override

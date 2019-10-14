@@ -1,11 +1,13 @@
 package mekanism.common.multiblock;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import mekanism.api.inventory.slot.IInventorySlot;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>> {
 
@@ -35,8 +37,9 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> {
 
     public Set<Coord4D> internalLocations = new HashSet<>();
 
-    public NonNullList<ItemStack> getInventory() {
-        return null;
+    @Nonnull
+    public List<IInventorySlot> getInventorySlots() {
+        return Collections.emptyList();
     }
 
     @Override

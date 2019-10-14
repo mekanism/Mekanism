@@ -162,11 +162,6 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
     }
 
     @Override
-    public int getInventorySize() {
-        return 36;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityFormulaicAssemblicator tile) {
         return new ContainerProvider("mekanism.container.formulaic_assemblicator", (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, tile));
     }

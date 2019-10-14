@@ -1,9 +1,15 @@
 package mekanism.common.content.tank;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
@@ -24,10 +30,27 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public int prevFluidStage = 0;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
-
-    public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-
     public Set<ValveData> valves = new HashSet<>();
+
+    @Nonnull
+    private List<IInventorySlot> inventorySlots;
+
+    public SynchronizedTankData() {
+        //TODO: Look into some way of allowing slot position to be set differently if needed
+        inventorySlots = new ArrayList<>();
+        inventorySlots.add(FluidInventorySlot.input(fluidTank, 146, 20));
+        inventorySlots.add(OutputInventorySlot.at(146, 51));
+    }
+
+    @Nonnull
+    @Override
+    public List<IInventorySlot> getInventorySlots() {
+        return inventorySlots;
+    }
+
+    public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
+        inventorySlots = toCopy;
+    }
 
     public boolean needsRenderUpdate() {
         if ((fluidStored.isEmpty() && !prevFluid.isEmpty()) || (!fluidStored.isEmpty() && prevFluid.isEmpty())) {
@@ -41,11 +64,6 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
         boolean stageChanged = currentStage != prevFluidStage;
         prevFluidStage = currentStage;
         return (fluidStored.getFluid() != prevFluid.getFluid()) || stageChanged;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getInventory() {
-        return inventory;
     }
 
     public static class ValveData {

@@ -1,9 +1,12 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.IMultiblock;
@@ -16,13 +19,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -242,18 +242,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Nonnull
     @Override
-    public NonNullList<ItemStack> getInventory() {
-        //TODO: Overwrite hasInventory??
-        return structure != null ? structure.getInventory() : null;
-    }
-
-    @Override
-    public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
     @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
@@ -267,5 +255,20 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public T getSynchronizedData() {
         return structure;
+    }
+
+    @Nonnull
+    @Override
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        if (!hasInventory() || structure == null) {
+            //TODO: Previously we had a check like !isRemote() ? structure == null : !clientHasStructure
+            // Do we still need this if we ever actually needed it?
+            //If we don't have a structure then return that we have no slots accessible
+            return Collections.emptyList();
+        }
+        //Otherwise we get the inventory slots for our structure.
+        // NOTE: Currently we have nothing that "cares" about facing/can give different output to different sides
+        // so we are just returning the list directly instead of dealing with the side
+        return structure.getInventorySlots();
     }
 }

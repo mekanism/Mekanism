@@ -8,10 +8,8 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -20,10 +18,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper, IComparatorSupport {
 
+    //TODO: Move the dynamic fluid tank to SynchronizedTankData??
+    // There is no real sense in having them be separate
     public DynamicFluidTank fluidTank;
     private int currentRedstoneLevel;
 
@@ -87,26 +86,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
             }
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return !isRemote() ? structure == null : !clientHasStructure;
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return (!isRemote() && structure != null) || (isRemote() && clientHasStructure) ? SLOTS : InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        //can be filled/emptied
-        return slot == 0 && FluidContainerUtils.isFluidContainer(stack);
     }
 
     @Override

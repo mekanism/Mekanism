@@ -1,13 +1,9 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
@@ -23,7 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 /*@InterfaceList({
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })*/
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IMekanismInventory, IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
 
     public TileEntityAdvancedBoundingBlock() {
         super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK);
@@ -176,15 +172,5 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return super.getCapability(capability, side);
         }
         return inv.getOffsetCapability(capability, side, pos.subtract(getMainPos()));
-    }
-
-    @Nonnull
-    @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return Collections.emptyList();
-        }
-        return inv.getInventorySlots(side);
     }
 }

@@ -153,11 +153,6 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
     }
 
     @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntitySolarNeutronActivator tile) {
         return new ContainerProvider("mekanism.container.solar_neutron_activator", (i, inv, player) -> new SolarNeutronActivatorContainer(i, inv, tile));
     }

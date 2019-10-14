@@ -20,11 +20,6 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityInductionPort tile) {
         return new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv, tile));
     }

@@ -163,12 +163,6 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     }
 
     @Override
-    public int getInventorySize() {
-        //TODO: Double check this is correct
-        return 29;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityDigitalMiner tile) {
         return new ContainerProvider("mekanism.container.digital_miner", (i, inv, player) -> new DigitalMinerContainer(i, inv, tile));
     }

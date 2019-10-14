@@ -107,12 +107,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityTurbineCasing>) blockProvider.getBlock()).getProvider(this), pos);
-            return true;
-        }
-        return false;
+        return structure != null && openGui(player);
     }
 
     @Override

@@ -108,11 +108,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityGasTank tile) {
         return new ContainerProvider("mekanism.container.gas_tank", (i, inv, player) -> new GasTankContainer(i, inv, tile));
     }

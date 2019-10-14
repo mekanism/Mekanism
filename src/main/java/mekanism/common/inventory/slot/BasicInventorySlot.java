@@ -174,4 +174,26 @@ public class BasicInventorySlot implements IInventorySlot {
     protected ContainerSlotType getSlotType() {
         return ContainerSlotType.NORMAL;
     }
+
+    //Override this as suggested so that we can directly change the count of the stored item instead of having to copy the itemstack
+    @Override
+    public int setStackSize(int amount) {
+        if (current.isEmpty()) {
+            return 0;
+        }
+        if (amount <= 0) {
+            setStack(ItemStack.EMPTY);
+            return 0;
+        }
+        int maxStackSize = Math.min(current.getMaxStackSize(), getLimit());
+        if (amount > maxStackSize) {
+            amount = maxStackSize;
+        }
+        if (current.getCount() == amount) {
+            //If our size is not changing don't do anything
+            return amount;
+        }
+        current.setCount(amount);
+        return amount;
+    }
 }

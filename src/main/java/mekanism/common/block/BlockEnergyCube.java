@@ -130,11 +130,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<T
         return tier.getMaxEnergy();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)

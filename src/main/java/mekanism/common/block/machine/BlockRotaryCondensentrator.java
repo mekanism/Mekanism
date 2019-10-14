@@ -173,11 +173,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
         return MekanismConfig.storage.rotaryCondensentrator.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 6;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

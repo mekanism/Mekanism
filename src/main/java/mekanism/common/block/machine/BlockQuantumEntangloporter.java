@@ -189,11 +189,6 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     }
 
     @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityQuantumEntangloporter tile) {
         return new ContainerProvider("mekanism.container.quantum_entangloporter", (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile));
     }

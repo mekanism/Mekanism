@@ -19,11 +19,6 @@ public class BlockDynamicValve extends BlockBasicMultiblock implements IHasModel
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityDynamicValve tile) {
         return new ContainerProvider("mekanism.container.dynamic_tank", (i, inv, player) -> new DynamicTankContainer(i, inv, tile));
     }

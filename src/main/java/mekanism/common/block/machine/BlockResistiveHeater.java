@@ -156,11 +156,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
         return 100;
     }
 
-    @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

@@ -1,10 +1,12 @@
 package mekanism.common.tile;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
@@ -71,6 +73,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     public int currentRedstoneLevel;
 
+    private FluidInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = ((BlockFluidTank) blockProvider.getBlock()).getTier();
@@ -81,8 +86,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(FluidInventorySlot.input(fluidTank, 146, 19), RelativeSide.UP);
-        builder.addSlot(OutputInventorySlot.at(146, 51), RelativeSide.DOWN);
+        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, 146, 19), RelativeSide.UP);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(146, 51), RelativeSide.DOWN);
         return builder.build();
     }
 
@@ -151,7 +156,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     private void manageInventory() {
         if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
-            FluidStack ret = FluidContainerUtils.handleContainerItem(this, getInventory(), editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
+            List<IInventorySlot> inventorySlots = getInventorySlots(null);
+            FluidStack ret = FluidContainerUtils.handleContainerItem(this, editMode, fluidTank.getFluid(), getCurrentNeeded(), inputSlot, outputSlot, null);
 
             if (!ret.isEmpty()) {
                 fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.getAmount())));

@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.IHasGui;
@@ -11,15 +10,10 @@ import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel, IHasInventory, IHasTileEntity<TileEntityDynamicTank>, IHasGui<TileEntityDynamicTank> {
+public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel, IHasTileEntity<TileEntityDynamicTank>, IHasGui<TileEntityDynamicTank> {
 
     public BlockDynamicTank() {
         super("dynamic_tank");
-    }
-
-    @Override
-    public int getInventorySize() {
-        return 2;
     }
 
     @Override

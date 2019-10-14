@@ -40,7 +40,10 @@ public class InventorySlotHelper implements IInventorySlotHolder {
         RelativeSide side = RelativeSide.fromDirection(facingSupplier.get(), direction);
         List<IInventorySlot> slots = directionalSlots.get(side);
         if (slots == null) {
-            //TODO: Should this default to empty?
+            //TODO: Should this default to empty instead of returning all?
+            // It would probably make more sense for this to be the case, though we need to double check nothing breaks that way
+            // NOTE: The cases we would want it to still return ALL of them, is when/if an inventory does not have ANY direction markings
+            // as we then assume they are available on all sides?
             return inventorySlots;
         }
         return slots;

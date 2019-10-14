@@ -103,11 +103,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
         return 96000;
     }
 
-    @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

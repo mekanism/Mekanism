@@ -167,11 +167,6 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
         return MekanismConfig.storage.pressurizedReactionBase.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

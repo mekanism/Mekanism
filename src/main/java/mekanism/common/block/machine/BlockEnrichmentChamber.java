@@ -174,11 +174,6 @@ public class BlockEnrichmentChamber extends BlockMekanismContainer implements IB
         return MekanismConfig.storage.enrichmentChamber.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

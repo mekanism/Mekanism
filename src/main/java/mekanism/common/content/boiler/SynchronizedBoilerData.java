@@ -11,9 +11,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer {
@@ -51,8 +49,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public int steamVolume;
 
-    public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-
     public Coord4D upperRenderLocation;
 
     public Set<ValveData> valves = new HashSet<>();
@@ -85,11 +81,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             return (steamStored.getFluid() != prevSteam.getFluid()) || (steamStored.getAmount() != prevSteam.getAmount());
         }
         return false;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getInventory() {
-        return inventory;
     }
 
     @Override

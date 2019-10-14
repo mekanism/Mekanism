@@ -60,8 +60,9 @@ public class TileComponentUpgrade implements ITileComponent {
                     } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                         upgradeTicks = 0;
                         addUpgrade(type);
-                        //TODO: We are unable to shrink here as
-                        inventory.get(upgradeSlot).shrink(1);
+                        if (upgradeSlot.shrinkStack(1) != 1) {
+                            //TODO: Print warning about failing to shrink size of stack
+                        }
                         Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                         tileEntity.markDirty();
                     }

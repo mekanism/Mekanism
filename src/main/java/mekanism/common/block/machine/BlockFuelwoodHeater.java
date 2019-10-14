@@ -146,11 +146,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
     }
 
     @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityFuelwoodHeater tile) {
         return new ContainerProvider("mekanism.container.fuelwood_heater", (i, inv, player) -> new FuelwoodHeaterContainer(i, inv, tile));
     }

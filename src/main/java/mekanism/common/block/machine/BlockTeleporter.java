@@ -141,11 +141,6 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityTeleporter tile) {
         return new ContainerProvider("mekanism.container.teleporter", (i, inv, player) -> new TeleporterContainer(i, inv, tile));
     }

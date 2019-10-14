@@ -94,11 +94,6 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
     }
 
     @Override
-    public int getInventorySize() {
-        return 1;
-    }
-
-    @Override
     public TileEntityType<TileEntityAdvancedSolarGenerator> getTileType() {
         return GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR;
     }

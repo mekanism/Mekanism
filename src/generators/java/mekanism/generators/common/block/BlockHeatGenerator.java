@@ -122,11 +122,6 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
         return 160000;
     }
 
-    @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

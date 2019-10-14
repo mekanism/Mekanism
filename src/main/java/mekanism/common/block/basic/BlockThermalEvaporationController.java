@@ -71,11 +71,6 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityThermalEvaporationController tile) {
         return new ContainerProvider("mekanism.container.thermal_evaporation_controller", (i, inv, player) -> new ThermalEvaporationControllerContainer(i, inv, tile));
     }

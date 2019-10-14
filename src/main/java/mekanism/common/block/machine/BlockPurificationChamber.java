@@ -174,11 +174,6 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
         return MekanismConfig.storage.purificationChamber.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

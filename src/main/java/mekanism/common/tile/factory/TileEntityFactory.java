@@ -282,8 +282,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                         upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
                         upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(getStackInSlot(2)));
 
-                        getInventory().set(2, ItemStack.EMPTY);
-                        getInventory().set(3, returnStack);
+                        setStackInSlot(2, ItemStack.EMPTY, null);
+                        setStackInSlot(3, returnStack, null);
 
                         setRecipeType(toSet);
                         gasTank.setEmpty();
@@ -392,9 +392,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     //Balance the two slots
                     int total = count + checkStack.getCount();
                     ItemStack newStack = stack.isEmpty() ? checkStack : stack;
-                    getInventory().set(slotID, StackUtils.size(newStack, (total + 1) / 2));
-                    getInventory().set(checkSlotID, StackUtils.size(newStack, total / 2));
-
+                    setStackInSlot(slotID, StackUtils.size(newStack, (total + 1) / 2), null);
+                    setStackInSlot(checkSlotID, StackUtils.size(newStack, total / 2), null);
                     markDirty();
                     return;
                 }

@@ -113,11 +113,6 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
         return 160000;
     }
 
-    @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

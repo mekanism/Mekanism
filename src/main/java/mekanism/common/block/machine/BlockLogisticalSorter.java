@@ -262,11 +262,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityLogisticalSorter tile) {
         return new ContainerProvider("mekanism.container.logistical_sorter", (i, inv, player) -> new LogisticalSorterContainer(i, inv, tile));
     }

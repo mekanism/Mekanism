@@ -94,11 +94,6 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
         return 100 * MekanismConfig.general.FROM_H2.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

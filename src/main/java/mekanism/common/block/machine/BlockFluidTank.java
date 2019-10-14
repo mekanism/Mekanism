@@ -235,11 +235,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityFluidTank tile) {
         return new ContainerProvider("mekanism.container.fluid_tank", (i, inv, player) -> new FluidTankContainer(i, inv, tile));
     }

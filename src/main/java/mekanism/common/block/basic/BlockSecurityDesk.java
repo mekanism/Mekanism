@@ -86,11 +86,6 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
     }
 
     @Override
-    public int getInventorySize() {
-        return 2;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntitySecurityDesk tile) {
         return new ContainerProvider("mekanism.container.security_desk", (i, inv, player) -> new SecurityDeskContainer(i, inv, tile));
     }

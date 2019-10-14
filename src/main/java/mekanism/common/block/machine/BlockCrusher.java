@@ -174,11 +174,6 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
         return MekanismConfig.storage.crusher.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

@@ -1,23 +1,25 @@
 package mekanism.common.content.matrix;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 //TODO: Do something better for purposes of double precision such as BigInt
 public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixData> {
 
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     private Set<Coord4D> providers = new HashSet<>();
     private Set<Coord4D> cells = new HashSet<>();
     private double queuedOutput;
@@ -32,13 +34,24 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     private int clientProviders;
     private int clientCells;
 
-    @Override
-    public NonNullList<ItemStack> getInventory() {
-        return inventory;
+    @Nonnull
+    private List<IInventorySlot> inventorySlots;
+
+    public SynchronizedMatrixData() {
+        //TODO: Look into some way of allowing slot position to be set differently if needed
+        inventorySlots = new ArrayList<>();
+        inventorySlots.add(EnergyInventorySlot.charge(146, 20));
+        inventorySlots.add(EnergyInventorySlot.discharge(146, 51));
     }
 
-    public void setInventory(NonNullList<ItemStack> inventory) {
-        this.inventory = inventory;
+    @Nonnull
+    @Override
+    public List<IInventorySlot> getInventorySlots() {
+        return inventorySlots;
+    }
+
+    public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
+        inventorySlots = toCopy;
     }
 
     public void addCell(Coord4D coord, TileEntityInductionCell cell) {

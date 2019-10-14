@@ -14,10 +14,4 @@ public class InductionMatrixContainer extends MekanismEnergyContainer<TileEntity
     public InductionMatrixContainer(int id, PlayerInventory inv, PacketBuffer buf) {
         this(id, inv, getTileFromBuf(buf, TileEntityInductionCasing.class));
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotCharge(tile, 0, 146, 20));
-        addSlot(new SlotDischarge(tile, 1, 146, 51));
-    }
 }

@@ -174,11 +174,6 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
         return MekanismConfig.storage.osmiumCompressor.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

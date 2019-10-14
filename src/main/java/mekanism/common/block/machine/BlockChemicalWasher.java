@@ -167,11 +167,6 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
         return MekanismConfig.storage.chemicalWasher.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

@@ -164,11 +164,6 @@ public class BlockFluidicPlenisher extends BlockMekanismContainer implements IBl
     }
 
     @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityFluidicPlenisher tile) {
         return new ContainerProvider("mekanism.container.fluidic_plenisher", (i, inv, player) -> new FluidicPlenisherContainer(i, inv, tile));
     }

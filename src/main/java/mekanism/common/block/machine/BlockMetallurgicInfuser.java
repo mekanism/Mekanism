@@ -180,11 +180,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
         return MekanismConfig.storage.metallurgicInfuser.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 5;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

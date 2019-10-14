@@ -75,14 +75,14 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
                     if (outputStack.isEmpty()) {
                         inputStack.shrink(1);
                         if (inputStack.getCount() <= 0) {
-                            getInventory().set(0, ItemStack.EMPTY);
+                            setStackInSlot(0, ItemStack.EMPTY, null);
                         }
-                        getInventory().set(1, result);
+                        setStackInSlot(1, result, null);
                         didProcess = true;
                     } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputStack.getMaxStackSize()) {
                         inputStack.shrink(1);
                         if (inputStack.getCount() <= 0) {
-                            getInventory().set(0, ItemStack.EMPTY);
+                            setStackInSlot(0, ItemStack.EMPTY, null);
                         }
                         outputStack.grow(1);
                         didProcess = true;

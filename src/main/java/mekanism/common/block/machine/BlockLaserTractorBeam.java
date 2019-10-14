@@ -156,11 +156,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public int getInventorySize() {
-        return 27;
-    }
-
-    @Override
     public INamedContainerProvider getProvider(TileEntityLaserTractorBeam tile) {
         return new ContainerProvider("mekanism.container.laser_tractor_beam", (i, inv, player) -> new LaserTractorBeamContainer(i, inv, tile));
     }

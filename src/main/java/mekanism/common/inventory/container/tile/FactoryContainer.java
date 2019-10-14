@@ -61,7 +61,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             if (isOutputSlot(slotID)) {
-                if (!mergeItemStack(slotStack, tile.getSizeInventory() - 1, inventorySlots.size(), true)) {
+                if (!mergeItemStack(slotStack, tile.getSlots() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !ItemHandlerHelper.canItemStacksStack(slotStack, tile.getMachineStack())) {
@@ -69,12 +69,12 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else if (slotID == 2) {
-                if (!mergeItemStack(slotStack, tile.getSizeInventory() - 1, inventorySlots.size(), true)) {
+                if (!mergeItemStack(slotStack, tile.getSlots() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (tile.isValidInputItem(slotStack)) {
                 if (isInputSlot(slotID)) {
-                    if (!mergeItemStack(slotStack, tile.getSizeInventory() - 1, inventorySlots.size(), true)) {
+                    if (!mergeItemStack(slotStack, tile.getSlots() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (!mergeItemStack(slotStack, 4, 4 + tile.tier.processes, false)) {
@@ -82,7 +82,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
                 }
             } else if (ChargeUtils.canBeDischarged(slotStack)) {
                 if (slotID == 0) {
-                    if (!mergeItemStack(slotStack, tile.getSizeInventory() - 1, inventorySlots.size(), true)) {
+                    if (!mergeItemStack(slotStack, tile.getSlots() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (!mergeItemStack(slotStack, 0, 1, false)) {
@@ -94,7 +94,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else {
-                int slotEnd = tile.getSizeInventory() - 1;
+                int slotEnd = tile.getSlots() - 1;
                 if (slotID >= slotEnd && slotID <= (slotEnd + 26)) {
                     if (!mergeItemStack(slotStack, slotEnd + 27, inventorySlots.size(), false)) {
                         return ItemStack.EMPTY;
@@ -121,10 +121,10 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
     }
 
     private boolean transferExtraSlot(int slotID, ItemStack slotStack) {
-        if (slotID >= tile.getSizeInventory() - 1) {
+        if (slotID >= tile.getSlots() - 1) {
             return !mergeItemStack(slotStack, 3, 4, false);
         }
-        return !mergeItemStack(slotStack, tile.getSizeInventory() - 1, inventorySlots.size(), true);
+        return !mergeItemStack(slotStack, tile.getSlots() - 1, inventorySlots.size(), true);
     }
 
     public boolean isProperMachine(ItemStack itemStack) {
@@ -168,7 +168,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
+        public boolean isItemValid(@Nonnull ItemStack stack) {
             ItemStack outputSlotStack = tile.getStackInSlot(getOutputSlotIndex(this.processNumber));
             return tile.inputProducesOutput(getInputSlotIndex(this.processNumber), stack, outputSlotStack, false) && super.isItemValid(stack);
         }

@@ -144,7 +144,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Variables for handling ITileContainer
     //TODO: Figure out the proper way to store this here instead of per Tile with inventory
     // Maybe have one list OR a getter for each side per side, and then if they overlap
-    private IInventorySlotHolder inventory;
+    @Nullable
+    private IInventorySlotHolder slotHolder;
 
     private ProxyItemHandler readOnlyHandler;
     private Map<Direction, ProxyItemHandler> itemHandlers;
@@ -196,7 +197,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
             //TODO: Instantiate this properly, maybe it can be abstracted to the block, but for now
-            inventory = getInitialInventory();//NonNullList.withSize(((IHasInventory) getBlockType()).getInventorySize(), ItemStack.EMPTY);
+            slotHolder = getInitialInventory();//NonNullList.withSize(((IHasInventory) getBlockType()).getInventorySize(), ItemStack.EMPTY);
             //We want one overall specific list, and then the other caches can be made?
         }
         if (supportsUpgrades()) {
@@ -582,6 +583,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return super.getCapability(capability, side);
     }
 
+    //TODO: Go through and re-evaluate all the capabilities, as there are cases when we should have the item handler cap disabled where it is not in the future
+    // As other ones are being handled this is becoming less of a problem, as things like multiblocks are returning no slots accessible for when they are not formed
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
         //TODO: Disable these caps if it is not electric?
@@ -743,10 +746,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        if (!hasInventory() || inventory == null) {
+        if (!hasInventory() || slotHolder == null) {
             return Collections.emptyList();
         }
-        return inventory.getInventorySlots(side);
+        return slotHolder.getInventorySlots(side);
     }
 
     @Override

@@ -174,11 +174,6 @@ public class BlockEnergizedSmelter extends BlockMekanismContainer implements IBl
         return MekanismConfig.storage.energizedSmelter.get();
     }
 
-    @Override
-    public int getInventorySize() {
-        return 4;
-    }
-
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {

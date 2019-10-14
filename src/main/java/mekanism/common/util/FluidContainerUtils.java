@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import javax.annotation.Nonnull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -8,7 +9,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -39,7 +39,7 @@ public final class FluidContainerUtils {
     public static FluidStack extractFluid(FluidTank tileTank, TileEntityMekanism tile, int slotID, FluidChecker checker) {
         return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(tile.getStackInSlot(slotID))).getIfPresent(handler -> {
             FluidStack ret = extractFluid(tileTank.getCapacity() - tileTank.getFluidAmount(), handler, checker);
-            tile.getInventory().set(slotID, handler.getContainer());
+            tile.setStackInSlot(slotID, handler.getContainer(), null);
             return ret;
         });
     }
@@ -66,13 +66,13 @@ public final class FluidContainerUtils {
         return handler.fill(fluid, FluidAction.EXECUTE);
     }
 
-    public static void handleContainerItemFill(TileEntityMekanism tileEntity, FluidTank tank, int inSlot, int outSlot) {
-        tank.setFluid(handleContainerItemFill(tileEntity, tileEntity.getInventory(), tank.getFluid(), inSlot, outSlot));
+    public static void handleContainerItemFill(TileEntityMekanism tileEntity, FluidTank tank, IInventorySlot inSlot, IInventorySlot outSlot) {
+        tank.setFluid(handleContainerItemFill(tileEntity, tank.getFluid(), inSlot, outSlot));
     }
 
-    public static FluidStack handleContainerItemFill(TileEntity tileEntity, NonNullList<ItemStack> inventory, @Nonnull FluidStack stack, int inSlot, int outSlot) {
+    public static FluidStack handleContainerItemFill(TileEntity tileEntity, @Nonnull FluidStack stack, IInventorySlot inSlot, IInventorySlot outSlot) {
         if (!stack.isEmpty()) {
-            ItemStack inputCopy = StackUtils.size(inventory.get(inSlot).copy(), 1);
+            ItemStack inputCopy = StackUtils.size(inSlot.getStack(), 1);
             LazyOptionalHelper<IFluidHandlerItem> handlerHelper = new LazyOptionalHelper<>(FluidUtil.getFluidHandler(inputCopy));
             int drained = 0;
             if (handlerHelper.isPresent()) {
@@ -80,34 +80,39 @@ public final class FluidContainerUtils {
                 drained = insertFluid(stack, handler);
                 inputCopy = handler.getContainer();
             }
-            if (!inventory.get(outSlot).isEmpty() && (!ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy) ||
-                                                      inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize())) {
+            ItemStack outputStack = outSlot.getStack();
+            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) ||
+                                           outputStack.getCount() == Math.min(outputStack.getMaxStackSize(), outSlot.getLimit()))) {
                 return stack;
             }
             stack.setAmount(stack.getAmount() - drained);
-            if (inventory.get(outSlot).isEmpty()) {
-                inventory.set(outSlot, inputCopy);
-            } else if (ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy)) {
-                inventory.get(outSlot).grow(1);
+            if (outputStack.isEmpty()) {
+                outSlot.setStack(inputCopy);
+            } else if (ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy)) {
+                if (outSlot.growStack(1) != 1) {
+                    //TODO: Print warning about failing to increase size of stack
+                }
             }
-            inventory.get(inSlot).shrink(1);
+            if (inSlot.shrinkStack(1) != 1) {
+                //TODO: Print warning about failing to shrink size of stack
+            }
             tileEntity.markDirty();
         }
         return stack;
     }
 
-    public static void handleContainerItemEmpty(TileEntityMekanism tileEntity, FluidTank tank, int inSlot, int outSlot) {
+    public static void handleContainerItemEmpty(TileEntityMekanism tileEntity, FluidTank tank, IInventorySlot inSlot, IInventorySlot outSlot) {
         handleContainerItemEmpty(tileEntity, tank, inSlot, outSlot, null);
     }
 
-    public static void handleContainerItemEmpty(TileEntityMekanism tileEntity, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
-        tank.setFluid(handleContainerItemEmpty(tileEntity, tileEntity.getInventory(), tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
+    public static void handleContainerItemEmpty(TileEntityMekanism tileEntity, FluidTank tank, IInventorySlot inSlot, IInventorySlot outSlot, FluidChecker checker) {
+        tank.setFluid(handleContainerItemEmpty(tileEntity, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
     }
 
-    public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, NonNullList<ItemStack> inventory, @Nonnull FluidStack stored, int needed, int inSlot, int outSlot,
+    public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, @Nonnull FluidStack stored, int needed, IInventorySlot inSlot, IInventorySlot outSlot,
           final FluidChecker checker) {
         final Fluid storedFinal = stored.getFluid();
-        final ItemStack input = StackUtils.size(inventory.get(inSlot).copy(), 1);
+        final ItemStack input = StackUtils.size(inSlot.getStack(), 1);
         LazyOptionalHelper<IFluidHandlerItem> handlerHelper = new LazyOptionalHelper<>(FluidUtil.getFluidHandler(input));
 
         if (!handlerHelper.isPresent()) {
@@ -122,9 +127,10 @@ public final class FluidContainerUtils {
         });
 
         ItemStack inputCopy = handler.getContainer();
+        ItemStack outputStack = outSlot.getStack();
         if (!FluidUtil.getFluidContained(inputCopy).isPresent() && !inputCopy.isEmpty()) {
-            if (!inventory.get(outSlot).isEmpty() && (!ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy) ||
-                                                      inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize())) {
+            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) ||
+                                                  outputStack.getCount() == Math.min(outputStack.getMaxStackSize(), outSlot.getLimit()))) {
                 return stored;
             }
         }
@@ -141,34 +147,31 @@ public final class FluidContainerUtils {
 
         if (!FluidUtil.getFluidContained(inputCopy).isPresent() || needed == 0) {
             if (!inputCopy.isEmpty()) {
-                if (inventory.get(outSlot).isEmpty()) {
-                    inventory.set(outSlot, inputCopy);
-                } else if (ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy)) {
-                    inventory.get(outSlot).grow(1);
+                if (outputStack.isEmpty()) {
+                    outSlot.setStack(inputCopy);
+                } else if (ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy)) {
+                    if (outSlot.growStack(1) != 1) {
+                        //TODO: Print warning about failing to increase size of stack
+                    }
                 }
             }
-            inventory.get(inSlot).shrink(1);
+            if (inSlot.shrinkStack(1) != 1) {
+                //TODO: Print warning about failing to shrink size of stack
+            }
             tileEntity.markDirty();
         } else {
-            inventory.set(inSlot, inputCopy);
+            inSlot.setStack(inputCopy);
         }
         return stored;
     }
 
-    public static void handleContainerItem(TileEntityMekanism tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot) {
-        handleContainerItem(tileEntity, editMode, tank, inSlot, outSlot, null);
-    }
-
-    public static void handleContainerItem(TileEntityMekanism tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
-        tank.setFluid(handleContainerItem(tileEntity, tileEntity.getInventory(), editMode, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
-    }
-
-    public static FluidStack handleContainerItem(TileEntity tileEntity, NonNullList<ItemStack> inventory, ContainerEditMode editMode, @Nonnull FluidStack stack, int needed,
-          int inSlot, int outSlot, final FluidChecker checker) {
-        if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH && !FluidUtil.getFluidContained(inventory.get(inSlot)).isPresent())) {
-            return handleContainerItemFill(tileEntity, inventory, stack, inSlot, outSlot);
+    public static FluidStack handleContainerItem(TileEntityMekanism tileEntity, ContainerEditMode editMode, @Nonnull FluidStack stack, int needed,
+          IInventorySlot inSlot, IInventorySlot outSlot, final FluidChecker checker) {
+        //TODO: Can these two methods be cleaned up by offloading checks to the IInventorySlots
+        if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH && !FluidUtil.getFluidContained(inSlot.getStack()).isPresent())) {
+            return handleContainerItemFill(tileEntity, stack, inSlot, outSlot);
         } else if (editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH) {
-            return handleContainerItemEmpty(tileEntity, inventory, stack, needed, inSlot, outSlot, checker);
+            return handleContainerItemEmpty(tileEntity, stack, needed, inSlot, outSlot, checker);
         }
         return stack;
     }
