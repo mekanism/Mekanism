@@ -19,6 +19,14 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.container.slot.SlotStorageTank;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
@@ -30,6 +38,7 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -62,9 +71,26 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public double clientEnergyUsed;
     private int currentRedstoneLevel;
 
+    private GasInventorySlot gasInputSlot;
+    private OutputInventorySlot gasOutputSlot;
+    private FluidInventorySlot fluidInputSlot;
+    private OutputInventorySlot fluidOutputSlot;
+
     public TileEntityRotaryCondensentrator() {
         super(MekanismBlock.ROTARY_CONDENSENTRATOR);
-        //TODO: Upgrade slot index: 5
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //TODO: Figure out the proper implementation for these two slots. There wasn't really any specific code checks before but we can probably make them smarter now
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(gasInputSlot = GasInventorySlot.something(5, 25), RelativeSide.LEFT);
+        builder.addSlot(gasOutputSlot = OutputInventorySlot.at(5, 56), RelativeSide.LEFT);
+        builder.addSlot(fluidInputSlot = FluidInventorySlot.something(155, 25), RelativeSide.RIGHT);
+        builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(155, 56), RelativeSide.RIGHT);
+        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
+        return builder.build();
     }
 
     @Override
@@ -74,8 +100,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
             if (mode == 0) {
                 TileUtils.receiveGas(getStackInSlot(1), gasTank);
-                if (FluidContainerUtils.isFluidContainer(getStackInSlot(2))) {
-                    FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
+                if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {
+                    FluidContainerUtils.handleContainerItemFill(this, fluidTank, fluidInputSlot, fluidOutputSlot);
                 }
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
@@ -96,8 +122,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                 TileUtils.drawGas(getStackInSlot(0), gasTank);
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
 
-                if (FluidContainerUtils.isFluidContainer(getStackInSlot(2))) {
-                    FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
+                if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {
+                    FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, fluidInputSlot, fluidOutputSlot);
                 }
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
@@ -315,33 +341,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Override
     public Object[] getTanks() {
         return new Object[]{gasTank, fluidTank};
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == getLeftSide()) {
-            //Gas
-            return GAS_SLOTS;
-        } else if (side == getRightSide()) {
-            //Fluid
-            return LIQUID_SLOTS;
-        }
-        return ENERGY_SLOT;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        if (slot == 0) {
-            //Gas
-            return stack.getItem() instanceof IGasItem;
-        } else if (slot == 2) {
-            //Fluid
-            return FluidContainerUtils.isFluidContainer(stack);
-        } else if (slot == 4) {
-            return ChargeUtils.canBeDischarged(stack);
-        }
-        return false;
     }
 
     @Override

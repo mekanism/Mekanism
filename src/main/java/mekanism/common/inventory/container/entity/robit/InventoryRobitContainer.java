@@ -46,13 +46,4 @@ public class InventoryRobitContainer extends RobitContainer {
         }
         return stack;
     }
-
-    @Override
-    protected void addSlots() {
-        for (int slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new Slot(entity, slotX + slotY * 9, 8 + slotX * 18, 18 + slotY * 18));
-            }
-        }
-    }
 }

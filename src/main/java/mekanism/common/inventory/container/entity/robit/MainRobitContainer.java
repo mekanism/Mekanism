@@ -23,9 +23,4 @@ public class MainRobitContainer extends RobitContainer {
     public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         return ItemStack.EMPTY;
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotDischarge(entity, 27, 153, 17));
-    }
 }

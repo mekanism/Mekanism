@@ -2,6 +2,8 @@ package mekanism.common.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,10 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -35,7 +41,7 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.FurnaceRecipe;
@@ -50,7 +56,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -72,19 +77,47 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     public double MAX_ELECTRICITY = 100_000;
     public Coord4D homeLocation;
-    //TODO: Fix this
-    @Nonnull
-    private List<IInventorySlot> inventorySlots = Collections.emptyList();
     public int furnaceBurnTime = 0;
     public int currentItemBurnTime = 0;
     public int furnaceCookTime = 0;
     public boolean texTick;
 
+    @Nonnull
+    private final List<IInventorySlot> inventorySlots;
+    @Nonnull
+    private final List<IInventorySlot> mainContainerSlots;
+    @Nonnull
+    private final List<IInventorySlot> smeltingContainerSlots;
+    @Nonnull
+    private final List<IInventorySlot> inventoryContainerSlots;
+    private final EnergyInventorySlot energySlot;
+    private final IInventorySlot smeltingInputSlot;
+    private final FuelInventorySlot fuelSlot;
+    private final IInventorySlot smeltingOutputSlot;
+
     public EntityRobit(EntityType<EntityRobit> type, World world) {
         super(type, world);
         getNavigator().setCanSwim(false);
         setCustomNameVisible(true);
-        //TODO: Initialize the inventory slots, previously had 31 different slots
+        //TODO: Go through all this and clean it up properly
+        inventorySlots = new ArrayList<>();
+        inventoryContainerSlots = new ArrayList<>();
+        for (int slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                IInventorySlot slot = new BasicInventorySlot(8 + slotX * 18, 18 + slotY * 18);
+                inventorySlots.add(slot);
+                inventoryContainerSlots.add(slot);
+            }
+        }
+        inventorySlots.add(energySlot = EnergyInventorySlot.discharge(153, 17));
+        //TODO: FIX THIS INPUT AND OUTPUT SLOT DECLARATION
+        inventorySlots.add(smeltingInputSlot = new BasicInventorySlot(56, 17));
+        inventorySlots.add(fuelSlot = FuelInventorySlot.at(56, 53));
+        //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had
+        inventorySlots.add(smeltingOutputSlot = new BasicInventorySlot(116, 35));
+
+        mainContainerSlots = Collections.singletonList(energySlot);
+        smeltingContainerSlots = Arrays.asList(smeltingInputSlot, fuelSlot, smeltingOutputSlot);
     }
 
     public EntityRobit(World world, double x, double y, double z) {
@@ -171,8 +204,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 goHome();
             }
 
-            ItemStack stack = inventory.get(27);
-
+            ItemStack stack = energySlot.getStack();
             if (!stack.isEmpty() && getEnergy() < MAX_ELECTRICITY) {
                 if (stack.getItem() instanceof IEnergizedItem) {
                     setEnergy(getEnergy() + EnergizedItemManager.discharge(stack, MAX_ELECTRICITY - getEnergy()));
@@ -194,7 +226,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 }*/
                 else if (stack.getItem() == Items.REDSTONE && getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= MAX_ELECTRICITY) {
                     setEnergy(getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
-                    stack.shrink(1);
+                    if (energySlot.shrinkStack(1) != 1) {
+                        //TODO: Print error that something went wrong
+                    }
                 }
             }
 
@@ -204,12 +238,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
             if (!world.isRemote) {
                 if (furnaceBurnTime == 0 && canSmelt()) {
-                    currentItemBurnTime = furnaceBurnTime = ForgeHooks.getBurnTime(inventory.get(29));
+                    ItemStack fuel = fuelSlot.getStack();
+                    currentItemBurnTime = furnaceBurnTime = ForgeHooks.getBurnTime(fuel);
                     if (furnaceBurnTime > 0) {
-                        if (!inventory.get(29).isEmpty()) {
-                            inventory.get(29).shrink(1);
-                            if (inventory.get(29).getCount() == 0) {
-                                inventory.set(29, inventory.get(29).getItem().getContainerItem(inventory.get(29)));
+                        if (!fuel.isEmpty()) {
+                            if (fuelSlot.shrinkStack(1) != 1) {
+                                //TODO: Print error that something went wrong
+                            }
+                            if (fuelSlot.isEmpty()) {
+                                fuelSlot.setStack(fuel.getItem().getContainerItem(fuel));
                             }
                         }
                     }
@@ -237,17 +274,22 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                     continue;
                 }
                 for (int i = 0; i < 27; i++) {
-                    ItemStack itemStack = inventory.get(i);
+                    IInventorySlot slot = inventorySlots.get(i);
+                    ItemStack itemStack = slot.getStack();
                     if (itemStack.isEmpty()) {
-                        inventory.set(i, item.getItem());
+                        slot.setStack(item.getItem());
                         onItemPickup(item, item.getItem().getCount());
                         item.remove();
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
-                    } else if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < itemStack.getMaxStackSize()) {
-                        int needed = itemStack.getMaxStackSize() - itemStack.getCount();
+                    }
+                    int maxStackSize = Math.min(itemStack.getMaxStackSize(), slot.getLimit());
+                    if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxStackSize) {
+                        int needed = maxStackSize - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
-                        itemStack.grow(toAdd);
+                        if (slot.growStack(toAdd) != toAdd) {
+                            //TODO: Print warning that something went wrong
+                        }
                         item.getItem().shrink(toAdd);
                         onItemPickup(item, toAdd);
                         if (item.getItem().getCount() == 0) {
@@ -274,10 +316,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     private boolean canSmelt() {
-        ItemStack input = inventory.get(28);
+        ItemStack input = smeltingInputSlot.getStack();
         if (input.isEmpty()) {
             return false;
         }
+        //TODO: Should we make the robit go off of the energized smelter recipes instead?? It would allow for reducing a lot of this code
+        // as then it could do it all via the CachedRecipe system
         Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
         if (!recipe.isPresent()) {
             return false;
@@ -286,33 +330,36 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (result.isEmpty()) {
             return false;
         }
-        ItemStack currentOutput = inventory.get(30);
+        ItemStack currentOutput = smeltingOutputSlot.getStack();
         if (currentOutput.isEmpty()) {
             return true;
         }
         if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
             return false;
         }
-        int newAmount = currentOutput.getCount() + result.getCount();
-        return newAmount <= getInventoryStackLimit() && newAmount <= result.getMaxStackSize();
+        return currentOutput.getCount() + result.getCount() <= Math.min(result.getMaxStackSize(), smeltingOutputSlot.getLimit());
     }
 
     public void smeltItem() {
         if (canSmelt()) {
-            ItemStack input = inventory.get(28);
+            ItemStack input = smeltingInputSlot.getStack();
             Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
             if (!recipe.isPresent()) {
                 return;
             }
             ItemStack result = recipe.get().getRecipeOutput();
-            ItemStack currentOutput = inventory.get(30);
+            ItemStack currentOutput = smeltingOutputSlot.getStack();
             if (currentOutput.isEmpty()) {
-                inventory.set(30, result.copy());
+                smeltingOutputSlot.setStack(result.copy());
             } else if (ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
-                currentOutput.grow(result.getCount());
+                if (smeltingOutputSlot.growStack(result.getCount()) != result.getCount()) {
+                    //TODO: Print error that something went wrong
+                }
             }
             //There shouldn't be any other case where the item doesn't stack but should we double check it anyways
-            input.shrink(1);
+            if (smeltingInputSlot.shrinkStack(1) != 1) {
+                //TODO: Print error that something went wrong
+            }
         }
     }
 
@@ -370,11 +417,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             homeLocation.write(nbtTags);
         }
         ListNBT tagList = new ListNBT();
-        for (int slotCount = 0; slotCount < inventory.size(); slotCount++) {
-            if (!inventory.get(slotCount).isEmpty()) {
+        for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
+            IInventorySlot slot = inventorySlots.get(slotCount);
+            if (!slot.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.putByte("Slot", (byte) slotCount);
-                inventory.get(slotCount).write(tagCompound);
+                slot.getStack().write(tagCompound);
                 tagList.add(tagCompound);
             }
         }
@@ -496,9 +544,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             if (!stack.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.putByte("Slot", (byte) i);
-                ItemStack copy = stack.copy();
-                copy.write(tagCompound);
-                slot.setStack(copy);
+                stack.write(tagCompound);
                 tagList.add(tagCompound);
             }
         }
@@ -509,6 +555,20 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return hasInventory() ? inventorySlots : Collections.emptyList();
+    }
+
+    @Nonnull
+    public List<IInventorySlot> getInventorySlots(@Nonnull ContainerType<?> containerType) {
+        if (!hasInventory()) {
+            return Collections.emptyList();
+        } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT) {
+            return inventoryContainerSlots;
+        } else if (containerType == MekanismContainerTypes.MAIN_ROBIT) {
+            return mainContainerSlots;
+        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT) {
+            return smeltingContainerSlots;
+        }
+        return Collections.emptyList();
     }
 
     //TODO: Galacticraft

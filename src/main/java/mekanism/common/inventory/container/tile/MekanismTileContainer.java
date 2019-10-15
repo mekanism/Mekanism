@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.slot.IInventorySlot;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
@@ -48,7 +47,8 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
     protected void closeInventory(PlayerEntity player) {
         if (tile != null) {
             tile.close(player);
-            tile.closeInventory(player);
+            //TODO: Do we need any specific closing code?
+            //tile.closeInventory(player);
         }
     }
 

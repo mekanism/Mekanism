@@ -10,6 +10,7 @@ import net.minecraft.util.Direction;
 
 //TODO: Go through all the usages of ItemStack setCount, grow, and shrink as any that are from inventories should have the slot change it,
 // rather than forcefully changing it when the API says it shouldn't be modified
+// ALSO make sure to check all getStackInSlot calls to see if they are then being passed to stuff that may modify them
 public interface IMekanismInventory extends ISidedItemHandler {
 
     /**

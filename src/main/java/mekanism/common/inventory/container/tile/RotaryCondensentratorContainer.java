@@ -3,7 +3,6 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -83,14 +82,5 @@ public class RotaryCondensentratorContainer extends MekanismTileContainer<TileEn
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotStorageTank(tile, 0, 5, 25));
-        addSlot(new SlotStorageTank(tile, 1, 5, 56));
-        addSlot(new Slot(tile, 2, 155, 25));
-        addSlot(new SlotOutput(tile, 3, 155, 56));
-        addSlot(new SlotDischarge(tile, 4, 155, 5));
     }
 }

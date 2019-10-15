@@ -7,7 +7,6 @@ import mekanism.common.inventory.container.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.FurnaceResultSlot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -114,17 +113,5 @@ public class SmeltingRobitContainer extends RobitContainer {
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(entity, 28, 56, 17));
-        addSlot(new Slot(entity, 29, 56, 53));
-    }
-
-    @Override
-    protected void addInventorySlots(@Nonnull PlayerInventory inventory) {
-        addSlot(new FurnaceResultSlot(inventory.player, entity, 30, 116, 35));
-        super.addInventorySlots(inventory);
     }
 }

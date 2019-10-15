@@ -1,10 +1,10 @@
 package mekanism.common.inventory.container.entity.robit;
 
-import javax.annotation.Nonnull;
+import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.MekanismEntityContainer;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 
@@ -14,13 +14,18 @@ public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit
         super(type, id, inv, entity);
     }
 
+    //TODO: Add slots based on container type
     @Override
-    protected void openInventory(@Nonnull PlayerInventory inv) {
-        entity.openInventory(inv.player);
-    }
-
-    @Override
-    protected void closeInventory(PlayerEntity player) {
-        entity.closeInventory(player);
+    protected void addSlots() {
+        super.addSlots();
+        //TODO: Overwrite transferStackInSlot with the logic in the IInventorySlots??
+        if (entity.hasInventory()) {
+            //Get all the inventory slots the entity has/exposes for this container type
+            //TODO: Check to make sure that the repair and crafting containers still work fine
+            List<IInventorySlot> inventorySlots = entity.getInventorySlots(getType());
+            for (int i = 0; i < inventorySlots.size(); i++) {
+                addSlot(inventorySlots.get(i).createContainerSlot(i));
+            }
+        }
     }
 }
