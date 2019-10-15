@@ -59,9 +59,4 @@ public class SeismicVibratorContainer extends MekanismTileContainer<TileEntitySe
         }
         return stack;
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotDischarge(tile, 0, 143, 35));
-    }
 }

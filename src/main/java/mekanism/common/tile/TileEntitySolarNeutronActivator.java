@@ -13,7 +13,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.GasToGasCachedRecipe;
@@ -29,6 +28,10 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -53,8 +56,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
       IComparatorSupport, ITileCachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10000;
-    private static final int[] INPUT_SLOT = {0};
-    private static final int[] OUTPUT_SLOT = {1};
 
     public GasTank inputTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
@@ -72,10 +73,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public TileEntitySolarNeutronActivator() {
         super(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
-        //TODO: Upgrade slot index: 3
-
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), 5, 56),
+              RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT, RelativeSide.LEFT, RelativeSide.BACK);
+        builder.addSlot(GasInventorySlot.drain(outputTank, 155, 56), RelativeSide.FRONT);
+        return builder.build();
     }
 
     protected void recheckSettings() {
@@ -302,17 +311,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
             return .16 * (1 + (world.getDayTime() % 6));
         }
         return 0;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return side == getDirection() ? OUTPUT_SLOT : INPUT_SLOT;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        return stack.getItem() instanceof IGasItem;
     }
 
     @Override

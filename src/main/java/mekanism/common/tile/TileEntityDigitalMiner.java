@@ -489,14 +489,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     @Override
-    public void openInventory(@Nonnull PlayerEntity player) {
-        super.openInventory(player);
-        if (!isRemote()) {
-            Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
-        }
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         running = nbtTags.getBoolean("running");

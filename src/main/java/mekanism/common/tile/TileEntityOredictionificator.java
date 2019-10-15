@@ -17,11 +17,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,6 +59,17 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public TileEntityOredictionificator() {
         super(MekanismBlock.OREDICTIONIFICATOR);
         doAutoSync = false;
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        RelativeSide[] sides = new RelativeSide[]{RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
+
+        builder.addSlot(new BasicInventorySlot(item -> !getResult(item).isEmpty(), 26, 115), sides);
+        builder.addSlot(OutputInventorySlot.at(134, 115), sides);
+        return builder.build();
     }
 
     @Override
@@ -125,26 +140,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             }
         }
         return ItemStack.EMPTY;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side != getDirection()) {
-            return SLOTS;
-        }
-        return InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        return slotID == 1;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        return slotID == 0 && !getResult(itemstack).isEmpty();
-
     }
 
     @Nonnull
@@ -227,13 +222,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             filter.write(data);
         }
         return data;
-    }
-
-    @Override
-    public void openInventory(@Nonnull PlayerEntity player) {
-        if (!isRemote()) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-        }
     }
 
     @Override

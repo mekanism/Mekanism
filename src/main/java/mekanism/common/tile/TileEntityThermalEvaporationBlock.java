@@ -4,21 +4,17 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 //TODO: Try to move some of this logic to TileEntityMultiblock?
 public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implements IComputerIntegration {
@@ -129,20 +125,6 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     public class ControllerFinder {

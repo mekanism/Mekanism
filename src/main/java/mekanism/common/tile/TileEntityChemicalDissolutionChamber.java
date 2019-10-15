@@ -77,8 +77,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.fillOrConvert(injectTank, this::isValidGas, 6, 65), RelativeSide.DOWN);
-        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 26, 36), RelativeSide.UP, RelativeSide.LEFT);
+        builder.addSlot(GasInventorySlot.fillOrConvert(injectTank, this::isValidGas, 6, 65), RelativeSide.BOTTOM);
+        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 26, 36), RelativeSide.TOP, RelativeSide.LEFT);
         builder.addSlot(GasInventorySlot.drain(outputTank, 155, 25), RelativeSide.RIGHT);
         //TODO: Make this be accessible from some side for automation??
         builder.addSlot(EnergyInventorySlot.discharge(155, 5));

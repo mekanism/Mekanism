@@ -3,7 +3,6 @@ package mekanism.common.inventory.container.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -65,11 +64,5 @@ public class SolarNeutronActivatorContainer extends MekanismTileContainer<TileEn
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotStorageTank(tile, 0, 5, 56));
-        addSlot(new SlotStorageTank(tile, 1, 155, 56));
     }
 }

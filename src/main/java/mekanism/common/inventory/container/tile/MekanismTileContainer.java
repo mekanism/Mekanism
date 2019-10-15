@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
@@ -36,7 +37,10 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
     protected void openInventory(@Nonnull PlayerInventory inv) {
         if (tile != null) {
             tile.open(inv.player);
-            tile.openInventory(inv.player);
+            //TODO: Some tiles had their update packet get sent (at the very least to the player opening it)
+            /*if (!tile.isRemote()) {
+                Mekanism.packetHandler.sendUpdatePacket(tile);
+            }*/
         }
     }
 

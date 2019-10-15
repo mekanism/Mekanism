@@ -12,7 +12,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -29,8 +28,13 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -38,7 +42,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -108,8 +111,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
         inputHandler = InputHelper.getInputHandler(fluidTank, 0);
         outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
+    }
 
-        //TODO: Upgrade slot index: 4
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), 26, 35), RelativeSide.FRONT);
+        builder.addSlot(GasInventorySlot.drain(leftTank, 59, 52), RelativeSide.LEFT);
+        builder.addSlot(GasInventorySlot.drain(rightTank, 101, 52), RelativeSide.RIGHT);
+        //TODO: Make accessible for automation
+        builder.addSlot(EnergyInventorySlot.discharge(143, 35));
+        return builder.build();
     }
 
     @Override
@@ -211,54 +224,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 3) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        } else if (slotID == 0) {
-            return !FluidUtil.getFluidContained(itemstack).isPresent();
-        } else if (slotID == 1 || slotID == 2) {
-            if (itemstack.getItem() instanceof IGasItem) {
-                IGasItem gasItem = (IGasItem) itemstack.getItem();
-                GasStack gasInItem = gasItem.getGas(itemstack);
-                return !gasInItem.isEmpty() && gasInItem.getAmount() == gasItem.getMaxGas(itemstack);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return isFluidInputItem(itemstack);
-        } else if (slotID == 1) {
-            if (itemstack.getItem() instanceof IGasItem) {
-                GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return gasStack.isEmpty() || gasStack.getType().isIn(MekanismTags.HYDROGEN);
-            }
-            return false;
-        } else if (slotID == 2) {
-            if (itemstack.getItem() instanceof IGasItem) {
-                GasStack gasStack = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return gasStack.isEmpty() || gasStack.getType().isIn(MekanismTags.OXYGEN);
-            }
-        } else if (slotID == 3) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == getRightSide()) {
-            return new int[]{3};
-        } else if (side == getDirection() || side == getOppositeDirection()) {
-            return new int[]{1, 2};
-        }
-        return InventoryUtils.EMPTY;
     }
 
     @Override

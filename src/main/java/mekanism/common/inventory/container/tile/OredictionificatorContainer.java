@@ -64,12 +64,6 @@ public class OredictionificatorContainer extends MekanismTileContainer<TileEntit
     }
 
     @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 26, 115));
-        addSlot(new SlotOutput(tile, 1, 134, 115));
-    }
-
-    @Override
     protected int getInventoryYOffset() {
         return 148;
     }

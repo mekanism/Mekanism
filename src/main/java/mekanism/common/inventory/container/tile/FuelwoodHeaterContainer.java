@@ -59,9 +59,4 @@ public class FuelwoodHeaterContainer extends MekanismTileContainer<TileEntityFue
         }
         return stack;
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 15, 29));
-    }
 }

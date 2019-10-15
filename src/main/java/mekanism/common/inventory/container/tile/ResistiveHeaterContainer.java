@@ -59,9 +59,4 @@ public class ResistiveHeaterContainer extends MekanismTileContainer<TileEntityRe
         }
         return stack;
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotDischarge(tile, 0, 15, 35));
-    }
 }

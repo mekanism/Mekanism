@@ -89,7 +89,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), 180, 71), RelativeSide.LEFT);
-        builder.addSlot(OutputInventorySlot.at(180, 102), RelativeSide.UP);
+        builder.addSlot(OutputInventorySlot.at(180, 102), RelativeSide.TOP);
         builder.addSlot(GasInventorySlot.drain(outputTank, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(EnergyInventorySlot.discharge(155, 5));
         return builder.build();

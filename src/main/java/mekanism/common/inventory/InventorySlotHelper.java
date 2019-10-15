@@ -1,6 +1,7 @@
 package mekanism.common.inventory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +34,16 @@ public class InventorySlotHelper implements IInventorySlotHolder {
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction direction) {
-        if (direction == null) {
+        if (direction == null || directionalSlots.isEmpty()) {
+            //If we want the internal OR we have no side specification, give all of our slots
             return inventorySlots;
         }
         //TODO: Get the relative side
         RelativeSide side = RelativeSide.fromDirection(facingSupplier.get(), direction);
         List<IInventorySlot> slots = directionalSlots.get(side);
         if (slots == null) {
-            //TODO: Should this default to empty instead of returning all?
-            // It would probably make more sense for this to be the case, though we need to double check nothing breaks that way
-            // NOTE: The cases we would want it to still return ALL of them, is when/if an inventory does not have ANY direction markings
-            // as we then assume they are available on all sides?
-            return inventorySlots;
+            //TODO: Go through the code and make sure nothing is getting missed due to this returning an empty list
+            return Collections.emptyList();
         }
         return slots;
     }
@@ -76,18 +75,19 @@ public class InventorySlotHelper implements IInventorySlotHolder {
     }
 
     public enum RelativeSide {
-        DOWN,
-        UP,
+        BOTTOM,
+        TOP,
         FRONT,
         BACK,
         RIGHT,
         LEFT;
 
         public static RelativeSide fromDirection(@Nonnull Direction facing, @Nonnull Direction direction) {
+            //TODO: If we are facing up or downwards, this relative is "incorrect"
             if (direction == Direction.DOWN) {
-                return DOWN;
+                return BOTTOM;
             } else if (direction == Direction.UP) {
-                return UP;
+                return TOP;
             } else if (direction == facing) {
                 return FRONT;
             } else if (direction == facing.getOpposite()) {

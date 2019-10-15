@@ -62,7 +62,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 26, 36), RelativeSide.LEFT);
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.DOWN, RelativeSide.UP);
+        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         builder.addSlot(GasInventorySlot.drain(gasTank, 155, 25), RelativeSide.RIGHT);
         return builder.build();
     }

@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotStorageTank;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
@@ -79,13 +78,5 @@ public class ElectrolyticSeparatorContainer extends MekanismTileContainer<TileEn
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 26, 35));
-        addSlot(new SlotStorageTank(tile, 1, 59, 52));
-        addSlot(new SlotStorageTank(tile, 2, 101, 52));
-        addSlot(new SlotDischarge(tile, 3, 143, 35));
     }
 }

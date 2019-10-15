@@ -27,6 +27,8 @@ public class BasicInventorySlot implements IInventorySlot {
     protected final int x;
     protected final int y;
 
+    //TODO: Convert some of the direct usages of BasicInventorySlot to an "InputInventorySlot", which is a generic one but does not allow extracting from it unless
+    // the item is no longer valid for the slot somehow
     public BasicInventorySlot(int x, int y) {
         this(DEFAULT_LIMIT, x, y);
     }

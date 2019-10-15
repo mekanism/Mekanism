@@ -124,7 +124,7 @@ public interface IInventorySlot {
      *
      * @return Actual size it was set to.
      *
-     * @apiNote It is recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run.
+     * @implNote It is recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run.
      */
     default int setStackSize(int amount) {
         ItemStack stack = getStack();
@@ -181,5 +181,14 @@ public interface IInventorySlot {
      */
     default int shrinkStack(int amount) {
         return -growStack(-amount);
+    }
+
+    /**
+     * Convenience method for checking if this slot is empty.
+     *
+     * @return True if the slot is empty, false otherwise.
+     */
+    default boolean isEmpty() {
+        return getStack().isEmpty();
     }
 }

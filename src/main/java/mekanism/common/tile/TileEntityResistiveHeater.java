@@ -9,12 +9,14 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -23,8 +25,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, IComputerIntegration {
-
-    private static final int[] SLOTS = {0};
 
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature", "setEnergyUsage"};
     public double energyUsage = 100;
@@ -36,6 +36,14 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     public TileEntityResistiveHeater() {
         super(MekanismBlock.RESISTIVE_HEATER);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(EnergyInventorySlot.discharge(15, 35));
+        return builder.build();
     }
 
     @Override
@@ -197,16 +205,5 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return SLOTS;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        return ChargeUtils.canBeDischarged(stack);
     }
 }

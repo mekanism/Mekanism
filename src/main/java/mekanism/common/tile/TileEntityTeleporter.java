@@ -12,7 +12,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -20,6 +19,9 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.network.PacketEntityMove;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -29,7 +31,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -69,9 +70,15 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     public TileEntityTeleporter() {
         super(MekanismBlock.TELEPORTER);
-
         chunkLoaderComponent = new TileComponentChunkLoader(this);
-        //TODO: Upgrade slot index: 1
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(EnergyInventorySlot.discharge(153, 7));
+        return builder.build();
     }
 
     public static void teleportPlayerTo(ServerPlayerEntity player, Coord4D coord, TileEntityTeleporter teleporter) {
@@ -237,20 +244,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
                 didTeleport.remove(id);
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return new int[]{0};
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return true;
     }
 
     public void resetBounds() {
@@ -459,11 +452,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             data.add(0);
         }
         return data;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        return ChargeUtils.canBeOutputted(itemstack, false);
     }
 
     @Override

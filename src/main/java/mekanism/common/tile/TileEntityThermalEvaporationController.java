@@ -23,17 +23,19 @@ import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -44,7 +46,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -97,10 +98,28 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     private final IOutputHandler<@NonNull FluidStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
+    //TODO: Better names?
+    private FluidInventorySlot inputInputSlot;
+    private OutputInventorySlot outputInputSlot;
+    private FluidInventorySlot inputOutputSlot;
+    private OutputInventorySlot outputOutputSlot;
+
     public TileEntityThermalEvaporationController() {
         super(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER);
         inputHandler = InputHelper.getInputHandler(inputTank, 0);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //TODO: Make the inventory be accessible via the valves instead
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(inputInputSlot = FluidInventorySlot.fill(inputTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), 28, 20));
+        builder.addSlot(outputInputSlot = OutputInventorySlot.at(28, 51));
+        builder.addSlot(inputOutputSlot = FluidInventorySlot.drain(outputTank, 132, 20));
+        builder.addSlot(outputOutputSlot = OutputInventorySlot.at(132, 51));
+        return builder.build();
     }
 
     @Override
@@ -218,13 +237,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     private void manageBuckets() {
         if (!outputTank.getFluid().isEmpty()) {
             if (FluidContainerUtils.isFluidContainer(getStackInSlot(2))) {
-                FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
+                FluidContainerUtils.handleContainerItemFill(this, outputTank, inputOutputSlot, outputOutputSlot);
             }
         }
 
         if (structured) {
             if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
-                FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
+                FluidContainerUtils.handleContainerItemEmpty(this, inputTank, inputInputSlot, outputInputSlot, new FluidChecker() {
                     @Override
                     public boolean isValid(@Nonnull Fluid f) {
                         return hasRecipe(new FluidStack(f, 1));
@@ -558,29 +577,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return new Object[]{inputTank, outputTank};
     }
 
-    //TODO: Move getSlotsForFace, isItemValidForSlot, and isCapabilityDisabled to Valve
-    //NOTE: For now it has to be in the controller as it uses the old multiblock structure so the valve's don't actually
-    //have an inventory, which causes a crash trying to insert into them
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return getController() == null ? InventoryUtils.EMPTY : SLOTS;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        if (slot == 0) {
-            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack).isPresent();
-        } else if (slot == 2) {
-            return FluidContainerUtils.isFluidContainer(stack) && !FluidUtil.getFluidContained(stack).isPresent();
-        }
-        return false;
-    }
-
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return false;
+        //TODO: Should this be disabled via the inventory slots instead. (Then we can't access the items when opening the controller)
+        if (!structured && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
         }
         return super.isCapabilityDisabled(capability, side);
     }

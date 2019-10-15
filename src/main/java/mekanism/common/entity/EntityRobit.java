@@ -2,14 +2,17 @@ package mekanism.common.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
@@ -45,6 +48,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvents;
@@ -68,7 +72,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     public double MAX_ELECTRICITY = 100_000;
     public Coord4D homeLocation;
-    public NonNullList<ItemStack> inventory = NonNullList.withSize(31, ItemStack.EMPTY);
+    //TODO: Fix this
+    @Nonnull
+    private List<IInventorySlot> inventorySlots = Collections.emptyList();
     public int furnaceBurnTime = 0;
     public int currentItemBurnTime = 0;
     public int furnaceCookTime = 0;
@@ -78,6 +84,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         super(type, world);
         getNavigator().setCanSwim(false);
         setCustomNameVisible(true);
+        //TODO: Initialize the inventory slots, previously had 31 different slots
     }
 
     public EntityRobit(World world, double x, double y, double z) {
@@ -387,13 +394,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setDropPickup(nbtTags.getBoolean("dropPickup"));
         homeLocation = Coord4D.read(nbtTags);
         ListNBT tagList = nbtTags.getList("Items", Constants.NBT.TAG_COMPOUND);
-        inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+        int size = getSlots(null);
         for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-
-            if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, ItemStack.read(tagCompound));
+            if (slotID >= 0 && slotID < size) {
+                setStackInSlot(slotID, ItemStack.read(tagCompound));
             }
         }
     }
@@ -467,78 +473,16 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public int getSizeInventory() {
-        return inventory.size();
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getStackInSlot(int slotID) {
-        return inventory.get(slotID);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack decrStackSize(int slotID, int amount) {
-        return ItemStackHelper.getAndSplit(inventory, slotID, amount);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack removeStackFromSlot(int slotID) {
-        return ItemStackHelper.getAndRemove(inventory, slotID);
-    }
-
-    @Override
-    public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack) {
-        inventory.set(slotID, itemstack);
-        if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
-            itemstack.setCount(getInventoryStackLimit());
-        }
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        return 64;
-    }
-
-    @Override
-    public void markDirty() {
-    }
-
-    @Override
-    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
-        return true;
-    }
-
-    @Override
-    public void openInventory(@Nonnull PlayerEntity player) {
-    }
-
-    @Override
-    public void closeInventory(@Nonnull PlayerEntity player) {
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack) {
-        return true;
-    }
-
-    @Override
-    public void clear() {
-    }
-
-    @Override
     public void setInventory(ListNBT nbtTags, Object... data) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return;
         }
-        inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+        int size = getSlots(null);
         for (int slots = 0; slots < nbtTags.size(); slots++) {
             CompoundNBT tagCompound = nbtTags.getCompound(slots);
             byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, ItemStack.read(tagCompound));
+            if (slotID >= 0 && slotID < size) {
+                setStackInSlot(slotID, ItemStack.read(tagCompound));
             }
         }
     }
@@ -546,25 +490,25 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public ListNBT getInventory(Object... data) {
         ListNBT tagList = new ListNBT();
-        for (int slots = 0; slots < inventory.size(); slots++) {
-            if (!inventory.get(slots).isEmpty()) {
+        for (int i = 0; i < inventorySlots.size(); i++) {
+            IInventorySlot slot = inventorySlots.get(i);
+            ItemStack stack = slot.getStack();
+            if (!stack.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.putByte("Slot", (byte) slots);
-                inventory.get(slots).write(tagCompound);
+                tagCompound.putByte("Slot", (byte) i);
+                ItemStack copy = stack.copy();
+                copy.write(tagCompound);
+                slot.setStack(copy);
                 tagList.add(tagCompound);
             }
         }
         return tagList;
     }
 
+    @Nonnull
     @Override
-    public boolean isEmpty() {
-        for (ItemStack stack : inventory) {
-            if (!stack.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        return hasInventory() ? inventorySlots : Collections.emptyList();
     }
 
     //TODO: Galacticraft

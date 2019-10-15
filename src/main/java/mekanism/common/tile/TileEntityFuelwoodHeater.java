@@ -8,6 +8,9 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
@@ -31,8 +34,18 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
 
     public double lastEnvironmentLoss;
 
+    private FuelInventorySlot fuelSlot;
+
     public TileEntityFuelwoodHeater() {
         super(MekanismBlock.FUELWOOD_HEATER);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(fuelSlot = FuelInventorySlot.at(15, 29));
+        return builder.build();
     }
 
     @Override
@@ -43,14 +56,16 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
                 burnTime--;
                 burning = true;
             } else {
-                ItemStack stack = getStackInSlot(0);
+                ItemStack stack = fuelSlot.getStack();
                 if (!stack.isEmpty()) {
                     maxBurnTime = burnTime = ForgeHooks.getBurnTime(stack) / 2;
                     if (burnTime > 0) {
                         ItemStack preShrunk = stack.copy();
-                        stack.shrink(1);
-                        if (stack.getCount() == 0) {
-                            getInventory().set(0, preShrunk.getItem().getContainerItem(preShrunk));
+                        if (fuelSlot.shrinkStack(1) != 1) {
+                            //TODO: Print error something went wrong
+                        }
+                        if (fuelSlot.isEmpty()) {
+                            fuelSlot.setStack(preShrunk.getItem().getContainerItem(preShrunk));
                         }
                         burning = true;
                     }
@@ -103,17 +118,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
         data.add(maxBurnTime);
         data.add(lastEnvironmentLoss);
         return data;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return new int[]{0};
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
-        return ForgeHooks.getBurnTime(stack) > 0;
     }
 
     @Override

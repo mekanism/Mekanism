@@ -375,13 +375,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void openInventory(@Nonnull PlayerEntity player) {
-        if (!isRemote()) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-        }
-    }
-
-    @Override
     public boolean canPulse() {
         return true;
     }

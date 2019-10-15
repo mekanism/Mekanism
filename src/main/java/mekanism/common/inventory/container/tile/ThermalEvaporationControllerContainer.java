@@ -74,12 +74,4 @@ public class ThermalEvaporationControllerContainer extends MekanismTileContainer
         }
         return stack;
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 28, 20));
-        addSlot(new SlotOutput(tile, 1, 28, 51));
-        addSlot(new Slot(tile, 2, 132, 20));
-        addSlot(new SlotOutput(tile, 3, 132, 51));
-    }
 }

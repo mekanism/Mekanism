@@ -76,11 +76,4 @@ public class FluidicPlenisherContainer extends MekanismTileContainer<TileEntityF
         }
         return stack;
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 28, 20));
-        addSlot(new SlotOutput(tile, 1, 28, 51));
-        addSlot(new SlotDischarge(tile, 2, 143, 35));
-    }
 }

@@ -17,11 +17,15 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.IUpgradeTile;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -33,7 +37,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -46,7 +49,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -73,9 +75,24 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     private int currentRedstoneLevel;
 
+    private FluidInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     public TileEntityFluidicPlenisher() {
         super(MekanismBlock.FLUIDIC_PLENISHER);
         //TODO: Upgrade slot index: 3
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        //TODO: Is there a better position to use
+        builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, fluidStack ->
+              fluidStack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluidStack), 28, 20), RelativeSide.TOP);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(28, 51), RelativeSide.BOTTOM);
+        builder.addSlot(EnergyInventorySlot.discharge(143, 35), RelativeSide.BACK);
+        return builder.build();
     }
 
     @Override
@@ -83,7 +100,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (!isRemote()) {
             ChargeUtils.discharge(2, this);
             if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
-                FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
+                FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, inputSlot, outputSlot, new FluidChecker() {
                     @Override
                     public boolean isValid(@Nonnull Fluid f) {
                         //TODO: Is there a better position to use
@@ -261,41 +278,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 1) {
-            return false;
-        } else if (slotID == 0) {
-            //TODO: Is there a better position to use
-            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluidStack ->
-                  fluidStack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluidStack));
-        } else if (slotID == 2) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 2) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 1;
-    }
-
-    @Override
     public boolean canReceiveEnergy(Direction side) {
         return getOppositeDirection() == side;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == Direction.UP) {
-            return new int[]{0};
-        } else if (side == Direction.DOWN) {
-            return new int[]{1};
-        }
-        return new int[]{2};
     }
 
     @Override

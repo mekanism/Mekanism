@@ -74,7 +74,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         builder.addSlot(GasInventorySlot.fill(leftTank, this::isValidGas, 5, 56), RelativeSide.LEFT);
         builder.addSlot(GasInventorySlot.drain(centerTank, 155, 56), RelativeSide.FRONT);
         builder.addSlot(GasInventorySlot.fill(rightTank, this::isValidGas, 80, 65), RelativeSide.RIGHT);
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.DOWN, RelativeSide.UP);
+        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         return builder.build();
     }
 

@@ -91,6 +91,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     private int currentRedstoneLevel;
 
+    private FluidInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     public TileEntityElectricPump() {
         super(MekanismBlock.ELECTRIC_PUMP);
     }
@@ -99,8 +102,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(FluidInventorySlot.drain(fluidTank, 28, 20), RelativeSide.UP);
-        builder.addSlot(OutputInventorySlot.at(28, 51), RelativeSide.DOWN);
+        builder.addSlot(inputSlot = FluidInventorySlot.drain(fluidTank, 28, 20), RelativeSide.TOP);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(28, 51), RelativeSide.BOTTOM);
         builder.addSlot(EnergyInventorySlot.discharge(143, 35), RelativeSide.BACK);
         return builder.build();
     }
@@ -110,8 +113,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         if (!isRemote()) {
             ChargeUtils.discharge(2, this);
             if (!fluidTank.getFluid().isEmpty()) {
-                if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
-                    FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
+                if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
+                    FluidContainerUtils.handleContainerItemFill(this, fluidTank, inputSlot, outputSlot);
                 }
             }
             if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
