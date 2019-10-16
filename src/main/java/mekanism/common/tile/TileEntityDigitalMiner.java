@@ -567,7 +567,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex - 1);
                     for (PlayerEntity player : playersUsing) {
-                        openInventory(player);
+                        //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
+                        //openInventory(player);
                     }
                     break;
                 }
@@ -576,7 +577,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex + 1);
                     for (PlayerEntity player : playersUsing) {
-                        openInventory(player);
+                        //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
+//                        openInventory(player);
                     }
                     break;
                 }
@@ -761,9 +763,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public TileEntity getEjectTile() {
-        final Direction side = getOppositeDirection();
-        final BlockPos pos = getPos().up().offset(side);
-        if (world.isAreaLoaded(pos, 0)) {
+        BlockPos pos = getPos().up().offset(getOppositeDirection());
+        if (world != null && world.isAreaLoaded(pos, 0)) {
             return world.getTileEntity(pos);
         }
         return null;

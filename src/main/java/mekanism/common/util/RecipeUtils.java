@@ -3,11 +3,11 @@ package mekanism.common.util;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import mekanism.api.Upgrade;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.LazyOptionalHelper;
@@ -18,7 +18,7 @@ import mekanism.common.security.ISecurityItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -177,7 +177,7 @@ public class RecipeUtils {
         return !stack.isEmpty() && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ISupportsUpgrades;
     }
 
-    public static IRecipe getRecipeFromGrid(CraftingInventory inv, World world) {
+    public static ICraftingRecipe getRecipeFromGrid(CraftingInventory inv, World world) {
         return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, inv, world).get();
     }
 }

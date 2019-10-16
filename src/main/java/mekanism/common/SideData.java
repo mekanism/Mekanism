@@ -31,6 +31,7 @@ public class SideData implements IHasTranslationKey {
      */
     public IOState ioState;
 
+    //TODO: Make slots be a list of IInventorySlots
     public SideData(String n, EnumColor colour, int[] slots) {
         name = n;
         color = colour;

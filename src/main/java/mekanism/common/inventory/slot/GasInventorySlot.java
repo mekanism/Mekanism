@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
@@ -15,9 +16,49 @@ import net.minecraft.item.ItemStack;
 public class GasInventorySlot extends BasicInventorySlot {
 
     /**
+     * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
+     */
+    public static GasInventorySlot rotary(@Nonnull GasTank gasTank, Predicate<@NonNull Gas> validInput, BooleanSupplier modeSupplier, int x, int y) {
+        //Mode == true if gas to fluid
+        return new GasInventorySlot(gasTank, alwaysFalse, stack -> {
+            //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
+            Item item = stack.getItem();
+            //TODO: Use a capability instead of instanceof
+            if (item instanceof IGasItem) {
+                boolean mode = modeSupplier.getAsBoolean();
+                GasStack gasContained = ((IGasItem) item).getGas(stack);
+                if (gasContained.isEmpty()) {
+                    //We want to try and drain the tank AND we are not the input tank
+                    return !mode;
+                }
+                //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
+                return mode && validInput.test(gasContained.getType()) && gasTank.fill(gasContained, Action.SIMULATE) > 0;
+            }
+            return false;
+        }, stack -> {
+            Item item = stack.getItem();
+            //TODO: Use a capability instead of instanceof
+            if (item instanceof IGasItem) {
+                IGasItem gasItem = (IGasItem) item;
+                if (modeSupplier.getAsBoolean()) {
+                    //Input tank, so we want to fill it
+                    //TODO: Add a way to the capability to see if the item can ever output gas, as things like jetpacks cannot have the gas be drained from them
+                    // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
+                    GasStack containedGas = gasItem.getGas(stack);
+                    return !containedGas.isEmpty() && validInput.test(containedGas.getType());
+                }
+                //Output tank, so we want to drain
+                //Only accept items that are gas items and can accept some form of gas
+                return gasItem.getNeeded(stack) > 0;
+            }
+            return false;
+        }, x, y);
+    }
+
+    /**
      * Fills the tank from this item OR converts the given item to a gas
      */
-    public static GasInventorySlot fillOrConvert(GasTank gasTank, Predicate<Gas> isValidGas, int x, int y) {
+    public static GasInventorySlot fillOrConvert(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -61,7 +102,7 @@ public class GasInventorySlot extends BasicInventorySlot {
     /**
      * Fills the tank from this item
      */
-    public static GasInventorySlot fill(GasTank gasTank, Predicate<Gas> isValidGas, int x, int y) {
+    public static GasInventorySlot fill(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -100,7 +141,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      *
      * Drains the tank into this item.
      */
-    public static GasInventorySlot drain(GasTank gasTank, int x, int y) {
+    public static GasInventorySlot drain(@Nonnull GasTank gasTank, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -140,7 +181,7 @@ public class GasInventorySlot extends BasicInventorySlot {
     //TODO: Replace GasTank with an IGasHandler??
     private final GasTank gasTank;
 
-    private GasInventorySlot(GasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+    private GasInventorySlot(@Nonnull GasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
           @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
         super(canExtract, canInsert, validator, x, y);
         this.gasTank = gasTank;

@@ -1,10 +1,13 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
@@ -15,14 +18,11 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OutputInput;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
@@ -31,7 +31,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState, IComparatorSupport {
 
@@ -269,9 +268,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        //Inserting into input make it draw power from the item inserted
-        return (!isRemote() && structure != null) || (isRemote() && clientHasStructure) ? mode ? new int[]{0} : new int[]{1} : InventoryUtils.EMPTY;
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        if (!hasInventory() || structure == null) {
+            //TODO: Previously we had a check like !isRemote() ? structure == null : !clientHasStructure
+            // Do we still need this if we ever actually needed it?
+            //If we don't have a structure then return that we have no slots accessible
+            return Collections.emptyList();
+        }
+        //TODO: Cache this??
+        return Collections.singletonList(structure.getInventorySlots().get(mode ? 0 : 1));
     }
 
     @Override

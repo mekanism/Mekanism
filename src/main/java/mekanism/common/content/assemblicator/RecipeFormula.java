@@ -2,28 +2,37 @@ package mekanism.common.content.assemblicator;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RecipeUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class RecipeFormula {
 
     public NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
-    public IRecipe recipe;
+    public ICraftingRecipe recipe;
     private CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
 
     public RecipeFormula(World world, NonNullList<ItemStack> inv) {
-        this(world, inv, 0);
+        for (int i = 0; i < 9; i++) {
+            input.set(i, StackUtils.size(inv.get(i), 1));
+        }
+        resetToRecipe();
+        recipe = RecipeUtils.getRecipeFromGrid(dummy, world);
     }
 
-    public RecipeFormula(World world, NonNullList<ItemStack> inv, int start) {
-        for (int i = 0; i < 9; i++) {
-            input.set(i, StackUtils.size(inv.get(start + i), 1));
+    public RecipeFormula(World world, List<IInventorySlot> craftingGridSlots) {
+        //Should always be 9 for the size
+        for (int i = 0; i < craftingGridSlots.size(); i++) {
+            ItemStack stack = craftingGridSlots.get(i).getStack();
+            if (!stack.isEmpty()) {
+                input.set(i, StackUtils.size(stack, 1));
+            }
         }
         resetToRecipe();
         recipe = RecipeUtils.getRecipeFromGrid(dummy, world);
@@ -35,9 +44,11 @@ public class RecipeFormula {
         }
     }
 
-    public boolean matches(World world, NonNullList<ItemStack> newInput, int start) {
-        for (int i = 0; i < 9; i++) {
-            dummy.setInventorySlotContents(i, newInput.get(start + i));
+    public boolean matches(World world, List<IInventorySlot> craftingGridSlots) {
+        //Should always be 9 for the size
+        for (int i = 0; i < craftingGridSlots.size(); i++) {
+            //TODO: Do we really need to be copying it here
+            dummy.setInventorySlotContents(i, craftingGridSlots.get(i).getStack().copy());
         }
         return recipe.matches(dummy, world);
     }
@@ -75,7 +86,7 @@ public class RecipeFormula {
         return getRecipe(world) != null;
     }
 
-    public IRecipe getRecipe(World world) {
+    public ICraftingRecipe getRecipe(World world) {
         return recipe;
     }
 

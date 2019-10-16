@@ -1,14 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_CRAFT_MATRIX_FIRST;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_ENERGY;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_FORMULA;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_INPUT_FIRST;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_OUTPUT_FIRST;
-
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotSpecific;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.ChargeUtils;
@@ -17,8 +10,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class FormulaicAssemblicatorContainer extends MekanismTileContainer<TileEntityFormulaicAssemblicator> {
 
@@ -84,44 +75,6 @@ public class FormulaicAssemblicatorContainer extends MekanismTileContainer<TileE
             currentSlot.onTake(player, slotStack);
         }
         return stack;
-    }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotDischarge(tile, SLOT_ENERGY, 152, 76));
-        addSlot(new SlotSpecific(tile, SLOT_FORMULA, 6, 26, ItemCraftingFormula.class));
-        for (int slotY = 0; slotY < 2; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new Slot(tile, slotX + slotY * 9 + SLOT_INPUT_FIRST, 8 + slotX * 18, 98 + slotY * 18));
-            }
-        }
-        for (int slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 3; slotX++) {
-                addSlot(new Slot(tile, slotX + slotY * 3 + SLOT_CRAFT_MATRIX_FIRST, 26 + slotX * 18, 17 + slotY * 18) {
-                    @Override
-                    public boolean isItemValid(ItemStack stack) {
-                        return !tile.autoMode;
-                    }
-
-                    @Override
-                    public boolean canTakeStack(PlayerEntity player) {
-                        return !tile.autoMode;
-                    }
-
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public boolean isEnabled() {
-                        return !tile.autoMode;
-                    }
-                });
-            }
-        }
-
-        for (int slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 2; slotX++) {
-                addSlot(new SlotOutput(tile, slotX + slotY * 2 + SLOT_OUTPUT_FIRST, 116 + slotX * 18, 17 + slotY * 18));
-            }
-        }
     }
 
     @Override

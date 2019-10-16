@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
@@ -12,7 +13,6 @@ import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
@@ -23,6 +23,9 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -45,7 +48,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IComparatorSupport,
       ITileFilterHolder<TransporterFilter> {
@@ -64,7 +66,15 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         super(MekanismBlock.LOGISTICAL_SORTER);
         rapidChangeThreshold = 3;
         doAutoSync = false;
-        //TODO: Upgrade slot index: 1
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //TODO: Verify this still works. Given it MIGHT be trying to use things in an odd way
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(InternalInventorySlot.of(1), RelativeSide.FRONT, RelativeSide.BACK);
+        return builder.build();
     }
 
     @Override
@@ -226,14 +236,16 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex - 1);
                 for (PlayerEntity player : playersUsing) {
-                    openInventory(player);
+                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
+                    //openInventory(player);
                 }
             } else if (type == 4) {
                 // Move filter down
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex + 1);
                 for (PlayerEntity player : playersUsing) {
-                    openInventory(player);
+                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
+                    //openInventory(player);
                 }
             } else if (type == 5) {
                 singleItem = !singleItem;
@@ -348,30 +360,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TransitResponse sendHome(ItemStack stack) {
         TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(getWorld());
         return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), getOppositeDirection(), true);
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        return false;
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        return 1;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == getDirection() || side == getOppositeDirection()) {
-            return new int[]{0};
-        }
-        return InventoryUtils.EMPTY;
     }
 
     @Override
@@ -585,14 +573,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != null && side != getDirection() && side != getOppositeDirection();
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

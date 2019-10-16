@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -15,6 +16,13 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.FormulaInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -76,10 +84,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public boolean needsFormulaUpdate = false;
     public ItemStack lastOutputStack = ItemStack.EMPTY;
 
+    private List<IInventorySlot> craftingGridSlots;
+    private List<InputInventorySlot> inputSlots;
+    private List<OutputInventorySlot> outputSlots;
+
     public TileEntityFormulaicAssemblicator() {
         super(MekanismBlock.FORMULAIC_ASSEMBLICATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
+        //TODO: This needs to be rethought (Especially because the slots ids are wrong due to not having the upgrade slot be in it
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{SLOT_INPUT_FIRST, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                                                                                                              16, 17, 18, 19, SLOT_INPUT_LAST}));
@@ -89,10 +102,71 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{0, 0, 0, 3, 1, 2});
         configComponent.setInputConfig(TransmissionType.ENERGY);
 
-        //TODO: Upgrade slot index: SLOT_UPGRADE
-
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // This can probably be done by letting the configurations know the relative side information?
+        craftingGridSlots = new ArrayList<>();
+        inputSlots = new ArrayList<>();
+        outputSlots = new ArrayList<>();
+
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(EnergyInventorySlot.discharge(152, 76));
+        builder.addSlot(FormulaInventorySlot.at(6, 26));
+        for (int slotY = 0; slotY < 2; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                InputInventorySlot inputSlot = InputInventorySlot.at(stack -> {
+                    //Is item valid
+                    if (formula == null) {
+                        return true;
+                    }
+                    //TODO: CLEAN THIS UP/FIX as some of this logic should probably be in
+                    List<Integer> indices = formula.getIngredientIndices(world, stack);
+                    if (indices.size() > 0) {
+                        if (stockControl) {
+                            int filled = 0;
+                            for (InputInventorySlot stockSlot : inputSlots) {
+                                ItemStack slotStack = stockSlot.getStack();
+                                if (!slotStack.isEmpty()) {
+                                    if (formula.isIngredientInPos(world, slotStack, indices.get(0))) {
+                                        filled++;
+                                    }
+                                }
+                            }
+                            return filled < indices.size() * 2;
+                        }
+                        return true;
+                    }
+                    return false;
+                }, 8 + slotX * 18, 98 + slotY * 18);
+                builder.addSlot(inputSlot);
+                inputSlots.add(inputSlot);
+            }
+        }
+        for (int slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 3; slotX++) {
+                //TODO: Make sure that automation cannot extract from this slot, and cannot insert into it
+                //TODO: Also previously this had canTakeStack and isEnabled be the same as the !autoMode for the slot impl
+                IInventorySlot craftingSlot = BasicInventorySlot.at(item -> !autoMode, 26 + slotX * 18, 17 + slotY * 18);
+                builder.addSlot(craftingSlot);
+                craftingGridSlots.add(craftingSlot);
+            }
+        }
+
+        for (int slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 2; slotX++) {
+                OutputInventorySlot outputSlot = OutputInventorySlot.at(116 + slotX * 18, 17 + slotY * 18);
+                builder.addSlot(outputSlot);
+                outputSlots.add(outputSlot);
+            }
+        }
+        return builder.build();
     }
 
     @Override
@@ -196,15 +270,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private void recalculateRecipe() {
         if (world != null && !isRemote()) {
             if (formula == null) {
-                for (int i = 0; i < 9; i++) {
-                    dummyInv.setInventorySlotContents(i, getStackInSlot(SLOT_CRAFT_MATRIX_FIRST + i));
+                //Should always be 9 for the size
+                for (int i = 0; i <= craftingGridSlots.size(); i++) {
+                    //TODO: Do we really need to be copying it here
+                    dummyInv.setInventorySlotContents(i, craftingGridSlots.get(i).getStack().copy());
                 }
 
                 lastRemainingItems = EMPTY_LIST;
 
                 if (!cachedRecipe.isPresent() || !cachedRecipe.get().matches(dummyInv, world)) {
                     //TODO: Check other places CraftingManager was
-                    cachedRecipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, dummyInv, world);
+                    cachedRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, dummyInv, world);
                 }
                 if (cachedRecipe.isPresent()) {
                     lastOutputStack = cachedRecipe.get().getCraftingResult(dummyInv);
@@ -214,7 +290,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 }
                 isRecipe = !lastOutputStack.isEmpty();
             } else {
-                isRecipe = formula.matches(world, getInventory(), SLOT_CRAFT_MATRIX_FIRST);
+                isRecipe = formula.matches(world, craftingGridSlots);
                 if (isRecipe) {
                     lastOutputStack = formula.recipe.getCraftingResult(dummyInv);
                     lastRemainingItems = formula.recipe.getRemainingItems(dummyInv);
@@ -227,8 +303,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private boolean doSingleCraft() {
-        for (int i = 0; i < 9; i++) {
-            dummyInv.setInventorySlotContents(i, getStackInSlot(SLOT_CRAFT_MATRIX_FIRST + i));
+        //Should always be 9 for the size
+        for (int i = 0; i <= craftingGridSlots.size(); i++) {
+            //TODO: Do we really need to be copying it here
+            dummyInv.setInventorySlotContents(i, craftingGridSlots.get(i).getStack().copy());
         }
         recalculateRecipe();
 
@@ -241,10 +319,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 }
             }
 
-            for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
-                ItemStack stack = getStackInSlot(i);
-                if (!stack.isEmpty()) {
-                    stack.shrink(1);
+            for (IInventorySlot craftingSlot : craftingGridSlots) {
+                if (!craftingSlot.isEmpty()) {
+                    craftingSlot.shrinkStack(1);
                 }
             }
             if (formula != null) {
@@ -259,7 +336,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private boolean craftSingle() {
         if (formula != null) {
             boolean canOperate = true;
-            if (!formula.matches(getWorld(), getInventory(), SLOT_CRAFT_MATRIX_FIRST)) {
+            if (!formula.matches(getWorld(), craftingGridSlots)) {
                 canOperate = moveItemsToGrid();
             }
             if (canOperate) {
@@ -273,13 +350,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private boolean moveItemsToGrid() {
         boolean ret = true;
-        for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
-            IInventorySlot recipeSlot = getInventorySlot(i, null);
-            if (recipeSlot == null) {
-                continue;
-            }
+        for (int i = 0; i <= craftingGridSlots.size(); i++) {
+            IInventorySlot recipeSlot = craftingGridSlots.get(i);
             ItemStack recipeStack = recipeSlot.getStack();
-            if (formula.isIngredientInPos(world, recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)) {
+            if (formula.isIngredientInPos(world, recipeStack, i)) {
                 continue;
             }
             if (!recipeStack.isEmpty()) {
@@ -291,14 +365,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 }
             } else {
                 boolean found = false;
-                for (int j = SLOT_INPUT_LAST; j >= SLOT_INPUT_FIRST; j--) {
+                for (int j = inputSlots.size() - 1; j >= 0; j--) {
                     //The stack stored in the stock inventory
-                    IInventorySlot stockSlot = getInventorySlot(j, null);
-                    if (stockSlot == null) {
-                        continue;
-                    }
+                    InputInventorySlot stockSlot = inputSlots.get(j);
                     ItemStack stockStack = stockSlot.getStack();
-                    if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i - SLOT_CRAFT_MATRIX_FIRST)) {
+                    if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i)) {
                         recipeSlot.setStack(StackUtils.size(stockStack, 1));
                         if (stockSlot.shrinkStack(1) != 1) {
                             //TODO: Print error that something went wrong
@@ -322,13 +393,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void moveItemsToInput(boolean forcePush) {
-        for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
-            IInventorySlot recipeSlot = getInventorySlot(i, null);
-            if (recipeSlot != null) {
-                ItemStack recipeStack = recipeSlot.getStack();
-                if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getWorld(), recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)))) {
-                    recipeSlot.setStack(tryMoveToInput(recipeStack));
-                }
+        for (int i = 0; i <= craftingGridSlots.size(); i++) {
+            IInventorySlot recipeSlot = craftingGridSlots.get(i);
+            ItemStack recipeStack = recipeSlot.getStack();
+            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getWorld(), recipeStack, i)))) {
+                recipeSlot.setStack(tryMoveToInput(recipeStack));
             }
         }
         markDirty();
@@ -355,37 +424,34 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void organizeStock() {
-        for (int j = SLOT_INPUT_FIRST; j <= SLOT_INPUT_LAST; j++) {
-            IInventorySlot compareSlot = getInventorySlot(j, null);
-            if (compareSlot != null) {
-                for (int i = SLOT_INPUT_LAST; i > j; i--) {
-                    IInventorySlot stockSlot = getInventorySlot(i, null);
-                    if (stockSlot != null) {
-                        ItemStack stockStack = stockSlot.getStack();
-                        if (!stockStack.isEmpty()) {
-                            ItemStack compareStack = compareSlot.getStack();
-                            if (compareStack.isEmpty()) {
-                                compareSlot.setStack(stockStack);
-                                stockSlot.setStack(ItemStack.EMPTY);
-                                markDirty();
-                                return;
+        int inputSlotCount = inputSlots.size();
+        for (int j = 0; j < inputSlotCount; j++) {
+            IInventorySlot compareSlot = inputSlots.get(j);
+            for (int i = inputSlotCount - 1; i > j; i--) {
+                IInventorySlot stockSlot = inputSlots.get(i);
+                ItemStack stockStack = stockSlot.getStack();
+                if (!stockStack.isEmpty()) {
+                    ItemStack compareStack = compareSlot.getStack();
+                    if (compareStack.isEmpty()) {
+                        compareSlot.setStack(stockStack);
+                        stockSlot.setStack(ItemStack.EMPTY);
+                        markDirty();
+                        return;
+                    }
+                    int maxCompareSize = compareSlot.getStackLimit();
+                    if (compareStack.getCount() < maxCompareSize) {
+                        if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
+                            int newCount = compareStack.getCount() + stockStack.getCount();
+                            int newCompareSize = Math.min(maxCompareSize, newCount);
+                            if (compareSlot.setStackSize(newCompareSize) != newCompareSize) {
+                                //TODO: Print error
                             }
-                            int maxCompareSize = compareSlot.getStackLimit();
-                            if (compareStack.getCount() < maxCompareSize) {
-                                if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
-                                    int newCount = compareStack.getCount() + stockStack.getCount();
-                                    int newCompareSize = Math.min(maxCompareSize, newCount);
-                                    if (compareSlot.setStackSize(newCompareSize) != newCompareSize) {
-                                        //TODO: Print error
-                                    }
-                                    int newStockSize = Math.max(0, newCount - maxCompareSize);
-                                    if (stockSlot.setStackSize(newStockSize) != newStockSize) {
-                                        //TODO: Print error
-                                    }
-                                    markDirty();
-                                    return;
-                                }
+                            int newStockSize = Math.max(0, newCount - maxCompareSize);
+                            if (stockSlot.setStackSize(newStockSize) != newStockSize) {
+                                //TODO: Print error
                             }
+                            markDirty();
+                            return;
                         }
                     }
                 }
@@ -395,11 +461,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private ItemStack tryMoveToInput(ItemStack stack) {
         stack = stack.copy();
-        for (int i = SLOT_INPUT_FIRST; i <= SLOT_INPUT_LAST; i++) {
-            IInventorySlot stockSlot = getInventorySlot(i, null);
-            if (stockSlot == null) {
-                continue;
-            }
+        for (InputInventorySlot stockSlot : inputSlots) {
             ItemStack stockStack = stockSlot.getStack();
             if (stockStack.isEmpty()) {
                 stockSlot.setStack(stack);
@@ -422,11 +484,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private boolean tryMoveToOutput(ItemStack stack, boolean doMove) {
         stack = stack.copy();
-        for (int i = SLOT_OUTPUT_FIRST; i <= SLOT_OUTPUT_LAST; i++) {
-            IInventorySlot outputSlot = getInventorySlot(i, null);
-            if (outputSlot == null) {
-                continue;
-            }
+        for (OutputInventorySlot outputSlot : outputSlots) {
             ItemStack outputStack = outputSlot.getStack();
             if (outputStack.isEmpty()) {
                 if (doMove) {
@@ -456,56 +514,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
             ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
             if (item.getInventory(formulaStack) == null) {
-                RecipeFormula formula = new RecipeFormula(world, getInventory(), SLOT_CRAFT_MATRIX_FIRST);
+                RecipeFormula formula = new RecipeFormula(world, craftingGridSlots);
                 if (formula.isValidFormula(world)) {
                     item.setInventory(formulaStack, formula.input);
                     markDirty();
                 }
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == SLOT_ENERGY) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID >= SLOT_OUTPUT_FIRST && slotID <= SLOT_OUTPUT_LAST;
-
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID >= SLOT_INPUT_FIRST && slotID <= SLOT_INPUT_LAST) {
-            if (formula == null) {
-                return true;
-            }
-            List<Integer> indices = formula.getIngredientIndices(world, itemstack);
-            if (indices.size() > 0) {
-                if (stockControl) {
-                    int filled = 0;
-                    for (int i = SLOT_INPUT_FIRST; i < SLOT_INPUT_LAST; i++) {
-                        ItemStack slotStack = getStackInSlot(i);
-                        if (!slotStack.isEmpty()) {
-                            if (formula.isIngredientInPos(world, slotStack, indices.get(0))) {
-                                filled++;
-                            }
-                        }
-                    }
-                    return filled < indices.size() * 2;
-                }
-                return true;
-            }
-        } else if (slotID == SLOT_ENERGY) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
     }
 
     @Override

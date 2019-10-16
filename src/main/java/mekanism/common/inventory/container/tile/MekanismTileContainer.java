@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -78,7 +79,10 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);
             for (int i = 0; i < inventorySlots.size(); i++) {
-                addSlot(inventorySlots.get(i).createContainerSlot(i));
+                Slot containerSlot = inventorySlots.get(i).createContainerSlot(i);
+                if (containerSlot != null) {
+                    addSlot(containerSlot);
+                }
             }
         }
     }

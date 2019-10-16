@@ -1,6 +1,7 @@
 package mekanism.api.inventory.slot;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
@@ -121,8 +122,9 @@ public interface IInventorySlot {
      *
      * @param index A number representing what index this slot is supposed to have.
      *
-     * @return A slot for use in a container that represents this {@link IInventorySlot}
+     * @return A slot for use in a container that represents this {@link IInventorySlot}, or null if this slot should not be added.
      */
+    @Nullable
     Slot createContainerSlot(int index);
 
     /**

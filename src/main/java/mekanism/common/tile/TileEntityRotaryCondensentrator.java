@@ -76,11 +76,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        //TODO: Figure out the proper implementation for these two slots. There wasn't really any specific code checks before but we can probably make them smarter now
+        //TODO: Add in checks once we switch it to a recipe system for if the gas/fluid is ever valid
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(gasInputSlot = GasInventorySlot.something(5, 25), RelativeSide.LEFT);
+        builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, gas -> true, () -> mode == 0, 5, 25), RelativeSide.LEFT);
         builder.addSlot(gasOutputSlot = OutputInventorySlot.at(5, 56), RelativeSide.LEFT);
-        builder.addSlot(fluidInputSlot = FluidInventorySlot.something(155, 25), RelativeSide.RIGHT);
+        builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, fluid -> true, () -> mode == 1, 155, 25), RelativeSide.RIGHT);
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(155, 56), RelativeSide.RIGHT);
         builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
         return builder.build();

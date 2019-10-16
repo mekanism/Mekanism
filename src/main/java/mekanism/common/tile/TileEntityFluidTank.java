@@ -86,7 +86,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, 146, 19), RelativeSide.TOP);
+        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, fluid -> true, 146, 19), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(146, 51), RelativeSide.BOTTOM);
         return builder.build();
     }

@@ -2,6 +2,7 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -19,6 +20,10 @@ public class BasicInventorySlot implements IInventorySlot {
 
     public static BasicInventorySlot at(int x, int y) {
         return new BasicInventorySlot(x, y);
+    }
+
+    public static BasicInventorySlot at(@Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
+        return new BasicInventorySlot(validator, x, y);
     }
 
     public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
@@ -189,6 +194,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     //TODO: Should we move InventoryContainerSlot to the API and reference that instead
+    @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot(int index) {
         return new InventoryContainerSlot(this, index, x, y, getSlotType());

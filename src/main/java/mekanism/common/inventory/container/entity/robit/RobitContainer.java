@@ -7,6 +7,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.MekanismEntityContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 
 public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit> {
 
@@ -23,7 +24,10 @@ public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit
             //TODO: Check to make sure that the repair and crafting containers still work fine
             List<IInventorySlot> inventorySlots = entity.getInventorySlots(getType());
             for (int i = 0; i < inventorySlots.size(); i++) {
-                addSlot(inventorySlots.get(i).createContainerSlot(i));
+                Slot containerSlot = inventorySlots.get(i).createContainerSlot(i);
+                if (containerSlot != null) {
+                    addSlot(containerSlot);
+                }
             }
         }
     }
