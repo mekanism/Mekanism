@@ -26,6 +26,8 @@ import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -91,9 +93,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Nonnull
     private final List<IInventorySlot> inventoryContainerSlots;
     private final EnergyInventorySlot energySlot;
-    private final IInventorySlot smeltingInputSlot;
+    private final InputInventorySlot smeltingInputSlot;
     private final FuelInventorySlot fuelSlot;
-    private final IInventorySlot smeltingOutputSlot;
+    private final OutputInventorySlot smeltingOutputSlot;
 
     public EntityRobit(EntityType<EntityRobit> type, World world) {
         super(type, world);
@@ -104,17 +106,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         inventoryContainerSlots = new ArrayList<>();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                IInventorySlot slot = new BasicInventorySlot(8 + slotX * 18, 18 + slotY * 18);
+                IInventorySlot slot = BasicInventorySlot.at(8 + slotX * 18, 18 + slotY * 18);
                 inventorySlots.add(slot);
                 inventoryContainerSlots.add(slot);
             }
         }
         inventorySlots.add(energySlot = EnergyInventorySlot.discharge(153, 17));
         //TODO: FIX THIS INPUT AND OUTPUT SLOT DECLARATION
-        inventorySlots.add(smeltingInputSlot = new BasicInventorySlot(56, 17));
+        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(56, 17));
         inventorySlots.add(fuelSlot = FuelInventorySlot.at(56, 53));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had
-        inventorySlots.add(smeltingOutputSlot = new BasicInventorySlot(116, 35));
+        inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(116, 35));
 
         mainContainerSlots = Collections.singletonList(energySlot);
         smeltingContainerSlots = Arrays.asList(smeltingInputSlot, fuelSlot, smeltingOutputSlot);
@@ -283,7 +285,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
                     }
-                    int maxStackSize = Math.min(itemStack.getMaxStackSize(), slot.getLimit());
+                    int maxStackSize = slot.getStackLimit();
                     if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxStackSize) {
                         int needed = maxStackSize - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
@@ -322,6 +324,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         }
         //TODO: Should we make the robit go off of the energized smelter recipes instead?? It would allow for reducing a lot of this code
         // as then it could do it all via the CachedRecipe system
+        // The decision is yes, so we need to kill a bunch of these methods and replace them with using the CachedRecipe stuff
         Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
         if (!recipe.isPresent()) {
             return false;
@@ -337,7 +340,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
             return false;
         }
-        return currentOutput.getCount() + result.getCount() <= Math.min(result.getMaxStackSize(), smeltingOutputSlot.getLimit());
+        return currentOutput.getCount() + result.getCount() <= smeltingOutputSlot.getStackLimit();
     }
 
     public void smeltItem() {

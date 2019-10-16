@@ -24,10 +24,10 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
-import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.api.RelativeSide;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
@@ -61,7 +61,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 26, 36), RelativeSide.LEFT);
+        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 26, 36), RelativeSide.LEFT);
         builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         builder.addSlot(GasInventorySlot.drain(gasTank, 155, 25), RelativeSide.RIGHT);
         return builder.build();

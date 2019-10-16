@@ -73,6 +73,7 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
     protected void addSlots() {
         super.addSlots();
         //TODO: Overwrite transferStackInSlot with the logic in the IInventorySlots??
+        // NOTE: When implementing the generic transferStackInSlot stuff, we *should* probably ALWAYS allow manual extraction
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);

@@ -21,7 +21,7 @@ import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
+import mekanism.api.RelativeSide;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tier.BaseTier;

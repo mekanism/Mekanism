@@ -30,8 +30,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer {
 
-    protected static final int[] INV_SLOTS = {0, 1};
-
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
      */

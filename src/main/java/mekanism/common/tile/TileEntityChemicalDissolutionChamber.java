@@ -26,10 +26,10 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
-import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.api.RelativeSide;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
@@ -78,7 +78,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(GasInventorySlot.fillOrConvert(injectTank, this::isValidGas, 6, 65), RelativeSide.BOTTOM);
-        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 26, 36), RelativeSide.TOP, RelativeSide.LEFT);
+        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 26, 36), RelativeSide.TOP, RelativeSide.LEFT);
         builder.addSlot(GasInventorySlot.drain(outputTank, 155, 25), RelativeSide.RIGHT);
         //TODO: Make this be accessible from some side for automation??
         builder.addSlot(EnergyInventorySlot.discharge(155, 5));

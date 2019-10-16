@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.slot.SlotPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,15 +19,6 @@ public class PersonalChestTileContainer extends MekanismTileContainer<TileEntity
 
     public PersonalChestTileContainer(int id, PlayerInventory inv, PacketBuffer buf) {
         this(id, inv, getTileFromBuf(buf, TileEntityPersonalChest.class));
-    }
-
-    @Override
-    protected void addSlots() {
-        for (int slotY = 0; slotY < 6; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new SlotPersonalChest(tile, slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
-            }
-        }
     }
 
     @Override

@@ -7,7 +7,6 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -21,12 +20,17 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.InfusionInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -77,8 +81,27 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
         itemInputHandler = InputHelper.getInputHandler(this, 2);
         outputHandler = OutputHelper.getOutputHandler(this, 3);
+    }
 
-        //TODO: Upgrade slot index: 0
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // This can probably be done by letting the configurations know the relative side information?
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), 17, 35));
+        //TODO: Verify that it is properly querying the infusion tank's type if it changes
+        builder.addSlot(InputInventorySlot.at(stack -> {
+            if (!infusionTank.isEmpty()) {
+                return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
+            }
+            //Otherwise just look for items that can be used
+            return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
+        }, 51, 43));
+        builder.addSlot(OutputInventorySlot.at(109, 43));
+        builder.addSlot(EnergyInventorySlot.discharge(143, 35));
+        return builder.build();
     }
 
     @Override
@@ -167,43 +190,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         factory.upgraded = true;
         factory.markDirty();*/
         return true;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 4) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        }
-        return slotID == 3;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 3) {
-            return false;
-        } else if (slotID == 1) {
-            InfusionStack infusionStack = InfuseRegistry.getObject(itemstack);
-            if (infusionStack.isEmpty()) {
-                return false;
-            }
-            if (infusionTank.isEmpty()) {
-                InfuseType type = infusionStack.getType();
-                return containsRecipe(recipe -> recipe.getInfusionInput().testType(type));
-            }
-            return infusionStack.isTypeEqual(infusionTank.getType());
-        } else if (slotID == 0) {
-            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
-        } else if (slotID == 2) {
-            //If we have a type make sure that the recipe is valid for the type we have stored
-            if (!infusionTank.isEmpty()) {
-                return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(itemstack));
-            }
-            //Otherwise just look for items that can be used
-            return containsRecipe(recipe -> recipe.getItemInput().testType(itemstack));
-        } else if (slotID == 4) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        }
-        return false;
     }
 
     @Nonnull
@@ -312,12 +298,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override

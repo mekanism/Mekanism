@@ -14,7 +14,6 @@ public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit
         super(type, id, inv, entity);
     }
 
-    //TODO: Add slots based on container type
     @Override
     protected void addSlots() {
         super.addSlots();

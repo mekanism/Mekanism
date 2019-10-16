@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.RelativeSide;
 import mekanism.api.inventory.slot.IInventorySlot;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 
 public class InventorySlotHelper implements IInventorySlotHolder {
@@ -38,8 +38,7 @@ public class InventorySlotHelper implements IInventorySlotHolder {
             //If we want the internal OR we have no side specification, give all of our slots
             return inventorySlots;
         }
-        //TODO: Get the relative side
-        RelativeSide side = RelativeSide.fromDirection(facingSupplier.get(), direction);
+        RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
         List<IInventorySlot> slots = directionalSlots.get(side);
         if (slots == null) {
             //TODO: Go through the code and make sure nothing is getting missed due to this returning an empty list
@@ -74,31 +73,4 @@ public class InventorySlotHelper implements IInventorySlotHolder {
         }
     }
 
-    public enum RelativeSide {
-        BOTTOM,
-        TOP,
-        FRONT,
-        BACK,
-        RIGHT,
-        LEFT;
-
-        public static RelativeSide fromDirection(@Nonnull Direction facing, @Nonnull Direction direction) {
-            //TODO: If we are facing up or downwards, this relative is "incorrect"
-            if (direction == Direction.DOWN) {
-                return BOTTOM;
-            } else if (direction == Direction.UP) {
-                return TOP;
-            } else if (direction == facing) {
-                return FRONT;
-            } else if (direction == facing.getOpposite()) {
-                return BACK;
-            } else if (direction == MekanismUtils.getRight(facing)) {
-                return RIGHT;
-            } else if (direction == MekanismUtils.getLeft(facing)) {
-                return LEFT;
-            }
-            //Fall back to front, should never get here
-            return FRONT;
-        }
-    }
 }

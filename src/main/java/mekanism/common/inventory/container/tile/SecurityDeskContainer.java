@@ -61,12 +61,6 @@ public class SecurityDeskContainer extends MekanismTileContainer<TileEntitySecur
     }
 
     @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 0, 146, 18));
-        addSlot(new Slot(tile, 1, 146, 97));
-    }
-
-    @Override
     protected int getInventoryYOffset() {
         return 148;
     }

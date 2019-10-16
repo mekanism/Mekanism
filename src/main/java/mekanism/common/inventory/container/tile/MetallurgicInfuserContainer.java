@@ -78,12 +78,4 @@ public class MetallurgicInfuserContainer extends MekanismTileContainer<TileEntit
         //Otherwise just look for items that can be used
         return tile.containsRecipe(recipe -> recipe.getItemInput().testType(itemStack));
     }
-
-    @Override
-    protected void addSlots() {
-        addSlot(new Slot(tile, 1, 17, 35));
-        addSlot(new Slot(tile, 2, 51, 43));
-        addSlot(new SlotOutput(tile, 3, 109, 43));
-        addSlot(new SlotEnergy.SlotDischarge(tile, 4, 143, 35));
-    }
 }

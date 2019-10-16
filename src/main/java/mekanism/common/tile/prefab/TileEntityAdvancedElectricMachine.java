@@ -27,9 +27,9 @@ import mekanism.common.SideData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -114,7 +114,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 56, 17));
+        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 56, 17));
         builder.addSlot(GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, 56, 53));
         builder.addSlot(OutputInventorySlot.at(116, 35));
         builder.addSlot(EnergyInventorySlot.discharge(31, 35));

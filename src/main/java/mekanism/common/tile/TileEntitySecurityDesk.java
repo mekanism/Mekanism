@@ -9,6 +9,9 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.security.IOwnerItem;
@@ -16,7 +19,6 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,8 +33,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
-    private static final int[] SLOTS = {0, 1};
-
     public UUID ownerUUID;
     public String clientOwner;
 
@@ -40,6 +40,16 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public TileEntitySecurityDesk() {
         super(MekanismBlock.SECURITY_DESK);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        //TODO: Figure out if this should have some specialized type of slot/what can be inserted/extracted etc
+        builder.addSlot(BasicInventorySlot.at(146, 18));
+        builder.addSlot(BasicInventorySlot.at(146, 97));
+        return builder.build();
     }
 
     @Override
@@ -251,19 +261,11 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         return INFINITE_EXTENT_AABB;
     }
 
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        //Even though there are inventory slots make this return none as
-        // accessible by automation, as then people could lock items to other
-        // people unintentionally
-        return InventoryUtils.EMPTY;
-    }
-
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //For the same reason as the getSlotsForFace does not give any slots, don't expose this here
+            //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
+            // people unintentionally
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

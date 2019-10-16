@@ -24,9 +24,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration {
 
-    protected static final int[] CHARGE_SLOT = {0};
-    protected static final int[] DISCHARGE_SLOT = {1};
-
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
     public TileEntityInductionCasing() {

@@ -17,8 +17,8 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -64,7 +64,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
+        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
         builder.addSlot(EnergyInventorySlot.discharge(56, 53));
         builder.addSlot(OutputInventorySlot.at(116, 35));
         builder.addSlot(OutputInventorySlot.at(132, 35));

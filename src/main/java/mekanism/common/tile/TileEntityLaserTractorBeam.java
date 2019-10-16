@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
@@ -13,6 +14,9 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -31,7 +35,6 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityLaserTractorBeam extends TileEntityMekanism implements ILaserReceptor, IComparatorSupport {
 
     public static final double MAX_ENERGY = 5E9;
-    public static int[] availableSlotIDs = InventoryUtils.getIntRange(0, 26);
     public double collectedEnergy = 0;
     public double lastFired = 0;
     public boolean on = false;
@@ -40,6 +43,19 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
 
     public TileEntityLaserTractorBeam() {
         super(MekanismBlock.LASER_TRACTOR_BEAM);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        for (int slotX = 0; slotX < 9; slotX++) {
+            for (int slotY = 0; slotY < 3; slotY++) {
+                //TODO: We probably want it to create normal looking slots instead of "output" slots
+                builder.addSlot(OutputInventorySlot.at(8 + slotX * 18, 16 + slotY * 18));
+            }
+        }
+        return builder.build();
     }
 
     @Override
@@ -128,36 +144,30 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
     }
 
     public void receiveDrops(List<ItemStack> drops) {
+        List<IInventorySlot> inventorySlots = getInventorySlots(null);
         outer:
         for (ItemStack drop : drops) {
-            for (int i = 0; i < getInventory().size(); i++) {
-                if (getStackInSlot(i).isEmpty()) {
-                    getInventory().set(i, drop);
+            for (int i = 0; i < inventorySlots.size(); i++) {
+                IInventorySlot slot = inventorySlots.get(i);
+                if (slot.isEmpty()) {
+                    slot.setStack(drop);
                     continue outer;
                 }
-                ItemStack slot = getStackInSlot(i);
-                if (StackUtils.equalsWildcardWithNBT(slot, drop)) {
-                    int change = Math.min(drop.getCount(), slot.getMaxStackSize() - slot.getCount());
-                    slot.grow(change);
+                ItemStack stackInSlot = slot.getStack();
+                if (StackUtils.equalsWildcardWithNBT(stackInSlot, drop)) {
+                    int change = Math.min(drop.getCount(), slot.getStackLimit() - stackInSlot.getCount());
+                    if (slot.growStack(change) != change) {
+                        //TODO: Print error that something went wrong
+                    }
                     drop.shrink(change);
-                    if (drop.getCount() <= 0) {
+                    if (drop.isEmpty()) {
                         continue outer;
                     }
                 }
             }
+            //Only gets ran if one of the continue statements did not get hit
             Block.spawnAsEntity(getWorld(), pos, drop);
         }
-    }
-
-    @Override
-    public boolean canInsertItem(int i, @Nonnull ItemStack itemStack, @Nullable Direction side) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return availableSlotIDs;
     }
 
     @Override

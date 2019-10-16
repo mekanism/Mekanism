@@ -370,7 +370,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                                 markDirty();
                                 return;
                             }
-                            int maxCompareSize = Math.min(compareStack.getMaxStackSize(), compareSlot.getLimit());
+                            int maxCompareSize = compareSlot.getStackLimit();
                             if (compareStack.getCount() < maxCompareSize) {
                                 if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
                                     int newCount = compareStack.getCount() + stockStack.getCount();
@@ -404,8 +404,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             if (stockStack.isEmpty()) {
                 stockSlot.setStack(stack);
                 return ItemStack.EMPTY;
-            } else if (InventoryUtils.areItemsStackable(stack, stockStack) && stockStack.getCount() < Math.min(stockStack.getMaxStackSize(), stockSlot.getLimit())) {
-                int toUse = Math.min(stack.getCount(), Math.min(stockStack.getMaxStackSize(), stockSlot.getLimit()) - stockStack.getCount());
+            }
+            int stockMaxSize = stockSlot.getStackLimit();
+            if (InventoryUtils.areItemsStackable(stack, stockStack) && stockStack.getCount() < stockMaxSize) {
+                int toUse = Math.min(stack.getCount(), stockMaxSize - stockStack.getCount());
                 if (stockSlot.growStack(toUse) != toUse) {
                     //TODO: Print error that something went wrong
                 }
@@ -431,8 +433,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     outputSlot.setStack(stack);
                 }
                 return true;
-            } else if (InventoryUtils.areItemsStackable(stack, outputStack) && outputStack.getCount() < Math.min(outputStack.getMaxStackSize(), outputSlot.getLimit())) {
-                int toUse = Math.min(stack.getCount(), Math.min(outputStack.getMaxStackSize(), outputSlot.getLimit()) - outputStack.getCount());
+            }
+            int outputMaxSize = outputSlot.getStackLimit();
+            if (InventoryUtils.areItemsStackable(stack, outputStack) && outputStack.getCount() < outputMaxSize) {
+                int toUse = Math.min(stack.getCount(), outputMaxSize - outputStack.getCount());
                 if (doMove) {
                     if (outputSlot.growStack(toUse) != toUse) {
                         //TODO: Print error that something went wrong

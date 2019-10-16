@@ -55,7 +55,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public static final int MAX_OUTPUT = 10000;
     public static final int MAX_SOLARS = 4;
     public static final int MAX_HEIGHT = 18;
-    private static final int[] SLOTS = {0, 1, 2, 3};
 
     public FluidTank inputTank = new FluidTank(0);
     public FluidTank outputTank = new FluidTank(MAX_OUTPUT);

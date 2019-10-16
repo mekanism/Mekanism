@@ -31,8 +31,8 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -111,7 +111,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(new BasicInventorySlot(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), 54, 35));
+        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), 54, 35));
         builder.addSlot(EnergyInventorySlot.discharge(141, 19));
         builder.addSlot(OutputInventorySlot.at(116, 35));
         return builder.build();

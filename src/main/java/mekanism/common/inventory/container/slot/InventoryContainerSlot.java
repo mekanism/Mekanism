@@ -10,6 +10,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 //Like net.minecraftforge.items.SlotItemHandler, except directly interacts with the IInventorySlot instead
+//TODO: Override other methods to pass them directly to our IInventorySlot
 public class InventoryContainerSlot extends Slot {
 
     private static IInventory emptyInventory = new Inventory(0);
@@ -52,7 +53,8 @@ public class InventoryContainerSlot extends Slot {
     @Override
     public int getItemStackLimit(@Nonnull ItemStack stack) {
         //TODO: This logic is a lot simpler than the one in SlotItemHandler, is there some case we are missing?
-        return Math.min(slot.getLimit(), stack.getMaxStackSize());
+        // Strictly speaking this doesn't even need to override as the getSlotStackLimit should be fine
+        return slot.getStackLimit(stack);
     }
 
     @Override

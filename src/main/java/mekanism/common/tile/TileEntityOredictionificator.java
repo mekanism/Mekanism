@@ -19,8 +19,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.InventorySlotHelper.RelativeSide;
-import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.api.RelativeSide;
+import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
@@ -46,7 +46,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
 
-    private static final int[] SLOTS = {0, 1};
     public static final Map<String, List<String>> possibleFilters = new HashMap<>();
 
     static {
@@ -66,8 +65,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         RelativeSide[] sides = new RelativeSide[]{RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
-
-        builder.addSlot(new BasicInventorySlot(item -> !getResult(item).isEmpty(), 26, 115), sides);
+        builder.addSlot(InputInventorySlot.at(item -> !getResult(item).isEmpty(), 26, 115), sides);
         builder.addSlot(OutputInventorySlot.at(134, 115), sides);
         return builder.build();
     }

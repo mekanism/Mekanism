@@ -9,8 +9,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-//TODO: Handle persistence somewhere, so that we can load/save the slots in an IMekanismInventory.
-// Wherever we handle this we have to make sure to mark it dirty on change Or at least mark the tile dirty
+//TODO: Handle persistence somewhere, so that we can load/save the slots in an IMekanismInventory. We need to mark the tile dirty and things in onContentsChanged
+//TODO: Should this extend INBTSerializable
 public interface IInventorySlot {
 
     /**
@@ -41,6 +41,7 @@ public interface IInventorySlot {
      * @param stack {@link ItemStack} to set this slot to (may be empty).
      *
      * @throws RuntimeException if this slot is called in a way that it was not expecting.
+     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
     void setStack(@Nonnull ItemStack stack);
 
@@ -56,7 +57,8 @@ public interface IInventorySlot {
      * @return The remaining {@link ItemStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ItemStack}). May be the same as the
      * input {@link ItemStack} if unchanged, otherwise a new {@link ItemStack}. The returned ItemStack can be safely modified after
      *
-     * @implNote The {@link ItemStack} <em>should not</em> be modified in this function!
+     * @implNote The {@link ItemStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call {@link
+     * #onContentsChanged()}
      */
     @Nonnull
     ItemStack insertItem(@Nonnull ItemStack stack, Action action);
@@ -74,7 +76,8 @@ public interface IInventorySlot {
      * @return {@link ItemStack} extracted from the slot, must be empty if nothing can be extracted. The returned {@link ItemStack} can be safely modified after, so the
      * slot should return a new or copied stack.
      *
-     * @implNote The returned {@link ItemStack} can be safely modified after, so a new or copied stack should be returned.
+     * @implNote The returned {@link ItemStack} can be safely modified after, so a new or copied stack should be returned. If the internal stack does get updated make
+     * sure to call {@link #onContentsChanged()}
      */
     @Nonnull
     ItemStack extractItem(int amount, Action action);
@@ -83,6 +86,9 @@ public interface IInventorySlot {
      * Retrieves the maximum stack size allowed to exist in this {@link IInventorySlot}.
      *
      * @return The maximum stack size allowed in this {@link IInventorySlot}.
+     *
+     * @implNote The implementation of this CAN take into account the current stack's max size if desired, but is not required or expected to.
+     * @apiNote If the current stored {@link ItemStack}'s max stack size should be taken into account use {@link #getStackLimit()} instead.
      */
     int getLimit();
 
@@ -106,6 +112,11 @@ public interface IInventorySlot {
     boolean isItemValid(@Nonnull ItemStack stack);
 
     /**
+     * Called when the contents of this slot changes.
+     */
+    void onContentsChanged();
+
+    /**
      * Returns a slot with the given index for use in auto adding slots to a container.
      *
      * @param index A number representing what index this slot is supposed to have.
@@ -124,7 +135,8 @@ public interface IInventorySlot {
      *
      * @return Actual size it was set to.
      *
-     * @implNote It is recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run.
+     * @implNote It is recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run. If the internal stack
+     * does get updated make sure to call {@link #onContentsChanged()}
      */
     default int setStackSize(int amount) {
         ItemStack stack = getStack();
@@ -135,7 +147,7 @@ public interface IInventorySlot {
             setStack(ItemStack.EMPTY);
             return 0;
         }
-        int maxStackSize = Math.min(stack.getMaxStackSize(), getLimit());
+        int maxStackSize = getStackLimit();
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
@@ -160,6 +172,7 @@ public interface IInventorySlot {
      * @return Actual amount the stack grew.
      *
      * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
+     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
     default int growStack(int amount) {
         int current = getStack().getCount();
@@ -178,6 +191,7 @@ public interface IInventorySlot {
      * @return Actual amount the stack grew.
      *
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
+     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
     default int shrinkStack(int amount) {
         return -growStack(-amount);
@@ -190,5 +204,27 @@ public interface IInventorySlot {
      */
     default boolean isEmpty() {
         return getStack().isEmpty();
+    }
+
+    /**
+     * Helper method, similar to {@link #getLimit()}, except also ensures that it does not go past the stored stack's max size.
+     *
+     * @return The maximum stack size allowed in this {@link IInventorySlot}, or the max of the stored item, whichever of the two is smaller.
+     */
+    default int getStackLimit() {
+        return getStackLimit(getStack());
+    }
+
+    /**
+     * Helper method, similar to {@link #getLimit()}, except also ensures that it does not go past the given item's max stack size.
+     *
+     * @param stack The {@link ItemStack} to check the max size of.
+     *
+     * @return The maximum stack size allowed in this {@link IInventorySlot}, or the max of the given item, whichever of the two is smaller.
+     *
+     * @implNote Do not modify the given stack.
+     */
+    default int getStackLimit(@Nonnull ItemStack stack) {
+        return stack.isEmpty() ? getLimit() : Math.min(stack.getMaxStackSize(), getLimit());
     }
 }

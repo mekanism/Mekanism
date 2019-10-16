@@ -1,17 +1,19 @@
 package mekanism.common.tile;
 
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import mekanism.api.RelativeSide;
+import mekanism.api.annotations.NonNull;
 import mekanism.common.MekanismBlock;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityPersonalChest extends TileEntityMekanism {
 
@@ -23,6 +25,26 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
 
     public TileEntityPersonalChest() {
         super(MekanismBlock.PERSONAL_CHEST);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        Predicate<@NonNull ItemStack> canExtract = item -> SecurityUtils.getSecurity(this, Dist.DEDICATED_SERVER) != SecurityMode.PUBLIC;
+        RelativeSide[] sides = new RelativeSide[]{RelativeSide.TOP, RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
+        for (int slotY = 0; slotY < 6; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                builder.addSlot(BasicInventorySlot.at(canExtract, item -> true, 8 + slotX * 18, 26 + slotY * 18), sides);
+            }
+        }
+        //TODO: Update this comment it is from isCapabilityDisabled. We reimplemented HOW it acted above but it maybe should be done somewhat differently
+        //Still allow for the capability if it is not public. It just won't
+        // return any slots for the face. It doesn't properly sync when the state
+        // changes so the pipes stay connected/disconnected and have to be replaced.
+        // Leaving the slotsForFace to determine the ability to insert/extract in
+        // those cases fixes that issue.
+        return builder.build();
     }
 
     @Override
@@ -53,42 +75,5 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
                 lidAngle = 0.0F;
             }
         }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == Direction.DOWN || SecurityUtils.getSecurity(this, Dist.DEDICATED_SERVER) != SecurityMode.PUBLIC) {
-            return InventoryUtils.EMPTY;
-        } else if (INV == null) {
-            INV = new int[54];
-            for (int i = 0; i < INV.length; i++) {
-                INV[i] = i;
-            }
-        }
-        return INV;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //Still allow for the capability if it is not public. It just won't
-            // return any slots for the face. It doesn't properly sync when the state
-            // changes so the pipes stay connected/disconnected and have to be replaced.
-            // Leaving the slotsForFace to determine the ability to insert/extract in
-            // those cases fixes that issue.
-            return side == Direction.DOWN;
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        return true;
     }
 }

@@ -46,13 +46,4 @@ public class LaserTractorBeamContainer extends MekanismTileContainer<TileEntityL
         }
         return stack;
     }
-
-    @Override
-    protected void addSlots() {
-        for (int slotX = 0; slotX < 9; slotX++) {
-            for (int slotY = 0; slotY < 3; slotY++) {
-                addSlot(new Slot(tile, slotX + slotY * 9, 8 + slotX * 18, 16 + slotY * 18));
-            }
-        }
-    }
 }
