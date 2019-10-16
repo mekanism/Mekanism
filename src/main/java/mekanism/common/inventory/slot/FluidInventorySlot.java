@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.common.base.LazyOptionalHelper;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -114,6 +115,11 @@ public class FluidInventorySlot extends BasicInventorySlot {
           Predicate<@NonNull ItemStack> validator, int x, int y) {
         super(canExtract, canInsert, validator, x, y);
         this.fluidHandler = fluidHandler;
+    }
+
+    @Override
+    protected ContainerSlotType getSlotType() {
+        return ContainerSlotType.EXTRA;
     }
 
     //TODO: Make it so that the fluid handler fills

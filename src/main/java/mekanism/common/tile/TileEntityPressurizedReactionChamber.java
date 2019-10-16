@@ -72,6 +72,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private InputInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     public TileEntityPressurizedReactionChamber() {
         super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
@@ -98,10 +101,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
         ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
 
-        itemInputHandler = InputHelper.getInputHandler(this, 0);
+        itemInputHandler = InputHelper.getInputHandler(inputSlot);
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputGasTank);
-        outputHandler = OutputHelper.getOutputHandler(outputGasTank, this, 2);
+        outputHandler = OutputHelper.getOutputHandler(outputGasTank, outputSlot);
     }
 
     @Nonnull
@@ -111,9 +114,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), 54, 35));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), 54, 35));
         builder.addSlot(EnergyInventorySlot.discharge(141, 19));
-        builder.addSlot(OutputInventorySlot.at(116, 35));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
         return builder.build();
     }
 

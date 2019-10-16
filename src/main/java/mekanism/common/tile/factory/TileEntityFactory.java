@@ -10,22 +10,28 @@ import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionTank;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.InputInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
@@ -42,6 +48,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -54,13 +61,13 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
       ITierUpgradeable, ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
 
-    public static final int UPGRADE_SLOT_ID = 0;
     public static final int ENERGY_SLOT_ID = 1;
     public static final int EXTRA_SLOT_ID = 4;
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final CachedRecipe<RECIPE>[] cachedRecipes;
     private boolean[] activeStates;
+    protected ProcessInfo[] processInfoSlots;
     /**
      * This Factory's tier.
      */
@@ -119,7 +126,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         BlockFactory factoryBlock = (BlockFactory) blockProvider.getBlock();
-        this.tier = factoryBlock.getTier();
         this.type = factoryBlock.getFactoryType();
         //TODO: Do this better/potentially remove RecipeType all together
         // Ideally we would pass information for handling directly to the FactoryType, based on the slots and let it figure it all out
@@ -174,8 +180,32 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
         infusionTank = new InfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
         setRecipeType(recipeType);
+    }
 
-        //TODO: Upgrade slot index: UPGRADE_SLOT_ID
+    @Override
+    protected void setSupportedTypes(Block block) {
+        super.setSupportedTypes(block);
+        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
+        this.tier = ((BlockFactory) block).getTier();
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        addSlots(builder);
+        return builder.build();
+    }
+
+    protected void addSlots(InventorySlotHelper.Builder builder) {
+        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
+        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
+        // This can probably be done by letting the configurations know the relative side information?
+        builder.addSlot(EnergyInventorySlot.discharge(7, 13));
+        //TODO: Make these two slots not show up on the auto generation of gui
+        //TODO: Make this input slot only accept other machines for factories
+        builder.addSlot(InputInventorySlot.at(tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
+        builder.addSlot(OutputInventorySlot.at(tier == FactoryTier.ULTIMATE ? 214 : 180, 112));
     }
 
     @Override
@@ -343,6 +373,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         if (type.getFuelType() == MachineFuelType.CHANCE) {
             SideData data = configComponent.getOutputs(TransmissionType.ITEM).get(2);
             //Append the "extra" slot to the available slots
+            //TODO: FIXME this won't work at all with the fact that it isn't just a singular extra slot now
             data.availableSlots = Arrays.copyOf(data.availableSlots, data.availableSlots.length + 1);
             data.availableSlots[data.availableSlots.length - 1] = EXTRA_SLOT_ID;
         }
@@ -359,41 +390,30 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     public void sortInventory() {
         if (sorting) {
-            int[] inputSlots;
-            if (tier == FactoryTier.BASIC) {
-                inputSlots = new int[]{5, 6, 7};
-            } else if (tier == FactoryTier.ADVANCED) {
-                inputSlots = new int[]{5, 6, 7, 8, 9};
-            } else if (tier == FactoryTier.ELITE) {
-                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
-            } else if (tier == FactoryTier.ULTIMATE) {
-                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11, 12, 13};
-            } else {
-                //If something went wrong finding the tier don't sort it
-                return;
-            }
-            for (int i = 0; i < inputSlots.length; i++) {
-                int slotID = inputSlots[i];
-                ItemStack stack = getStackInSlot(slotID);
+            for (int i = 0; i < processInfoSlots.length; i++) {
+                ProcessInfo primaryInfo = processInfoSlots[i];
+                IInventorySlot primaryInputSlot = primaryInfo.getInputSlot();
+                ItemStack stack = primaryInputSlot.getStack();
                 int count = stack.getCount();
-                ItemStack output = getStackInSlot(tier.processes + slotID);
-                for (int j = i + 1; j < inputSlots.length; j++) {
-                    int checkSlotID = inputSlots[j];
-                    ItemStack checkStack = getStackInSlot(checkSlotID);
+                for (int j = i + 1; j < processInfoSlots.length; j++) {
+                    ProcessInfo checkInfo = processInfoSlots[j];
+                    IInventorySlot checkInputSlot = checkInfo.getInputSlot();
+
+                    ItemStack checkStack = checkInputSlot.getStack();
                     if (Math.abs(count - checkStack.getCount()) < 2 || !InventoryUtils.areItemsStackable(stack, checkStack)) {
                         continue;
                     }
                     //Output/Input will not match; Only check if the input spot is empty otherwise assume it works
-                    if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output, true) ||
-                        checkStack.isEmpty() && !inputProducesOutput(slotID, stack, getStackInSlot(tier.processes + checkSlotID), true)) {
+                    if (stack.isEmpty() && !inputProducesOutput(checkInfo.getProcess(), checkStack, primaryInfo.getOutputSlot(), primaryInfo.getSecondaryOutputSlot(), true) ||
+                        checkStack.isEmpty() && !inputProducesOutput(primaryInfo.getProcess(), stack, checkInfo.getOutputSlot(), checkInfo.getSecondaryOutputSlot(), true)) {
                         continue;
                     }
 
                     //Balance the two slots
                     int total = count + checkStack.getCount();
                     ItemStack newStack = stack.isEmpty() ? checkStack : stack;
-                    setStackInSlot(slotID, StackUtils.size(newStack, (total + 1) / 2), null);
-                    setStackInSlot(checkSlotID, StackUtils.size(newStack, total / 2), null);
+                    primaryInputSlot.setStack(StackUtils.size(newStack, (total + 1) / 2));
+                    checkInputSlot.setStack(StackUtils.size(newStack, total / 2));
                     markDirty();
                     return;
                 }
@@ -404,14 +424,16 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * Checks if the cached recipe (or recipe for current factory if the cache is out of date) can produce a specific output.
      *
-     * @param slotID        Slot ID to grab the cached recipe of.
-     * @param fallbackInput Used if the cached recipe is null or to validate the cached recipe is not out of date.
-     * @param output        The output we want.
-     * @param updateCache   True to make the cached recipe get updated if it is out of date.
+     * @param process             Which process the cache recipe is.
+     * @param fallbackInput       Used if the cached recipe is null or to validate the cached recipe is not out of date.
+     * @param outputSlot          The output slot for this slot.
+     * @param secondaryOutputSlot The secondary output slot or null if we only have one output slot
+     * @param updateCache         True to make the cached recipe get updated if it is out of date.
      *
      * @return True if the recipe produces the given output.
      */
-    public abstract boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache);
+    public abstract boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
+          @Nullable IInventorySlot secondaryOutputSlot, boolean updateCache);
 
     @Nullable
     @Override
@@ -441,52 +463,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     public ItemStack getMachineStack() {
         return blockProvider.getItemStack();
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == ENERGY_SLOT_ID) {
-            return ChargeUtils.canBeOutputted(itemstack, false);
-        } else if (tier == FactoryTier.BASIC && slotID >= 8 && slotID <= 10) {
-            return true;
-        } else if (tier == FactoryTier.ADVANCED && slotID >= 10 && slotID <= 14) {
-            return true;
-        } else if (tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18) {
-            return true;
-        } else if (tier == FactoryTier.ULTIMATE && slotID >= 14 && slotID <= 22) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nullable Direction side) {
-        if (slotID == ENERGY_SLOT_ID) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        } else if (isInputSlot(slotID)) {
-            return inputProducesOutput(slotID, itemstack, getStackInSlot(tier.processes + slotID), false);
-        }
-        //TODO: Only allow inserting into extra slot if it can go in
-        return super.canInsertItem(slotID, itemstack, side);
-    }
-
-    private boolean isInputSlot(int slotID) {
-        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7 : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE ? slotID <= 11 :
-                               tier == FactoryTier.ULTIMATE && slotID <= 13);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == UPGRADE_SLOT_ID) {
-            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
-        } else if (slotID == ENERGY_SLOT_ID) {
-            return ChargeUtils.canBeDischarged(itemstack);
-        } else if (slotID == EXTRA_SLOT_ID) {
-            return isValidExtraItem(itemstack);
-        } else if (isInputSlot(slotID)) {
-            return isValidInputItem(itemstack);
-        }
-        return false;
     }
 
     /**
@@ -606,19 +582,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return data;
     }
 
-    public int getInputSlot(int operation) {
-        return 5 + operation;
-    }
-
-    /* reverse of the above */
-    protected int getOperation(int inputSlot) {
-        return inputSlot - 5;
-    }
-
-    public int getOutputSlot(int operation) {
-        return 5 + tier.processes + operation;
-    }
-
     @Override
     public String[] getMethods() {
         return methods;
@@ -662,12 +625,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
@@ -773,4 +730,5 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public boolean lightUpdate() {
         return true;
     }
+
 }

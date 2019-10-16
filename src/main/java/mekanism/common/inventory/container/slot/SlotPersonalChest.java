@@ -15,10 +15,8 @@ public class SlotPersonalChest extends Slot {
 
     @Override
     public boolean canTakeStack(PlayerEntity player) {
-        if (inventory.getStackInSlot(getSlotIndex()).isEmpty()) {
-            return false;
-        }
-        return !(inventory.getStackInSlot(getSlotIndex()).getItem() instanceof ItemBlockPersonalChest);
+        ItemStack stackInSlot = inventory.getStackInSlot(getSlotIndex());
+        return !stackInSlot.isEmpty() && !(stackInSlot.getItem() instanceof ItemBlockPersonalChest);
     }
 
     @Override

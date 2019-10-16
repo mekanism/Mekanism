@@ -57,16 +57,6 @@ public class DigitalMinerContainer extends MekanismTileContainer<TileEntityDigit
     }
 
     @Override
-    protected void addSlots() {
-        for (int slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new Slot(tile, slotX + slotY * 9, 8 + slotX * 18, 80 + slotY * 18));
-            }
-        }
-        addSlot(new SlotDischarge(tile, 27, 152, 6));
-    }
-
-    @Override
     protected int getInventoryYOffset() {
         return 148;
     }

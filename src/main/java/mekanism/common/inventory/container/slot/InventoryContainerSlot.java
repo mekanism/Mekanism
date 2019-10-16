@@ -25,6 +25,7 @@ public class InventoryContainerSlot extends Slot {
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
+        //TODO: Should this also check canInsert to make sure that it does not get manually inserted
         return !stack.isEmpty() && slot.isItemValid(stack);
     }
 

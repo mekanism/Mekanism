@@ -35,6 +35,9 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     protected final IInputHandler<@NonNull ItemStack> inputHandler;
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
 
+    private InputInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     /**
      * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the upgrade slot (3). It will not run if it does not
      * have enough energy.
@@ -56,8 +59,8 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
-        inputHandler = InputHelper.getInputHandler(this, 0);
-        outputHandler = OutputHelper.getOutputHandler(this, 2);
+        inputHandler = InputHelper.getInputHandler(inputSlot);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot);
     }
 
     @Nonnull
@@ -67,9 +70,9 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
         builder.addSlot(EnergyInventorySlot.discharge(56, 53));
-        builder.addSlot(OutputInventorySlot.at(116, 35));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
         return builder.build();
     }
 

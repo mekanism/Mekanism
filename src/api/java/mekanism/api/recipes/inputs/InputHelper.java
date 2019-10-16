@@ -7,21 +7,20 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
+import mekanism.api.inventory.slot.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.IItemHandler;
 
 public class InputHelper {
 
-    //TODO: Add support for using IInventorySlot as a reference for an input handler?? That way we even more directly cache accessing the slot's information
-    public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull IItemHandler inventory, int slot) {
+    public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull IInventorySlot inventorySlot) {
         return new IInputHandler<@NonNull ItemStack>() {
 
             @Override
             public @NonNull ItemStack getInput() {
-                return inventory.getStackInSlot(slot);
+                return inventorySlot.getStack();
             }
 
             @Override
@@ -42,7 +41,7 @@ public class InputHelper {
                 }
                 if (!recipeInput.isEmpty()) {
                     //TODO: Should we check if it failed
-                    inventory.extractItem(slot, recipeInput.getCount() * operations, false);
+                    inventorySlot.extractItem(recipeInput.getCount() * operations, Action.EXECUTE);
                 }
             }
 

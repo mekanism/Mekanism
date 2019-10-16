@@ -64,11 +64,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private InputInventorySlot inputSlot;
+
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
         upgradeComponent.setSupported(Upgrade.GAS);
 
-        itemInputHandler = InputHelper.getInputHandler(this, 0);
+        itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(injectTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
@@ -78,7 +80,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(GasInventorySlot.fillOrConvert(injectTank, this::isValidGas, 6, 65), RelativeSide.BOTTOM);
-        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 26, 36), RelativeSide.TOP, RelativeSide.LEFT);
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 26, 36),
+              RelativeSide.TOP, RelativeSide.LEFT);
         builder.addSlot(GasInventorySlot.drain(outputTank, 155, 25), RelativeSide.RIGHT);
         //TODO: Make this be accessible from some side for automation??
         builder.addSlot(EnergyInventorySlot.discharge(155, 5));

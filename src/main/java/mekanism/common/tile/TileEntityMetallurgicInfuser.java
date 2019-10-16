@@ -63,6 +63,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
+    private InputInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     public TileEntityMetallurgicInfuser() {
         super(MekanismBlock.METALLURGIC_INFUSER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
@@ -79,8 +82,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
-        itemInputHandler = InputHelper.getInputHandler(this, 2);
-        outputHandler = OutputHelper.getOutputHandler(this, 3);
+        itemInputHandler = InputHelper.getInputHandler(inputSlot);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot);
     }
 
     @Nonnull
@@ -92,14 +95,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), 17, 35));
         //TODO: Verify that it is properly querying the infusion tank's type if it changes
-        builder.addSlot(InputInventorySlot.at(stack -> {
+        builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
                 return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
             }
             //Otherwise just look for items that can be used
             return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
         }, 51, 43));
-        builder.addSlot(OutputInventorySlot.at(109, 43));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(109, 43));
         builder.addSlot(EnergyInventorySlot.discharge(143, 35));
         return builder.build();
     }

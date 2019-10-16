@@ -9,6 +9,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.recipe.GasConversionHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -185,6 +186,11 @@ public class GasInventorySlot extends BasicInventorySlot {
           @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
         super(canExtract, canInsert, validator, x, y);
         this.gasTank = gasTank;
+    }
+
+    @Override
+    protected ContainerSlotType getSlotType() {
+        return ContainerSlotType.EXTRA;
     }
 
     //TODO: Make it so that the gas tank drains/fills

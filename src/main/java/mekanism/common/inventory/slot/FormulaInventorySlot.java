@@ -2,7 +2,6 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.Predicate;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.item.ItemCraftingFormula;
 import net.minecraft.item.ItemStack;
 
@@ -16,10 +15,5 @@ public class FormulaInventorySlot extends BasicInventorySlot {
 
     private FormulaInventorySlot(int x, int y) {
         super(alwaysFalse, alwaysTrue, validator, x, y);
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.OUTPUT;
     }
 }

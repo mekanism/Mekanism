@@ -71,6 +71,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
     protected final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private InputInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     /**
      * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
      * The machine will not run if it does not have enough electricity, or if it doesn't have enough fuel ticks.
@@ -102,9 +105,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
-        itemInputHandler = InputHelper.getInputHandler(this, 0);
+        itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
-        outputHandler = OutputHelper.getOutputHandler(this, 2);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot);
     }
 
     @Nonnull
@@ -114,9 +117,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 56, 17));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 56, 17));
         builder.addSlot(GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, 56, 53));
-        builder.addSlot(OutputInventorySlot.at(116, 35));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
         builder.addSlot(EnergyInventorySlot.discharge(31, 35));
         return builder.build();
     }

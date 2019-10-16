@@ -9,6 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -17,6 +18,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.GasUtils;
@@ -36,11 +39,19 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private IInventorySlot extraSlot;
+
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         //gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
 
         gasInputHandler = InputHelper.getInputHandler(gasTank);
+    }
+
+    @Override
+    protected void addSlots(InventorySlotHelper.Builder builder) {
+        super.addSlots(builder);
+        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, 7, 57));
     }
 
     @Override
@@ -59,11 +70,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    public boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
-        if (output.isEmpty()) {
+    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+          boolean updateCache) {
+        if (outputSlot.isEmpty()) {
             return true;
         }
-        int process = getOperation(slotID);
         CachedRecipe<ItemStackGasToItemStackRecipe> cached = getCachedRecipe(process);
         if (cached != null) {
             ItemStackGasToItemStackRecipe cachedRecipe = cached.getRecipe();
@@ -78,6 +89,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         GasStack gasStack = gasTank.getStack();
         Gas gas = gasStack.getType();
+        ItemStack output = outputSlot.getStack();
         ItemStackGasToItemStackRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getItemInput().testType(fallbackInput)) {
                 //If we don't have a gas stored ignore checking for a match
@@ -111,7 +123,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     protected void handleSecondaryFuel() {
-        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
+        ItemStack extra = extraSlot.getStack();
         if (!extra.isEmpty() && gasTank.getNeeded() > 0) {
             GasStack gasStack = GasConversionHandler.getItemGas(extra, gasTank, this::isValidGas);
             if (!gasStack.isEmpty()) {

@@ -3,6 +3,7 @@ package mekanism.common.tile.factory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
@@ -12,24 +13,45 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.common.base.ProcessInfo;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.FactoryInputInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
-    protected final IInputHandler<@NonNull ItemStack>[] inputHandlers;
-    protected final IOutputHandler<@NonNull ChanceOutput>[] outputHandlers;
+    protected IInputHandler<@NonNull ItemStack>[] inputHandlers;
+    protected IOutputHandler<@NonNull ChanceOutput>[] outputHandlers;
 
     public TileEntitySawingFactory(IBlockProvider blockProvider) {
         super(blockProvider);
+    }
+
+    @Override
+    protected void addSlots(InventorySlotHelper.Builder builder) {
+        super.addSlots(builder);
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
+        processInfoSlots = new ProcessInfo[tier.processes];
+        int baseX = tier == FactoryTier.BASIC ? 55 : tier == FactoryTier.ADVANCED ? 35 : tier == FactoryTier.ELITE ? 29 : 27;
+        int baseXMult = tier == FactoryTier.BASIC ? 38 : tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tier.processes; i++) {
-            inputHandlers[i] = InputHelper.getInputHandler(this, getInputSlot(i));
-            outputHandlers[i] = OutputHelper.getOutputHandler(this, getOutputSlot(i), EXTRA_SLOT_ID);
+            int xPos = baseX + (i * baseXMult);
+            OutputInventorySlot outputSlot = OutputInventorySlot.at(xPos, 57);
+            //TODO: Test where is a good Y-value for this
+            OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(xPos, 77);
+            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, xPos, 13);
+            builder.addSlot(inputSlot);
+            builder.addSlot(outputSlot);
+            builder.addSlot(secondaryOutputSlot);
+            inputHandlers[i] = InputHelper.getInputHandler(inputSlot);
+            outputHandlers[i] = OutputHelper.getOutputHandler(outputSlot, secondaryOutputSlot);
+            processInfoSlots[i] = new ProcessInfo(i, inputSlot, outputSlot, secondaryOutputSlot);
         }
     }
 
@@ -43,12 +65,13 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         return false;
     }
 
+    //TODO: Improve the logic for this so that it more accurately handles the secondary output slot type stacking
     @Override
-    public boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
-        if (output.isEmpty()) {
+    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+          boolean updateCache) {
+        if (outputSlot.isEmpty()) {
             return true;
         }
-        int process = getOperation(slotID);
         CachedRecipe<SawmillRecipe> cached = getCachedRecipe(process);
         if (cached != null && cached.getRecipe().getInput().testType(fallbackInput)) {
             return true;
@@ -57,7 +80,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
-        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
+        ItemStack output = outputSlot.getStack();
+        ItemStack extra = secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
         SawmillRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getInput().testType(fallbackInput)) {
                 ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
@@ -114,10 +138,5 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        return slotID == EXTRA_SLOT_ID || super.canExtractItem(slotID, itemstack, side);
     }
 }

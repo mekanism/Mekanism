@@ -13,6 +13,7 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> {
 
@@ -35,7 +36,8 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public SynchronizedTankData() {
         //TODO: Look into some way of allowing slot position to be set differently if needed
         inventorySlots = new ArrayList<>();
-        inventorySlots.add(FluidInventorySlot.input(fluidTank, fluid -> true, 146, 20));
+        //TODO: Replace this with a fluid handler representing our fluid (fluidStored)
+        inventorySlots.add(FluidInventorySlot.input(EmptyFluidHandler.INSTANCE, fluid -> true, 146, 20));
         inventorySlots.add(OutputInventorySlot.at(146, 51));
     }
 

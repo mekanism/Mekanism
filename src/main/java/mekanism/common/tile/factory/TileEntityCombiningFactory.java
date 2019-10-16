@@ -3,12 +3,15 @@ package mekanism.common.tile.factory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -18,9 +21,17 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
+    private InputInventorySlot extraSlot;
+
     public TileEntityCombiningFactory(IBlockProvider blockProvider) {
         super(blockProvider);
-        extraInputHandler = InputHelper.getInputHandler(this, EXTRA_SLOT_ID);
+        extraInputHandler = InputHelper.getInputHandler(extraSlot);
+    }
+
+    @Override
+    protected void addSlots(InventorySlotHelper.Builder builder) {
+        super.addSlots(builder);
+        builder.addSlot(extraSlot = InputInventorySlot.at(this::isValidExtraItem, 7, 57));
     }
 
     @Override
@@ -34,15 +45,15 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
-        if (output.isEmpty()) {
+    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+          boolean updateCache) {
+        if (outputSlot.isEmpty()) {
             return true;
         }
-        int process = getOperation(slotID);
         CachedRecipe<CombinerRecipe> cached = getCachedRecipe(process);
         if (cached != null) {
             CombinerRecipe cachedRecipe = cached.getRecipe();
-            ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
+            ItemStack extra = extraSlot.getStack();
             if (cachedRecipe.getMainInput().testType(fallbackInput) && (extra.isEmpty() || cachedRecipe.getExtraInput().testType(extra))) {
                 //Our input matches the recipe we have cached for this slot
                 return true;
@@ -52,7 +63,8 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
-        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
+        ItemStack extra = extraSlot.getStack();
+        ItemStack output = outputSlot.getStack();
         CombinerRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getMainInput().testType(fallbackInput)) {
                 if (extra.isEmpty() || recipe.getExtraInput().testType(extra)) {

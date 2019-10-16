@@ -5,12 +5,12 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 
 public class InternalInventorySlot extends BasicInventorySlot {
 
-    public static InternalInventorySlot of(int stackLimit) {
-        return new InternalInventorySlot(stackLimit);
+    public static InternalInventorySlot create() {
+        return new InternalInventorySlot();
     }
 
-    private InternalInventorySlot(int stackLimit) {
-        super(stackLimit, alwaysFalse, alwaysFalse, 0, 0);
+    private InternalInventorySlot() {
+        super(alwaysFalse, alwaysFalse, 0, 0);
     }
 
     @Nullable

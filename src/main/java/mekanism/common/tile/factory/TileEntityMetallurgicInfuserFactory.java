@@ -7,12 +7,15 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -22,9 +25,17 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
+    private IInventorySlot extraSlot;
+
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
+    }
+
+    @Override
+    protected void addSlots(InventorySlotHelper.Builder builder) {
+        super.addSlots(builder);
+        builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), 7, 57));
     }
 
     @Override
@@ -39,11 +50,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     @Override
-    public boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
-        if (output.isEmpty()) {
+    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+          boolean updateCache) {
+        if (outputSlot.isEmpty()) {
             return true;
         }
-        int process = getOperation(slotID);
         CachedRecipe<MetallurgicInfuserRecipe> cached = getCachedRecipe(process);
         if (cached != null) {
             MetallurgicInfuserRecipe cachedRecipe = cached.getRecipe();
@@ -58,6 +69,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         int stored = infusionTank.getStored();
         InfuseType type = infusionTank.getType();
+        ItemStack output = outputSlot.getStack();
         MetallurgicInfuserRecipe foundRecipe = findFirstRecipe(recipe -> {
             //Check the infusion type before the ItemStack type as it a quicker easier compare check
             if (stored == 0 || recipe.getInfusionInput().testType(type)) {
@@ -84,7 +96,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Override
     protected void handleSecondaryFuel() {
-        ItemStack extra = getStackInSlot(EXTRA_SLOT_ID);
+        ItemStack extra = extraSlot.getStack();
         if (!extra.isEmpty()) {
             InfusionStack pendingInfusionInput = InfuseRegistry.getObject(extra);
             if (!pendingInfusionInput.isEmpty()) {

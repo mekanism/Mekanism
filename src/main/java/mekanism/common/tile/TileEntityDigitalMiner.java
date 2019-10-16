@@ -15,15 +15,16 @@ import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -35,8 +36,12 @@ import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -133,7 +138,24 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     public TileEntityDigitalMiner() {
         super(MekanismBlock.DIGITAL_MINER);
         radius = 10;
-        //TODO: Upgrade slot index: last
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        for (int slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                builder.addSlot(BasicInventorySlot.at(8 + slotX * 18, 80 + slotY * 18), RelativeSide.BACK, RelativeSide.TOP);
+                //TODO: Make it so insertion/extraction is sided but the inventory is the same???
+                //Can insert;
+                //RelativeSide.TOP && isReplaceStack(stack)
+                //Can extract:
+                //RelativeSide.BACK && !isReplaceStack(stack)
+            }
+        }
+        builder.addSlot(EnergyInventorySlot.discharge(152, 6));
+        return builder.build();
     }
 
     @Override
@@ -361,10 +383,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return ItemStack.EMPTY;
     }
 
-    public NonNullList<ItemStack> copy(NonNullList<ItemStack> stacks) {
-        NonNullList<ItemStack> toReturn = NonNullList.withSize(stacks.size(), ItemStack.EMPTY);
-        for (int i = 0; i < stacks.size(); i++) {
-            toReturn.set(i, !stacks.get(i).isEmpty() ? stacks.get(i).copy() : ItemStack.EMPTY);
+    public NonNullList<ItemStack> copy(List<IInventorySlot> slots) {
+        //TODO: Clean this up/cache it??
+        NonNullList<ItemStack> toReturn = NonNullList.withSize(slots.size(), ItemStack.EMPTY);
+        for (int i = 0; i < slots.size(); i++) {
+            IInventorySlot slot = slots.get(i);
+            ItemStack stack = slot.getStack();
+            toReturn.set(i, !stack.isEmpty() ? stack.copy() : ItemStack.EMPTY);
         }
         return toReturn;
     }
@@ -384,7 +409,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         if (stacks.isEmpty()) {
             return true;
         }
-        NonNullList<ItemStack> testInv = copy(getInventory());
+        NonNullList<ItemStack> testInv = copy(getInventorySlots(null));
         int added = 0;
 
         stacks:
@@ -750,46 +775,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         }
     }
 
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        //Allow for automation via the top (as that is where it can auto pull from)
-        return side == Direction.UP || side == getOppositeDirection() ? INV_SLOTS : InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
-        return slotID != 27 || ChargeUtils.canBeDischarged(stack);
-    }
-
     public TileEntity getEjectTile() {
         BlockPos pos = getPos().up().offset(getOppositeDirection());
         if (world != null && world.isAreaLoaded(pos, 0)) {
             return world.getTileEntity(pos);
         }
         return null;
-    }
-
-    @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nullable Direction side) {
-        if (side == Direction.UP) {
-            if (slotID == 27) {
-                return ChargeUtils.canBeDischarged(itemstack);
-            }
-            return !itemstack.isEmpty() && isReplaceStack(itemstack);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (side == getOppositeDirection()) {
-            if (slotID == 27) {
-                return !ChargeUtils.canBeDischarged(itemstack);
-            }
-            return itemstack.isEmpty() || !isReplaceStack(itemstack);
-        }
-        return false;
     }
 
     @Override

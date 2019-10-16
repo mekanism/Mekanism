@@ -7,6 +7,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.item.ItemStack;
 
 public class InfusionInventorySlot extends BasicInventorySlot {
@@ -33,6 +34,11 @@ public class InfusionInventorySlot extends BasicInventorySlot {
           @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
         super(canExtract, canInsert, validator, x, y);
         this.infusionTank = infusionTank;
+    }
+
+    @Override
+    protected ContainerSlotType getSlotType() {
+        return ContainerSlotType.EXTRA;
     }
 
     //TODO: Make it so that the infusion tank fills

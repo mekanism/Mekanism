@@ -38,6 +38,10 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     private final IInputHandler<@NonNull ItemStack> inputHandler;
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
+    private InputInventorySlot mainInputSlot;
+    private InputInventorySlot extraInputSlot;
+    private OutputInventorySlot outputSlot;
+
     /**
      * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
      * (4). The machine will not run if it does not have enough electricity.
@@ -58,9 +62,9 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
-        inputHandler = InputHelper.getInputHandler(this, 0);
-        extraInputHandler = InputHelper.getInputHandler(this, 1);
-        outputHandler = OutputHelper.getOutputHandler(this, 2);
+        inputHandler = InputHelper.getInputHandler(mainInputSlot);
+        extraInputHandler = InputHelper.getInputHandler(extraInputSlot);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot);
     }
 
     @Nonnull
@@ -71,9 +75,9 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         //TODO: Should we limit ACTUAL insertion to be based on the other slot's contents?
-        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), 56, 17));
-        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), 56, 53));
-        builder.addSlot(OutputInventorySlot.at(116, 35));
+        builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), 56, 17));
+        builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), 56, 53));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
         builder.addSlot(EnergyInventorySlot.discharge(31, 35));
         return builder.build();
     }

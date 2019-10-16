@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -29,11 +30,11 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     }
 
     @Override
-    public boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
-        if (output.isEmpty()) {
+    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+          boolean updateCache) {
+        if (outputSlot.isEmpty()) {
             return true;
         }
-        int process = getOperation(slotID);
         CachedRecipe<ItemStackToItemStackRecipe> cached = getCachedRecipe(process);
         if (cached != null && cached.getRecipe().getInput().testType(fallbackInput)) {
             //Our input matches the recipe we have cached for this slot
@@ -43,6 +44,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
+        ItemStack output = outputSlot.getStack();
         ItemStackToItemStackRecipe foundRecipe = findFirstRecipe(
               recipe -> recipe.getInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput), output));
         if (foundRecipe == null) {

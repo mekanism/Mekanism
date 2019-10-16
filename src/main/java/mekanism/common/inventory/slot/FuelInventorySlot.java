@@ -2,7 +2,6 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.Predicate;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -18,10 +17,5 @@ public class FuelInventorySlot extends BasicInventorySlot {
     private FuelInventorySlot(int x, int y) {
         //Only allow extraction if after a reload the item no longer has a burn time
         super(extractPredicate, alwaysTrue, validator, x, y);
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.OUTPUT;
     }
 }

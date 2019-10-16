@@ -38,6 +38,10 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
+    private InputInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+    private OutputInventorySlot secondaryOutputSlot;
+
     public TileEntityPrecisionSawmill() {
         super(MekanismBlock.PRECISION_SAWMILL, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -53,8 +57,8 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 
-        inputHandler = InputHelper.getInputHandler(this, 0);
-        outputHandler = OutputHelper.getOutputHandler(this, 2, 4);
+        inputHandler = InputHelper.getInputHandler(inputSlot);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot, secondaryOutputSlot);
     }
 
     @Nonnull
@@ -64,10 +68,10 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
         builder.addSlot(EnergyInventorySlot.discharge(56, 53));
-        builder.addSlot(OutputInventorySlot.at(116, 35));
-        builder.addSlot(OutputInventorySlot.at(132, 35));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
+        builder.addSlot(secondaryOutputSlot = OutputInventorySlot.at(132, 35));
         return builder.build();
     }
 

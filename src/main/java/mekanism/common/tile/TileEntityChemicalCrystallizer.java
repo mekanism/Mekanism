@@ -60,6 +60,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
+    private OutputInventorySlot outputSlot;
+
     public TileEntityChemicalCrystallizer() {
         super(MekanismBlock.CHEMICAL_CRYSTALLIZER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
@@ -81,7 +83,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
         inputHandler = InputHelper.getInputHandler(inputTank);
-        outputHandler = OutputHelper.getOutputHandler(this, 1);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot);
     }
 
     @Nonnull
@@ -91,7 +93,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         // configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), 6, 65));
-        builder.addSlot(OutputInventorySlot.at(131, 57));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(131, 57));
         builder.addSlot(EnergyInventorySlot.discharge(155, 5));
         return builder.build();
     }
