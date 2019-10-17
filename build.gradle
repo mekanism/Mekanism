@@ -24,7 +24,6 @@ defaultTasks 'fullBuild'
 
 idea {
     module {
-        //TODO: sourceDirs??
         // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
         //Exclude directories from being managed
@@ -152,9 +151,8 @@ minecraft {
 
     accessTransformers(file('src/main/resources/META-INF/accesstransformer.cfg'),
             file('src/tools/resources/META-INF/accesstransformer.cfg'))
-    /*version = "${minecraft_version}-${forge_version}"
-    useDepAts = true*/
 
+    //TODO: Try to fix the version number not being replaced in the java files??
     /*replace '${version}', project.version
     replace 'new Version(999, 999, 999)', "new Version(${explodedVersion[0]}, ${explodedVersion[1]}, ${explodedVersion[2]})"
     replaceIn "Mekanism.java"
@@ -259,80 +257,56 @@ processResources {
     }
 }
 
-def setMainManifestProps = {
-    Manifest manifest ->
-        manifest.attributes([
-                "Specification-Title"     : "mekanism",
-                "Specification-Vendor"    : "mekanism",
-                "Specification-Version"   : "${mod_version}",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
-                "Implementation-Vendor"   : "mekanism",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
+processToolsResources {
+    filesMatching('**/mods.toml') {
+        expand version_properties
+    }
+}
+
+processAdditionsResources {
+    filesMatching('**/mods.toml') {
+        expand version_properties
+    }
+}
+
+processGeneratorsResources {
+    filesMatching('**/mods.toml') {
+        expand version_properties
+    }
 }
 
 jar {
     //TODO: Make this be an "All" jar again
     from sourceSets.main.output
     from sourceSets.api.output
-    manifest(setMainManifestProps)
 }
 
 //TODO: Sources Jar
 
 task coreJar(type: Jar) {
     archiveName = "Mekanism-${project.version}.jar"
-    classifier "core"
     from sourceSets.main.output
     from sourceSets.api.output
-    filesMatching('**/mods.toml') {
-        expand version_properties
-    }
-    manifest(setMainManifestProps)
 }
 
 task additionsJar(type: Jar) {
     archiveName = "MekanismAdditions-${project.version}.jar"
-    classifier "additions"
     from sourceSets.additions.output
-    filesMatching('**/mods.toml') {
-        expand version_properties
-    }
-    //TODO: Set Title to be mekanismadditions
-    manifest(setMainManifestProps)
 }
 
 task generatorsJar(type: Jar) {
     archiveName = "MekanismGenerators-${project.version}.jar"
-    classifier "generators"
     from sourceSets.generators.output
-    filesMatching('**/mods.toml') {
-        expand version_properties
-    }
-    //TODO: Set Title to be mekanismgenerators
-    manifest(setMainManifestProps)
 }
 
 task toolsJar(type: Jar) {
     archiveName = "MekanismTools-${project.version}.jar"
-    classifier "tools"
     from sourceSets.tools.output
-    filesMatching('**/mods.toml') {
-        expand version_properties
-    }
-    //TODO: Set Title to be mekanismtools
-    manifest(setMainManifestProps)
 }
 
 task apiJar(type: Jar) {
-    from sourceSets.api.output
     classifier "api"
-    /*baseName "Mekanism"
-    dependsOn "sourceMainJava"
-    include 'mekanism/api/**'
-    from sourceSets.main.java.srcDirs
-    from sourceSets.main.output*/
+    from sourceSets.api.output
 }
 
 artifacts {
@@ -348,28 +322,18 @@ artifacts {
 reobf {
     apiJar {
         classpath = sourceSets.api.compileClasspath
-        dependsOn createMcpToSrg
-        mappings = createMcpToSrg.outputs.files.singleFile
     }
     coreJar {
         classpath = sourceSets.main.compileClasspath
-        dependsOn createMcpToSrg
-        mappings = createMcpToSrg.outputs.files.singleFile
     }
     additionsJar {
         classpath = sourceSets.additions.compileClasspath
-        dependsOn createMcpToSrg
-        mappings = createMcpToSrg.outputs.files.singleFile
     }
     generatorsJar {
         classpath = sourceSets.generators.compileClasspath
-        dependsOn createMcpToSrg
-        mappings = createMcpToSrg.outputs.files.singleFile
     }
     toolsJar {
         classpath = sourceSets.tools.compileClasspath
-        dependsOn createMcpToSrg
-        mappings = createMcpToSrg.outputs.files.singleFile
     }
 }
 

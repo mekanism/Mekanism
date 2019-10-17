@@ -14,5 +14,5 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 [[dependencies.mekanismgenerators]]
     modId="mekanism"
     mandatory=true
-    versionRange="[9.8.2]" #TODO Fix the fact this breaks in dev if using [${version}]
+    versionRange="[${version}]"
     side="BOTH"
