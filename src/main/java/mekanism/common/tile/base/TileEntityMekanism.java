@@ -766,6 +766,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (slotID >= 0 && slotID < size) {
                 IInventorySlot inventorySlot = inventorySlots.get(slotID);
                 try {
+                    //TODO: FIX this because it doesn't actually save the correct size if our slot can go past the size of a byte
                     inventorySlot.setStack(ItemStack.read(tagCompound));
                 } catch (RuntimeException e) {
                     //TODO: Log error

@@ -182,6 +182,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public void onContentsChanged() {
         //TODO: IMPLEMENT THIS so as ot mark the tile/inventory it is in as dirty
+        // Make a method in IMekanismInventory for onContentsChanged, and then have slots take an inventory as it and then pass it up that way
     }
 
     //TODO: Should we move InventoryContainerSlot to the API and reference that instead

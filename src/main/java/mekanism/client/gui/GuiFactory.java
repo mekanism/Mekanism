@@ -31,6 +31,7 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
+import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -103,13 +104,13 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         }
 
         for (Slot slot : container.inventorySlots) {
+            GuiSlot slotElement;
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
                 ContainerSlotType slotType = containerSlot.getSlotType();
                 if (slotType == ContainerSlotType.IGNORED) {
                     continue;
                 }
-                GuiSlot slotElement;
                 //Shift the slots by one as the elements include the border of the slot
                 if (slotType == ContainerSlotType.INPUT) {
                     slotElement = new GuiSlot(SlotType.INPUT, this, resource, slot.xPos - 1, slot.yPos - 1);
@@ -122,8 +123,10 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
                 } else {//slotType == ContainerSlotType.NORMAL
                     slotElement = new GuiSlot(SlotType.NORMAL, this, resource, slot.xPos - 1, slot.yPos - 1);
                 }
-                addButton(slotElement);
+            } else {
+                slotElement = new GuiSlot(SlotType.NORMAL, this, resource, slot.xPos - 1, slot.yPos - 1);
             }
+            addButton(slotElement);
         }
     }
 
@@ -131,7 +134,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), tileEntity.tier == FactoryTier.ULTIMATE ? 26 : 8,
-              tileEntity.hasSecondaryResourceBar() ? 85 : 75, 0x404040);
+              tileEntity.hasSecondaryResourceBar() ? 85 : tileEntity instanceof TileEntitySawingFactory ? 95 : 75, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

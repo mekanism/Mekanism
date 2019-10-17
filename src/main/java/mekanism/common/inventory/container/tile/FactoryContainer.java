@@ -5,6 +5,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,7 +26,13 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
 
     @Override
     protected int getInventoryYOffset() {
-        return tile.hasSecondaryResourceBar() ? 95 : 85;
+        if (tile.hasSecondaryResourceBar()) {
+            return 95;
+        }
+        if (tile instanceof TileEntitySawingFactory) {
+            return 105;
+        }
+        return 85;
     }
 
     @Override

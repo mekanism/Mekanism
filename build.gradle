@@ -234,7 +234,7 @@ dependencies {
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
 
     //TODO: Use proper CrT dependency if this is not the path for maven
-    compileOnly "com.blamejared.crafttweaker:CraftTweaker:${minecraft_version}-${crafttweaker_version}"
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
     // Not updated yet
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
@@ -244,12 +244,6 @@ dependencies {
     compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
-    compileOnly("CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}") {
-        exclude module: "asm-debug-all"
-    }
-    deobfCompile("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}") {
-        exclude module: "asm-debug-all"
-    }
     compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
     compileOnly("appeng:appliedenergistics2:${ae2_version}:api") {
         exclude module: "jei_1.12.2"

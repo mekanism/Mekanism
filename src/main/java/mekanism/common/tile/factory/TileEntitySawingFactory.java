@@ -43,7 +43,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         for (int i = 0; i < tier.processes; i++) {
             int xPos = baseX + (i * baseXMult);
             OutputInventorySlot outputSlot = OutputInventorySlot.at(xPos, 57);
-            //TODO: Test where is a good Y-value for this
             OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(xPos, 77);
             IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, xPos, 13);
             builder.addSlot(inputSlot);

@@ -225,8 +225,11 @@ public class PacketHandler {
     }
 
     public <MSG> void sendToAllTracking(MSG message, World world, BlockPos pos) {
-        //TODO: Safety check this is a server world?
-        ((ServerWorld) world).getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
+        if (world instanceof ServerWorld) {
+            ((ServerWorld) world).getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
+        } else {
+            //TODO: LOG ERROR
+        }
     }
 
     //TODO: change Network stuff over to using this
