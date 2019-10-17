@@ -4,13 +4,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
@@ -28,6 +32,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +41,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -58,8 +62,21 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double lastEnvironmentLoss;
     private int currentRedstoneLevel;
 
+    private FuelInventorySlot fuelSlot;
+
     public TileEntityHeatGenerator() {
         super(GeneratorsBlock.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get() * 2);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        //TODO: See if this can be cleaned up/optimized
+        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA),17, 35),
+              RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addSlot(EnergyInventorySlot.charge(143, 35), RelativeSide.RIGHT);
+        return builder.build();
     }
 
     @Override
@@ -68,21 +85,23 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
         if (!isRemote()) {
             ChargeUtils.charge(1, this);
-            ItemStack stack = getStackInSlot(0);
-            if (!stack.isEmpty()) {
-                if (FluidContainerUtils.isFluidContainer(stack)) {
+            ItemStack fuelStack = fuelSlot.getStack();
+            if (!fuelStack.isEmpty()) {
+                if (FluidContainerUtils.isFluidContainer(fuelStack)) {
                     lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(Fluids.LAVA)), FluidAction.EXECUTE);
                 } else {
-                    int fuel = getFuel(stack);
+                    int fuel = getFuel(fuelStack);
                     if (fuel > 0) {
                         int fuelNeeded = lavaTank.getCapacity() - lavaTank.getFluid().getAmount();
                         if (fuel <= fuelNeeded) {
                             lavaTank.fill(new FluidStack(Fluids.LAVA, fuel), FluidAction.EXECUTE);
-                            ItemStack containerItem = stack.getItem().getContainerItem(stack);
+                            ItemStack containerItem = fuelStack.getItem().getContainerItem(fuelStack);
                             if (!containerItem.isEmpty()) {
-                                getInventory().set(0, containerItem);
+                                fuelSlot.setStack(containerItem);
                             } else {
-                                stack.shrink(1);
+                                if (fuelSlot.shrinkStack(1) != 1) {
+                                    //TODO: Print error that something went wrong
+                                }
                             }
                         }
                     }
@@ -117,19 +136,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            if (getFuel(itemstack) > 0) {
-                return true;
-            }
-            return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemstack)).matches(fluid -> fluid.getFluid() == Fluids.LAVA);
-        } else if (slotID == 1) {
-            return ChargeUtils.canBeCharged(itemstack);
-        }
-        return true;
-    }
-
-    @Override
     public boolean canOperate() {
         return getEnergy() < getBaseStorage() && lavaTank.getFluid().getAmount() >= 10 && MekanismUtils.canFunction(this);
     }
@@ -150,16 +156,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             nbtTags.put("lavaTank", lavaTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 1) {
-            return ChargeUtils.canBeOutputted(itemstack, true);
-        } else if (slotID == 0) {
-            return !FluidUtil.getFluidContained(itemstack).isPresent();
-        }
-        return false;
     }
 
     public double getBoost() {
@@ -186,12 +182,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     public int getFuel(ItemStack stack) {
         return ForgeHooks.getBurnTime(stack) / 2;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return side == getRightSide() ? new int[]{1} : new int[]{0};
     }
 
     /**

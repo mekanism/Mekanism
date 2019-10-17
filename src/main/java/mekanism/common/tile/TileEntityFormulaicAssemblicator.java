@@ -438,7 +438,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         markDirty();
                         return;
                     }
-                    int maxCompareSize = compareSlot.getStackLimit();
+                    int maxCompareSize = compareSlot.getLimit();
                     if (compareStack.getCount() < maxCompareSize) {
                         if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
                             int newCount = compareStack.getCount() + stockStack.getCount();
@@ -467,7 +467,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 stockSlot.setStack(stack);
                 return ItemStack.EMPTY;
             }
-            int stockMaxSize = stockSlot.getStackLimit();
+            int stockMaxSize = stockSlot.getLimit();
             if (InventoryUtils.areItemsStackable(stack, stockStack) && stockStack.getCount() < stockMaxSize) {
                 int toUse = Math.min(stack.getCount(), stockMaxSize - stockStack.getCount());
                 if (stockSlot.growStack(toUse) != toUse) {
@@ -492,7 +492,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 }
                 return true;
             }
-            int outputMaxSize = outputSlot.getStackLimit();
+            int outputMaxSize = outputSlot.getLimit();
             if (InventoryUtils.areItemsStackable(stack, outputStack) && outputStack.getCount() < outputMaxSize) {
                 int toUse = Math.min(stack.getCount(), outputMaxSize - outputStack.getCount());
                 if (doMove) {

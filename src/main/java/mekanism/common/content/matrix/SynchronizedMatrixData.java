@@ -38,10 +38,16 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     private List<IInventorySlot> inventorySlots;
 
     public SynchronizedMatrixData() {
+        inventorySlots = createBaseInventorySlots();
+    }
+
+    //TODO: Fix this for the cache to be done better
+    public static List<IInventorySlot> createBaseInventorySlots() {
         //TODO: Look into some way of allowing slot position to be set differently if needed
-        inventorySlots = new ArrayList<>();
+        List<IInventorySlot> inventorySlots = new ArrayList<>();
         inventorySlots.add(EnergyInventorySlot.charge(146, 20));
         inventorySlots.add(EnergyInventorySlot.discharge(146, 51));
+        return inventorySlots;
     }
 
     @Nonnull

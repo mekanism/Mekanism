@@ -155,7 +155,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                 }
                 ItemStack stackInSlot = slot.getStack();
                 if (StackUtils.equalsWildcardWithNBT(stackInSlot, drop)) {
-                    int change = Math.min(drop.getCount(), slot.getStackLimit() - stackInSlot.getCount());
+                    int change = Math.min(drop.getCount(), slot.getLimit() - stackInSlot.getCount());
                     if (slot.growStack(change) != change) {
                         //TODO: Print error that something went wrong
                     }

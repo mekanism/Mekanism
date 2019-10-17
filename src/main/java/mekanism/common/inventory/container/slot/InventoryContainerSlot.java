@@ -51,12 +51,9 @@ public class InventoryContainerSlot extends Slot {
         return slot.getLimit();
     }
 
-    @Override
-    public int getItemStackLimit(@Nonnull ItemStack stack) {
-        //TODO: This logic is a lot simpler than the one in SlotItemHandler, is there some case we are missing?
-        // Strictly speaking this doesn't even need to override as the getSlotStackLimit should be fine
-        return slot.getStackLimit(stack);
-    }
+    //TODO: This logic is a lot simpler than the one in SlotItemHandler, is there some case we are missing?
+    // Strictly speaking this doesn't even need to override as the getSlotStackLimit should be fine
+    // Comment about getItemStackLimit (maybe check if item is even stackable)
 
     @Override
     public boolean canTakeStack(PlayerEntity playerIn) {

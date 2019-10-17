@@ -2,9 +2,10 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.MekanismAPI;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Action;
+import mekanism.api.MekanismAPI;
+import mekanism.api.RelativeSide;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -17,6 +18,10 @@ import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -48,9 +53,21 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public int clientUsed;
     private int currentRedstoneLevel;
 
+    private GasInventorySlot fuelSlot;
+
     public TileEntityGasGenerator() {
         super(GeneratorsBlock.GAS_BURNING_GENERATOR, MekanismConfig.general.FROM_H2.get() * 2);
         fuelTank = new GasTank(MAX_GAS);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, gas -> !FuelHandler.getFuel(gas).isEmpty(), 17, 35),
+              RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addSlot(EnergyInventorySlot.charge(143, 35), RelativeSide.RIGHT);
+        return builder.build();
     }
 
     @Override
@@ -134,35 +151,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         max = Math.min((fuelTank.getStored() * maxBurnTicks) + burnTicks, max);
         max = (int) Math.min(getNeededEnergy() / generationRate, max);
         return max;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 1) {
-            return ChargeUtils.canBeOutputted(itemstack, true);
-        } else if (slotID == 0) {
-            return itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack).isEmpty();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            if (itemstack.getItem() instanceof IGasItem) {
-                GasStack gasInItem = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-                return !gasInItem.isEmpty() && !FuelHandler.getFuel(gasInItem.getType()).isEmpty();
-            }
-        } else if (slotID == 1) {
-            return ChargeUtils.canBeCharged(itemstack);
-        }
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return side == getRightSide() ? new int[]{1} : new int[]{0};
     }
 
     @Override

@@ -89,7 +89,6 @@ public interface IInventorySlot {
      * @return The maximum stack size allowed in this {@link IInventorySlot}.
      *
      * @implNote The implementation of this CAN take into account the current stack's max size if desired, but is not required or expected to.
-     * @apiNote If the current stored {@link ItemStack}'s max stack size should be taken into account use {@link #getStackLimit()} instead.
      */
     int getLimit();
 
@@ -149,7 +148,7 @@ public interface IInventorySlot {
             setStack(ItemStack.EMPTY);
             return 0;
         }
-        int maxStackSize = getStackLimit();
+        int maxStackSize = getLimit();
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
@@ -206,27 +205,5 @@ public interface IInventorySlot {
      */
     default boolean isEmpty() {
         return getStack().isEmpty();
-    }
-
-    /**
-     * Helper method, similar to {@link #getLimit()}, except also ensures that it does not go past the stored stack's max size.
-     *
-     * @return The maximum stack size allowed in this {@link IInventorySlot}, or the max of the stored item, whichever of the two is smaller.
-     */
-    default int getStackLimit() {
-        return getStackLimit(getStack());
-    }
-
-    /**
-     * Helper method, similar to {@link #getLimit()}, except also ensures that it does not go past the given item's max stack size.
-     *
-     * @param stack The {@link ItemStack} to check the max size of.
-     *
-     * @return The maximum stack size allowed in this {@link IInventorySlot}, or the max of the given item, whichever of the two is smaller.
-     *
-     * @implNote Do not modify the given stack.
-     */
-    default int getStackLimit(@Nonnull ItemStack stack) {
-        return stack.isEmpty() ? getLimit() : Math.min(stack.getMaxStackSize(), getLimit());
     }
 }

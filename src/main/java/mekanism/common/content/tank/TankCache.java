@@ -1,6 +1,5 @@
 package mekanism.common.content.tank;
 
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -10,17 +9,13 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TankCache extends MultiblockCache<SynchronizedTankData> {
 
-    //TODO: REMOVE USAGES OF THIS, and use inventory slots instead
-    @Deprecated
-    public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     @Nonnull
-    private List<IInventorySlot> inventorySlots = Collections.emptyList();
+    private List<IInventorySlot> inventorySlots = SynchronizedTankData.createBaseInventorySlots();
 
     @Nonnull
     public FluidStack fluid = FluidStack.EMPTY;
@@ -41,17 +36,20 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
         editMode = data.editMode;
     }
 
+    @Nonnull
+    public List<IInventorySlot> getInventorySlots() {
+        return inventorySlots;
+    }
+
     @Override
     public void load(CompoundNBT nbtTags) {
         editMode = EnumUtils.CONTAINER_EDIT_MODES[nbtTags.getInt("editMode")];
         ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-
         for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < 2) {
-                inventory.set(slotID, ItemStack.read(tagCompound));
+                inventorySlots.get(slotID).setStack(ItemStack.read(tagCompound));
             }
         }
         if (nbtTags.contains("cachedFluid")) {
@@ -64,10 +62,11 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
         nbtTags.putInt("editMode", editMode.ordinal());
         ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < 2; slotCount++) {
-            if (!inventory.get(slotCount).isEmpty()) {
+            IInventorySlot slot = inventorySlots.get(slotCount);
+            if (!slot.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.putByte("Slot", (byte) slotCount);
-                inventory.get(slotCount).write(tagCompound);
+                slot.getStack().write(tagCompound);
                 tagList.add(tagCompound);
             }
         }

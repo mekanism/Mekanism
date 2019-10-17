@@ -559,9 +559,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
         }
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //Note: We don't need to check hasInventory, as we have this cap marked as disabled if we are not an item handler
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getItemHandler(side)));
+        if (hasInventory()) {
+            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+                List<IInventorySlot> inventorySlots = getInventorySlots(side);
+                //Don't return an item handler if we don't actually even have any slots for that side
+                //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+                LazyOptional<IItemHandler> lazyItemHandler = inventorySlots.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getItemHandler(side));
+                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, lazyItemHandler);
+            }
         }
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
@@ -590,11 +595,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         //TODO: Disable these caps if it is not electric?
         if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
-        }
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //TODO: This means we don't need to override in as many spots for disabling the item handler cap
-            //Disable the item handler capability if we have no inventory or we don't have any slots for the given side
-            return !hasInventory() || getInventorySlots(side).isEmpty();
         }
         return false;
     }

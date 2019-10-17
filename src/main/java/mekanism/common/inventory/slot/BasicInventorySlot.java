@@ -65,8 +65,8 @@ public class BasicInventorySlot implements IInventorySlot {
         this(limit, alwaysTrue, alwaysTrue, validator, x, y);
     }
 
-    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
-          int x, int y) {
+    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator, int x,
+          int y) {
         this(DEFAULT_LIMIT, canExtract, canInsert, validator, x, y);
     }
 
@@ -97,20 +97,11 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public void setStack(@Nonnull ItemStack stack) {
+        //TODO: Decide if we want to limit this to the slots limit and maybe make a method for reading from file that lets it go past the limit??
         if (stack.isEmpty()) {
             current = ItemStack.EMPTY;
         } else if (isItemValid(stack)) {
-            //Limit the max stack size, and copy it to ensure it does not get accidentally modified
-            int maxToAccept = getStackLimit(stack);
-            if (stack.getCount() > maxToAccept) {
-                //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
-                // As setStack is more meant to be used as an internal method
-                //TODO: Even if it is valid for this to throw a runtime exception should we be printing an error instead and just refusing to accept the stack
-                throw new RuntimeException("Tried to set stack with a size that is larger than this slot accepts.");
-            }
-            //Note: While technically we don't need to update it if the stack we are setting it to is identical, the logic is a lot simpler to do so
-            // and in most cases that case will not happen anyways
-            current = StackUtils.size(stack, Math.min(stack.getCount(), maxToAccept));
+            current = stack.copy();
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
@@ -125,29 +116,28 @@ public class BasicInventorySlot implements IInventorySlot {
     public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
         if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack)) {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
-            return ItemStack.EMPTY;
+            return stack;
+        }
+        int needed = getLimit() - current.getCount();
+        if (needed <= 0) {
+            //Fail if we are a full inventory
+            return stack;
         }
         boolean sameType = false;
         if (current.isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
-            int maxToAdd = stack.getCount();
-            //Cap our max size at the limit or the max size of our new stack
-            // Note: If we already have a stack then we know it is the same type as our current stack, so the result of getMaxStackSize should be the same
-            int maxSize = getStackLimit(stack);
-            if (maxToAdd < maxSize) {
-                int toAdd = maxSize - maxToAdd;
-                if (action.execute()) {
-                    //If we want to actually insert the item, then update the current item
-                    if (sameType) {
-                        //We can just grow our stack by the amount we want to increase it
-                        current.grow(toAdd);
-                    } else {
-                        //If we are not the same type then we have to copy the stack and set it
-                        current = StackUtils.size(stack, toAdd);
-                    }
-                    onContentsChanged();
+            int toAdd = Math.min(stack.getCount(), needed);
+            if (action.execute()) {
+                //If we want to actually insert the item, then update the current item
+                if (sameType) {
+                    //We can just grow our stack by the amount we want to increase it
+                    current.grow(toAdd);
+                } else {
+                    //If we are not the same type then we have to copy the stack and set it
+                    current = StackUtils.size(stack, toAdd);
                 }
-                return StackUtils.size(stack, maxToAdd - toAdd);
+                onContentsChanged();
             }
+            return StackUtils.size(stack, stack.getCount() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
         return stack;
@@ -178,6 +168,7 @@ public class BasicInventorySlot implements IInventorySlot {
         return toReturn;
     }
 
+    //TODO: Evaluate usages of this maybe some should be capped by the max size of the stack
     @Override
     public int getLimit() {
         return limit;
@@ -208,7 +199,8 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
      */
     @Override
     public int setStackSize(int amount) {
@@ -219,9 +211,8 @@ public class BasicInventorySlot implements IInventorySlot {
             setStack(ItemStack.EMPTY);
             return 0;
         }
-        int maxStackSize = getStackLimit();
-        if (amount > maxStackSize) {
-            amount = maxStackSize;
+        if (amount > limit) {
+            amount = limit;
         }
         if (current.getCount() == amount) {
             //If our size is not changing don't do anything
@@ -252,15 +243,5 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public boolean isEmpty() {
         return current.isEmpty();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
-     */
-    @Override
-    public int getStackLimit() {
-        return getStackLimit(current);
     }
 }

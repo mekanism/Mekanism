@@ -114,7 +114,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         inventorySlots.add(energySlot = EnergyInventorySlot.discharge(153, 17));
         //TODO: FIX THIS INPUT AND OUTPUT SLOT DECLARATION
         inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(56, 17));
-        inventorySlots.add(fuelSlot = FuelInventorySlot.at(56, 53));
+        inventorySlots.add(fuelSlot = FuelInventorySlot.forFuel(ForgeHooks::getBurnTime, 56, 53));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had
         inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(116, 35));
 
@@ -285,9 +285,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
                     }
-                    int maxStackSize = slot.getStackLimit();
-                    if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxStackSize) {
-                        int needed = maxStackSize - itemStack.getCount();
+                    if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < slot.getLimit()) {
+                        int needed = slot.getLimit() - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
                         if (slot.growStack(toAdd) != toAdd) {
                             //TODO: Print warning that something went wrong
@@ -340,7 +339,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
             return false;
         }
-        return currentOutput.getCount() + result.getCount() <= smeltingOutputSlot.getStackLimit();
+        return currentOutput.getCount() + result.getCount() <= smeltingOutputSlot.getLimit();
     }
 
     public void smeltItem() {

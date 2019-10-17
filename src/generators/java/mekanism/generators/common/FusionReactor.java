@@ -4,11 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.Action;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismGases;
@@ -26,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -128,9 +128,11 @@ public class FusionReactor {
     }
 
     public void vaporiseHohlraum() {
-        getFuelTank().fill(((ItemHohlraum) controller.getStackInSlot(0).getItem()).getGas(controller.getStackInSlot(0)), Action.EXECUTE);
+        IInventorySlot reactorSlot = controller.getReactorSlot();
+        ItemStack hohlraum = reactorSlot.getStack();
+        getFuelTank().fill(((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum), Action.EXECUTE);
         lastPlasmaTemperature = plasmaTemperature;
-        controller.getInventory().set(0, ItemStack.EMPTY);
+        reactorSlot.setStack(ItemStack.EMPTY);
         burning = true;
     }
 
@@ -444,9 +446,5 @@ public class FusionReactor {
 
     public IHeatTransfer getAdjacent(Direction side) {
         return null;
-    }
-
-    public NonNullList<ItemStack> getInventory() {
-        return isFormed() ? controller.getInventory() : null;
     }
 }

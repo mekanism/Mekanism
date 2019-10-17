@@ -65,11 +65,7 @@ public class ReactorControllerContainer extends MekanismTileContainer<TileEntity
         return stack;
     }
 
-    @Override
-    protected void addSlots() {
-        addSlot(new SlotReactor(tile, 0, 80, 39));
-    }
-
+    //TODO: Remove this
     public class SlotReactor extends Slot {
 
         public SlotReactor(IInventory inventory, int index, int x, int y) {

@@ -20,12 +20,13 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.getDirection());
         if (!Block.hasSolidSide(obj.getBlockState(tileEntity.getWorld()), tileEntity.getWorld(), obj.getPos(), tileEntity.getOppositeDirection())) {
-            render(tileEntity.getDirection(), tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
+            render(tileEntity.getDirection(), tileEntity.clientStack, true, x, y, z);
         }
     }
 
-    public void render(Direction facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
-        if (!itemType.isEmpty()) {
+    public void render(Direction facing, ItemStack clientStack, boolean text, double x, double y, double z) {
+        if (!clientStack.isEmpty()) {
+            int clientAmount = clientStack.getCount();
             String amount = Integer.toString(clientAmount);
             if (clientAmount == Integer.MAX_VALUE) {
                 amount = TextComponentUtil.translate("gui.mekanism.infinite").getFormattedText();
@@ -56,7 +57,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             float scaler = 0.9F;
             GlStateManager.scalef(scale * scaler, scale * scaler, -0.0001F);
             GlStateManager.rotatef(180, 0, 0, 1);
-            Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(itemType, 0, 0);
+            Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(clientStack, 0, 0);
             GlStateManager.popMatrix();
             if (text) {
                 renderText(amount, facing, 0.02F, x, y - 0.3725F, z);

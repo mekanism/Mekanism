@@ -81,7 +81,7 @@ public final class FluidContainerUtils {
                 inputCopy = handler.getContainer();
             }
             ItemStack outputStack = outSlot.getStack();
-            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getStackLimit())) {
+            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit())) {
                 return stack;
             }
             stack.setAmount(stack.getAmount() - drained);
@@ -128,7 +128,7 @@ public final class FluidContainerUtils {
         ItemStack inputCopy = handler.getContainer();
         ItemStack outputStack = outSlot.getStack();
         if (!FluidUtil.getFluidContained(inputCopy).isPresent() && !inputCopy.isEmpty()) {
-            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getStackLimit())) {
+            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit())) {
                 return stored;
             }
         }

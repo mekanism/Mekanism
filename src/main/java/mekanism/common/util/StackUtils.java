@@ -3,12 +3,12 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -54,11 +54,12 @@ public final class StackUtils {
         return ret;
     }
 
-    public static List<ItemStack> getMergeRejects(NonNullList<ItemStack> orig, NonNullList<ItemStack> toAdd) {
+    public static List<ItemStack> getMergeRejects(@Nonnull List<IInventorySlot> orig, @Nonnull List<IInventorySlot> toAdd) {
         List<ItemStack> ret = new ArrayList<>();
         for (int i = 0; i < toAdd.size(); i++) {
-            if (!toAdd.get(i).isEmpty()) {
-                ItemStack reject = getMergeReject(orig.get(i), toAdd.get(i));
+            IInventorySlot toAddSlot = toAdd.get(i);
+            if (!toAddSlot.isEmpty()) {
+                ItemStack reject = getMergeReject(orig.get(i).getStack(), toAddSlot.getStack());
                 if (!reject.isEmpty()) {
                     ret.add(reject);
                 }
@@ -67,10 +68,12 @@ public final class StackUtils {
         return ret;
     }
 
-    public static void merge(NonNullList<ItemStack> orig, NonNullList<ItemStack> toAdd) {
+    public static void merge(@Nonnull List<IInventorySlot> orig, @Nonnull List<IInventorySlot> toAdd) {
         for (int i = 0; i < toAdd.size(); i++) {
-            if (!toAdd.get(i).isEmpty()) {
-                orig.set(i, merge(orig.get(i), toAdd.get(i)));
+            IInventorySlot toAddSlot = toAdd.get(i);
+            if (!toAddSlot.isEmpty()) {
+                IInventorySlot origSlot = orig.get(i);
+                origSlot.setStack(merge(origSlot.getStack(), toAddSlot.getStack()));
             }
         }
     }

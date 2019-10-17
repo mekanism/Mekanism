@@ -3,12 +3,15 @@ package mekanism.generators.common.tile.reactor;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasTank;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismGases;
 import mekanism.common.base.IActiveState;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
@@ -16,7 +19,6 @@ import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -55,8 +57,23 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     private ISound activeSound;
     private int playSoundCooldown = 0;
 
+    private IInventorySlot reactorSlot;
+
     public TileEntityReactorController() {
         super(GeneratorsBlock.REACTOR_CONTROLLER);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        //TODO: FIXME
+        builder.addSlot(reactorSlot = BasicInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, 80, 39));
+        return builder.build();
+    }
+
+    public IInventorySlot getReactorSlot() {
+        return reactorSlot;
     }
 
     @Override
@@ -289,22 +306,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         return box;
     }
 
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return isFormed() ? new int[]{0} : InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        return stack.getItem() instanceof ItemHohlraum;
-    }
-
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //Allow inserting
-            return false;
+            return !isFormed();
         }
         return super.isCapabilityDisabled(capability, side);
     }

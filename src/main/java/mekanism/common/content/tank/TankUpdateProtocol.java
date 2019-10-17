@@ -54,11 +54,11 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
             tankCache.fluid.setAmount(tankCache.fluid.getAmount() + mergeCache.fluid.getAmount());
         }
         tankCache.editMode = mergeCache.editMode;
-        List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.inventory, mergeCache.inventory);
+        List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.getInventorySlots(), mergeCache.getInventorySlots());
         if (!rejects.isEmpty()) {
             rejectedItems.addAll(rejects);
         }
-        StackUtils.merge(tankCache.inventory, mergeCache.inventory);
+        StackUtils.merge(tankCache.getInventorySlots(), mergeCache.getInventorySlots());
     }
 
     @Override

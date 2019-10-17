@@ -3,10 +3,10 @@ package mekanism.generators.common.tile.reactor;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
-import mekanism.api.Action;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -22,17 +22,14 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.HeatUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OutputInput;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.generators.common.GeneratorsBlock;
-import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -45,8 +42,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.CapabilityItemHandler;
 
+//TODO: Allow reactor controller inventory slot to be interacted with via the port again
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, IHeatTransfer, IConfigurable {
 
     public boolean fluidEject;
@@ -281,60 +278,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         return null;
     }
 
-    @Nonnull
-    @Override
-    public ItemStack getStackInSlot(int slotID) {
-        return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory().get(slotID) : ItemStack.EMPTY;
-    }
-
-    @Override
-    public int getSizeInventory() {
-        return getReactor() != null && getReactor().isFormed() ? 1 : 0;
-    }
-
-    @Override
-    public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack) {
-        if (getReactor() != null && getReactor().isFormed()) {
-            getReactor().getInventory().set(slotID, itemstack);
-            if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
-                itemstack.setCount(getInventoryStackLimit());
-            }
-        }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return getReactor() != null && getReactor().isFormed() ? new int[]{0} : InventoryUtils.EMPTY;
-    }
-
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //Allow inserting
-            return false;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return getReactor() == null;
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum) {
-            ItemHohlraum hohlraum = (ItemHohlraum) itemstack.getItem();
-            return !hohlraum.getGas(itemstack).isEmpty() && hohlraum.getGas(itemstack).getAmount() == hohlraum.getMaxGas(itemstack);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum) {
-            ItemHohlraum hohlraum = (ItemHohlraum) itemstack.getItem();
-            return hohlraum.getGas(itemstack).isEmpty();
-        }
-        return false;
     }
 
     @Override

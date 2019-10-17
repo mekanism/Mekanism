@@ -4,18 +4,18 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
-
-    private static final int[] SLOTS = {0};
 
     public static final float SPEED = 32F;
     public static final float SPEED_SCALED = 256F / SPEED;
@@ -27,6 +27,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public TileEntityWindGenerator() {
         super(GeneratorsBlock.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get() * 2);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(EnergyInventorySlot.charge(143, 35));
+        return builder.build();
     }
 
     @Override
@@ -171,16 +179,5 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public boolean isBlacklistDimension() {
         return isBlacklistDimension;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return SLOTS;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        return ChargeUtils.canBeCharged(stack);
     }
 }

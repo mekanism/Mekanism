@@ -2,7 +2,9 @@ package mekanism.common.block.basic;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
@@ -12,12 +14,14 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -40,7 +44,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator {
+public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
+      IHasInventory {
 
     private final BinTier tier;
 
@@ -72,8 +77,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
             InventoryBin inv = new InventoryBin(stack);
             if (!inv.getItemType().isEmpty()) {
                 TileEntityBin bin = (TileEntityBin) tile;
-                bin.setItemType(inv.getItemType());
-                bin.setItemCount(inv.getItemCount());
+                bin.getBinSlot().setStack(StackUtils.size(inv.getItemType(), inv.getItemCount()));
             }
         }
     }
@@ -88,12 +92,20 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
             BlockRayTraceResult mop = MekanismUtils.rayTrace(world, player);
             //TODO: Check to make sure it wasn't a miss?
             if (mop != null && mop.getFace() == bin.getDirection()) {
-                if (!bin.bottomStack.isEmpty()) {
+                BinInventorySlot binSlot = bin.getBinSlot();
+                ItemStack storedStack = binSlot.getStack();
+                if (!storedStack.isEmpty()) {
                     ItemStack stack;
                     if (player.isSneaking()) {
-                        stack = bin.remove(1).copy();
+                        stack = StackUtils.size(storedStack, 1);
+                        if (binSlot.shrinkStack(1) != 1) {
+                            //TODO: Print error that something went wrong??
+                        }
                     } else {
-                        stack = bin.removeStack().copy();
+                        stack = binSlot.getBottomStack();
+                        if (!stack.isEmpty() && binSlot.shrinkStack(stack.getCount()) != stack.getCount()) {
+                            //TODO: Print error that something went wrong??
+                        }
                     }
                     if (!player.inventory.addItemStackToInventory(stack)) {
                         BlockPos dropPos = pos.offset(bin.getDirection());
@@ -112,7 +124,6 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        ItemStack stack = player.getHeldItem(hand);
         TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
         if (bin == null) {
             return false;
@@ -121,24 +132,28 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
             return true;
         }
         if (!world.isRemote) {
-            if (bin.getItemCount() < bin.tier.getStorage()) {
+            BinInventorySlot binSlot = bin.getBinSlot();
+            if (binSlot.getStack().getCount() < binSlot.getLimit()) {
+                ItemStack stack = player.getHeldItem(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
-                        ItemStack remain = bin.add(stack);
+                        ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE);
                         player.setHeldItem(hand, remain);
                         bin.addTicks = 5;
                     }
                 } else if (bin.addTicks > 0 && bin.getItemCount() > 0) {
                     NonNullList<ItemStack> inv = player.inventory.mainInventory;
                     for (int i = 0; i < inv.size(); i++) {
-                        if (bin.getItemCount() == bin.tier.getStorage()) {
+                        if (binSlot.getStack().getCount() == binSlot.getLimit()) {
                             break;
                         }
-                        if (!inv.get(i).isEmpty()) {
-                            ItemStack remain = bin.add(inv.get(i));
+                        ItemStack stackToAdd = inv.get(i);
+                        if (!stackToAdd.isEmpty()) {
+                            ItemStack remain = binSlot.insertItem(stackToAdd, Action.EXECUTE);
                             inv.set(i, remain);
                             bin.addTicks = 5;
                         }
+                        //TODO: Is this needed? Maybe it just updates the hotbar and stuff in which case it is needed
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     }
                 }
@@ -155,7 +170,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
             if (bin.getItemCount() > 0) {
                 InventoryBin inv = new InventoryBin(stack);
                 inv.setItemCount(bin.getItemCount());
-                inv.setItemType(bin.itemType);
+                inv.setItemType(bin.getItemType());
             }
         }
         return stack;

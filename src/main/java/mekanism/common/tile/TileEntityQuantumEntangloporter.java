@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
@@ -23,7 +25,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -41,7 +42,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.HeatUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
@@ -50,7 +50,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
@@ -205,12 +204,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ListNBT tagList = nbtTags.getList("upgradesInv", Constants.NBT.TAG_COMPOUND);
         //TODO: Given we only have one slot I think we can manually clear or something
-        //inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
+        List<IInventorySlot> inventorySlots = getInventorySlots(null);
         for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < getInventory().size()) {
-                getInventory().set(slotID, ItemStack.read(tagCompound));
+            if (slotID >= 0 && slotID < inventorySlots.size()) {
+                inventorySlots.get(slotID).setStack(ItemStack.read(tagCompound));
             }
         }
 
@@ -433,13 +432,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return false;
     }
 
-    @Nonnull
-    @Override
-    public NonNullList<ItemStack> getInventory() {
-        //TODO: This was null before so we should check the things for being null now
-        return hasFrequency() ? frequency.inventory : NonNullList.create();
-    }
-
     @Override
     public double getTemp() {
         return hasFrequency() ? frequency.temperature : 0;
@@ -482,25 +474,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
         }
         return null;
-    }
-
-    @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nullable Direction side) {
-        return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.INPUT;
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState != IOState.OFF) {
-            return new int[]{0};
-        }
-        return InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.OUTPUT;
     }
 
     @Override
@@ -584,5 +557,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         Set<ChunkPos> ret = new HashSet<>();
         ret.add(new Chunk3D(Coord4D.get(this)).getPos());
         return ret;
+    }
+
+    @Nonnull
+    @Override
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        if (!hasInventory() || !hasFrequency()) {
+            return Collections.emptyList();
+        }
+        return frequency.inventorySlots;
     }
 }

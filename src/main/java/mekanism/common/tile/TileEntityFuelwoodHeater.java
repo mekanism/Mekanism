@@ -44,7 +44,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = FuelInventorySlot.at(15, 29));
+        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(ForgeHooks::getBurnTime, 15, 29));
         return builder.build();
     }
 

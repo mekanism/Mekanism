@@ -34,11 +34,17 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     private List<IInventorySlot> inventorySlots;
 
     public SynchronizedTankData() {
+        inventorySlots = createBaseInventorySlots();
+    }
+
+    //TODO: Fix this for the cache to be done better
+    public static List<IInventorySlot> createBaseInventorySlots() {
         //TODO: Look into some way of allowing slot position to be set differently if needed
-        inventorySlots = new ArrayList<>();
+        List<IInventorySlot> inventorySlots = new ArrayList<>();
         //TODO: Replace this with a fluid handler representing our fluid (fluidStored)
         inventorySlots.add(FluidInventorySlot.input(EmptyFluidHandler.INSTANCE, fluid -> true, 146, 20));
         inventorySlots.add(OutputInventorySlot.at(146, 51));
+        return inventorySlots;
     }
 
     @Nonnull

@@ -3,11 +3,13 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.inventory.IInventorySlotHolder;
+import mekanism.common.inventory.InventorySlotHelper;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
@@ -31,14 +33,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         super(blockProvider, output);
     }
 
-    public boolean canSeeSun() {
-        return seesSun;
-    }
-
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull Direction side) {
-        return new int[]{0};
+    protected IInventorySlotHolder getInitialInventory() {
+        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        builder.addSlot(EnergyInventorySlot.charge(143, 35));
+        return builder.build();
+    }
+
+    public boolean canSeeSun() {
+        return seesSun;
     }
 
     protected void recheckSettings() {
@@ -94,22 +98,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     protected boolean canSeeSky() {
         World world = getWorld();
         return world != null && world.canBlockSeeSky(getPos());
-    }
-
-    @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
-        if (slotID == 0) {
-            return ChargeUtils.canBeOutputted(itemstack, true);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 0) {
-            return ChargeUtils.canBeCharged(itemstack);
-        }
-        return true;
     }
 
     @Override
