@@ -105,6 +105,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
+    private FluidInventorySlot fluidSlot;
+    private GasInventorySlot leftOutputSlot;
+    private GasInventorySlot rightOutputSlot;
+
     public TileEntityElectrolyticSeparator() {
         super(MekanismBlock.ELECTROLYTIC_SEPARATOR);
         BASE_ENERGY_PER_TICK = super.getBaseUsage();
@@ -117,11 +121,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), 26, 35), RelativeSide.FRONT);
-        builder.addSlot(GasInventorySlot.drain(leftTank, 59, 52), RelativeSide.LEFT);
-        builder.addSlot(GasInventorySlot.drain(rightTank, 101, 52), RelativeSide.RIGHT);
+        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this, 26, 35),
+              RelativeSide.FRONT);
+        builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52), RelativeSide.LEFT);
+        builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52), RelativeSide.RIGHT);
         //TODO: Make accessible for automation
-        builder.addSlot(EnergyInventorySlot.discharge(143, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
     }
 
@@ -134,14 +139,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(3, this);
-            ItemStack fluidInputStack = getStackInSlot(0);
+            ItemStack fluidInputStack = fluidSlot.getStack();
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
-                fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
+                //TODO: Is this check even needed
+                fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, fluidSlot), FluidAction.EXECUTE);
             }
 
             //TODO: look at other places that call drawGas and the likes and see if they need saving
-            boolean needsSaving = TileUtils.drawGas(getStackInSlot(1), leftTank);
-            needsSaving |= TileUtils.drawGas(getStackInSlot(2), rightTank);
+            boolean needsSaving = TileUtils.drawGas(leftOutputSlot.getStack(), leftTank);
+            needsSaving |= TileUtils.drawGas(rightOutputSlot.getStack(), rightTank);
             if (needsSaving) {
                 MekanismUtils.saveChunk(this);
             }

@@ -64,9 +64,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, gas -> !FuelHandler.getFuel(gas).isEmpty(), 17, 35),
+        builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, gas -> !FuelHandler.getFuel(gas).isEmpty(), this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.charge(143, 35), RelativeSide.RIGHT);
+        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 

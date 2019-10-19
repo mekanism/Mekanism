@@ -123,6 +123,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Nonnull
     protected FactoryType type;
 
+    private IInventorySlot typeInputSlot;
+    private OutputInventorySlot typeOutputSlot;
+
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         BlockFactory factoryBlock = (BlockFactory) blockProvider.getBlock();
@@ -201,11 +204,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
-        builder.addSlot(EnergyInventorySlot.discharge(7, 13));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 7, 13));
         //TODO: Make these two slots not show up on the auto generation of gui
         //TODO: Make this input slot only accept other machines for factories
-        builder.addSlot(InputInventorySlot.at(tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
-        builder.addSlot(OutputInventorySlot.at(tier == FactoryTier.ULTIMATE ? 214 : 180, 112));
+        builder.addSlot(typeInputSlot = InputInventorySlot.at(this, tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
+        builder.addSlot(typeOutputSlot = OutputInventorySlot.at(this, tier == FactoryTier.ULTIMATE ? 214 : 180, 112));
     }
 
     @Override
@@ -292,11 +295,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
             handleSecondaryFuel();
             sortInventory();
-            if (!getStackInSlot(2).isEmpty() && getStackInSlot(3).isEmpty()) {
+            ItemStack typeInputStack = typeInputSlot.getStack();
+            if (!typeInputStack.isEmpty() && typeOutputSlot.isEmpty()) {
                 RecipeType toSet = null;
 
                 for (RecipeType type : RecipeType.values()) {
-                    if (ItemHandlerHelper.canItemStacksStack(getStackInSlot(2), type.getStack())) {
+                    if (ItemHandlerHelper.canItemStacksStack(typeInputStack, type.getStack())) {
                         toSet = type;
                         break;
                     }
@@ -310,10 +314,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
                         upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
                         upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-                        upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(getStackInSlot(2)));
+                        upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(typeInputStack));
 
-                        setStackInSlot(2, ItemStack.EMPTY, null);
-                        setStackInSlot(3, returnStack, null);
+                        typeInputSlot.setStack(ItemStack.EMPTY);
+                        typeOutputSlot.setStack(returnStack);
 
                         setRecipeType(toSet);
                         gasTank.setEmpty();

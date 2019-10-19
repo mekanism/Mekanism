@@ -31,7 +31,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Override
     protected void addSlots(InventorySlotHelper.Builder builder) {
         super.addSlots(builder);
-        builder.addSlot(extraSlot = InputInventorySlot.at(this::isValidExtraItem, 7, 57));
+        builder.addSlot(extraSlot = InputInventorySlot.at(this::isValidExtraItem,this,  7, 57));
     }
 
     @Override

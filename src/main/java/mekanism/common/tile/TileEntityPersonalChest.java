@@ -35,7 +35,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
         RelativeSide[] sides = new RelativeSide[]{RelativeSide.TOP, RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                builder.addSlot(BasicInventorySlot.at(canExtract, item -> true, 8 + slotX * 18, 26 + slotY * 18), sides);
+                builder.addSlot(BasicInventorySlot.at(canExtract, item -> true, this, 8 + slotX * 18, 26 + slotY * 18), sides);
             }
         }
         //TODO: Update this comment it is from isCapabilityDisabled. We reimplemented HOW it acted above but it maybe should be done somewhat differently

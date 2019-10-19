@@ -52,7 +52,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
         for (int slotX = 0; slotX < 9; slotX++) {
             for (int slotY = 0; slotY < 3; slotY++) {
                 //TODO: We probably want it to create normal looking slots instead of "output" slots
-                builder.addSlot(OutputInventorySlot.at(8 + slotX * 18, 16 + slotY * 18));
+                builder.addSlot(OutputInventorySlot.at(this, 8 + slotX * 18, 16 + slotY * 18));
             }
         }
         return builder.build();

@@ -89,9 +89,9 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         //TODO: Is there a better position to use
         builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, fluidStack ->
-              fluidStack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluidStack), 28, 20), RelativeSide.TOP);
-        builder.addSlot(outputSlot = OutputInventorySlot.at(28, 51), RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.discharge(143, 35), RelativeSide.BACK);
+              fluidStack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluidStack), this, 28, 20), RelativeSide.TOP);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 28, 51), RelativeSide.BOTTOM);
+        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
         return builder.build();
     }
 
@@ -99,7 +99,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(2, this);
-            if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
+            if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, inputSlot, outputSlot, new FluidChecker() {
                     @Override
                     public boolean isValid(@Nonnull Fluid f) {

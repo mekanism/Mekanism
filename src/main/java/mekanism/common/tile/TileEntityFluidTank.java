@@ -1,12 +1,11 @@
 package mekanism.common.tile;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
-import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
@@ -21,7 +20,6 @@ import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.api.RelativeSide;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tier.BaseTier;
@@ -86,8 +84,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, fluid -> true, 146, 19), RelativeSide.TOP);
-        builder.addSlot(outputSlot = OutputInventorySlot.at(146, 51), RelativeSide.BOTTOM);
+        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, fluid -> true, this, 146, 19), RelativeSide.TOP);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 146, 51), RelativeSide.BOTTOM);
         return builder.build();
     }
 
@@ -125,7 +123,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             }
 
             prevAmount = fluidTank.getFluidAmount();
-            if (!getStackInSlot(0).isEmpty()) {
+            if (!inputSlot.isEmpty()) {
                 manageInventory();
             }
             if (getActive()) {
@@ -155,8 +153,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     private void manageInventory() {
-        if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
-            List<IInventorySlot> inventorySlots = getInventorySlots(null);
+        if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
             FluidStack ret = FluidContainerUtils.handleContainerItem(this, editMode, fluidTank.getFluid(), getCurrentNeeded(), inputSlot, outputSlot, null);
 
             if (!ret.isEmpty()) {

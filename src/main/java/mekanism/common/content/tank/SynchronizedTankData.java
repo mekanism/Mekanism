@@ -42,8 +42,9 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
         //TODO: Look into some way of allowing slot position to be set differently if needed
         List<IInventorySlot> inventorySlots = new ArrayList<>();
         //TODO: Replace this with a fluid handler representing our fluid (fluidStored)
-        inventorySlots.add(FluidInventorySlot.input(EmptyFluidHandler.INSTANCE, fluid -> true, 146, 20));
-        inventorySlots.add(OutputInventorySlot.at(146, 51));
+        //TODO: FIXME?? ideally we don't pass null as the inventory??
+        inventorySlots.add(FluidInventorySlot.input(EmptyFluidHandler.INSTANCE, fluid -> true, null, 146, 20));
+        inventorySlots.add(OutputInventorySlot.at(null, 146, 51));
         return inventorySlots;
     }
 

@@ -94,10 +94,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     public void manageInventory() {
         int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - structure.fluidStored.getAmount();
-        ItemStack stack = getStackInSlot(0, null);
-        if (FluidContainerUtils.isFluidContainer(stack)) {
-            List<IInventorySlot> inventorySlots = structure.getInventorySlots();
-            structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inventorySlots.get(0),
+        List<IInventorySlot> inventorySlots = structure.getInventorySlots();
+        //TODO: No magic numbers??
+        IInventorySlot inputSlot = inventorySlots.get(0);
+        if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
+            structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inputSlot,
                   inventorySlots.get(1), null);
             Mekanism.packetHandler.sendUpdatePacket(this);
         }

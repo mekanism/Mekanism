@@ -33,14 +33,14 @@ public final class FluidContainerUtils {
         return tankFluid.isEmpty() || tankFluid.isFluidEqual(fillFluid);
     }
 
-    public static FluidStack extractFluid(FluidTank tileTank, TileEntityMekanism tile, int slotID) {
-        return extractFluid(tileTank, tile, slotID, FluidChecker.check(tileTank.getFluid()));
+    public static FluidStack extractFluid(FluidTank tileTank, IInventorySlot slot) {
+        return extractFluid(tileTank, slot, FluidChecker.check(tileTank.getFluid()));
     }
 
-    public static FluidStack extractFluid(FluidTank tileTank, TileEntityMekanism tile, int slotID, FluidChecker checker) {
-        return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(tile.getStackInSlot(slotID))).getIfPresent(handler -> {
+    public static FluidStack extractFluid(FluidTank tileTank, IInventorySlot slot, FluidChecker checker) {
+        return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(slot.getStack())).getIfPresent(handler -> {
             FluidStack ret = extractFluid(tileTank.getCapacity() - tileTank.getFluidAmount(), handler, checker);
-            tile.setStackInSlot(slotID, handler.getContainer(), null);
+            slot.setStack(handler.getContainer());
             return ret;
         });
     }

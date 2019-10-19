@@ -69,8 +69,7 @@ public class InventoryContainerSlot extends Slot {
     }
 
     //TODO: Forge has a TODO for implementing isSameInventory.
-    // We can probably implement this by generating a UUID or something when we are looping over our inventory slots creating them
-    // and then compare the UUIDs
+    // We can compare inventories at the very least for BasicInventorySlots as they have an instance of IMekanismInventory stored
     /*@Override
     public boolean isSameInventory(Slot other) {
         return other instanceof SlotItemHandler && ((SlotItemHandler) other).getItemHandler() == this.itemHandler;

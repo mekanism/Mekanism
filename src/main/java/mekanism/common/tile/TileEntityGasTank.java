@@ -63,6 +63,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
+    private GasInventorySlot drainSlot;
+    private GasInventorySlot fillSlot;
+
     public TileEntityGasTank(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = ((BlockGasTank) blockProvider.getBlock()).getTier();
@@ -90,16 +93,16 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.drain(gasTank, 8, 8));
-        builder.addSlot(GasInventorySlot.fill(gasTank, gas -> true, 8, 40));
+        builder.addSlot(drainSlot = GasInventorySlot.drain(gasTank, this, 8, 8));
+        builder.addSlot(fillSlot = GasInventorySlot.fill(gasTank, gas -> true, this, 8, 40));
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            TileUtils.drawGas(getStackInSlot(0), gasTank, Action.get(tier != GasTankTier.CREATIVE));
-            if (TileUtils.receiveGas(getStackInSlot(1), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
+            TileUtils.drawGas(drainSlot.getStack(), gasTank, Action.get(tier != GasTankTier.CREATIVE));
+            if (TileUtils.receiveGas(fillSlot.getStack(), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
                 gasTank.setStack(new GasStack(gasTank.getStack(), Integer.MAX_VALUE));
             }
             if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {

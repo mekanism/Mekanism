@@ -69,8 +69,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         RelativeSide[] sides = new RelativeSide[]{RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(), 26, 115), sides);
-        builder.addSlot(outputSlot = OutputInventorySlot.at(134, 115), sides);
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(),this,  26, 115), sides);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 134, 115), sides);
         return builder.build();
     }
 

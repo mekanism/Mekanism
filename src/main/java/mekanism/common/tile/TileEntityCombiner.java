@@ -75,10 +75,10 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         //TODO: Should we limit ACTUAL insertion to be based on the other slot's contents?
-        builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), 56, 17));
-        builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), 56, 53));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
-        builder.addSlot(EnergyInventorySlot.discharge(31, 35));
+        builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), this, 56, 17));
+        builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), this, 56, 53));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 31, 35));
         return builder.build();
     }
 

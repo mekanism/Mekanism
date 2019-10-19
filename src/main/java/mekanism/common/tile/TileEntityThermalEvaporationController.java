@@ -114,10 +114,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     protected IInventorySlotHolder getInitialInventory() {
         //TODO: Make the inventory be accessible via the valves instead
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(inputInputSlot = FluidInventorySlot.fill(inputTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), 28, 20));
-        builder.addSlot(outputInputSlot = OutputInventorySlot.at(28, 51));
-        builder.addSlot(inputOutputSlot = FluidInventorySlot.drain(outputTank, 132, 20));
-        builder.addSlot(outputOutputSlot = OutputInventorySlot.at(132, 51));
+        builder.addSlot(inputInputSlot = FluidInventorySlot.fill(inputTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this, 28, 20));
+        builder.addSlot(outputInputSlot = OutputInventorySlot.at(this, 28, 51));
+        builder.addSlot(inputOutputSlot = FluidInventorySlot.drain(outputTank, this, 132, 20));
+        builder.addSlot(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
         return builder.build();
     }
 
@@ -235,13 +235,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private void manageBuckets() {
         if (!outputTank.getFluid().isEmpty()) {
-            if (FluidContainerUtils.isFluidContainer(getStackInSlot(2))) {
+            if (FluidContainerUtils.isFluidContainer(inputOutputSlot.getStack())) {
                 FluidContainerUtils.handleContainerItemFill(this, outputTank, inputOutputSlot, outputOutputSlot);
             }
         }
 
         if (structured) {
-            if (FluidContainerUtils.isFluidContainer(getStackInSlot(0))) {
+            if (FluidContainerUtils.isFluidContainer(inputInputSlot.getStack())) {
                 FluidContainerUtils.handleContainerItemEmpty(this, inputTank, inputInputSlot, outputInputSlot, new FluidChecker() {
                     @Override
                     public boolean isValid(@Nonnull Fluid f) {

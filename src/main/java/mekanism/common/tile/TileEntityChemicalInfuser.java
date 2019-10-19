@@ -58,6 +58,10 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     private final IInputHandler<@NonNull GasStack> leftInputHandler;
     private final IInputHandler<@NonNull GasStack> rightInputHandler;
 
+    private GasInventorySlot leftInputSlot;
+    private GasInventorySlot outputSlot;
+    private GasInventorySlot rightInputSlot;
+
     public TileEntityChemicalInfuser() {
         super(MekanismBlock.CHEMICAL_INFUSER);
         leftInputHandler = InputHelper.getInputHandler(leftTank);
@@ -71,10 +75,10 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
-        builder.addSlot(GasInventorySlot.fill(leftTank, this::isValidGas, 5, 56), RelativeSide.LEFT);
-        builder.addSlot(GasInventorySlot.drain(centerTank, 155, 56), RelativeSide.FRONT);
-        builder.addSlot(GasInventorySlot.fill(rightTank, this::isValidGas, 80, 65), RelativeSide.RIGHT);
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this::isValidGas, this, 5, 56), RelativeSide.LEFT);
+        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this::isValidGas, this, 155, 56), RelativeSide.RIGHT);
+        builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65), RelativeSide.FRONT);
+        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         return builder.build();
     }
 
@@ -86,9 +90,9 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(3, this);
-            TileUtils.receiveGas(getStackInSlot(0), leftTank);
-            TileUtils.receiveGas(getStackInSlot(1), rightTank);
-            TileUtils.drawGas(getStackInSlot(2), centerTank);
+            TileUtils.receiveGas(leftInputSlot.getStack(), leftTank);
+            TileUtils.receiveGas(rightInputSlot.getStack(), rightTank);
+            TileUtils.drawGas(outputSlot.getStack(), centerTank);
             double prev = getEnergy();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

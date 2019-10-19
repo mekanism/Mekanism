@@ -225,8 +225,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             nbtTags.put("frequency", frequencyTag);
         }
 
+        //TODO: Save the upgrades to file, needed for all not just this one
         //Upgrades inventory
-        ListNBT tagList = new ListNBT();
+        /*ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < getInventory().size(); slotCount++) {
             ItemStack stackInSlot = getStackInSlot(slotCount);
             if (!stackInSlot.isEmpty()) {
@@ -236,7 +237,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                 tagList.add(tagCompound);
             }
         }
-        nbtTags.put("upgradesInv", tagList);
+        nbtTags.put("upgradesInv", tagList);*/
         return nbtTags;
     }
 

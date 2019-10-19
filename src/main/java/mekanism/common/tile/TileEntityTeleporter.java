@@ -77,7 +77,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(153, 7));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 153, 7));
         return builder.build();
     }
 

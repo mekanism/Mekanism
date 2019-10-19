@@ -11,7 +11,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.security.IOwnerItem;
@@ -38,6 +38,9 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public SecurityFrequency frequency;
 
+    private SecurityInventorySlot unlockSlot;
+    private SecurityInventorySlot lockSlot;
+
     public TileEntitySecurityDesk() {
         super(MekanismBlock.SECURITY_DESK);
     }
@@ -46,9 +49,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        //TODO: Figure out if this should have some specialized type of slot/what can be inserted/extracted etc
-        builder.addSlot(BasicInventorySlot.at(146, 18));
-        builder.addSlot(BasicInventorySlot.at(146, 97));
+        builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(() -> ownerUUID, this, 146, 18));
+        builder.addSlot(lockSlot = SecurityInventorySlot.lock(this, 146, 97));
         return builder.build();
     }
 
@@ -56,7 +58,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public void onUpdate() {
         if (!isRemote()) {
             if (ownerUUID != null && frequency != null) {
-                ItemStack itemStack = getStackInSlot(0);
+                //TODO: Move the locking unlocking logic into the SecurityInventorySlot
+                ItemStack itemStack = unlockSlot.getStack();
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) itemStack.getItem();
                     if (item.getOwnerUUID(itemStack) != null) {
@@ -69,7 +72,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                     }
                 }
 
-                ItemStack stack = getStackInSlot(1);
+                ItemStack stack = lockSlot.getStack();
                 if (!stack.isEmpty() && stack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) stack.getItem();
                     UUID stackOwner = item.getOwnerUUID(stack);

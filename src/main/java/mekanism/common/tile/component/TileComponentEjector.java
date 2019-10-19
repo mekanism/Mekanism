@@ -163,6 +163,7 @@ public class TileComponentEjector implements ITileComponent {
         TransitRequest request = new TransitRequest();
         for (int index = 0; index < data.availableSlots.length; index++) {
             int slotID = data.availableSlots[index];
+            //TODO: Rework this while reworking the SideData to interact better with new inventory system
             ItemStack stack = tileEntity.getStackInSlot(slotID);
             if (!stack.isEmpty()) {
                 request.addItem(stack, index);

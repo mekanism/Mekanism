@@ -102,9 +102,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(inputSlot = FluidInventorySlot.drain(fluidTank, 28, 20), RelativeSide.TOP);
-        builder.addSlot(outputSlot = OutputInventorySlot.at(28, 51), RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.discharge(143, 35), RelativeSide.BACK);
+        builder.addSlot(inputSlot = FluidInventorySlot.drain(fluidTank, this, 28, 20), RelativeSide.TOP);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 28, 51), RelativeSide.BOTTOM);
+        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
         return builder.build();
     }
 

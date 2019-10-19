@@ -2,18 +2,19 @@ package mekanism.common.inventory.slot;
 
 import java.util.Set;
 import mekanism.api.Upgrade;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.base.IUpgradeItem;
 import net.minecraft.item.Item;
 
 public class UpgradeInventorySlot extends BasicInventorySlot {
 
-    public static UpgradeInventorySlot of(Set<Upgrade> supportedTypes) {
-        return new UpgradeInventorySlot(supportedTypes);
+    public static UpgradeInventorySlot of(IMekanismInventory inventory, Set<Upgrade> supportedTypes) {
+        return new UpgradeInventorySlot(inventory, supportedTypes);
     }
 
     private final Set<Upgrade> supportedTypes;
 
-    private UpgradeInventorySlot(Set<Upgrade> supportedTypes) {
+    private UpgradeInventorySlot(IMekanismInventory inventory, Set<Upgrade> supportedTypes) {
         super(alwaysFalse, stack -> {
             Item item = stack.getItem();
             if (item instanceof IUpgradeItem) {
@@ -21,7 +22,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
                 return supportedTypes.contains(upgradeType);
             }
             return false;
-        }, stack -> stack.getItem() instanceof IUpgradeItem, 154, 7);
+        }, stack -> stack.getItem() instanceof IUpgradeItem, inventory, 154, 7);
         this.supportedTypes = supportedTypes;
     }
 

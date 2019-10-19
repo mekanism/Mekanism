@@ -78,11 +78,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     protected IInventorySlotHolder getInitialInventory() {
         //TODO: Add in checks once we switch it to a recipe system for if the gas/fluid is ever valid
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, gas -> true, () -> mode == 0, 5, 25), RelativeSide.LEFT);
-        builder.addSlot(gasOutputSlot = OutputInventorySlot.at(5, 56), RelativeSide.LEFT);
-        builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, fluid -> true, () -> mode == 1, 155, 25), RelativeSide.RIGHT);
-        builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(155, 56), RelativeSide.RIGHT);
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, gas -> true, () -> mode == 0, this, 5, 25), RelativeSide.LEFT);
+        builder.addSlot(gasOutputSlot = OutputInventorySlot.at(this, 5, 56), RelativeSide.LEFT);
+        builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, fluid -> true, () -> mode == 1, this, 155, 25), RelativeSide.RIGHT);
+        builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56), RelativeSide.RIGHT);
+        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
         return builder.build();
     }
 
@@ -92,7 +92,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             ChargeUtils.discharge(4, this);
 
             if (mode == 0) {
-                TileUtils.receiveGas(getStackInSlot(1), gasTank);
+                TileUtils.receiveGas(gasOutputSlot.getStack(), gasTank);
                 if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, fluidInputSlot, fluidOutputSlot);
                 }
@@ -112,7 +112,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                     setActive(false);
                 }
             } else if (mode == 1) {
-                TileUtils.drawGas(getStackInSlot(0), gasTank);
+                TileUtils.drawGas(gasInputSlot.getStack(), gasTank);
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
 
                 if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {

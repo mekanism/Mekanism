@@ -119,8 +119,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         outputSlots = new ArrayList<>();
 
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(152, 76));
-        builder.addSlot(formulaSlot = FormulaInventorySlot.at(6, 26));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 152, 76));
+        builder.addSlot(formulaSlot = FormulaInventorySlot.at(this, 6, 26));
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 InputInventorySlot inputSlot = InputInventorySlot.at(stack -> {
@@ -146,7 +146,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         return true;
                     }
                     return false;
-                }, 8 + slotX * 18, 98 + slotY * 18);
+                },this,  8 + slotX * 18, 98 + slotY * 18);
                 builder.addSlot(inputSlot);
                 inputSlots.add(inputSlot);
             }
@@ -155,7 +155,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             for (int slotX = 0; slotX < 3; slotX++) {
                 //TODO: Make sure that automation cannot extract from this slot, and cannot insert into it
                 //TODO: Also previously this had canTakeStack and isEnabled be the same as the !autoMode for the slot impl
-                IInventorySlot craftingSlot = BasicInventorySlot.at(item -> !autoMode, 26 + slotX * 18, 17 + slotY * 18);
+                IInventorySlot craftingSlot = BasicInventorySlot.at(item -> !autoMode, this, 26 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(craftingSlot);
                 craftingGridSlots.add(craftingSlot);
             }
@@ -163,7 +163,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
-                OutputInventorySlot outputSlot = OutputInventorySlot.at(116 + slotX * 18, 17 + slotY * 18);
+                OutputInventorySlot outputSlot = OutputInventorySlot.at(this, 116 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(outputSlot);
                 outputSlots.add(outputSlot);
             }

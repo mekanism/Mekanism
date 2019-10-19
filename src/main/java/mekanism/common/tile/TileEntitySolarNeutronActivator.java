@@ -71,6 +71,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
+    private GasInventorySlot inputSlot;
+    private GasInventorySlot outputSlot;
+
     public TileEntitySolarNeutronActivator() {
         super(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
         inputHandler = InputHelper.getInputHandler(inputTank);
@@ -81,9 +84,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), 5, 56),
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this, 5, 56),
               RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT, RelativeSide.LEFT, RelativeSide.BACK);
-        builder.addSlot(GasInventorySlot.drain(outputTank, 155, 56), RelativeSide.FRONT);
+        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.FRONT);
         return builder.build();
     }
 
@@ -100,8 +103,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
                 recheckSettings();
             }
 
-            TileUtils.receiveGas(getStackInSlot(0), inputTank);
-            TileUtils.drawGas(getStackInSlot(1), outputTank);
+            TileUtils.receiveGas(inputSlot.getStack(), inputTank);
+            TileUtils.drawGas(outputSlot.getStack(), outputTank);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

@@ -107,17 +107,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         inventoryContainerSlots = new ArrayList<>();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                IInventorySlot slot = BasicInventorySlot.at(8 + slotX * 18, 18 + slotY * 18);
+                IInventorySlot slot = BasicInventorySlot.at(this, 8 + slotX * 18, 18 + slotY * 18);
                 inventorySlots.add(slot);
                 inventoryContainerSlots.add(slot);
             }
         }
-        inventorySlots.add(energySlot = EnergyInventorySlot.discharge(153, 17));
+        inventorySlots.add(energySlot = EnergyInventorySlot.discharge(this, 153, 17));
         //TODO: FIX THIS INPUT AND OUTPUT SLOT DECLARATION
-        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(56, 17));
-        inventorySlots.add(fuelSlot = FuelInventorySlot.forFuel(ForgeHooks::getBurnTime, 56, 53));
+        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(this, 56, 17));
+        inventorySlots.add(fuelSlot = FuelInventorySlot.forFuel(ForgeHooks::getBurnTime, this, 56, 53));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had
-        inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(116, 35));
+        inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(this, 116, 35));
 
         mainContainerSlots = Collections.singletonList(energySlot);
         smeltingContainerSlots = Arrays.asList(smeltingInputSlot, fuelSlot, smeltingOutputSlot);
@@ -446,12 +446,18 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setDropPickup(nbtTags.getBoolean("dropPickup"));
         homeLocation = Coord4D.read(nbtTags);
         ListNBT tagList = nbtTags.getList("Items", Constants.NBT.TAG_COMPOUND);
-        int size = getSlots(null);
+        List<IInventorySlot> inventorySlots = getInventorySlots((Direction) null);
+        int size = inventorySlots.size();
         for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < size) {
-                setStackInSlot(slotID, ItemStack.read(tagCompound));
+                IInventorySlot inventorySlot = inventorySlots.get(slotID);
+                try {
+                    inventorySlot.setStack(ItemStack.read(tagCompound));
+                } catch (RuntimeException e) {
+                    //TODO: Log error
+                }
             }
         }
     }
@@ -529,12 +535,18 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (nbtTags == null || nbtTags.isEmpty()) {
             return;
         }
-        int size = getSlots(null);
+        List<IInventorySlot> inventorySlots = getInventorySlots((Direction) null);
+        int size = inventorySlots.size();
         for (int slots = 0; slots < nbtTags.size(); slots++) {
             CompoundNBT tagCompound = nbtTags.getCompound(slots);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < size) {
-                setStackInSlot(slotID, ItemStack.read(tagCompound));
+                IInventorySlot inventorySlot = inventorySlots.get(slotID);
+                try {
+                    inventorySlot.setStack(ItemStack.read(tagCompound));
+                } catch (RuntimeException e) {
+                    //TODO: Log error
+                }
             }
         }
     }
@@ -559,6 +571,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return hasInventory() ? inventorySlots : Collections.emptyList();
+    }
+
+    @Override
+    public void onContentsChanged() {
+        //TODO: Should we do anything here
     }
 
     @Nonnull

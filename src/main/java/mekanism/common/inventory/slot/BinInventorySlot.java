@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
@@ -16,14 +17,14 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     private static final Predicate<@NonNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
 
-    public static BinInventorySlot create(BinTier tier) {
-        return new BinInventorySlot(tier);
+    public static BinInventorySlot create(IMekanismInventory inventory, BinTier tier) {
+        return new BinInventorySlot(inventory, tier);
     }
 
     private boolean isCreative;
 
-    private BinInventorySlot(BinTier tier) {
-        super(tier.getStorage(), alwaysTrue, alwaysTrue, validator, 0, 0);
+    private BinInventorySlot(IMekanismInventory inventory, BinTier tier) {
+        super(tier.getStorage(), alwaysTrue, alwaysTrue, validator, inventory, 0, 0);
         isCreative = tier == BinTier.CREATIVE;
         obeyStackLimit = false;
     }

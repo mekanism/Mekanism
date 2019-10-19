@@ -33,7 +33,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.charge(143, 35));
+        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35));
         return builder.build();
     }
 

@@ -42,7 +42,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(15, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 15, 35));
         return builder.build();
     }
 

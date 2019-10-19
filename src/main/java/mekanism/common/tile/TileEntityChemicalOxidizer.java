@@ -52,6 +52,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
     private InputInventorySlot inputSlot;
+    private GasInventorySlot outputSlot;
 
     public TileEntityChemicalOxidizer() {
         super(MekanismBlock.CHEMICAL_OXIDIZER, 100);
@@ -63,9 +64,9 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 26, 36), RelativeSide.LEFT);
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
-        builder.addSlot(GasInventorySlot.drain(gasTank, 155, 25), RelativeSide.RIGHT);
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 26, 36), RelativeSide.LEFT);
+        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 155, 25), RelativeSide.RIGHT);
         return builder.build();
     }
 
@@ -73,7 +74,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(1, this);
-            TileUtils.drawGas(getStackInSlot(2), gasTank);
+            TileUtils.drawGas(outputSlot.getStack(), gasTank);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

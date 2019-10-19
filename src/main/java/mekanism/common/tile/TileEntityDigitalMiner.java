@@ -151,7 +151,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                BasicInventorySlot slot = BasicInventorySlot.at(8 + slotX * 18, 80 + slotY * 18);
+                BasicInventorySlot slot = BasicInventorySlot.at(this, 8 + slotX * 18, 80 + slotY * 18);
                 builder.addSlot(slot, RelativeSide.BACK, RelativeSide.TOP);
                 mainSlots.add(slot);
                 //TODO: Make it so insertion/extraction is sided but the inventory is the same???
@@ -161,7 +161,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 //RelativeSide.BACK && !isReplaceStack(stack)
             }
         }
-        builder.addSlot(EnergyInventorySlot.discharge(152, 6));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 152, 6));
         return builder.build();
     }
 
@@ -405,9 +405,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     public TransitRequest getEjectItemMap() {
         TransitRequest request = new TransitRequest();
-        for (int i = 27 - 1; i >= 0; i--) {
-            ItemStack stack = getStackInSlot(i);
+        for (int i = mainSlots.size() - 1; i >= 0; i--) {
+            ItemStack stack = mainSlots.get(i).getStack();
             if (!stack.isEmpty() && !isReplaceStack(stack)) {
+                //TODO: Check if we need to place a copy in terms of mutability
                 request.addItem(stack, i);
             }
         }

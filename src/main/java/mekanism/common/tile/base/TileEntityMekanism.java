@@ -196,13 +196,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         setSupportedTypes(this.blockProvider.getBlock());
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
-            //TODO: Instantiate this properly, maybe it can be abstracted to the block, but for now
-            slotHolder = getInitialInventory();//NonNullList.withSize(((IHasInventory) getBlockType()).getInventorySize(), ItemStack.EMPTY);
-            //We want one overall specific list, and then the other caches can be made?
+            slotHolder = getInitialInventory();
         }
         if (supportsUpgrades()) {
             //TODO: Make sure to use the upgrade slot where needed and to store it so that it is persistent
-            upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(getSupportedUpgrade()));
+            upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(this, getSupportedUpgrade()));
         }
         if (isElectric()) {
             maxEnergy = getBaseStorage();
@@ -751,6 +749,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             return Collections.emptyList();
         }
         return slotHolder.getInventorySlots(side);
+    }
+
+    @Override
+    public void onContentsChanged() {
+        markDirty();
     }
 
     @Override

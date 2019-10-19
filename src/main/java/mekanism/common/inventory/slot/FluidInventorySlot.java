@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.FluidContainerUtils;
@@ -26,24 +27,25 @@ public class FluidInventorySlot extends BasicInventorySlot {
     /**
      * Fills/Drains the tank depending on if this item has any contents in it
      */
-    public static FluidInventorySlot input(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, int x, int y) {
-        return new FluidInventorySlot(fluidHandler, alwaysFalse, item -> {
-            FluidStack fluidContained = FluidUtil.getFluidContained(item).orElse(FluidStack.EMPTY);
+    public static FluidInventorySlot input(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, IMekanismInventory inventory, int x, int y) {
+        return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
+            FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             if (fluidContained.isEmpty()) {
                 //We want to try and drain the tank
                 return true;
             }
             //True if the items contents are valid and we can fill the tank with any of our contents
             return validInput.test(fluidContained) && fluidHandler.fill(fluidContained, FluidAction.SIMULATE) > 0;
-        }, isFluidContainer, x, y);
+        }, isFluidContainer, inventory, x, y);
     }
 
     /**
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static FluidInventorySlot rotary(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, BooleanSupplier modeSupplier, int x, int y) {
-        return new FluidInventorySlot(fluidHandler, alwaysFalse, item -> {
-            FluidStack fluidContained = FluidUtil.getFluidContained(item).orElse(FluidStack.EMPTY);
+    public static FluidInventorySlot rotary(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, BooleanSupplier modeSupplier,
+          IMekanismInventory inventory, int x, int y) {
+        return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
+            FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             boolean mode = modeSupplier.getAsBoolean();
             //Mode == true if fluid to gas
             if (fluidContained.isEmpty()) {
@@ -64,24 +66,24 @@ public class FluidInventorySlot extends BasicInventorySlot {
                 return isNonFullFluidContainer(capabilityHelper);
             }
             return false;
-        }, x, y);
+        }, inventory, x, y);
     }
 
     /**
      * Fills the tank from this item
      */
-    public static FluidInventorySlot fill(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validFluid, int x, int y) {
-        return new FluidInventorySlot(fluidHandler, alwaysFalse, item -> {
-            FluidStack fluidContained = FluidUtil.getFluidContained(item).orElse(FluidStack.EMPTY);
+    public static FluidInventorySlot fill(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validFluid, IMekanismInventory inventory, int x, int y) {
+        return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
+            FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             //True if we can fill the tank with any of our contents, ignored if the item has no fluid, as it won't pass isValid
             return fluidHandler.fill(fluidContained, FluidAction.SIMULATE) > 0;
-        }, item -> {
-            if (!FluidContainerUtils.isFluidContainer(item)) {
+        }, stack -> {
+            if (!FluidContainerUtils.isFluidContainer(stack)) {
                 return false;
             }
-            FluidStack fluidContained = FluidUtil.getFluidContained(item).orElse(FluidStack.EMPTY);
+            FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             return !fluidContained.isEmpty() && validFluid.test(fluidContained);
-        }, x, y);
+        }, inventory, x, y);
     }
 
     /**
@@ -89,11 +91,11 @@ public class FluidInventorySlot extends BasicInventorySlot {
      *
      * Drains the tank into this item.
      */
-    public static FluidInventorySlot drain(@Nonnull FluidTank fluidTank, int x, int y) {
+    public static FluidInventorySlot drain(@Nonnull FluidTank fluidTank, IMekanismInventory inventory, int x, int y) {
         //TODO: Accept a fluid handler in general?
-        return new FluidInventorySlot(fluidTank, alwaysFalse, item -> new LazyOptionalHelper<>(FluidUtil.getFluidHandler(item))
+        return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> new LazyOptionalHelper<>(FluidUtil.getFluidHandler(stack))
               .matches(itemFluidHandler -> fluidTank.isEmpty() || itemFluidHandler.fill(fluidTank.getFluid(), FluidAction.SIMULATE) > 0),
-              stack -> isNonFullFluidContainer(new LazyOptionalHelper<>(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY))), x, y);
+              stack -> isNonFullFluidContainer(new LazyOptionalHelper<>(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY))), inventory, x, y);
     }
 
     //TODO: Should we make this also have the fluid type have to match a desired type???
@@ -112,8 +114,8 @@ public class FluidInventorySlot extends BasicInventorySlot {
     private final IFluidHandler fluidHandler;
 
     private FluidInventorySlot(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, int x, int y) {
-        super(canExtract, canInsert, validator, x, y);
+          Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+        super(canExtract, canInsert, validator, inventory, x, y);
         this.fluidHandler = fluidHandler;
     }
 

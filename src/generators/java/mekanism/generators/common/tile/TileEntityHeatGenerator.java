@@ -74,9 +74,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         //TODO: See if this can be cleaned up/optimized
-        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA),17, 35),
+        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA),this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.charge(143, 35), RelativeSide.RIGHT);
+        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
@@ -89,7 +89,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             ItemStack fuelStack = fuelSlot.getStack();
             if (!fuelStack.isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(fuelStack)) {
-                    lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(Fluids.LAVA)), FluidAction.EXECUTE);
+                    lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, fuelSlot, FluidChecker.check(Fluids.LAVA)), FluidAction.EXECUTE);
                 } else {
                     int fuel = getFuel(fuelStack);
                     if (fuel > 0) {

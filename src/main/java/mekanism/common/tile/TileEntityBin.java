@@ -65,7 +65,7 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(binSlot = BinInventorySlot.create(tier));
+        builder.addSlot(binSlot = BinInventorySlot.create(this, tier));
         return builder.build();
     }
 

@@ -114,9 +114,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), 54, 35));
-        builder.addSlot(EnergyInventorySlot.discharge(141, 19));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), this, 54, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 141, 19));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         return builder.build();
     }
 

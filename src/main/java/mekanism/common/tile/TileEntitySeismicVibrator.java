@@ -30,7 +30,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(143, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
     }
 

@@ -68,10 +68,10 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), 56, 17));
-        builder.addSlot(EnergyInventorySlot.discharge(56, 53));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
-        builder.addSlot(secondaryOutputSlot = OutputInventorySlot.at(132, 35));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 56, 17));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 56, 53));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
+        builder.addSlot(secondaryOutputSlot = OutputInventorySlot.at(this, 132, 35));
         return builder.build();
     }
 

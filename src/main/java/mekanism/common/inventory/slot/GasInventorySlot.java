@@ -9,6 +9,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.recipe.GasConversionHandler;
 import net.minecraft.item.Item;
@@ -19,7 +20,8 @@ public class GasInventorySlot extends BasicInventorySlot {
     /**
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static GasInventorySlot rotary(@Nonnull GasTank gasTank, Predicate<@NonNull Gas> validInput, BooleanSupplier modeSupplier, int x, int y) {
+    public static GasInventorySlot rotary(@Nonnull GasTank gasTank, Predicate<@NonNull Gas> validInput, BooleanSupplier modeSupplier, IMekanismInventory inventory,
+          int x, int y) {
         //Mode == true if gas to fluid
         return new GasInventorySlot(gasTank, alwaysFalse, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
@@ -53,13 +55,13 @@ public class GasInventorySlot extends BasicInventorySlot {
                 return gasItem.getNeeded(stack) > 0;
             }
             return false;
-        }, x, y);
+        }, inventory, x, y);
     }
 
     /**
      * Fills the tank from this item OR converts the given item to a gas
      */
-    public static GasInventorySlot fillOrConvert(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, int x, int y) {
+    public static GasInventorySlot fillOrConvert(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, IMekanismInventory inventory, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -97,13 +99,13 @@ public class GasInventorySlot extends BasicInventorySlot {
             //TODO: Re-evaluate this after switching GasConversion to being a recipe
             //Allow gas conversion of items that have a gas that is valid
             return !GasConversionHandler.getItemGasConversion(stack, isValidGas).isEmpty();
-        }, x, y);
+        }, inventory, x, y);
     }
 
     /**
      * Fills the tank from this item
      */
-    public static GasInventorySlot fill(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, int x, int y) {
+    public static GasInventorySlot fill(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, IMekanismInventory inventory, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -134,7 +136,7 @@ public class GasInventorySlot extends BasicInventorySlot {
                 return !containedGas.isEmpty() && isValidGas.test(containedGas.getType());
             }
             return false;
-        }, x, y);
+        }, inventory, x, y);
     }
 
     /**
@@ -142,7 +144,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      *
      * Drains the tank into this item.
      */
-    public static GasInventorySlot drain(@Nonnull GasTank gasTank, int x, int y) {
+    public static GasInventorySlot drain(@Nonnull GasTank gasTank, IMekanismInventory inventory, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -176,15 +178,15 @@ public class GasInventorySlot extends BasicInventorySlot {
                 return ((IGasItem) item).getNeeded(stack) > 0;
             }
             return false;
-        }, x, y);
+        }, inventory, x, y);
     }
 
     //TODO: Replace GasTank with an IGasHandler??
     private final GasTank gasTank;
 
     private GasInventorySlot(@Nonnull GasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
-        super(canExtract, canInsert, validator, x, y);
+          @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+        super(canExtract, canInsert, validator, inventory, x, y);
         this.gasTank = gasTank;
     }
 

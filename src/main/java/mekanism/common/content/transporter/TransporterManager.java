@@ -41,8 +41,13 @@ public class TransporterManager {
         }
     }
 
+    /**
+     * @implNote Make sure to set stack size back to the originalCount when returning from this method
+     */
     private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack, int count) {
-        //IMPL NOTE: Make sure to set stack size back to the originalCount when returning from this method
+        //TODO: The changing size is because copying is semi expensive (or at least was in 1.12). Check if it is still expensive in 1.14
+        // Also IF we set the size of the stack to zero then does this get broken due to it updating to the empty stack, or does it get fixed when changing it back above
+        // a zero count
         int originalCount = stack.getCount();
         if (count != originalCount) {
             //If we have a different count than actual count, set the count to the proper amount (allows for slightly reduced copying stacks about)

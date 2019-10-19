@@ -64,7 +64,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private GasInventorySlot gasInputSlot;
     private InputInventorySlot inputSlot;
+    private GasInventorySlot outputSlot;
 
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
@@ -79,12 +81,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.fillOrConvert(injectTank, this::isValidGas, 6, 65), RelativeSide.BOTTOM);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 26, 36),
+        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::isValidGas, this, 6, 65), RelativeSide.BOTTOM);
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 26, 36),
               RelativeSide.TOP, RelativeSide.LEFT);
-        builder.addSlot(GasInventorySlot.drain(outputTank, 155, 25), RelativeSide.RIGHT);
+        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 25), RelativeSide.RIGHT);
         //TODO: Make this be accessible from some side for automation??
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5));
         return builder.build();
     }
 
@@ -92,7 +94,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(3, this);
-            ItemStack itemStack = getStackInSlot(0);
+            ItemStack itemStack = gasInputSlot.getStack();
             if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
                 //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though
                 IGasItem item = (IGasItem) itemStack.getItem();
@@ -105,7 +107,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
                     }
                 }
             }
-            TileUtils.drawGas(getStackInSlot(2), outputTank);
+            TileUtils.drawGas(outputSlot.getStack(), outputTank);
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

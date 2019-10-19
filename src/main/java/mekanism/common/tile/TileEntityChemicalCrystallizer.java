@@ -60,6 +60,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
+    private GasInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
 
     public TileEntityChemicalCrystallizer() {
@@ -92,9 +93,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), 6, 65));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(131, 57));
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5));
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this, 6, 65));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5));
         return builder.build();
     }
 
@@ -102,7 +103,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(2, this);
-            TileUtils.receiveGas(getStackInSlot(0), inputTank);
+            TileUtils.receiveGas(inputSlot.getStack(), inputTank);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

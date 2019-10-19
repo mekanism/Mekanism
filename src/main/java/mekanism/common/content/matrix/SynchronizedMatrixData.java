@@ -45,8 +45,9 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     public static List<IInventorySlot> createBaseInventorySlots() {
         //TODO: Look into some way of allowing slot position to be set differently if needed
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        inventorySlots.add(EnergyInventorySlot.charge(146, 20));
-        inventorySlots.add(EnergyInventorySlot.discharge(146, 51));
+        //TODO: FIXME?? ideally we don't pass null as the inventory??
+        inventorySlots.add(EnergyInventorySlot.charge(null, 146, 20));
+        inventorySlots.add(EnergyInventorySlot.discharge(null, 146, 51));
         return inventorySlots;
     }
 

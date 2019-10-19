@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
@@ -14,20 +15,25 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class BasicInventorySlot implements IInventorySlot {
 
-    protected static final Predicate<@NonNull ItemStack> alwaysTrue = item -> true;
-    protected static final Predicate<@NonNull ItemStack> alwaysFalse = item -> false;
+    protected static final Predicate<@NonNull ItemStack> alwaysTrue = stack -> true;
+    protected static final Predicate<@NonNull ItemStack> alwaysFalse = stack -> false;
     private static final int DEFAULT_LIMIT = 64;
 
-    public static BasicInventorySlot at(int x, int y) {
-        return new BasicInventorySlot(x, y);
+    public static BasicInventorySlot at(IMekanismInventory inventory, int x, int y) {
+        return at(alwaysTrue, inventory, x, y);
     }
 
-    public static BasicInventorySlot at(@Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
-        return new BasicInventorySlot(validator, x, y);
+    public static BasicInventorySlot at(@Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+        return new BasicInventorySlot(alwaysTrue, alwaysTrue, validator, inventory, x, y);
     }
 
-    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
-        return new BasicInventorySlot(canExtract, canInsert, x, y);
+    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, IMekanismInventory inventory, int x, int y) {
+        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
+    }
+
+    public static BasicInventorySlot at(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, IMekanismInventory inventory,
+          int x, int y) {
+        return new BasicInventorySlot(limit, canExtract, canInsert, alwaysTrue, inventory, x, y);
     }
 
     @Nonnull
@@ -37,46 +43,23 @@ public class BasicInventorySlot implements IInventorySlot {
     private final Predicate<@NonNull ItemStack> canExtract;
     private final Predicate<@NonNull ItemStack> canInsert;
     private final int limit;
-    protected final int x;
-    protected final int y;
+    private final IMekanismInventory inventory;
+    private final int x;
+    private final int y;
     protected boolean obeyStackLimit = true;
 
-    //TODO: Make these protected and maybe remove some of these default helper constructors
-    public BasicInventorySlot(int x, int y) {
-        this(DEFAULT_LIMIT, x, y);
+    protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
+          IMekanismInventory inventory, int x, int y) {
+        this(DEFAULT_LIMIT, canExtract, canInsert, validator, inventory, x, y);
     }
 
-    public BasicInventorySlot(int limit, int x, int y) {
-        this(limit, alwaysTrue, alwaysTrue, x, y);
-    }
-
-    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
-        this(DEFAULT_LIMIT, canExtract, canInsert, x, y);
-    }
-
-    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, int x, int y) {
-        this(limit, canExtract, canInsert, alwaysTrue, x, y);
-    }
-
-    public BasicInventorySlot(@Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
-        this(DEFAULT_LIMIT, validator, x, y);
-    }
-
-    public BasicInventorySlot(int limit, @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
-        this(limit, alwaysTrue, alwaysTrue, validator, x, y);
-    }
-
-    public BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator, int x,
-          int y) {
-        this(DEFAULT_LIMIT, canExtract, canInsert, validator, x, y);
-    }
-
-    public BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          @Nonnull Predicate<@NonNull ItemStack> validator, int x, int y) {
+    protected BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+          @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
         this.limit = limit;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
+        this.inventory = inventory;
         this.x = x;
         this.y = y;
     }
@@ -102,6 +85,8 @@ public class BasicInventorySlot implements IInventorySlot {
         if (stack.isEmpty()) {
             current = ItemStack.EMPTY;
         } else if (isItemValid(stack)) {
+            //TODO: Should we allow forcefully setting invalid items? At least we need to go through them and check to make sure we allow setting an empty container??
+            // This error of empty container not being valid may not even be an issue once we move logic for resources into the specific slots
             current = stack.copy();
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
@@ -184,8 +169,9 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public void onContentsChanged() {
-        //TODO: IMPLEMENT THIS so as ot mark the tile/inventory it is in as dirty
-        // Make a method in IMekanismInventory for onContentsChanged, and then have slots take an inventory as it and then pass it up that way
+        if (inventory != null) {
+            inventory.onContentsChanged();
+        }
     }
 
     //TODO: Should we move InventoryContainerSlot to the API and reference that instead

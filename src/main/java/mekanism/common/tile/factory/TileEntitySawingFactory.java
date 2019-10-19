@@ -42,9 +42,9 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         int baseXMult = tier == FactoryTier.BASIC ? 38 : tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tier.processes; i++) {
             int xPos = baseX + (i * baseXMult);
-            OutputInventorySlot outputSlot = OutputInventorySlot.at(xPos, 57);
-            OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(xPos, 77);
-            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, xPos, 13);
+            OutputInventorySlot outputSlot = OutputInventorySlot.at(this, xPos, 57);
+            OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(this, xPos, 77);
+            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, this, xPos, 13);
             builder.addSlot(inputSlot);
             builder.addSlot(outputSlot);
             builder.addSlot(secondaryOutputSlot);

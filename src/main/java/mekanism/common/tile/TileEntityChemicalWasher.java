@@ -77,6 +77,9 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private FluidInventorySlot fluidSlot;
+    private GasInventorySlot gasOutputSlot;
+
     public TileEntityChemicalWasher() {
         super(MekanismBlock.CHEMICAL_WASHER);
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
@@ -88,10 +91,12 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), 180, 71), RelativeSide.LEFT);
-        builder.addSlot(OutputInventorySlot.at(180, 102), RelativeSide.TOP);
-        builder.addSlot(GasInventorySlot.drain(outputTank, 155, 56), RelativeSide.RIGHT);
-        builder.addSlot(EnergyInventorySlot.discharge(155, 5));
+        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), this, 180, 71),
+              RelativeSide.LEFT);
+        //Output slot for the fluid container that was used as an input
+        builder.addSlot(OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
+        builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
+        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5));
         return builder.build();
     }
 
@@ -99,11 +104,12 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(3, this);
-            ItemStack fluidInputStack = getStackInSlot(0);
+            ItemStack fluidInputStack = fluidSlot.getStack();
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
-                fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), FluidAction.EXECUTE);
+                //TODO: Do we need this check? It should be a fluid input item if it is in the slot??
+                fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, fluidSlot), FluidAction.EXECUTE);
             }
-            TileUtils.drawGas(getStackInSlot(2), outputTank);
+            TileUtils.drawGas(gasOutputSlot.getStack(), outputTank);
             double prev = getEnergy();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

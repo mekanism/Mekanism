@@ -94,7 +94,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), 17, 35));
+        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this, 17, 35));
         //TODO: Verify that it is properly querying the infusion tank's type if it changes
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
@@ -102,9 +102,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             }
             //Otherwise just look for items that can be used
             return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
-        }, 51, 43));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(109, 43));
-        builder.addSlot(EnergyInventorySlot.discharge(143, 35));
+        }, this, 51, 43));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 109, 43));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
     }
 

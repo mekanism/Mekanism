@@ -78,8 +78,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.charge(143, 35));
-        builder.addSlot(EnergyInventorySlot.discharge(17, 35));
+        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35));
+        builder.addSlot(EnergyInventorySlot.discharge(this, 17, 35));
         return builder.build();
     }
 

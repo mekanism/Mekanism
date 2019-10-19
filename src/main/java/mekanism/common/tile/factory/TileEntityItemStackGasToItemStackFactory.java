@@ -51,7 +51,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected void addSlots(InventorySlotHelper.Builder builder) {
         super.addSlots(builder);
-        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, 7, 57));
+        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this, 7, 57));
     }
 
     @Override

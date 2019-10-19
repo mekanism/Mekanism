@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Hand;
 
+//TODO: Should this be rewritten to be a mekanism inventory
 public class InventoryPersonalChest extends Inventory {
 
     private final ItemStack itemStack;

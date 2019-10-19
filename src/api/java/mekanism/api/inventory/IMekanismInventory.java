@@ -8,9 +8,7 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
-//TODO: Go through all the usages of ItemStack setCount, grow, and shrink as any that are from inventories should have the slot change it,
-// rather than forcefully changing it when the API says it shouldn't be modified
-// ALSO make sure to check all getStackInSlot calls to see if they are then being passed to stuff that may modify them
+//TODO: Move all secondary slot calculations like gas/fluid/energy input/output to the slots so that they can mutate the stack properly instead of breaking API
 public interface IMekanismInventory extends ISidedItemHandler {
 
     /**
@@ -44,6 +42,11 @@ public interface IMekanismInventory extends ISidedItemHandler {
      */
     @Nonnull
     List<IInventorySlot> getInventorySlots(@Nullable Direction side);
+
+    /**
+     * Called when the contents of this inventory changes.
+     */
+    void onContentsChanged();
 
     /**
      * Returns the {@link IInventorySlot} that has the given index from the list of slots on the given side.
