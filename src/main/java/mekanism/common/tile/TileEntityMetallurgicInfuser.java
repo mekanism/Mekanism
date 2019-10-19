@@ -66,6 +66,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     private InfusionInventorySlot infusionSlot;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityMetallurgicInfuser() {
         super(MekanismBlock.METALLURGIC_INFUSER, 200);
@@ -104,14 +105,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
         }, this, 51, 43));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 109, 43));
-        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(4, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             //TODO: Move this logic into the slot
             ItemStack infuseInput = infusionSlot.getStack();
             if (!infuseInput.isEmpty()) {

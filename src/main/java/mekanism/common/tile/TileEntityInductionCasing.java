@@ -1,9 +1,11 @@
 package mekanism.common.tile;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
@@ -40,8 +42,10 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         if (!isRemote()) {
             if (structure != null && isRendering) {
                 structure.tick(getWorld());
-                ChargeUtils.charge(0, this);
-                ChargeUtils.discharge(1, this);
+                //TODO: FIXME??
+                List<IInventorySlot> inventorySlots = getInventorySlots(null);
+                ChargeUtils.charge(inventorySlots.get(0).getStack(), this);
+                ChargeUtils.discharge(inventorySlots.get(1).getStack(), this);
             }
         }
     }

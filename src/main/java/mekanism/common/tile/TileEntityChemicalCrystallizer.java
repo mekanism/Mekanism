@@ -62,6 +62,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     private GasInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalCrystallizer() {
         super(MekanismBlock.CHEMICAL_CRYSTALLIZER, 200);
@@ -95,14 +96,14 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this, 6, 65));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
-        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(2, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             TileUtils.receiveGas(inputSlot.getStack(), inputTank);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

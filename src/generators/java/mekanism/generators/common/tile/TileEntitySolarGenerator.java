@@ -25,6 +25,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private double peakOutput;
     private boolean settingsChecked;
 
+    private EnergyInventorySlot energySlot;
+
     public TileEntitySolarGenerator() {
         this(GeneratorsBlock.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get() * 2);
     }
@@ -37,7 +39,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35));
         return builder.build();
     }
 
@@ -77,7 +79,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
                 recheckSettings();
             }
 
-            ChargeUtils.charge(0, this);
+            ChargeUtils.charge(energySlot.getStack(), this);
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
             // significant penalty.

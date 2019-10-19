@@ -37,6 +37,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
 
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     /**
      * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the upgrade slot (3). It will not run if it does not
@@ -71,8 +72,8 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 56, 17));
-        builder.addSlot(EnergyInventorySlot.discharge(this, 56, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 56, 53));
         return builder.build();
     }
 
@@ -90,7 +91,7 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(1, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

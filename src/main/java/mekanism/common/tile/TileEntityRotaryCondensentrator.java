@@ -68,6 +68,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     private OutputInventorySlot gasOutputSlot;
     private FluidInventorySlot fluidInputSlot;
     private OutputInventorySlot fluidOutputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityRotaryCondensentrator() {
         super(MekanismBlock.ROTARY_CONDENSENTRATOR);
@@ -82,14 +83,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         builder.addSlot(gasOutputSlot = OutputInventorySlot.at(this, 5, 56), RelativeSide.LEFT);
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, fluid -> true, () -> mode == 1, this, 155, 25), RelativeSide.RIGHT);
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56), RelativeSide.RIGHT);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(4, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
 
             if (mode == 0) {
                 TileUtils.receiveGas(gasOutputSlot.getStack(), gasTank);

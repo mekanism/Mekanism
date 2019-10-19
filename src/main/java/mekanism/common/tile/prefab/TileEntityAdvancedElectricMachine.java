@@ -74,6 +74,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private GasInventorySlot secondarySlot;
+    private EnergyInventorySlot energySlot;
 
     /**
      * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
@@ -121,7 +122,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 56, 17));
         builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this, 56, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(EnergyInventorySlot.discharge(this, 31, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 31, 35));
         return builder.build();
     }
 
@@ -161,7 +162,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(3, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             handleSecondaryFuel();
             //TODO: Is there some better way to do this rather than storing it and then doing it like this?
             // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics

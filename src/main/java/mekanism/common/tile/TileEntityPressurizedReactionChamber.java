@@ -74,6 +74,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber() {
         super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
@@ -115,15 +116,15 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInputSolid().testType(item)), this, 54, 35));
-        builder.addSlot(EnergyInventorySlot.discharge(this, 141, 19));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 141, 19));
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(1, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

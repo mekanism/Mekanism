@@ -22,6 +22,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
 
     public int clientPiston;
 
+    private EnergyInventorySlot energySlot;
+
     public TileEntitySeismicVibrator() {
         super(MekanismBlock.SEISMIC_VIBRATOR);
     }
@@ -30,7 +32,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
     }
 
@@ -41,7 +43,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
                 clientPiston++;
             }
         } else {
-            ChargeUtils.discharge(0, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseUsage()) {
                 setActive(true);
                 pullEnergy(null, getBaseUsage(), false);

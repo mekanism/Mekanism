@@ -67,6 +67,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     private GasInventorySlot gasInputSlot;
     private InputInventorySlot inputSlot;
     private GasInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
@@ -86,14 +87,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
               RelativeSide.TOP, RelativeSide.LEFT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 25), RelativeSide.RIGHT);
         //TODO: Make this be accessible from some side for automation??
-        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(3, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             ItemStack itemStack = gasInputSlot.getStack();
             if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
                 //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though

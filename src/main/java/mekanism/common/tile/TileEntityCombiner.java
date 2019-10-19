@@ -41,6 +41,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     private InputInventorySlot mainInputSlot;
     private InputInventorySlot extraInputSlot;
     private OutputInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     /**
      * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
@@ -78,7 +79,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), this, 56, 17));
         builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), this, 56, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(EnergyInventorySlot.discharge(this, 31, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 31, 35));
         return builder.build();
     }
 
@@ -98,7 +99,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(3, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

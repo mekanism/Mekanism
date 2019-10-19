@@ -739,6 +739,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nullable
     protected IInventorySlotHolder getInitialInventory() {
         //TODO: Go back through and verify all sides are correct/make sense now that it is easier to tell what slot is what
+        // Also reorder the slots to be more logical when the order does not make much sense
         return null;
     }
 

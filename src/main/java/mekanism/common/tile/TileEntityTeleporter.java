@@ -68,6 +68,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     public TileComponentChunkLoader chunkLoaderComponent;
 
+    private EnergyInventorySlot energySlot;
+
     public TileEntityTeleporter() {
         super(MekanismBlock.TELEPORTER);
         chunkLoaderComponent = new TileComponentChunkLoader(this);
@@ -77,7 +79,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 153, 7));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 153, 7));
         return builder.build();
     }
 
@@ -158,7 +160,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             prevShouldRender = shouldRender;
             teleDelay = Math.max(0, teleDelay - 1);
         }
-        ChargeUtils.discharge(0, this);
+        ChargeUtils.discharge(energySlot.getStack(), this);
     }
 
     @Override

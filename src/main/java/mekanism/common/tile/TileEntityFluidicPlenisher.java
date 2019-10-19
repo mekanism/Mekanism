@@ -77,6 +77,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityFluidicPlenisher() {
         super(MekanismBlock.FLUIDIC_PLENISHER);
@@ -98,7 +99,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(2, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, inputSlot, outputSlot, new FluidChecker() {
                     @Override

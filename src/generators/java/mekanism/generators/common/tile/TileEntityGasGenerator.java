@@ -54,6 +54,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     private int currentRedstoneLevel;
 
     private GasInventorySlot fuelSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator() {
         super(GeneratorsBlock.GAS_BURNING_GENERATOR, MekanismConfig.general.FROM_H2.get() * 2);
@@ -66,7 +67,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, gas -> !FuelHandler.getFuel(gas).isEmpty(), this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
+        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
@@ -75,7 +76,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         super.onUpdate();
 
         if (!isRemote()) {
-            ChargeUtils.charge(1, this);
+            ChargeUtils.charge(energySlot.getStack(), this);
             ItemStack stack = fuelSlot.getStack();
             if (!stack.isEmpty() && fuelTank.getStored() < MAX_GAS) {
                 Gas gasType = MekanismAPI.EMPTY_GAS;

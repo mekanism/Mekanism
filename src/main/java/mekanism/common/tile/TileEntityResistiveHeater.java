@@ -34,6 +34,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     public float soundScale = 1;
     public double lastEnvironmentLoss;
 
+    private EnergyInventorySlot energySlot;
+
     public TileEntityResistiveHeater() {
         super(MekanismBlock.RESISTIVE_HEATER);
     }
@@ -42,7 +44,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 15, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 15, 35));
         return builder.build();
     }
 
@@ -50,7 +52,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     public void onUpdate() {
         if (!isRemote()) {
             boolean packet = false;
-            ChargeUtils.discharge(0, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             double toUse = 0;
             if (MekanismUtils.canFunction(this)) {
                 toUse = Math.min(getEnergy(), energyUsage);

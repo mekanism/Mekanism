@@ -108,6 +108,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     private FluidInventorySlot fluidSlot;
     private GasInventorySlot leftOutputSlot;
     private GasInventorySlot rightOutputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityElectrolyticSeparator() {
         super(MekanismBlock.ELECTROLYTIC_SEPARATOR);
@@ -126,7 +127,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52), RelativeSide.LEFT);
         builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52), RelativeSide.RIGHT);
         //TODO: Make accessible for automation
-        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
     }
 
@@ -138,7 +139,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(3, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             ItemStack fluidInputStack = fluidSlot.getStack();
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
                 //TODO: Is this check even needed

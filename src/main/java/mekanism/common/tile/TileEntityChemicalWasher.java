@@ -79,6 +79,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
 
     private FluidInventorySlot fluidSlot;
     private GasInventorySlot gasOutputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalWasher() {
         super(MekanismBlock.CHEMICAL_WASHER);
@@ -96,14 +97,14 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         //Output slot for the fluid container that was used as an input
         builder.addSlot(OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
         builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(3, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             ItemStack fluidInputStack = fluidSlot.getStack();
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
                 //TODO: Do we need this check? It should be a fluid input item if it is in the slot??

@@ -47,15 +47,6 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
-    public static final int SLOT_UPGRADE = 0;
-    public static final int SLOT_ENERGY = 1;
-    public static final int SLOT_FORMULA = 2;
-    public static final int SLOT_INPUT_FIRST = 3;
-    public static final int SLOT_INPUT_LAST = 20;
-    public static final int SLOT_OUTPUT_FIRST = 21;
-    public static final int SLOT_OUTPUT_LAST = 26;
-    public static final int SLOT_CRAFT_MATRIX_FIRST = 27;
-    public static final int SLOT_CRAFT_MATRIX_LAST = 35;
 
     public CraftingInventory dummyInv = MekanismUtils.getDummyCraftingInv();
 
@@ -89,17 +80,18 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private List<InputInventorySlot> inputSlots;
     private List<OutputInventorySlot> outputSlots;
     private FormulaInventorySlot formulaSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityFormulaicAssemblicator() {
         super(MekanismBlock.FORMULAIC_ASSEMBLICATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
-        //TODO: This needs to be rethought (Especially because the slots ids are wrong due to not having the upgrade slot be in it
+        //TODO: This needs to be rethought (Especially because the slots ids are wrong due to not having the upgrade slot be in it)
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{SLOT_INPUT_FIRST, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                                                                                                             16, 17, 18, 19, SLOT_INPUT_LAST}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{SLOT_OUTPUT_FIRST, 22, 23, 24, 25, SLOT_OUTPUT_LAST}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{SLOT_ENERGY}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                                                                                                             16, 17, 18, 19, 20}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{21, 22, 23, 24, 25, 26}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{1}));
 
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{0, 0, 0, 3, 1, 2});
         configComponent.setInputConfig(TransmissionType.ENERGY);
@@ -119,7 +111,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         outputSlots = new ArrayList<>();
 
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 152, 76));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 76));
         builder.addSlot(formulaSlot = FormulaInventorySlot.at(this, 6, 26));
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
@@ -191,7 +183,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 needsOrganize = false;
                 organizeStock();
             }
-            ChargeUtils.discharge(SLOT_ENERGY, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             if (getControlType() != RedstoneControl.PULSE) {
                 pulseOperations = 0;
             } else if (MekanismUtils.canFunction(this)) {

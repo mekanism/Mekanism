@@ -125,6 +125,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     private IInventorySlot typeInputSlot;
     private OutputInventorySlot typeOutputSlot;
+    private EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -204,7 +205,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
-        builder.addSlot(EnergyInventorySlot.discharge(this, 7, 13));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 7, 13));
         //TODO: Make these two slots not show up on the auto generation of gui
         //TODO: Make this input slot only accept other machines for factories
         builder.addSlot(typeInputSlot = InputInventorySlot.at(this, tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
@@ -291,7 +292,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             if (ticker == 1) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
-            ChargeUtils.discharge(ENERGY_SLOT_ID, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
 
             handleSecondaryFuel();
             sortInventory();

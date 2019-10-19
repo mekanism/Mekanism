@@ -64,6 +64,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     private int currentRedstoneLevel;
 
     private FuelInventorySlot fuelSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator() {
         super(GeneratorsBlock.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get() * 2);
@@ -76,7 +77,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         //TODO: See if this can be cleaned up/optimized
         builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
+        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
@@ -85,7 +86,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         super.onUpdate();
 
         if (!isRemote()) {
-            ChargeUtils.charge(1, this);
+            ChargeUtils.charge(energySlot.getStack(), this);
             ItemStack fuelStack = fuelSlot.getStack();
             if (!fuelStack.isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(fuelStack)) {

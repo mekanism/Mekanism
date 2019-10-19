@@ -3,7 +3,6 @@ package mekanism.common.util;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
@@ -12,7 +11,6 @@ import net.minecraft.item.Items;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
 
 public final class ChargeUtils {
 
@@ -28,53 +26,31 @@ public final class ChargeUtils {
     /**
      * Universally discharges an item, and updates the TileEntity's energy level.
      *
-     * @param slotID - ID of the slot of which to charge
+     * @param stack  - ItemStack to discharge
      * @param storer - TileEntity the item is being charged in
      */
-    public static void discharge(int slotID, IStrictEnergyStorage storer) {
-        if (storer instanceof IItemHandler) {
-            if (storer instanceof IMekanismInventory && !((IMekanismInventory) storer).hasInventory()) {
-                return;
+    public static void discharge(ItemStack stack, IStrictEnergyStorage storer) {
+        //TODO: FIXME the stack should not be modified. Though might be simpler once we move this into the energy inventory slot
+        if (!stack.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
+            LazyOptional<IEnergyStorage> forgeCapability;
+            if (stack.getItem() instanceof IEnergizedItem) {
+                storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(stack, storer.getMaxEnergy() - storer.getEnergy()));
+            } else if (MekanismUtils.useForge() && (forgeCapability = stack.getCapability(CapabilityEnergy.ENERGY)).isPresent()) {
+                forgeCapability.ifPresent(storage -> {
+                    if (storage.canExtract()) {
+                        int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
+                        storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
+                    }
+                });
             }
-            IItemHandler inv = (IItemHandler) storer;
-            ItemStack stack = inv.getStackInSlot(slotID);
-            //TODO: FIXME the stack should not be modified. Though might be simpler once we move this into the energy inventory slot
-            if (!stack.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
-                LazyOptional<IEnergyStorage> forgeCapability;
-                if (stack.getItem() instanceof IEnergizedItem) {
-                    storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(stack, storer.getMaxEnergy() - storer.getEnergy()));
-                } else if (MekanismUtils.useForge() && (forgeCapability = stack.getCapability(CapabilityEnergy.ENERGY)).isPresent()) {
-                    forgeCapability.ifPresent(storage -> {
-                        if (storage.canExtract()) {
-                            int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
-                            storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
-                        }
-                    });
-                }
-                //TODO: IC2
+            //TODO: IC2
                 /*else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
                     double gain = IC2Integration.fromEU(ElectricItem.manager.discharge(stack, IC2Integration.toEU(storer.getMaxEnergy() - storer.getEnergy()), 4, true, true, false));
                     storer.setEnergy(storer.getEnergy() + gain);
                 }*/
-                else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= storer.getMaxEnergy()) {
-                    storer.setEnergy(storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
-                    stack.shrink(1);
-                }
-            }
-        }
-    }
-
-    /**
-     * Universally charges an item, and updates the TileEntity's energy level.
-     *
-     * @param slotID - ID of the slot of which to discharge
-     * @param storer - TileEntity the item is being discharged in
-     */
-    public static void charge(int slotID, IStrictEnergyStorage storer) {
-        //TODO: Switch to item handler
-        if (storer instanceof IItemHandler) {
-            if (!(storer instanceof IMekanismInventory) || ((IMekanismInventory) storer).hasInventory()) {
-                charge(((IItemHandler) storer).getStackInSlot(slotID), storer);
+            else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= storer.getMaxEnergy()) {
+                storer.setEnergy(storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
+                stack.shrink(1);
             }
         }
     }
@@ -86,6 +62,7 @@ public final class ChargeUtils {
      * @param storer - TileEntity the item is being discharged in
      */
     public static void charge(ItemStack stack, IStrictEnergyStorage storer) {
+        //TODO: FIXME the stack should not be modified. Though might be simpler once we move this into the energy inventory slot
         if (!stack.isEmpty() && storer.getEnergy() > 0) {
             LazyOptional<IEnergyStorage> forgeCapability;
             if (stack.getItem() instanceof IEnergizedItem) {

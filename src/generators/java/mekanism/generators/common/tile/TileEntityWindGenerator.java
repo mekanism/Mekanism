@@ -25,6 +25,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private float currentMultiplier;
     private boolean isBlacklistDimension = false;
 
+    private EnergyInventorySlot energySlot;
+
     public TileEntityWindGenerator() {
         super(GeneratorsBlock.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get() * 2);
     }
@@ -33,7 +35,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(EnergyInventorySlot.charge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35));
         return builder.build();
     }
 
@@ -59,7 +61,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         super.onUpdate();
 
         if (!isRemote()) {
-            ChargeUtils.charge(0, this);
+            ChargeUtils.charge(energySlot.getStack(), this);
             // If we're in a blacklisted dimension, there's nothing more to do
             if (isBlacklistDimension) {
                 return;

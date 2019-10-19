@@ -93,6 +93,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityElectricPump() {
         super(MekanismBlock.ELECTRIC_PUMP);
@@ -104,14 +105,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(inputSlot = FluidInventorySlot.drain(fluidTank, this, 28, 20), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 28, 51), RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
         return builder.build();
     }
 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(2, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             if (!fluidTank.getFluid().isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, inputSlot, outputSlot);

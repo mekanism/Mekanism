@@ -138,6 +138,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     private List<IInventorySlot> mainSlots;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityDigitalMiner() {
         super(MekanismBlock.DIGITAL_MINER);
@@ -161,7 +162,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 //RelativeSide.BACK && !isReplaceStack(stack)
             }
         }
-        builder.addSlot(EnergyInventorySlot.discharge(this, 152, 6));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 6));
         return builder.build();
     }
 
@@ -186,7 +187,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 initCalc = true;
             }
 
-            ChargeUtils.discharge(27, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
 
             if (MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0) {
                 setActive(true);

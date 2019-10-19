@@ -61,6 +61,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     private GasInventorySlot leftInputSlot;
     private GasInventorySlot outputSlot;
     private GasInventorySlot rightInputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalInfuser() {
         super(MekanismBlock.CHEMICAL_INFUSER);
@@ -78,7 +79,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this::isValidGas, this, 5, 56), RelativeSide.LEFT);
         builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this::isValidGas, this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65), RelativeSide.FRONT);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         return builder.build();
     }
 
@@ -89,7 +90,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(3, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             TileUtils.receiveGas(leftInputSlot.getStack(), leftTank);
             TileUtils.receiveGas(rightInputSlot.getStack(), rightTank);
             TileUtils.drawGas(outputSlot.getStack(), centerTank);

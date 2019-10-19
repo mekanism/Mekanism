@@ -41,6 +41,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private OutputInventorySlot secondaryOutputSlot;
+    private EnergyInventorySlot energySlot;
 
     public TileEntityPrecisionSawmill() {
         super(MekanismBlock.PRECISION_SAWMILL, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
@@ -69,9 +70,9 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 56, 17));
-        builder.addSlot(EnergyInventorySlot.discharge(this, 56, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(secondaryOutputSlot = OutputInventorySlot.at(this, 132, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 56, 53));
         return builder.build();
     }
 
@@ -92,7 +93,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(1, this);
+            ChargeUtils.discharge(energySlot.getStack(), this);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
