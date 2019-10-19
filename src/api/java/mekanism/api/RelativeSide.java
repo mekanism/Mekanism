@@ -13,8 +13,10 @@ public enum RelativeSide {
 
     /**
      * Gets the {@link RelativeSide} based on a side, and the facing direction of a block.
+     *
      * @param facing The direction the block is facing.
-     * @param side The side of the block we want to know what {@link RelativeSide} it is.
+     * @param side   The side of the block we want to know what {@link RelativeSide} it is.
+     *
      * @return the {@link RelativeSide} based on a side, and the facing direction of a block.
      *
      * @apiNote The calculations for what side is what when facing upwards or downwards, is done as if it was facing NORTH and rotated around the X-axis

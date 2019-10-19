@@ -104,6 +104,7 @@ public class Mekanism {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return ClientProxy::new;
     }
+
     /**
      * Mekanism mod instance
      */

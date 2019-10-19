@@ -16,6 +16,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * The side this {@link ISidedItemHandler} is for. This defaults to null, which is for internal use.
+     *
      * @return The default side to use for the normal {@link IItemHandler} methods when wrapping them into {@link ISidedItemHandler} methods.
      */
     @Nullable

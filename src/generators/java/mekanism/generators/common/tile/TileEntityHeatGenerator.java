@@ -74,7 +74,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         //TODO: See if this can be cleaned up/optimized
-        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA),this, 17, 35),
+        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();

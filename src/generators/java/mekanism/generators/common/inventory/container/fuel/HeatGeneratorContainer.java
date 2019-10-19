@@ -15,6 +15,7 @@ public class HeatGeneratorContainer extends FuelGeneratorContainer<TileEntityHea
     public HeatGeneratorContainer(int id, PlayerInventory inv, PacketBuffer buf) {
         this(id, inv, getTileFromBuf(buf, TileEntityHeatGenerator.class));
     }
+
     @Override
     protected boolean tryFuel(ItemStack slotStack) {
         return tile.getFuel(slotStack) > 0;

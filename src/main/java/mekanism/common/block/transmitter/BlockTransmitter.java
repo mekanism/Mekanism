@@ -110,7 +110,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        if (!context.hasItem(MekanismItem.CONFIGURATOR.getItem()))  {
+        if (!context.hasItem(MekanismItem.CONFIGURATOR.getItem())) {
             return getRealShape(state, world, pos);
         }
         //Get the partial selection box if we are holding a configurator

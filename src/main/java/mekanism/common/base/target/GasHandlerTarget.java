@@ -1,7 +1,7 @@
 package mekanism.common.base.target;
 
-import mekanism.api.annotations.NonNull;
 import mekanism.api.Action;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.common.base.SplitInfo;

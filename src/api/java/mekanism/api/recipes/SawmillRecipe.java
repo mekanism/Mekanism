@@ -48,7 +48,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     }
 
     public List<ItemStack> getSecondaryOutputDefinition() {
-        return secondaryOutput.isEmpty() ? Collections.emptyList() :  Collections.singletonList(secondaryOutput);
+        return secondaryOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(secondaryOutput);
     }
 
     public double getSecondaryChance() {

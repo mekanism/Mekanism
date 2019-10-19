@@ -136,8 +136,6 @@ public final class ChargeUtils {
 
     /**
      * Checks if it is a valid energy item that can be extracted from, but not if it currently has any power stored.
-     * @param itemstack
-     * @return
      */
     public static boolean isEnergyItem(ItemStack itemstack) {
         if (itemstack.getItem() instanceof IEnergizedItem) {

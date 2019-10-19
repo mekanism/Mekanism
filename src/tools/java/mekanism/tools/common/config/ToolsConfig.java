@@ -1,10 +1,10 @@
 package mekanism.tools.common.config;
 
 import mekanism.common.config.IMekanismConfig;
-import mekanism.tools.common.material.impl.BronzeMaterialDefaults;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import mekanism.tools.common.material.impl.LapisLazuliMaterialDefaults;
 import mekanism.tools.common.material.MaterialCreator;
+import mekanism.tools.common.material.impl.BronzeMaterialDefaults;
+import mekanism.tools.common.material.impl.LapisLazuliMaterialDefaults;
 import mekanism.tools.common.material.impl.OsmiumMaterialDefaults;
 import mekanism.tools.common.material.impl.RefinedGlowstoneMaterialDefaults;
 import mekanism.tools.common.material.impl.RefinedObsidianMaterialDefaults;

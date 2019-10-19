@@ -2,8 +2,8 @@ package mekanism.common.util;
 
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Action;
+import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.ChemicalTank;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;

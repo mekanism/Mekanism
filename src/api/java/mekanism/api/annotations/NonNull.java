@@ -12,6 +12,6 @@ import javax.annotation.meta.TypeQualifier;
  */
 @TypeQualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE_PARAMETER,ElementType.FIELD,ElementType.LOCAL_VARIABLE,ElementType.PARAMETER,ElementType.TYPE,ElementType.TYPE_USE})
+@Target({ElementType.TYPE_PARAMETER, ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.PARAMETER, ElementType.TYPE, ElementType.TYPE_USE})
 @Nonnull
 public @interface NonNull {}

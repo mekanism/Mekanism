@@ -137,7 +137,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "smelter":
-                for (ItemStackToItemStackRecipe  recipe : MekanismRecipeType.SMELTING.getRecipes(world)) {
+                for (ItemStackToItemStackRecipe recipe : MekanismRecipeType.SMELTING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.smelter.addRecipe(%s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInput()),
                           RecipeInfoHelper.getItemName(recipe.getOutput(null))
@@ -145,7 +145,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "enrichment":
-                for (ItemStackToItemStackRecipe  recipe : MekanismRecipeType.ENRICHING.getRecipes(world)) {
+                for (ItemStackToItemStackRecipe recipe : MekanismRecipeType.ENRICHING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.enrichment.addRecipe(%s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getInput()),
                           RecipeInfoHelper.getItemName(recipe.getOutput(null))
@@ -169,7 +169,7 @@ public class MekRecipesCommand extends CommandImpl {
                 }
                 break;
             case "compressor":
-                for (ItemStackGasToItemStackRecipe  recipe : MekanismRecipeType.COMPRESSING.getRecipes(world)) {
+                for (ItemStackGasToItemStackRecipe recipe : MekanismRecipeType.COMPRESSING.getRecipes(world)) {
                     CraftTweakerAPI.logInfo(String.format("mods.mekanism.compressor.addRecipe(%s, %s, %s)",
                           RecipeInfoHelper.getItemName(recipe.getItemInput()),
                           RecipeInfoHelper.getGasName(recipe.getGasInput().getRepresentations()),

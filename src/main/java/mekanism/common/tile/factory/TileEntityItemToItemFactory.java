@@ -35,7 +35,7 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
         for (int i = 0; i < tier.processes; i++) {
             int xPos = baseX + (i * baseXMult);
             OutputInventorySlot outputSlot = OutputInventorySlot.at(this, xPos, 57);
-            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot,this,  xPos, 13);
+            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, this, xPos, 13);
             builder.addSlot(inputSlot);
             builder.addSlot(outputSlot);
             inputHandlers[i] = InputHelper.getInputHandler(inputSlot);

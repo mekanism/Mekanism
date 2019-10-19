@@ -126,7 +126,7 @@ public class APIHandler implements MekanismRecipeHelper {
         checkPhase();
         //TODO: API way of adding recipes
         //RecipeHandler.addPRCRecipe(ItemStackIngredient.from(Ingredient.fromStacks(inputSolid), inputSolid.getCount()), FluidStackIngredient.from(inputFluid),
-              //GasStackIngredient.from(inputGas), outputSolid, outputGas, extraEnergy, ticks);
+        //GasStackIngredient.from(inputGas), outputSolid, outputGas, extraEnergy, ticks);
     }
 
     @Override

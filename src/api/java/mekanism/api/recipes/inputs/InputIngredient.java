@@ -30,6 +30,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
 
     /**
      * Writes this ingredient to a PacketBuffer.
+     *
      * @param buffer The buffer to write to.
      */
     void write(PacketBuffer buffer);

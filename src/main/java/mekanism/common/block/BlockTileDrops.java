@@ -150,8 +150,8 @@ public abstract class BlockTileDrops extends Block {
     }*/
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops}. Used together with {@link
-     * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops}. Used together with {@link Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState,
+     * TileEntity, ItemStack)}.
      *
      * @author Forge
      * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)
