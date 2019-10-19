@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
@@ -15,7 +14,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -160,25 +158,5 @@ public final class InventoryUtils {
     public static IItemHandler getItemHandler(TileEntity tile, Direction side) {
         //TODO: Do this better
         return CapabilityUtils.getCapabilityHelper(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).getValue();
-    }
-
-    //From Container#calcRedstoneFromInventory
-    public static int calcRedstoneFromInventory(@Nullable IItemHandler handler) {
-        if (handler == null) {
-            return 0;
-        }
-        int i = 0;
-        float f = 0.0F;
-
-        for (int j = 0; j < handler.getSlots(); ++j) {
-            ItemStack itemstack = handler.getStackInSlot(j);
-            if (!itemstack.isEmpty()) {
-                f += (float) itemstack.getCount() / (float) Math.min(handler.getSlotLimit(j), itemstack.getMaxStackSize());
-                ++i;
-            }
-        }
-
-        f = f / (float) handler.getSlots();
-        return MathHelper.floor(f * 14.0F) + (i > 0 ? 1 : 0);
     }
 }

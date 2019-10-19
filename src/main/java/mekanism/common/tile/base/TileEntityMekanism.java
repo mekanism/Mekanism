@@ -534,8 +534,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (hasInventory()) {
             if (handleInventory()) {
                 ListNBT tagList = new ListNBT();
-                for (int slotCount = 0; slotCount < getSlots(); slotCount++) {
-                    ItemStack stackInSlot = getStackInSlot(slotCount);
+                List<IInventorySlot> inventorySlots = getInventorySlots(null);
+                for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
+                    ItemStack stackInSlot = inventorySlots.get(slotCount).getStack();
                     if (!stackInSlot.isEmpty()) {
                         CompoundNBT tagCompound = new CompoundNBT();
                         tagCompound.putByte("Slot", (byte) slotCount);

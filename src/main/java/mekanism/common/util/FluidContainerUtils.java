@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.LazyOptionalHelper;
@@ -81,18 +82,18 @@ public final class FluidContainerUtils {
                 inputCopy = handler.getContainer();
             }
             ItemStack outputStack = outSlot.getStack();
-            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit())) {
+            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit(outputStack))) {
                 return stack;
             }
             stack.setAmount(stack.getAmount() - drained);
             if (outputStack.isEmpty()) {
                 outSlot.setStack(inputCopy);
             } else if (ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy)) {
-                if (outSlot.growStack(1) != 1) {
+                if (outSlot.growStack(1, Action.EXECUTE) != 1) {
                     //TODO: Print warning about failing to increase size of stack
                 }
             }
-            if (inSlot.shrinkStack(1) != 1) {
+            if (inSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                 //TODO: Print warning about failing to shrink size of stack
             }
             tileEntity.markDirty();
@@ -128,7 +129,7 @@ public final class FluidContainerUtils {
         ItemStack inputCopy = handler.getContainer();
         ItemStack outputStack = outSlot.getStack();
         if (!FluidUtil.getFluidContained(inputCopy).isPresent() && !inputCopy.isEmpty()) {
-            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit())) {
+            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit(outputStack))) {
                 return stored;
             }
         }
@@ -148,12 +149,12 @@ public final class FluidContainerUtils {
                 if (outputStack.isEmpty()) {
                     outSlot.setStack(inputCopy);
                 } else if (ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy)) {
-                    if (outSlot.growStack(1) != 1) {
+                    if (outSlot.growStack(1, Action.EXECUTE) != 1) {
                         //TODO: Print warning about failing to increase size of stack
                     }
                 }
             }
-            if (inSlot.shrinkStack(1) != 1) {
+            if (inSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                 //TODO: Print warning about failing to shrink size of stack
             }
             tileEntity.markDirty();

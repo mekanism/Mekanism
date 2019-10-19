@@ -76,7 +76,7 @@ public class FusionReactor {
 
     public boolean hasHohlraum() {
         if (controller != null) {
-            ItemStack hohlraum = controller.getStackInSlot(0);
+            ItemStack hohlraum = controller.getReactorSlot().getStack();
             if (!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
                 return !gasStack.isEmpty() && gasStack.getType().isIn(MekanismTags.FUSION_FUEL) && gasStack.getAmount() == ItemHohlraum.MAX_GAS;

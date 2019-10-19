@@ -38,6 +38,7 @@ public final class ChargeUtils {
             }
             IItemHandler inv = (IItemHandler) storer;
             ItemStack stack = inv.getStackInSlot(slotID);
+            //TODO: FIXME the stack should not be modified. Though might be simpler once we move this into the energy inventory slot
             if (!stack.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
                 LazyOptional<IEnergyStorage> forgeCapability;
                 if (stack.getItem() instanceof IEnergizedItem) {

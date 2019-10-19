@@ -49,6 +49,7 @@ public class QuantumEntangloporterContainer extends MekanismTileContainer<TileEn
 
     @Override
     protected void addSlots() {
+        //TODO: Should this be here?
     }
 
     @Override

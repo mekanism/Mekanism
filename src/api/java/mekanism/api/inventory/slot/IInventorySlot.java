@@ -3,12 +3,14 @@ package mekanism.api.inventory.slot;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.annotations.NonNull;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.items.IItemHandler;
 
 //TODO: Handle persistence somewhere, so that we can load/save the slots in an IMekanismInventory. We need to mark the tile dirty and things in onContentsChanged
 //TODO: Should this extend INBTSerializable
@@ -84,13 +86,17 @@ public interface IInventorySlot {
     ItemStack extractItem(int amount, Action action);
 
     /**
-     * Retrieves the maximum stack size allowed to exist in this {@link IInventorySlot}.
+     * Retrieves the maximum stack size allowed to exist in this {@link IInventorySlot}. Unlike {@link IItemHandler#getSlotLimit(int)} this takes a stack that it can use
+     * for checking max stack size, if this {@link IInventorySlot} wants to respect the maximum stack size.
+     *
+     * @param stack The stack we want to know the limit for in case this {@link IInventorySlot} wants to obey the stack limit. If the empty stack is passed, then it
+     *              returns the max amount of any item this slot can store.
      *
      * @return The maximum stack size allowed in this {@link IInventorySlot}.
      *
-     * @implNote The implementation of this CAN take into account the current stack's max size if desired, but is not required or expected to.
+     * @implNote The implementation of this CAN take into account the max size of this stack but is not required to.
      */
-    int getLimit();
+    int getLimit(@NonNull ItemStack stack);
 
     /**
      * <p>
@@ -133,27 +139,30 @@ public interface IInventorySlot {
      * less than or equal to zero, then this instead sets the stack to the empty stack.
      *
      * @param amount The desired size to set the stack to.
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return Actual size it was set to.
+     * @return Actual size the stack was set to.
      *
      * @implNote It is recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run. If the internal stack
      * does get updated make sure to call {@link #onContentsChanged()}
      */
-    default int setStackSize(int amount) {
+    default int setStackSize(int amount, Action action) {
         ItemStack stack = getStack();
         if (stack.isEmpty()) {
             return 0;
         }
         if (amount <= 0) {
-            setStack(ItemStack.EMPTY);
+            if (action.execute()) {
+                setStack(ItemStack.EMPTY);
+            }
             return 0;
         }
-        int maxStackSize = getLimit();
+        int maxStackSize = getLimit(stack);
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (stack.getCount() == amount) {
-            //If our size is not changing don't do anything
+        if (stack.getCount() == amount || action.simulate()) {
+            //If our size is not changing or we are only simulating the change, don't do anything
             return amount;
         }
         ItemStack newStack = stack.copy();
@@ -169,15 +178,16 @@ public interface IInventorySlot {
      * shrinks to an amount of less than or equal to zero, then this instead sets the stack to the empty stack.
      *
      * @param amount The desired size to set the stack to.
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return Actual amount the stack grew.
      *
      * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default int growStack(int amount) {
+    default int growStack(int amount, Action action) {
         int current = getStack().getCount();
-        int newSize = setStackSize(current + amount);
+        int newSize = setStackSize(current + amount, action);
         return newSize - current;
     }
 
@@ -188,14 +198,15 @@ public interface IInventorySlot {
      * to the empty stack. If this method is used to grow the stack the size gets capped at the item's max stack size and the limit of this slot.
      *
      * @param amount The desired size to set the stack to.
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return Actual amount the stack grew.
      *
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default int shrinkStack(int amount) {
-        return -growStack(-amount);
+    default int shrinkStack(int amount, Action action) {
+        return -growStack(-amount, action);
     }
 
     /**

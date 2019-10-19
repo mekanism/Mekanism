@@ -76,7 +76,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
         if (!isRemote()) {
             ChargeUtils.charge(1, this);
-            ItemStack stack = getStackInSlot(0);
+            ItemStack stack = fuelSlot.getStack();
             if (!stack.isEmpty() && fuelTank.getStored() < MAX_GAS) {
                 Gas gasType = MekanismAPI.EMPTY_GAS;
                 if (!fuelTank.isEmpty()) {
@@ -88,6 +88,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                     }
                 }
                 if (!gasType.isEmptyType() && !FuelHandler.getFuel(gasType).isEmpty()) {
+                    //TODO: FIXME (or more accurately move logic into the slot), as the stack is supposed to not be changed and this method changes it
                     GasStack removed = GasUtils.removeGas(stack, gasType, fuelTank.getNeeded());
                     boolean isTankEmpty = fuelTank.isEmpty();
                     int fuelReceived = fuelTank.fill(removed, Action.EXECUTE);

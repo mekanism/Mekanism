@@ -73,6 +73,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
 
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
+    private GasInventorySlot secondarySlot;
 
     /**
      * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
@@ -118,7 +119,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), 56, 17));
-        builder.addSlot(GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, 56, 53));
+        builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, 56, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(116, 35));
         builder.addSlot(EnergyInventorySlot.discharge(31, 35));
         return builder.build();
@@ -173,7 +174,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     }
 
     public void handleSecondaryFuel() {
-        ItemStack itemStack = getStackInSlot(1);
+        //TODO: Move this stuff into the slot itself because of getStack not supposed to being modified
+        ItemStack itemStack = secondarySlot.getStack();
         int needed = gasTank.getNeeded();
         if (!itemStack.isEmpty() && needed > 0) {
             GasStack gasStack = getItemGas(itemStack);
@@ -183,7 +185,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
                     gasTank.fill(item.removeGas(itemStack, gasStack.getAmount()), Action.EXECUTE);
                 } else {
                     gasTank.fill(gasStack, Action.EXECUTE);
-                    itemStack.shrink(1);
+                    if (secondarySlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                        //TODO: Print error that something went wrong
+                    }
                 }
             }
         }

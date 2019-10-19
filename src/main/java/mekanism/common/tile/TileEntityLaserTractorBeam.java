@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -19,8 +20,6 @@ import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -31,6 +30,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityLaserTractorBeam extends TileEntityMekanism implements ILaserReceptor, IComparatorSupport {
 
@@ -145,28 +145,18 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
 
     public void receiveDrops(List<ItemStack> drops) {
         List<IInventorySlot> inventorySlots = getInventorySlots(null);
-        outer:
         for (ItemStack drop : drops) {
-            for (int i = 0; i < inventorySlots.size(); i++) {
-                IInventorySlot slot = inventorySlots.get(i);
-                if (slot.isEmpty()) {
-                    slot.setStack(drop);
-                    continue outer;
-                }
-                ItemStack stackInSlot = slot.getStack();
-                if (StackUtils.equalsWildcardWithNBT(stackInSlot, drop)) {
-                    int change = Math.min(drop.getCount(), slot.getLimit() - stackInSlot.getCount());
-                    if (slot.growStack(change) != change) {
-                        //TODO: Print error that something went wrong
-                    }
-                    drop.shrink(change);
-                    if (drop.isEmpty()) {
-                        continue outer;
-                    }
+            for (IInventorySlot slot : inventorySlots) {
+                drop = slot.insertItem(drop, Action.EXECUTE);
+                if (drop.isEmpty()) {
+                    //If we inserted it all, then break otherwise try to insert the remainder into another slot
+                    break;
                 }
             }
-            //Only gets ran if one of the continue statements did not get hit
-            Block.spawnAsEntity(getWorld(), pos, drop);
+            if (!drop.isEmpty()) {
+                //If we have some drop left over that we couldn't fit, then spawn it into the world
+                Block.spawnAsEntity(getWorld(), pos, drop);
+            }
         }
     }
 
@@ -200,6 +190,6 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
 
     @Override
     public int getRedstoneLevel() {
-        return InventoryUtils.calcRedstoneFromInventory(this);
+        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 }

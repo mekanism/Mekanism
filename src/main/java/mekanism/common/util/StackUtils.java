@@ -18,6 +18,7 @@ public final class StackUtils {
 
     //ignores count
     //TODO: Remove this method/replace it as there is no longer a wildcard
+    // The core difference between this and other things is that this cares about item damage still
     public static boolean equalsWildcard(ItemStack wild, ItemStack check) {
         if (wild.isEmpty() && check.isEmpty()) {
             return true;
@@ -27,6 +28,7 @@ public final class StackUtils {
 
     //ignores count
     //TODO: Remove this method/replace it as there is no longer a wildcard
+    // The core difference between this and other things is that this cares about item damage still
     public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check) {
         boolean wildcard = equalsWildcard(wild, check);
         if (wild.isEmpty() || check.isEmpty()) {

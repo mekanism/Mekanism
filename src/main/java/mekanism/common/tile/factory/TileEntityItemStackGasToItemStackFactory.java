@@ -123,6 +123,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     protected void handleSecondaryFuel() {
+        //TODO: Move logic into the slot
         ItemStack extra = extraSlot.getStack();
         if (!extra.isEmpty() && gasTank.getNeeded() > 0) {
             GasStack gasStack = GasConversionHandler.getItemGas(extra, gasTank, this::isValidGas);
@@ -134,7 +135,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
                         gasTank.fill(item.removeGas(extra, gasStack.getAmount()), Action.EXECUTE);
                     } else {
                         gasTank.fill(gasStack, Action.EXECUTE);
-                        extra.shrink(1);
+                        if (extraSlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                            //TODO: Print warning/error
+                        }
                     }
                 }
             }

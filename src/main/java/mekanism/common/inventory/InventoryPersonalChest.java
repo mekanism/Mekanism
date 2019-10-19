@@ -42,10 +42,11 @@ public class InventoryPersonalChest extends Inventory {
     public void write() {
         ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
-            if (!getStackInSlot(slotCount).isEmpty()) {
+            ItemStack stack = getStackInSlot(slotCount);
+            if (!stack.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.putByte("Slot", (byte) slotCount);
-                getStackInSlot(slotCount).write(tagCompound);
+                stack.write(tagCompound);
                 tagList.add(tagCompound);
             }
         }

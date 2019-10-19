@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -135,6 +137,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
+    private List<IInventorySlot> mainSlots;
+
     public TileEntityDigitalMiner() {
         super(MekanismBlock.DIGITAL_MINER);
         radius = 10;
@@ -143,10 +147,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
+        mainSlots = new ArrayList<>();
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                builder.addSlot(BasicInventorySlot.at(8 + slotX * 18, 80 + slotY * 18), RelativeSide.BACK, RelativeSide.TOP);
+                BasicInventorySlot slot = BasicInventorySlot.at(8 + slotX * 18, 80 + slotY * 18);
+                builder.addSlot(slot, RelativeSide.BACK, RelativeSide.TOP);
+                mainSlots.add(slot);
                 //TODO: Make it so insertion/extraction is sided but the inventory is the same???
                 //Can insert;
                 //RelativeSide.TOP && isReplaceStack(stack)
@@ -365,10 +372,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         if (filter == null || filter.replaceStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        for (int i = 0; i < 27; i++) {
-            ItemStack stack = getStackInSlot(i);
+        for (IInventorySlot slot : mainSlots) {
+            ItemStack stack = slot.getStack();
+            //TODO: Should this be ItemHandlerHelper.canItemStacksStack() instead of isItemEqual
             if (!stack.isEmpty() && stack.isItemEqual(filter.replaceStack)) {
-                stack.shrink(1);
+                if (slot.shrinkStack(1, Action.EXECUTE) != 1) {
+                    //TODO: Print error/warning
+                }
                 return StackUtils.size(filter.replaceStack, 1);
             }
         }
@@ -387,8 +397,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         //TODO: Clean this up/cache it??
         NonNullList<ItemStack> toReturn = NonNullList.withSize(slots.size(), ItemStack.EMPTY);
         for (int i = 0; i < slots.size(); i++) {
-            IInventorySlot slot = slots.get(i);
-            ItemStack stack = slot.getStack();
+            ItemStack stack = slots.get(i).getStack();
             toReturn.set(i, !stack.isEmpty() ? stack.copy() : ItemStack.EMPTY);
         }
         return toReturn;
@@ -409,7 +418,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         if (stacks.isEmpty()) {
             return true;
         }
-        NonNullList<ItemStack> testInv = copy(getInventorySlots(null));
+        NonNullList<ItemStack> testInv = copy(mainSlots);
         int added = 0;
 
         stacks:
@@ -418,7 +427,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             if (stack.isEmpty()) {
                 continue;
             }
-            for (int i = 0; i < 27; i++) {
+            for (int i = 0; i < testInv.size(); i++) {
+                //TODO: Would be better if we could do this via the slots rather than copying it and then looping it
+                // This way we can obey what the slot believe its limit is/how high to stack
                 ItemStack existingStack = testInv.get(i);
                 if (existingStack.isEmpty()) {
                     testInv.set(i, stack);
@@ -449,18 +460,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public void add(List<ItemStack> stacks) {
-        if (stacks.isEmpty()) {
-            return;
-        }
-
         for (ItemStack stack : stacks) {
-            for (int i = 0; i < 27; i++) {
-                ItemStack currentStack = getStackInSlot(i);
-                if (currentStack.isEmpty()) {
-                    setStackInSlot(i, stack, null);
-                    break;
-                } else if (ItemHandlerHelper.canItemStacksStack(currentStack, stack) && currentStack.getCount() + stack.getCount() <= stack.getMaxStackSize()) {
-                    currentStack.grow(stack.getCount());
+            for (IInventorySlot slot : mainSlots) {
+                //Try to insert the item across all slots until we inserted it all
+                stack = slot.insertItem(stack, Action.EXECUTE);
+                if (stack.isEmpty()) {
                     break;
                 }
             }

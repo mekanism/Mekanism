@@ -11,7 +11,7 @@ import mekanism.common.tier.BinTier;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 
-//TODO: Check if we need any more special handling for creative bins. We need to change setCount, probably by adding in a simulate param
+//TODO: Check if we need any more special handling for creative bins
 public class BinInventorySlot extends BasicInventorySlot {
 
     private static final Predicate<@NonNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
@@ -23,9 +23,9 @@ public class BinInventorySlot extends BasicInventorySlot {
     private boolean isCreative;
 
     private BinInventorySlot(BinTier tier) {
-        //TODO: I don't believe we need to check the itemType or if they can stack as that stuff will be checked when attempting to set it
         super(tier.getStorage(), alwaysTrue, alwaysTrue, validator, 0, 0);
         isCreative = tier == BinTier.CREATIVE;
+        obeyStackLimit = false;
     }
 
     @Nonnull
@@ -40,16 +40,27 @@ public class BinInventorySlot extends BasicInventorySlot {
         return super.extractItem(amount, action.combine(!isCreative));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * Note: We are only patching {@link #setStackSize(int, Action)}, as both {@link #growStack(int, Action)} and {@link #shrinkStack(int, Action)} are wrapped through
+     * this method.
+     */
+    @Override
+    public int setStackSize(int amount, Action action) {
+        return super.setStackSize(amount, action.combine(!isCreative));
+    }
+
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot(int index) {
         return null;
     }
 
-    //TODO: JavaDoc that the returned stack can be mutable or whatever
+    //TODO: JavaDoc that the returned stack can be modified
     @Nonnull
     public ItemStack getBottomStack() {
-        //TODO: Should we directly access current
+        //TODO: Should we directly access current by just changing it to protected
         ItemStack current = getStack();
         if (current.isEmpty()) {
             return ItemStack.EMPTY;

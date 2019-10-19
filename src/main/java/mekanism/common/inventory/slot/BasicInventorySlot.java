@@ -39,6 +39,7 @@ public class BasicInventorySlot implements IInventorySlot {
     private final int limit;
     protected final int x;
     protected final int y;
+    protected boolean obeyStackLimit = true;
 
     //TODO: Make these protected and maybe remove some of these default helper constructors
     public BasicInventorySlot(int x, int y) {
@@ -118,7 +119,7 @@ public class BasicInventorySlot implements IInventorySlot {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
         }
-        int needed = getLimit() - current.getCount();
+        int needed = getLimit(stack) - current.getCount();
         if (needed <= 0) {
             //Fail if we are a full inventory
             return stack;
@@ -169,9 +170,11 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     //TODO: Evaluate usages of this maybe some should be capped by the max size of the stack
+    // In fact most uses of this probably can instead use the insertItem method instead
     @Override
-    public int getLimit() {
-        return limit;
+    public int getLimit(@NonNull ItemStack stack) {
+        //TODO: is this a decent way to do this or do we want to set obeyStack limit some other way
+        return obeyStackLimit && !stack.isEmpty() ? Math.min(limit, stack.getMaxStackSize()) : limit;
     }
 
     @Override
@@ -204,19 +207,22 @@ public class BasicInventorySlot implements IInventorySlot {
      * instead of having to make a copy.
      */
     @Override
-    public int setStackSize(int amount) {
+    public int setStackSize(int amount, Action action) {
         if (current.isEmpty()) {
             return 0;
         }
         if (amount <= 0) {
-            setStack(ItemStack.EMPTY);
+            if (action.execute()) {
+                setStack(ItemStack.EMPTY);
+            }
             return 0;
         }
-        if (amount > limit) {
-            amount = limit;
+        int maxStackSize = getLimit(current);
+        if (amount > maxStackSize) {
+            amount = maxStackSize;
         }
-        if (current.getCount() == amount) {
-            //If our size is not changing don't do anything
+        if (current.getCount() == amount || action.simulate()) {
+            //If our size is not changing or we are only simulating the change, don't do anything
             return amount;
         }
         current.setCount(amount);
@@ -230,9 +236,9 @@ public class BasicInventorySlot implements IInventorySlot {
      * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
      */
     @Override
-    public int growStack(int amount) {
+    public int growStack(int amount, Action action) {
         int currentCount = current.getCount();
-        int newSize = setStackSize(currentCount + amount);
+        int newSize = setStackSize(currentCount + amount, action);
         return newSize - currentCount;
     }
 

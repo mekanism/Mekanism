@@ -105,7 +105,7 @@ public interface IMekanismInventory extends ISidedItemHandler {
     @Override
     default int getSlotLimit(int slot, @Nullable Direction side) {
         IInventorySlot inventorySlot = getInventorySlot(slot, side);
-        return inventorySlot == null ? 0 : inventorySlot.getLimit();
+        return inventorySlot == null ? 0 : inventorySlot.getLimit(ItemStack.EMPTY);
     }
 
     @Override

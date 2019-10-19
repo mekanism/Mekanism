@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
@@ -60,7 +61,7 @@ public class TileComponentUpgrade implements ITileComponent {
                     } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                         upgradeTicks = 0;
                         addUpgrade(type);
-                        if (upgradeSlot.shrinkStack(1) != 1) {
+                        if (upgradeSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print warning about failing to shrink size of stack
                         }
                         Mekanism.packetHandler.sendUpdatePacket(tileEntity);

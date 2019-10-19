@@ -76,9 +76,7 @@ public class BlockObsidianTNT extends Block {
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack itemstack = player.getHeldItem(hand);
         Item item = itemstack.getItem();
-        if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE) {
-            return super.onBlockActivated(state, world, pos, player, hand, hit);
-        } else {
+        if (item == Items.FLINT_AND_STEEL || item == Items.FIRE_CHARGE) {
             explode(world, pos, player);
             world.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
             if (item == Items.FLINT_AND_STEEL) {
@@ -88,6 +86,7 @@ public class BlockObsidianTNT extends Block {
             }
             return true;
         }
+        return super.onBlockActivated(state, world, pos, player, hand, hit);
     }
 
     @Override

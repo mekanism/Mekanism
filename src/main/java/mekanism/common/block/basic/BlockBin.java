@@ -98,12 +98,12 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                     ItemStack stack;
                     if (player.isSneaking()) {
                         stack = StackUtils.size(storedStack, 1);
-                        if (binSlot.shrinkStack(1) != 1) {
+                        if (binSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print error that something went wrong??
                         }
                     } else {
                         stack = binSlot.getBottomStack();
-                        if (!stack.isEmpty() && binSlot.shrinkStack(stack.getCount()) != stack.getCount()) {
+                        if (!stack.isEmpty() && binSlot.shrinkStack(stack.getCount(), Action.EXECUTE) != stack.getCount()) {
                             //TODO: Print error that something went wrong??
                         }
                     }
@@ -133,7 +133,8 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
         }
         if (!world.isRemote) {
             BinInventorySlot binSlot = bin.getBinSlot();
-            if (binSlot.getStack().getCount() < binSlot.getLimit()) {
+            int binMaxSize = binSlot.getLimit(binSlot.getStack());
+            if (binSlot.getStack().getCount() < binMaxSize) {
                 ItemStack stack = player.getHeldItem(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
@@ -144,7 +145,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                 } else if (bin.addTicks > 0 && bin.getItemCount() > 0) {
                     NonNullList<ItemStack> inv = player.inventory.mainInventory;
                     for (int i = 0; i < inv.size(); i++) {
-                        if (binSlot.getStack().getCount() == binSlot.getLimit()) {
+                        if (binSlot.getStack().getCount() == binMaxSize) {
                             break;
                         }
                         ItemStack stackToAdd = inv.get(i);

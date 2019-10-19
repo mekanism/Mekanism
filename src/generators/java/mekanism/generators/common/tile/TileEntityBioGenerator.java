@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
@@ -15,7 +16,6 @@ import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -34,6 +34,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IComparatorSupport {
 
@@ -80,14 +81,14 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                         if (!containerItem.isEmpty()) {
                             fuelSlot.setStack(containerItem);
                         } else {
-                            if (fuelSlot.shrinkStack(1) != 1) {
+                            if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                                 //TODO: Print error that something went wrong
                             }
                         }
                     }
                 }
             } else if (fluidStack.getFluid().isIn(GeneratorTags.BIO_ETHANOL)) {
-                FluidUtil.getFluidHandler(getStackInSlot(0)).ifPresent(handler -> {
+                FluidUtil.getFluidHandler(fuelStack).ifPresent(handler -> {
                     FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, FluidAction.EXECUTE);
                     if (!drained.isEmpty()) {
                         bioFuelSlot.fluidStored += drained.getAmount();
@@ -236,6 +237,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public int getRedstoneLevel() {
-        return InventoryUtils.calcRedstoneFromInventory(this);
+        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 }

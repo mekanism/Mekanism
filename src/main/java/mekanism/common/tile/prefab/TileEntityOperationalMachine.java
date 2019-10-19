@@ -9,10 +9,10 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComparatorSupport,
       ITileCachedRecipeHolder<RECIPE> {
@@ -88,7 +88,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
 
     @Override
     public int getRedstoneLevel() {
-        return InventoryUtils.calcRedstoneFromInventory(this);
+        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 
     @Override

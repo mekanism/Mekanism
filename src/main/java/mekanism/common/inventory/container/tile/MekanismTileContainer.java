@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.Minecraft;
@@ -58,7 +59,7 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
         if (tile == null) {
             return true;
         }
-        //TODO: Double check this, used to check to see if it had an inventory.
+        //TODO: Double check this, it used to check to see if it had an inventory.
         if (tile.hasGui() && !tile.isRemoved()) {
             //prevent Containers from remaining valid after the chunk has unloaded;
             World world = tile.getWorld();
@@ -73,6 +74,10 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
     @Override
     protected void addSlots() {
         super.addSlots();
+        if (this instanceof IEmptyContainer) {
+            //Don't include the inventory slots
+            return;
+        }
         //TODO: Overwrite transferStackInSlot with the logic in the IInventorySlots??
         // NOTE: When implementing the generic transferStackInSlot stuff, we *should* probably ALWAYS allow manual extraction
         if (tile.hasInventory()) {

@@ -96,6 +96,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Override
     protected void handleSecondaryFuel() {
+        //TODO: Move to logic in the slot
         ItemStack extra = extraSlot.getStack();
         if (!extra.isEmpty()) {
             InfusionStack pendingInfusionInput = InfuseRegistry.getObject(extra);
@@ -104,7 +105,9 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
                 if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
                     //If we can accept it all, then add it and decrease our input
                     infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
-                    extra.shrink(1);
+                    if (extraSlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                        //TODO: Print warning/error
+                    }
                 }
             }
         }

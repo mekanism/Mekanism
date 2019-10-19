@@ -34,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
 
+//TODO: UPDATE to more closely match logic of BowItem. Maybe even extend BowItem and then implement IItemEnergized instead
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     public ItemElectricBow() {

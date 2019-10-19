@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
@@ -19,7 +21,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.api.RelativeSide;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.network.PacketTileEntity;
@@ -55,6 +56,9 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     private HashList<OredictionificatorFilter> filters = new HashList<>();
     public boolean didProcess;
 
+    private InputInventorySlot inputSlot;
+    private OutputInventorySlot outputSlot;
+
     public TileEntityOredictionificator() {
         super(MekanismBlock.OREDICTIONIFICATOR);
         doAutoSync = false;
@@ -65,8 +69,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         RelativeSide[] sides = new RelativeSide[]{RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
-        builder.addSlot(InputInventorySlot.at(item -> !getResult(item).isEmpty(), 26, 115), sides);
-        builder.addSlot(OutputInventorySlot.at(134, 115), sides);
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(), 26, 115), sides);
+        builder.addSlot(outputSlot = OutputInventorySlot.at(134, 115), sides);
         return builder.build();
     }
 
@@ -80,24 +84,18 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             }
 
             didProcess = false;
-            ItemStack inputStack = getStackInSlot(0);
+            ItemStack inputStack = inputSlot.getStack();
             if (MekanismUtils.canFunction(this) && !inputStack.isEmpty() && getValidName(inputStack) != null) {
                 ItemStack result = getResult(inputStack);
                 if (!result.isEmpty()) {
-                    ItemStack outputStack = getStackInSlot(1);
+                    ItemStack outputStack = outputSlot.getStack();
                     if (outputStack.isEmpty()) {
-                        inputStack.shrink(1);
-                        if (inputStack.getCount() <= 0) {
-                            setStackInSlot(0, ItemStack.EMPTY, null);
-                        }
-                        setStackInSlot(1, result, null);
+                        inputSlot.shrinkStack(1, Action.EXECUTE);
+                        outputSlot.setStack(result);
                         didProcess = true;
-                    } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputStack.getMaxStackSize()) {
-                        inputStack.shrink(1);
-                        if (inputStack.getCount() <= 0) {
-                            setStackInSlot(0, ItemStack.EMPTY, null);
-                        }
-                        outputStack.grow(1);
+                    } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputSlot.getLimit(outputStack)) {
+                        inputSlot.shrinkStack(1, Action.EXECUTE);
+                        outputSlot.growStack(1, Action.EXECUTE);
                         didProcess = true;
                     }
                     markDirty();

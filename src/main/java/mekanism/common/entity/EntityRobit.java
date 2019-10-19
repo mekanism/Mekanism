@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
@@ -228,7 +229,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 }*/
                 else if (stack.getItem() == Items.REDSTONE && getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= MAX_ELECTRICITY) {
                     setEnergy(getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
-                    if (energySlot.shrinkStack(1) != 1) {
+                    if (energySlot.shrinkStack(1, Action.EXECUTE) != 1) {
                         //TODO: Print error that something went wrong
                     }
                 }
@@ -244,7 +245,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                     currentItemBurnTime = furnaceBurnTime = ForgeHooks.getBurnTime(fuel);
                     if (furnaceBurnTime > 0) {
                         if (!fuel.isEmpty()) {
-                            if (fuelSlot.shrinkStack(1) != 1) {
+                            if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                                 //TODO: Print error that something went wrong
                             }
                             if (fuelSlot.isEmpty()) {
@@ -285,15 +286,16 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
                     }
-                    if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < slot.getLimit()) {
-                        int needed = slot.getLimit() - itemStack.getCount();
+                    int maxSize = slot.getLimit(itemStack);
+                    if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
+                        int needed = maxSize - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
-                        if (slot.growStack(toAdd) != toAdd) {
+                        if (slot.growStack(toAdd, Action.EXECUTE) != toAdd) {
                             //TODO: Print warning that something went wrong
                         }
                         item.getItem().shrink(toAdd);
                         onItemPickup(item, toAdd);
-                        if (item.getItem().getCount() == 0) {
+                        if (item.getItem().isEmpty()) {
                             item.remove();
                         }
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
@@ -339,7 +341,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
             return false;
         }
-        return currentOutput.getCount() + result.getCount() <= smeltingOutputSlot.getLimit();
+        return currentOutput.getCount() + result.getCount() <= smeltingOutputSlot.getLimit(currentOutput);
     }
 
     public void smeltItem() {
@@ -354,12 +356,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             if (currentOutput.isEmpty()) {
                 smeltingOutputSlot.setStack(result.copy());
             } else if (ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
-                if (smeltingOutputSlot.growStack(result.getCount()) != result.getCount()) {
+                if (smeltingOutputSlot.growStack(result.getCount(), Action.EXECUTE) != result.getCount()) {
                     //TODO: Print error that something went wrong
                 }
             }
             //There shouldn't be any other case where the item doesn't stack but should we double check it anyways
-            if (smeltingInputSlot.shrinkStack(1) != 1) {
+            if (smeltingInputSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                 //TODO: Print error that something went wrong
             }
         }

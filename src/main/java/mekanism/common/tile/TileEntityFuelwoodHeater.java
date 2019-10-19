@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.MekanismBlock;
@@ -61,7 +62,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
                     maxBurnTime = burnTime = ForgeHooks.getBurnTime(stack) / 2;
                     if (burnTime > 0) {
                         ItemStack preShrunk = stack.copy();
-                        if (fuelSlot.shrinkStack(1) != 1) {
+                        if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print error something went wrong
                         }
                         if (fuelSlot.isEmpty()) {

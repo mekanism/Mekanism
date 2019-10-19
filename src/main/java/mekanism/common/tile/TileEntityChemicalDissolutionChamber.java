@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
@@ -26,7 +27,6 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.IInventorySlotHolder;
 import mekanism.common.inventory.InventorySlotHelper;
-import mekanism.api.RelativeSide;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -35,7 +35,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
@@ -47,6 +46,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements IGasHandler, ISustainedData, ITankManager,
       IComparatorSupport {
@@ -278,6 +278,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Override
     public int getRedstoneLevel() {
-        return InventoryUtils.calcRedstoneFromInventory(this);
+        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 }

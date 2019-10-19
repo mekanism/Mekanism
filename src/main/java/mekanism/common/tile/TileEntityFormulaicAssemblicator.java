@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
@@ -87,6 +88,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private List<IInventorySlot> craftingGridSlots;
     private List<InputInventorySlot> inputSlots;
     private List<OutputInventorySlot> outputSlots;
+    private FormulaInventorySlot formulaSlot;
 
     public TileEntityFormulaicAssemblicator() {
         super(MekanismBlock.FORMULAIC_ASSEMBLICATOR);
@@ -118,7 +120,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
         builder.addSlot(EnergyInventorySlot.discharge(152, 76));
-        builder.addSlot(FormulaInventorySlot.at(6, 26));
+        builder.addSlot(formulaSlot = FormulaInventorySlot.at(6, 26));
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 InputInventorySlot inputSlot = InputInventorySlot.at(stack -> {
@@ -167,6 +169,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             }
         }
         return builder.build();
+    }
+
+    public FormulaInventorySlot getFormulaSlot() {
+        return formulaSlot;
     }
 
     @Override
@@ -225,7 +231,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private void checkFormula() {
         RecipeFormula prev = formula;
-        ItemStack formulaStack = getStackInSlot(SLOT_FORMULA);
+        ItemStack formulaStack = formulaSlot.getStack();
         if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
             if (formula == null || lastFormulaStack != formulaStack) {
                 loadFormula();
@@ -241,7 +247,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     public void loadFormula() {
-        ItemStack formulaStack = getStackInSlot(SLOT_FORMULA);
+        ItemStack formulaStack = formulaSlot.getStack();
         ItemCraftingFormula formulaItem = (ItemCraftingFormula) formulaStack.getItem();
         if (formulaItem.getInventory(formulaStack) != null && !formulaItem.isInvalid(formulaStack)) {
             RecipeFormula recipe = new RecipeFormula(world, formulaItem.getInventory(formulaStack));
@@ -311,17 +317,25 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         recalculateRecipe();
 
         ItemStack output = lastOutputStack;
-        if (!output.isEmpty() && tryMoveToOutput(output, false) && (lastRemainingItems.isEmpty() || lastRemainingItems.stream().allMatch(it -> it.isEmpty() || tryMoveToOutput(it, false)))) {
-            tryMoveToOutput(output, true);
+        if (!output.isEmpty() && tryMoveToOutput(output, Action.SIMULATE) &&
+            (lastRemainingItems.isEmpty() || lastRemainingItems.stream().allMatch(it -> it.isEmpty() || tryMoveToOutput(it, Action.EXECUTE)))) {
+            tryMoveToOutput(output, Action.EXECUTE);
+            //TODO: Fix this as I believe if things overlap there is a chance it won't work properly.
+            // For example if there are multiple stacks of dirt in remaining and we have room for one stack, but given we only check one stack at a time...)
             for (ItemStack remainingItem : lastRemainingItems) {
                 if (!remainingItem.isEmpty()) {
-                    tryMoveToOutput(remainingItem, true);
+                    //TODO: Check if it matters that we are not actually updating the list of remaining items?
+                    // The better solution would be to not allow continuing until we moved output AND all remaining items
+                    // instead of trying to move all at once??
+                    tryMoveToOutput(remainingItem, Action.EXECUTE);
                 }
             }
 
             for (IInventorySlot craftingSlot : craftingGridSlots) {
                 if (!craftingSlot.isEmpty()) {
-                    craftingSlot.shrinkStack(1);
+                    if (craftingSlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                        //TODO: Print error/warning
+                    }
                 }
             }
             if (formula != null) {
@@ -371,7 +385,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     ItemStack stockStack = stockSlot.getStack();
                     if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i)) {
                         recipeSlot.setStack(StackUtils.size(stockStack, 1));
-                        if (stockSlot.shrinkStack(1) != 1) {
+                        if (stockSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print error that something went wrong
                         }
                         markDirty();
@@ -424,6 +438,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void organizeStock() {
+        //TODO: Try to clean this up
         int inputSlotCount = inputSlots.size();
         for (int j = 0; j < inputSlotCount; j++) {
             IInventorySlot compareSlot = inputSlots.get(j);
@@ -438,16 +453,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         markDirty();
                         return;
                     }
-                    int maxCompareSize = compareSlot.getLimit();
+                    int maxCompareSize = compareSlot.getLimit(compareStack);
                     if (compareStack.getCount() < maxCompareSize) {
                         if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
                             int newCount = compareStack.getCount() + stockStack.getCount();
                             int newCompareSize = Math.min(maxCompareSize, newCount);
-                            if (compareSlot.setStackSize(newCompareSize) != newCompareSize) {
+                            if (compareSlot.setStackSize(newCompareSize, Action.EXECUTE) != newCompareSize) {
                                 //TODO: Print error
                             }
                             int newStockSize = Math.max(0, newCount - maxCompareSize);
-                            if (stockSlot.setStackSize(newStockSize) != newStockSize) {
+                            if (stockSlot.setStackSize(newStockSize, Action.EXECUTE) != newStockSize) {
                                 //TODO: Print error
                             }
                             markDirty();
@@ -460,57 +475,32 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private ItemStack tryMoveToInput(ItemStack stack) {
-        stack = stack.copy();
         for (InputInventorySlot stockSlot : inputSlots) {
-            ItemStack stockStack = stockSlot.getStack();
-            if (stockStack.isEmpty()) {
-                stockSlot.setStack(stack);
-                return ItemStack.EMPTY;
-            }
-            int stockMaxSize = stockSlot.getLimit();
-            if (InventoryUtils.areItemsStackable(stack, stockStack) && stockStack.getCount() < stockMaxSize) {
-                int toUse = Math.min(stack.getCount(), stockMaxSize - stockStack.getCount());
-                if (stockSlot.growStack(toUse) != toUse) {
-                    //TODO: Print error that something went wrong
-                }
-                stack.shrink(toUse);
-                if (stack.isEmpty()) {
-                    return ItemStack.EMPTY;
-                }
+            stack = stockSlot.insertItem(stack, Action.EXECUTE);
+            if (stack.isEmpty()) {
+                //We fit it all, just break and return that we have no remainder
+                break;
             }
         }
         return stack;
     }
 
-    private boolean tryMoveToOutput(ItemStack stack, boolean doMove) {
-        stack = stack.copy();
+    private boolean tryMoveToOutput(ItemStack stack, Action action) {
         for (OutputInventorySlot outputSlot : outputSlots) {
-            ItemStack outputStack = outputSlot.getStack();
-            if (outputStack.isEmpty()) {
-                if (doMove) {
-                    outputSlot.setStack(stack);
-                }
-                return true;
-            }
-            int outputMaxSize = outputSlot.getLimit();
-            if (InventoryUtils.areItemsStackable(stack, outputStack) && outputStack.getCount() < outputMaxSize) {
-                int toUse = Math.min(stack.getCount(), outputMaxSize - outputStack.getCount());
-                if (doMove) {
-                    if (outputSlot.growStack(toUse) != toUse) {
-                        //TODO: Print error that something went wrong
-                    }
-                }
-                stack.shrink(toUse);
-                if (stack.isEmpty()) {
-                    return true;
-                }
+            //Try to insert the item (simulating as needed), and overwrite our local reference to point ot the remainder
+            // We can then continue on to the next slot if we did not fit it all and try to insert it.
+            // The logic is relatively simple due to only having one stack we are trying to insert so we don't have to worry
+            // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
+            stack = outputSlot.insertItem(stack, action);
+            if (stack.isEmpty()) {
+                break;
             }
         }
-        return false;
+        return stack.isEmpty();
     }
 
     private void encodeFormula() {
-        ItemStack formulaStack = getStackInSlot(SLOT_FORMULA);
+        ItemStack formulaStack = formulaSlot.getStack();
         if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
             ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
             if (item.getInventory(formulaStack) == null) {

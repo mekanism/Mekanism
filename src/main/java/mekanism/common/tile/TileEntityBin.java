@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
@@ -113,7 +114,7 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
                     );
                     if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                         int sendingAmount = response.getSendingAmount();
-                        if (binSlot.shrinkStack(sendingAmount) != sendingAmount) {
+                        if (binSlot.shrinkStack(sendingAmount, Action.EXECUTE) != sendingAmount) {
                             //TODO: Print error something went wrong
                         }
                     }
@@ -168,7 +169,7 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(getItemCount(), binSlot.getLimit());
+        return MekanismUtils.redstoneLevelFromContents(getItemCount(), binSlot.getLimit(binSlot.getStack()));
     }
 
     @Override

@@ -8,6 +8,7 @@ import mekanism.api.Upgrade;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.interfaces.ITileUpgradable;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
@@ -61,6 +62,12 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
             ItemStack stack = player.getHeldItem(context.getHand());
             Upgrade type = getUpgradeType(stack);
             if (tile instanceof IUpgradeTile) {
+                if (tile instanceof ITileUpgradable) {
+                    if (!((ITileUpgradable) tile).supportsUpgrades()) {
+                        //Can't support upgrades so continue on
+                        return ActionResultType.PASS;
+                    }
+                }
                 TileComponentUpgrade component = ((IUpgradeTile) tile).getComponent();
                 if (component.supports(type)) {
                     if (!world.isRemote && component.getUpgrades(type) < type.getMax()) {

@@ -2,6 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -192,6 +193,12 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
         ItemStack filled = new ItemStack(this);
         setGas(filled, MekanismGases.HYDROGEN.getGasStack(((IGasItem) filled.getItem()).getMaxGas(filled)));
         items.add(filled);
+    }
+
+    @Override
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+        //TODO: Use this in various places??
+        return 0;
     }
 
     public enum JetpackMode {

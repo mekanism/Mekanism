@@ -63,6 +63,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
+    private InfusionInventorySlot infusionSlot;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
 
@@ -93,7 +94,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
         // This can probably be done by letting the configurations know the relative side information?
         InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
-        builder.addSlot(InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), 17, 35));
+        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), 17, 35));
         //TODO: Verify that it is properly querying the infusion tank's type if it changes
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
@@ -111,7 +112,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     public void onUpdate() {
         if (!isRemote()) {
             ChargeUtils.discharge(4, this);
-            ItemStack infuseInput = getStackInSlot(1);
+            //TODO: Move this logic into the slot
+            ItemStack infuseInput = infusionSlot.getStack();
             if (!infuseInput.isEmpty()) {
                 InfusionStack pendingInfusionInput = InfuseRegistry.getObject(infuseInput);
                 if (!pendingInfusionInput.isEmpty()) {
@@ -119,7 +121,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                     if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
                         //If we can accept it all, then add it and decrease our input
                         infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
-                        infuseInput.shrink(1);
+                        if (infusionSlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                            //TODO: Print error/warning
+                        }
                     }
                 }
             }

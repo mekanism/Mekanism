@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
@@ -99,7 +100,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
                             if (!containerItem.isEmpty()) {
                                 fuelSlot.setStack(containerItem);
                             } else {
-                                if (fuelSlot.shrinkStack(1) != 1) {
+                                if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                                     //TODO: Print error that something went wrong
                                 }
                             }
