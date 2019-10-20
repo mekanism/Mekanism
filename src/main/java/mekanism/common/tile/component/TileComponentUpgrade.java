@@ -17,6 +17,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
 public class TileComponentUpgrade implements ITileComponent {
@@ -45,7 +46,6 @@ public class TileComponentUpgrade implements ITileComponent {
         upgradeSlot = slot;
         slot.getSupportedUpgrade().forEach(this::setSupported);
         tile.addComponent(this);
-        //TODO: Store and load slot contents when saving/writing to disk
     }
 
     @Override
@@ -132,10 +132,6 @@ public class TileComponentUpgrade implements ITileComponent {
         return supported;
     }
 
-    public void clearSupportedTypes() {
-        supported.clear();
-    }
-
     @Override
     public void read(PacketBuffer dataStream) {
         upgrades.clear();
@@ -166,11 +162,20 @@ public class TileComponentUpgrade implements ITileComponent {
         for (Upgrade upgrade : getSupportedTypes()) {
             tileEntity.recalculateUpgrades(upgrade);
         }
+        //Load the inventory
+        if (nbtTags.contains("UpgradeSlot", NBT.TAG_COMPOUND)) {
+            upgradeSlot.deserializeNBT(nbtTags.getCompound("UpgradeSlot"));
+        }
     }
 
     @Override
     public void write(CompoundNBT nbtTags) {
         Upgrade.saveMap(upgrades, nbtTags);
+        //Save the inventory
+        CompoundNBT compoundNBT = upgradeSlot.serializeNBT();
+        if (!compoundNBT.isEmpty()) {
+            nbtTags.put("UpgradeSlot", compoundNBT);
+        }
     }
 
     @Override

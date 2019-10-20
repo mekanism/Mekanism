@@ -422,11 +422,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         }
         ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
-            IInventorySlot slot = inventorySlots.get(slotCount);
-            if (!slot.isEmpty()) {
-                CompoundNBT tagCompound = new CompoundNBT();
+            CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
+            if (!tagCompound.isEmpty()) {
                 tagCompound.putByte("Slot", (byte) slotCount);
-                slot.getStack().write(tagCompound);
                 tagList.add(tagCompound);
             }
         }
@@ -452,12 +450,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < size) {
-                IInventorySlot inventorySlot = inventorySlots.get(slotID);
-                try {
-                    inventorySlot.setStack(ItemStack.read(tagCompound));
-                } catch (RuntimeException e) {
-                    //TODO: Log error
-                }
+                inventorySlots.get(slotID).deserializeNBT(tagCompound);
             }
         }
     }
@@ -541,12 +534,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             CompoundNBT tagCompound = nbtTags.getCompound(slots);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < size) {
-                IInventorySlot inventorySlot = inventorySlots.get(slotID);
-                try {
-                    inventorySlot.setStack(ItemStack.read(tagCompound));
-                } catch (RuntimeException e) {
-                    //TODO: Log error
-                }
+                inventorySlots.get(slotID).deserializeNBT(tagCompound);
             }
         }
     }
@@ -555,12 +543,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public ListNBT getInventory(Object... data) {
         ListNBT tagList = new ListNBT();
         for (int i = 0; i < inventorySlots.size(); i++) {
-            IInventorySlot slot = inventorySlots.get(i);
-            ItemStack stack = slot.getStack();
-            if (!stack.isEmpty()) {
-                CompoundNBT tagCompound = new CompoundNBT();
+            CompoundNBT tagCompound = inventorySlots.get(i).serializeNBT();
+            if (!tagCompound.isEmpty()) {
                 tagCompound.putByte("Slot", (byte) i);
-                stack.write(tagCompound);
                 tagList.add(tagCompound);
             }
         }

@@ -7,14 +7,15 @@ import mekanism.api.annotations.NonNull;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 
-//TODO: Handle persistence somewhere, so that we can load/save the slots in an IMekanismInventory. We need to mark the tile dirty and things in onContentsChanged
-//TODO: Should this extend INBTSerializable
-public interface IInventorySlot {
+//TODO: Should we add a way to read contents to/from network so that things like the bin does not have issues due to it being too large
+public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
 
     /**
      * Returns the {@link ItemStack} in this {@link IInventorySlot}.

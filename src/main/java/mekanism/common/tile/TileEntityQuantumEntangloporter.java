@@ -44,15 +44,12 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -201,18 +198,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             frequency = new InventoryFrequency(nbtTags.getCompound("frequency"));
             frequency.valid = false;
         }
-
-        ListNBT tagList = nbtTags.getList("upgradesInv", Constants.NBT.TAG_COMPOUND);
-        //TODO: Given we only have one slot I think we can manually clear or something
-        List<IInventorySlot> inventorySlots = getInventorySlots(null);
-        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
-            CompoundNBT tagCompound = tagList.getCompound(tagCount);
-            byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < inventorySlots.size()) {
-                inventorySlots.get(slotID).setStack(ItemStack.read(tagCompound));
-            }
-        }
-
     }
 
     @Nonnull
@@ -224,20 +209,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             frequency.write(frequencyTag);
             nbtTags.put("frequency", frequencyTag);
         }
-
-        //TODO: Save the upgrades to file, needed for all not just this one
-        //Upgrades inventory
-        /*ListNBT tagList = new ListNBT();
-        for (int slotCount = 0; slotCount < getInventory().size(); slotCount++) {
-            ItemStack stackInSlot = getStackInSlot(slotCount);
-            if (!stackInSlot.isEmpty()) {
-                CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.putByte("Slot", (byte) slotCount);
-                stackInSlot.write(tagCompound);
-                tagList.add(tagCompound);
-            }
-        }
-        nbtTags.put("upgradesInv", tagList);*/
         return nbtTags;
     }
 

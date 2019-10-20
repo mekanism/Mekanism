@@ -11,6 +11,8 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class BasicInventorySlot implements IInventorySlot {
@@ -236,5 +238,34 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public boolean isEmpty() {
         return current.isEmpty();
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = new CompoundNBT();
+        if (!current.isEmpty()) {
+            nbt.put("Item", current.write(new CompoundNBT()));
+            if (current.getCount() > current.getMaxStackSize()) {
+                nbt.putInt("SizeOverride", current.getCount());
+            }
+        }
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        if (nbt.contains("Item", NBT.TAG_COMPOUND)) {
+            ItemStack stack = ItemStack.read(nbt.getCompound("Item"));
+            if (nbt.contains("SizeOverride", NBT.TAG_INT)) {
+                stack.setCount(nbt.getInt("SizeOverride"));
+            }
+            //Directly set the stack in case the item is no longer valid for the stack.
+            //TODO: Re-evaluate as this may cause issues but we really don't want to just void the stack and then throw an exception
+            // Should we at least log a warning that it is no longer valid if it isn't valid?
+            current = stack;
+        } else {
+            current = ItemStack.EMPTY;
+        }
+        //TODO: Do we need to fire onContentsChanged??? Probably not given this is mainly used for when we just loaded from disk anyways
     }
 }

@@ -35,6 +35,7 @@ public class InventoryFrequency extends Frequency {
     //TODO: output: configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.OUTPUT
     //TODO: Should this be an input and output slot then? Also should this even be two slots big?
     //TODO: FIXME?? ideally we don't pass null as the inventory??
+    //TODO: FIX INVENTORY PERSISTENCE
     public final List<IInventorySlot> inventorySlots = Arrays.asList(InternalInventorySlot.create(null), InternalInventorySlot.create(null));
 
     public InventoryFrequency(String n, UUID uuid) {

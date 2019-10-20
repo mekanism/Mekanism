@@ -4,13 +4,13 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.multiblock.MultiblockCache;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
 
+    //TODO: FIX INVENTORY PERSISTENCE??
     @Nonnull
     private List<IInventorySlot> inventorySlots = SynchronizedMatrixData.createBaseInventorySlots();
 
@@ -36,7 +36,7 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < 2) {
-                inventorySlots.get(slotID).setStack(ItemStack.read(tagCompound));
+                inventorySlots.get(slotID).deserializeNBT(tagCompound);
             }
         }
     }
@@ -45,11 +45,9 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
     public void save(CompoundNBT nbtTags) {
         ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < 2; slotCount++) {
-            IInventorySlot slot = inventorySlots.get(slotCount);
-            if (!slot.isEmpty()) {
-                CompoundNBT tagCompound = new CompoundNBT();
+            CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
+            if (!tagCompound.isEmpty()) {
                 tagCompound.putByte("Slot", (byte) slotCount);
-                slot.getStack().write(tagCompound);
                 tagList.add(tagCompound);
             }
         }

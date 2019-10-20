@@ -199,7 +199,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             slotHolder = getInitialInventory();
         }
         if (supportsUpgrades()) {
-            //TODO: Make sure to use the upgrade slot where needed and to store it so that it is persistent
             upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(this, getSupportedUpgrade()));
         }
         if (isElectric()) {
@@ -496,19 +495,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (hasInventory()) {
             if (handleInventory()) {
                 ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
-                //TODO: We need to make sure the slots are initialized first
                 List<IInventorySlot> inventorySlots = getInventorySlots(null);
                 int size = inventorySlots.size();
                 for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
                     CompoundNBT tagCompound = tagList.getCompound(tagCount);
                     byte slotID = tagCompound.getByte("Slot");
                     if (slotID >= 0 && slotID < size) {
-                        IInventorySlot inventorySlot = inventorySlots.get(slotID);
-                        try {
-                            inventorySlot.setStack(ItemStack.read(tagCompound));
-                        } catch (RuntimeException e) {
-                            //TODO: Log error
-                        }
+                        //TODO: Re-evaluate the slot id stuff
+                        inventorySlots.get(slotID).deserializeNBT(tagCompound);
                     }
                 }
             }
@@ -534,11 +528,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 ListNBT tagList = new ListNBT();
                 List<IInventorySlot> inventorySlots = getInventorySlots(null);
                 for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
-                    ItemStack stackInSlot = inventorySlots.get(slotCount).getStack();
-                    if (!stackInSlot.isEmpty()) {
-                        CompoundNBT tagCompound = new CompoundNBT();
+                    CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
+                    if (!tagCompound.isEmpty()) {
+                        //TODO: Re-evaluate how the slot works like this
                         tagCompound.putByte("Slot", (byte) slotCount);
-                        stackInSlot.write(tagCompound);
                         tagList.add(tagCompound);
                     }
                 }
@@ -762,20 +755,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (nbtTags == null || nbtTags.isEmpty() || !handleInventory()) {
             return;
         }
-        //TODO: Make sure our inventory has been initialized??
         List<IInventorySlot> inventorySlots = getInventorySlots(null);
         int size = inventorySlots.size();
         for (int slots = 0; slots < nbtTags.size(); slots++) {
             CompoundNBT tagCompound = nbtTags.getCompound(slots);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < size) {
-                IInventorySlot inventorySlot = inventorySlots.get(slotID);
-                try {
-                    //TODO: FIX this because it doesn't actually save the correct size if our slot can go past the size of a byte
-                    inventorySlot.setStack(ItemStack.read(tagCompound));
-                } catch (RuntimeException e) {
-                    //TODO: Log error
-                }
+                //TODO: Re-evaluate the slot id stuff
+                inventorySlots.get(slotID).deserializeNBT(tagCompound);
             }
         }
     }
@@ -787,11 +774,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
             for (int slots = 0; slots < inventorySlots.size(); slots++) {
                 IInventorySlot inventorySlot = inventorySlots.get(slots);
-                ItemStack itemStack = inventorySlot.getStack();
-                if (!itemStack.isEmpty()) {
-                    CompoundNBT tagCompound = new CompoundNBT();
+                CompoundNBT tagCompound = inventorySlot.serializeNBT();
+                if (!tagCompound.isEmpty()) {
+                    //TODO: Re-evaluate how the slot works like this
                     tagCompound.putByte("Slot", (byte) slots);
-                    itemStack.write(tagCompound);
                     tagList.add(tagCompound);
                 }
             }
@@ -799,7 +785,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return tagList;
     }
 
-    //TODO: Remove??
+    //TODO: Remove?? Maybe rename to something like shouldSaveInventory
     public boolean handleInventory() {
         return hasInventory();
     }
