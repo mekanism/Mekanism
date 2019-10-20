@@ -20,13 +20,11 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-//TODO: Switch this to being GuiMekanismTile??
 @OnlyIn(Dist.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, UpgradeManagementContainer> {
 
@@ -83,21 +81,21 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.supported"), ":"), 26, 59, 0x404040);
         if (selectedType == null) {
-            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.noSelection"), "."), 92, 8, 0.8F, true);
+            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.noSelection"), "."), 92, 8, 0.8F);
         } else {
             int amount = tileEntity.getComponent().getUpgrades(selectedType);
-            renderText(TextComponentUtil.build(selectedType, " ", Translation.of("gui.mekanism.upgrade")), 92, 8, 0.6F, true);
-            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F, true);
+            renderText(TextComponentUtil.build(selectedType, " ", Translation.of("gui.mekanism.upgrade")), 92, 8, 0.6F);
+            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F);
             int text = 0;
             for (ITextComponent component : UpgradeUtils.getInfo(tileEntity, selectedType)) {
-                renderText(component, 92, 22 + (6 * text++), 0.6F, true);
+                renderText(component, 92, 22 + (6 * text++), 0.6F);
             }
         }
         Set<Upgrade> supportedTypes = tileEntity.getComponent().getSupportedTypes();
         if (!supportedTypes.isEmpty()) {
             Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
-                renderUpgrade(supported[supportedIndex], 80, 57, 0.8F, true);
+                renderUpgrade(supported[supportedIndex], 80, 57, 0.8F);
                 drawString(TextComponentUtil.build(supported[supportedIndex]), 96, 59, 0x404040);
             }
         }
@@ -113,7 +111,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
             int xPos = 25;
             int yPos = 7 + (i * 12);
             drawString(TextComponentUtil.build(upgrade), xPos + 12, yPos + 2, 0x404040);
-            renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
+            renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
                 displayTooltip(TextComponentUtil.build(Translation.of(upgrade.getDescription()), UpgradeUtils.getStack(upgrade)), xAxis, yAxis);
             }
@@ -122,25 +120,15 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    private void renderText(ITextComponent component, int x, int y, float size, boolean scale) {
-        //TODO: Is this fine?
-        renderText(component.getFormattedText(), x, y, size, scale);
-    }
-
-    private void renderText(String text, int x, int y, float size, boolean scale) {
+    private void renderText(ITextComponent component, int x, int y, float size) {
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(size, size, size);
-        drawString(text, scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y, 0x00CD00);
+        GlStateManager.scalef(size, size, size);
+        drawString(component, (int) ((1F / size) * x), (int) ((1F / size) * y), 0x00CD00);
         GlStateManager.popMatrix();
     }
 
-    private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale) {
-        ItemStack stack = UpgradeUtils.getStack(type);
-        if (scale) {
-            renderItem(stack, (int) ((float) x / size), (int) ((float) y / size), size);
-        } else {
-            renderItem(stack, x, y, size);
-        }
+    private void renderUpgrade(Upgrade type, int x, int y, float size) {
+        renderItem(UpgradeUtils.getStack(type), (int) ((float) x / size), (int) ((float) y / size), size);
     }
 
     @Override
