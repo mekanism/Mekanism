@@ -33,11 +33,11 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     }
 
     //TODO: Use this for charging/discharging
-    private final boolean isCharge;
+    private final boolean discharge;
 
-    private EnergyInventorySlot(IMekanismInventory inventory, int x, int y, boolean isCharge) {
-        super(isCharge ? chargeExtractPredicate : dischargeExtractPredicate, isCharge ? chargeInsertPredicate : dischargeInsertPredicate, validPredicate, inventory, x, y);
-        this.isCharge = isCharge;
+    private EnergyInventorySlot(IMekanismInventory inventory, int x, int y, boolean discharge) {
+        super(discharge ? dischargeExtractPredicate : chargeExtractPredicate, discharge ? dischargeInsertPredicate : chargeInsertPredicate, validPredicate, inventory, x, y);
+        this.discharge = discharge;
     }
 
     @Override

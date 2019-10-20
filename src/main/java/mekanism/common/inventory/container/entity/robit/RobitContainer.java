@@ -23,8 +23,8 @@ public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit
             //Get all the inventory slots the entity has/exposes for this container type
             //TODO: Check to make sure that the repair and crafting containers still work fine
             List<IInventorySlot> inventorySlots = entity.getInventorySlots(getType());
-            for (int i = 0; i < inventorySlots.size(); i++) {
-                Slot containerSlot = inventorySlots.get(i).createContainerSlot(i);
+            for (IInventorySlot inventorySlot : inventorySlots) {
+                Slot containerSlot = inventorySlot.createContainerSlot();
                 if (containerSlot != null) {
                     addSlot(containerSlot);
                 }

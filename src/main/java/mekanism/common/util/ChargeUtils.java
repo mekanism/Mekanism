@@ -116,7 +116,9 @@ public final class ChargeUtils {
      */
     public static boolean isEnergyItem(ItemStack itemstack) {
         if (itemstack.getItem() instanceof IEnergizedItem) {
-            if (((IEnergizedItem) itemstack.getItem()).canSend(itemstack)) {
+            IEnergizedItem energizedItem = (IEnergizedItem) itemstack.getItem();
+            //TODO: Should this just always return true??
+            if (energizedItem.canSend(itemstack) || energizedItem.canReceive(itemstack)) {
                 return true;
             }
         }
@@ -136,13 +138,11 @@ public final class ChargeUtils {
      * @return if the ItemStack can be discharged
      */
     public static boolean canBeCharged(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return false;
-        }
         if (stack.getItem() instanceof IEnergizedItem) {
             IEnergizedItem energizedItem = (IEnergizedItem) stack.getItem();
             if (energizedItem.canReceive(stack)) {
-                if (energizedItem.getMaxEnergy(stack) < energizedItem.getEnergy(stack)) {
+                //TODO: FIX THIS IN 1.12 as well, it can only be charged if we have less energy than the max energy we can store
+                if (energizedItem.getEnergy(stack) < energizedItem.getMaxEnergy(stack)) {
                     return true;
                 }
             }

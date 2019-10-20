@@ -123,14 +123,12 @@ public interface IInventorySlot {
     void onContentsChanged();
 
     /**
-     * Returns a slot with the given index for use in auto adding slots to a container.
-     *
-     * @param index A number representing what index this slot is supposed to have.
+     * Returns a slot for use in auto adding slots to a container.
      *
      * @return A slot for use in a container that represents this {@link IInventorySlot}, or null if this slot should not be added.
      */
     @Nullable
-    Slot createContainerSlot(int index);
+    Slot createContainerSlot();
 
     /**
      * Convenience method for modifying the size of the stored stack.

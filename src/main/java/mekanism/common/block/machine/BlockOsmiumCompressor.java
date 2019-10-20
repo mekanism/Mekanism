@@ -24,7 +24,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.advanced.OsmiumCompressorContainer;
+import mekanism.common.inventory.container.tile.OsmiumCompressorContainer;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;

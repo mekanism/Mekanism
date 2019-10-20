@@ -3,6 +3,7 @@ package mekanism.common.util.text;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.util.text.ITextComponent;
 
+//TODO: Cache objects of this that get used in GUI's in static final variables
 public class Translation implements IHasTextComponent {
 
     private final String key;

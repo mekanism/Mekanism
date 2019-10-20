@@ -1,11 +1,12 @@
-package mekanism.common.inventory.container.tile.advanced;
+package mekanism.common.inventory.container.tile;
 
 import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-public class OsmiumCompressorContainer extends AdvancedElectricMachineContainer<TileEntityOsmiumCompressor> {
+public class OsmiumCompressorContainer extends MekanismTileContainer<TileEntityOsmiumCompressor> {
 
     public OsmiumCompressorContainer(int id, PlayerInventory inv, TileEntityOsmiumCompressor tile) {
         super(MekanismContainerTypes.OSMIUM_COMPRESSOR, id, inv, tile);

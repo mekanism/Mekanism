@@ -1,11 +1,11 @@
-package mekanism.common.inventory.container.tile.electric;
+package mekanism.common.inventory.container.tile;
 
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-public class EnrichmentChamberContainer extends ElectricMachineContainer<TileEntityEnrichmentChamber> {
+public class EnrichmentChamberContainer extends MekanismTileContainer<TileEntityEnrichmentChamber> {
 
     public EnrichmentChamberContainer(int id, PlayerInventory inv, TileEntityEnrichmentChamber tile) {
         super(MekanismContainerTypes.ENRICHMENT_CHAMBER, id, inv, tile);

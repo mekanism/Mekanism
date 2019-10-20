@@ -54,7 +54,7 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Nullable
     @Override
-    public InventoryContainerSlot createContainerSlot(int index) {
+    public InventoryContainerSlot createContainerSlot() {
         return null;
     }
 

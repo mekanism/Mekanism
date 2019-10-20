@@ -6,7 +6,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.fluid.DynamicTankContainer;
+import mekanism.common.inventory.container.tile.DynamicTankContainer;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.inventory.container.INamedContainerProvider;

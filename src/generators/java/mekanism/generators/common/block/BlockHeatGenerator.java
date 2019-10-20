@@ -18,7 +18,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.inventory.container.fuel.HeatGeneratorContainer;
+import mekanism.generators.common.inventory.container.HeatGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.block.Block;

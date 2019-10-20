@@ -14,7 +14,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.inventory.container.tile.electric.ElectricMachineContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
@@ -26,7 +26,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiElectricMachine<TILE extends TileEntityElectricMachine, CONTAINER extends ElectricMachineContainer<TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
+public abstract class GuiElectricMachine<TILE extends TileEntityElectricMachine, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
 
     protected GuiElectricMachine(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

@@ -33,6 +33,7 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
 
     @Override
     protected void addSlots() {
+        //TODO: FIXME???
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 addSlot(new SlotPersonalChest(itemInventory, slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
@@ -62,6 +63,7 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
+        //TODO: NOTE: until we do some method for handling this, given we don't have InventoryContainerSlots, We CANNOT use the super method for transferStackInSlot
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot != null && currentSlot.getHasStack()) {

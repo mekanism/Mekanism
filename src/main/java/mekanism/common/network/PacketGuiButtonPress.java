@@ -17,7 +17,7 @@ import mekanism.common.inventory.container.tile.MatrixStatsContainer;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
-import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
+import mekanism.common.inventory.container.tile.InductionMatrixContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;

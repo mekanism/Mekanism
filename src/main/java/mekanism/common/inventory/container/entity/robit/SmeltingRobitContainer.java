@@ -15,6 +15,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.FurnaceTileEntity;
 
+//TODO: Rework this when we switch to using the cached recipe system.
 public class SmeltingRobitContainer extends RobitContainer {
 
     private int lastCookTime = 0;
@@ -70,6 +71,7 @@ public class SmeltingRobitContainer extends RobitContainer {
         }
     }
 
+    //TODO: Remove this, just leaving it for now until we switch to the cached recipe system to make it easier to remember to check things
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {

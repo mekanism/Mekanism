@@ -15,7 +15,7 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.energy.EnergyCubeContainer;
+import mekanism.common.inventory.container.tile.EnergyCubeContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;

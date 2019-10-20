@@ -2,7 +2,7 @@ package mekanism.client.gui.chemical;
 
 import mekanism.client.gui.GuiAdvancedElectricMachine;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.inventory.container.tile.advanced.ChemicalInjectionChamberContainer;
+import mekanism.common.inventory.container.tile.ChemicalInjectionChamberContainer;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;

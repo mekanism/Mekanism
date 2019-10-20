@@ -106,7 +106,7 @@ public class BasicInventorySlot implements IInventorySlot {
         }
         int needed = getLimit(stack) - current.getCount();
         if (needed <= 0) {
-            //Fail if we are a full inventory
+            //Fail if we are a full slot
             return stack;
         }
         boolean sameType = false;
@@ -177,8 +177,8 @@ public class BasicInventorySlot implements IInventorySlot {
     //TODO: Should we move InventoryContainerSlot to the API and reference that instead
     @Nullable
     @Override
-    public InventoryContainerSlot createContainerSlot(int index) {
-        return new InventoryContainerSlot(this, index, x, y, getSlotType());
+    public InventoryContainerSlot createContainerSlot() {
+        return new InventoryContainerSlot(this, x, y, getSlotType());
     }
 
     //TODO: Implement this properly in the different subclasses/slot types

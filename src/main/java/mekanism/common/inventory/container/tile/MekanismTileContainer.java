@@ -83,8 +83,8 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);
-            for (int i = 0; i < inventorySlots.size(); i++) {
-                Slot containerSlot = inventorySlots.get(i).createContainerSlot(i);
+            for (IInventorySlot inventorySlot : inventorySlots) {
+                Slot containerSlot = inventorySlot.createContainerSlot();
                 if (containerSlot != null) {
                     addSlot(containerSlot);
                 }

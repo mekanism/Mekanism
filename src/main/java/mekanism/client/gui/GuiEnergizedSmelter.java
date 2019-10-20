@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.inventory.container.tile.electric.EnergizedSmelterContainer;
+import mekanism.common.inventory.container.tile.EnergizedSmelterContainer;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;

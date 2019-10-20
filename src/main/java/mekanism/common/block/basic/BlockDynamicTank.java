@@ -4,7 +4,7 @@ import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.fluid.DynamicTankContainer;
+import mekanism.common.inventory.container.tile.DynamicTankContainer;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.inventory.container.INamedContainerProvider;

@@ -3,7 +3,7 @@ package mekanism.common.block.basic;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.energy.InductionMatrixContainer;
+import mekanism.common.inventory.container.tile.InductionMatrixContainer;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.inventory.container.INamedContainerProvider;

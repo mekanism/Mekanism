@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.inventory.container.tile.advanced.PurificationChamberContainer;
+import mekanism.common.inventory.container.tile.PurificationChamberContainer;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;

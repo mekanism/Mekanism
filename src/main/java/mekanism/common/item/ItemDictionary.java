@@ -61,11 +61,12 @@ public class ItemDictionary extends ItemMekanism {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new DictionaryContainer(i, inv, hand, stack)), buf -> {
-                buf.writeEnumValue(hand);
-                buf.writeItemStack(stack);
-            });
+        if (player.isSneaking() && !world.isRemote()) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new DictionaryContainer(i, inv, hand, stack)),
+                  buf -> {
+                      buf.writeEnumValue(hand);
+                      buf.writeItemStack(stack);
+                  });
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

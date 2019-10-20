@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.inventory.container.tile.fluid.DynamicTankContainer;
+import mekanism.common.inventory.container.tile.DynamicTankContainer;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

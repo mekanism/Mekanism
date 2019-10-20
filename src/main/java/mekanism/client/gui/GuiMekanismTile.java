@@ -62,6 +62,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
             if (datas != null) {
                 for (SideData data : datas) {
                     for (int id : data.availableSlots) {
+                        //TODO: FIXME as we don't bother giving the slots numeric index ids anymore
                         if (id == slot.getSlotIndex()) {
                             return data;
                         }

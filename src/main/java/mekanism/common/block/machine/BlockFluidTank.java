@@ -20,7 +20,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.fluid.FluidTankContainer;
+import mekanism.common.inventory.container.tile.FluidTankContainer;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.MekanismTileEntityTypes;

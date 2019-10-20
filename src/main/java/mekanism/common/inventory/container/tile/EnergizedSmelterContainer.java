@@ -1,11 +1,12 @@
-package mekanism.common.inventory.container.tile.electric;
+package mekanism.common.inventory.container.tile;
 
 import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-public class EnergizedSmelterContainer extends ElectricMachineContainer<TileEntityEnergizedSmelter> {
+public class EnergizedSmelterContainer extends MekanismTileContainer<TileEntityEnergizedSmelter> {
 
     public EnergizedSmelterContainer(int id, PlayerInventory inv, TileEntityEnergizedSmelter tile) {
         super(MekanismContainerTypes.ENERGIZED_SMELTER, id, inv, tile);
