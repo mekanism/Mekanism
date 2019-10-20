@@ -15,6 +15,18 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
     }
 
     @Override
+    public void init() {
+        super.init();
+        //TODO: Use a progress bar instead of the way it used to do it with the cooking progress
+        /*addButton(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return tileEntity.getScaledProgress();
+            }
+        }, ProgressBar.GREEN, this, getGuiLocation(), 77, 37));*/
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.translate("gui.mekanism.robit.smelting"), 8, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 93, 0x404040);
