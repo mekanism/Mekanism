@@ -1,4 +1,4 @@
-package mekanism.common.inventory;
+package mekanism.common.inventory.slot.holder;
 
 import java.util.List;
 import javax.annotation.Nonnull;

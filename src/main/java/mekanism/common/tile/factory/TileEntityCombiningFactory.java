@@ -10,8 +10,8 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.InputInventorySlot;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper.Builder builder) {
+    protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
         builder.addSlot(extraSlot = InputInventorySlot.at(this::isValidExtraItem, this, 7, 57));
     }

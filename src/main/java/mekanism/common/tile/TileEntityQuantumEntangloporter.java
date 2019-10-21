@@ -85,7 +85,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            Supplier<List<? extends IInventorySlot>> slotSupplier = () -> hasFrequency() ? frequency.inventorySlots : Collections.emptyList();
+            Supplier<List<IInventorySlot>> slotSupplier = () -> hasFrequency() ? frequency.inventorySlots : Collections.emptyList();
             itemConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Inventory(slotSupplier));
             itemConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Inventory(slotSupplier));
             //Set default config directions

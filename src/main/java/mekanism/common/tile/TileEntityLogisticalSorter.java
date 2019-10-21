@@ -23,9 +23,9 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.InternalInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -72,7 +72,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         //TODO: Verify this still works. Given it MIGHT be trying to use things in an odd way
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(InternalInventorySlot.create(this), RelativeSide.FRONT, RelativeSide.BACK);
         return builder.build();
     }

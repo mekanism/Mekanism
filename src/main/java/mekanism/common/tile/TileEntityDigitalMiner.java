@@ -38,12 +38,12 @@ import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -149,7 +149,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         mainSlots = new ArrayList<>();
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 BasicInventorySlot slot = BasicInventorySlot.at(this, 8 + slotX * 18, 80 + slotY * 18);

@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
@@ -34,7 +34,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35));
         return builder.build();
     }

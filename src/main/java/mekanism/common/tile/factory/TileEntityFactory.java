@@ -26,11 +26,11 @@ import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
@@ -194,15 +194,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         addSlots(builder);
         return builder.build();
     }
 
-    protected void addSlots(InventorySlotHelper.Builder builder) {
-        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
-        // This can probably be done by letting the configurations know the relative side information?
+    protected void addSlots(InventorySlotHelper builder) {
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 7, 13));
         //TODO: Make these two slots not show up on the auto generation of gui
         //TODO: Make this input slot only accept other machines for factories

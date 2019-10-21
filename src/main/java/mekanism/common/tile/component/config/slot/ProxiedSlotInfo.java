@@ -46,14 +46,14 @@ public class ProxiedSlotInfo {
 
     public static class Inventory extends InventorySlotInfo {
 
-        private final Supplier<List<? extends IInventorySlot>> slotSupplier;
+        private final Supplier<List<IInventorySlot>> slotSupplier;
 
-        public Inventory(Supplier<List<? extends IInventorySlot>> slotSupplier) {
+        public Inventory(Supplier<List<IInventorySlot>> slotSupplier) {
             this.slotSupplier = slotSupplier;
         }
 
         @Override
-        public List<? extends IInventorySlot> getSlots() {
+        public List<IInventorySlot> getSlots() {
             return slotSupplier.get();
         }
     }

@@ -14,9 +14,9 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -92,10 +92,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
-        // This can probably be done by letting the configurations know the relative side information?
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(chargeSlot = EnergyInventorySlot.charge(this, 143, 35));
         builder.addSlot(dischargeSlot = EnergyInventorySlot.discharge(this, 17, 35));
         return builder.build();

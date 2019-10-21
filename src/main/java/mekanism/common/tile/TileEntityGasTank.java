@@ -22,9 +22,9 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
@@ -105,10 +105,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
-        // This can probably be done by letting the configurations know the relative side information?
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(drainSlot = GasInventorySlot.drain(gasTank, this, 8, 8));
         builder.addSlot(fillSlot = GasInventorySlot.fill(gasTank, gas -> true, this, 8, 40));
         return builder.build();

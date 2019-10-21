@@ -7,7 +7,7 @@ import mekanism.api.inventory.slot.IInventorySlot;
 
 public class InventorySlotInfo implements ISlotInfo {
 
-    private final List<? extends IInventorySlot> inventorySlots;
+    private final List<IInventorySlot> inventorySlots;
 
     public InventorySlotInfo() {
         inventorySlots = Collections.emptyList();
@@ -17,11 +17,11 @@ public class InventorySlotInfo implements ISlotInfo {
         this(Arrays.asList(slots));
     }
 
-    public InventorySlotInfo(List<? extends IInventorySlot> slots) {
+    public InventorySlotInfo(List<IInventorySlot> slots) {
         inventorySlots = slots;
     }
 
-    public List<? extends IInventorySlot> getSlots() {
+    public List<IInventorySlot> getSlots() {
         return inventorySlots;
     }
 

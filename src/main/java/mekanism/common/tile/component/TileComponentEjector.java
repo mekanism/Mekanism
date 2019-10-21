@@ -158,7 +158,7 @@ public class TileComponentEjector implements ITileComponent {
 
     private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo) {
         TransitRequest request = new TransitRequest();
-        List<? extends IInventorySlot> slots = slotInfo.getSlots();
+        List<IInventorySlot> slots = slotInfo.getSlots();
         for (int index = 0; index < slots.size(); index++) {
             IInventorySlot slot = slots.get(index);
             if (!slot.isEmpty()) {

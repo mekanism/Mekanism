@@ -9,9 +9,9 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ProcessInfo;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.item.ItemStack;
 
@@ -25,7 +25,7 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper.Builder builder) {
+    protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];

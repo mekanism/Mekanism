@@ -9,9 +9,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismGases;
 import mekanism.common.base.IActiveState;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
@@ -66,7 +66,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: FIXME
         builder.addSlot(reactorSlot = BasicInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
         return builder.build();

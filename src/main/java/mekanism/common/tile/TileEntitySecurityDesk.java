@@ -9,9 +9,9 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.security.IOwnerItem;
@@ -48,7 +48,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(() -> ownerUUID, this, 146, 18));
         builder.addSlot(lockSlot = SecurityInventorySlot.lock(this, 146, 97));
         return builder.build();

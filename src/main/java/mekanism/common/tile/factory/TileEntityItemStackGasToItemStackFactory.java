@@ -18,8 +18,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -62,7 +62,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper.Builder builder) {
+    protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
         builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this, 7, 57));
     }

@@ -25,11 +25,11 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -98,9 +98,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
-        // configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this, 6, 65));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));

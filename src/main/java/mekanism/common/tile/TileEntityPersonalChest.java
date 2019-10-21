@@ -5,9 +5,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.common.MekanismBlock;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.item.ItemStack;
@@ -30,7 +30,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         Predicate<@NonNull ItemStack> canExtract = item -> SecurityUtils.getSecurity(this, Dist.DEDICATED_SERVER) != SecurityMode.PUBLIC;
         RelativeSide[] sides = new RelativeSide[]{RelativeSide.TOP, RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
         for (int slotY = 0; slotY < 6; slotY++) {

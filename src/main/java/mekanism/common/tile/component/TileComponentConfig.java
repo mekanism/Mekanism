@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -28,6 +29,8 @@ public class TileComponentConfig implements ITileComponent {
 
     public TileEntityMekanism tileEntity;
     private Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+    //TODO: See if we can come up with a way of not needing this. The issue is we want this to be sorted, but getting the keyset of configInfo doesn't work for us
+    private List<TransmissionType> transmissionTypes = new ArrayList<>();
 
     public TileComponentConfig(TileEntityMekanism tile, TransmissionType... types) {
         tileEntity = tile;
@@ -47,14 +50,14 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     public List<TransmissionType> getTransmissions() {
-        //TODO: Do this better given the side config uses this for figuring out tab order
-        return new ArrayList<>(configInfo.keySet());
+        return transmissionTypes;
     }
 
     public void addSupported(TransmissionType type) {
         if (!configInfo.containsKey(type)) {
             //TODO: ISideConfiguration#getOrientation?
             configInfo.put(type, new ConfigInfo(() -> tileEntity.getDirection()));
+            transmissionTypes.add(type);
         }
     }
 
@@ -68,19 +71,16 @@ public class TileComponentConfig implements ITileComponent {
             type = TransmissionType.HEAT;
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             type = TransmissionType.FLUID;
+        } else if (capability == CapabilityEnergy.ENERGY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY ||
+                   capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+            //While we strictly speaking don't need to check this for energy because of baseline checks, we do so anyways as it makes the logic easier to follow
+            type = TransmissionType.ENERGY;
         }
-        //Energy is handled by the TileEntityElectricBlock anyways in the super clauses so no need to bother with it
-        //TODO: We actually might as well deal with energy here?
-        if (type != null && supports(type)) {
+        if (type != null) {
             ISlotInfo slotInfo = getSlotInfo(type, side);
             return slotInfo == null || !slotInfo.isEnabled();
         }
         return false;
-    }
-
-    public boolean canEject(TransmissionType type) {
-        ConfigInfo info = getConfig(type);
-        return info != null && info.canEject();
     }
 
     @Nullable

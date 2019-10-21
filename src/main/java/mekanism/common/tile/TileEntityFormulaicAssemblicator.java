@@ -16,13 +16,13 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
-import mekanism.common.inventory.IInventorySlotHolder;
-import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -80,8 +80,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public ItemStack lastOutputStack = ItemStack.EMPTY;
 
     private List<IInventorySlot> craftingGridSlots;
-    private List<InputInventorySlot> inputSlots;
-    private List<OutputInventorySlot> outputSlots;
+    private List<IInventorySlot> inputSlots;
+    private List<IInventorySlot> outputSlots;
     private FormulaInventorySlot formulaSlot;
     private EnergyInventorySlot energySlot;
 
@@ -114,14 +114,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        //return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
-        //TODO: Some way to tie slots to a config component? So that we can filter by the config component?
-        // This can probably be done by letting the configurations know the relative side information?
         craftingGridSlots = new ArrayList<>();
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
-
-        InventorySlotHelper.Builder builder = InventorySlotHelper.Builder.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 76));
         builder.addSlot(formulaSlot = FormulaInventorySlot.at(this, 6, 26));
         for (int slotY = 0; slotY < 2; slotY++) {
@@ -136,7 +132,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     if (indices.size() > 0) {
                         if (stockControl) {
                             int filled = 0;
-                            for (InputInventorySlot stockSlot : inputSlots) {
+                            for (IInventorySlot stockSlot : inputSlots) {
                                 ItemStack slotStack = stockSlot.getStack();
                                 if (!slotStack.isEmpty()) {
                                     if (formula.isIngredientInPos(world, slotStack, indices.get(0))) {
@@ -384,7 +380,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 boolean found = false;
                 for (int j = inputSlots.size() - 1; j >= 0; j--) {
                     //The stack stored in the stock inventory
-                    InputInventorySlot stockSlot = inputSlots.get(j);
+                    IInventorySlot stockSlot = inputSlots.get(j);
                     ItemStack stockStack = stockSlot.getStack();
                     if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i)) {
                         recipeSlot.setStack(StackUtils.size(stockStack, 1));
@@ -478,7 +474,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private ItemStack tryMoveToInput(ItemStack stack) {
-        for (InputInventorySlot stockSlot : inputSlots) {
+        for (IInventorySlot stockSlot : inputSlots) {
             stack = stockSlot.insertItem(stack, Action.EXECUTE);
             if (stack.isEmpty()) {
                 //We fit it all, just break and return that we have no remainder
@@ -489,7 +485,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private boolean tryMoveToOutput(ItemStack stack, Action action) {
-        for (OutputInventorySlot outputSlot : outputSlots) {
+        for (IInventorySlot outputSlot : outputSlots) {
             //Try to insert the item (simulating as needed), and overwrite our local reference to point ot the remainder
             // We can then continue on to the next slot if we did not fit it all and try to insert it.
             // The logic is relatively simple due to only having one stack we are trying to insert so we don't have to worry

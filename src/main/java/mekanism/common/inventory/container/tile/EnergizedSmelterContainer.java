@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
 import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
