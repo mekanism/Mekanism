@@ -173,7 +173,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
         progress = new int[tier.processes];
         //TODO: Theoretically this should work as it initializes them all as null, but is there a better/proper way to do this

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IMekWrench;
+import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -19,11 +20,11 @@ import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -85,8 +86,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(), "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig().supports(transmissionType)) {
                     ISideConfiguration config = (ISideConfiguration) tile;
-                    DataType dataType = config.getConfig().getDataType(transmissionType, side);
-                    if (dataType != null) {
+                    ConfigInfo info = config.getConfig().getConfig(transmissionType);
+                    if (info != null) {
+                        RelativeSide relativeSide = RelativeSide.fromDirections(config.getOrientation(), side);
+                        DataType dataType = info.getDataType(relativeSide);
                         if (!player.isSneaking()) {
                             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                                   Translation.of("tooltip.mekanism.configurator.view_mode", TextComponentUtil.build(transmissionType)), ": ", dataType.getColor(), dataType,
@@ -95,13 +98,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-                                    MekanismUtils.incrementOutput(config, transmissionType, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-                                    dataType = config.getConfig().getDataType(transmissionType, side);
-                                    if (dataType != null) {
-                                        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                              Translation.of("tooltip.mekanism.configurator.toggle_mode", TextComponentUtil.build(transmissionType)), ": ",
-                                              dataType.getColor(), dataType, " (", dataType.getColor().getColoredName(), ")"));
-                                    }
+                                    dataType = info.incrementDataType(relativeSide);
+                                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
+                                          Translation.of("tooltip.mekanism.configurator.toggle_mode", TextComponentUtil.build(transmissionType)), ": ",
+                                          dataType.getColor(), dataType, " (", dataType.getColor().getColoredName(), ")"));
                                     if (config instanceof TileEntityMekanism) {
                                         Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                     }

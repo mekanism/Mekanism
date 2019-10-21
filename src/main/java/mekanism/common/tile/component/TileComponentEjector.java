@@ -1,32 +1,35 @@
 package mekanism.common.tile.component;
 
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.SideData;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.FluidSlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -45,15 +48,17 @@ public class TileComponentEjector implements ITileComponent {
     private EnumColor outputColor;
     private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
     private int tickDelay = 0;
-    private Map<TransmissionType, SideData> sideData = new EnumMap<>(TransmissionType.class);
+    private Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
 
     public TileComponentEjector(TileEntityMekanism tile) {
         tileEntity = tile;
         tile.addComponent(this);
     }
 
-    public TileComponentEjector setOutputData(TransmissionType type, SideData data) {
-        sideData.put(type, data);
+    public TileComponentEjector setOutputData(TransmissionType type, @Nullable ConfigInfo info) {
+        if (info != null) {
+            configInfo.put(type, info);
+        }
         return this;
     }
 
@@ -62,7 +67,7 @@ public class TileComponentEjector implements ITileComponent {
         outputColor = ejector.outputColor;
         inputColors = ejector.inputColors;
         tickDelay = ejector.tickDelay;
-        sideData = ejector.sideData;
+        configInfo = ejector.configInfo;
     }
 
     @Override
@@ -79,15 +84,15 @@ public class TileComponentEjector implements ITileComponent {
     }
 
     private void eject(TransmissionType type) {
-        SideData data = sideData.get(type);
-        if (data != null && getEjecting(type)) {
-            ITankManager tankManager = (ITankManager) this.tileEntity;
-            if (tankManager.getTanks() != null) {
-                Set<Direction> outputSides = getOutputSides(type, data);
-                if (type == TransmissionType.GAS) {
-                    ejectGas(outputSides, (GasTank) tankManager.getTanks()[data.availableSlots[0]]);
-                } else if (type == TransmissionType.FLUID) {
-                    ejectFluid(outputSides, (FluidTank) tankManager.getTanks()[data.availableSlots[0]]);
+        ConfigInfo info = configInfo.get(type);
+        if (info != null && info.isEjecting()) {
+            ISlotInfo slotInfo = info.getSlotInfo(DataType.OUTPUT);
+            if (slotInfo != null) {
+                Set<Direction> outputSides = info.getSidesForData(DataType.OUTPUT);
+                if (type == TransmissionType.GAS && slotInfo instanceof GasSlotInfo) {
+                    ((GasSlotInfo) slotInfo).getTanks().forEach(tank -> ejectGas(outputSides, tank));
+                } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
+                    ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> ejectFluid(outputSides, tank));
                 }
             }
         }
@@ -109,31 +114,23 @@ public class TileComponentEjector implements ITileComponent {
         }
     }
 
-    public Set<Direction> getOutputSides(TransmissionType type, SideData data) {
-        Set<Direction> outputSides = EnumSet.noneOf(Direction.class);
-        TileComponentConfig config = ((ISideConfiguration) tileEntity).getConfig();
-        SideConfig sideConfig = config.getConfig(type);
-        List<SideData> outputs = config.getOutputs(type);
-        Direction[] facings = MekanismUtils.getBaseOrientations(tileEntity.getDirection());
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            Direction side = facings[i];
-            if (sideConfig.get(side) == outputs.indexOf(data)) {
-                outputSides.add(EnumUtils.DIRECTIONS[i]);
-            }
-        }
-        return outputSides;
-    }
-
     private void outputItems() {
-        SideData data = sideData.get(TransmissionType.ITEM);
-        if (data == null || !getEjecting(TransmissionType.ITEM)) {
+        ConfigInfo info = configInfo.get(TransmissionType.ITEM);
+        if (info == null || !info.isEjecting()) {
             return;
         }
-        Set<Direction> outputs = getOutputSides(TransmissionType.ITEM, data);
+        //TODO: Do we want to check ejecting for EACH data type that is there, if the slot allows outputting, or do we just want to then check DataType.OUTPUT
+        // For now just doing the specific output type because it makes more sense
+        Set<Direction> outputs = info.getSidesForData(DataType.OUTPUT);
+        ISlotInfo slotInfo = info.getSlotInfo(DataType.OUTPUT);
+        if (!(slotInfo instanceof InventorySlotInfo)) {
+            //We need it to be inventory slot info
+            return;
+        }
         TransitRequest ejectMap = null;
         for (Direction side : outputs) {
             if (ejectMap == null) {
-                ejectMap = getEjectItemMap(data);
+                ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
                 if (ejectMap.isEmpty()) {
                     break;
                 }
@@ -159,14 +156,14 @@ public class TileComponentEjector implements ITileComponent {
         tickDelay = 10;
     }
 
-    private TransitRequest getEjectItemMap(SideData data) {
+    private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo) {
         TransitRequest request = new TransitRequest();
-        for (int index = 0; index < data.availableSlots.length; index++) {
-            int slotID = data.availableSlots[index];
-            //TODO: Rework this while reworking the SideData to interact better with new inventory system
-            ItemStack stack = tileEntity.getStackInSlot(slotID);
-            if (!stack.isEmpty()) {
-                request.addItem(stack, index);
+        List<? extends IInventorySlot> slots = slotInfo.getSlots();
+        for (int index = 0; index < slots.size(); index++) {
+            IInventorySlot slot = slots.get(index);
+            if (!slot.isEmpty()) {
+                //TODO: verify the stack can't be modified or give it a copy
+                request.addItem(slot.getStack(), index);
             }
         }
         return request;
@@ -190,12 +187,12 @@ public class TileComponentEjector implements ITileComponent {
         MekanismUtils.saveChunk(tileEntity);
     }
 
-    public void setInputColor(Direction side, EnumColor color) {
+    public void setInputColor(RelativeSide side, EnumColor color) {
         inputColors[side.ordinal()] = color;
         MekanismUtils.saveChunk(tileEntity);
     }
 
-    public EnumColor getInputColor(Direction side) {
+    public EnumColor getInputColor(RelativeSide side) {
         return inputColors[side.ordinal()];
     }
 
@@ -257,9 +254,5 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void invalidate() {
-    }
-
-    private boolean getEjecting(TransmissionType type) {
-        return ((ISideConfiguration) tileEntity).getConfig().isEjecting(type);
     }
 }

@@ -87,7 +87,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
         itemInputHandler = InputHelper.getInputHandler(inputSlot);

@@ -68,7 +68,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
         inputHandler = InputHelper.getInputHandler(inputSlot);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, secondaryOutputSlot);

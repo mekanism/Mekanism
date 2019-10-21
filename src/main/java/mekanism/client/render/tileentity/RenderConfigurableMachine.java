@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -52,7 +53,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
                 if (configurable.getConfig().supports(type)) {
                     if (bp.equals(configurable.getPos())) {
-                        DataType dataType = configurable.getConfig().getDataType(type, pos.getFace());
+                        DataType dataType = configurable.getConfig().getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), pos.getFace()));
                         if (dataType != null) {
                             GlStateManager.pushMatrix();
                             GlStateManager.enableCull();

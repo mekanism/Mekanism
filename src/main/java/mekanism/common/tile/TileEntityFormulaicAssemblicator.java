@@ -108,7 +108,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
     }
 
     @Nonnull

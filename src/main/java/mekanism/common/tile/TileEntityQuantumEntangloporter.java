@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -15,6 +16,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -43,9 +45,9 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.ProxiedSlotInfo;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -61,6 +63,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
       IGasHandler, IHeatTransfer, IComputerIntegration, IChunkLoader {
@@ -80,34 +83,59 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         super(MekanismBlock.QUANTUM_ENTANGLOPORTER);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
-        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            ConfigInfo config = configComponent.getConfig(type);
-            if (config != null) {
-                config.fill(DataType.INPUT);
-                if (type == TransmissionType.HEAT) {
-                    config.addSlotInfo(DataType.INPUT, );
-                    config.setCanEject(false);
-                } else {
-                    config.addSlotInfo(DataType.INPUT, );
-                    config.addSlotInfo(DataType.OUTPUT, );
-                    //Set default config directions
-                    config.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
-                }
-            }
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            Supplier<List<? extends IInventorySlot>> slotSupplier = () -> hasFrequency() ? frequency.inventorySlots : Collections.emptyList();
+            itemConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Inventory(slotSupplier));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Inventory(slotSupplier));
+            //Set default config directions
+            itemConfig.fill(DataType.INPUT);
+            itemConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
         }
 
-        configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{0};
-        configComponent.getOutputs(TransmissionType.FLUID).get(2).availableSlots = new int[]{0};
-        configComponent.getOutputs(TransmissionType.GAS).get(2).availableSlots = new int[]{1};
+        ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
+        if (fluidConfig != null) {
+            Supplier<List<FluidTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedFluid) : Collections.emptyList();
+            fluidConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Fluid(tankSupplier));
+            fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(tankSupplier));
+            //Set default config directions
+            fluidConfig.fill(DataType.INPUT);
+            fluidConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+        }
+
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        if (gasConfig != null) {
+            Supplier<List<GasTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedGas) : Collections.emptyList();
+            gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(tankSupplier));
+            gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(tankSupplier));
+            //Set default config directions
+            gasConfig.fill(DataType.INPUT);
+            gasConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+        }
+
+        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
+        if (energyConfig != null) {
+            energyConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Energy());
+            energyConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Energy());
+            //Set default config directions
+            energyConfig.fill(DataType.INPUT);
+            energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+        }
+
+        ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
+        if (heatConfig != null) {
+            heatConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Heat());
+            //Set default config directions
+            heatConfig.fill(DataType.INPUT);
+            heatConfig.setCanEject(false);
+        }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
-        ejectorComponent.setOutputData(TransmissionType.FLUID, configComponent.getOutputs(TransmissionType.FLUID).get(2));
-        ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
+        ejectorComponent.setOutputData(TransmissionType.FLUID, fluidConfig);
+        ejectorComponent.setOutputData(TransmissionType.GAS, gasConfig);
 
         chunkLoaderComponent = new TileComponentChunkLoader(this);
-
-        //TODO: Upgrade slot index: 0
     }
 
     @Override

@@ -1,12 +1,17 @@
 package mekanism.common.tile.component.config.slot;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.inventory.slot.IInventorySlot;
 
 public class InventorySlotInfo implements ISlotInfo {
 
     private final List<? extends IInventorySlot> inventorySlots;
+
+    public InventorySlotInfo() {
+        inventorySlots = Collections.emptyList();
+    }
 
     public InventorySlotInfo(IInventorySlot... slots) {
         this(Arrays.asList(slots));
@@ -22,6 +27,6 @@ public class InventorySlotInfo implements ISlotInfo {
 
     public boolean hasSlot(IInventorySlot slot) {
         //TODO: Check if this even works
-        return inventorySlots.contains(slot);
+        return getSlots().contains(slot);
     }
 }

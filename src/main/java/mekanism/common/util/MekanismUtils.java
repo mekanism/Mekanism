@@ -11,18 +11,14 @@ import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
-import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismGases;
-import mekanism.common.SideData;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
@@ -31,8 +27,6 @@ import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.component.SideConfig;
-import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextComponentUtil;
@@ -51,7 +45,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -86,18 +79,6 @@ public final class MekanismUtils {
     public static final Map<String, Class<?>> classesFound = new HashMap<>();
 
     private static final List<UUID> warnedFails = new ArrayList<>();
-    /**
-     * Pre-calculated cache of translated block orientations
-     */
-    private static final Direction[][] baseOrientations = new Direction[EnumUtils.DIRECTIONS.length][EnumUtils.DIRECTIONS.length];
-
-    static {
-        for (int blockFacing = 0; blockFacing < EnumUtils.DIRECTIONS.length; blockFacing++) {
-            for (int side = 0; side < EnumUtils.DIRECTIONS.length; side++) {
-                baseOrientations[blockFacing][side] = getBaseOrientation(EnumUtils.DIRECTIONS[side], EnumUtils.DIRECTIONS[blockFacing]);
-            }
-        }
-    }
 
     /**
      * Retrieves an empty Gas Tank.
@@ -158,121 +139,6 @@ public final class MekanismUtils {
      */
     public static Direction getRight(Direction orientation) {
         return orientation.rotateYCCW();
-    }
-
-    /**
-     * Returns the sides in the modified order relative to the machine-based orientation.
-     *
-     * @param blockFacing - what orientation the block is facing
-     *
-     * @return Direction.values(), translated to machine orientation
-     */
-    public static Direction[] getBaseOrientations(Direction blockFacing) {
-        return baseOrientations[blockFacing.ordinal()];
-    }
-
-    /**
-     * Returns an integer facing that converts a world-based orientation to a machine-based orientation.
-     *
-     * @param side        - world based
-     * @param blockFacing - what orientation the block is facing
-     *
-     * @return machine orientation
-     */
-    public static Direction getBaseOrientation(Direction side, Direction blockFacing) {
-        //TODO: Replace usages of this with RelativeSide??
-        if (blockFacing == Direction.DOWN) {
-            switch (side) {
-                case DOWN:
-                    return Direction.NORTH;
-                case UP:
-                    return Direction.SOUTH;
-                case NORTH:
-                    return Direction.UP;
-                case SOUTH:
-                    return Direction.DOWN;
-                default:
-                    return side;
-            }
-        } else if (blockFacing == Direction.UP) {
-            switch (side) {
-                case DOWN:
-                    return Direction.SOUTH;
-                case UP:
-                    return Direction.NORTH;
-                case NORTH:
-                    return Direction.DOWN;
-                case SOUTH:
-                    return Direction.UP;
-                default:
-                    return side;
-            }
-        } else if (blockFacing == Direction.SOUTH || side.getAxis() == Axis.Y) {
-            if (side.getAxis() == Axis.Z) {
-                return side.getOpposite();
-            }
-            return side;
-        } else if (blockFacing == Direction.NORTH) {
-            if (side.getAxis() == Axis.Z) {
-                return side;
-            }
-            return side.getOpposite();
-        } else if (blockFacing == Direction.WEST) {
-            if (side.getAxis() == Axis.Z) {
-                return getRight(side);
-            }
-            return getLeft(side);
-        } else if (blockFacing == Direction.EAST) {
-            if (side.getAxis() == Axis.Z) {
-                return getLeft(side);
-            }
-            return getRight(side);
-        }
-        return side;
-    }
-
-    /**
-     * Increments the output type of a machine's side.
-     *
-     * @param config    - configurable machine
-     * @param type      - the TransmissionType to modify
-     * @param direction - side to increment output of
-     */
-    public static void incrementOutput(ISideConfiguration config, TransmissionType type, Direction direction) {
-        ArrayList<SideData> outputs = config.getConfig().getOutputs(type);
-        SideConfig sideConfig = config.getConfig().getConfig(type);
-        int max = outputs.size() - 1;
-        int current = outputs.indexOf(outputs.get(sideConfig.get(direction)));
-        if (current < max) {
-            sideConfig.set(direction, (byte) (current + 1));
-        } else if (current == max) {
-            sideConfig.set(direction, (byte) 0);
-        }
-        assert config instanceof TileEntity;
-        TileEntity tile = (TileEntity) config;
-        tile.markDirty();
-    }
-
-    /**
-     * Decrements the output type of a machine's side.
-     *
-     * @param config    - configurable machine
-     * @param type      - the TransmissionType to modify
-     * @param direction - side to increment output of
-     */
-    public static void decrementOutput(ISideConfiguration config, TransmissionType type, Direction direction) {
-        ArrayList<SideData> outputs = config.getConfig().getOutputs(type);
-        SideConfig sideConfig = config.getConfig().getConfig(type);
-        int max = outputs.size() - 1;
-        int current = outputs.indexOf(outputs.get(sideConfig.get(direction)));
-        if (current > 0) {
-            sideConfig.set(direction, (byte) (current - 1));
-        } else if (current == 0) {
-            sideConfig.set(direction, (byte) max);
-        }
-        assert config instanceof TileEntity;
-        TileEntity tile = (TileEntity) config;
-        tile.markDirty();
     }
 
     public static float fractionUpgrades(IUpgradeTile mgmt, Upgrade type) {

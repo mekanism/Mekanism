@@ -122,8 +122,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
-        ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
+        ejectorComponent.setOutputData(TransmissionType.GAS, gasConfig);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, 0);

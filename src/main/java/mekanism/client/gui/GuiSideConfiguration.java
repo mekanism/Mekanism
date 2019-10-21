@@ -1,10 +1,9 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mekanism.api.Coord4D;
+import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
@@ -19,6 +18,7 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -26,7 +26,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, SideConfigurationContainer> {
 
-    private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
+    private List<GuiPos> slotPosList = new ArrayList<>();
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
 
@@ -43,12 +42,12 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         super(container, inv, title);
         ySize = 95;
         currentType = getTopTransmission();
-        slotPosMap.put(0, new GuiPos(81, 64));
-        slotPosMap.put(1, new GuiPos(81, 34));
-        slotPosMap.put(2, new GuiPos(81, 49));
-        slotPosMap.put(3, new GuiPos(66, 64));
-        slotPosMap.put(4, new GuiPos(66, 49));
-        slotPosMap.put(5, new GuiPos(96, 49));
+        slotPosList.add(new GuiPos(RelativeSide.BOTTOM,81, 64));
+        slotPosList.add(new GuiPos(RelativeSide.TOP, 81, 34));
+        slotPosList.add(new GuiPos(RelativeSide.FRONT, 81, 49));
+        slotPosList.add(new GuiPos(RelativeSide.BACK, 66, 64));
+        slotPosList.add(new GuiPos(RelativeSide.LEFT, 66, 49));
+        slotPosList.add(new GuiPos(RelativeSide.RIGHT, 96, 49));
     }
 
     public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
@@ -74,15 +73,12 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType)),
               getOnHover("gui.mekanism.autoEject")));
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            GuiPos guiPos = slotPosMap.get(i);
-            Direction facing = Direction.byIndex(i);
-            addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
-                  () -> getTile().getConfig().getDataType(currentType, facing), () -> {
-                DataType dataType = getTile().getConfig().getDataType(currentType, facing);
+        for (GuiPos guiPos : slotPosList) {
+            addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, guiPos.relativeSide.ordinal(),
+                  () -> getTile().getConfig().getDataType(currentType, guiPos.relativeSide), () -> {
+                DataType dataType = getTile().getConfig().getDataType(currentType, guiPos.relativeSide);
                 return dataType == null ? EnumColor.GRAY : dataType.getColor();
-            }, tileEntity, currentType,
-                  ConfigurationPacket.SIDE_DATA, getOnHover()));
+            }, tileEntity, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover()));
         }
     }
 
@@ -116,8 +112,9 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("gui.mekanism.config")), 0, xSize, 5, 0x404040);
         //TODO: 1.14 Convert to GuiElement
-        if (getTile().getConfig().canEject(currentType)) {
-            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.eject"), ": ", OnOff.of(getTile().getConfig().isEjecting(currentType))), 53, 17, 0x00CD00);
+        ConfigInfo config = getTile().getConfig().getConfig(currentType);
+        if (config != null && config.canEject()) {
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.eject"), ": ", OnOff.of(config.isEjecting())), 53, 17, 0x00CD00);
         } else {
             drawString(TextComponentUtil.translate("gui.mekanism.noEject"), 53, 17, 0x00CD00);
         }
@@ -140,10 +137,12 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
 
     public static class GuiPos {
 
+        public final RelativeSide relativeSide;
         public final int xPos;
         public final int yPos;
 
-        public GuiPos(int x, int y) {
+        public GuiPos(RelativeSide side, int x, int y) {
+            relativeSide = side;
             xPos = x;
             yPos = y;
         }

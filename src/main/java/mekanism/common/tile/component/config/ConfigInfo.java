@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import mekanism.common.tile.component.SideConfig;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
@@ -58,17 +57,6 @@ public class ConfigInfo {
         this.ejecting = ejecting;
     }
 
-    @Deprecated
-    public SideConfig getSideConfigOld() {
-        //TODO: Remove
-        return null;
-    }
-
-    @Deprecated
-    public void setSideConfigOld(SideConfig sideConfigOld) {
-        //TODO: Remove
-    }
-
     @Nonnull
     public DataType getDataType(@Nonnull RelativeSide side) {
         return sideConfig.get(side);
@@ -107,8 +95,29 @@ public class ConfigInfo {
 
     public Set<Direction> getSidesForData(@Nonnull DataType dataType) {
         Direction facing = facingSupplier.get();
-        EnumSet<Direction> relativeSides = sideConfig.entrySet().stream().filter(entry -> entry.getValue().equals(dataType)).map(entry ->
+        return sideConfig.entrySet().stream().filter(entry -> entry.getValue().equals(dataType)).map(entry ->
               entry.getKey().getDirection(facing)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
-        return relativeSides;
+    }
+
+    /**
+     * @return The new data type
+     */
+    @Nonnull
+    public DataType incrementDataType(@Nonnull RelativeSide relativeSide) {
+        Set<DataType> supportedDataTypes = getSupportedDataTypes();
+        DataType newType = getDataType(relativeSide).getNext(supportedDataTypes::contains);
+        sideConfig.put(relativeSide, newType);
+        return newType;
+    }
+
+    /**
+     * @return The new data type
+     */
+    @Nonnull
+    public DataType decrementDataType(@Nonnull RelativeSide relativeSide) {
+        Set<DataType> supportedDataTypes = getSupportedDataTypes();
+        DataType newType = getDataType(relativeSide).getPrevious(supportedDataTypes::contains);
+        sideConfig.put(relativeSide, newType);
+        return newType;
     }
 }

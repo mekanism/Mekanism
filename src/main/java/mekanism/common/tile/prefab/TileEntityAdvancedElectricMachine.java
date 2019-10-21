@@ -118,7 +118,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
             upgradeComponent.setSupported(Upgrade.GAS);
         }
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(gasTank);

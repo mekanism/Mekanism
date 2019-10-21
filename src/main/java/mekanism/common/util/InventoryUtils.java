@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
@@ -113,7 +114,7 @@ public final class InventoryUtils {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
             if (config.getEjector().hasStrictInput()) {
                 Direction tileSide = config.getOrientation();
-                EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
+                EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
                 if (configColor != null && configColor != color) {
                     return false;
                 }

@@ -9,6 +9,7 @@ import net.minecraft.util.Direction;
  *
  * @author AidanBrady
  */
+//TODO: Make the main mekanism tile extend this directly?
 public interface ISideConfiguration {
 
     /**

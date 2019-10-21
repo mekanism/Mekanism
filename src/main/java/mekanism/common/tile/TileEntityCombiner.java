@@ -74,7 +74,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
         inputHandler = InputHelper.getInputHandler(mainInputSlot);
         extraInputHandler = InputHelper.getInputHandler(extraInputSlot);

@@ -1,8 +1,9 @@
 package mekanism.client.gui;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.Coord4D;
+import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
@@ -26,7 +27,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,17 +36,17 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, TransporterConfigurationContainer> {
 
-    private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
+    private List<GuiPos> slotPosList = new ArrayList<>();
 
     public GuiTransporterConfig(TransporterConfigurationContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize = 95;
-        slotPosMap.put(0, new GuiPos(54, 64));
-        slotPosMap.put(1, new GuiPos(54, 34));
-        slotPosMap.put(2, new GuiPos(54, 49));
-        slotPosMap.put(3, new GuiPos(39, 64));
-        slotPosMap.put(4, new GuiPos(39, 49));
-        slotPosMap.put(5, new GuiPos(69, 49));
+        slotPosList.add(new GuiPos(RelativeSide.BOTTOM,54, 64));
+        slotPosList.add(new GuiPos(RelativeSide.TOP,54, 34));
+        slotPosList.add(new GuiPos(RelativeSide.FRONT,54, 49));
+        slotPosList.add(new GuiPos(RelativeSide.BACK,39, 64));
+        slotPosList.add(new GuiPos(RelativeSide.LEFT,39, 49));
+        slotPosList.add(new GuiPos(RelativeSide.RIGHT,69, 49));
     }
 
     @Override
@@ -61,12 +61,10 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
                     InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null))));
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            GuiPos guiPos = slotPosMap.get(i);
-            Direction facing = Direction.byIndex(i);
-            addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
-                  () -> getTile().getConfig().getDataType(TransmissionType.ITEM, facing), () -> getTile().getEjector().getInputColor(facing), tileEntity, null,
-                  ConfigurationPacket.INPUT_COLOR, getOnHover()));
+        for (GuiPos guiPos : slotPosList) {
+            addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, guiPos.relativeSide.ordinal(),
+                  () -> getTile().getConfig().getDataType(TransmissionType.ITEM, guiPos.relativeSide), () -> getTile().getEjector().getInputColor(guiPos.relativeSide),
+                  tileEntity, () -> null, ConfigurationPacket.INPUT_COLOR, getOnHover()));
         }
     }
 

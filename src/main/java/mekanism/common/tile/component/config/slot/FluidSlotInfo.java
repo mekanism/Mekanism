@@ -1,30 +1,39 @@
 package mekanism.common.tile.component.config.slot;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FluidSlotInfo implements ISlotInfo {
 
     //TODO: Should it be a fluid tank instead
-    private final List<IFluidHandler> handlers;
+    private final List<FluidTank> tanks;
 
-    public FluidSlotInfo(IFluidHandler... handlers) {
-        this(Arrays.asList(handlers));
+    public FluidSlotInfo() {
+        tanks = Collections.emptyList();
     }
 
-    public FluidSlotInfo(List<IFluidHandler> handlers) {
-        this.handlers = handlers;
+    public FluidSlotInfo(FluidTank... tanks) {
+        this(Arrays.asList(tanks));
     }
 
-    public boolean hasTank(IFluidHandler tank) {
+    public FluidSlotInfo(List<FluidTank> tanks) {
+        this.tanks = tanks;
+    }
+
+    public boolean hasTank(FluidTank tank) {
         //TODO: Test if this even works
-        return handlers.contains(tank);
+        return getTanks().contains(tank);
     }
 
     public IFluidTank[] getTankInfo() {
-        //TODO
-        return new IFluidTank[0];
+        //TODO: check this
+        return getTanks().toArray(new IFluidTank[0]);
+    }
+
+    public List<FluidTank> getTanks() {
+        return tanks;
     }
 }

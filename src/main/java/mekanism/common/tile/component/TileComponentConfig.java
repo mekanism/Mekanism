@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.SideData;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -18,7 +17,6 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -45,8 +43,12 @@ public class TileComponentConfig implements ITileComponent {
         return RelativeSide.fromDirections(tileEntity.getDirection(), direction);
     }
 
+    public void readFrom(TileComponentConfig config) {
+        configInfo = config.configInfo;
+    }
+
     public List<TransmissionType> getTransmissions() {
-        //TODO: Do this better
+        //TODO: Do this better given the side config uses this for figuring out tab order
         return new ArrayList<>(configInfo.keySet());
     }
 
@@ -72,7 +74,7 @@ public class TileComponentConfig implements ITileComponent {
         //TODO: We actually might as well deal with energy here?
         if (type != null && supports(type)) {
             ISlotInfo slotInfo = getSlotInfo(type, side);
-            return slotInfo != null && slotInfo.isEnabled();
+            return slotInfo == null || !slotInfo.isEnabled();
         }
         return false;
     }
@@ -82,20 +84,9 @@ public class TileComponentConfig implements ITileComponent {
         return info != null && info.canEject();
     }
 
-    @Deprecated
-    public ArrayList<SideData> getOutputs(TransmissionType type) {
-
-        return null;
-    }
-
     @Nullable
     public ConfigInfo getConfig(TransmissionType type) {
         return configInfo.get(type);
-    }
-
-    @Nullable
-    public DataType getDataType(TransmissionType type, Direction direction) {
-        return getDataType(type, getSide(direction));
     }
 
     @Nullable
@@ -107,6 +98,7 @@ public class TileComponentConfig implements ITileComponent {
         return null;
     }
 
+    //TODO: Use relative side where possible?
     @Nullable
     public ISlotInfo getSlotInfo(TransmissionType type, Direction direction) {
         if (direction == null) {
@@ -141,18 +133,21 @@ public class TileComponentConfig implements ITileComponent {
 
     @Override
     public void read(PacketBuffer dataStream) {
-        //TODO: Do we actually want to clear this?
-        configInfo.clear();
+        //TODO: Let the ConfigInfo handle what info it sends/reads?
         int amount = dataStream.readInt();
         for (int i = 0; i < amount; i++) {
             TransmissionType type = dataStream.readEnumValue(TransmissionType.class);
-            //TODO: ISideConfiguration#getOrientation?
-            ConfigInfo info = new ConfigInfo(() -> tileEntity.getDirection());
+            ConfigInfo info = getConfig(type);
+            if (info == null) {
+                //TODO: log some error?
+                //TODO: ISideConfiguration#getOrientation?
+                info = new ConfigInfo(() -> tileEntity.getDirection());
+                configInfo.put(type, info);
+            }
             info.setEjecting(dataStream.readBoolean());
             for (RelativeSide side : EnumUtils.SIDES) {
                 info.setDataType(side, dataStream.readEnumValue(DataType.class));
             }
-            this.configInfo.put(type, info);
         }
     }
 
@@ -185,17 +180,9 @@ public class TileComponentConfig implements ITileComponent {
     public void invalidate() {
     }
 
+    //TODO: Should we inline this?
     public boolean isEjecting(TransmissionType type) {
         ConfigInfo info = getConfig(type);
         return info != null && info.isEjecting();
-    }
-
-    public void setEjecting(TransmissionType type, boolean eject) {
-        ConfigInfo info = getConfig(type);
-        if (info != null) {
-            info.setEjecting(eject);
-            MekanismUtils.saveChunk(tileEntity);
-        }
-        //TODO: Else print warning/error? Or should we add it or something
     }
 }
