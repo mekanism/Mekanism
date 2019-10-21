@@ -12,7 +12,6 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
-import mekanism.common.SideData.IOState;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.EnumUtils;
@@ -51,7 +50,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-            energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, Minecraft.getInstance().textureManager);
+            energyCube.renderSide(0.0625F, side, true, side == Direction.NORTH, Minecraft.getInstance().textureManager);
         }
         GlStateManager.popMatrix();
 

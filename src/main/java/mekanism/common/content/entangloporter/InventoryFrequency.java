@@ -1,6 +1,6 @@
 package mekanism.common.content.entangloporter;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -13,7 +13,6 @@ import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.TileUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -33,10 +32,9 @@ public class InventoryFrequency extends Frequency {
 
     //TODO: input: configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.INPUT
     //TODO: output: configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.OUTPUT
-    //TODO: Should this be an input and output slot then? Also should this even be two slots big?
     //TODO: FIXME?? ideally we don't pass null as the inventory??
     //TODO: FIX INVENTORY PERSISTENCE
-    public final List<IInventorySlot> inventorySlots = Arrays.asList(InternalInventorySlot.create(null), InternalInventorySlot.create(null));
+    public final List<IInventorySlot> inventorySlots = Collections.singletonList(InternalInventorySlot.create(null));
 
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
@@ -63,12 +61,10 @@ public class InventoryFrequency extends Frequency {
             nbtTags.put("storedGas", storedGas.write(new CompoundNBT()));
         }
         ListNBT tagList = new ListNBT();
-        for (int slotCount = 0; slotCount < 1; slotCount++) {
-            IInventorySlot slot = inventorySlots.get(slotCount);
-            if (!slot.isEmpty()) {
-                CompoundNBT tagCompound = new CompoundNBT();
+        for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
+            CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
+            if (!tagCompound.isEmpty()) {
                 tagCompound.putByte("Slot", (byte) slotCount);
-                slot.getStack().write(tagCompound);
                 tagList.add(tagCompound);
             }
         }
@@ -95,8 +91,8 @@ public class InventoryFrequency extends Frequency {
         for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-            if (slotID == 0) {
-                inventorySlots.get(slotID).setStack(ItemStack.read(tagCompound));
+            if (slotID >= 0 && slotID < inventorySlots.size()) {
+                inventorySlots.get(slotID).deserializeNBT(tagCompound);
             }
         }
         temperature = nbtTags.getDouble("temperature");

@@ -11,6 +11,7 @@ import mekanism.api.Action;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -20,7 +21,6 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.SideData.IOState;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
@@ -37,6 +37,12 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.FluidSlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -75,10 +81,18 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            if (type != TransmissionType.HEAT) {
-                configComponent.setIOConfig(type);
-            } else {
-                configComponent.setInputConfig(type);
+            ConfigInfo config = configComponent.getConfig(type);
+            if (config != null) {
+                config.fill(DataType.INPUT);
+                if (type == TransmissionType.HEAT) {
+                    config.addSlotInfo(DataType.INPUT, );
+                    config.setCanEject(false);
+                } else {
+                    config.addSlotInfo(DataType.INPUT, );
+                    config.addSlotInfo(DataType.OUTPUT, );
+                    //Set default config directions
+                    config.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+                }
             }
         }
 
@@ -291,7 +305,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (!hasFrequency()) {
             return false;
         }
-        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 2, side);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+        return slotInfo instanceof EnergySlotInfo && slotInfo.canOutput();
     }
 
     @Override
@@ -299,7 +314,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (!hasFrequency()) {
             return false;
         }
-        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
     }
 
     @Override
@@ -337,16 +353,22 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState == IOState.INPUT) {
-            return FluidContainerUtils.canFill(frequency.storedFluid.getFluid(), fluid);
+        if (hasFrequency()) {
+            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
+            if (slotInfo != null && slotInfo.canInput()) {
+                return FluidContainerUtils.canFill(frequency.storedFluid.getFluid(), fluid);
+            }
         }
         return false;
     }
 
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState == IOState.OUTPUT) {
-            return FluidContainerUtils.canDrain(frequency.storedFluid.getFluid(), fluid);
+        if (hasFrequency()) {
+            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
+            if (slotInfo instanceof FluidSlotInfo && slotInfo.canOutput()) {
+                return FluidContainerUtils.canDrain(frequency.storedFluid.getFluid(), fluid);
+            }
         }
         return false;
     }
@@ -354,7 +376,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
         if (hasFrequency()) {
-            if (configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState != IOState.OFF) {
+            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
+            if (slotInfo instanceof FluidSlotInfo && slotInfo.isEnabled()) {
                 return new IFluidTank[]{frequency.storedFluid};
             }
         }
@@ -379,16 +402,22 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.INPUT) {
-            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
+        if (hasFrequency()) {
+            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+            if (slotInfo instanceof GasSlotInfo && slotInfo.canInput()) {
+                return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
+            }
         }
         return false;
     }
 
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.OUTPUT) {
-            return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
+        if (hasFrequency()) {
+            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+            if (slotInfo instanceof GasSlotInfo && slotInfo.canOutput()) {
+                return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
+            }
         }
         return false;
     }
@@ -442,8 +471,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState == IOState.INPUT) {
-            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+        if (hasFrequency()) {
+            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
+            if (slotInfo != null && slotInfo.canInput()) {
+                return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+            }
         }
         return null;
     }
@@ -491,11 +523,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (configComponent.isCapabilityDisabled(capability, side, getDirection())) {
+        if (configComponent.isCapabilityDisabled(capability, side)) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
                    capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return side != null && (!hasFrequency() || configComponent.isCapabilityDisabled(capability, side, getDirection()));
+            return side != null && !hasFrequency();
         }
         return super.isCapabilityDisabled(capability, side);
     }

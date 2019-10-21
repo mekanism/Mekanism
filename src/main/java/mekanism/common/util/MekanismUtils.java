@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
+import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -31,6 +32,7 @@ import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.SideConfig;
+import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextComponentUtil;
@@ -178,6 +180,7 @@ public final class MekanismUtils {
      * @return machine orientation
      */
     public static Direction getBaseOrientation(Direction side, Direction blockFacing) {
+        //TODO: Replace usages of this with RelativeSide??
         if (blockFacing == Direction.DOWN) {
             switch (side) {
                 case DOWN:

@@ -11,10 +11,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.config.DataType;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -53,8 +52,8 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
                 if (configurable.getConfig().supports(type)) {
                     if (bp.equals(configurable.getPos())) {
-                        SideData data = configurable.getConfig().getOutput(type, pos.getFace(), configurable.getOrientation());
-                        if (data != TileComponentConfig.EMPTY) {
+                        DataType dataType = configurable.getConfig().getDataType(type, pos.getFace());
+                        if (dataType != null) {
                             GlStateManager.pushMatrix();
                             GlStateManager.enableCull();
                             GlStateManager.disableLighting();
@@ -64,7 +63,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                             GlStateManager.enableBlend();
                             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-                            MekanismRenderer.color(data.color, 0.6F);
+                            MekanismRenderer.color(dataType.getColor(), 0.6F);
                             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                             GlStateManager.translatef((float) x, (float) y, (float) z);
                             int display = getOverlayDisplay(pos.getFace(), type).display;

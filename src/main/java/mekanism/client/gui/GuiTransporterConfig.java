@@ -11,7 +11,6 @@ import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -19,7 +18,7 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -66,7 +65,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
-                  () -> getTile().getConfig().getOutput(TransmissionType.ITEM, facing), () -> getTile().getEjector().getInputColor(facing), tileEntity, null,
+                  () -> getTile().getConfig().getDataType(TransmissionType.ITEM, facing), () -> getTile().getEjector().getInputColor(facing), tileEntity, null,
                   ConfigurationPacket.INPUT_COLOR, getOnHover()));
         }
     }
@@ -79,8 +78,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
         return (onHover, xAxis, yAxis) -> {
             if (onHover instanceof SideDataButton) {
                 SideDataButton button = (SideDataButton) onHover;
-                SideData data = button.getSideData();
-                if (data != TileComponentConfig.EMPTY) {
+                DataType dataType = button.getDataType();
+                if (dataType != null) {
                     EnumColor color = button.getColor();
                     if (color != null) {
                         displayTooltip(color.getColoredName(), xAxis, yAxis);

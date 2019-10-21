@@ -10,6 +10,7 @@ import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -63,7 +64,15 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         setLightmapDisabled(true);
         for (Direction side : EnumUtils.DIRECTIONS) {
             bindTexture(baseTexture);
-            model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, rendererDispatcher.textureManager);
+            ISlotInfo slotInfo = tileEntity.configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+            //TODO: Re-evaluate
+            boolean canInput = false;
+            boolean canOutput = false;
+            if (slotInfo != null) {
+                canInput = slotInfo.canInput();
+                canOutput = slotInfo.canOutput();
+            }
+            model.renderSide(0.0625F, side, canInput, canOutput, rendererDispatcher.textureManager);
         }
         setLightmapDisabled(false);
         GlStateManager.popMatrix();

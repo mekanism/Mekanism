@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
+import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -19,7 +19,7 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -78,7 +78,10 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, i,
-                  () -> getTile().getConfig().getOutput(currentType, facing), () -> getTile().getConfig().getOutput(currentType, facing).color, tileEntity, currentType,
+                  () -> getTile().getConfig().getDataType(currentType, facing), () -> {
+                DataType dataType = getTile().getConfig().getDataType(currentType, facing);
+                return dataType == null ? EnumColor.GRAY : dataType.getColor();
+            }, tileEntity, currentType,
                   ConfigurationPacket.SIDE_DATA, getOnHover()));
         }
     }
@@ -86,9 +89,9 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     private IHoverable getOnHover() {
         return (onHover, xAxis, yAxis) -> {
             if (onHover instanceof SideDataButton) {
-                SideData data = ((SideDataButton) onHover).getSideData();
-                if (data != TileComponentConfig.EMPTY) {
-                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getColoredName(), ")"), xAxis, yAxis);
+                DataType dataType = ((SideDataButton) onHover).getDataType();
+                if (dataType != null) {
+                    displayTooltip(TextComponentUtil.build(dataType.getColor(), dataType, " (", dataType.getColor().getColoredName(), ")"), xAxis, yAxis);
                 }
             }
         };

@@ -1,9 +1,11 @@
 package mekanism.common.tile;
 
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -11,11 +13,9 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -31,9 +31,13 @@ import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -71,14 +75,26 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         this.tier = ((BlockGasTank) blockProvider.getBlock()).getTier();
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Fill", EnumColor.DARK_BLUE, new int[]{0}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Empty", EnumColor.DARK_RED, new int[]{1}));
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(drainSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(fillSlot));
+            //Set default config directions
+            itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
+            itemConfig.setDataType(RelativeSide.BOTTOM, DataType.OUTPUT);
 
-        configComponent.setConfig(TransmissionType.ITEM, new byte[]{2, 1, 0, 0, 0, 0});
-        configComponent.setCanEject(TransmissionType.ITEM, false);
-        configComponent.setIOConfig(TransmissionType.GAS);
-        configComponent.setEjecting(TransmissionType.GAS, true);
+            itemConfig.setCanEject(false);
+        }
+
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        if (gasConfig != null) {
+            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(gasTank));
+            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(gasTank));
+            //Set default config directions
+            gasConfig.fill(DataType.INPUT);
+            gasConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+            gasConfig.setEjecting(true);
+        }
 
         gasTank = new GasTank(tier.getStorage());
         dumping = GasMode.IDLE;
@@ -106,9 +122,13 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
                 gasTank.setStack(new GasStack(gasTank.getStack(), Integer.MAX_VALUE));
             }
             if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
-                if (configComponent.isEjecting(TransmissionType.GAS)) {
-                    GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
-                    gasTank.drain(GasUtils.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, getDirection(), 2)), Action.get(tier != GasTankTier.CREATIVE));
+                ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
+                if (config != null && config.isEjecting()) {
+                    Set<Direction> sidesForData = config.getSidesForData(DataType.OUTPUT);
+                    if (!sidesForData.isEmpty()) {
+                        GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
+                        gasTank.drain(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
+                    }
                 }
             }
 
@@ -165,16 +185,20 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 2, side)) {
-            return gasTank.canDraw(type);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+        if (slotInfo instanceof GasSlotInfo) {
+            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
+            return gasSlotInfo.canOutput() && gasSlotInfo.hasTank(gasTank) && gasTank.canDraw(type);
         }
         return false;
     }
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 1, side)) {
-            return gasTank.canReceive(type);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+        if (slotInfo instanceof GasSlotInfo) {
+            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
+            return gasSlotInfo.canInput() && gasSlotInfo.hasTank(gasTank) && gasTank.canReceive(type);
         }
         return false;
     }
@@ -199,7 +223,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

@@ -1,14 +1,16 @@
 package mekanism.client.gui.element.gauge;
 
+import java.util.Set;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -96,17 +98,21 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             if (guiObj instanceof GuiMekanismTile) {
                 TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
                 if (tile instanceof ISideConfiguration && getTransmission() != null) {
-                    SideData data = null;
-                    for (SideData iterData : ((ISideConfiguration) tile).getConfig().getOutputs(getTransmission())) {
-                        if (iterData.color == color) {
-                            data = iterData;
-                            break;
+                    DataType dataType = null;
+                    ConfigInfo config = ((ISideConfiguration) tile).getConfig().getConfig(getTransmission());
+                    if (config != null) {
+                        Set<DataType> supportedDataTypes = config.getSupportedDataTypes();
+                        for (DataType type : supportedDataTypes) {
+                            if (type.getColor() == color) {
+                                dataType = type;
+                                break;
+                            }
                         }
                     }
-                    if (data == null) {
+                    if (dataType == null) {
                         guiObj.displayTooltip(TextComponentUtil.build(color, "(", color.getColoredName(), ")"), mouseX, mouseY);
                     } else {
-                        guiObj.displayTooltip(TextComponentUtil.build(color, data, " (", color.getColoredName(), ")"), mouseX, mouseY);
+                        guiObj.displayTooltip(TextComponentUtil.build(color, dataType, " (", color.getColoredName(), ")"), mouseX, mouseY);
                     }
                 }
             }

@@ -22,6 +22,10 @@ import mekanism.common.inventory.InventorySlotHelper;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -46,12 +50,27 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         //gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
 
         gasInputHandler = InputHelper.getInputHandler(gasTank);
+
+        configComponent.addSupported(TransmissionType.GAS);
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        if (gasConfig != null) {
+            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(gasTank));
+            //Set default config directions
+            gasConfig.fill(DataType.INPUT);
+            gasConfig.setCanEject(false);
+        }
     }
 
     @Override
     protected void addSlots(InventorySlotHelper.Builder builder) {
         super.addSlots(builder);
         builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this, 7, 57));
+    }
+
+    @Nullable
+    @Override
+    protected IInventorySlot getExtraSlot() {
+        return extraSlot;
     }
 
     @Override
@@ -224,7 +243,12 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0) && gasTank.canReceiveType(type) && isValidGas(type);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+        if (slotInfo instanceof GasSlotInfo) {
+            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
+            return gasSlotInfo.canInput() && gasSlotInfo.hasTank(gasTank) && gasTank.canReceiveType(type) && isValidGas(type);
+        }
+        return false;
     }
 
     @Nonnull

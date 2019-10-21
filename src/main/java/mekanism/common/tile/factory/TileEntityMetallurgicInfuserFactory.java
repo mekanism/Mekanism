@@ -38,6 +38,12 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this, 7, 57));
     }
 
+    @Nullable
+    @Override
+    protected IInventorySlot getExtraSlot() {
+        return extraSlot;
+    }
+
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
         return containsRecipe(recipe -> recipe.getItemInput().testType(stack));

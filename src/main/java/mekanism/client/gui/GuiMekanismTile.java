@@ -1,12 +1,17 @@
 package mekanism.client.gui;
 
-import java.util.List;
+import java.util.Set;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -47,25 +52,25 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
 
             ItemStack stack = minecraft.player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null) {
-                SideData data = getFromSlot(hovering);
+                DataType data = getFromSlot(hovering);
                 if (data != null) {
-                    displayTooltip(TextComponentUtil.build(data.color, data, " (", data.color.getColoredName(), ")"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(data.getColor(), data, " (", data.getColor().getColoredName(), ")"), xAxis, yAxis);
                 }
             }
         }
     }
 
-    private SideData getFromSlot(Slot slot) {
-        if (slot.slotNumber < tileEntity.getSlots()) {
+    private DataType getFromSlot(Slot slot) {
+        if (slot.slotNumber < tileEntity.getSlots() && slot instanceof InventoryContainerSlot) {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
-            List<SideData> datas = config.getConfig().getOutputs(TransmissionType.ITEM);
-            if (datas != null) {
-                for (SideData data : datas) {
-                    for (int id : data.availableSlots) {
-                        //TODO: FIXME as we don't bother giving the slots numeric index ids anymore
-                        if (id == slot.getSlotIndex()) {
-                            return data;
-                        }
+            ConfigInfo info = config.getConfig().getConfig(TransmissionType.ITEM);
+            if (info != null) {
+                Set<DataType> supportedDataTypes = info.getSupportedDataTypes();
+                IInventorySlot inventorySlot = ((InventoryContainerSlot) slot).getInventorySlot();
+                for (DataType type : supportedDataTypes) {
+                    ISlotInfo slotInfo = info.getSlotInfo(type);
+                    if (slotInfo instanceof InventorySlotInfo && ((InventorySlotInfo) slotInfo).hasSlot(inventorySlot)) {
+                        return type;
                     }
                 }
             }

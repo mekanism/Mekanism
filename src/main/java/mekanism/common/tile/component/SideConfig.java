@@ -5,6 +5,7 @@ import java.util.Observer;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
+@Deprecated
 public class SideConfig {
 
     private byte[] directions = new byte[EnumUtils.DIRECTIONS.length];

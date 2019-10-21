@@ -9,6 +9,8 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ITankManager;
 import net.minecraftforge.fluids.IFluidTank;
 
+//TODO: Rewrite this entirely, Make it into an abstract class that then has an implementation for various things??
+@Deprecated
 public class SideData implements IHasTranslationKey {
 
     /**
@@ -82,6 +84,7 @@ public class SideData implements IHasTranslationKey {
         return (GasTank) tanks[0];
     }
 
+    @Deprecated
     public enum IOState {
         INPUT,
         OUTPUT,

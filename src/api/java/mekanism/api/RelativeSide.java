@@ -12,6 +12,47 @@ public enum RelativeSide {
     BOTTOM;
 
     /**
+     * Gets the {@link Direction} from the block based on what side it is facing.
+     *
+     * @param facing The direction the block si facing.
+     *
+     * @return The direction representing which side of the block this RelativeSide is actually representing based on the direction it is facing.
+     */
+    public Direction getDirection(@Nonnull Direction facing) {
+        if (this == FRONT) {
+            return facing;
+        } else if (this == BACK) {
+            return facing.getOpposite();
+        } else if (this == LEFT) {
+            if (facing == Direction.DOWN || facing == Direction.UP) {
+                return Direction.EAST;
+            }
+            return facing.rotateY();
+        } else if (this == RIGHT) {
+            if (facing == Direction.DOWN || facing == Direction.UP) {
+                return Direction.WEST;
+            }
+            return facing.rotateYCCW();
+        } else if (this == TOP) {
+            if (facing == Direction.DOWN) {
+                return Direction.NORTH;
+            } else if (facing == Direction.UP) {
+                return Direction.SOUTH;
+            }
+            return Direction.UP;
+        } else if (this == BOTTOM) {
+            if (facing == Direction.DOWN) {
+                return Direction.SOUTH;
+            } else if (facing == Direction.UP) {
+                return Direction.NORTH;
+            }
+            return Direction.DOWN;
+        }
+        //Fallback to north though we should never get here
+        return Direction.NORTH;
+    }
+
+    /**
      * Gets the {@link RelativeSide} based on a side, and the facing direction of a block.
      *
      * @param facing The direction the block is facing.

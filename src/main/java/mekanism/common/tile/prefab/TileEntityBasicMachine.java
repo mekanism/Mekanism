@@ -11,6 +11,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -36,7 +38,8 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
 
     @Override
     public boolean canReceiveEnergy(Direction side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
     }
 
     @Override
@@ -68,6 +71,6 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 }

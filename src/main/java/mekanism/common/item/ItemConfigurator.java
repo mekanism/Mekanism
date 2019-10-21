@@ -15,12 +15,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -86,21 +85,23 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(), "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig().supports(transmissionType)) {
                     ISideConfiguration config = (ISideConfiguration) tile;
-                    SideData initial = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
-                    if (initial != TileComponentConfig.EMPTY) {
+                    DataType dataType = config.getConfig().getDataType(transmissionType, side);
+                    if (dataType != null) {
                         if (!player.isSneaking()) {
                             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                  Translation.of("tooltip.mekanism.configurator.view_mode", TextComponentUtil.build(transmissionType)), ": ", initial.color, initial,
-                                  " (", initial.color.getColoredName(), ")"));
+                                  Translation.of("tooltip.mekanism.configurator.view_mode", TextComponentUtil.build(transmissionType)), ": ", dataType.getColor(), dataType,
+                                  " (", dataType.getColor().getColoredName(), ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
                                     MekanismUtils.incrementOutput(config, transmissionType, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-                                    SideData data = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
-                                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                          Translation.of("tooltip.mekanism.configurator.toggle_mode", TextComponentUtil.build(transmissionType)), ": ", data.color, data,
-                                          " (", data.color.getColoredName(), ")"));
+                                    dataType = config.getConfig().getDataType(transmissionType, side);
+                                    if (dataType != null) {
+                                        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
+                                              Translation.of("tooltip.mekanism.configurator.toggle_mode", TextComponentUtil.build(transmissionType)), ": ",
+                                              dataType.getColor(), dataType, " (", dataType.getColor().getColoredName(), ")"));
+                                    }
                                     if (config instanceof TileEntityMekanism) {
                                         Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                     }

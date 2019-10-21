@@ -7,10 +7,9 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.config.DataType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.tileentity.TileEntity;
@@ -21,24 +20,24 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class SideDataButton extends MekanismButton {
 
-    private final Supplier<SideData> sideDataSupplier;
+    private final Supplier<DataType> dataTypeSupplier;
     private final Supplier<EnumColor> colorSupplier;
 
-    public SideDataButton(IGuiWrapper gui, int x, int y, int slotPosMapIndex, Supplier<SideData> sideDataSupplier, Supplier<EnumColor> colorSupplier,
+    public SideDataButton(IGuiWrapper gui, int x, int y, int slotPosMapIndex, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
           TileEntity tile, TransmissionType transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
         super(gui, x, y, 14, 14, "",
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile),
                     InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, slotPosMapIndex, transmissionType)),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), 1, slotPosMapIndex, transmissionType)),
               onHover);
-        this.sideDataSupplier = sideDataSupplier;
+        this.dataTypeSupplier = dataTypeSupplier;
         this.colorSupplier = colorSupplier;
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        SideData data = getSideData();
-        EnumColor color = data == TileComponentConfig.EMPTY ? null : getColor();
+        DataType dataType = getDataType();
+        EnumColor color = dataType == null ? null : getColor();
         boolean doColor = color != null && color != EnumColor.GRAY;
         if (doColor) {
             MekanismRenderer.color(color);
@@ -56,8 +55,8 @@ public class SideDataButton extends MekanismButton {
         return false;
     }
 
-    public SideData getSideData() {
-        return this.sideDataSupplier.get();
+    public DataType getDataType() {
+        return this.dataTypeSupplier.get();
     }
 
     public EnumColor getColor() {

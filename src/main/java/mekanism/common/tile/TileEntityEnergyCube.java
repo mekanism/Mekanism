@@ -3,12 +3,11 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -23,10 +22,14 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -62,14 +65,26 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
 
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Charge", EnumColor.DARK_BLUE, new int[]{0}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Discharge", EnumColor.DARK_RED, new int[]{1}));
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(chargeSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(dischargeSlot));
+            //Set default config directions
+            itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
+            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
 
-        configComponent.setConfig(TransmissionType.ITEM, new byte[]{0, 0, 0, 0, 2, 1});
-        configComponent.setCanEject(TransmissionType.ITEM, false);
-        configComponent.setIOConfig(TransmissionType.ENERGY);
-        configComponent.setEjecting(TransmissionType.ENERGY, true);
+            itemConfig.setCanEject(false);
+        }
+
+        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
+        if (energyConfig != null) {
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
+            energyConfig.addSlotInfo(DataType.OUTPUT, new EnergySlotInfo());
+            //Set default config directions
+            energyConfig.fill(DataType.INPUT);
+            energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+            energyConfig.setEjecting(true);
+        }
 
         ejectorComponent = new TileComponentEjector(this);
     }
@@ -120,12 +135,14 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
 
     @Override
     public boolean canReceiveEnergy(Direction side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
     }
 
     @Override
     public boolean canOutputEnergy(Direction side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 2, side);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+        return slotInfo instanceof EnergySlotInfo && slotInfo.canOutput();
     }
 
     @Override

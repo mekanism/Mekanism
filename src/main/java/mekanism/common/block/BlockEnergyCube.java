@@ -22,6 +22,8 @@ import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -89,7 +91,10 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<T
         if (tile instanceof TileEntityEnergyCube) {
             TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
             if (cube.tier == EnergyCubeTier.CREATIVE) {
-                cube.configComponent.fillConfig(TransmissionType.ENERGY, ((ItemBlockEnergyCube) stack.getItem()).getEnergy(stack) > 0 ? 2 : 1);
+                ConfigInfo energyConfig = cube.configComponent.getConfig(TransmissionType.ENERGY);
+                if (energyConfig != null) {
+                    energyConfig.fill(((ItemBlockEnergyCube) stack.getItem()).getEnergy(stack) > 0 ? DataType.OUTPUT : DataType.INPUT);
+                }
             }
         }
     }

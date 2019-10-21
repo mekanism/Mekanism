@@ -24,6 +24,10 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         this.slotType = slotType;
     }
 
+    public IInventorySlot getInventorySlot() {
+        return slot;
+    }
+
     @Nonnull
     @Override
     public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {

@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -35,7 +36,13 @@ public class EnumUtils {
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
      */
+    //TODO: Replace some calls to this with Direction.byIndex?
     public static final Direction[] DIRECTIONS = Direction.values();
+
+    /**
+     * Cached value of {@link RelativeSide#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final RelativeSide[] SIDES = RelativeSide.values();
 
     /**
      * Cached value of {@link AxisDirection#values()}. DO NOT MODIFY THIS LIST.

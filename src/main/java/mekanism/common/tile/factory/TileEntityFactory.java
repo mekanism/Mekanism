@@ -1,10 +1,12 @@
 package mekanism.common.tile.factory;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
@@ -15,11 +17,8 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.SideData;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -38,6 +37,11 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.ChargeUtils;
@@ -60,9 +64,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
       ITierUpgradeable, ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
-
-    public static final int ENERGY_SLOT_ID = 1;
-    public static final int EXTRA_SLOT_ID = 4;
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final CachedRecipe<RECIPE>[] cachedRecipes;
@@ -135,44 +136,41 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         // Ideally we would pass information for handling directly to the FactoryType, based on the slots and let it figure it all out
         recipeType = RecipeType.values()[type.ordinal()];
 
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            List<IInventorySlot> inputSlots = new ArrayList<>();
+            List<IInventorySlot> outputSlots = new ArrayList<>();
 
-        int[] inputSlots;
-        int[] outputSlots;
-        switch (tier) {
-            case ADVANCED:
-                inputSlots = new int[]{5, 6, 7, 8, 9};
-                outputSlots = new int[]{10, 11, 12, 13, 14};
-                break;
-            case ELITE:
-                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
-                outputSlots = new int[]{12, 13, 14, 15, 16, 17, 18};
-                break;
-            case ULTIMATE:
-                inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11, 12, 13};
-                outputSlots = new int[]{14, 15, 16, 17, 18, 19, 20, 21, 22};
-                break;
-            case BASIC:
-            default:
-                inputSlots = new int[]{5, 6, 7};
-                outputSlots = new int[]{8, 9, 10};
-                break;
+            for (ProcessInfo info : processInfoSlots) {
+                inputSlots.add(info.getInputSlot());
+                outputSlots.add(info.getOutputSlot());
+                if (info.getSecondaryOutputSlot() != null) {
+                    outputSlots.add(info.getSecondaryOutputSlot());
+                }
+            }
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(inputSlots));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(outputSlots));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(energySlot));
+            //Set default config directions
+            itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
+            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
+            itemConfig.setDataType(RelativeSide.BACK, DataType.ENERGY);
+
+            IInventorySlot extraSlot = getExtraSlot();
+            if (extraSlot != null) {
+                itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(extraSlot));
+                itemConfig.setDataType(RelativeSide.BOTTOM, DataType.EXTRA);
+            }
         }
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, inputSlots));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, outputSlots));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{ENERGY_SLOT_ID}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[]{EXTRA_SLOT_ID}));
-        configComponent.setConfig(TransmissionType.ITEM, new byte[]{4, 0, 0, 3, 1, 2});
-
-        configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[]{0}));
-        configComponent.fillConfig(TransmissionType.GAS, 1);
-        configComponent.setCanEject(TransmissionType.GAS, false);
-
-        configComponent.setInputConfig(TransmissionType.ENERGY);
+        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
+        if (energyConfig != null) {
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
+            energyConfig.fill(DataType.INPUT);
+            energyConfig.setCanEject(false);
+        }
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
@@ -210,6 +208,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         //TODO: Make this input slot only accept other machines for factories
         builder.addSlot(typeInputSlot = InputInventorySlot.at(this, tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
         builder.addSlot(typeOutputSlot = OutputInventorySlot.at(this, tier == FactoryTier.ULTIMATE ? 214 : 180, 112));
+    }
+
+    @Nullable
+    protected IInventorySlot getExtraSlot() {
+        return null;
     }
 
     @Override
@@ -375,13 +378,13 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
-        if (type.getFuelType() == MachineFuelType.CHANCE) {
+        /*if (type.getFuelType() == MachineFuelType.CHANCE) {
             SideData data = configComponent.getOutputs(TransmissionType.ITEM).get(2);
             //Append the "extra" slot to the available slots
             //TODO: FIXME this won't work at all with the fact that it isn't just a singular extra slot now
             data.availableSlots = Arrays.copyOf(data.availableSlots, data.availableSlots.length + 1);
             data.availableSlots[data.availableSlots.length - 1] = EXTRA_SLOT_ID;
-        }
+        }*/
 
         for (Upgrade upgrade : upgradeComponent.getSupportedTypes()) {
             recalculateUpgrades(upgrade);
@@ -390,7 +393,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public boolean canReceiveEnergy(Direction side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
     }
 
     public void sortInventory() {
@@ -664,7 +668,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (configComponent.isCapabilityDisabled(capability, side, getDirection())) {
+        if (configComponent.isCapabilityDisabled(capability, side)) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

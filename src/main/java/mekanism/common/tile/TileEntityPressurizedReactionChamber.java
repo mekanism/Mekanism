@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
+import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
@@ -20,11 +21,9 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.SideData;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -37,10 +36,16 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.FluidSlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -80,23 +85,41 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{0}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{1}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{2}));
-        configComponent.setConfig(TransmissionType.ITEM, new byte[]{2, 1, 0, 0, 0, 3});
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(inputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(outputSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(energySlot));
+            //Set default config directions
+            itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
+            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
+            itemConfig.setDataType(RelativeSide.BOTTOM, DataType.ENERGY);
+        }
 
-        configComponent.addOutput(TransmissionType.FLUID, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.FLUID, new SideData("Fluid", EnumColor.YELLOW, new int[]{0}));
-        configComponent.setConfig(TransmissionType.FLUID, new byte[]{0, 0, 0, 1, 0, 0});
-        configComponent.setCanEject(TransmissionType.FLUID, false);
+        ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
+        if (fluidConfig != null) {
+            fluidConfig.addSlotInfo(DataType.INPUT, new FluidSlotInfo(inputFluidTank));
+            //Set default config directions
+            fluidConfig.setDataType(RelativeSide.BACK, DataType.INPUT);
 
-        configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GRAY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[]{1}));
-        configComponent.addOutput(TransmissionType.GAS, new SideData("Output", EnumColor.DARK_BLUE, new int[]{2}));
-        configComponent.setConfig(TransmissionType.GAS, new byte[]{0, 0, 0, 0, 1, 2});
+            fluidConfig.setCanEject(false);
+        }
 
-        configComponent.setInputConfig(TransmissionType.ENERGY);
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        if (gasConfig != null) {
+            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(inputGasTank));
+            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(outputGasTank));
+            //Set default config directions
+            gasConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
+            gasConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
+        }
+
+        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
+        if (energyConfig != null) {
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
+            energyConfig.fill(DataType.INPUT);
+            energyConfig.setCanEject(false);
+        }
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
@@ -256,17 +279,21 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        SideData data = configComponent.getOutput(TransmissionType.FLUID, from, getDirection());
-        if (data.hasSlot(0)) {
-            return FluidContainerUtils.canFill(inputFluidTank.getFluid(), fluid);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
+        if (slotInfo instanceof FluidSlotInfo) {
+            FluidSlotInfo fluidSlotInfo = (FluidSlotInfo) slotInfo;
+            return fluidSlotInfo.canInput() && fluidSlotInfo.hasTank(inputFluidTank) && FluidContainerUtils.canFill(inputFluidTank.getFluid(), fluid);
         }
         return false;
     }
 
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
-        SideData data = configComponent.getOutput(TransmissionType.FLUID, from, getDirection());
-        return data.getFluidTankInfo(this);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
+        if (slotInfo instanceof FluidSlotInfo) {
+            return ((FluidSlotInfo) slotInfo).getTankInfo();
+        }
+        return new IFluidTank[0];
     }
 
     @Override
@@ -293,12 +320,22 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(1) && inputGasTank.canReceive(type);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+        if (slotInfo instanceof GasSlotInfo) {
+            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
+            return gasSlotInfo.canInput() && gasSlotInfo.hasTank(inputGasTank) && inputGasTank.canReceive(type);
+        }
+        return false;
     }
 
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(2) && outputGasTank.canDraw(type);
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+        if (slotInfo instanceof GasSlotInfo) {
+            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
+            return gasSlotInfo.canOutput() && gasSlotInfo.hasTank(outputGasTank) && outputGasTank.canDraw(type);
+        }
+        return false;
     }
 
     @Nonnull
@@ -324,7 +361,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

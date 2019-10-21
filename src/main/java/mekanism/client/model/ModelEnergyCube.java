@@ -3,7 +3,6 @@ package mekanism.client.model;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.SideData.IOState;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -392,14 +391,14 @@ public class ModelEnergyCube extends Model {
         GlStateManager.popMatrix();
     }
 
-    public void renderSide(float size, Direction side, IOState state, TextureManager renderer) {
-        if (state != IOState.OFF) { //input or output
+    public void renderSide(float size, Direction side, boolean canInput, boolean canOutput, TextureManager renderer) {
+        if (canInput || canOutput) {
             connectors[side.ordinal()].render(size);
             ports[side.ordinal()].render(size);
         }
 
         GlowInfo glowInfo;
-        if (state == IOState.OUTPUT) {
+        if (canOutput) {
             glowInfo = MekanismRenderer.enableGlow();
             renderer.bindTexture(BASE_OVERLAY);
             ports[side.ordinal()].render(size);
@@ -407,7 +406,7 @@ public class ModelEnergyCube extends Model {
             glowInfo = MekanismRenderer.NO_GLOW;
         }
 
-        renderer.bindTexture(state == IOState.OUTPUT ? OVERLAY_ON : OVERLAY_OFF);
+        renderer.bindTexture(canOutput ? OVERLAY_ON : OVERLAY_OFF);
 
         leds1[side.ordinal()].render(size);
         leds2[side.ordinal()].render(size);
