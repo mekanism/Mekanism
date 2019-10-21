@@ -24,7 +24,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-//TODO: Figure this out
 public class TileComponentConfig implements ITileComponent {
 
     public TileEntityMekanism tileEntity;
@@ -125,8 +124,11 @@ public class TileComponentConfig implements ITileComponent {
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
-                info.setSideConfigOld(new SideConfig(nbtTags.getByteArray("config" + type.ordinal())));
                 info.setEjecting(nbtTags.getBoolean("ejecting" + type.ordinal()));
+                CompoundNBT sideConfig = nbtTags.getCompound("config" + type.ordinal());
+                for (RelativeSide side : EnumUtils.SIDES) {
+                    info.setDataType(side, DataType.byIndex(sideConfig.getInt("side" + side.ordinal())));
+                }
             }
         }
     }
@@ -156,8 +158,12 @@ public class TileComponentConfig implements ITileComponent {
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            nbtTags.putByteArray("config" + type.ordinal(), info.getSideConfigOld().asByteArray());
             nbtTags.putBoolean("ejecting" + type.ordinal(), info.isEjecting());
+            CompoundNBT sideConfig = new CompoundNBT();
+            for (RelativeSide side : EnumUtils.SIDES) {
+                sideConfig.putInt("side" + side.ordinal(), info.getDataType(side).ordinal());
+            }
+            nbtTags.put("config" + type.ordinal(), sideConfig);
         }
         nbtTags.putBoolean("sideDataStored", true);
     }
