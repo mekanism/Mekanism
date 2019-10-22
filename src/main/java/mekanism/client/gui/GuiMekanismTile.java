@@ -38,23 +38,19 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
         if (tileEntity instanceof ISideConfiguration) {
-            Slot hovering = null;
-            for (int i = 0; i < container.inventorySlots.size(); i++) {
-                Slot slot = container.inventorySlots.get(i);
-                if (isMouseOverSlot(slot, mouseX, mouseY)) {
-                    hovering = slot;
-                    break;
-                }
-            }
-
             ItemStack stack = minecraft.player.inventory.getItemStack();
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null) {
-                DataType data = getFromSlot(hovering);
-                if (data != null) {
-                    displayTooltip(TextComponentUtil.build(data.getColor(), data, " (", data.getColor().getColoredName(), ")"), xAxis, yAxis);
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
+                for (int i = 0; i < container.inventorySlots.size(); i++) {
+                    Slot slot = container.inventorySlots.get(i);
+                    if (isMouseOverSlot(slot, mouseX, mouseY)) {
+                        DataType data = getFromSlot(slot);
+                        if (data != null) {
+                            displayTooltip(TextComponentUtil.build(data.getColor(), data, " (", data.getColor().getColoredName(), ")"),
+                                  mouseX - guiLeft, mouseY - guiTop);
+                        }
+                        break;
+                    }
                 }
             }
         }
