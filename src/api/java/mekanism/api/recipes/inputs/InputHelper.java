@@ -7,7 +7,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,8 +40,10 @@ public class InputHelper {
                     return;
                 }
                 if (!recipeInput.isEmpty()) {
-                    //TODO: Should we check if it failed
-                    inventorySlot.extractItem(recipeInput.getCount() * operations, Action.EXECUTE, AutomationType.INTERNAL);
+                    int amount = recipeInput.getCount() * operations;
+                    if (inventorySlot.shrinkStack(recipeInput.getCount() * operations, Action.EXECUTE) != amount) {
+                        //TODO: Print error/warning that something went wrong
+                    }
                 }
             }
 
