@@ -99,7 +99,7 @@ public final class OreDictCache {
 
     public static List<ItemStack> getOreDictStacks(String oreName, boolean forceBlock) {
         //TODO: Replace with others
-        return new ArrayList<>();
+        return getItemTagStacks(oreName, forceBlock);
     }
 
     public static List<ItemStack> getModIDStacks(String modName, boolean forceBlock) {

@@ -24,6 +24,13 @@ public abstract class FilterContainer<FILTER extends IFilter<FILTER>, TILE exten
         } else {
             filter = origFilter.clone();
         }
+        //TODO: FIXME, the slots are slightly offset
+    }
+
+    @Override
+    public void addSlots() {
+        //TODO: Check if any filters actually have us wanting to add the slots
+        //NO-OP
     }
 
     public boolean isNew() {
