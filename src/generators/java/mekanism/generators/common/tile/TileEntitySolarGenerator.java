@@ -79,7 +79,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
                 recheckSettings();
             }
 
-            ChargeUtils.charge(energySlot.getStack(), this);
+            energySlot.charge(this);
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
             // significant penalty.

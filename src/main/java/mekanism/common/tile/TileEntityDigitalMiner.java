@@ -50,7 +50,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.ItemRegistryUtils;
@@ -188,7 +187,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 initCalc = true;
             }
 
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
 
             if (MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0) {
                 setActive(true);

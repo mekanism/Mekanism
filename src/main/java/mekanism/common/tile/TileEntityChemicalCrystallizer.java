@@ -38,7 +38,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -108,7 +107,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             TileUtils.receiveGas(inputSlot.getStack(), inputTank);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

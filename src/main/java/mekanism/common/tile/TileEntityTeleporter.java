@@ -161,7 +161,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             prevShouldRender = shouldRender;
             teleDelay = Math.max(0, teleDelay - 1);
         }
-        ChargeUtils.discharge(energySlot.getStack(), this);
+        energySlot.discharge(this);
     }
 
     @Override

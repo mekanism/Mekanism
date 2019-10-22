@@ -292,7 +292,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             if (ticker == 1) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
 
             handleSecondaryFuel();
             sortInventory();

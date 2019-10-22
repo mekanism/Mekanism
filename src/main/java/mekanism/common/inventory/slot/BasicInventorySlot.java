@@ -40,7 +40,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nonnull
     private final Predicate<@NonNull ItemStack> validator;
     @Nonnull
-    private ItemStack current = ItemStack.EMPTY;
+    protected ItemStack current = ItemStack.EMPTY;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert;
     private final int limit;

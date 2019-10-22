@@ -38,7 +38,6 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
@@ -115,7 +114,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             //TODO: Move this logic into the slot
             ItemStack infuseInput = infusionSlot.getStack();
             if (!infuseInput.isEmpty()) {

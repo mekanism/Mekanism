@@ -27,7 +27,6 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -90,7 +89,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
 
             if (mode == 0) {
                 TileUtils.receiveGas(gasOutputSlot.getStack(), gasTank);

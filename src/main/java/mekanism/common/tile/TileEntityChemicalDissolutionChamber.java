@@ -94,7 +94,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             ItemStack itemStack = gasInputSlot.getStack();
             if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
                 //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though

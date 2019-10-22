@@ -43,7 +43,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
                 clientPiston++;
             }
         } else {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseUsage()) {
                 setActive(true);
                 pullEnergy(null, getBaseUsage(), false);

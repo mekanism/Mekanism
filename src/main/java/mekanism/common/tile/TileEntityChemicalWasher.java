@@ -37,7 +37,6 @@ import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -104,7 +103,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             ItemStack fluidInputStack = fluidSlot.getStack();
             if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
                 //TODO: Do we need this check? It should be a fluid input item if it is in the slot??

@@ -28,7 +28,6 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -108,8 +107,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.charge(chargeSlot.getStack(), this);
-            ChargeUtils.discharge(dischargeSlot.getStack(), this);
+            chargeSlot.charge(this);
+            dischargeSlot.discharge(this);
             if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
                 CableUtils.emit(this);
             }

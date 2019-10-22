@@ -52,7 +52,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     public void onUpdate() {
         if (!isRemote()) {
             boolean packet = false;
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             double toUse = 0;
             if (MekanismUtils.canFunction(this)) {
                 toUse = Math.min(getEnergy(), energyUsage);

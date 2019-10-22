@@ -15,7 +15,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -70,7 +69,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
         ItemStack fuelStack = fuelSlot.getStack();
         if (!fuelStack.isEmpty()) {
-            ChargeUtils.charge(energySlot.getStack(), this);
+            energySlot.charge(this);
             FluidStack fluidStack = FluidUtil.getFluidContained(fuelStack).orElse(FluidStack.EMPTY);
             if (fluidStack.isEmpty()) {
                 int fuel = getFuel(fuelStack);

@@ -31,7 +31,6 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
@@ -112,7 +111,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             if (!fluidTank.getFluid().isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, inputSlot, outputSlot);

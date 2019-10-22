@@ -60,6 +60,7 @@ public class LazyOptionalHelper<T> {
         return elseResult.get();
     }
 
+    //TODO: Do we want to add a getIfMatchesElse?
     public <RESULT> RESULT getIfPresentElse(Function<? super T, RESULT> presentFunction, RESULT elseResult) {
         if (isPresent()) {
             return presentFunction.apply(getValue());

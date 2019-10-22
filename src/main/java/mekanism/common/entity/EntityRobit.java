@@ -41,7 +41,6 @@ import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
@@ -221,8 +220,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 goHome();
             }
 
-            //TODO: Move logic into slot itself
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             //TODO: Use cached recipe system
             /*cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

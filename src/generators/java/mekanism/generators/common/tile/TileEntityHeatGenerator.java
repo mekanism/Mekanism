@@ -86,7 +86,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         super.onUpdate();
 
         if (!isRemote()) {
-            ChargeUtils.charge(energySlot.getStack(), this);
+            energySlot.charge(this);
             ItemStack fuelStack = fuelSlot.getStack();
             if (!fuelStack.isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(fuelStack)) {

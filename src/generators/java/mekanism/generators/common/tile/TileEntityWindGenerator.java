@@ -61,7 +61,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         super.onUpdate();
 
         if (!isRemote()) {
-            ChargeUtils.charge(energySlot.getStack(), this);
+            energySlot.charge(this);
             // If we're in a blacklisted dimension, there's nothing more to do
             if (isBlacklistDimension) {
                 return;

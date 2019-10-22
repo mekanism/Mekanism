@@ -62,8 +62,6 @@ public class BinInventorySlot extends BasicInventorySlot {
     //TODO: JavaDoc that the returned stack can be modified
     @Nonnull
     public ItemStack getBottomStack() {
-        //TODO: Should we directly access current by just changing it to protected
-        ItemStack current = getStack();
         if (current.isEmpty()) {
             return ItemStack.EMPTY;
         }

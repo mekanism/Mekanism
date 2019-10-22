@@ -14,8 +14,8 @@ import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -44,8 +44,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
                 structure.tick(getWorld());
                 //TODO: FIXME??
                 List<IInventorySlot> inventorySlots = getInventorySlots(null);
-                ChargeUtils.charge(inventorySlots.get(0).getStack(), this);
-                ChargeUtils.discharge(inventorySlots.get(1).getStack(), this);
+                ((EnergyInventorySlot) inventorySlots.get(0)).charge(this);
+                ((EnergyInventorySlot) inventorySlots.get(1)).discharge(this);
             }
         }
     }

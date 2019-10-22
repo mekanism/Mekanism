@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
  *
  * @author aidancbrady
  */
+//TODO: Should this be made into a capability?
 public interface IEnergizedItem {
 
     /**

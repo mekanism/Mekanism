@@ -76,7 +76,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         super.onUpdate();
 
         if (!isRemote()) {
-            ChargeUtils.charge(energySlot.getStack(), this);
+            energySlot.charge(this);
             ItemStack stack = fuelSlot.getStack();
             if (!stack.isEmpty() && fuelTank.getStored() < MAX_GAS) {
                 Gas gasType = MekanismAPI.EMPTY_GAS;

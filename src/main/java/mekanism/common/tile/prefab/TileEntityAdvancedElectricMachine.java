@@ -172,7 +172,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            ChargeUtils.discharge(energySlot.getStack(), this);
+            energySlot.discharge(this);
             handleSecondaryFuel();
             //TODO: Is there some better way to do this rather than storing it and then doing it like this?
             // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
