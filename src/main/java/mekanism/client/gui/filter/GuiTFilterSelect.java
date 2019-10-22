@@ -20,22 +20,22 @@ public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter
 
     @Override
     protected Runnable onItemStackButton() {
-        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_ITEMSTACK);
+        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_ITEMSTACK, -1);
     }
 
     @Override
     protected Runnable onTagButton() {
-        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_TAG);
+        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_TAG, -1);
     }
 
     @Override
     protected Runnable onMaterialButton() {
-        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_MATERIAL);
+        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_MATERIAL, -1);
     }
 
     @Override
     protected Runnable onModIDButton() {
-        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_MOD_ID);
+        return () -> sendPacketToServer(ClickedTileButton.LS_FILTER_MOD_ID, -1);
     }
 
     @Override
