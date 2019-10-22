@@ -58,6 +58,10 @@ public interface IRedstoneControl {
         @Nonnull
         @Override
         public RedstoneControl byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static RedstoneControl byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

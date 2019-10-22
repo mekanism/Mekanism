@@ -314,7 +314,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         super.read(nbtTags);
         redstoneReactive = nbtTags.getBoolean("redstoneReactive");
         for (int i = 0; i < 6; i++) {
-            connectionTypes[i] = EnumUtils.CONNECTION_TYPES[nbtTags.getInt("connection" + i)];
+            connectionTypes[i] = ConnectionType.byIndexStatic(nbtTags.getInt("connection" + i));
         }
         //TODO: Do we need to update the model here
     }
@@ -660,6 +660,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         @Nonnull
         @Override
         public ConnectionType byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static ConnectionType byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return TYPES[Math.floorMod(index, TYPES.length)];
         }

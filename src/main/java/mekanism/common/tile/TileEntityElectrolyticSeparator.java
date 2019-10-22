@@ -39,7 +39,6 @@ import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -277,8 +276,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         }
         leftTank.read(nbtTags.getCompound("leftTank"));
         rightTank.read(nbtTags.getCompound("rightTank"));
-        dumpLeft = EnumUtils.GAS_MODES[nbtTags.getInt("dumpLeft")];
-        dumpRight = EnumUtils.GAS_MODES[nbtTags.getInt("dumpRight")];
+        dumpLeft = GasMode.byIndexStatic(nbtTags.getInt("dumpLeft"));
+        dumpRight = GasMode.byIndexStatic(nbtTags.getInt("dumpRight"));
     }
 
     @Nonnull

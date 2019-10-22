@@ -4,7 +4,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -47,7 +46,7 @@ public class LaserParticleData implements IParticleData {
         @Override
         public LaserParticleData deserialize(@Nonnull ParticleType<LaserParticleData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
-            Direction direction = EnumUtils.DIRECTIONS[reader.readInt()];
+            Direction direction = Direction.byIndex(reader.readInt());
             reader.expect(' ');
             double distance = reader.readDouble();
             reader.expect(' ');

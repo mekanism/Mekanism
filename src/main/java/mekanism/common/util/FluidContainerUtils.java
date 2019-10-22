@@ -198,6 +198,10 @@ public final class FluidContainerUtils {
         @Nonnull
         @Override
         public ContainerEditMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static ContainerEditMode byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

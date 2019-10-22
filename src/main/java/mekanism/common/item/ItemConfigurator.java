@@ -24,7 +24,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -181,7 +180,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     }
 
     public ConfiguratorMode getState(ItemStack itemstack) {
-        return EnumUtils.CONFIGURATOR_MODES[ItemDataUtils.getInt(itemstack, "state")];
+        return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(itemstack, "state"));
     }
 
     @Override
@@ -303,6 +302,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
         @Nonnull
         @Override
         public ConfiguratorMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static ConfiguratorMode byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

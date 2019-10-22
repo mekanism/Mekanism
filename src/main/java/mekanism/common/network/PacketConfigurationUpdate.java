@@ -15,7 +15,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -71,7 +70,7 @@ public class PacketConfigurationUpdate {
                     }
                 } else if (message.packetType == ConfigurationPacket.SIDE_DATA) {
                     //TODO: Re-evaluate
-                    RelativeSide relativeSide = EnumUtils.SIDES[Math.floorMod(message.inputSide, EnumUtils.SIDES.length)];
+                    RelativeSide relativeSide = RelativeSide.byIndex(message.inputSide);
                     ConfigInfo info = config.getConfig().getConfig(message.transmission);
                     if (info != null) {
                         if (message.clickType == 0) {
@@ -101,7 +100,7 @@ public class PacketConfigurationUpdate {
                     }
                 } else if (message.packetType == ConfigurationPacket.INPUT_COLOR) {
                     //TODO: Re-evaluate
-                    RelativeSide relativeSide = EnumUtils.SIDES[Math.floorMod(message.inputSide, EnumUtils.SIDES.length)];
+                    RelativeSide relativeSide = RelativeSide.byIndex(message.inputSide);
                     TileComponentEjector ejector = config.getEjector();
                     if (message.clickType == 0) {
                         ejector.setInputColor(relativeSide, TransporterUtils.increment(ejector.getInputColor(relativeSide)));

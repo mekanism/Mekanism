@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -248,7 +247,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
-        mode = EnumUtils.FLAMETHROWER_MODES[nbtTags.getInt("mode")];
+        mode = FlamethrowerMode.byIndexStatic(nbtTags.getInt("mode"));
     }
 
     @Override

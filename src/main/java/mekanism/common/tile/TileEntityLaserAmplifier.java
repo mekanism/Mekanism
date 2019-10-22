@@ -19,7 +19,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -245,7 +244,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         time = nbtTags.getInt("time");
         collectedEnergy = nbtTags.getDouble("collectedEnergy");
         lastFired = nbtTags.getDouble("lastFired");
-        outputMode = EnumUtils.REDSTONE_OUTPUTS[nbtTags.getInt("outputMode")];
+        outputMode = RedstoneOutput.byIndexStatic(nbtTags.getInt("outputMode"));
     }
 
     @Nonnull
@@ -337,6 +336,10 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         @Nonnull
         @Override
         public RedstoneOutput byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static RedstoneOutput byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

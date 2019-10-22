@@ -12,6 +12,7 @@ import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
+import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateHelper;
@@ -22,7 +23,6 @@ import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -310,7 +310,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
         }
         if (tile.supportsRedstone()) {
             if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(EnumUtils.REDSTONE_CONTROLS[ItemDataUtils.getInt(stack, "controlType")]);
+                tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, "controlType")));
             }
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank && ((ISustainedTank) item).hasTank(stack)) {

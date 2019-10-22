@@ -11,6 +11,13 @@ public enum RelativeSide {
     TOP,
     BOTTOM;
 
+    private final static RelativeSide[] SIDES = values();
+
+    public static RelativeSide byIndex(int index) {
+        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+        return SIDES[Math.floorMod(index, SIDES.length)];
+    }
+
     /**
      * Gets the {@link Direction} from the block based on what side it is facing.
      *

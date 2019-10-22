@@ -39,6 +39,10 @@ public interface ISecurityTile {
         @Nonnull
         @Override
         public SecurityMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static SecurityMode byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

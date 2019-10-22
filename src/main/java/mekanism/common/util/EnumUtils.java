@@ -2,12 +2,6 @@ package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
-import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
-import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
-import mekanism.common.item.gear.ItemJetpack.JetpackMode;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -20,13 +14,7 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
-import mekanism.common.tile.TileEntityLaserAmplifier.RedstoneOutput;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
-import mekanism.common.util.UnitDisplayUtils.TempType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.AxisDirection;
@@ -36,7 +24,6 @@ public class EnumUtils {
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
      */
-    //TODO: Replace some calls to this with Direction.byIndex?
     public static final Direction[] DIRECTIONS = Direction.values();
 
     /**
@@ -50,26 +37,6 @@ public class EnumUtils {
     public static final AxisDirection[] AXIS_DIRECTIONS = AxisDirection.values();
 
     /**
-     * Cached value of {@link RedstoneControl#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final RedstoneControl[] REDSTONE_CONTROLS = RedstoneControl.values();
-
-    /**
-     * Cached value of {@link RedstoneOutput#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final RedstoneOutput[] REDSTONE_OUTPUTS = RedstoneOutput.values();
-
-    /**
-     * Cached value of {@link GasMode#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final GasMode[] GAS_MODES = GasMode.values();
-
-    /**
-     * Cached value of {@link ConfiguratorMode#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final ConfiguratorMode[] CONFIGURATOR_MODES = ConfiguratorMode.values();
-
-    /**
      * Cached value of {@link TemperatureUnit#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final TemperatureUnit[] TEMPERATURE_UNITS = TemperatureUnit.values();
@@ -78,21 +45,6 @@ public class EnumUtils {
      * Cached value of {@link MeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final MeasurementUnit[] MEASUREMENT_UNITS = MeasurementUnit.values();
-
-    /**
-     * Cached value of {@link EnergyType#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final EnergyType[] ENERGY_TYPES = EnergyType.values();
-
-    /**
-     * Cached value of {@link TempType#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final TempType[] TEMP_TYPES = TempType.values();
-
-    /**
-     * Cached value of {@link ConnectionType#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final ConnectionType[] CONNECTION_TYPES = ConnectionType.values();
 
     /**
      * Cached value of {@link TransmissionType#values()}. DO NOT MODIFY THIS LIST.
@@ -158,29 +110,4 @@ public class EnumUtils {
      * Cached value of {@link FactoryTier#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final FactoryTier[] FACTORY_TIERS = FactoryTier.values();
-
-    /**
-     * Cached value of {@link SecurityMode#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final SecurityMode[] SECURITY_MODES = SecurityMode.values();
-
-    /**
-     * Cached value of {@link ContainerEditMode#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final ContainerEditMode[] CONTAINER_EDIT_MODES = ContainerEditMode.values();
-
-    /**
-     * Cached value of {@link FlamethrowerMode#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final FlamethrowerMode[] FLAMETHROWER_MODES = FlamethrowerMode.values();
-
-    /**
-     * Cached value of {@link JetpackMode#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final JetpackMode[] JETPACK_MODES = JetpackMode.values();
-
-    /**
-     * Cached value of {@link FreeRunnerMode#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final FreeRunnerMode[] FREE_RUNNER_MODES = FreeRunnerMode.values();
 }

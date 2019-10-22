@@ -18,7 +18,6 @@ import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -161,7 +160,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
     }
 
     public JetpackMode getMode(ItemStack stack) {
-        return EnumUtils.JETPACK_MODES[ItemDataUtils.getInt(stack, "mode")];
+        return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, "mode"));
     }
 
     public void setMode(ItemStack stack, JetpackMode mode) {
@@ -223,6 +222,10 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
         @Nonnull
         @Override
         public JetpackMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static JetpackMode byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

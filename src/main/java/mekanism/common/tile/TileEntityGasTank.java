@@ -263,7 +263,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         super.read(nbtTags);
         tier = EnumUtils.GAS_TANK_TIERS[nbtTags.getInt("tier")];
         gasTank.read(nbtTags.getCompound("gasTank"));
-        dumping = EnumUtils.GAS_MODES[nbtTags.getInt("dumping")];
+        dumping = GasMode.byIndexStatic(nbtTags.getInt("dumping"));
     }
 
     @Nonnull
@@ -344,6 +344,10 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         @Nonnull
         @Override
         public GasMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static GasMode byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

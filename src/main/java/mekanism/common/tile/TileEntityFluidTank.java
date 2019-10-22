@@ -211,7 +211,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         tier = EnumUtils.FLUID_TANK_TIERS[nbtTags.getInt("tier")];
-        editMode = EnumUtils.CONTAINER_EDIT_MODES[nbtTags.getInt("editMode")];
+        editMode = ContainerEditMode.byIndexStatic(nbtTags.getInt("editMode"));
         //Needs to be outside the contains check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());
         if (nbtTags.contains("fluidTank")) {

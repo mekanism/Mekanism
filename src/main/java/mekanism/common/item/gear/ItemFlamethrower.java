@@ -15,7 +15,6 @@ import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -157,7 +156,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     }
 
     public FlamethrowerMode getMode(ItemStack stack) {
-        return EnumUtils.FLAMETHROWER_MODES[ItemDataUtils.getInt(stack, "mode")];
+        return FlamethrowerMode.byIndexStatic(ItemDataUtils.getInt(stack, "mode"));
     }
 
     public void setMode(ItemStack stack, FlamethrowerMode mode) {
@@ -186,6 +185,10 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         @Nonnull
         @Override
         public FlamethrowerMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static FlamethrowerMode byIndexStatic(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }

@@ -6,12 +6,12 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -119,7 +119,7 @@ public class ItemConfigurationCard extends ItemMekanism {
 
     private void setBaseData(CompoundNBT nbtTags, TileEntity tile) {
         if (tile instanceof IRedstoneControl) {
-            ((IRedstoneControl) tile).setControlType(EnumUtils.REDSTONE_CONTROLS[nbtTags.getInt("controlType")]);
+            ((IRedstoneControl) tile).setControlType(RedstoneControl.byIndexStatic(nbtTags.getInt("controlType")));
         }
         if (tile instanceof ISideConfiguration) {
             ((ISideConfiguration) tile).getConfig().read(nbtTags);
