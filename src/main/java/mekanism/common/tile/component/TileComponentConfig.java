@@ -127,7 +127,7 @@ public class TileComponentConfig implements ITileComponent {
                 info.setEjecting(nbtTags.getBoolean("ejecting" + type.ordinal()));
                 CompoundNBT sideConfig = nbtTags.getCompound("config" + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
-                    info.setDataType(side, DataType.byIndex(sideConfig.getInt("side" + side.ordinal())));
+                    info.setDataType(side, DataType.byIndexStatic(sideConfig.getInt("side" + side.ordinal())));
                 }
             }
         }

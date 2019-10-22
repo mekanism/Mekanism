@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -215,7 +216,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                     time = dataStream.readInt();
                     break;
                 case 3:
-                    outputMode = EnumUtils.REDSTONE_OUTPUTS[outputMode.ordinal() == EnumUtils.REDSTONE_OUTPUTS.length - 1 ? 0 : outputMode.ordinal() + 1];
+                    outputMode = outputMode.getNext();
                     break;
             }
             return;
@@ -316,11 +317,12 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         return super.isCapabilityDisabled(capability, side);
     }
 
-    public enum RedstoneOutput implements IHasTranslationKey {
+    public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasTranslationKey {
         OFF("off"),
         ENTITY_DETECTION("entityDetection"),
         ENERGY_CONTENTS("energyContents");
 
+        private static final RedstoneOutput[] MODES = values();
         private String unlocalizedName;
 
         RedstoneOutput(String name) {
@@ -330,6 +332,13 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         @Override
         public String getTranslationKey() {
             return "gui.mekanism." + unlocalizedName;
+        }
+
+        @Nonnull
+        @Override
+        public RedstoneOutput byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 }

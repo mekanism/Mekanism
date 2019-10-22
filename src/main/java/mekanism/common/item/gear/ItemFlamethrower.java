@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -152,7 +153,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     }
 
     public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).increment());
+        setMode(stack, getMode(stack).getNext());
     }
 
     public FlamethrowerMode getMode(ItemStack stack) {
@@ -163,11 +164,12 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
         ItemDataUtils.setInt(stack, "mode", mode.ordinal());
     }
 
-    public enum FlamethrowerMode implements IHasTextComponent {
+    public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent {
         COMBAT("tooltip.flamethrower.combat", EnumColor.YELLOW),
         HEAT("tooltip.flamethrower.heat", EnumColor.ORANGE),
         INFERNO("tooltip.flamethrower.inferno", EnumColor.DARK_RED);
 
+        private static final FlamethrowerMode[] MODES = values();
         private String unlocalized;
         private EnumColor color;
 
@@ -176,13 +178,16 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
             color = c;
         }
 
-        public FlamethrowerMode increment() {
-            return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
-        }
-
         @Override
         public ITextComponent getTextComponent() {
             return TextComponentUtil.build(color, unlocalized);
+        }
+
+        @Nonnull
+        @Override
+        public FlamethrowerMode byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 }

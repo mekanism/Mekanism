@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.LazyOptionalHelper;
@@ -177,11 +178,12 @@ public final class FluidContainerUtils {
         return stack;
     }
 
-    public enum ContainerEditMode implements IHasTranslationKey {
+    public enum ContainerEditMode implements IIncrementalEnum<ContainerEditMode>, IHasTranslationKey {
         BOTH("mekanism.fluidedit.both"),
         FILL("mekanism.fluidedit.fill"),
         EMPTY("mekanism.fluidedit.empty");
 
+        private static final ContainerEditMode[] MODES = values();
         private String display;
 
         ContainerEditMode(String s) {
@@ -191,6 +193,13 @@ public final class FluidContainerUtils {
         @Override
         public String getTranslationKey() {
             return display;
+        }
+
+        @Nonnull
+        @Override
+        public ContainerEditMode byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 

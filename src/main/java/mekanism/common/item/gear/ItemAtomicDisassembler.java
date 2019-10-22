@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.IDisableableEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
@@ -304,7 +305,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     public void toggleMode(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, "mode", Mode.getNextEnabledAsInt(getMode(itemStack)));
+        ItemDataUtils.setInt(itemStack, "mode", getMode(itemStack).getNext().ordinal());
     }
 
     @Override
@@ -323,7 +324,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return multiMap;
     }
 
-    public enum Mode implements IHasTranslationKey {
+    public enum Mode implements IDisableableEnum<Mode>, IHasTranslationKey {
         NORMAL("normal", 20, 3, () -> true),
         SLOW("slow", 8, 1, () -> MekanismConfig.general.disassemblerSlowMode.get()),
         FAST("fast", 128, 5, () -> MekanismConfig.general.disassemblerFastMode.get()),
@@ -331,6 +332,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         EXTENDED_VEIN("extended_vein", 20, 3, () -> MekanismConfig.general.disassemblerExtendedMining.get()),
         OFF("off", 0, 0, () -> true);
 
+        private static Mode[] VALUES = values();
         private final Supplier<Boolean> checkEnabled;
         private final String mode;
         private final int efficiency;
@@ -347,26 +349,16 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         /**
          * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
          */
-        public static Mode getFromInt(int ordinal) {
-            Mode[] values = values();
-            //If it is out of bounds just shift it as if it had gone around that many times
-            Mode mode = values[ordinal % values.length];
+        public static Mode getFromInt(int index) {
+            Mode mode = VALUES[Math.floorMod(index, VALUES.length)];
             return mode.isEnabled() ? mode : NORMAL;
         }
 
-        public static int getNextEnabledAsInt(Mode mode) {
-            //Get the next mode
-            Mode next = mode.getNext();
-            //keep going until we find one that is enabled (we know at the very least NORMAL and OFF are enabled
-            while (!next.isEnabled()) {
-                next = next.getNext();
-            }
-            return next.ordinal();
-        }
-
-        private Mode getNext() {
-            Mode[] values = values();
-            return values[(ordinal() + 1) % values.length];
+        @Nonnull
+        @Override
+        public Mode byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return VALUES[Math.floorMod(index, VALUES.length)];
         }
 
         @Override
@@ -382,6 +374,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             return diameter;
         }
 
+        @Override
         public boolean isEnabled() {
             return checkEnabled.get();
         }

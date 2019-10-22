@@ -1,5 +1,7 @@
 package mekanism.common.util;
 
+import javax.annotation.Nonnull;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
@@ -225,27 +227,45 @@ public class UnitDisplayUtils {
         }
     }
 
-    public enum EnergyType implements IHasTextComponent {
+    public enum EnergyType implements IIncrementalEnum<EnergyType>, IHasTextComponent {
         J,
         FE,
         EU;
+
+        private static final EnergyType[] TYPES = values();
 
         @Override
         public ITextComponent getTextComponent() {
             return TextComponentUtil.getString(name());
         }
+
+        @Nonnull
+        @Override
+        public EnergyType byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return TYPES[Math.floorMod(index, TYPES.length)];
+        }
     }
 
-    public enum TempType implements IHasTextComponent {
+    public enum TempType implements IIncrementalEnum<TempType>, IHasTextComponent {
         K,
         C,
         R,
         F,
         STP;
 
+        private static final TempType[] TYPES = values();
+
         @Override
         public ITextComponent getTextComponent() {
             return TextComponentUtil.getString(name());
+        }
+
+        @Nonnull
+        @Override
+        public TempType byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return TYPES[Math.floorMod(index, TYPES.length)];
         }
     }
 }

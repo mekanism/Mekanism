@@ -4,6 +4,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
@@ -160,13 +161,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+        //TODO: Upgrade
+        /*if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
         tier = EnumUtils.GAS_TANK_TIERS[upgradeTier.ordinal()];
         gasTank.setCapacity(tier.getStorage());
         Mekanism.packetHandler.sendUpdatePacket(this);
-        markDirty();
+        markDirty();*/
         return true;
     }
 
@@ -235,8 +237,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                int index = (dumping.ordinal() + 1) % EnumUtils.GAS_MODES.length;
-                dumping = EnumUtils.GAS_MODES[index];
+                dumping = dumping.getNext();
             }
             for (PlayerEntity player : playersUsing) {
                 Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
@@ -323,11 +324,12 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         }
     }
 
-    public enum GasMode implements IHasTranslationKey {
+    public enum GasMode implements IIncrementalEnum<GasMode>, IHasTranslationKey {
         IDLE("gui.mekanism.idle"),
         DUMPING_EXCESS("gui.mekanism.dumping_excess"),
         DUMPING("gui.mekanism.dumping");
 
+        private static final GasMode[] MODES = values();
         private final String langKey;
 
         GasMode(String langKey) {
@@ -337,6 +339,13 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         @Override
         public String getTranslationKey() {
             return langKey;
+        }
+
+        @Nonnull
+        @Override
+        public GasMode byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 }

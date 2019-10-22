@@ -19,7 +19,6 @@ import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -77,9 +76,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
             if (player.isSneaking() && item instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) item;
-                ConfiguratorMode configuratorMode = configurator.getState(toolStack);
-                int toSet = (configuratorMode.ordinal() + 1) % EnumUtils.CONFIGURATOR_MODES.length;
-                configuratorMode = EnumUtils.CONFIGURATOR_MODES[toSet];
+                ConfiguratorMode configuratorMode = configurator.getState(toolStack).getNext();
                 configurator.setState(toolStack, configuratorMode);
                 Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(configuratorMode)));
                 player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,

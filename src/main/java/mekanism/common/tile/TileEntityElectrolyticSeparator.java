@@ -238,9 +238,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         if (!isRemote()) {
             byte type = dataStream.readByte();
             if (type == 0) {
-                dumpLeft = EnumUtils.GAS_MODES[dumpLeft.ordinal() == EnumUtils.GAS_MODES.length - 1 ? 0 : dumpLeft.ordinal() + 1];
+                dumpLeft = dumpLeft.getNext();
             } else if (type == 1) {
-                dumpRight = EnumUtils.GAS_MODES[dumpRight.ordinal() == EnumUtils.GAS_MODES.length - 1 ? 0 : dumpRight.ordinal() + 1];
+                dumpRight = dumpRight.getNext();
             }
             return;
         }

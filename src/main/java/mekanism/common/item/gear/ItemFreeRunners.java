@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.ModelCustomArmor;
@@ -141,13 +142,14 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
     }
 
     public void incrementMode(ItemStack itemStack) {
-        setMode(itemStack, getMode(itemStack).increment());
+        setMode(itemStack, getMode(itemStack).getNext());
     }
 
-    public enum FreeRunnerMode {
+    public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode> {
         NORMAL("tooltip.freerunner.regular", EnumColor.DARK_GREEN),
         DISABLED("tooltip.freerunner.disabled", EnumColor.DARK_RED);
 
+        private static final FreeRunnerMode[] MODES = values();
         private String unlocalized;
         private EnumColor color;
 
@@ -156,12 +158,15 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
             this.color = color;
         }
 
-        public FreeRunnerMode increment() {
-            return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
-        }
-
         public ITextComponent getTextComponent() {
             return TextComponentUtil.build(color, unlocalized);
+        }
+
+        @Nonnull
+        @Override
+        public FreeRunnerMode byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 

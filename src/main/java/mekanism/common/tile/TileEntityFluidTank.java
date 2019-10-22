@@ -98,13 +98,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+        //TODO: Upgrade
+        /*if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
         tier = EnumUtils.FLUID_TANK_TIERS[upgradeTier.ordinal()];
         fluidTank.setCapacity(tier.getStorage());
         Mekanism.packetHandler.sendUpdatePacket(this);
-        markDirty();
+        markDirty();*/
         return true;
     }
 

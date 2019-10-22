@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.IMekWrench;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -241,7 +242,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     @FieldsAreNonnullByDefault
-    public enum ConfiguratorMode implements IHasTextComponent {
+    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent {
         CONFIGURATE_ITEMS("configurate", TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_FLUIDS("configurate", TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_GASES("configurate", TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
@@ -251,6 +252,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
         ROTATE("rotate", null, EnumColor.YELLOW, false),
         WRENCH("wrench", null, EnumColor.PINK, false);
 
+        private static ConfiguratorMode[] MODES = values();
         private String name;
         @Nullable
         private final TransmissionType transmissionType;
@@ -296,6 +298,13 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 default:
                     return null;
             }
+        }
+
+        @Nonnull
+        @Override
+        public ConfiguratorMode byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 }

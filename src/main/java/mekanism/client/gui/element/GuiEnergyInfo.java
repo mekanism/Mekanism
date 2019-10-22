@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -40,6 +39,6 @@ public class GuiEnergyInfo extends GuiTexturedElement {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        MekanismConfig.general.energyUnit.set(EnumUtils.ENERGY_TYPES[(MekanismConfig.general.energyUnit.get().ordinal() + 1) % EnumUtils.ENERGY_TYPES.length]);
+        MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getNext());
     }
 }

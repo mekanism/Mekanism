@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -104,7 +105,7 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
     }
 
     public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).increment());
+        setMode(stack, getMode(stack).getNext());
     }
 
     public void useGas(ItemStack stack) {
@@ -201,11 +202,12 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
         return 0;
     }
 
-    public enum JetpackMode {
+    public enum JetpackMode implements IIncrementalEnum<JetpackMode> {
         NORMAL("tooltip.jetpack.regular", EnumColor.DARK_GREEN),
         HOVER("tooltip.jetpack.hover", EnumColor.DARK_AQUA),
         DISABLED("tooltip.jetpack.disabled", EnumColor.DARK_RED);
 
+        private static final JetpackMode[] MODES = values();
         private String unlocalized;
         private EnumColor color;
 
@@ -214,12 +216,15 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
             color = c;
         }
 
-        public JetpackMode increment() {
-            return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
-        }
-
         public ITextComponent getTextComponent() {
             return TextComponentUtil.build(color, unlocalized);
+        }
+
+        @Nonnull
+        @Override
+        public JetpackMode byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 

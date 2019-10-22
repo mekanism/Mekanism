@@ -123,12 +123,13 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+        //TODO: Upgrade
+        /*if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
         tier = EnumUtils.ENERGY_CUBE_TIERS[upgradeTier.ordinal()];
         Mekanism.packetHandler.sendUpdatePacket(this);
-        markDirty();
+        markDirty();*/
         return true;
     }
 

@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -533,7 +534,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                     }
                     hitSide = side;
                 }
-                connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
+                connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].getNext();
                 sendDesc = true;
                 onModeChange(Direction.byIndex(hitSide.ordinal()));
 
@@ -638,18 +639,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         return super.getCapability(capability, side);
     }
 
-    public enum ConnectionType implements IStringSerializable, IHasTranslationKey {
+    public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringSerializable, IHasTranslationKey {
         NORMAL,
         PUSH,
         PULL,
         NONE;
 
-        public ConnectionType next() {
-            if (ordinal() == values().length - 1) {
-                return NORMAL;
-            }
-            return values()[ordinal() + 1];
-        }
+        private static final ConnectionType[] TYPES = values();
 
         @Override
         public String getName() {
@@ -659,6 +655,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         @Override
         public String getTranslationKey() {
             return "mekanism.pipe.connectiontype." + getName();
+        }
+
+        @Nonnull
+        @Override
+        public ConnectionType byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return TYPES[Math.floorMod(index, TYPES.length)];
         }
     }
 }

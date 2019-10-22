@@ -1,5 +1,7 @@
 package mekanism.common.base;
 
+import javax.annotation.Nonnull;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.text.IHasTranslationKey;
 
 public interface IRedstoneControl {
@@ -35,12 +37,13 @@ public interface IRedstoneControl {
      */
     boolean canPulse();
 
-    enum RedstoneControl implements IHasTranslationKey {
+    enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasTranslationKey {
         DISABLED("tooltip.mekanism.control.disabled"),
         HIGH("tooltip.mekanism.control.high"),
         LOW("tooltip.mekanism.control.low"),
         PULSE("tooltip.mekanism.control.pulse");
 
+        private static final RedstoneControl[] MODES = values();
         private String display;
 
         RedstoneControl(String s) {
@@ -50,6 +53,13 @@ public interface IRedstoneControl {
         @Override
         public String getTranslationKey() {
             return display;
+        }
+
+        @Nonnull
+        @Override
+        public RedstoneControl byIndex(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 }
