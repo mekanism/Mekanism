@@ -128,7 +128,8 @@ public final class FluidContainerUtils {
 
         ItemStack inputCopy = handler.getContainer();
         ItemStack outputStack = outSlot.getStack();
-        if (!FluidUtil.getFluidContained(inputCopy).isPresent() && !inputCopy.isEmpty()) {
+        LazyOptionalHelper<FluidStack> containerFluidHelper = new LazyOptionalHelper<>(FluidUtil.getFluidContained(inputCopy));
+        if (!containerFluidHelper.matches(fluidStack -> !fluidStack.isEmpty()) && !inputCopy.isEmpty()) {
             if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit(outputStack))) {
                 return stored;
             }
@@ -144,7 +145,7 @@ public final class FluidContainerUtils {
             tileEntity.markDirty();
         }
 
-        if (!FluidUtil.getFluidContained(inputCopy).isPresent() || needed == 0) {
+        if (!containerFluidHelper.matches(fluidStack -> !fluidStack.isEmpty()) || needed == 0) {
             if (!inputCopy.isEmpty()) {
                 if (outputStack.isEmpty()) {
                     outSlot.setStack(inputCopy);
@@ -167,7 +168,8 @@ public final class FluidContainerUtils {
     public static FluidStack handleContainerItem(TileEntityMekanism tileEntity, ContainerEditMode editMode, @Nonnull FluidStack stack, int needed,
           IInventorySlot inSlot, IInventorySlot outSlot, final FluidChecker checker) {
         //TODO: Can these two methods be cleaned up by offloading checks to the IInventorySlots
-        if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH && !FluidUtil.getFluidContained(inSlot.getStack()).isPresent())) {
+        if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH &&
+                                                   !new LazyOptionalHelper<>(FluidUtil.getFluidContained(inSlot.getStack())).matches(fluidStack -> !fluidStack.isEmpty()))) {
             return handleContainerItemFill(tileEntity, stack, inSlot, outSlot);
         } else if (editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH) {
             return handleContainerItemEmpty(tileEntity, stack, needed, inSlot, outSlot, checker);
