@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
@@ -73,7 +74,7 @@ public class PacketSecurityUpdate {
         PacketSecurityUpdate packet = new PacketSecurityUpdate(buf.readEnumValue(SecurityPacket.class));
         if (packet.packetType == SecurityPacket.UPDATE) {
             packet.playerUUID = buf.readUniqueId();
-            packet.playerUsername = buf.readString();
+            packet.playerUsername = PacketHandler.readString(buf);
             if (buf.readBoolean()) {
                 packet.securityData = SecurityData.read(buf);
             }
@@ -83,7 +84,7 @@ public class PacketSecurityUpdate {
             int amount = buf.readInt();
             for (int i = 0; i < amount; i++) {
                 UUID uuid = buf.readUniqueId();
-                String username = buf.readString();
+                String username = PacketHandler.readString(buf);
                 MekanismClient.clientSecurityMap.put(uuid, SecurityData.read(buf));
                 MekanismClient.clientUUIDMap.put(uuid, username);
             }

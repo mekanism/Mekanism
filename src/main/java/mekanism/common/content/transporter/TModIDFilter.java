@@ -1,6 +1,7 @@
 package mekanism.common.content.transporter;
 
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemStack;
@@ -44,7 +45,7 @@ public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IMo
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        modID = dataStream.readString();
+        modID = PacketHandler.readString(dataStream);
     }
 
     @Override

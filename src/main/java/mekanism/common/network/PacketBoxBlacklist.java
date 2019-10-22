@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -39,7 +40,7 @@ public class PacketBoxBlacklist {
         }
         int amountMods = buf.readInt();
         for (int i = 0; i < amountMods; i++) {
-            MekanismAPI.addBoxBlacklistMod(buf.readString());
+            MekanismAPI.addBoxBlacklistMod(PacketHandler.readString(buf));
         }
         Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " explicit blocks, " + amountMods + " mod wildcards)");
         return new PacketBoxBlacklist();

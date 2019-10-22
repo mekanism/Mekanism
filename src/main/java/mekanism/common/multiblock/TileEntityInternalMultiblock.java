@@ -2,11 +2,13 @@ package mekanism.common.multiblock;
 
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.PacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.network.PacketBuffer;
 
 public class TileEntityInternalMultiblock extends TileEntityMekanism {
 
+    //TODO: Make this actually be a UUID?
     public String multiblockUUID;
 
     public TileEntityInternalMultiblock(IBlockProvider blockProvider) {
@@ -22,7 +24,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
         super.handlePacketData(dataStream);
         if (isRemote()) {
             if (dataStream.readBoolean()) {
-                multiblockUUID = dataStream.readString();
+                multiblockUUID = PacketHandler.readString(dataStream);
             } else {
                 multiblockUUID = null;
             }

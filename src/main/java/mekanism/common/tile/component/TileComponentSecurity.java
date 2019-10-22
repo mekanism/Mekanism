@@ -4,6 +4,7 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -135,7 +136,7 @@ public class TileComponentSecurity implements ITileComponent {
 
         if (dataStream.readBoolean()) {
             ownerUUID = dataStream.readUniqueId();
-            clientOwner = dataStream.readString();
+            clientOwner = PacketHandler.readString(dataStream);
         } else {
             ownerUUID = null;
             clientOwner = null;

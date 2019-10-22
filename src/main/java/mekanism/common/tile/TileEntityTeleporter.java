@@ -11,6 +11,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -386,11 +387,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                String name = dataStream.readString();
+                String name = PacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 setFrequency(name, isPublic);
             } else if (type == 1) {
-                String freq = dataStream.readString();
+                String freq = PacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 FrequencyManager manager = getManager(new Frequency(freq, null).setPublic(isPublic));
                 if (manager != null) {

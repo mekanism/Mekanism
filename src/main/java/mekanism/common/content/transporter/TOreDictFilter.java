@@ -1,6 +1,7 @@
 package mekanism.common.content.transporter;
 
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemStack;
@@ -44,7 +45,7 @@ public class TOreDictFilter extends TransporterFilter<TOreDictFilter> implements
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        oreDictName = dataStream.readString();
+        oreDictName = PacketHandler.readString(dataStream);
     }
 
     @Override

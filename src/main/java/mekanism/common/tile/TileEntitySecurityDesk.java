@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -137,11 +138,11 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             int type = dataStream.readInt();
             if (type == 0) {
                 if (frequency != null) {
-                    frequency.trusted.add(dataStream.readString());
+                    frequency.trusted.add(PacketHandler.readString(dataStream));
                 }
             } else if (type == 1) {
                 if (frequency != null) {
-                    frequency.trusted.remove(dataStream.readString());
+                    frequency.trusted.remove(PacketHandler.readString(dataStream));
                 }
             } else if (type == 2) {
                 if (frequency != null) {
@@ -162,7 +163,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
         if (isRemote()) {
             if (dataStream.readBoolean()) {
-                clientOwner = dataStream.readString();
+                clientOwner = PacketHandler.readString(dataStream);
                 ownerUUID = dataStream.readUniqueId();
             } else {
                 clientOwner = null;

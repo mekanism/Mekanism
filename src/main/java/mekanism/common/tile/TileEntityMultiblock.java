@@ -9,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
@@ -209,7 +210,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     structure.volLength = dataStream.readInt();
                     structure.renderLocation = Coord4D.read(dataStream);
                     if (dataStream.readBoolean()) {
-                        structure.inventoryID = dataStream.readString();
+                        structure.inventoryID = PacketHandler.readString(dataStream);
                     } else {
                         structure.inventoryID = null;
                     }

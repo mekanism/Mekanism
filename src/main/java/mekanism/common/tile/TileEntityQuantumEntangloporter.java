@@ -23,6 +23,7 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
@@ -259,11 +260,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                String name = dataStream.readString();
+                String name = PacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 setFrequency(name, isPublic);
             } else if (type == 1) {
-                String freq = dataStream.readString();
+                String freq = PacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 FrequencyManager manager = getManager(new InventoryFrequency(freq, null).setPublic(isPublic));
                 if (manager != null) {

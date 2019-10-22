@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -92,9 +93,9 @@ public class Frequency {
     }
 
     protected void read(PacketBuffer dataStream) {
-        name = dataStream.readString();
+        name = PacketHandler.readString(dataStream);
         ownerUUID = dataStream.readUniqueId();
-        clientOwner = dataStream.readString();
+        clientOwner = PacketHandler.readString(dataStream);
         publicFreq = dataStream.readBoolean();
     }
 

@@ -1,6 +1,7 @@
 package mekanism.common.content.miner;
 
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.BlockItem;
@@ -44,8 +45,7 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        //TODO: FIXME readString is clientside only
-        modID = dataStream.readString();
+        modID = PacketHandler.readString(dataStream);
     }
 
     @Override

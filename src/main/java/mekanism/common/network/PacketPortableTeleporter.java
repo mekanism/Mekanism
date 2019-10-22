@@ -210,11 +210,11 @@ public class PacketPortableTeleporter {
         byte status = 0;
         if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
             if (buf.readBoolean()) {
-                frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+                frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
         } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
             if (buf.readBoolean()) {
-                frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+                frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
             status = buf.readByte();
 
@@ -227,11 +227,11 @@ public class PacketPortableTeleporter {
                 privateCache.add(new Frequency(buf));
             }
         } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
-            frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+            frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
         } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
-            frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+            frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
         } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
-            frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+            frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
         }
         return new PacketPortableTeleporter(currentHand, frequency, status, publicCache, privateCache);
     }
