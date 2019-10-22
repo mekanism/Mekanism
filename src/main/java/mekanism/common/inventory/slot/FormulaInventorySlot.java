@@ -15,6 +15,6 @@ public class FormulaInventorySlot extends BasicInventorySlot {
     }
 
     private FormulaInventorySlot(IMekanismInventory inventory, int x, int y) {
-        super(alwaysFalse, alwaysTrue, validator, inventory, x, y);
+        super(manualOnly, alwaysTrueBi, validator, inventory, x, y);
     }
 }

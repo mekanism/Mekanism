@@ -32,6 +32,7 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -76,8 +77,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
-        this.tier = ((BlockFluidTank) blockProvider.getBlock()).getTier();
-        fluidTank = new FluidTank(this.tier.getStorage());
+    }
+
+    @Override
+    protected void setSupportedTypes(Block block) {
+        super.setSupportedTypes(block);
+        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
+        this.tier = ((BlockFluidTank) block).getTier();
+        fluidTank = new FluidTank(tier.getStorage());
     }
 
     @Nonnull

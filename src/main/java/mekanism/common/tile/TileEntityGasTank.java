@@ -40,6 +40,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -72,7 +73,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     public TileEntityGasTank(IBlockProvider blockProvider) {
         super(blockProvider);
-        this.tier = ((BlockGasTank) blockProvider.getBlock()).getTier();
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -96,10 +96,17 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             gasConfig.setEjecting(true);
         }
 
-        gasTank = new GasTank(tier.getStorage());
         dumping = GasMode.IDLE;
 
         ejectorComponent = new TileComponentEjector(this);
+    }
+
+    @Override
+    protected void setSupportedTypes(Block block) {
+        super.setSupportedTypes(block);
+        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
+        this.tier = ((BlockGasTank) block).getTier();
+        gasTank = new GasTank(tier.getStorage());
     }
 
     @Nonnull

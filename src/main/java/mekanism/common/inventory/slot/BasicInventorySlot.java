@@ -1,10 +1,12 @@
 package mekanism.common.inventory.slot;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -19,6 +21,8 @@ public class BasicInventorySlot implements IInventorySlot {
 
     protected static final Predicate<@NonNull ItemStack> alwaysTrue = stack -> true;
     protected static final Predicate<@NonNull ItemStack> alwaysFalse = stack -> false;
+    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
     private static final int DEFAULT_LIMIT = 64;
 
     public static BasicInventorySlot at(IMekanismInventory inventory, int x, int y) {
@@ -26,24 +30,19 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public static BasicInventorySlot at(@Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
-        return new BasicInventorySlot(alwaysTrue, alwaysTrue, validator, inventory, x, y);
+        return new BasicInventorySlot(alwaysTrueBi, alwaysTrueBi, validator, inventory, x, y);
     }
 
     public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, IMekanismInventory inventory, int x, int y) {
         return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
     }
 
-    public static BasicInventorySlot at(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, IMekanismInventory inventory,
-          int x, int y) {
-        return new BasicInventorySlot(limit, canExtract, canInsert, alwaysTrue, inventory, x, y);
-    }
-
     @Nonnull
     private final Predicate<@NonNull ItemStack> validator;
     @Nonnull
     private ItemStack current = ItemStack.EMPTY;
-    private final Predicate<@NonNull ItemStack> canExtract;
-    private final Predicate<@NonNull ItemStack> canInsert;
+    private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract;
+    private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert;
     private final int limit;
     private final IMekanismInventory inventory;
     private final int x;
@@ -52,10 +51,17 @@ public class BasicInventorySlot implements IInventorySlot {
 
     protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
           IMekanismInventory inventory, int x, int y) {
+        //TODO: Re-evaluate this
+        this((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
+              validator, inventory, x, y);
+    }
+
+    protected BasicInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
+          @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
         this(DEFAULT_LIMIT, canExtract, canInsert, validator, inventory, x, y);
     }
 
-    protected BasicInventorySlot(int limit, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+    protected BasicInventorySlot(int limit, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
           @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
         this.limit = limit;
         this.canExtract = canExtract;
@@ -101,8 +107,8 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Nonnull
     @Override
-    public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
-        if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack)) {
+    public ItemStack insertItem(@Nonnull ItemStack stack, Action action, AutomationType automationType) {
+        if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack, automationType)) {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
         }
@@ -133,8 +139,8 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Nonnull
     @Override
-    public ItemStack extractItem(int amount, Action action) {
-        if (current.isEmpty() || amount < 1 || !canExtract.test(current)) {
+    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
+        if (current.isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return ItemStack.EMPTY;
         }

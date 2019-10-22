@@ -4,6 +4,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,6 +34,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
     }
 
     private FuelInventorySlot(Predicate<@NonNull ItemStack> canExtract, @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
-        super(canExtract, alwaysTrue, validator, inventory, x, y);
+        //TODO: Re-evaluate this can extract
+        super((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), alwaysTrueBi, validator, inventory, x, y);
     }
 }

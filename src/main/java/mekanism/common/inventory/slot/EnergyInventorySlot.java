@@ -1,7 +1,9 @@
 package mekanism.common.inventory.slot;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.ChargeUtils;
@@ -10,10 +12,12 @@ import net.minecraft.item.ItemStack;
 public class EnergyInventorySlot extends BasicInventorySlot {
 
     //Cache the predicates as we only really need one instance of them
-    private static final Predicate<@NonNull ItemStack> dischargeExtractPredicate = stack -> ChargeUtils.canBeOutputted(stack, false);
-    private static final Predicate<@NonNull ItemStack> dischargeInsertPredicate = ChargeUtils::canBeDischarged;
-    private static final Predicate<@NonNull ItemStack> chargeExtractPredicate = stack -> ChargeUtils.canBeOutputted(stack, true);
-    private static final Predicate<@NonNull ItemStack> chargeInsertPredicate = ChargeUtils::canBeCharged;
+    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> dischargeExtractPredicate = (stack, automationType) ->
+          automationType == AutomationType.MANUAL || ChargeUtils.canBeOutputted(stack, false);
+    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> dischargeInsertPredicate = (stack, automationType) -> ChargeUtils.canBeDischarged(stack);
+    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> chargeExtractPredicate = (stack, automationType) ->
+          automationType == AutomationType.MANUAL || ChargeUtils.canBeOutputted(stack, true);
+    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> chargeInsertPredicate = (stack, automationType) -> ChargeUtils.canBeCharged(stack);
     private static final Predicate<@NonNull ItemStack> validPredicate = ChargeUtils::isEnergyItem;
 
     /**

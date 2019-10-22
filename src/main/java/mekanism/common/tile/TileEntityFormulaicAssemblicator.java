@@ -10,6 +10,7 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlock;
@@ -475,7 +476,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private ItemStack tryMoveToInput(ItemStack stack) {
         for (IInventorySlot stockSlot : inputSlots) {
-            stack = stockSlot.insertItem(stack, Action.EXECUTE);
+            stack = stockSlot.insertItem(stack, Action.EXECUTE, AutomationType.INTERNAL);
             if (stack.isEmpty()) {
                 //We fit it all, just break and return that we have no remainder
                 break;
@@ -490,7 +491,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             // We can then continue on to the next slot if we did not fit it all and try to insert it.
             // The logic is relatively simple due to only having one stack we are trying to insert so we don't have to worry
             // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
-            stack = outputSlot.insertItem(stack, action);
+            stack = outputSlot.insertItem(stack, action, AutomationType.INTERNAL);
             if (stack.isEmpty()) {
                 break;
             }

@@ -2,8 +2,8 @@ package mekanism.common.inventory.container.slot;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
-import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -31,7 +31,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     @Nonnull
     @Override
     public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
-        ItemStack remainder = slot.insertItem(stack, action);
+        ItemStack remainder = slot.insertItem(stack, action, AutomationType.MANUAL);
         if (action.execute() && stack.getCount() != remainder.getCount()) {
             onSlotChanged();
         }
@@ -75,21 +75,13 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public boolean canTakeStack(PlayerEntity player) {
-        //TODO: Switch to some variation of !slot.extractItem(1, Action.SIMULATE).isEmpty();
-        // See decrStackSize for more details
-        return slot.shrinkStack(1, Action.SIMULATE) == 1;
+        return !slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty();
     }
 
     @Nonnull
     @Override
     public ItemStack decrStackSize(int amount) {
-        //TODO: Can we use some variation of slot.extractItem(amount, Action.EXECUTE);
-        // Currently we have to use shrink as we have extraction disabled (FOR AUTOMATION), maybe we can instead make some extract method that allows bypassing the automation check
-        ItemStack stack = slot.getStack();
-        if (slot.shrinkStack(amount, Action.EXECUTE) != amount) {
-            //TODO: Print error that something went wrong??
-        }
-        return StackUtils.size(stack, amount);
+        return slot.extractItem(amount, Action.EXECUTE, AutomationType.MANUAL);
     }
 
     //TODO: Forge has a TODO for implementing isSameInventory.

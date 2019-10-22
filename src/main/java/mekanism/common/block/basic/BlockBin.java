@@ -8,6 +8,7 @@ import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.ITieredBlock;
@@ -138,7 +139,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                 ItemStack stack = player.getHeldItem(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
-                        ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE);
+                        ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
                         player.setHeldItem(hand, remain);
                         bin.addTicks = 5;
                     }
@@ -150,7 +151,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                         }
                         ItemStack stackToAdd = inv.get(i);
                         if (!stackToAdd.isEmpty()) {
-                            ItemStack remain = binSlot.insertItem(stackToAdd, Action.EXECUTE);
+                            ItemStack remain = binSlot.insertItem(stackToAdd, Action.EXECUTE, AutomationType.MANUAL);
                             inv.set(i, remain);
                             bin.addTicks = 5;
                         }

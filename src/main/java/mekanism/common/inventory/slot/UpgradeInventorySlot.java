@@ -15,7 +15,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     private final Set<Upgrade> supportedTypes;
 
     private UpgradeInventorySlot(IMekanismInventory inventory, Set<Upgrade> supportedTypes) {
-        super(alwaysFalse, stack -> {
+        super(manualOnly, (stack, automationType) -> {
             Item item = stack.getItem();
             if (item instanceof IUpgradeItem) {
                 Upgrade upgradeType = ((IUpgradeItem) item).getUpgradeType(stack);

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -55,8 +56,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * </p>
      * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
      *
-     * @param stack  {@link ItemStack} to insert. This must not be modified by the slot.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param stack          {@link ItemStack} to insert. This must not be modified by the slot.
+     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param automationType The method that this slot is being interacted from.
      *
      * @return The remaining {@link ItemStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ItemStack}). May be the same as the
      * input {@link ItemStack} if unchanged, otherwise a new {@link ItemStack}. The returned ItemStack can be safely modified after
@@ -65,7 +67,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * #onContentsChanged()}
      */
     @Nonnull
-    ItemStack insertItem(@Nonnull ItemStack stack, Action action);
+    ItemStack insertItem(@Nonnull ItemStack stack, Action action, AutomationType automationType);
 
     /**
      * Extracts an {@link ItemStack} from this {@link IInventorySlot}.
@@ -74,8 +76,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * ItemStack#getMaxStackSize()}.
      * </p>
      *
-     * @param amount Amount to extract (may be greater than the current stack's max limit)
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param amount         Amount to extract (may be greater than the current stack's max limit)
+     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param automationType The method that this slot is being interacted from.
      *
      * @return {@link ItemStack} extracted from the slot, must be empty if nothing can be extracted. The returned {@link ItemStack} can be safely modified after, so the
      * slot should return a new or copied stack.
@@ -84,7 +87,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * sure to call {@link #onContentsChanged()}
      */
     @Nonnull
-    ItemStack extractItem(int amount, Action action);
+    ItemStack extractItem(int amount, Action action, AutomationType automationType);
 
     /**
      * Retrieves the maximum stack size allowed to exist in this {@link IInventorySlot}. Unlike {@link IItemHandler#getSlotLimit(int)} this takes a stack that it can use

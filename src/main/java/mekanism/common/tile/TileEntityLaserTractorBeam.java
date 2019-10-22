@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
@@ -147,7 +148,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
         List<IInventorySlot> inventorySlots = getInventorySlots(null);
         for (ItemStack drop : drops) {
             for (IInventorySlot slot : inventorySlots) {
-                drop = slot.insertItem(drop, Action.EXECUTE);
+                drop = slot.insertItem(drop, Action.EXECUTE, AutomationType.INTERNAL);
                 if (drop.isEmpty()) {
                     //If we inserted it all, then break otherwise try to insert the remainder into another slot
                     break;

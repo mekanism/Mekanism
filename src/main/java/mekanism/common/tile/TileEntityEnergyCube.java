@@ -31,6 +31,7 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -61,7 +62,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
      */
     public TileEntityEnergyCube(IBlockProvider blockProvider) {
         super(blockProvider);
-        this.tier = ((BlockEnergyCube) blockProvider.getBlock()).getTier();
 
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 
@@ -87,6 +87,13 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
         }
 
         ejectorComponent = new TileComponentEjector(this);
+    }
+
+    @Override
+    protected void setSupportedTypes(Block block) {
+        super.setSupportedTypes(block);
+        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
+        this.tier = ((BlockEnergyCube) block).getTier();
     }
 
     @Nonnull

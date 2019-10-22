@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
@@ -24,21 +25,21 @@ public class BinInventorySlot extends BasicInventorySlot {
     private boolean isCreative;
 
     private BinInventorySlot(IMekanismInventory inventory, BinTier tier) {
-        super(tier.getStorage(), alwaysTrue, alwaysTrue, validator, inventory, 0, 0);
+        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, validator, inventory, 0, 0);
         isCreative = tier == BinTier.CREATIVE;
         obeyStackLimit = false;
     }
 
     @Nonnull
     @Override
-    public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
-        return super.insertItem(stack, action.combine(!isCreative));
+    public ItemStack insertItem(@Nonnull ItemStack stack, Action action, AutomationType automationType) {
+        return super.insertItem(stack, action.combine(!isCreative), automationType);
     }
 
     @Nonnull
     @Override
-    public ItemStack extractItem(int amount, Action action) {
-        return super.extractItem(amount, action.combine(!isCreative));
+    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
+        return super.extractItem(amount, action.combine(!isCreative), automationType);
     }
 
     /**

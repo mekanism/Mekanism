@@ -5,6 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import net.minecraft.item.ItemStack;
@@ -148,7 +149,7 @@ public class OutputHelper {
             // that we are using the fill the tank with
             output.setCount(output.getCount() * operations);
         }
-        inventorySlot.insertItem(output, Action.EXECUTE);
+        inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private static int operationsRoomFor(@Nonnull GasTank gasTank, @NonNull GasStack toOutput, int currentMax) {
@@ -199,8 +200,8 @@ public class OutputHelper {
         //Make a cope of the stack we are outputting with its maximum size
         output.setCount(output.getMaxStackSize());
 
-        ItemStack remainder = inventorySlot.insertItem(output, Action.SIMULATE);
-        int amountUsed = toOutput.getCount() - remainder.getCount();
+        ItemStack remainder = inventorySlot.insertItem(output, Action.SIMULATE, AutomationType.INTERNAL);
+        int amountUsed = output.getCount() - remainder.getCount();
 
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         return Math.min(amountUsed / toOutput.getCount(), currentMax);

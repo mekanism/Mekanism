@@ -9,6 +9,7 @@ import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -21,7 +22,13 @@ public class TileEntityInductionCell extends TileEntityMekanism implements IStri
 
     public TileEntityInductionCell(IBlockProvider blockProvider) {
         super(blockProvider);
-        this.tier = ((BlockInductionCell) blockProvider.getBlock()).getTier();
+    }
+
+    @Override
+    protected void setSupportedTypes(Block block) {
+        super.setSupportedTypes(block);
+        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
+        this.tier = ((BlockInductionCell) block).getTier();
     }
 
     public double electricityStored;

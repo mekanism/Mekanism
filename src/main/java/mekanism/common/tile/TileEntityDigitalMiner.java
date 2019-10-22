@@ -20,6 +20,7 @@ import mekanism.api.Range4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
@@ -465,7 +466,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         for (ItemStack stack : stacks) {
             for (IInventorySlot slot : mainSlots) {
                 //Try to insert the item across all slots until we inserted it all
-                stack = slot.insertItem(stack, Action.EXECUTE);
+                stack = slot.insertItem(stack, Action.EXECUTE, AutomationType.INTERNAL);
                 if (stack.isEmpty()) {
                     break;
                 }

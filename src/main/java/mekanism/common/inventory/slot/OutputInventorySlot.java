@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 
@@ -10,7 +11,7 @@ public class OutputInventorySlot extends BasicInventorySlot {
     }
 
     private OutputInventorySlot(IMekanismInventory inventory, int x, int y) {
-        super(alwaysTrue, alwaysFalse, alwaysTrue, inventory, x, y);
+        super(alwaysTrueBi, (stack, automationType) -> automationType == AutomationType.INTERNAL, alwaysTrue, inventory, x, y);
     }
 
     @Override

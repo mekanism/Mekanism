@@ -92,7 +92,8 @@ public interface IMekanismInventory extends ISidedItemHandler {
         if (inventorySlot == null) {
             return stack;
         }
-        return inventorySlot.insertItem(stack, action);
+        //TODO: Evaluate if we should make this always be external
+        return inventorySlot.insertItem(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 
     @Nonnull
@@ -102,7 +103,8 @@ public interface IMekanismInventory extends ISidedItemHandler {
         if (inventorySlot == null) {
             return ItemStack.EMPTY;
         }
-        return inventorySlot.extractItem(amount, action);
+        //TODO: Evaluate if we should make this always be external
+        return inventorySlot.extractItem(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 
     @Override
