@@ -2,6 +2,7 @@ package mekanism.api.chemical;
 
 import java.util.Set;
 import javax.annotation.Nonnull;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -14,7 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistryEntry<TYPE> implements IHasTranslationKey {
+public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistryEntry<TYPE> implements IHasTextComponent, IHasTranslationKey {
 
     private String translationKey;
     private ResourceLocation iconLocation;
@@ -40,7 +41,9 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
     @Nonnull
     protected abstract String getDefaultTranslationKey();
 
-    public ITextComponent getDisplayName() {
+    //TODO: Make sure we use getTextComponent where we can instead of the translation key (might already be done)
+    @Override
+    public ITextComponent getTextComponent() {
         return new TranslationTextComponent(getTranslationKey());
     }
 

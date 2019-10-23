@@ -1,13 +1,14 @@
 package mekanism.api.chemical;
 
 import javax.annotation.Nonnull;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
-public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTranslationKey {
+public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey {
 
     private boolean isEmpty;
     private int amount;
@@ -93,11 +94,13 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return "[" + getType() + ", " + amount + "]";
     }
 
-    public ITextComponent getDisplayName() {
+    @Override
+    public ITextComponent getTextComponent() {
         //Wrapper to get display name of the chemical type easier
-        return getType().getDisplayName();
+        return getType().getTextComponent();
     }
 
+    //TODO: Make sure we use getTextComponent where we can instead of the translation key (might already be done)
     @Override
     public String getTranslationKey() {
         //Wrapper to get translation key of the chemical type easier
