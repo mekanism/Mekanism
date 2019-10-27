@@ -38,7 +38,7 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         //From AbstractButton
         if (this.active && this.visible) {
             if (keyCode == 257 || keyCode == 32 || keyCode == 335) {

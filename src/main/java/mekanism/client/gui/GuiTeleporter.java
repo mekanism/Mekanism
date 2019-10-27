@@ -177,6 +177,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     @Override
     public void tick() {
         super.tick();
+        //TODO: Why do we call updateButtons every tick?
         updateButtons();
         frequencyField.tick();
     }
@@ -194,38 +195,33 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_) {
-        //TODO: Figure out decent namings for the other spots
-        if (frequencyField.isFocused() && keyCode != GLFW.GLFW_KEY_ESCAPE) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                frequencyField.isFocused();
-                setFrequency(frequencyField.getText());
-                frequencyField.setText("");
-                //TODO: Is this updateButtons needed
-                updateButtons();
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (frequencyField.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                frequencyField.setFocused2(false);
                 return true;
             }
-            return frequencyField.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                setFrequency(frequencyField.getText());
+                frequencyField.setText("");
+                return true;
+            }
+            return frequencyField.keyPressed(keyCode, scanCode, modifiers);
         }
-        return super.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        //TODO: Move some of this logic to keyPressed
-        boolean returnValue = false;
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            if (frequencyField.isFocused()) {
-                frequencyField.setFocused2(false);
-                returnValue = true;
-            } else {
-                returnValue = super.charTyped(c, keyCode);
+        if (frequencyField.isFocused()) {
+            if (Character.isDigit(c) || Character.isLetter(c) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
+                //Only allow a subset of characters to be entered into the frequency text box
+                return frequencyField.charTyped(c, keyCode);
             }
-        } else if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, keyCode) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
-            returnValue = frequencyField.charTyped(c, keyCode);
+            return false;
         }
-        updateButtons();
-        return returnValue;
+        return super.charTyped(c, keyCode);
     }
 
     @Override
