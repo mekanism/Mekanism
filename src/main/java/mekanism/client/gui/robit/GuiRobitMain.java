@@ -91,6 +91,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     public boolean charTyped(char c, int i) {
+        //TODO: FIXME
         if (!nameChangeField.visible) {
             return super.charTyped(c, i);
         }

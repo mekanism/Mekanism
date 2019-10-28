@@ -29,7 +29,8 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
     protected abstract TextFieldWidget createTextField();
 
     protected boolean wasTextboxKey(char c, int i) {
-        return Character.isLetter(c) || Character.isDigit(c) || isTextboxKey(c, i);
+        //TODO: Allow tag filters to accept `:`
+        return Character.isLetter(c) || Character.isDigit(c);
     }
 
     @Override
@@ -47,17 +48,31 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if (!text.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            return super.charTyped(c, i);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (text.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                text.setFocused2(false);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                setText();
+                return true;
+            }
+            return text.keyPressed(keyCode, scanCode, modifiers);
         }
-        if (text.isFocused() && i == GLFW.GLFW_KEY_ENTER) {
-            setText();
-            return true;
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        if (text.isFocused()) {
+            if (wasTextboxKey(c, keyCode)) {
+                //Only allow a subset of characters to be entered into the frequency text box
+                return text.charTyped(c, keyCode);
+            }
+            return false;
         }
-        if (wasTextboxKey(c, i)) {
-            return text.charTyped(c, i);
-        }
-        return false;
+        return super.charTyped(c, keyCode);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
@@ -189,29 +190,51 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if ((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
-            return super.charTyped(c, i);
-        }
-        if (i == GLFW.GLFW_KEY_ENTER) {
-            if (radiusField.isFocused()) {
-                setRadius();
-                return true;
-            } else if (minField.isFocused()) {
-                setMinY();
-                return true;
-            } else if (maxField.isFocused()) {
-                setMaxY();
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        TextFieldWidget focusedField = getFocusedField();
+        if (focusedField != null) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                focusedField.setFocused2(false);
                 return true;
             }
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                if (radiusField.isFocused()) {
+                    setRadius();
+                } else if (minField.isFocused()) {
+                    setMinY();
+                } else if (maxField.isFocused()) {
+                    setMaxY();
+                }
+                return true;
+            }
+            return focusedField.keyPressed(keyCode, scanCode, modifiers);
         }
-        if (Character.isDigit(c) || isTextboxKey(c, i)) {
-            radiusField.charTyped(c, i);
-            minField.charTyped(c, i);
-            maxField.charTyped(c, i);
-            return true;
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        TextFieldWidget focusedField = getFocusedField();
+        if (focusedField != null) {
+            if (Character.isDigit(c)) {
+                return focusedField.charTyped(c, keyCode);
+            }
+            return false;
         }
-        return false;
+        return super.charTyped(c, keyCode);
+    }
+
+    @Nullable
+    private TextFieldWidget getFocusedField() {
+        if (radiusField.isFocused()) {
+            return radiusField;
+        } else if (minField.isFocused()) {
+            return minField;
+        } else if (maxField.isFocused()) {
+            return maxField;
+        }
+        return null;
     }
 
     private void setRadius() {

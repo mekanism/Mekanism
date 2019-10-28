@@ -156,19 +156,33 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        boolean returnValue = false;
-        if (!trustedField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            returnValue = super.charTyped(c, i);
-        } else if (i == GLFW.GLFW_KEY_ENTER && trustedField.isFocused()) {
-            addTrusted(trustedField.getText());
-            trustedField.setText("");
-            returnValue = true;
-        } else if (SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i)) {
-            returnValue = trustedField.charTyped(c, i);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (trustedField.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                trustedField.setFocused2(false);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                addTrusted(trustedField.getText());
+                trustedField.setText("");
+                return true;
+            }
+            return trustedField.keyPressed(keyCode, scanCode, modifiers);
         }
-        updateButtons();
-        return returnValue;
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        if (trustedField.isFocused()) {
+            if (SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c)) {
+                //Only allow a subset of characters to be entered into the trustedField text box
+                return trustedField.charTyped(c, keyCode);
+            }
+            return false;
+        }
+        return super.charTyped(c, keyCode);
     }
 
     @Override

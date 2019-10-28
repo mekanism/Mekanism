@@ -1,5 +1,6 @@
 package mekanism.client.gui.filter;
 
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.ColorButton;
@@ -108,14 +109,39 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if ((!minField.isFocused() && !maxField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
-            return super.charTyped(c, i);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        TextFieldWidget focusedField = getFocusedField();
+        if (focusedField != null) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                focusedField.setFocused2(false);
+                return true;
+            }
+            return focusedField.keyPressed(keyCode, scanCode, modifiers);
         }
-        if (Character.isDigit(c) || isTextboxKey(c, i)) {
-            return minField.charTyped(c, i) || maxField.charTyped(c, i);
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        TextFieldWidget focusedField = getFocusedField();
+        if (focusedField != null) {
+            if (Character.isDigit(c)) {
+                return focusedField.charTyped(c, keyCode);
+            }
+            return false;
         }
-        return false;
+        return super.charTyped(c, keyCode);
+    }
+
+    @Nullable
+    private TextFieldWidget getFocusedField() {
+        if (minField.isFocused()) {
+            return minField;
+        } else if (maxField.isFocused()) {
+            return maxField;
+        }
+        return null;
     }
 
     @Override

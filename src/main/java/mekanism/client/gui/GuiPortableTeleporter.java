@@ -218,19 +218,33 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        boolean returnValue = false;
-        if (!frequencyField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            returnValue = super.charTyped(c, i);
-        } else if (i == GLFW.GLFW_KEY_ENTER && frequencyField.isFocused()) {
-            setFrequency(frequencyField.getText());
-            frequencyField.setText("");
-            returnValue = true;
-        } else if (Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
-            returnValue = frequencyField.charTyped(c, i);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (frequencyField.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                frequencyField.setFocused2(false);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                setFrequency(frequencyField.getText());
+                frequencyField.setText("");
+                return true;
+            }
+            return frequencyField.keyPressed(keyCode, scanCode, modifiers);
         }
-        updateButtons();
-        return returnValue;
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        if (frequencyField.isFocused()) {
+            if (Character.isDigit(c) || Character.isLetter(c) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
+                //Only allow a subset of characters to be entered into the frequency text box
+                return frequencyField.charTyped(c, keyCode);
+            }
+            return false;
+        }
+        return super.charTyped(c, keyCode);
     }
 
     @Override

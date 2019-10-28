@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
@@ -107,36 +108,52 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if (!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
-            return super.charTyped(c, i);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        TextFieldWidget focusedField = getFocusedField();
+        if (focusedField != null) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                focusedField.setFocused2(false);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                if (minField.isFocused()) {
+                    setMinThreshold();
+                } else if (maxField.isFocused()) {
+                    setMaxThreshold();
+                } else if (timerField.isFocused()) {
+                    setTime();
+                }
+                return true;
+            }
+            return focusedField.keyPressed(keyCode, scanCode, modifiers);
         }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
 
-        if (i == GLFW.GLFW_KEY_ENTER) {
-            if (minField.isFocused()) {
-                setMinThreshold();
-                return true;
-            } else if (maxField.isFocused()) {
-                setMaxThreshold();
-                return true;
-            } else if (timerField.isFocused()) {
-                setTime();
-                return true;
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        TextFieldWidget focusedField = getFocusedField();
+        if (focusedField != null) {
+            if (Character.isDigit(c) || ((c == '.' || c == 'E') && focusedField != timerField)) {
+                //Only allow a subset of characters to be entered
+                return focusedField.charTyped(c, keyCode);
             }
+            return false;
         }
+        return super.charTyped(c, keyCode);
+    }
 
-        if (Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i)) {
-            if (minField.charTyped(c, i)) {
-                return true;
-            }
-            if (maxField.charTyped(c, i)) {
-                return true;
-            }
-            if (c != '.' && c != 'E') {
-                return timerField.charTyped(c, i);
-            }
+    @Nullable
+    private TextFieldWidget getFocusedField() {
+        if (minField.isFocused()) {
+            return minField;
+        } else if (maxField.isFocused()) {
+            return maxField;
+        } else if (timerField.isFocused()) {
+            return timerField;
         }
-        return false;
+        return null;
     }
 
     private void setMinThreshold() {

@@ -18,13 +18,11 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -52,6 +50,11 @@ public class AdditionsClientRegistration {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         new AdditionsKeyHandler();
+
+        //Register entity rendering handlers
+        RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, RenderObsidianTNTPrimed::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, RenderBalloon::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, SkeletonRenderer::new);
     }
 
     @SubscribeEvent
@@ -138,13 +141,5 @@ public class AdditionsClientRegistration {
               AdditionsItem.PURPLE_BALLOON, AdditionsItem.CYAN_BALLOON, AdditionsItem.LIGHT_GRAY_BALLOON, AdditionsItem.GRAY_BALLOON, AdditionsItem.PINK_BALLOON,
               AdditionsItem.LIME_BALLOON, AdditionsItem.YELLOW_BALLOON, AdditionsItem.LIGHT_BLUE_BALLOON, AdditionsItem.MAGENTA_BALLOON, AdditionsItem.ORANGE_BALLOON,
               AdditionsItem.WHITE_BALLOON);
-    }
-
-    @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        //Register entity rendering handlers
-        RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, RenderObsidianTNTPrimed::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, RenderBalloon::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, SkeletonRenderer::new);
     }
 }

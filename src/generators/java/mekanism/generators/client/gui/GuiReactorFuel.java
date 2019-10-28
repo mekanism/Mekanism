@@ -83,18 +83,32 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if (!injectionRateField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            return super.charTyped(c, i);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (injectionRateField.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                injectionRateField.setFocused2(false);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                setInjection();
+                return true;
+            }
+            return injectionRateField.keyPressed(keyCode, scanCode, modifiers);
         }
-        if (i == GLFW.GLFW_KEY_ENTER && injectionRateField.isFocused()) {
-            setInjection();
-            return true;
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        if (injectionRateField.isFocused()) {
+            if (Character.isDigit(c)) {
+                //Only allow a subset of characters to be entered into the frequency text box
+                return injectionRateField.charTyped(c, keyCode);
+            }
+            return false;
         }
-        if (Character.isDigit(c) || isTextboxKey(c, i)) {
-            return injectionRateField.charTyped(c, i);
-        }
-        return false;
+        return super.charTyped(c, keyCode);
     }
 
     private void setInjection() {

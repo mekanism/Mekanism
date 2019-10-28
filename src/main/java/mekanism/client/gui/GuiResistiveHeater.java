@@ -98,17 +98,31 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if (!energyUsageField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
-            return super.charTyped(c, i);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (energyUsageField.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                //Manually handle hitting escape making the field lose focus
+                energyUsageField.setFocused2(false);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                setEnergyUsage();
+                return true;
+            }
+            return energyUsageField.keyPressed(keyCode, scanCode, modifiers);
         }
-        if (energyUsageField.isFocused() && i == GLFW.GLFW_KEY_ENTER) {
-            setEnergyUsage();
-            return true;
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        if (energyUsageField.isFocused()) {
+            if (Character.isDigit(c)) {
+                //Only allow a subset of characters to be entered into the frequency text box
+                return energyUsageField.charTyped(c, keyCode);
+            }
+            return false;
         }
-        if (Character.isDigit(c) || isTextboxKey(c, i)) {
-            return energyUsageField.charTyped(c, i);
-        }
-        return false;
+        return super.charTyped(c, keyCode);
     }
 }
