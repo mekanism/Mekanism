@@ -88,6 +88,13 @@ public class BlockObsidianTNT extends Block {
         return false;
     }
 
+    public void onEntityWalk(World world, BlockPos pos, Entity entity) {
+    	if (!world.isRemote) {
+    		explode(world, pos);
+    		world.setBlockToAir(pos);
+    	}
+    }
+
     @Override
     public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (entity instanceof EntityArrow && !world.isRemote) {
