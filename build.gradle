@@ -161,6 +161,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file("run")
+            properties 'fml.earlyprogresswindow': 'false'
 
             mods {
                 mekanism {
@@ -199,6 +200,7 @@ minecraft {
 
         data {
             workingDirectory project.file("run")
+            properties 'fml.earlyprogresswindow': 'false'
 
             mods {
                 mekanism {
