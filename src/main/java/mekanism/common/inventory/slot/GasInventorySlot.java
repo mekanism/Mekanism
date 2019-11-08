@@ -196,4 +196,27 @@ public class GasInventorySlot extends BasicInventorySlot {
     }
 
     //TODO: Make it so that the gas tank drains/fills
+
+    //TODO: Rename to the proper method either drain or fill
+    /*public void drawGas() {
+        if (!current.isEmpty() && !gasTank.isEmpty()) {
+            //TODO: Capability for gas item
+            if (current.getItem() instanceof IGasItem) {
+                IGasItem gasItem = (IGasItem) current.getItem();
+                GasStack storedGas = gasTank.getStack();
+                if (gasItem.canReceiveGas(current, storedGas.getType())) {
+                    int drainedAmount = gasItem.addGas(current, storedGas.copy());
+                    gasTank.drain(drainedAmount, Action.EXECUTE);
+                    onContentsChanged();
+                }
+            }
+        }
+    }
+
+    public void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, Direction facing) {
+        if (!tank.isEmpty()) {
+            GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), gasOutput));
+            tank.drain(GasUtils.emit(toSend, tile, EnumSet.of(facing)), Action.EXECUTE);
+        }
+    }*/
 }

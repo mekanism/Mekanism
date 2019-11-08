@@ -59,6 +59,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
 
+//TODO: Use HoeItem#HOE_LOOKUP for figuring out what to do with different block types?
+// And ShovelItem#field_195955_e for figuring out the grass -> grass path
 public class ItemAtomicDisassembler extends ItemEnergized {
 
     public ItemAtomicDisassembler() {
