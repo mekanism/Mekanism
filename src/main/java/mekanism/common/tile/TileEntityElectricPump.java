@@ -141,7 +141,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             }
 
             if (!fluidTank.getFluid().isEmpty()) {
-                TileEntity tileEntity = Coord4D.get(this).offset(Direction.UP).getTileEntity(world);
+                TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos.up());
                 CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
                     fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), FluidAction.EXECUTE);
@@ -169,7 +169,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
         for (Direction orientation : EnumUtils.DIRECTIONS) {
             Coord4D wrapper = Coord4D.get(this).offset(orientation);
-            FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
+            FluidStack fluid = MekanismUtils.getFluid(world, wrapper.getPos(), hasFilter());
             if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
                 if (take) {
                     activeType = fluid.getFluid();
@@ -186,7 +186,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         //Finally, go over the recurring list of nodes and see if there is a fluid block available to suck - if not, will iterate around the recurring block, attempt to suck,
         //and then add the adjacent block to the recurring list
         for (Coord4D wrapper : tempPumpList) {
-            FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
+            FluidStack fluid = MekanismUtils.getFluid(world, wrapper.getPos(), hasFilter());
             if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
                 if (take) {
                     activeType = fluid.getFluid();
@@ -202,7 +202,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             for (Direction orientation : EnumUtils.DIRECTIONS) {
                 Coord4D side = wrapper.offset(orientation);
                 if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.general.maxPumpRange.get()) {
-                    fluid = MekanismUtils.getFluid(world, side, hasFilter());
+                    fluid = MekanismUtils.getFluid(world, side.getPos(), hasFilter());
                     if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
                         if (take) {
                             activeType = fluid.getFluid();

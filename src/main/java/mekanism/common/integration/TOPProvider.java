@@ -13,6 +13,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,9 +39,7 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
         if (mode != ProbeMode.EXTENDED) {
             return;
         }
-
-        final TileEntity tile = world.getTileEntity(data.getPos());
-
+        TileEntity tile = MekanismUtils.getTileEntity(world, data.getPos());
         if (tile != null) {
             CapabilityUtils.getCapabilityHelper(tile, Capabilities.GAS_HANDLER_CAPABILITY, null).ifPresent(handler -> {
                 GasTankInfo[] tanks = handler.getTankInfo();

@@ -16,7 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -48,9 +47,9 @@ public class PacketGeneratorsGuiButtonPress {
         context.get().enqueueWork(() -> {
             if (!player.world.isRemote) {
                 //If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
-                TileEntity tile = MekanismUtils.getTileEntity(player.world, message.tilePosition);
-                if (tile instanceof TileEntityMekanism) {
-                    INamedContainerProvider provider = message.tileButton.getProvider((TileEntityMekanism) tile, message.extra);
+                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                if (tile != null) {
+                    INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
                     if (provider != null) {
                         //Ensure valid data
                         NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {

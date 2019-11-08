@@ -7,6 +7,7 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -14,7 +15,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -66,7 +66,7 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
             if (world == null) {
                 return false;
             }
-            return world.isAreaLoaded(tile.getPos(), 0);
+            return world.isBlockLoaded(tile.getPos());
         }
         return false;
     }
@@ -96,13 +96,6 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
         if (buf == null) {
             return null;
         }
-        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
-            BlockPos pos = buf.readBlockPos();
-            TileEntity tile = Minecraft.getInstance().world.getTileEntity(pos);
-            if (type.isInstance(tile)) {
-                return (TILE) tile;
-            }
-            return null;
-        });
+        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> MekanismUtils.getTileEntity(type, Minecraft.getInstance().world, buf.readBlockPos()));
     }
 }

@@ -209,7 +209,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 break;
                             }
 
-                            if (!coord.exists(world)) {
+                            BlockPos coordPos = coord.getPos();
+                            if (!world.isBlockLoaded(coordPos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
@@ -218,11 +219,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 next = index + 1;
                                 continue;
                             }
-
-                            BlockState state = coord.getBlockState(world);
-                            Block block = state.getBlock();
-
-                            if (coord.isAirBlock(world)) {
+                            if (world.isAirBlock(coordPos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
@@ -233,7 +230,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                             }
 
                             boolean hasFilter = false;
-                            ItemStack is = new ItemStack(block);
+                            BlockState state = world.getBlockState(coordPos);
+                            ItemStack is = new ItemStack(state.getBlock());
                             for (MinerFilter filter : filters) {
                                 if (filter.canFilter(is)) {
                                     hasFilter = true;
@@ -259,7 +257,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 if (set.cardinality() == 0) {
                                     it.remove();
                                 }
-                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
+                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coordPos, Block.getStateId(state));
                                 missingStack = ItemStack.EMPTY;
                             }
                             break;
@@ -337,11 +335,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         BlockPos pos = obj.getPos();
         PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, this.pos).get());
 
-        //TODO: Verify shulker checks not needed
-
         if (!stack.isEmpty()) {
             world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer));
-            BlockState s = obj.getBlockState(world);
+            BlockState s = world.getBlockState(pos);
             if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).isValidPosition(s, world, pos)) {
                 //TODO Block.spawnDrops fortune 1?? Also make sure to drop the item
                 //s.getBlock().dropBlockAsItem(world, pos, s, 1);
@@ -355,13 +351,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 return true;
             }
             missingStack = filter.replaceStack;
-            //TODO: Verify shulker checks not needed
             return false;
         }
     }
 
     private boolean canMine(Coord4D coord) {
-        BlockState state = coord.getBlockState(world);
+        BlockState state = world.getBlockState(coord.getPos());
         PlayerEntity dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, pos).get());
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
@@ -449,16 +444,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public TileEntity getPullInv() {
-        return Coord4D.get(this).translate(0, 2, 0).getTileEntity(getWorld());
+        return MekanismUtils.getTileEntity(getWorld(), getPos().up(2));
     }
 
     public TileEntity getEjectInv() {
-        final Direction side = getOppositeDirection();
-        final BlockPos pos = getPos().up().offset(side, 2);
-        if (world.isAreaLoaded(pos, 0)) {
-            return world.getTileEntity(pos);
-        }
-        return null;
+        return MekanismUtils.getTileEntity(world, getPos().up().offset(getOppositeDirection(), 2));
     }
 
     public void add(List<ItemStack> stacks) {
@@ -782,11 +772,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public TileEntity getEjectTile() {
-        BlockPos pos = getPos().up().offset(getOppositeDirection());
-        if (world != null && world.isAreaLoaded(pos, 0)) {
-            return world.getTileEntity(pos);
-        }
-        return null;
+        return MekanismUtils.getTileEntity(world, getPos().up().offset(getOppositeDirection()));
     }
 
     @Override

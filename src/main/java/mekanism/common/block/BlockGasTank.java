@@ -20,6 +20,7 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,7 +29,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -71,9 +71,9 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -81,8 +81,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
@@ -90,7 +89,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }

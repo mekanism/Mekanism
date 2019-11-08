@@ -7,6 +7,7 @@ import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +25,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (master != null) {
-            TileEntity masterTile = master.getTileEntity(getWorld());
+            TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
             if (masterTile instanceof IMultiblock) {
                 return ((IMultiblock<?>) masterTile).onActivate(player, hand, stack);
             }
@@ -36,7 +37,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
     @Override
     public void doUpdate() {
         if (master != null) {
-            TileEntity masterTile = master.getTileEntity(getWorld());
+            TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
             if (masterTile instanceof IMultiblock) {
                 ((IMultiblock<?>) masterTile).doUpdate();
             } else {
@@ -73,7 +74,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
             iterated.add(pos);
             for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D coord = pos.offset(side);
-                TileEntity tile = coord.getTileEntity(getWorld());
+                TileEntity tile = MekanismUtils.getTileEntity(getWorld(), coord.getPos());
                 if (!iterated.contains(coord)) {
                     if (tile instanceof IMultiblock) {
                         found = (IMultiblock<?>) tile;

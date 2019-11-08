@@ -13,6 +13,7 @@ import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
@@ -246,7 +247,7 @@ public class SoundHandler {
             }
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity te = minecraft.world.getTileEntity(new BlockPos(original.getX(), original.getY(), original.getZ()));
+            TileEntity te = MekanismUtils.getTileEntity(minecraft.world, new BlockPos(original.getX(), original.getY(), original.getZ()));
             if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
                 return 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());

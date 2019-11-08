@@ -10,6 +10,7 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType()).getTileEntity(pointer.getWorld());
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
         return tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider;
     }
 
@@ -73,7 +74,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     @Override
     protected boolean canForm(SynchronizedMatrixData structure) {
         for (Coord4D coord : innerNodes) {
-            TileEntity tile = coord.getTileEntity(pointer.getWorld());
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
             if (tile instanceof TileEntityInductionCell) {
                 structure.addCell(coord, (TileEntityInductionCell) tile);
             } else if (tile instanceof TileEntityInductionProvider) {

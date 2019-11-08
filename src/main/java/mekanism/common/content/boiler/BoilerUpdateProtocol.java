@@ -14,6 +14,7 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySuperheatingElement;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +38,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType()).getTileEntity(pointer.getWorld());
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
         return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
     }
 
@@ -49,7 +50,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         Set<Coord4D> dispersers = new HashSet<>();
         Set<Coord4D> elements = new HashSet<>();
         for (Coord4D coord : innerNodes) {
-            TileEntity tile = coord.getTileEntity(pointer.getWorld());
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
             if (tile instanceof TileEntityPressureDisperser) {
                 dispersers.add(coord);
             } else if (tile instanceof TileEntitySuperheatingElement) {
@@ -70,7 +71,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         for (int x = 1; x < structure.volLength - 1; x++) {
             for (int z = 1; z < structure.volWidth - 1; z++) {
                 Coord4D coord4D = pos.translate(x, 0, z);
-                TileEntity tile = coord4D.getTileEntity(pointer.getWorld());
+                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord4D.getPos());
                 if (!(tile instanceof TileEntityPressureDisperser)) {
                     return false;
                 }
@@ -87,7 +88,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
             structure.superheatingElements = new NodeCounter(new NodeChecker() {
                 @Override
                 public boolean isValid(Coord4D coord) {
-                    return coord.getTileEntity(pointer.getWorld()) instanceof TileEntitySuperheatingElement;
+                    return MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord.getPos()) != null;
                 }
             }).calculate(elements.iterator().next());
         }
@@ -123,10 +124,14 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         structure.waterVolume = new NodeCounter(new NodeChecker() {
             @Override
             public final boolean isValid(Coord4D coord) {
-                return coord.y >= renderLocation.y - 1 && coord.y < initDisperser.y &&
-                       coord.x >= renderLocation.x && coord.x < renderLocation.x + volLength &&
-                       coord.z >= renderLocation.z && coord.z < renderLocation.z + volWidth &&
-                       (coord.isAirBlock(pointer.getWorld()) || isViableNode(coord.getPos()));
+                BlockPos coordPos = coord.getPos();
+                int x = coordPos.getX();
+                int y = coordPos.getY();
+                int z = coordPos.getZ();
+                return y >= renderLocation.y - 1 && y < initDisperser.y &&
+                       x >= renderLocation.x && x < renderLocation.x + volLength &&
+                       z >= renderLocation.z && z < renderLocation.z + volWidth &&
+                       (pointer.getWorld().isAirBlock(coordPos) || isViableNode(coordPos));
             }
         }).calculate(initAir);
 
@@ -187,7 +192,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     @Override
     protected void onStructureCreated(SynchronizedBoilerData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
-            if (obj.getTileEntity(pointer.getWorld()) instanceof TileEntityBoilerValve) {
+            if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityBoilerValve) {
                 ValveData data = new ValveData();
                 data.location = obj;
                 data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);

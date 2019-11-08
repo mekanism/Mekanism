@@ -25,6 +25,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -80,7 +81,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
             ItemStack stack = player.getHeldItem(hand);
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
 
             if (getState(stack).isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(), "Configurating state requires transmission type");

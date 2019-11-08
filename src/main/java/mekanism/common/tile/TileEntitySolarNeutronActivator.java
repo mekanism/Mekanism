@@ -216,7 +216,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), Coord4D.get(this).offset(Direction.UP).getPos(), Coord4D.get(this));
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), Coord4D.get(this));
     }
 
     @Override

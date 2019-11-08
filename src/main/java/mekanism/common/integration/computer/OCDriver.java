@@ -26,7 +26,7 @@ public class OCDriver extends DriverSidedTileEntity {
 
     @Override
     public ManagedEnvironment createEnvironment(World world, BlockPos pos, Direction side) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = MekanismUtils.getTileEntity(world, pos);
         if (tile instanceof IComputerIntegration) {
             return new OCManagedEnvironment((IComputerIntegration) tile);
         }

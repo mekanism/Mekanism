@@ -4,20 +4,19 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.MekanismGases;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -36,12 +35,12 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
     public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
-            Coord4D coord = tileEntity.structure.complex;
+            BlockPos complexPos = tileEntity.structure.complex.getPos();
 
             while (true) {
-                coord = coord.offset(Direction.DOWN);
-                TileEntity tile = coord.getTileEntity(tileEntity.getWorld());
-                if (!(tile instanceof TileEntityTurbineRotor)) {
+                complexPos = complexPos.down();
+                TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, tileEntity.getWorld(), complexPos);
+                if (tile == null) {
                     break;
                 }
                 TileEntityRendererDispatcher.instance.render(tile, partialTick, destroyStage);

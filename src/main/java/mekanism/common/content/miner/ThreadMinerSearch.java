@@ -62,7 +62,7 @@ public class ThreadMinerSearch extends Thread {
             }
 
             BlockPos testPos = new BlockPos(x, y, z);
-            if (!world.isAreaLoaded(testPos, 0) || world.getTileEntity(testPos) instanceof TileEntityBoundingBlock) {
+            if (!world.isBlockLoaded(testPos) || MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, testPos) != null) {
                 //If it is not loaded or it is a bounding block skip it
                 continue;
             }

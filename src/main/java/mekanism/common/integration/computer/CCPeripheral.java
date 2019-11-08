@@ -66,7 +66,7 @@ public class CCPeripheral implements IPeripheral {
 
         @Override
         public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull Direction side) {
-            TileEntity te = world.getTileEntity(pos);
+            TileEntity te = MekanismUtils.getTileEntity(world, pos);
             if (te instanceof IComputerIntegration) {
                 return new CCPeripheral((IComputerIntegration) te);
             }

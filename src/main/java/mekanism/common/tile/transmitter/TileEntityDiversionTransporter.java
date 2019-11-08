@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.data.TransmitterModelData;
@@ -121,7 +120,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
             return false;
         }
         int mode = modes[side.ordinal()];
-        boolean redstone = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+        boolean redstone = MekanismUtils.isGettingPowered(getWorld(), getPos());
         return (mode != 2 || !redstone) && (mode != 1 || redstone);
     }
 

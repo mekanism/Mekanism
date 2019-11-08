@@ -17,7 +17,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -41,11 +40,6 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
     }
 
     protected static TileEntitySidedPipe getTileEntitySidedPipe(IBlockReader world, BlockPos pos) {
-        TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-        TileEntitySidedPipe sidedPipe = null;
-        if (tileEntity instanceof TileEntitySidedPipe) {
-            sidedPipe = (TileEntitySidedPipe) tileEntity;
-        }
         //TODO: Multipart
         /*else if (Mekanism.hooks.MCMPLoaded) {
             TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
@@ -53,7 +47,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
                 sidedPipe = (TileEntitySidedPipe) childEntity;
             }
         }*/
-        return sidedPipe;
+        return MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
     }
 
     @Override

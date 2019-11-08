@@ -12,6 +12,7 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -41,7 +42,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity acceptor = coord.getTileEntity(getWorld());
+            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), coord.getPos());
             if (acceptor == null) {
                 continue;
             }

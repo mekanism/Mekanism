@@ -9,6 +9,7 @@ import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityPressureDisperser;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.turbine.BlockTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
@@ -41,7 +42,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-        TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
         return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex || tile instanceof TileEntityPressureDisperser ||
                tile instanceof TileEntityElectromagneticCoil || tile instanceof TileEntitySaturatingCondenser;
     }
@@ -67,7 +68,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
         //Scan for complex
         for (Coord4D coord : innerNodes) {
-            TileEntity tile = coord.getTileEntity(pointer.getWorld());
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
             if (tile instanceof TileEntityRotationalComplex) {
                 if (complex != null || coord.x != centerX || coord.z != centerZ) {
                     return false;
@@ -97,8 +98,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         for (int x = complex.x - innerRadius; x <= complex.x + innerRadius; x++) {
             for (int z = complex.z - innerRadius; z <= complex.z + innerRadius; z++) {
                 if (x != centerX || z != centerZ) {
-                    TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, complex.y, z));
-                    if (!(tile instanceof TileEntityPressureDisperser)) {
+                    TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getWorld(), new BlockPos(x, complex.y, z));
+                    if (tile == null) {
                         return false;
                     }
                     dispersers.remove(new Coord4D(x, complex.y, z, pointer.getWorld().getDimension().getType()));
@@ -124,17 +125,15 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
         // Starting from the complex, walk down and count the number of rotors/blades in the structure
         for (int y = complex.y - 1; y > structure.minLocation.y; y--) {
-            TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(centerX, y, centerZ));
-            if (tile instanceof TileEntityTurbineRotor) {
-                TileEntityTurbineRotor rotor = (TileEntityTurbineRotor) tile;
-                turbineHeight++;
-                blades += rotor.getHousedBlades();
-                structure.internalLocations.add(Coord4D.get(tile));
-                turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().getDimension().getType()));
-            } else {
+            TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, pointer.getWorld(), new BlockPos(centerX, y, centerZ));
+            if (rotor == null) {
                 // Not a contiguous set of rotors
                 return false;
             }
+            turbineHeight++;
+            blades += rotor.getHousedBlades();
+            structure.internalLocations.add(Coord4D.get(rotor));
+            turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().getDimension().getType()));
         }
 
         // If there are any rotors left over, they are in the wrong place in the structure
@@ -146,11 +145,11 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         structure.blades = blades;
 
         Coord4D startCoord = complex.offset(Direction.UP);
-        if (startCoord.getTileEntity(pointer.getWorld()) instanceof TileEntityElectromagneticCoil) {
+        if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), startCoord.getPos()) != null) {
             structure.coils = new NodeCounter(new NodeChecker() {
                 @Override
                 public boolean isValid(Coord4D coord) {
-                    return coord.getTileEntity(pointer.getWorld()) instanceof TileEntityElectromagneticCoil;
+                    return MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord.getPos()) != null;
                 }
             }).calculate(startCoord);
         }
@@ -160,7 +159,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         }
 
         for (Coord4D coord : structure.locations) {
-            if (coord.getTileEntity(pointer.getWorld()) instanceof TileEntityTurbineVent) {
+            if (MekanismUtils.getTileEntity(TileEntityTurbineVent.class, pointer.getWorld(), coord.getPos()) != null) {
                 if (coord.y < complex.y) {
                     return false;
                 }

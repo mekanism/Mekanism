@@ -2,6 +2,7 @@ package mekanism.api;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -51,6 +52,12 @@ public class Chunk3D {
         x = coord.x >> 4;
         z = coord.z >> 4;
         dimension = coord.dimension;
+    }
+
+    public Chunk3D(GlobalPos pos) {
+        x = pos.getPos().getX() >> 4;
+        z = pos.getPos().getZ() >> 4;
+        dimension = pos.getDimension();
     }
 
     /**

@@ -194,13 +194,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (canConnectMutual(side)) {
-                Coord4D coord = new Coord4D(getPos(), getWorld()).offset(side);
-                if (!isRemote() && !coord.exists(getWorld())) {
+                BlockPos offset = getPos().offset(side);
+                if (!isRemote() && !getWorld().isBlockLoaded(offset)) {
                     forceUpdate = true;
                     continue;
                 }
 
-                TileEntity tileEntity = coord.getTileEntity(getWorld());
+                TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), offset);
                 if (isValidAcceptor(tileEntity, side)) {
                     if (cachedAcceptors[side.ordinal()] != tileEntity) {
                         cachedAcceptors[side.ordinal()] = tileEntity;
@@ -263,7 +263,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone()) {
             if (!redstoneSet) {
                 if (redstoneReactive) {
-                    redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+                    redstonePowered = MekanismUtils.isGettingPowered(getWorld(), getPos());
                 } else {
                     redstonePowered = false;
                 }
@@ -345,7 +345,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone()) {
             boolean previouslyPowered = redstonePowered;
             if (redstoneReactive) {
-                redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+                redstonePowered = MekanismUtils.isGettingPowered(getWorld(), getPos());
             } else {
                 redstonePowered = false;
             }
@@ -418,9 +418,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         //This fixes pipes not reconnecting cross chunk
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-                if (tileEntity instanceof TileEntitySidedPipe) {
-                    ((TileEntitySidedPipe) tileEntity).refreshConnections();
+                TileEntitySidedPipe tileEntity = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, getWorld(), getPos().offset(side));
+                if (tileEntity != null) {
+                    tileEntity.refreshConnections();
                 }
             }
         }

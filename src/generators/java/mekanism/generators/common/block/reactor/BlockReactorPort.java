@@ -6,6 +6,7 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
@@ -13,7 +14,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -32,9 +32,9 @@ public class BlockReactorPort extends BlockTileDrops implements IStateActive, IB
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -44,7 +44,7 @@ public class BlockReactorPort extends BlockTileDrops implements IStateActive, IB
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }

@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -26,9 +27,9 @@ public class PacketContainerEditMode {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-            if (tileEntity instanceof IFluidContainerManager) {
-                ((IFluidContainerManager) tileEntity).setContainerEditMode(message.value);
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
+            if (tile instanceof IFluidContainerManager) {
+                ((IFluidContainerManager) tile).setContainerEditMode(message.value);
             }
         });
         context.get().setPacketHandled(true);

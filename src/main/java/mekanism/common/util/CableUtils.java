@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.HashSet;
 import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
@@ -105,13 +104,13 @@ public final class CableUtils {
         if (!tileEntity.getWorld().isRemote && MekanismUtils.canFunction(tileEntity)) {
             double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
             if (energyToSend > 0) {
-                Coord4D coord = Coord4D.get(tileEntity);
+                BlockPos pos = tileEntity.getPos();
                 //Fake that we have one target given we know that no sides will overlap
                 // This allows us to have slightly better performance
                 EnergyAcceptorTarget target = new EnergyAcceptorTarget();
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     if (emitter.canOutputEnergy(side)) {
-                        TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
+                        TileEntity tile = MekanismUtils.getTileEntity(tileEntity.getWorld(), pos.offset(side));
                         //If it can accept energy or it is a cable
                         if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {
                             //Get the opposite side as the current side is relative to us

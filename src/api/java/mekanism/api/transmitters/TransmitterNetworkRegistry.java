@@ -234,7 +234,7 @@ public class TransmitterNetworkRegistry {
                     transmitter.setOrphan(false);
 
                     for (Direction direction : DIRECTIONS) {
-                        if (direction.getAxis().isHorizontal() && !transmitter.world().isAreaLoaded(from.getPos().offset(direction), 0)) {
+                        if (direction.getAxis().isHorizontal() && !transmitter.world().isBlockLoaded(from.getPos().offset(direction))) {
                             continue;
                         }
                         Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);

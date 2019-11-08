@@ -125,7 +125,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                         Coord4D next = stack.getPath().get(currentIndex - 1);
                         if (!stack.isFinal(this)) {
                             if (next != null) {
-                                TileEntity tile = next.getTileEntity(world());
+                                TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this))) {
                                     CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).ifPresent(nextTile ->
                                           nextTile.entityEntering(stack, stack.progress % 100));
@@ -135,7 +135,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                                 prevSet = next;
                             }
                         } else if (stack.getPathType() != Path.NONE) {
-                            TileEntity tile = next.getTileEntity(world());
+                            TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
                             if (tile != null) {
                                 TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this),
                                       stack.getPathType() == Path.HOME);
@@ -166,7 +166,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                     if (stack.isFinal(this)) {
                         tryRecalculate = checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE;
                     } else {
-                        tryRecalculate = !stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), stack.getSide(this));
+                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world(), stack.getNext(this).getPos()), stack.getSide(this));
                     }
                     if (tryRecalculate && !recalculate(stackId, stack, null)) {
                         deletes.add(stackId);
@@ -191,8 +191,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     private boolean checkPath(TransporterStack stack, Path dest, boolean home) {
-        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack,
-              stack.getSide(this), home));
+        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(MekanismUtils.getTileEntity(world(), stack.getDest().getPos()),
+              stack.color, stack.itemStack, stack.getSide(this), home));
     }
 
     private boolean checkSideForInsert(TransporterStack stack) {

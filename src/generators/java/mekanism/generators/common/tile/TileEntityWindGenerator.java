@@ -7,12 +7,10 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
@@ -150,10 +148,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             return;
         }
         Coord4D current = Coord4D.get(this);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 1), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 2), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 3), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 4), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().up(), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().up(2), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().up(3), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().up(4), current);
         // Check to see if the placement is happening in a blacklisted dimension
         isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
     }

@@ -16,7 +16,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -37,9 +36,9 @@ public class BlockReactorLogicAdapter extends BlockTileDrops implements IHasGui<
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -49,7 +48,7 @@ public class BlockReactorLogicAdapter extends BlockTileDrops implements IHasGui<
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }
@@ -62,9 +61,9 @@ public class BlockReactorLogicAdapter extends BlockTileDrops implements IHasGui<
     @Override
     @Deprecated
     public int getWeakPower(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tile instanceof TileEntityReactorLogicAdapter) {
-            return ((TileEntityReactorLogicAdapter) tile).checkMode() ? 15 : 0;
+        TileEntityReactorLogicAdapter tile = MekanismUtils.getTileEntity(TileEntityReactorLogicAdapter.class, world, pos);
+        if (tile != null) {
+            return tile.checkMode() ? 15 : 0;
         }
         return 0;
     }

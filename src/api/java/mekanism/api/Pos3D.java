@@ -96,7 +96,7 @@ public class Pos3D extends Vec3d {
     }
 
     public static double anglePreNorm(Pos3D pos1, Pos3D pos2) {
-        return Math.acos(pos1.clone().dotProduct(pos2));
+        return Math.acos(pos1.dotProduct(pos2));
     }
 
     public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2) {

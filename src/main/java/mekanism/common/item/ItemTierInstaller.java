@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,7 @@ public class ItemTierInstaller extends ItemMekanismTiered {
         if (world.isRemote || player == null) {
             return ActionResultType.PASS;
         }
-        TileEntity tile = world.getTileEntity(context.getPos());
+        TileEntity tile = MekanismUtils.getTileEntity(world, context.getPos());
         if (tile instanceof ITierUpgradeable) {
             //TODO: Replace this?? Or will instance case still be true
             if (tile instanceof TileEntityMekanism && ((TileEntityMekanism) tile).playersUsing.size() > 0) {

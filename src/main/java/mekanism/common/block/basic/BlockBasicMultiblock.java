@@ -3,7 +3,6 @@ package mekanism.common.block.basic;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.multiblock.IMultiblock;
@@ -44,7 +43,7 @@ public class BlockBasicMultiblock extends BlockTileDrops {
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof IMultiblock) {
                 ((IMultiblock<?>) tileEntity).doUpdate();
             }
@@ -56,7 +55,7 @@ public class BlockBasicMultiblock extends BlockTileDrops {
 
     @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
-        TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
+        TileEntityMultiblock<?> tileEntity = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tileEntity != null) {
             if (world instanceof IWorldReader ? !((IWorldReader) world).isRemote() : EffectiveSide.get() == LogicalSide.SERVER) {
                 if (tileEntity.structure != null) {
@@ -71,7 +70,7 @@ public class BlockBasicMultiblock extends BlockTileDrops {
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
+        TileEntityMultiblock<?> tileEntity = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tileEntity != null) {
             if (world.isRemote) {
                 return true;

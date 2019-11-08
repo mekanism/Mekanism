@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -177,18 +178,16 @@ public class FrequencyManager {
             for (Iterator<Coord4D> iter = iterFreq.activeCoords.iterator(); iter.hasNext(); ) {
                 Coord4D coord = iter.next();
                 if (coord.dimension.equals(world.getDimension().getType())) {
-                    if (!coord.exists(world)) {
-                        iter.remove();
-                    } else {
-                        TileEntity tile = coord.getTileEntity(world);
-                        if (!(tile instanceof IFrequencyHandler)) {
+                    //Note: We will check if the block is loaded while getting the tile so we don't need to
+                    // specifically have that case as all it did was also remove iter
+                    TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());
+                    if (tile instanceof IFrequencyHandler) {
+                        Frequency freq = ((IFrequencyHandler) tile).getFrequency(this);
+                        if (freq == null || !freq.equals(iterFreq)) {
                             iter.remove();
-                        } else {
-                            Frequency freq = ((IFrequencyHandler) tile).getFrequency(this);
-                            if (freq == null || !freq.equals(iterFreq)) {
-                                iter.remove();
-                            }
                         }
+                    } else {
+                        iter.remove();
                     }
                 }
             }

@@ -11,6 +11,7 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -70,11 +71,9 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         }
     }
 
+    @Nullable
     public TileEntity getMainTile() {
-        if (receivedCoords && world.isAreaLoaded(getMainPos(), 0)) {
-            return world.getTileEntity(getMainPos());
-        }
-        return null;
+        return receivedCoords ? MekanismUtils.getTileEntity(world, getMainPos()) : null;
     }
 
     public void onNeighborChange(Block block) {

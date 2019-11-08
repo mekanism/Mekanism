@@ -73,7 +73,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         if (isRemote()) {
             if (!dataRequest) {
                 dataRequest = true;
-                MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(getWorld().getTileEntity(getPos())));
+                MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(MekanismUtils.getTileEntity(getWorld(), getPos())));
             }
         }
     }
@@ -170,10 +170,9 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     private boolean recheckConnectionPrechecked(Direction side) {
-        final TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-        if (tileEntity instanceof TileEntityTransmitter) {
+        TileEntityTransmitter other = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getWorld(), getPos().offset(side));
+        if (other != null) {
             N network = getTransmitter().getTransmitterNetwork();
-            TileEntityTransmitter other = (TileEntityTransmitter) tileEntity;
             //The other one should always have the same incompatible networks state as us
             // But just in case it doesn't just check the boolean
             if (other.canHaveIncompatibleNetworks() && other.getTransmitter().hasTransmitterNetwork()) {

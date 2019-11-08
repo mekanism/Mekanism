@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
@@ -152,7 +151,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     private void activeEmit() {
         if (!fluidTank.getFluid().isEmpty()) {
-            TileEntity tileEntity = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(getWorld());
+            TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), pos.down());
             CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : FluidAction.EXECUTE);
@@ -184,9 +183,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     public int pushUp(@Nonnull FluidStack fluid, FluidAction fluidAction) {
-        Coord4D up = Coord4D.get(this).offset(Direction.UP);
-        TileEntity tileEntity = up.getTileEntity(getWorld());
-        if (tileEntity instanceof TileEntityFluidTank) {
+        TileEntityFluidTank tileEntity = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
+        if (tileEntity != null) {
             return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).getIfPresentElse(
                   handler -> PipeUtils.canFill(handler, fluid) ? handler.fill(fluid, fluidAction) : 0,
                   0
@@ -253,10 +251,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         if (tier == FluidTankTier.CREATIVE) {
             return Integer.MAX_VALUE;
         }
-        Coord4D top = Coord4D.get(this).offset(Direction.UP);
-        TileEntity topTile = top.getTileEntity(getWorld());
-        if (topTile instanceof TileEntityFluidTank) {
-            TileEntityFluidTank topTank = (TileEntityFluidTank) topTile;
+        TileEntityFluidTank topTank = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
+        if (topTank != null) {
             if (!fluidTank.getFluid().isEmpty() && !topTank.fluidTank.getFluid().isEmpty()) {
                 if (fluidTank.getFluid().getFluid() != topTank.fluidTank.getFluid().getFluid()) {
                     return needed;
@@ -357,7 +353,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(Direction.DOWN));
+        TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
         if (from == Direction.DOWN && getActive() && !(tile instanceof TileEntityFluidTank)) {
             return false;
         }

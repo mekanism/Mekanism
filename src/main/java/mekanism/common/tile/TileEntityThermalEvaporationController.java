@@ -309,12 +309,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         updatedThisTick = true;
 
         Coord4D startPoint = Coord4D.get(this);
-        while (startPoint.offset(Direction.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock) {
+        while (MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, pos.up()) != null) {
             startPoint = startPoint.offset(Direction.UP);
         }
 
         Coord4D test = startPoint.offset(Direction.DOWN).offset(right, 2);
-        isLeftOnFace = test.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock;
+        isLeftOnFace = MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, test.getPos()) != null;
         startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
         if (!scanTopLayer(startPoint)) {
             return false;
@@ -339,22 +339,23 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public boolean scanTopLayer(Coord4D current) {
         Direction right = getRightSide();
         Direction back = getOppositeDirection();
+        BlockPos currentPos = current.getPos();
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
-                Coord4D pointer = current.offset(right, x).offset(back, z);
-                TileEntity pointerTile = pointer.getTileEntity(world);
+                BlockPos pointerPos = currentPos.offset(right, x).offset(back, z);
+                TileEntity pointerTile = MekanismUtils.getTileEntity(world, pointerPos);
                 int corner = getCorner(x, z);
                 if (corner != -1) {
-                    if (!addSolarPanel(pointer.getTileEntity(world), corner)) {
-                        if (pointer.offset(Direction.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
+                    if (!addSolarPanel(pointerTile, corner)) {
+                        if (MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, pointerPos.up()) != null || !addTankPart(pointerTile)) {
                             return false;
                         }
                     }
                 } else if ((x == 1 || x == 2) && (z == 1 || z == 2)) {
-                    if (!pointer.isAirBlock(world)) {
+                    if (!world.isAirBlock(pointerPos)) {
                         return false;
                     }
-                } else if (pointer.offset(Direction.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
+                } else if (MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, pointerPos.up()) != null || !addTankPart(pointerTile)) {
                     return false;
                 }
             }
@@ -383,10 +384,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         Direction right = getRightSide();
         Direction back = getOppositeDirection();
         boolean foundCenter = false;
+        BlockPos currentPos = current.getPos();
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
-                Coord4D pointer = current.offset(right, x).offset(back, z);
-                TileEntity pointerTile = pointer.getTileEntity(world);
+                BlockPos pointerPos = currentPos.offset(right, x).offset(back, z);
+                TileEntity pointerTile = MekanismUtils.getTileEntity(world, pointerPos);
                 if ((x == 1 || x == 2) && (z == 1 || z == 2)) {
                     if (pointerTile instanceof TileEntityThermalEvaporationBlock) {
                         if (!foundCenter) {
@@ -397,7 +399,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                                 return false;
                             }
                         }
-                    } else if (foundCenter || !pointer.isAirBlock(world)) {
+                    } else if (foundCenter || !world.isAirBlock(pointerPos)) {
                         height = -1;
                         return false;
                     }
@@ -486,8 +488,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 if (structured) {
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
-                    BlockPos corner1 = getRenderLocation().getPos().offset(Direction.WEST).offset(Direction.NORTH).down();
-                    BlockPos corner2 = corner1.offset(Direction.EAST, 3).offset(Direction.SOUTH, 3).up(height - 1);
+                    BlockPos corner1 = getRenderLocation().getPos().west().north().down();
+                    BlockPos corner2 = corner1.east(3).south(3).up(height - 1);
                     // Use the corners to spin up the sparkle
                     Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
                 }
@@ -541,9 +543,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public void clearStructure() {
         for (Coord4D tankPart : tankParts) {
-            TileEntity tile = tankPart.getTileEntity(world);
-            if (tile instanceof TileEntityThermalEvaporationBlock) {
-                ((TileEntityThermalEvaporationBlock) tile).controllerGone();
+            TileEntityThermalEvaporationBlock tile = MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, tankPart.getPos());
+            if (tile != null) {
+                tile.controllerGone();
             }
         }
         tankParts.clear();

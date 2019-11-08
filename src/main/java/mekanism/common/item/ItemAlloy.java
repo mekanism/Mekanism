@@ -5,6 +5,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.AlloyTier;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +30,7 @@ public class ItemAlloy extends ItemMekanism {
         if (player != null && MekanismConfig.general.allowTransmitterAlloyUpgrade.get()) {
             World world = context.getWorld();
             BlockPos pos = context.getPos();
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             return CapabilityUtils.getCapabilityHelper(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getFace()).getIfPresentElse(
                   interaction -> {
                       if (!world.isRemote) {

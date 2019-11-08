@@ -14,7 +14,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -34,9 +33,9 @@ public class BlockRotationalComplex extends BlockMekanismContainer implements IH
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -44,8 +43,7 @@ public class BlockRotationalComplex extends BlockMekanismContainer implements IH
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class BlockRotationalComplex extends BlockMekanismContainer implements IH
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }

@@ -21,6 +21,7 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -81,8 +82,8 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                 }
 
                 if (mop.getType() != Type.MISS) {
-                    BlockState blockHit = hitCoord.getBlockState(world);
-                    TileEntity tileHit = hitCoord.getTileEntity(world);
+                    BlockState blockHit = world.getBlockState(hitCoord.getPos());
+                    TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
                     if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace())
                           .matches(receptor -> !receptor.canLasersDig())) {
@@ -109,8 +110,8 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
                 diggingProgress = 0;
             }
             if (info.movingPos.getType() != Type.MISS) {
-                BlockState blockHit = hitCoord.getBlockState(world);
-                TileEntity tileHit = hitCoord.getTileEntity(world);
+                BlockState blockHit = world.getBlockState(hitCoord.getPos());
+                TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
                 float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
                 if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace())

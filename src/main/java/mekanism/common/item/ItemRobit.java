@@ -6,7 +6,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
@@ -14,7 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -47,9 +48,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityChargepad) {
-            TileEntityChargepad chargepad = (TileEntityChargepad) tileEntity;
+        TileEntityMekanism chargepad = MekanismUtils.getTileEntity(TileEntityChargepad.class, world, pos);
+        if (chargepad != null) {
             if (!chargepad.getActive()) {
                 Hand hand = context.getHand();
                 ItemStack itemstack = player.getHeldItem(hand);

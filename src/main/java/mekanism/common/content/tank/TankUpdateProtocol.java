@@ -10,6 +10,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -72,7 +73,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     @Override
     protected void onStructureCreated(SynchronizedTankData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
-            if (obj.getTileEntity(pointer.getWorld()) instanceof TileEntityDynamicValve) {
+            if (MekanismUtils.getTileEntity(TileEntityDynamicValve.class, pointer.getWorld(), obj.getPos()) != null) {
                 ValveData data = new ValveData();
                 data.location = obj;
                 data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);

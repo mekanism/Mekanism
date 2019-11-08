@@ -38,14 +38,13 @@ public class LaserManager {
     public static LaserInfo fireLaser(TileEntity source, Direction direction, double energy, World world) {
         Pos3D from = new Pos3D(source).centre().translate(direction, 0.501);
         ServerWorld serverWorld = (ServerWorld) world;
-        Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
+        Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
         PlayerEntity dummy = Mekanism.proxy.getDummyPlayer(serverWorld, new BlockPos(from)).get();
         //TODO: Verify this is correct
         BlockRayTraceResult mop = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
         if (mop.getType() != Type.MISS) {
             to = new Pos3D(mop.getHitVec());
-            Coord4D toCoord = new Coord4D(mop.getPos(), world);
-            TileEntity tile = toCoord.getTileEntity(world);
+            TileEntity tile = MekanismUtils.getTileEntity(world, mop.getPos());
             CapabilityUtils.getCapabilityHelper(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).ifPresent(receptor -> {
                 if (!receptor.canLasersDig()) {
                     receptor.receiveLaserEnergy(energy, mop.getFace());
@@ -77,8 +76,7 @@ public class LaserManager {
         if (!MekanismConfig.general.aestheticWorldDamage.get()) {
             return null;
         }
-
-        BlockState state = blockCoord.getBlockState(world);
+        BlockState state = world.getBlockState(blockCoord.getPos());
         Block blockHit = state.getBlock();
         PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, laserPos).get();
         BlockPos pos = blockCoord.getPos();
@@ -89,7 +87,7 @@ public class LaserManager {
         }
         NonNullList<ItemStack> ret = null;
         if (dropAtBlock) {
-            Block.spawnDrops(state, world, pos, world.getTileEntity(pos));
+            Block.spawnDrops(state, world, pos, MekanismUtils.getTileEntity(world, pos));
         } else {
             ret = NonNullList.create();
             //TODO: Check this is correct/handle tile entity
@@ -106,7 +104,7 @@ public class LaserManager {
     @Deprecated
     public static BlockRayTraceResult fireLaserClient(TileEntity source, Direction direction, double energy, World world) {
         Pos3D from = new Pos3D(source).centre().translate(direction, 0.501);
-        Pos3D to = from.clone().translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
+        Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
         //TODO: Verify this is correct
         return world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, Minecraft.getInstance().player));
     }

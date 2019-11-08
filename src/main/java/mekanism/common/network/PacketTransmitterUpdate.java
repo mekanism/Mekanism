@@ -17,6 +17,7 @@ import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -80,7 +81,7 @@ public class PacketTransmitterUpdate {
             if (message.coord4D == null) {
                 return;
             }
-            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             LazyOptionalHelper<IGridTransmitter> capabilityHelper = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
             capabilityHelper.ifPresent(transmitter -> {
                 if (message.packetType == PacketType.UPDATE) {
@@ -88,7 +89,7 @@ public class PacketTransmitterUpdate {
                     network.register();
                     transmitter.setTransmitterNetwork(network);
                     for (Coord4D coord : message.transmitterCoords) {
-                        TileEntity tile = coord.getTileEntity(player.world);
+                        TileEntity tile = MekanismUtils.getTileEntity(player.world, coord.getPos());
                         CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(
                               gridTransmitter -> gridTransmitter.setTransmitterNetwork(network)
                         );

@@ -18,6 +18,7 @@ import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,7 +65,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
             } else {
                 for (ValveData data : valveViewing) {
-                    TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(getWorld());
+                    TileEntityDynamicTank tileEntity = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
                     if (tileEntity != null) {
                         tileEntity.clientHasStructure = false;
                     }
@@ -180,7 +181,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                         data.location = Coord4D.read(dataStream);
                         data.side = Direction.byIndex(dataStream.readInt());
                         valveViewing.add(data);
-                        TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(getWorld());
+                        TileEntityDynamicTank tileEntity = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
                         if (tileEntity != null) {
                             tileEntity.clientHasStructure = true;
                         }

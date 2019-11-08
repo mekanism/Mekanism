@@ -6,6 +6,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -33,9 +34,9 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Nullable
     private static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
-        TileEntity te = world.getTileEntity(thisPos);
-        if (te instanceof TileEntityBoundingBlock && !thisPos.equals(((TileEntityBoundingBlock) te).getMainPos())) {
-            return ((TileEntityBoundingBlock) te).getMainPos();
+        TileEntityBoundingBlock te = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
+        if (te != null && !thisPos.equals(te.getMainPos())) {
+            return te.getMainPos();
         }
         return null;
     }
@@ -159,7 +160,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
-        TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
+        TileEntityBoundingBlock tileEntity = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
         if (tileEntity != null) {
             tileEntity.onNeighborChange(state.getBlock());
         }

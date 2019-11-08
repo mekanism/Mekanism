@@ -9,6 +9,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -36,8 +37,8 @@ public class TileEntityLaser extends TileEntityMekanism {
                     diggingProgress = 0;
                 }
                 if (mop.getType() != Type.MISS) {
-                    BlockState blockHit = hitCoord.getBlockState(world);
-                    TileEntity tileHit = hitCoord.getTileEntity(world);
+                    BlockState blockHit = world.getBlockState(hitCoord.getPos());
+                    TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
                     if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).matches(receptor -> !receptor.canLasersDig())) {
                         diggingProgress += MekanismConfig.usage.laser.get();
@@ -57,8 +58,8 @@ public class TileEntityLaser extends TileEntityMekanism {
                     diggingProgress = 0;
                 }
                 if (info.movingPos.getType() != Type.MISS) {
-                    BlockState blockHit = hitCoord.getBlockState(world);
-                    TileEntity tileHit = hitCoord.getTileEntity(world);
+                    BlockState blockHit = world.getBlockState(hitCoord.getPos());
+                    TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
                     if (hardness >= 0 && !CapabilityUtils.getCapabilityHelper(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace())
                           .matches(receptor -> !receptor.canLasersDig())) {

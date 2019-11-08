@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
@@ -86,8 +85,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
 
             if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-                TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
-                TileEntity front = Coord4D.get(this).offset(getDirection()).getTileEntity(world);
+                TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+                TileEntity front = MekanismUtils.getTileEntity(getWorld(), pos.offset(getDirection()));
                 //If there is no tile to pull from or the push to, skip doing any checks
                 if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
                     boolean sentItems = false;
@@ -348,17 +347,17 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public boolean canSendHome(ItemStack stack) {
-        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(getWorld());
+        TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         return InventoryUtils.canInsert(back, null, stack, getOppositeDirection(), true);
     }
 
     public boolean hasConnectedInventory() {
-        TileEntity tile = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(getWorld());
+        TileEntity tile = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }
 
     public TransitResponse sendHome(ItemStack stack) {
-        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(getWorld());
+        TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), getOppositeDirection(), true);
     }
 

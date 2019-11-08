@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -36,13 +37,14 @@ public class ItemNetworkReader extends ItemEnergized {
         World world = context.getWorld();
         if (!world.isRemote && player != null) {
             ItemStack stack = player.getHeldItem(context.getHand());
-            TileEntity tileEntity = world.getTileEntity(context.getPos());
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, context.getPos());
             boolean drain = !player.isCreative();
             //TODO: lang keys for the different information
             if (getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null) {
                 if (drain) {
                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
                 }
+                Coord4D tileCoord = Coord4D.get(tileEntity);
                 Direction opposite = context.getFace().getOpposite();
                 CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite).ifPresentElse(transmitter -> {
                           player.sendMessage(TextComponentUtil.build(EnumColor.GRAY, "------------- ", EnumColor.DARK_BLUE, Mekanism.LOG_TAG, EnumColor.GRAY, " -------------"));
@@ -69,10 +71,9 @@ public class ItemNetworkReader extends ItemEnergized {
                             },
                             () -> {
                                 Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
-
                                 for (Direction iterSide : EnumUtils.DIRECTIONS) {
-                                    Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
-                                    TileEntity tile = coord.getTileEntity(world);
+                                    Coord4D coord = tileCoord.offset(iterSide);
+                                    TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());
                                     Direction iterSideOpposite = iterSide.getOpposite();
                                     CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSideOpposite).ifPresent(transmitter -> {
                                         if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSideOpposite)) &&

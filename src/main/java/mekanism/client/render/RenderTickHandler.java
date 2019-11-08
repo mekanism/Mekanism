@@ -2,7 +2,6 @@ package mekanism.client.render;
 
 import java.util.Random;
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.ClientTickHandler;
@@ -25,6 +24,8 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -55,23 +56,22 @@ public class RenderTickHandler {
                 //TODO: Fix block player is hovering
                 BlockRayTraceResult pos = null;//player.rayTrace(40.0D, 1.0F);
                 if (pos != null) {
-                    Coord4D obj = new Coord4D(pos.getPos(), world);
-                    Block block = obj.getBlock(world);
-
-                    if (block != null && MekanismAPI.debug && minecraft.currentScreen == null && !minecraft.gameSettings.showDebugInfo) {
-                        String tileDisplay = "";
-
-                        if (obj.getTileEntity(world) != null) {
-                            if (obj.getTileEntity(world).getClass() != null) {
-                                tileDisplay = obj.getTileEntity(world).getClass().getSimpleName();
+                    BlockPos blockPos = pos.getPos();
+                    if (world.isBlockLoaded(blockPos)) {
+                        Block block = world.getBlockState(blockPos).getBlock();
+                        if (block != null && MekanismAPI.debug && minecraft.currentScreen == null && !minecraft.gameSettings.showDebugInfo) {
+                            String tileDisplay = "";
+                            TileEntity tileEntity = MekanismUtils.getTileEntity(world, blockPos);
+                            if (tileEntity != null && tileEntity.getClass() != null) {
+                                tileDisplay = tileEntity.getClass().getSimpleName();
                             }
-                        }
 
-                        font.drawStringWithShadow("Block: " + block.getTranslationKey(), 1, 1, 0x404040);
-                        font.drawStringWithShadow("Metadata: " + obj.getBlockState(world), 1, 10, 0x404040);
-                        font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
-                        font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
-                        font.drawStringWithShadow("Side: " + pos.getFace(), 1, 37, 0x404040);
+                            font.drawStringWithShadow("Block: " + block.getTranslationKey(), 1, 1, 0x404040);
+                            font.drawStringWithShadow("Metadata: " + world.getBlockState(blockPos), 1, 10, 0x404040);
+                            font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(blockPos), 1, 19, 0x404040);
+                            font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
+                            font.drawStringWithShadow("Side: " + pos.getFace(), 1, 37, 0x404040);
+                        }
                     }
                 }
 

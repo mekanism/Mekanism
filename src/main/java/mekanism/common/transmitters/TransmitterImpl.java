@@ -9,6 +9,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
@@ -39,7 +40,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     @Override
     public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
         Coord4D sideCoord = coord().offset(side);
-        TileEntity potentialTransmitterTile = sideCoord.getTileEntity(world());
+        TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world(), sideCoord.getPos());
         if (!containingTile.canConnectMutual(side)) {
             return null;
         }
@@ -75,7 +76,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
         if (cont == null) {
             return false;
         }
-        return !cont.isRemoved() && coord().exists(world()) && coord().getTileEntity(world()) == cont && cont.getTransmitter() == this;
+        return !cont.isRemoved() && MekanismUtils.getTileEntity(world(), cont.getPos()) == cont && cont.getTransmitter() == this;
     }
 
     @Override
@@ -85,7 +86,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public NETWORK getExternalNetwork(Coord4D from) {
-        return CapabilityUtils.getCapabilityHelper(from.getTileEntity(world()), Capabilities.GRID_TRANSMITTER_CAPABILITY, null).getIfPresent(transmitter -> {
+        return CapabilityUtils.getCapabilityHelper(MekanismUtils.getTileEntity(world(), from.getPos()), Capabilities.GRID_TRANSMITTER_CAPABILITY, null).getIfPresent(transmitter -> {
             if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType())) {
                 return ((IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
             }

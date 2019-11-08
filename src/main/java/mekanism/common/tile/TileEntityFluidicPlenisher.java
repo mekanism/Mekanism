@@ -167,16 +167,17 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
         Set<Coord4D> toRemove = new HashSet<>();
         for (Coord4D coord : activeNodes) {
-            if (coord.exists(world)) {
+            BlockPos coordPos = coord.getPos();
+            if (world.isBlockLoaded(coordPos)) {
                 FluidStack fluid = fluidTank.getFluid();
                 if (canReplace(coord, true, false) && !fluid.isEmpty()) {
-                    world.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlockState(fluid));
+                    world.setBlockState(coordPos, MekanismUtils.getFlowingBlockState(fluid));
                     fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
                 }
 
                 for (Direction dir : dirs) {
                     Coord4D sideCoord = coord.offset(dir);
-                    if (sideCoord.exists(world) && canReplace(sideCoord, true, true)) {
+                    if (world.isBlockLoaded(sideCoord.getPos()) && canReplace(sideCoord, true, true)) {
                         activeNodes.add(sideCoord);
                     }
                 }
@@ -194,13 +195,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (checkNodes && usedNodes.contains(coord)) {
             return false;
         }
-        if (coord.isAirBlock(world) || MekanismUtils.isDeadFluid(world, coord)) {
+        BlockPos pos = coord.getPos();
+        if (world.isAirBlock(pos) || MekanismUtils.isDeadFluid(world, pos)) {
             return true;
         }
-        if (MekanismUtils.isFluid(world, coord)) {
+        if (MekanismUtils.isFluid(world, pos)) {
             return isPathfinding;
         }
-        return MekanismUtils.isValidReplaceableBlock(world, coord.getPos());
+        return MekanismUtils.isValidReplaceableBlock(world, pos);
     }
 
     @Override

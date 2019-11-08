@@ -11,6 +11,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
@@ -111,7 +112,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity tile = coord.getTileEntity(getWorld());
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), coord.getPos());
             if (tile == null) {
                 continue;
             }

@@ -13,6 +13,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -51,7 +52,7 @@ public class ItemConfigurationCard extends ItemMekanism {
         if (!world.isRemote && player != null) {
             BlockPos pos = context.getPos();
             Direction side = context.getFace();
-            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tileEntity)) {
                     ItemStack stack = player.getHeldItem(context.getHand());

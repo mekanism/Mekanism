@@ -24,6 +24,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -63,15 +64,10 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     @Nonnull
     protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         ItemStack itemStack = new ItemStack(this);
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity == null) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
             return itemStack;
         }
-        if (!(tileEntity instanceof TileEntityMekanism)) {
-            //TODO let it do the down below checks anyways
-            return itemStack;
-        }
-        TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
         //TODO: If crashes happen here because of lack of NBT make things use ItemDataUtils
 
         Item item = itemStack.getItem();
@@ -249,17 +245,11 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity == null) {
-            return;
-        }
-        if (!(tileEntity instanceof TileEntityMekanism)) {
-            //TODO: Allow TileEntity to check against below things
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
             return;
         }
         //TODO: Remove most implementations of ItemBlock#placeBlockAt and use this method instead
-        //TODO: Should this just be TileEntity and then check instance of and abstract things further
-        TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
         if (tile.supportsRedstone()) {
             tile.redstone = world.isBlockPowered(pos);
         }
@@ -360,7 +350,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     @Override
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if (state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof IBoundingBlock) {
                 ((IBoundingBlock) tile).onBreak();
             }
@@ -374,9 +364,9 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
+    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
         if (hasComparatorInputOverride(blockState)) {
-            TileEntity tile = worldIn.getTileEntity(pos);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             //Double check the tile actually has comparator support
             //TODO: Eventually make it so this is not needed
             if (tile instanceof IComparatorSupport) {

@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import java.util.UUID;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
@@ -14,6 +13,7 @@ import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -24,7 +24,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -46,9 +45,9 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -67,7 +66,7 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntitySecurityDesk tile = (TileEntitySecurityDesk) world.getTileEntity(pos);
+        TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
         //TODO
         if (tile != null) {
             if (!player.isSneaking()) {

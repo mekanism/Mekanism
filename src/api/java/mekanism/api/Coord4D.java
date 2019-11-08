@@ -1,9 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -14,10 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes in account the dimension the
@@ -25,7 +20,7 @@ import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
  *
  * @author aidancbrady
  */
-public class Coord4D {
+public class Coord4D {//TODO: Replace this with GlobalPos?
 
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
@@ -106,33 +101,8 @@ public class Coord4D {
         return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), DimensionType.byName(dataStream.readResourceLocation()));
     }
 
-    /**
-     * Gets the state of the block representing this Coord4D.
-     *
-     * @param world - world this Coord4D is in
-     *
-     * @return the state of this Coord4D's block
-     */
-    public BlockState getBlockState(IWorldReader world) {
-        return world.getBlockState(getPos());
-    }
-
     public BlockPos getPos() {
         return new BlockPos(x, y, z);
-    }
-
-    /**
-     * Gets the TileEntity of the block representing this Coord4D.
-     *
-     * @param world - world this Coord4D is in
-     *
-     * @return the TileEntity of this Coord4D's block
-     */
-    public TileEntity getTileEntity(IWorldReader world) {
-        if (world == null || world instanceof World && !exists(world)) {
-            return null;
-        }
-        return world.getTileEntity(getPos());
     }
 
     /**
@@ -143,10 +113,10 @@ public class Coord4D {
      * @return the Block value of this Coord4D's block
      */
     public Block getBlock(IWorldReader world) {
-        if (world instanceof World && !exists(world)) {
+        if (!world.isBlockLoaded(getPos())) {
             return null;
         }
-        return getBlockState(world).getBlock();
+        return world.getBlockState(getPos()).getBlock();
     }
 
     /**
@@ -238,14 +208,6 @@ public class Coord4D {
         return new Coord4D(x + (side.getXOffset() * amount), y + (side.getYOffset() * amount), z + (side.getZOffset() * amount), dimension);
     }
 
-    public ItemStack getStack(IWorldReader world) {
-        BlockState state = getBlockState(world);
-        if (state == null || state.getBlock().isAir(state, world, null)) {
-            return ItemStack.EMPTY;
-        }
-        return new ItemStack(state.getBlock());
-    }
-
     /**
      * Creates and returns a new Coord4D with values representing the difference between the defined Coord4D
      *
@@ -289,91 +251,12 @@ public class Coord4D {
     }
 
     /**
-     * @param side  - side to check
-     * @param world - world this Coord4D is in
-     *
-     * @return Whether or not the defined side of this Coord4D is visible.
-     */
-    public boolean sideVisible(Direction side, IWorldReader world) {
-        return world.isAirBlock(step(side).getPos());
-    }
-
-    /**
-     * Gets a TargetPoint with the defined range from this Coord4D with the appropriate coordinates and dimension ID.
-     *
-     * @param range - the range the packet can be sent in of this Coord4D
-     *
-     * @return TargetPoint relative to this Coord4D
-     */
-    public TargetPoint getTargetPoint(double range) {
-        return new TargetPoint(x, y, z, range, dimension);
-    }
-
-    /**
-     * Steps this Coord4D in the defined side's offset without creating a new value.
-     *
-     * @param side - side to step towards
-     *
-     * @return this Coord4D
-     */
-    public Coord4D step(Direction side) {
-        return translate(side.getXOffset(), side.getYOffset(), side.getZOffset());
-    }
-
-    /**
-     * Whether or not the chunk this Coord4D is in exists and is loaded.
-     *
-     * @param world - world this Coord4D is in
-     *
-     * @return the chunk of this Coord4D
-     */
-    public boolean exists(IWorldReader world) {
-        return world.isAreaLoaded(new BlockPos(x, y, z), 0);//world.getChunkProvider() == null || world.getChunkProvider().getLoadedChunk(x >> 4, z >> 4) != null;
-    }
-
-    /**
-     * Gets the chunk this Coord4D is in.
-     *
-     * @param world - world this Coord4D is in
-     *
-     * @return the chunk of this Coord4D
-     */
-    public IChunk getChunk(IWorldReader world) {
-        return world.getChunk(getPos());
-    }
-
-    /**
-     * Gets the Chunk3D object with chunk coordinates correlating to this Coord4D's location
-     *
-     * @return Chunk3D with correlating chunk coordinates.
-     */
-    public Chunk3D getChunk3D() {
-        return new Chunk3D(this);
-    }
-
-    /**
-     * Whether or not the block this Coord4D represents is an air block.
-     *
-     * @param world - world this Coord4D is in
-     *
-     * @return if this Coord4D is an air block
-     */
-    public boolean isAirBlock(IWorldReader world) {
-        return world.isAirBlock(getPos());
-    }
-
-    /**
      * Gets a bounding box that contains the area this Coord4D would take up in a world.
      *
      * @return this Coord4D's bounding box
      */
     public AxisAlignedBB getBoundingBox() {
         return new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1);
-    }
-
-    @Override
-    public Coord4D clone() {
-        return new Coord4D(x, y, z, dimension);
     }
 
     @Override

@@ -208,8 +208,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
             if (ticksExisted % 20 == 0) {
                 World serverWorld = ServerLifecycleHooks.getCurrentServer().getWorld(homeLocation.dimension);
-                if (homeLocation.exists(serverWorld)) {
-                    if (!(homeLocation.getTileEntity(serverWorld) instanceof TileEntityChargepad)) {
+                BlockPos homePos = homeLocation.getPos();
+                if (serverWorld.isBlockLoaded(homePos)) {
+                    if (MekanismUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
                         drop();
                         remove();
                     }
@@ -360,8 +361,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public boolean isOnChargepad() {
-        BlockPos pos = new BlockPos(this);
-        return world.getTileEntity(pos) instanceof TileEntityChargepad;
+        return MekanismUtils.getTileEntity(TileEntityChargepad.class, world, getPosition()) != null;
     }
 
     @Nonnull

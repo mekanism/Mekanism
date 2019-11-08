@@ -6,9 +6,11 @@ import mekanism.api.Coord4D;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class TileEntityReactorBlock extends TileEntityMekanism {
@@ -118,13 +120,17 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
             iterated.add(pos);
             for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D coord = pos.offset(side);
-                if (!iterated.contains(coord) && coord.getTileEntity(world) instanceof TileEntityReactorBlock) {
-                    ((TileEntityReactorBlock) coord.getTileEntity(world)).attempted = true;
-                    if (coord.getTileEntity(world) instanceof TileEntityReactorController) {
-                        found = (TileEntityReactorController) coord.getTileEntity(world);
-                        return;
+                BlockPos coordPos = coord.getPos();
+                if (!iterated.contains(coord)) {
+                    TileEntityReactorBlock tile = MekanismUtils.getTileEntity(TileEntityReactorBlock.class, world, coordPos);
+                    if (tile != null) {
+                        tile.attempted = true;
+                        if (tile instanceof TileEntityReactorController) {
+                            found = (TileEntityReactorController) tile;
+                            return;
+                        }
+                        loop(coord);
                     }
-                    loop(coord);
                 }
             }
         }

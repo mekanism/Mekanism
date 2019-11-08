@@ -27,7 +27,6 @@ import mekanism.common.network.PacketEntityMove;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -94,11 +93,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     public static void alignPlayer(ServerPlayerEntity player, Coord4D coord) {
-        Coord4D upperCoord = coord.offset(Direction.UP);
         Direction side = null;
         float yaw = player.rotationYaw;
+        BlockPos upperPos = coord.getPos().up();
         for (Direction iterSide : MekanismUtils.SIDE_DIRS) {
-            if (upperCoord.offset(iterSide).isAirBlock(player.world)) {
+            if (player.world.isAirBlock(upperPos.offset(iterSide))) {
                 side = iterSide;
                 break;
             }
@@ -286,7 +285,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         }
         for (Entity entity : entitiesInPortal) {
             World teleWorld = ServerLifecycleHooks.getCurrentServer().getWorld(closestCoords.dimension);
-            TileEntityTeleporter teleporter = (TileEntityTeleporter) closestCoords.getTileEntity(teleWorld);
+            TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestCoords.getPos());
 
             if (teleporter != null) {
                 teleporter.didTeleport.add(entity.getUniqueID());

@@ -25,6 +25,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -114,9 +115,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     if (structure != null && (structure.locations.contains(obj) || structure.internalLocations.contains(obj))) {
                         continue;
                     }
-                    TileEntity tile = obj.getTileEntity(world);
-                    if (!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
-                        MekanismUtils.notifyNeighborofChange(world, obj, getPos());
+                    BlockPos pos = obj.getPos();
+                    TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                    if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
+                        MekanismUtils.notifyNeighborofChange(world, pos, getPos());
                     }
                 }
 
@@ -149,7 +151,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public void sendPacketToRenderer() {
         if (structure != null) {
             for (Coord4D obj : structure.locations) {
-                TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(getWorld());
+                TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) MekanismUtils.getTileEntity(TileEntityMultiblock.class, getWorld(), obj.getPos());
                 if (tileEntity != null && tileEntity.isRendering) {
                     Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                 }

@@ -14,6 +14,7 @@ import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -45,7 +46,7 @@ public class PacketNewFilter {
         }
         context.get().enqueueWork(() -> {
             //TODO: Verify this
-            TileEntity tile = message.coord4D.getTileEntity(player.world);
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (message.type == 0 && tile instanceof TileEntityLogisticalSorter) {
                 handleFilter((TileEntityLogisticalSorter) tile, message);
             } else if (message.type == 1 && tile instanceof TileEntityDigitalMiner) {

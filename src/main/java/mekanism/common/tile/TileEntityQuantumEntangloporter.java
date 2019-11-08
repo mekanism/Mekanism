@@ -499,10 +499,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Nullable
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
+                TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
                 return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
             }
         }

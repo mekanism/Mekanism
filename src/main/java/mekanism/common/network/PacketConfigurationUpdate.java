@@ -58,7 +58,7 @@ public class PacketConfigurationUpdate {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tile = message.coord4D.getTileEntity(player.world);
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (tile instanceof ISideConfiguration) {
                 LazyOptionalHelper<ITileNetwork> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
                 ISideConfiguration config = (ISideConfiguration) tile;

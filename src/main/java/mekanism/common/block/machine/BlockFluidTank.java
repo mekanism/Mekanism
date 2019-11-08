@@ -80,7 +80,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {
-            TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
                 return MekanismConfig.client.ambientLightingLevel.get();
             }
@@ -93,7 +93,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }
@@ -126,8 +126,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
@@ -215,9 +214,9 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }

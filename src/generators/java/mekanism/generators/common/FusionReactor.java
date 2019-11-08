@@ -15,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismGases;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -28,6 +29,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -266,7 +268,7 @@ public class FusionReactor {
         unformMultiblock(true);
         reactorBlocks.add(controller);
 
-        if (!createFrame(centreOfReactor) || !addSides(centreOfReactor) || !centreIsClear(centreOfReactor)) {
+        if (!createFrame(centreOfReactor) || !addSides(centreOfReactor) || !centerIsClear(centreOfReactor)) {
             unformMultiblock(keepBurning);
             return;
         }
@@ -286,14 +288,12 @@ public class FusionReactor {
               {-2, -1, -1}, {-2, +0, -2}, {-2, +1, -1},};
 
         for (int[] coords : positions) {
-            TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
-
-            if (tile instanceof TileEntityReactorBlock && ((TileEntityReactorBlock) tile).isFrame()) {
-                reactorBlocks.add((TileEntityReactorBlock) tile);
-                ((TileEntityReactorBlock) tile).setReactor(this);
-            } else {
+            TileEntityReactorBlock tile = MekanismUtils.getTileEntity(TileEntityReactorBlock.class, controller.getWorld(), centre.translate(coords[0], coords[1], coords[2]).getPos());;
+            if (tile == null || !tile.isFrame()) {
                 return false;
             }
+            reactorBlocks.add(tile);
+            tile.setReactor(this);
         }
         return true;
     }
@@ -309,8 +309,7 @@ public class FusionReactor {
         };
 
         for (int[] coords : positions) {
-            TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
-
+            TileEntity tile = MekanismUtils.getTileEntity(controller.getWorld(), centre.translate(coords[0], coords[1], coords[2]).getPos());
             if (LaserManager.isReceptor(tile, null) && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0))) {
                 return false;
             }
@@ -328,14 +327,15 @@ public class FusionReactor {
         return true;
     }
 
-    public boolean centreIsClear(Coord4D centre) {
+    public boolean centerIsClear(Coord4D center) {
+        BlockPos centerPos = center.getPos();
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
-                    Coord4D trans = centre.translate(x, y, z);
-                    BlockState state = trans.getBlockState(controller.getWorld());
+                    BlockPos transPos = centerPos.add(x, y, z);
+                    BlockState state = controller.getWorld().getBlockState(transPos);
                     Block tile = state.getBlock();
-                    if (!tile.isAir(state, controller.getWorld(), trans.getPos())) {
+                    if (!tile.isAir(state, controller.getWorld(), transPos)) {
                         return false;
                     }
                 }

@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -14,6 +13,7 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,9 +37,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         if (!isRemote()) {
             if ((master == null) == prevMaster) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    Coord4D obj = Coord4D.get(this).offset(side);
-                    if (obj.exists(world) && !obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)) {
-                        MekanismUtils.notifyNeighborofChange(world, obj, this.pos);
+                    BlockPos offset = pos.offset(side);
+                    if (!world.isAirBlock(offset) && MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, offset) == null) {
+                        MekanismUtils.notifyNeighborofChange(world, offset, pos);
                     }
                 }
             }

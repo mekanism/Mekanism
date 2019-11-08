@@ -19,7 +19,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
     @Override
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.getDirection());
-        if (!Block.hasSolidSide(obj.getBlockState(tileEntity.getWorld()), tileEntity.getWorld(), obj.getPos(), tileEntity.getOppositeDirection())) {
+        if (!Block.hasSolidSide(tileEntity.getWorld().getBlockState(obj.getPos()), tileEntity.getWorld(), obj.getPos(), tileEntity.getOppositeDirection())) {
             render(tileEntity.getDirection(), tileEntity.clientStack, true, x, y, z);
         }
     }

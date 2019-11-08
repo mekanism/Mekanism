@@ -9,6 +9,7 @@ import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITileUpgradable;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
@@ -58,7 +59,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
         PlayerEntity player = context.getPlayer();
         if (player != null && player.isSneaking()) {
             World world = context.getWorld();
-            TileEntity tile = world.getTileEntity(context.getPos());
+            TileEntity tile = MekanismUtils.getTileEntity(world, context.getPos());
             ItemStack stack = player.getHeldItem(context.getHand());
             Upgrade type = getUpgradeType(stack);
             if (tile instanceof IUpgradeTile) {

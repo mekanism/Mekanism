@@ -59,8 +59,8 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
             float zRandom = (float) pos.getZ() + 0.5F;
@@ -94,7 +94,7 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
     @Override
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {
-            TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
                 return MekanismConfig.client.ambientLightingLevel.get();
             }
@@ -107,7 +107,7 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }
@@ -127,8 +127,7 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
@@ -141,9 +140,9 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }

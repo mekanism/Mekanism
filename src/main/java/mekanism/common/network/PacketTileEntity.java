@@ -8,6 +8,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
@@ -45,7 +46,7 @@ public class PacketTileEntity {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
                 try {
                     network.handlePacketData(message.storedBuffer);
@@ -63,7 +64,7 @@ public class PacketTileEntity {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
             World world = server.getWorld(pkt.coord4D.dimension);
-            PacketHandler.log("Sending TileEntity packet from coordinate " + pkt.coord4D + " (" + pkt.coord4D.getTileEntity(world) + ")");
+            PacketHandler.log("Sending TileEntity packet from coordinate " + pkt.coord4D + " (" + MekanismUtils.getTileEntity(world, pkt.coord4D.getPos()) + ")");
         }
         PacketHandler.encode(pkt.parameters.toArray(), buf);
     }

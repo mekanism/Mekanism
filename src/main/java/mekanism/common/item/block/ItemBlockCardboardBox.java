@@ -9,6 +9,7 @@ import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -21,7 +22,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -72,8 +72,8 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 BlockData data = new BlockData();
                 data.block = block;
                 isMonitoring = true;
-                if (world.getTileEntity(pos) != null) {
-                    TileEntity tile = world.getTileEntity(pos);
+                TileEntityCardboardBox tile = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
+                if (tile != null) {
                     CompoundNBT tag = new CompoundNBT();
                     tile.write(tag);
                     data.tileTag = tag;
@@ -89,9 +89,8 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 world.removeBlock(pos, false);
                 world.setBlockState(pos, getBlock().getDefaultState().with(BlockStateHelper.storageProperty, true));
                 isMonitoring = false;
-                TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
-                if (tileEntity != null) {
-                    tileEntity.storedData = data;
+                if (tile != null) {
+                    tile.storedData = data;
                 }
                 return ActionResultType.SUCCESS;
             }
@@ -106,7 +105,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
             return true;
         }
         if (super.placeBlock(context, state)) {
-            TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(context.getPos());
+            TileEntityCardboardBox tileEntity = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, context.getPos());
             if (tileEntity != null) {
                 tileEntity.storedData = getBlockData(context.getItem());
             }

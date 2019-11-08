@@ -4,14 +4,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -123,14 +122,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     private TileEntityTurbineRotor nextRotor(BlockPos pos) {
-        World world = getWorld();
-        if (world != null) {
-            TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileEntityTurbineRotor) {
-                return (TileEntityTurbineRotor) tile;
-            }
-        }
-        return null;
+        return MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), pos);
     }
 
     private void sendUpdatePacket() {

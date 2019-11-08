@@ -16,7 +16,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
@@ -44,9 +43,9 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            final TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -54,17 +53,16 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if (!world.isRemote && state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
-            TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityTurbineRotor) {
+            TileEntityTurbineRotor tileEntity = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
+            if (tileEntity != null) {
                 //TODO: Evaluate
-                int amount = ((TileEntityTurbineRotor) tileEntity).getHousedBlades();
+                int amount = tileEntity.getHousedBlades();
                 if (amount > 0) {
                     spawnAsEntity(world, pos, GeneratorsItem.TURBINE_BLADE.getItemStack(amount));
                 }
@@ -78,7 +76,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }

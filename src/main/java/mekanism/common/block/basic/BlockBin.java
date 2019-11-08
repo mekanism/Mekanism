@@ -3,7 +3,6 @@ package mekanism.common.block.basic;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
@@ -32,7 +31,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -65,9 +63,9 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -86,7 +84,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     @Override
     public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
         if (!world.isRemote) {
-            TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
+            TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin == null) {
                 return;
             }
@@ -125,7 +123,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
+        TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return false;
         }

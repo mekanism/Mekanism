@@ -22,6 +22,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
@@ -159,17 +160,20 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         if (coord.equals(orig)) {
                             continue;
                         }
-                        int destroyEnergy = getDestroyEnergy(itemstack, coord.getBlockState(player.world).getBlockHardness(player.world, coord.getPos()));
+                        BlockPos coordPos = coord.getPos();
+                        BlockState coordState = player.world.getBlockState(coordPos);
+                        int destroyEnergy = getDestroyEnergy(itemstack, coordState.getBlockHardness(player.world, coordPos));
                         if (getEnergy(itemstack) < destroyEnergy) {
                             continue;
                         }
-                        Block block2 = coord.getBlock(player.world);
-                        block2.onBlockHarvested(player.world, coord.getPos(), state, player);
-                        player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
-                        player.world.removeBlock(coord.getPos(), false);
+                        Block block2 = coordState.getBlock();
+                        //TODO: Should these be using coordState instead of state??
+                        block2.onBlockHarvested(player.world, coordPos, state, player);
+                        player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coordPos, Block.getStateId(state));
+                        player.world.removeBlock(coordPos, false);
                         //TODO: Check this
-                        block2.onReplaced(state, player.world, coord.getPos(), Blocks.AIR.getDefaultState(), false);
-                        Block.spawnDrops(state, player.world, coord.getPos(), player.world.getTileEntity(coord.getPos()));
+                        block2.onReplaced(state, player.world, coordPos, Blocks.AIR.getDefaultState(), false);
+                        Block.spawnDrops(state, player.world, coordPos, MekanismUtils.getTileEntity(player.world, coordPos));
                         setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
                     }
                 }
@@ -423,7 +427,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 if (maxRange > 0 && location.distanceTo(coord) > maxRange) {
                     continue;
                 }
-                if (coord.exists(world)) {
+                if (world.isBlockLoaded(coord.getPos())) {
                     Block block = coord.getBlock(world);
                     //TODO: Verify this works as a replacement for the below commented code
                     if (block == startBlock) {

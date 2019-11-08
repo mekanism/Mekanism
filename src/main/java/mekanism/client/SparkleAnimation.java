@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import mekanism.common.MekanismSounds;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
@@ -48,11 +49,7 @@ public class SparkleAnimation {
 
         while (itr.hasNext()) {
             BlockPos pos = itr.next();
-            if (world.isAirBlock(pos)) {
-                continue;
-            }
-
-            TileEntity t = world.getTileEntity(pos);
+            TileEntity t = MekanismUtils.getTileEntity(world, pos);
             if (t == null || !nodeChecker.isNode(t)) {
                 continue;
             }

@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +27,7 @@ public class PacketRedstoneControl {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (tileEntity instanceof IRedstoneControl) {
                 ((IRedstoneControl) tileEntity).setControlType(message.value);
             }

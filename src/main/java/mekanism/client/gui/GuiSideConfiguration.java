@@ -125,7 +125,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     @Override
     public void tick() {
         super.tick();
-        if (tileEntity == null || minecraft.world.getTileEntity(tileEntity.getPos()) == null) {
+        if (tileEntity == null || MekanismUtils.getTileEntity(minecraft.world, tileEntity.getPos()) == null) {
             minecraft.displayGuiScreen(null);
         }
     }

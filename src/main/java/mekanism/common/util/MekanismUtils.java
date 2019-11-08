@@ -66,6 +66,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -110,11 +111,9 @@ public final class MekanismUtils {
      * @return if machine is active
      */
     public static boolean isActive(IBlockReader world, BlockPos pos) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity != null) {
-            if (tileEntity instanceof IActiveState) {
-                return ((IActiveState) tileEntity).getActive();
-            }
+        TileEntity tileEntity = getTileEntity(world, pos);
+        if (tileEntity instanceof IActiveState) {
+            return ((IActiveState) tileEntity).getActive();
         }
         return false;
     }
@@ -226,19 +225,20 @@ public final class MekanismUtils {
      * Better version of the World.getRedstonePowerFromNeighbors() method that doesn't load chunks.
      *
      * @param world - the world to perform the check in
-     * @param coord - the coordinate of the block performing the check
+     * @param pos   - the position of the block performing the check
      *
      * @return if the block is indirectly getting powered by LOADED chunks
      */
-    public static boolean isGettingPowered(World world, Coord4D coord) {
+    public static boolean isGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
-            Coord4D sideCoord = coord.offset(side);
-            if (sideCoord.exists(world) && sideCoord.offset(side).exists(world)) {
-                BlockState blockState = sideCoord.getBlockState(world);
-                boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, coord.getPos(), side);
-                if (weakPower && isDirectlyGettingPowered(world, sideCoord)) {
+            BlockPos offset = pos.offset(side);
+            //TODO: Why does it offset twice
+            if (world.isBlockLoaded(pos) && world.isBlockLoaded(pos.offset(side))) {
+                BlockState blockState = world.getBlockState(offset);
+                boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
+                if (weakPower && isDirectlyGettingPowered(world, offset)) {
                     return true;
-                } else if (!weakPower && blockState.getWeakPower(world, sideCoord.getPos(), side) > 0) {
+                } else if (!weakPower && blockState.getWeakPower(world, offset, side) > 0) {
                     return true;
                 }
             }
@@ -250,15 +250,15 @@ public final class MekanismUtils {
      * Checks if a block is directly getting powered by any of its neighbors without loading any chunks.
      *
      * @param world - the world to perform the check in
-     * @param coord - the Coord4D of the block to check
+     * @param pos   - the BlockPos of the block to check
      *
      * @return if the block is directly getting powered
      */
-    public static boolean isDirectlyGettingPowered(World world, Coord4D coord) {
+    public static boolean isDirectlyGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
-            Coord4D sideCoord = coord.offset(side);
-            if (sideCoord.exists(world)) {
-                if (world.getRedstonePower(coord.getPos(), side) > 0) {
+            BlockPos offset = pos.offset(side);
+            if (world.isBlockLoaded(offset)) {
+                if (world.getRedstonePower(pos, side) > 0) {
                     return true;
                 }
             }
@@ -282,18 +282,19 @@ public final class MekanismUtils {
      * @param coord - Coord4D to perform the operation on
      */
     public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
-        BlockState state = coord.getBlockState(world);
+        BlockPos coordPos = coord.getPos();
+        BlockState state = world.getBlockState(coordPos);
         for (Direction dir : EnumUtils.DIRECTIONS) {
-            Coord4D offset = coord.offset(dir);
-            if (offset.exists(world)) {
-                notifyNeighborofChange(world, offset, coord.getPos());
-                if (offset.getBlockState(world).isNormalCube(world, offset.getPos())) {
+            BlockPos offset = coordPos.offset(dir);
+            if (world.isBlockLoaded(offset)) {
+                notifyNeighborofChange(world, offset, coordPos);
+                if (world.getBlockState(offset).isNormalCube(world, offset)) {
                     offset = offset.offset(dir);
-                    if (offset.exists(world)) {
-                        Block block1 = offset.getBlock(world);
+                    if (world.isBlockLoaded(offset)) {
+                        Block block1 = world.getBlockState(offset).getBlock();
                         //TODO: Make sure this is passing the correct state
-                        if (block1.getWeakChanges(state, world, offset.getPos())) {
-                            block1.onNeighborChange(state, world, offset.getPos(), coord.getPos());
+                        if (block1.getWeakChanges(state, world, offset)) {
+                            block1.onNeighborChange(state, world, offset, coordPos);
                         }
                     }
                 }
@@ -305,14 +306,14 @@ public final class MekanismUtils {
      * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
      *
      * @param world   world the change exists in
-     * @param coord   neighbor to notify
+     * @param pos     neighbor to notify
      * @param fromPos pos of our block that updated
      */
-    public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos) {
-        BlockState state = coord.getBlockState(world);
-        state.getBlock().onNeighborChange(state, world, coord.getPos(), fromPos);
+    public static void notifyNeighborofChange(World world, BlockPos pos, BlockPos fromPos) {
+        BlockState state = world.getBlockState(pos);
+        state.getBlock().onNeighborChange(state, world, pos, fromPos);
         //TODO: Check if this should be true for moving
-        state.neighborChanged(world, coord.getPos(), world.getBlockState(fromPos).getBlock(), fromPos, false);
+        state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
     }
 
     /**
@@ -343,9 +344,9 @@ public final class MekanismUtils {
         }
         world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote()) {
-            TileEntity tile = getTileEntity(world, boundingLocation);
-            if (tile instanceof TileEntityBoundingBlock) {
-                ((TileEntityBoundingBlock) tile).setMainLocation(orig.getPos());
+            TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
+            if (tile != null) {
+                tile.setMainLocation(orig.getPos());
             } else {
                 Mekanism.logger.warn("Unable to find Bounding Block Tile at: {}", boundingLocation);
             }
@@ -362,9 +363,9 @@ public final class MekanismUtils {
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock().getDefaultState());
         if (!world.isRemote) {
-            TileEntity tile = getTileEntity(world, boundingLocation);
-            if (tile instanceof TileEntityAdvancedBoundingBlock) {
-                ((TileEntityAdvancedBoundingBlock) tile).setMainLocation(orig.getPos());
+            TileEntityAdvancedBoundingBlock tile = getTileEntity(TileEntityAdvancedBoundingBlock.class, world, boundingLocation);
+            if (tile != null) {
+                tile.setMainLocation(orig.getPos());
             } else {
                 Mekanism.logger.warn("Unable to find Advanced Bounding Block Tile at: {}", boundingLocation);
             }
@@ -378,7 +379,7 @@ public final class MekanismUtils {
      * @param pos   Position of the block
      */
     public static void updateBlock(@Nullable World world, BlockPos pos) {
-        if (world == null || !world.isAreaLoaded(pos, 0)) {
+        if (world == null || !world.isBlockLoaded(pos)) {
             return;
         }
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
@@ -390,7 +391,7 @@ public final class MekanismUtils {
         BlockState blockState = world.getBlockState(pos);
         //TODO: Fix this as it is not ideal to just pretend the block was previously air to force it to update
         world.func_225319_b(pos, Blocks.AIR.getDefaultState(), blockState);
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = getTileEntity(world, pos);
         if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             updateAllLightTypes(world, pos);
         }
@@ -416,7 +417,7 @@ public final class MekanismUtils {
      *
      * @return if the block is a fluid
      */
-    public static boolean isFluid(World world, Coord4D pos) {
+    public static boolean isFluid(World world, BlockPos pos) {
         return !getFluid(world, pos, false).isEmpty();
     }
 
@@ -429,8 +430,8 @@ public final class MekanismUtils {
      * @return the fluid at the certain location, null if it doesn't exist
      */
     @Nonnull
-    public static FluidStack getFluid(World world, Coord4D pos, boolean filter) {
-        BlockState state = pos.getBlockState(world);
+    public static FluidStack getFluid(World world, BlockPos pos, boolean filter) {
+        BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
         if (block == Blocks.WATER && state.get(FlowingFluidBlock.LEVEL) == 0) {
             if (!filter) {
@@ -442,7 +443,7 @@ public final class MekanismUtils {
         } else if (block instanceof IFluidBlock) {
             IFluidBlock fluid = (IFluidBlock) block;
             if (state.getProperties().contains(FlowingFluidBlock.LEVEL) && state.get(FlowingFluidBlock.LEVEL) == 0) {
-                return fluid.drain(world, pos.getPos(), FluidAction.SIMULATE);
+                return fluid.drain(world, pos, FluidAction.SIMULATE);
             }
         }
         return FluidStack.EMPTY;
@@ -456,9 +457,8 @@ public final class MekanismUtils {
      *
      * @return if the block is a dead fluid
      */
-    public static boolean isDeadFluid(World world, Coord4D pos) {
-        BlockState state = pos.getBlockState(world);
-        Block block = state.getBlock();
+    public static boolean isDeadFluid(World world, BlockPos pos) {
+        Block block = world.getBlockState(pos).getBlock();
         return block instanceof FlowingFluidBlock || block instanceof IFluidBlock;
 
     }
@@ -672,12 +672,12 @@ public final class MekanismUtils {
     /**
      * Gets a clean view of a coordinate value without the dimension ID.
      *
-     * @param obj - coordinate to check
+     * @param pos - coordinate to check
      *
      * @return coordinate display
      */
-    public static String getCoordDisplay(Coord4D obj) {
-        return "[" + obj.x + ", " + obj.y + ", " + obj.z + "]";
+    public static String getCoordDisplay(BlockPos pos) {
+        return "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
     }
 
     /**
@@ -755,7 +755,7 @@ public final class MekanismUtils {
      */
     public static boolean isChunkVibrated(Chunk3D chunk) {
         for (Coord4D coord : Mekanism.activeVibrators) {
-            if (coord.getChunk3D().equals(chunk)) {
+            if (chunk.equals(new Chunk3D(coord))) {
                 return true;
             }
         }
@@ -863,11 +863,6 @@ public final class MekanismUtils {
         return ret != null ? ret : "<???>";
     }
 
-    public static TileEntity getTileEntitySafe(IBlockReader world, BlockPos pos) {
-        //TODO: Remove this/replace with getTileEntity
-        return world.getTileEntity(pos);//world instanceof Region ? ((Region) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK) : world.getTileEntity(pos);
-    }
-
     /**
      * Gets a tile entity if the location is loaded
      *
@@ -877,19 +872,75 @@ public final class MekanismUtils {
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
-    public static TileEntity getTileEntity(IWorldReader world, BlockPos pos) {
-        if (world != null && world.isAreaLoaded(pos, 0)) {
-            //TODO: This freezes if being called from onLoad
-            return world.getTileEntity(pos);
+    @Contract("null, _ -> null")
+    public static TileEntity getTileEntity(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
+        if (!isBlockLoaded(world, pos)) {
+            //If the world is null or its a world reader and the block is not loaded, return null
+            return null;
+        }
+        //TODO: This causes freezes if being called from onLoad
+        return world.getTileEntity(pos);
+    }
+
+    /**
+     * Gets a tile entity if the location is loaded
+     *
+     * @param clazz - Class type of the TileEntity we expect to be in the position
+     * @param world - world
+     * @param pos   - position
+     *
+     * @return tile entity if found, null if either not found or not loaded, or of the wrong type
+     */
+    @Nullable
+    @Contract("_, null, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IBlockReader world, @Nonnull BlockPos pos) {
+        //TODO: Should we go through usages of this where TileEntityMekanism is used, and use a more restrictive tile type?
+        return getTileEntity(clazz, world, pos, false);
+    }
+
+    @Nullable
+    @Contract("_, null, _, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IBlockReader world, @Nonnull BlockPos pos, boolean logWrongType) {
+        if (!isBlockLoaded(world, pos)) {
+            //If the world is null or its a world reader and the block is not loaded, return null
+            return null;
+        }
+        //TODO: This causes freezes if being called from onLoad
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile == null) {
+            return null;
+        }
+        if (clazz.isInstance(tile)) {
+            return (T) tile;
+        } else if (logWrongType) {
+            Mekanism.logger.warn("Unexpected TileEntity class at {}, expected {}, but found: {}", pos, clazz, tile.getClass());
         }
         return null;
     }
 
     /**
+     * Checks if a position is loaded
+     *
+     * @param world world
+     * @param pos   position
+     *
+     * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
+     */
+    public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
+        if (world == null) {
+            return false;
+        }
+        if (world instanceof IWorldReader) {
+            return ((IWorldReader) world).isBlockLoaded(pos);
+        }
+        return true;
+    }//TODO: Make a util method for checking if a block is air that also ensures it is loaded?
+
+    /**
      * Dismantles a block, dropping it and removing it from the world.
      */
     public static void dismantleBlock(BlockState state, World world, BlockPos pos) {
-        dismantleBlock(state, world, pos, world.getTileEntity(pos));
+        dismantleBlock(state, world, pos, getTileEntity(world, pos));
     }
 
     public static void dismantleBlock(BlockState state, World world, BlockPos pos, TileEntity tile) {

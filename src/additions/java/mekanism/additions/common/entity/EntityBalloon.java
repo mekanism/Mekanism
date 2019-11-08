@@ -142,9 +142,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         }
 
         if (!world.isRemote) {
-            if (latched != null && latched.exists(world) && latched.isAirBlock(world)) {
-                latched = null;
-                dataManager.set(IS_LATCHED, (byte) 0);
+            if (latched != null) {
+                BlockPos latchedPos = latched.getPos();
+                if (world.isBlockLoaded(latchedPos) && world.isAirBlock(latchedPos)) {
+                    latched = null;
+                    dataManager.set(IS_LATCHED, (byte) 0);
+                }
             }
             //TODO: Get nearby entities
             if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive()/* || !world.loadedEntityList.contains(latchedEntity)*/)) {

@@ -7,6 +7,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -28,7 +29,7 @@ public class PacketDataRequest {
         }
         context.get().enqueueWork(() -> {
             //TODO: Verify this
-            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (tileEntity instanceof TileEntityMultiblock) {
                 ((TileEntityMultiblock<?>) tileEntity).sendStructure = true;
             }

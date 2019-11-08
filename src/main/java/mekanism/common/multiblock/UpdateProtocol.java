@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -224,7 +225,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
      */
     public boolean isViableNode(int x, int y, int z) {
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType()).getTileEntity(pointer.getWorld());
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
         if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(pointer)) {
             return true;
         }
@@ -290,9 +291,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
     protected void onFormed() {
         for (Coord4D coord : structureFound.internalLocations) {
-            TileEntity tile = coord.getTileEntity(pointer.getWorld());
-            if (tile instanceof TileEntityInternalMultiblock) {
-                ((TileEntityInternalMultiblock) tile).setMultiblock(structureFound.inventoryID);
+            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, pointer.getWorld(), coord.getPos());
+            if (tile != null) {
+                tile.setMultiblock(structureFound.inventoryID);
             }
         }
     }
@@ -307,9 +308,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
     }
 
     private void killInnerNode(Coord4D coord) {
-        TileEntity tile = coord.getTileEntity(pointer.getWorld());
-        if (tile instanceof TileEntityInternalMultiblock) {
-            ((TileEntityInternalMultiblock) tile).setMultiblock(null);
+        TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, pointer.getWorld(), coord.getPos());
+        if (tile != null) {
+            tile.setMultiblock(null);
         }
     }
 
@@ -330,7 +331,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             for (Coord4D coord : iteratedNodes) {
                 if (!structureFound.locations.contains(coord)) {
                     for (Coord4D newCoord : iteratedNodes) {
-                        TileEntity tile = newCoord.getTileEntity(pointer.getWorld());
+                        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), newCoord.getPos());
                         if (tile instanceof TileEntityMultiblock) {
                             ((TileEntityMultiblock<?>) tile).structure = null;
                         } else if (tile instanceof IStructuralMultiblock) {
@@ -346,9 +347,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
             List<String> idsFound = new ArrayList<>();
             for (Coord4D obj : structureFound.locations) {
-                TileEntity tileEntity = obj.getTileEntity(pointer.getWorld());
-                if (tileEntity instanceof TileEntityMultiblock
-                    && ((TileEntityMultiblock) tileEntity).cachedID != null) {
+                TileEntity tileEntity = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
+                if (tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock) tileEntity).cachedID != null) {
                     idsFound.add(((TileEntityMultiblock) tileEntity).cachedID);
                 }
             }
@@ -383,7 +383,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             Coord4D toUse = null;
 
             for (Coord4D obj : structureFound.locations) {
-                TileEntity tileEntity = obj.getTileEntity(pointer.getWorld());
+                TileEntity tileEntity = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
                 if (tileEntity instanceof TileEntityMultiblock) {
                     ((TileEntityMultiblock<T>) tileEntity).structure = structureFound;
                     if (toUse == null) {
@@ -401,7 +401,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             }
         } else {
             for (Coord4D coord : iteratedNodes) {
-                TileEntity tile = coord.getTileEntity(pointer.getWorld());
+                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
                 if (tile instanceof TileEntityMultiblock) {
                     TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) tile;
                     if (tileEntity.structure != null && !tileEntity.structure.destroyed) {

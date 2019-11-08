@@ -16,6 +16,7 @@ import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -128,7 +129,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity tile = coord.getTileEntity(getWorld());
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), coord.getPos());
             if (tile == null) {
                 continue;
             }

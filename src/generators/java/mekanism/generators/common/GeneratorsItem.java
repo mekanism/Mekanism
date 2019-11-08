@@ -19,7 +19,7 @@ public enum GeneratorsItem implements IItemProvider {
     TURBINE_BLADE(new ItemMekanism(MekanismGenerators.MODID, "turbine_blade") {
         @Override
         public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
-            return MekanismUtils.getTileEntitySafe(world, pos) instanceof TileEntityTurbineRotor;
+            return MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos) != null;
         }
     });
 

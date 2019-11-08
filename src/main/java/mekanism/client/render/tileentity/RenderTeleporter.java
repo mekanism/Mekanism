@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -18,7 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
@@ -41,9 +40,9 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translatef((float) x, (float) y, (float) z);
-            Coord4D obj = Coord4D.get(tileEntity).offset(Direction.WEST);
+            BlockPos pos = tileEntity.getPos().west();
             int type = 0;
-            BlockState s = obj.getBlockState(tileEntity.getWorld());
+            BlockState s = tileEntity.getWorld().getBlockState(pos);
             if (s.getBlock() instanceof BlockTeleporter) {
                 type = 1;
             }

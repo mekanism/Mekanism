@@ -7,6 +7,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -40,7 +41,7 @@ public class PacketSecurityMode {
         }
         context.get().enqueueWork(() -> {
             if (message.packetType == SecurityPacketType.BLOCK) {
-                TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+                TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
                 if (tileEntity instanceof ISecurityTile && ((ISecurityTile) tileEntity).hasSecurity()) {
                     UUID owner = ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
                     if (owner != null && player.getUniqueID().equals(owner)) {

@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
@@ -42,7 +41,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof TileEntityMekanism) {
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
@@ -74,7 +73,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntityStructuralGlass tileEntity = (TileEntityStructuralGlass) MekanismUtils.getTileEntitySafe(world, pos);
+        TileEntityStructuralGlass tileEntity = MekanismUtils.getTileEntity(TileEntityStructuralGlass.class, world, pos);
         if (tileEntity != null) {
             if (world.isRemote) {
                 return true;

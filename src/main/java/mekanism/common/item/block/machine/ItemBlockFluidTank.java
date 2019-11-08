@@ -182,7 +182,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                         if (!entityplayer.canPlayerEdit(coord.getPos(), pos.getFace(), itemstack)) {
                             return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
-                        FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
+                        FluidStack fluid = MekanismUtils.getFluid(world, coord.getPos(), false);
                         if (!fluid.isEmpty()) {
                             FluidStack stored = getFluidStack(itemstack);
                             if (stored.isEmpty() || getFluidStack(itemstack).isFluidEqual(fluid)) {

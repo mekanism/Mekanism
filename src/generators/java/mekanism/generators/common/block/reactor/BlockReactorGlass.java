@@ -5,6 +5,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
@@ -12,7 +13,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -36,9 +36,9 @@ public class BlockReactorGlass extends BlockTileDrops implements IHasTileEntity<
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -48,7 +48,7 @@ public class BlockReactorGlass extends BlockTileDrops implements IHasTileEntity<
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity == null) {
             return false;
         }

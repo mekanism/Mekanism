@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITankManager.DropperHandler;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +30,7 @@ public class PacketDropperUse {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (tileEntity instanceof ITankManager) {
                 try {
                     Object tank = ((ITankManager) tileEntity).getTanks()[message.tankId];

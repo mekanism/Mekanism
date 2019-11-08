@@ -191,19 +191,22 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private boolean smeltBlock(Coord4D block) {
-        ItemStack stack = block.getStack(world);
+        if (world.isAirBlock(block.getPos())) {
+            return false;
+        }
+        ItemStack stack = new ItemStack(world.getBlockState(block.getPos()).getBlock());
         if (stack.isEmpty()) {
             return false;
         }
         Optional<FurnaceRecipe> recipe;
         try {
-            recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(block.getStack(world)), world);
+            recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world);
         } catch (Exception e) {
             return false;
         }
         if (recipe.isPresent()) {
             if (!world.isRemote) {
-                BlockState state = block.getBlockState(world);
+                BlockState state = world.getBlockState(block.getPos());
                 ItemStack result = recipe.get().getRecipeOutput();
                 if (result.getItem() instanceof BlockItem) {
                     world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem().getItem()).getDefaultState());

@@ -1,7 +1,6 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
@@ -23,7 +22,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -46,9 +44,9 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock);
             }
         }
     }
@@ -60,12 +58,14 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-        if (tileEntity instanceof TileEntityThermalEvaporationController && !player.isSneaking()) {
-            if (!world.isRemote) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, getProvider((TileEntityThermalEvaporationController) tileEntity), pos);
+        if (!player.isSneaking()) {
+            TileEntityThermalEvaporationController tileEntity = MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, world, pos);
+            if (tileEntity != null) {
+                if (!world.isRemote) {
+                    NetworkHooks.openGui((ServerPlayerEntity) player, getProvider(tileEntity), pos);
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }

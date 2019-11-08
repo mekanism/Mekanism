@@ -75,12 +75,10 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
         if (!(this instanceof TileEntityThermalEvaporationController)) {
             for (Direction side : EnumUtils.DIRECTIONS) {
                 BlockPos checkPos = pos.offset(side);
-                TileEntity check = MekanismUtils.getTileEntity(getWorld(), checkPos);
-                if (check instanceof TileEntityThermalEvaporationBlock) {
-                    if (check instanceof TileEntityThermalEvaporationController) {
-                        ((TileEntityThermalEvaporationController) check).refresh();
-                        return;
-                    }
+                TileEntityThermalEvaporationController check = MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, getWorld(), checkPos);
+                if (check != null) {
+                    check.refresh();
+                    return;
                 }
             }
             TileEntityThermalEvaporationController found = new ControllerFinder().find();
@@ -92,10 +90,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
     public TileEntityThermalEvaporationController getController() {
         if (master != null) {
-            TileEntity tile = master.getTileEntity(getWorld());
-            if (tile instanceof TileEntityThermalEvaporationController) {
-                return (TileEntityThermalEvaporationController) tile;
-            }
+            return MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, getWorld(), master.getPos());
         }
         return null;
     }

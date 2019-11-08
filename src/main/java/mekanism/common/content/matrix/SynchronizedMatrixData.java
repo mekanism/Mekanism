@@ -14,7 +14,6 @@ import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 //TODO: Do something better for purposes of double precision such as BigInt
@@ -166,9 +165,8 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 
     private void addEnergy(World world, double energy) {
         for (Coord4D coord : cells) {
-            TileEntity tile = coord.getTileEntity(world);
-            if (tile instanceof TileEntityInductionCell) {
-                TileEntityInductionCell cell = (TileEntityInductionCell) tile;
+            TileEntityInductionCell cell = MekanismUtils.getTileEntity(TileEntityInductionCell.class, world, coord.getPos());
+            if (cell != null) {
                 double cellEnergy = cell.getEnergy();
                 double cellMax = cell.getMaxEnergy();
                 if (cellEnergy >= cellMax) {
@@ -196,9 +194,8 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 
     private void removeEnergy(World world, double energy) {
         for (Coord4D coord : cells) {
-            TileEntity tile = coord.getTileEntity(world);
-            if (tile instanceof TileEntityInductionCell) {
-                TileEntityInductionCell cell = (TileEntityInductionCell) tile;
+            TileEntityInductionCell cell = MekanismUtils.getTileEntity(TileEntityInductionCell.class, world, coord.getPos());
+            if (cell != null) {
                 double cellEnergy = cell.getEnergy();
                 if (cellEnergy == 0) {
                     //It is already empty

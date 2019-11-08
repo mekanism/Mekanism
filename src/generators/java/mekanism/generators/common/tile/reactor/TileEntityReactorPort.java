@@ -272,10 +272,10 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-        if (!(adj instanceof TileEntityReactorBlock)) {
-            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+        if (adj instanceof TileEntityReactorBlock) {
+            return null;
         }
-        return null;
+        return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
     }
 
     @Override
