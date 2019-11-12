@@ -89,6 +89,20 @@ public class BlockObsidianTNT extends Block {
     }
 
     @Override
+    public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isFireSource(World world, BlockPos pos, EnumFacing side)
+    {
+    	  explode(world, pos);
+        world.setBlockToAir(pos);
+        return true;
+    }
+
+    @Override
     public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (entity instanceof EntityArrow && !world.isRemote) {
             EntityArrow entityarrow = (EntityArrow) entity;
