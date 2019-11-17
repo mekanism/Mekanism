@@ -14,7 +14,6 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.item.IItemEnergized;
@@ -81,8 +80,8 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
             securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
             securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
         }
-        if (tile instanceof IUpgradeTile) {
-            ((IUpgradeTile) tile).getComponent().write(ItemDataUtils.getDataMap(itemStack));
+        if (tile.supportsUpgrades()) {
+            tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
         }
         if (tile instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tile;

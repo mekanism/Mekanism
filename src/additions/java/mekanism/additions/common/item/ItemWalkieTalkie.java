@@ -8,7 +8,6 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.api.text.EnumColor;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
@@ -29,14 +28,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
+public class ItemWalkieTalkie extends Item implements IItemNetwork {
 
     public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(new ResourceLocation(MekanismAdditions.MODID, "walkie_talkie"), "inventory");
 
     public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
-    public ItemWalkieTalkie() {
-        super(MekanismAdditions.MODID, "walkie_talkie", new Item.Properties().maxStackSize(1));
+    public ItemWalkieTalkie(Item.Properties properties) {
+        super(properties.maxStackSize(1));
     }
 
     public static ModelResourceLocation getModel(int channel) {

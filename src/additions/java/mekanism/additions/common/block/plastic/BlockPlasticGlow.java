@@ -1,10 +1,8 @@
 package mekanism.additions.common.block.plastic;
 
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
 
 public class BlockPlasticGlow extends Block implements IColoredBlock {
 
@@ -13,7 +11,6 @@ public class BlockPlasticGlow extends Block implements IColoredBlock {
     public BlockPlasticGlow(EnumColor color) {
         super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).lightValue(10));
         this.color = color;
-        setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_plastic_glow"));
     }
 
     @Override

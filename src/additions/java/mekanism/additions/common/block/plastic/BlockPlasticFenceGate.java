@@ -1,7 +1,6 @@
 package mekanism.additions.common.block.plastic;
 
 import javax.annotation.Nonnull;
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.states.BlockStateHelper;
@@ -14,7 +13,6 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
@@ -25,7 +23,6 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
     public BlockPlasticFenceGate(EnumColor color) {
         super(Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F));
         this.color = color;
-        setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_plastic_fence_gate"));
         this.setDefaultState(getDefaultState().with(BlockStateHelper.WATERLOGGED, false));
     }
 

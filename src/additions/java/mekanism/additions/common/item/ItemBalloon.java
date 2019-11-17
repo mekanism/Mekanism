@@ -2,12 +2,11 @@ package mekanism.additions.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.api.text.EnumColor;
-import mekanism.common.item.ItemMekanism;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
@@ -28,12 +27,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public class ItemBalloon extends ItemMekanism {
+public class ItemBalloon extends Item {
 
     private final EnumColor color;
 
     public ItemBalloon(EnumColor color) {
-        super(MekanismAdditions.MODID, color.registry_prefix + "_balloon");
+        super(ItemDeferredRegister.getMekBaseProperties());
         this.color = color;
         DispenserBlock.registerDispenseBehavior(this, new DispenserBehavior());
     }

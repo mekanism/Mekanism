@@ -28,7 +28,6 @@ public class BlockObsidianTNT extends Block {
 
     public BlockObsidianTNT() {
         super(Block.Properties.create(Material.TNT));
-        setRegistryName(new ResourceLocation(MekanismAdditions.MODID, "obsidian_tnt"));
     }
 
     @Override

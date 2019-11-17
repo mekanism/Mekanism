@@ -2,14 +2,12 @@ package mekanism.tools.common.item;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.Mekanism;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.tools.common.IHasRepairType;
-import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,14 +17,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -39,17 +35,15 @@ import net.minecraftforge.common.ToolType;
 public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
 
     public ItemMekanismPaxel(BaseMekanismMaterial material) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, new HashSet<>(), new Item.Properties().group(Mekanism.tabMekanism)
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, new HashSet<>(), ItemDeferredRegister.getMekBaseProperties()
               .addToolType(ToolType.AXE, material.getPaxelHarvestLevel()).addToolType(ToolType.PICKAXE, material.getPaxelHarvestLevel())
               .addToolType(ToolType.SHOVEL, material.getPaxelHarvestLevel()));
-        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.getRegistryPrefix() + "_paxel"));
     }
 
     public ItemMekanismPaxel(ItemTier material) {
-        super(4, -2.4F, material, new HashSet<>(), new Item.Properties().group(Mekanism.tabMekanism)
+        super(4, -2.4F, material, new HashSet<>(), ItemDeferredRegister.getMekBaseProperties()
               .addToolType(ToolType.AXE, material.getHarvestLevel()).addToolType(ToolType.PICKAXE, material.getHarvestLevel())
               .addToolType(ToolType.SHOVEL, material.getHarvestLevel()));
-        setRegistryName(new ResourceLocation(MekanismTools.MODID, material.name().toLowerCase(Locale.ROOT) + "_paxel"));
     }
 
     @Override
@@ -100,6 +94,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
                 context.getItem().damageItem(1, playerentity, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
             }
         }
+        //TODO: Make it so that we can also turn grass -> grass paths
         return ActionResultType.SUCCESS;
     }
 

@@ -3,19 +3,22 @@ package mekanism.common.item.block;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class ItemBlockColoredName<BLOCK extends Block & IColoredBlock> extends ItemBlockMekanism<BLOCK> {
+//TODO: Do we want an interface for getting the block easier with the correct type
+public class ItemBlockColoredName extends BlockItem {
 
-    public ItemBlockColoredName(BLOCK block) {
-        this(block, new Item.Properties());
+    public <BLOCK extends Block & IColoredBlock> ItemBlockColoredName(BLOCK block) {
+        this(block, ItemDeferredRegister.getMekBaseProperties());
     }
 
-    public ItemBlockColoredName(BLOCK block, Item.Properties properties) {
+    public <BLOCK extends Block & IColoredBlock> ItemBlockColoredName(BLOCK block, Item.Properties properties) {
         super(block, properties);
     }
 

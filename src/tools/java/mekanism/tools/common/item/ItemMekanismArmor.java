@@ -1,11 +1,10 @@
 package mekanism.tools.common.item;
 
 import java.util.List;
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.render.ModelCustomArmor;
-import mekanism.common.Mekanism;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.tools.common.IHasRepairType;
@@ -18,10 +17,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,20 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
 
     public ItemMekanismArmor(BaseMekanismMaterial material, EquipmentSlotType slot) {
-        super(material, slot, new Item.Properties().group(Mekanism.tabMekanism));
-        String name = null;
-        if (slot == EquipmentSlotType.HEAD) {
-            name = material.getRegistryPrefix() + "_helmet";
-        } else if (slot == EquipmentSlotType.CHEST) {
-            name = material.getRegistryPrefix() + "_chestplate";
-        } else if (slot == EquipmentSlotType.LEGS) {
-            name = material.getRegistryPrefix() + "_leggings";
-        } else if (slot == EquipmentSlotType.FEET) {
-            name = material.getRegistryPrefix() + "_boots";
-        }
-        if (name != null) {
-            setRegistryName(new ResourceLocation(MekanismTools.MODID, name.toLowerCase(Locale.ROOT)));
-        }
+        super(material, slot, ItemDeferredRegister.getMekBaseProperties());
     }
 
     @Override

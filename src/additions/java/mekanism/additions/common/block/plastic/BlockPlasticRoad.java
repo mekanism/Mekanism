@@ -1,11 +1,9 @@
 package mekanism.additions.common.block.plastic;
 
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -17,7 +15,6 @@ public class BlockPlasticRoad extends Block implements IColoredBlock {
     public BlockPlasticRoad(EnumColor color) {
         super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F));
         this.color = color;
-        setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_plastic_road"));
     }
 
     @Override

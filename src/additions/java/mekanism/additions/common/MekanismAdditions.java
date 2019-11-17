@@ -39,6 +39,9 @@ public class MekanismAdditions implements IModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::serverStarting);
         modEventBus.addListener(this::serverStopping);
+
+        AdditionsItem.ITEMS.register(modEventBus);
+        AdditionsBlock.BLOCKS.register(modEventBus);
     }
 
     @Override

@@ -10,6 +10,7 @@ import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.api.block.IColoredBlock;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.block.Block;
@@ -40,8 +41,8 @@ public class AdditionsClientRegistration {
     }
 
     //TODO: Move this to a utils class
-    private static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, AdditionsBlock... blocks) {
-        for (AdditionsBlock additionsBlock : blocks) {
+    private static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, IBlockProvider... blocks) {
+        for (IBlockProvider additionsBlock : blocks) {
             blockColors.register(blockColor, additionsBlock.getBlock());
             itemColors.register(itemColor, additionsBlock.getItem());
         }

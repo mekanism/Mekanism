@@ -1,6 +1,7 @@
 package mekanism.tools.common;
 
 import java.util.Random;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
@@ -36,6 +37,8 @@ public class MekanismTools implements IModule {
         //modEventBus.addListener((FMLModIdMappingEvent event) -> ToolsItem.remapItems());
         modEventBus.addListener(this::onLivingSpecialSpawn);
 
+        ToolsItem.ITEMS.register(modEventBus);
+
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         //TODO: Is the modEventBus stuff above used instead of this
         //MinecraftForge.EVENT_BUS.register(this);
@@ -49,7 +52,7 @@ public class MekanismTools implements IModule {
         }
     }
 
-    private void setEntityArmorWithChance(Random random, LivingEntity entity, ToolsItem sword, ToolsItem helmet, ToolsItem chestplate, ToolsItem leggings, ToolsItem boots) {
+    private void setEntityArmorWithChance(Random random, LivingEntity entity, IItemProvider sword, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings, IItemProvider boots) {
         if (entity instanceof ZombieEntity && random.nextInt(100) < 50) {
             setStackIfEmpty(entity, EquipmentSlotType.MAINHAND, sword.getItemStack());
         }

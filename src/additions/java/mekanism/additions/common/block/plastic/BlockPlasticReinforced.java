@@ -1,10 +1,8 @@
 package mekanism.additions.common.block.plastic;
 
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
 
 public class BlockPlasticReinforced extends Block implements IColoredBlock {
 
@@ -13,7 +11,6 @@ public class BlockPlasticReinforced extends Block implements IColoredBlock {
     public BlockPlasticReinforced(EnumColor color) {
         super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(50F, 2000F));
         this.color = color;
-        setRegistryName(new ResourceLocation(MekanismAdditions.MODID, color.registry_prefix + "_reinforced_plastic"));
     }
 
     @Override
