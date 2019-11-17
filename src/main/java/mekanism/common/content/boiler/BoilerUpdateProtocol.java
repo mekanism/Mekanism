@@ -67,15 +67,15 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         final Coord4D initDisperser = dispersers.iterator().next();
 
         //Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
-        Coord4D pos = new Coord4D(structure.renderLocation.x, initDisperser.y, structure.renderLocation.z, pointer.getWorld().getDimension().getType());
+        BlockPos pos = new BlockPos(structure.renderLocation.x, initDisperser.y, structure.renderLocation.z);
         for (int x = 1; x < structure.volLength - 1; x++) {
             for (int z = 1; z < structure.volWidth - 1; z++) {
-                Coord4D coord4D = pos.translate(x, 0, z);
-                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord4D.getPos());
-                if (!(tile instanceof TileEntityPressureDisperser)) {
+                BlockPos shifted = pos.add(x, 0, z);
+                TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getWorld(), shifted);
+                if (tile == null) {
                     return false;
                 }
-                dispersers.remove(coord4D);
+                dispersers.remove(new Coord4D(shifted, pointer.getWorld()));
             }
         }
 

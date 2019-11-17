@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
 
     private static ModelWindGenerator windGenerator = new ModelWindGenerator();
-    private static int angle = 0;
+    private static int angle = 0;//TODO: FIXME this gets incremented for every visible wind generator item
     public static ItemLayerWrapper model;
 
     @Override

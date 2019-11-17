@@ -39,8 +39,8 @@ public class UsageConfig implements IMekanismConfig {
     public final ConfigValue<Integer> teleporterDistance;
     public final ConfigValue<Integer> teleporterDimensionPenalty;
 
-    UsageConfig(ForgeConfigSpec.Builder builder) {
-        //ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+    UsageConfig() {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Machine Energy Usage Config").push("usage");
 
         enrichmentChamber = builder.comment("Energy per operation tick (Joules).").define("enrichmentChamber", 50D);
@@ -76,14 +76,13 @@ public class UsageConfig implements IMekanismConfig {
 
         builder.pop();
 
-        //TODO
         builder.pop();
-        //configSpec = builder.build();
+        configSpec = builder.build();
     }
 
     @Override
     public String getFileName() {
-        return "machine-usage.toml";
+        return "machine-usage";
     }
 
     @Override
@@ -93,6 +92,11 @@ public class UsageConfig implements IMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
+        return Type.SERVER;
+    }
+
+    @Override
+    public boolean addToContainer() {
+        return false;
     }
 }

@@ -20,7 +20,7 @@ import net.minecraft.world.dimension.DimensionType;
  *
  * @author aidancbrady
  */
-public class Coord4D {//TODO: Replace this with GlobalPos?
+public class Coord4D {//TODO: Replace this with GlobalPos
 
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
@@ -169,17 +169,6 @@ public class Coord4D {//TODO: Replace this with GlobalPos?
      */
     public Coord4D translate(int x, int y, int z) {
         return new Coord4D(this.x + x, this.y + y, this.z + z, dimension);
-    }
-
-    /**
-     * Translates this Coord4D by the defined Coord4D's coordinates, regardless of dimension.
-     *
-     * @param coord - coordinates to translate by
-     *
-     * @return translated Coord4D
-     */
-    public Coord4D translate(Coord4D coord) {
-        return translate(coord.x, coord.y, coord.z);
     }
 
     /**

@@ -96,7 +96,7 @@ public class GeneratorsConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "generators.toml";
+        return "generators";
     }
 
     @Override
@@ -106,6 +106,6 @@ public class GeneratorsConfig implements IMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
+        return Type.SERVER;
     }
 }

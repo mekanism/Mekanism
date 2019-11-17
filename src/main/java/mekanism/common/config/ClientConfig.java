@@ -46,7 +46,7 @@ public class ClientConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "client.toml";
+        return "client";
     }
 
     @Override

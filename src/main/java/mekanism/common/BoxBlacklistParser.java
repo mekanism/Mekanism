@@ -6,11 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import mekanism.common.config.MekanismConfigHelper;
 
 public final class BoxBlacklistParser {
 
-    private static File mekanismDir = new File(Mekanism.proxy.getMinecraftDir(), "config/mekanism");
-    private static File boxBlacklistFile = new File(mekanismDir, "BoxBlacklist.txt");
+    //TODO: Convert this to a toml file
+    private static File boxBlacklistFile = MekanismConfigHelper.CONFIG_DIR.resolve("BoxBlacklist.txt").toFile();
 
     private BoxBlacklistParser() {
     }
@@ -26,7 +27,6 @@ public final class BoxBlacklistParser {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void generateFiles() throws IOException {
-        mekanismDir.mkdirs();
         if (!boxBlacklistFile.exists()) {
             boxBlacklistFile.createNewFile();
             writeExamples();

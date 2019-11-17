@@ -1,6 +1,5 @@
 package mekanism.additions.common;
 
-import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.AdditionsEntityType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -29,11 +28,6 @@ public class AdditionsRegistration {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         AdditionsEntityType.registerEntities(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void onLoad(ModConfig.Loading configEvent) {
-        MekanismAdditionsConfig.loadFromFiles();
     }
 
     @SubscribeEvent

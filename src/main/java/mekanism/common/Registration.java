@@ -2,7 +2,6 @@ package mekanism.common;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -105,11 +104,6 @@ public class Registration {
     @SubscribeEvent
     public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
         MekanismParticleType.registerParticles(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void onLoad(ModConfig.Loading configEvent) {
-        MekanismConfig.loadFromFiles();
     }
 
     @SubscribeEvent

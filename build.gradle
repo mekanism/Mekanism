@@ -45,11 +45,11 @@ sourceSets {
     main {
         java {
             srcDir 'src/main/java'
-            resources {
-                include '**/**'
-                // copy everything else, but blender files.
-                exclude '**/*.blend'
-            }
+        }
+        resources {
+            include '**/**'
+            // copy everything else, but blender files.
+            exclude '**/*.blend'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
@@ -230,10 +230,14 @@ dependencies {
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
+    //TODO: Fix this once https://github.com/McJtyMods/TheOneProbe/issues/344 gets resolved
+    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api")
+    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}")
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
-    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
 
-    //TODO: Use proper CrT dependency if this is not the path for maven
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
     // Not updated yet

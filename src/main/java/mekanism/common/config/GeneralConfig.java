@@ -94,7 +94,8 @@ public class GeneralConfig implements IMekanismConfig {
     public EnumValue<EnergyType> energyUnit;
     public EnumValue<TempType> tempUnit;
 
-    GeneralConfig(ForgeConfigSpec.Builder builder) {
+    GeneralConfig() {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("General Config").push("general");
         //TODO: Move things to different files where it makes more sense
         // Also make config options for the different gear types, where previously we didn't allow them to be configured
@@ -209,19 +210,13 @@ public class GeneralConfig implements IMekanismConfig {
 
         voidInvalidGases = builder.comment("Should machines void the gas inside of them on load if there is no recipe using that gas.").define("voidInvalidGases", true);
 
-        //TODO
         builder.pop();
-        //configSpec = builder.build();
+        configSpec = builder.build();
     }
 
     @Override
     public String getFileName() {
-        return "general.toml";
-    }
-
-    //TODO: Remove
-    public void setConfigSpec(ForgeConfigSpec spec) {
-        configSpec = spec;
+        return "general";
     }
 
     @Override
@@ -231,6 +226,6 @@ public class GeneralConfig implements IMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
+        return Type.SERVER;
     }
 }

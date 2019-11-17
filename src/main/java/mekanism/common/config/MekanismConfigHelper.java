@@ -1,26 +1,25 @@
 package mekanism.common.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import java.nio.file.Path;
 import mekanism.common.Mekanism;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 public class MekanismConfigHelper {
 
-    public static Path CONFIG_DIR;
+    public static final Path CONFIG_DIR;
 
-    public static void registerConfig(ModLoadingContext modLoadingContext, IMekanismConfig config) {
-        modLoadingContext.registerConfig(config.getConfigType(), config.getConfigSpec(), Mekanism.MODID + "/" + config.getFileName());
+    static {
+        CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(Mekanism.MOD_NAME), Mekanism.MOD_NAME);
     }
 
-    public static void load(IMekanismConfig config) {
-        if (CONFIG_DIR == null) {
-            CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(Mekanism.MODID), Mekanism.MODID);
+    /**
+     * Creates a mod config so that {@link net.minecraftforge.fml.config.ConfigTracker} will track it and sync server configs from server to client.
+     */
+    public static void registerConfig(ModContainer modContainer, IMekanismConfig config) {
+        MekanismModConfig modConfig = new MekanismModConfig(config.getConfigType(), config.getConfigSpec(), modContainer, config.getFileName());
+        if (config.addToContainer()) {
+            modContainer.addConfig(modConfig);
         }
-        CommentedFileConfig configData = CommentedFileConfig.builder(CONFIG_DIR.resolve(config.getFileName())).sync().autosave().writingMode(WritingMode.REPLACE).build();
-        configData.load();
-        config.getConfigSpec().setConfig(configData);
     }
 }

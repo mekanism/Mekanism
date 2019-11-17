@@ -35,8 +35,8 @@ public class TierConfig implements IMekanismConfig {
     //TODO: final
     private ForgeConfigSpec configSpec;
 
-    TierConfig(ForgeConfigSpec.Builder builder) {
-        //ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+    TierConfig() {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Tier Config").push("tier");
         addEnergyCubeCategory(builder);
         addFluidTankCategory(builder);
@@ -45,9 +45,8 @@ public class TierConfig implements IMekanismConfig {
         addInductionCategory(builder);
         addTransmittersCategory(builder);
 
-        //TODO
         builder.pop();
-        //configSpec = builder.build();
+        configSpec = builder.build();
     }
 
     private void addEnergyCubeCategory(ForgeConfigSpec.Builder builder) {
@@ -194,7 +193,7 @@ public class TierConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "tiers.toml";
+        return "tiers";
     }
 
     @Override
@@ -204,6 +203,11 @@ public class TierConfig implements IMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
+        return Type.SERVER;
+    }
+
+    @Override
+    public boolean addToContainer() {
+        return false;
     }
 }

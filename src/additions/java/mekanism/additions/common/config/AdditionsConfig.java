@@ -34,7 +34,7 @@ public class AdditionsConfig implements IMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "additions.toml";
+        return "additions";
     }
 
     @Override
@@ -44,6 +44,6 @@ public class AdditionsConfig implements IMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
+        return Type.SERVER;
     }
 }

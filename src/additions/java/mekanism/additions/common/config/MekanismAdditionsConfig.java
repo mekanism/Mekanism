@@ -7,11 +7,7 @@ public class MekanismAdditionsConfig {
 
     public static final AdditionsConfig additions = new AdditionsConfig();
 
-    public static void loadFromFiles() {
-        MekanismConfigHelper.load(additions);
-    }
-
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        MekanismConfigHelper.registerConfig(modLoadingContext, additions);
+        MekanismConfigHelper.registerConfig(modLoadingContext.getActiveContainer(), additions);
     }
 }

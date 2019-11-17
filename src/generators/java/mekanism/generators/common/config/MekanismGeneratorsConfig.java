@@ -7,11 +7,7 @@ public class MekanismGeneratorsConfig {
 
     public static final GeneratorsConfig generators = new GeneratorsConfig();
 
-    public static void loadFromFiles() {
-        MekanismConfigHelper.load(generators);
-    }
-
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        MekanismConfigHelper.registerConfig(modLoadingContext, generators);
+        MekanismConfigHelper.registerConfig(modLoadingContext.getActiveContainer(), generators);
     }
 }

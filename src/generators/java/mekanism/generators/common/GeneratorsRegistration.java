@@ -1,6 +1,5 @@
 package mekanism.generators.common;
 
-import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import net.minecraft.block.Block;
@@ -36,11 +35,6 @@ public class GeneratorsRegistration {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
         GeneratorsContainerTypes.registerContainers(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void onLoad(ModConfig.Loading configEvent) {
-        MekanismGeneratorsConfig.loadFromFiles();
     }
 
     @SubscribeEvent

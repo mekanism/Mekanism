@@ -35,8 +35,8 @@ public class StorageConfig implements IMekanismConfig {
     public final ConfigValue<Double> formulaicAssemblicator;
     public final ConfigValue<Double> teleporter;
 
-    StorageConfig(ForgeConfigSpec.Builder builder) {
-        //ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+    StorageConfig() {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Machine Energy Storage Config").push("storage");
 
         enrichmentChamber = builder.comment("Base energy storage (Joules).").define("enrichmentChamber", 20_000D);
@@ -65,14 +65,13 @@ public class StorageConfig implements IMekanismConfig {
         formulaicAssemblicator = builder.comment("Base energy storage (Joules).").define("formulaicAssemblicator", 40_000D);
         teleporter = builder.comment("Base energy storage (Joules).").define("teleporter", 5_000_000D);
 
-        //TODO
         builder.pop();
-        //configSpec = builder.build();
+        configSpec = builder.build();
     }
 
     @Override
     public String getFileName() {
-        return "machine-storage.toml";
+        return "machine-storage";
     }
 
     @Override
@@ -82,6 +81,11 @@ public class StorageConfig implements IMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
+        return Type.SERVER;
+    }
+
+    @Override
+    public boolean addToContainer() {
+        return false;
     }
 }

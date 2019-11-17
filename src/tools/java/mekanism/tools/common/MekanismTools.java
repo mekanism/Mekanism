@@ -74,7 +74,7 @@ public class MekanismTools implements IModule {
             Random random = event.getWorld().getRandom();
             double chance = random.nextDouble();
             if (chance < MekanismToolsConfig.tools.armorSpawnRate.get()) {
-                int armorType = random.nextInt(4);
+                int armorType = random.nextInt(5);
                 if (armorType == 0) {
                     setEntityArmorWithChance(random, entity, ToolsItem.REFINED_GLOWSTONE_SWORD, ToolsItem.REFINED_GLOWSTONE_HELMET, ToolsItem.REFINED_GLOWSTONE_CHESTPLATE,
                           ToolsItem.REFINED_GLOWSTONE_LEGGINGS, ToolsItem.REFINED_GLOWSTONE_BOOTS);

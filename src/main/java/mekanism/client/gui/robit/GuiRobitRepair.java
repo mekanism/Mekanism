@@ -49,8 +49,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
         GlStateManager.disableLighting();
         drawString(TextComponentUtil.translate("container.repair"), 60, 6, 0x404040);
 
-        //func_216976_f = getMaximumCost
-        int maximumCost = container.func_216976_f();
+        int maximumCost = container.getMaximumCost();
         if (maximumCost > 0) {
             //TODO: Verify this works as intended
             int k = 0x80FF20;

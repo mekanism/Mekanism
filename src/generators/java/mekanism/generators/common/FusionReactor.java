@@ -280,15 +280,15 @@ public class FusionReactor {
         }
     }
 
-    public boolean createFrame(Coord4D centre) {
+    public boolean createFrame(Coord4D center) {
         int[][] positions = new int[][]{
               {+2, +2, +0}, {+2, +1, +1}, {+2, +0, +2}, {+2, -1, +1}, {+2, -2, +0}, {+2, -1, -1}, {+2, +0, -2}, {+2, +1, -1}, {+1, +2, +1}, {+1, +1, +2}, {+1, -1, +2},
               {+1, -2, +1}, {+1, -2, -1}, {+1, -1, -2}, {+1, +1, -2}, {+1, +2, -1}, {+0, +2, +2}, {+0, -2, +2}, {+0, -2, -2}, {+0, +2, -2}, {-1, +2, +1}, {-1, +1, +2},
               {-1, -1, +2}, {-1, -2, +1}, {-1, -2, -1}, {-1, -1, -2}, {-1, +1, -2}, {-1, +2, -1}, {-2, +2, +0}, {-2, +1, +1}, {-2, +0, +2}, {-2, -1, +1}, {-2, -2, +0},
               {-2, -1, -1}, {-2, +0, -2}, {-2, +1, -1},};
-
+        BlockPos centerPos = center.getPos();
         for (int[] coords : positions) {
-            TileEntityReactorBlock tile = MekanismUtils.getTileEntity(TileEntityReactorBlock.class, controller.getWorld(), centre.translate(coords[0], coords[1], coords[2]).getPos());;
+            TileEntityReactorBlock tile = MekanismUtils.getTileEntity(TileEntityReactorBlock.class, controller.getWorld(), centerPos.add(coords[0], coords[1], coords[2]));;
             if (tile == null || !tile.isFrame()) {
                 return false;
             }
@@ -298,7 +298,7 @@ public class FusionReactor {
         return true;
     }
 
-    public boolean addSides(Coord4D centre) {
+    public boolean addSides(Coord4D center) {
         int[][] positions = new int[][]{
               {+2, +0, +0}, {+2, +1, +0}, {+2, +0, +1}, {+2, -1, +0}, {+2, +0, -1}, //EAST
               {-2, +0, +0}, {-2, +1, +0}, {-2, +0, +1}, {-2, -1, +0}, {-2, +0, -1}, //WEST
@@ -307,9 +307,9 @@ public class FusionReactor {
               {+0, +0, +2}, {+1, +0, +2}, {+0, +1, +2}, {-1, +0, +2}, {+0, -1, +2}, //SOUTH
               {+0, +0, -2}, {+1, +0, -2}, {+0, +1, -2}, {-1, +0, -2}, {+0, -1, -2}, //NORTH
         };
-
+        BlockPos centerPos = center.getPos();
         for (int[] coords : positions) {
-            TileEntity tile = MekanismUtils.getTileEntity(controller.getWorld(), centre.translate(coords[0], coords[1], coords[2]).getPos());
+            TileEntity tile = MekanismUtils.getTileEntity(controller.getWorld(), centerPos.add(coords[0], coords[1], coords[2]));
             if (LaserManager.isReceptor(tile, null) && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0))) {
                 return false;
             }
