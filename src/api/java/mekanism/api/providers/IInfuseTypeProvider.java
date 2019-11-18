@@ -3,6 +3,7 @@ package mekanism.api.providers;
 import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public interface IInfuseTypeProvider extends IBaseProvider {
 
@@ -15,7 +16,7 @@ public interface IInfuseTypeProvider extends IBaseProvider {
     }
 
     @Override
-    default String getTranslationKey() {
-        return getInfuseType().getTranslationKey();
+    default ITextComponent getTextComponent() {
+        return getInfuseType().getTextComponent();
     }
 }

@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
-import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IBaseProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -18,7 +18,6 @@ import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -45,23 +44,16 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     protected IDrawable fluidOverlayLarge;
     protected IDrawable fluidOverlaySmall;
     protected Set<GuiTexturedElement> guiElements = new HashSet<>();
-    private ResourceLocation recipeUID;
-    private String unlocalizedName;
+    private IBaseProvider provider;
 
     private final IDrawable background;
 
-    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, IBlockProvider mekanismBlock, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
-        this(helper, guiTexture, mekanismBlock.getRegistryName(), mekanismBlock.getTranslationKey(), progress, xOffset, yOffset, width, height);
-    }
-
-    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, ResourceLocation name, String unlocalized, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
+    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, IBaseProvider provider, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;
         guiLocation = new ResourceLocation(guiTexture);
 
         progressBar = progress;
-
-        recipeUID = name;
-        unlocalizedName = unlocalized;
+        this.provider = provider;
 
         timer = helper.createTickTimer(20, 20, false);
 
@@ -88,12 +80,12 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public ResourceLocation getUid() {
-        return recipeUID;
+        return provider.getRegistryName();
     }
 
     @Override
     public String getTitle() {
-        return TextComponentUtil.translate(unlocalizedName).getFormattedText();
+        return provider.getTextComponent().getFormattedText();
     }
 
     @Override

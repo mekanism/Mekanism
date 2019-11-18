@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> implements Supplier<T> {
+public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> implements Supplier<T>, INamedEntry {
 
     private final RegistryObject<T> registryObject;
 
@@ -22,5 +22,10 @@ public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> imp
 
     public RegistryObject<T> getInternal() {
         return registryObject;
+    }
+
+    @Override
+    public String getInternalRegistryName() {
+        return registryObject.getId().getPath();
     }
 }

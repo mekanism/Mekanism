@@ -6,12 +6,12 @@ import javax.annotation.Nullable;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +24,7 @@ public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> ext
     //TODO: Annotate this
     protected final TILE tile;
 
-    protected MekanismTileContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
+    protected MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
         super(type, id, inv);
         this.tile = tile;
         addSlotsAndOpen();

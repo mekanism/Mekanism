@@ -566,11 +566,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public List<IInventorySlot> getInventorySlots(@Nonnull ContainerType<?> containerType) {
         if (!hasInventory()) {
             return Collections.emptyList();
-        } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT) {
+        } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.getContainerType()) {
             return inventoryContainerSlots;
-        } else if (containerType == MekanismContainerTypes.MAIN_ROBIT) {
+        } else if (containerType == MekanismContainerTypes.MAIN_ROBIT.getContainerType()) {
             return mainContainerSlots;
-        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT) {
+        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.getContainerType()) {
             return smeltingContainerSlots;
         }
         return Collections.emptyList();

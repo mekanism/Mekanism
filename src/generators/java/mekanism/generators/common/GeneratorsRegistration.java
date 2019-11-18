@@ -1,8 +1,6 @@
 package mekanism.generators.common;
 
-import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,11 +13,6 @@ public class GeneratorsRegistration {
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         GeneratorsTileEntityTypes.registerTileEntities(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        GeneratorsContainerTypes.registerContainers(event.getRegistry());
     }
 
     @SubscribeEvent

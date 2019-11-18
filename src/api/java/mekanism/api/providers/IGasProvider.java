@@ -6,6 +6,7 @@ import mekanism.api.gas.GasStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public interface IGasProvider extends IBaseProvider {
 
@@ -23,8 +24,8 @@ public interface IGasProvider extends IBaseProvider {
     }
 
     @Override
-    default String getTranslationKey() {
-        return getGas().getTranslationKey();
+    default ITextComponent getTextComponent() {
+        return getGas().getTextComponent();
     }
 
     @Nonnull

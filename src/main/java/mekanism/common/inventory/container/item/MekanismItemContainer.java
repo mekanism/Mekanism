@@ -3,8 +3,8 @@ package mekanism.common.inventory.container.item;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -17,7 +17,7 @@ public abstract class MekanismItemContainer extends MekanismContainer {
     protected Hand hand;
     protected ItemStack stack;
 
-    protected MekanismItemContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, Hand hand, ItemStack stack) {
+    protected MekanismItemContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, Hand hand, ItemStack stack) {
         super(type, id, inv);
         this.hand = hand;
         this.stack = stack;

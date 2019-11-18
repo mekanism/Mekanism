@@ -123,6 +123,7 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.particle.MekanismParticleType;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
@@ -163,13 +164,17 @@ import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.ScreenManager.IScreenFactory;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -242,80 +247,84 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        ScreenManager.registerFactory(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.SEISMIC_READER, GuiSeismicReader::new);
+        registerScreen(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
+        registerScreen(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
+        registerScreen(MekanismContainerTypes.SEISMIC_READER, GuiSeismicReader::new);
 
-        ScreenManager.registerFactory(MekanismContainerTypes.MAIN_ROBIT, GuiRobitMain::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.INVENTORY_ROBIT, GuiRobitInventory::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.SMELTING_ROBIT, GuiRobitSmelting::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.CRAFTING_ROBIT, GuiRobitCrafting::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.REPAIR_ROBIT, GuiRobitRepair::new);
+        registerScreen(MekanismContainerTypes.MAIN_ROBIT, GuiRobitMain::new);
+        registerScreen(MekanismContainerTypes.INVENTORY_ROBIT, GuiRobitInventory::new);
+        registerScreen(MekanismContainerTypes.SMELTING_ROBIT, GuiRobitSmelting::new);
+        registerScreen(MekanismContainerTypes.CRAFTING_ROBIT, GuiRobitCrafting::new);
+        registerScreen(MekanismContainerTypes.REPAIR_ROBIT, GuiRobitRepair::new);
 
-        ScreenManager.registerFactory(MekanismContainerTypes.CHEMICAL_CRYSTALLIZER, GuiChemicalCrystallizer::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.CHEMICAL_DISSOLUTION_CHAMBER, GuiChemicalDissolutionChamber::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.CHEMICAL_INFUSER, GuiChemicalInfuser::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.CHEMICAL_INJECTION_CHAMBER, GuiChemicalInjectionChamber::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.CHEMICAL_OXIDIZER, GuiChemicalOxidizer::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.CHEMICAL_WASHER, GuiChemicalWasher::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.COMBINER, GuiCombiner::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.CRUSHER, GuiCrusher::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.DIGITAL_MINER, GuiDigitalMiner::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.DYNAMIC_TANK, GuiDynamicTank::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.ELECTRIC_PUMP, GuiElectricPump::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.ELECTROLYTIC_SEPARATOR, GuiElectrolyticSeparator::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.ENERGIZED_SMELTER, GuiEnergizedSmelter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.ENRICHMENT_CHAMBER, GuiEnrichmentChamber::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.FLUIDIC_PLENISHER, GuiFluidicPlenisher::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR, GuiFormulaicAssemblicator::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.FUELWOOD_HEATER, GuiFuelwoodHeater::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LASER_AMPLIFIER, GuiLaserAmplifier::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LASER_TRACTOR_BEAM, GuiLaserTractorBeam::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.METALLURGIC_INFUSER, GuiMetallurgicInfuser::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.OREDICTIONIFICATOR, GuiOredictionificator::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.OSMIUM_COMPRESSOR, GuiOsmiumCompressor::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.PRECISION_SAWMILL, GuiPrecisionSawmill::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.PRESSURIZED_REACTION_CHAMBER, GuiPRC::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.PURIFICATION_CHAMBER, GuiPurificationChamber::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.QUANTUM_ENTANGLOPORTER, GuiQuantumEntangloporter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.RESISTIVE_HEATER, GuiResistiveHeater::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.ROTARY_CONDENSENTRATOR, GuiRotaryCondensentrator::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.SECURITY_DESK, GuiSecurityDesk::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.SEISMIC_VIBRATOR, GuiSeismicVibrator::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR, GuiSolarNeutronActivator::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.TELEPORTER, GuiTeleporter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController::new);
+        registerScreen(MekanismContainerTypes.CHEMICAL_CRYSTALLIZER, GuiChemicalCrystallizer::new);
+        registerScreen(MekanismContainerTypes.CHEMICAL_DISSOLUTION_CHAMBER, GuiChemicalDissolutionChamber::new);
+        registerScreen(MekanismContainerTypes.CHEMICAL_INFUSER, GuiChemicalInfuser::new);
+        registerScreen(MekanismContainerTypes.CHEMICAL_INJECTION_CHAMBER, GuiChemicalInjectionChamber::new);
+        registerScreen(MekanismContainerTypes.CHEMICAL_OXIDIZER, GuiChemicalOxidizer::new);
+        registerScreen(MekanismContainerTypes.CHEMICAL_WASHER, GuiChemicalWasher::new);
+        registerScreen(MekanismContainerTypes.COMBINER, GuiCombiner::new);
+        registerScreen(MekanismContainerTypes.CRUSHER, GuiCrusher::new);
+        registerScreen(MekanismContainerTypes.DIGITAL_MINER, GuiDigitalMiner::new);
+        registerScreen(MekanismContainerTypes.DYNAMIC_TANK, GuiDynamicTank::new);
+        registerScreen(MekanismContainerTypes.ELECTRIC_PUMP, GuiElectricPump::new);
+        registerScreen(MekanismContainerTypes.ELECTROLYTIC_SEPARATOR, GuiElectrolyticSeparator::new);
+        registerScreen(MekanismContainerTypes.ENERGIZED_SMELTER, GuiEnergizedSmelter::new);
+        registerScreen(MekanismContainerTypes.ENRICHMENT_CHAMBER, GuiEnrichmentChamber::new);
+        registerScreen(MekanismContainerTypes.FLUIDIC_PLENISHER, GuiFluidicPlenisher::new);
+        registerScreen(MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR, GuiFormulaicAssemblicator::new);
+        registerScreen(MekanismContainerTypes.FUELWOOD_HEATER, GuiFuelwoodHeater::new);
+        registerScreen(MekanismContainerTypes.LASER_AMPLIFIER, GuiLaserAmplifier::new);
+        registerScreen(MekanismContainerTypes.LASER_TRACTOR_BEAM, GuiLaserTractorBeam::new);
+        registerScreen(MekanismContainerTypes.METALLURGIC_INFUSER, GuiMetallurgicInfuser::new);
+        registerScreen(MekanismContainerTypes.OREDICTIONIFICATOR, GuiOredictionificator::new);
+        registerScreen(MekanismContainerTypes.OSMIUM_COMPRESSOR, GuiOsmiumCompressor::new);
+        registerScreen(MekanismContainerTypes.PRECISION_SAWMILL, GuiPrecisionSawmill::new);
+        registerScreen(MekanismContainerTypes.PRESSURIZED_REACTION_CHAMBER, GuiPRC::new);
+        registerScreen(MekanismContainerTypes.PURIFICATION_CHAMBER, GuiPurificationChamber::new);
+        registerScreen(MekanismContainerTypes.QUANTUM_ENTANGLOPORTER, GuiQuantumEntangloporter::new);
+        registerScreen(MekanismContainerTypes.RESISTIVE_HEATER, GuiResistiveHeater::new);
+        registerScreen(MekanismContainerTypes.ROTARY_CONDENSENTRATOR, GuiRotaryCondensentrator::new);
+        registerScreen(MekanismContainerTypes.SECURITY_DESK, GuiSecurityDesk::new);
+        registerScreen(MekanismContainerTypes.SEISMIC_VIBRATOR, GuiSeismicVibrator::new);
+        registerScreen(MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR, GuiSolarNeutronActivator::new);
+        registerScreen(MekanismContainerTypes.TELEPORTER, GuiTeleporter::new);
+        registerScreen(MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController::new);
 
-        ScreenManager.registerFactory(MekanismContainerTypes.FACTORY, GuiFactory::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.FLUID_TANK, GuiFluidTank::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.ENERGY_CUBE, GuiEnergyCube::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.INDUCTION_MATRIX, GuiInductionMatrix::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.THERMOELECTRIC_BOILER, GuiThermoelectricBoiler::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.PERSONAL_CHEST_ITEM, GuiPersonalChestItem::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.PERSONAL_CHEST_BLOCK, GuiPersonalChestTile::new);
+        registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
+        registerScreen(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);
+        registerScreen(MekanismContainerTypes.FLUID_TANK, GuiFluidTank::new);
+        registerScreen(MekanismContainerTypes.ENERGY_CUBE, GuiEnergyCube::new);
+        registerScreen(MekanismContainerTypes.INDUCTION_MATRIX, GuiInductionMatrix::new);
+        registerScreen(MekanismContainerTypes.THERMOELECTRIC_BOILER, GuiThermoelectricBoiler::new);
+        registerScreen(MekanismContainerTypes.PERSONAL_CHEST_ITEM, GuiPersonalChestItem::new);
+        registerScreen(MekanismContainerTypes.PERSONAL_CHEST_BLOCK, GuiPersonalChestTile::new);
 
-        ScreenManager.registerFactory(MekanismContainerTypes.DIGITAL_MINER_CONFIG, GuiDigitalMinerConfig::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LOGISTICAL_SORTER, GuiLogisticalSorter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.DM_FILTER_SELECT, GuiMFilterSelect::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LS_FILTER_SELECT, GuiTFilterSelect::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.DM_TAG_FILTER, GuiMOreDictFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LS_TAG_FILTER, GuiTOreDictFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.DM_MOD_ID_FILTER, GuiMModIDFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LS_MOD_ID_FILTER, GuiTModIDFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.DM_MATERIAL_FILTER, GuiMMaterialFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LS_MATERIAL_FILTER, GuiTMaterialFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.DM_ITEMSTACK_FILTER, GuiMItemStackFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.LS_ITEMSTACK_FILTER, GuiTItemStackFilter::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.OREDICTIONIFICATOR_FILTER, GuiOredictionificatorFilter::new);
+        registerScreen(MekanismContainerTypes.DIGITAL_MINER_CONFIG, GuiDigitalMinerConfig::new);
+        registerScreen(MekanismContainerTypes.LOGISTICAL_SORTER, GuiLogisticalSorter::new);
+        registerScreen(MekanismContainerTypes.DM_FILTER_SELECT, GuiMFilterSelect::new);
+        registerScreen(MekanismContainerTypes.LS_FILTER_SELECT, GuiTFilterSelect::new);
+        registerScreen(MekanismContainerTypes.DM_TAG_FILTER, GuiMOreDictFilter::new);
+        registerScreen(MekanismContainerTypes.LS_TAG_FILTER, GuiTOreDictFilter::new);
+        registerScreen(MekanismContainerTypes.DM_MOD_ID_FILTER, GuiMModIDFilter::new);
+        registerScreen(MekanismContainerTypes.LS_MOD_ID_FILTER, GuiTModIDFilter::new);
+        registerScreen(MekanismContainerTypes.DM_MATERIAL_FILTER, GuiMMaterialFilter::new);
+        registerScreen(MekanismContainerTypes.LS_MATERIAL_FILTER, GuiTMaterialFilter::new);
+        registerScreen(MekanismContainerTypes.DM_ITEMSTACK_FILTER, GuiMItemStackFilter::new);
+        registerScreen(MekanismContainerTypes.LS_ITEMSTACK_FILTER, GuiTItemStackFilter::new);
+        registerScreen(MekanismContainerTypes.OREDICTIONIFICATOR_FILTER, GuiOredictionificatorFilter::new);
 
         //TODO: Add any missing ones like side configuration
-        ScreenManager.registerFactory(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.SIDE_CONFIGURATION, GuiSideConfiguration::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.TRANSPORTER_CONFIGURATION, GuiTransporterConfig::new);
+        registerScreen(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
+        registerScreen(MekanismContainerTypes.SIDE_CONFIGURATION, GuiSideConfiguration::new);
+        registerScreen(MekanismContainerTypes.TRANSPORTER_CONFIGURATION, GuiTransporterConfig::new);
 
-        ScreenManager.registerFactory(MekanismContainerTypes.BOILER_STATS, GuiBoilerStats::new);
-        ScreenManager.registerFactory(MekanismContainerTypes.MATRIX_STATS, GuiMatrixStats::new);
+        registerScreen(MekanismContainerTypes.BOILER_STATS, GuiBoilerStats::new);
+        registerScreen(MekanismContainerTypes.MATRIX_STATS, GuiMatrixStats::new);
+    }
+
+    private static <C extends Container, U extends Screen & IHasContainer<C>> void registerScreen(ContainerTypeRegistryObject<C> type, IScreenFactory<C, U> factory) {
+        ScreenManager.registerFactory(type.getContainerType(), factory);
     }
 
     @SubscribeEvent

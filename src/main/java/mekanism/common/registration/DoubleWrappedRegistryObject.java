@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> {
+public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> implements INamedEntry {
 
     private final RegistryObject<PRIMARY> primaryRegistryObject;
     private final RegistryObject<SECONDARY> secondaryRegistryObject;
@@ -31,5 +31,10 @@ public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? s
 
     public RegistryObject<SECONDARY> getSecondaryInternal() {
         return secondaryRegistryObject;
+    }
+
+    @Override
+    public String getInternalRegistryName() {
+        return primaryRegistryObject.getId().getPath();
     }
 }

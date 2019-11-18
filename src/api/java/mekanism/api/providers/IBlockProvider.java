@@ -9,6 +9,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public interface IBlockProvider extends IItemProvider {
 
@@ -31,8 +32,8 @@ public interface IBlockProvider extends IItemProvider {
     }
 
     @Override
-    default String getTranslationKey() {
-        return getBlock().getTranslationKey();
+    default ITextComponent getTextComponent() {
+        return getBlock().getNameTextComponent();
     }
 
     @Nullable

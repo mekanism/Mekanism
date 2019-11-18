@@ -3,11 +3,11 @@ package mekanism.common.inventory.container.entity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -16,7 +16,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
 
     protected final ENTITY entity;
 
-    protected MekanismEntityContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, ENTITY entity) {
+    protected MekanismEntityContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, ENTITY entity) {
         super(type, id, inv);
         this.entity = entity;
         addSlotsAndOpen();

@@ -5,13 +5,13 @@ import javax.annotation.Nullable;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.MekanismEntityContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 
 public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit> {
 
-    protected RobitContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv, EntityRobit entity) {
+    protected RobitContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, EntityRobit entity) {
         super(type, id, inv, entity);
     }
 

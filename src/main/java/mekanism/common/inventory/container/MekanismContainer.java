@@ -9,11 +9,11 @@ import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.IInsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -25,8 +25,8 @@ public abstract class MekanismContainer extends Container {
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
 
-    protected MekanismContainer(@Nullable ContainerType<?> type, int id, @Nullable PlayerInventory inv) {
-        super(type, id);
+    protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
+        super(type.getContainerType(), id);
         this.inv = inv;
     }
 

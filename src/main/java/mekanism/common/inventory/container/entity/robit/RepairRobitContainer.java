@@ -37,6 +37,6 @@ public class RepairRobitContainer extends RepairContainer implements IEntityCont
     @Nonnull
     @Override
     public ContainerType<?> getType() {
-        return MekanismContainerTypes.REPAIR_ROBIT;
+        return MekanismContainerTypes.REPAIR_ROBIT.getContainerType();
     }
 }

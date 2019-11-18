@@ -1,10 +1,13 @@
 package mekanism.api.providers;
 
+import javax.annotation.Nonnull;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public interface IEntityTypeProvider extends IBaseProvider {
 
+    @Nonnull
     EntityType getEntityType();
 
     @Override
@@ -13,7 +16,7 @@ public interface IEntityTypeProvider extends IBaseProvider {
     }
 
     @Override
-    default String getTranslationKey() {
-        return getEntityType().getTranslationKey();
+    default ITextComponent getTextComponent() {
+        return getEntityType().getName();
     }
 }

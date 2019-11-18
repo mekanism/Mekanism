@@ -36,6 +36,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.OreDictManager;
+import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
@@ -185,6 +186,7 @@ public class Mekanism {
 
         MekanismItem.ITEMS.register(modEventBus);
         MekanismBlock.BLOCKS.register(modEventBus);
+        MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
     }
 
     public void setTagManager(MekanismTagManager manager) {

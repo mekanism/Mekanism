@@ -10,6 +10,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -41,6 +42,7 @@ public class MekanismGenerators implements IModule {
 
         GeneratorsItem.ITEMS.register(modEventBus);
         GeneratorsBlock.BLOCKS.register(modEventBus);
+        GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

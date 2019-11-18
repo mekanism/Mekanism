@@ -37,6 +37,6 @@ public class CraftingRobitContainer extends WorkbenchContainer implements IEntit
     @Nonnull
     @Override
     public ContainerType<?> getType() {
-        return MekanismContainerTypes.CRAFTING_ROBIT;
+        return MekanismContainerTypes.CRAFTING_ROBIT.getContainerType();
     }
 }

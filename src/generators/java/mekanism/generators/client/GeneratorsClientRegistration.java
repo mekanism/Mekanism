@@ -3,6 +3,7 @@ package mekanism.generators.client;
 import java.util.Map;
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -43,9 +44,13 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.ScreenManager.IScreenFactory;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -63,18 +68,22 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        ScreenManager.registerFactory(GeneratorsContainerTypes.BIO_GENERATOR, GuiBioGenerator::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GuiGasGenerator::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.HEAT_GENERATOR, GuiHeatGenerator::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, GuiIndustrialTurbine::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_CONTROLLER, GuiReactorController::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_FUEL, GuiReactorFuel::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_HEAT, GuiReactorHeat::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, GuiReactorLogicAdapter::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.REACTOR_STATS, GuiReactorStats::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.SOLAR_GENERATOR, GuiSolarGenerator::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.TURBINE_STATS, GuiTurbineStats::new);
-        ScreenManager.registerFactory(GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);
+        registerScreen(GeneratorsContainerTypes.BIO_GENERATOR, GuiBioGenerator::new);
+        registerScreen(GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GuiGasGenerator::new);
+        registerScreen(GeneratorsContainerTypes.HEAT_GENERATOR, GuiHeatGenerator::new);
+        registerScreen(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, GuiIndustrialTurbine::new);
+        registerScreen(GeneratorsContainerTypes.REACTOR_CONTROLLER, GuiReactorController::new);
+        registerScreen(GeneratorsContainerTypes.REACTOR_FUEL, GuiReactorFuel::new);
+        registerScreen(GeneratorsContainerTypes.REACTOR_HEAT, GuiReactorHeat::new);
+        registerScreen(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, GuiReactorLogicAdapter::new);
+        registerScreen(GeneratorsContainerTypes.REACTOR_STATS, GuiReactorStats::new);
+        registerScreen(GeneratorsContainerTypes.SOLAR_GENERATOR, GuiSolarGenerator::new);
+        registerScreen(GeneratorsContainerTypes.TURBINE_STATS, GuiTurbineStats::new);
+        registerScreen(GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);
+    }
+
+    private static <C extends Container, U extends Screen & IHasContainer<C>> void registerScreen(ContainerTypeRegistryObject<C> type, IScreenFactory<C, U> factory) {
+        ScreenManager.registerFactory(type.getContainerType(), factory);
     }
 
     @SubscribeEvent
