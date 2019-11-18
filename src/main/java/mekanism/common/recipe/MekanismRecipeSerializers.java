@@ -1,7 +1,5 @@
 package mekanism.common.recipe;
 
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -13,7 +11,6 @@ import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
@@ -50,60 +47,46 @@ import mekanism.common.recipe.serializer.ItemStackToItemStackRecipeSerializer;
 import mekanism.common.recipe.serializer.MetallurgicInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.PressurizedReactionRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistry;
+import mekanism.common.registration.impl.IRecipeSerializerDeferredRegister;
+import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
 
-//TODO: Allow for registry overrides?
-//TODO: Make sure the serializers support conditions
 //TODO: Should this and the serializer implementations be moved to API package? Probably at least the declarations should be moved
 // Ideally we would not have to have a separate class for each one that is basically just a factory for setting the:
 // serializer, recipe type, group, and icon.
 // Is there some way we could declare those statically for each of the things
 public class MekanismRecipeSerializers {
 
-    private static final List<IRecipeSerializer<? extends MekanismRecipe>> types = new ArrayList<>();
+    public static final IRecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new IRecipeSerializerDeferredRegister(Mekanism.MODID);
 
-    public static final IRecipeSerializer<ItemStackToItemStackRecipe> CRUSHING = create("crushing", new ItemStackToItemStackRecipeSerializer<>(CrushingIRecipe::new));
-    public static final IRecipeSerializer<ItemStackToItemStackRecipe> ENRICHING = create("enriching", new ItemStackToItemStackRecipeSerializer<>(EnrichingIRecipe::new));
-    public static final IRecipeSerializer<ItemStackToItemStackRecipe> SMELTING = create("smelting", new ItemStackToItemStackRecipeSerializer<>(SmeltingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackToItemStackRecipe> CRUSHING = RECIPE_SERIALIZERS.register("crushing", () -> new ItemStackToItemStackRecipeSerializer<>(CrushingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackToItemStackRecipe> ENRICHING = RECIPE_SERIALIZERS.register("enriching", () -> new ItemStackToItemStackRecipeSerializer<>(EnrichingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackToItemStackRecipe> SMELTING = RECIPE_SERIALIZERS.register("smelting", () -> new ItemStackToItemStackRecipeSerializer<>(SmeltingIRecipe::new));
 
-    public static final IRecipeSerializer<ChemicalInfuserRecipe> CHEMICAL_INFUSING = create("chemical_infusing", new ChemicalInfuserRecipeSerializer<>(ChemicalInfuserIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ChemicalInfuserRecipe> CHEMICAL_INFUSING = RECIPE_SERIALIZERS.register("chemical_infusing", () -> new ChemicalInfuserRecipeSerializer<>(ChemicalInfuserIRecipe::new));
 
-    public static final IRecipeSerializer<CombinerRecipe> COMBINING = create("combining", new CombinerRecipeSerializer<>(CombinerIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<CombinerRecipe> COMBINING = RECIPE_SERIALIZERS.register("combining", () -> new CombinerRecipeSerializer<>(CombinerIRecipe::new));
 
-    public static final IRecipeSerializer<ElectrolysisRecipe> SEPARATING = create("separating", new ElectrolysisRecipeSerializer<>(ElectrolysisIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ElectrolysisRecipe> SEPARATING = RECIPE_SERIALIZERS.register("separating", () -> new ElectrolysisRecipeSerializer<>(ElectrolysisIRecipe::new));
 
-    public static final IRecipeSerializer<FluidGasToGasRecipe> WASHING = create("washing", new FluidGasToGasRecipeSerializer<>(FluidGasToGasIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<FluidGasToGasRecipe> WASHING = RECIPE_SERIALIZERS.register("washing", () -> new FluidGasToGasRecipeSerializer<>(FluidGasToGasIRecipe::new));
 
-    public static final IRecipeSerializer<FluidToFluidRecipe> EVAPORATING = create("evaporating", new FluidToFluidRecipeSerializer<>(FluidToFluidIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<FluidToFluidRecipe> EVAPORATING = RECIPE_SERIALIZERS.register("evaporating", () -> new FluidToFluidRecipeSerializer<>(FluidToFluidIRecipe::new));
 
-    public static final IRecipeSerializer<GasToGasRecipe> ACTIVATING = create("activating", new GasToGasRecipeSerializer<>(GasToGasIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<GasToGasRecipe> ACTIVATING = RECIPE_SERIALIZERS.register("activating", () -> new GasToGasRecipeSerializer<>(GasToGasIRecipe::new));
 
-    public static final IRecipeSerializer<GasToItemStackRecipe> CRYSTALLIZING = create("crystallizing", new GasToItemStackRecipeSerializer<>(ChemicalCrystallizerIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<GasToItemStackRecipe> CRYSTALLIZING = RECIPE_SERIALIZERS.register("crystallizing", () -> new GasToItemStackRecipeSerializer<>(ChemicalCrystallizerIRecipe::new));
 
-    public static final IRecipeSerializer<ItemStackGasToGasRecipe> DISSOLUTION = create("dissolution", new ItemStackGasToGasRecipeSerializer<>(ItemStackGasToGasIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackGasToGasRecipe> DISSOLUTION = RECIPE_SERIALIZERS.register("dissolution", () -> new ItemStackGasToGasRecipeSerializer<>(ItemStackGasToGasIRecipe::new));
 
-    public static final IRecipeSerializer<ItemStackGasToItemStackRecipe> COMPRESSING = create("compressing", new ItemStackGasToItemStackRecipeSerializer<>(CompressingIRecipe::new));
-    public static final IRecipeSerializer<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying", new ItemStackGasToItemStackRecipeSerializer<>(PurifyingIRecipe::new));
-    public static final IRecipeSerializer<ItemStackGasToItemStackRecipe> INJECTING = create("injecting", new ItemStackGasToItemStackRecipeSerializer<>(InjectingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> COMPRESSING = RECIPE_SERIALIZERS.register("compressing", () -> new ItemStackGasToItemStackRecipeSerializer<>(CompressingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> PURIFYING = RECIPE_SERIALIZERS.register("purifying", () -> new ItemStackGasToItemStackRecipeSerializer<>(PurifyingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> INJECTING = RECIPE_SERIALIZERS.register("injecting", () -> new ItemStackGasToItemStackRecipeSerializer<>(InjectingIRecipe::new));
 
-    public static final IRecipeSerializer<ItemStackToGasRecipe> OXIDIZING = create("oxidizing", new ItemStackToGasRecipeSerializer<>(ItemStackToGasIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackToGasRecipe> OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> new ItemStackToGasRecipeSerializer<>(ItemStackToGasIRecipe::new));
 
-    public static final IRecipeSerializer<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = create("metallurgic_infusing", new MetallurgicInfuserRecipeSerializer<>(MetallurgicInfuserIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = RECIPE_SERIALIZERS.register("metallurgic_infusing", () -> new MetallurgicInfuserRecipeSerializer<>(MetallurgicInfuserIRecipe::new));
 
-    public static final IRecipeSerializer<PressurizedReactionRecipe> REACTION = create("reaction", new PressurizedReactionRecipeSerializer<>(PressurizedReactionIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<PressurizedReactionRecipe> REACTION = RECIPE_SERIALIZERS.register("reaction", () -> new PressurizedReactionRecipeSerializer<>(PressurizedReactionIRecipe::new));
 
-    public static final IRecipeSerializer<SawmillRecipe> SAWING = create("sawing", new SawmillRecipeSerializer<>(SawmillIRecipe::new));
-
-    private static <T extends MekanismRecipe> IRecipeSerializer<T> create(String name, IRecipeSerializer<T> builder) {
-        builder.setRegistryName(new ResourceLocation(Mekanism.MODID, name));
-        types.add(builder);
-        return builder;
-    }
-
-    public static void registerRecipeSerializers(IForgeRegistry<IRecipeSerializer<?>> registry) {
-        types.forEach(registry::register);
-        //TODO: Should the list be cleared afterwards as it isn't really needed anymore after registration
-    }
+    public static final IRecipeSerializerRegistryObject<SawmillRecipe> SAWING = RECIPE_SERIALIZERS.register("sawing", () -> new SawmillRecipeSerializer<>(SawmillIRecipe::new));
 }

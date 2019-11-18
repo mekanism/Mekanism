@@ -27,7 +27,7 @@ public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.INJECTING;
+        return MekanismRecipeSerializers.INJECTING.getRecipeSerializer();
     }
 
     @Nonnull

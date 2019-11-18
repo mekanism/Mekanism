@@ -26,7 +26,7 @@ public class ChemicalCrystallizerIRecipe extends GasToItemStackRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<GasToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CRYSTALLIZING;
+        return MekanismRecipeSerializers.CRYSTALLIZING.getRecipeSerializer();
     }
 
     @Nonnull

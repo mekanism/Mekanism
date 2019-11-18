@@ -26,7 +26,7 @@ public class EnrichingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.ENRICHING;
+        return MekanismRecipeSerializers.ENRICHING.getRecipeSerializer();
     }
 
     @Nonnull

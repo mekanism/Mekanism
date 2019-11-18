@@ -27,7 +27,7 @@ public class ChemicalInfuserIRecipe extends ChemicalInfuserRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<ChemicalInfuserRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CHEMICAL_INFUSING;
+        return MekanismRecipeSerializers.CHEMICAL_INFUSING.getRecipeSerializer();
     }
 
     @Nonnull

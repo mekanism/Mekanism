@@ -27,7 +27,7 @@ public class ElectrolysisIRecipe extends ElectrolysisRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<ElectrolysisRecipe> getSerializer() {
-        return MekanismRecipeSerializers.SEPARATING;
+        return MekanismRecipeSerializers.SEPARATING.getRecipeSerializer();
     }
 
     @Nonnull

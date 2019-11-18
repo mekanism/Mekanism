@@ -30,7 +30,7 @@ public class PressurizedReactionIRecipe extends PressurizedReactionRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<PressurizedReactionRecipe> getSerializer() {
-        return MekanismRecipeSerializers.REACTION;
+        return MekanismRecipeSerializers.REACTION.getRecipeSerializer();
     }
 
     @Nonnull

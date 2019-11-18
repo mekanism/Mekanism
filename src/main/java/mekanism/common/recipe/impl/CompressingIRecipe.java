@@ -27,7 +27,7 @@ public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.COMPRESSING;
+        return MekanismRecipeSerializers.COMPRESSING.getRecipeSerializer();
     }
 
     @Nonnull

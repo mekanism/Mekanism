@@ -27,7 +27,7 @@ public class GasToGasIRecipe extends GasToGasRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<GasToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.ACTIVATING;
+        return MekanismRecipeSerializers.ACTIVATING.getRecipeSerializer();
     }
 
     @Nonnull

@@ -28,7 +28,7 @@ public class ItemStackGasToGasIRecipe extends ItemStackGasToGasRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<ItemStackGasToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.DISSOLUTION;
+        return MekanismRecipeSerializers.DISSOLUTION.getRecipeSerializer();
     }
 
     @Nonnull

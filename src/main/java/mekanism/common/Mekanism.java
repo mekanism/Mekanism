@@ -44,6 +44,7 @@ import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.particle.MekanismParticleType;
 import mekanism.common.recipe.GasConversionHandler;
+import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tags.MekanismTagManager;
@@ -194,6 +195,7 @@ public class Mekanism {
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismSounds.SOUND_EVENTS.register(modEventBus);
         MekanismParticleType.PARTICLE_TYPES.register(modEventBus);
+        MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
     }
 
     public void setTagManager(MekanismTagManager manager) {

@@ -28,7 +28,7 @@ public class FluidGasToGasIRecipe extends FluidGasToGasRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<FluidGasToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.WASHING;
+        return MekanismRecipeSerializers.WASHING.getRecipeSerializer();
     }
 
     @Nonnull

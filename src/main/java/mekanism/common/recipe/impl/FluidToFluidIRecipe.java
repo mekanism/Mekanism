@@ -27,7 +27,7 @@ public class FluidToFluidIRecipe extends FluidToFluidRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<FluidToFluidRecipe> getSerializer() {
-        return MekanismRecipeSerializers.EVAPORATING;
+        return MekanismRecipeSerializers.EVAPORATING.getRecipeSerializer();
     }
 
     @Nonnull

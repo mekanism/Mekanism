@@ -26,7 +26,7 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public IRecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.SMELTING;
+        return MekanismRecipeSerializers.SMELTING.getRecipeSerializer();
     }
 
     @Nonnull
