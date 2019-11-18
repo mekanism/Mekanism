@@ -1,6 +1,7 @@
 package mekanism.client.jei;
 
 import mekanism.api.block.FactoryType;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
@@ -12,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class CatalystRegistryHelper {
 
-    public static void register(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock) {
+    public static void register(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock) {
         registerRecipeItem(registry, mekanismBlock, mekanismBlock.getRegistryName());
     }
 
@@ -30,7 +31,7 @@ public class CatalystRegistryHelper {
         }
     }
 
-    public static void registerRecipeItem(IRecipeCatalystRegistration registry, MekanismBlock mekanismBlock, ResourceLocation category) {
+    public static void registerRecipeItem(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock, ResourceLocation category) {
         registry.addRecipeCatalyst(mekanismBlock.getItemStack(), category);
         FactoryType factoryType = mekanismBlock.getFactoryType();
         if (factoryType != null) {

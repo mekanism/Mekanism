@@ -25,8 +25,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -41,7 +41,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEnergized {
+public class ItemFreeRunners extends ArmorItem implements IItemEnergized {
 
     public static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
@@ -50,8 +50,8 @@ public class ItemFreeRunners extends ItemCustomArmorMekanism implements IItemEne
      */
     public double MAX_ELECTRICITY = 64000;
 
-    public ItemFreeRunners() {
-        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, "free_runners", new Item.Properties().setTEISR(() -> getTEISR()));
+    public ItemFreeRunners(Properties properties) {
+        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setTEISR(() -> getTEISR()).setNoRepair());
     }
 
     @OnlyIn(Dist.CLIENT)

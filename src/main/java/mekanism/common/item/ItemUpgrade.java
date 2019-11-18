@@ -27,13 +27,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
-public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
+public class ItemUpgrade extends Item implements IUpgradeItem {
 
     private Upgrade upgrade;
 
-    public ItemUpgrade(Upgrade type) {
-        //Upgrade names are upgrade_type for purposes of tab complete
-        super("upgrade_" + type.getRawName(), new Item.Properties().maxStackSize(type.getMax()));
+    public ItemUpgrade(Upgrade type, Properties properties) {
+        super(properties.maxStackSize(type.getMax()));
         upgrade = type;
     }
 

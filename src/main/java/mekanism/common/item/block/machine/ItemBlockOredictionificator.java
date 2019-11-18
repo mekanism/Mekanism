@@ -6,6 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.machine.BlockOredictionificator;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -14,7 +15,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockOredictionificator extends ItemBlockAdvancedTooltip<BlockOredictionificator> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockOredictionificator(BlockOredictionificator block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
     @Override

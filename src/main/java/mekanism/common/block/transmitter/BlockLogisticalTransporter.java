@@ -1,6 +1,5 @@
 package mekanism.common.block.transmitter;
 
-import java.util.Locale;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.TransporterTier;
@@ -15,7 +14,6 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     private final TransporterTier tier;
 
     public BlockLogisticalTransporter(TransporterTier tier) {
-        super(tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_logistical_transporter");
         this.tier = tier;
     }
 

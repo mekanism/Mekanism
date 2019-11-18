@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.client.gui.element.GuiProgress;
@@ -17,7 +18,6 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mezz.jei.api.constants.VanillaTypes;
@@ -30,7 +30,7 @@ import net.minecraft.item.ItemStack;
 
 public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackGasToItemStackRecipe> {
 
-    public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
+    public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock, ProgressBar progress) {
         super(helper, "mekanism:gui/advanced_machine.png", mekanismBlock, progress, 28, 16, 144, 54);
     }
 

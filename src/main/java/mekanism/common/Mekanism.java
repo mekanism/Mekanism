@@ -182,6 +182,9 @@ public class Mekanism {
         //TODO: Register other listeners and various stuff that is needed
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
+
+        MekanismItem.ITEMS.register(modEventBus);
+        MekanismBlock.BLOCKS.register(modEventBus);
     }
 
     public void setTagManager(MekanismTagManager manager) {

@@ -1,9 +1,7 @@
 package mekanism.common.block.basic;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -18,7 +16,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -29,14 +26,12 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public class BlockBasicMultiblock extends BlockTileDrops {
 
-    public BlockBasicMultiblock(String name) {
-        this(Mekanism.MODID, name, Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
+    public BlockBasicMultiblock() {
+        this(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
     }
 
-    public BlockBasicMultiblock(String modid, String name, Block.Properties properties) {
+    public BlockBasicMultiblock(Block.Properties properties) {
         super(properties);
-        //Ensure the name is lower case as with concatenating with values from enums it may not be
-        setRegistryName(new ResourceLocation(modid, name.toLowerCase(Locale.ROOT)));
     }
 
     @Override

@@ -2,7 +2,6 @@ package mekanism.common.block.transmitter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.states.IStateWaterLogged;
@@ -20,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -34,9 +32,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class BlockTransmitter extends BlockTileDrops implements IStateWaterLogged {
 
-    protected BlockTransmitter(String name) {
+    protected BlockTransmitter() {
         super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
     protected static TileEntitySidedPipe getTileEntitySidedPipe(IBlockReader world, BlockPos pos) {

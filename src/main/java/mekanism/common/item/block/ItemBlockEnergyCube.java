@@ -12,6 +12,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.ITieredItem;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
@@ -38,7 +39,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier> {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block, new Item.Properties().maxStackSize(1).setNoRepair().setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

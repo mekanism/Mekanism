@@ -1,6 +1,9 @@
 package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.block.FactoryType;
+import mekanism.api.block.IHasFactoryType;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -30,5 +33,14 @@ public interface IBlockProvider extends IItemProvider {
     @Override
     default String getTranslationKey() {
         return getBlock().getTranslationKey();
+    }
+
+    @Nullable
+    default FactoryType getFactoryType() {
+        Block block = getBlock();
+        if (block instanceof IHasFactoryType) {
+            return ((IHasFactoryType) block).getFactoryType();
+        }
+        return null;
     }
 }

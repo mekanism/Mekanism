@@ -12,10 +12,6 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel, IHasTileEntity<TileEntityDynamicTank>, IHasGui<TileEntityDynamicTank> {
 
-    public BlockDynamicTank() {
-        super("dynamic_tank");
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityDynamicTank tile) {
         return new ContainerProvider("mekanism.container.dynamic_tank", (i, inv, player) -> new DynamicTankContainer(i, inv, tile));

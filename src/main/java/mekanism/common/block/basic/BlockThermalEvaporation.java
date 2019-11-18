@@ -24,7 +24,6 @@ public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel
 
     public BlockThermalEvaporation() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "thermal_evaporation_block"));
     }
 
     @Override

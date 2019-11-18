@@ -9,10 +9,6 @@ import net.minecraft.util.BlockRenderLayer;
 
 public class BlockDiversionTransporter extends BlockLargeTransmitter implements IHasTileEntity<TileEntityDiversionTransporter> {
 
-    public BlockDiversionTransporter() {
-        super("diversion_transporter");
-    }
-
     @Override
     public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.TRANSLUCENT || layer == BlockRenderLayer.CUTOUT;

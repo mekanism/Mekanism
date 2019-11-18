@@ -7,7 +7,6 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
@@ -23,7 +22,7 @@ import net.minecraft.world.IBlockReader;
 public class BlockTurbineVent extends BlockBasicMultiblock implements IHasTileEntity<TileEntityTurbineVent>, IHasGui<TileEntityTurbineVent> {
 
     public BlockTurbineVent() {
-        super(MekanismGenerators.MODID, "turbine_vent", Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
     }
 
     @Override

@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
     public ItemRobit() {
-        super("robit", 100_000);
+        super(100_000);
     }
 
     @Override

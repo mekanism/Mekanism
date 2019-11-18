@@ -6,7 +6,6 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import net.minecraft.block.Block;
@@ -17,7 +16,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
@@ -28,7 +26,6 @@ public class BlockLaserFocusMatrix extends BlockTileDrops implements IHasTileEnt
 
     public BlockLaserFocusMatrix() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "laser_focus_matrix"));
     }
 
     @Override

@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ITieredItem;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -22,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredItem<BinTier> {
 
     public ItemBlockBin(BlockBin block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
     @Nullable

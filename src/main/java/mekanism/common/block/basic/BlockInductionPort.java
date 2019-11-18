@@ -15,10 +15,6 @@ import net.minecraft.tileentity.TileEntityType;
 public class BlockInductionPort extends BlockBasicMultiblock implements IStateActive, IHasInventory, IHasTileEntity<TileEntityInductionPort>, ISupportsComparator,
       IHasGui<TileEntityInductionPort> {
 
-    public BlockInductionPort() {
-        super("induction_port");
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityInductionPort tile) {
         return new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv, tile));

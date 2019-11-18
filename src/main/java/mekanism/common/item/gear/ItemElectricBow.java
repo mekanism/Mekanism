@@ -37,9 +37,9 @@ import net.minecraftforge.event.ForgeEventFactory;
 //TODO: UPDATE to more closely match logic of BowItem. Maybe even extend BowItem and then implement IItemEnergized instead
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
-    public ItemElectricBow() {
+    public ItemElectricBow(Properties properties) {
         //TODO: Config max energy, damage, etc
-        super("electric_bow", 120_000, new Item.Properties().setNoRepair());
+        super(120_000, properties.setNoRepair());
     }
 
     @Override

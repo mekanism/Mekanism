@@ -3,7 +3,6 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.util.MekanismUtils;
@@ -20,7 +19,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -62,11 +60,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         // Or maybe use blockstate
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         this.advanced = advanced;
-        if (advanced) {
-            setRegistryName(new ResourceLocation(Mekanism.MODID, "advanced_bounding_block"));
-        } else {
-            setRegistryName(new ResourceLocation(Mekanism.MODID, "bounding_block"));
-        }
     }
 
     @Override

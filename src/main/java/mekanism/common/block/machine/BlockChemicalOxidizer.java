@@ -62,7 +62,6 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
 
     public BlockChemicalOxidizer() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "chemical_oxidizer"));
     }
 
     @Override

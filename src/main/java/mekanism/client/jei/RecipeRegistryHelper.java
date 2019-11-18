@@ -1,5 +1,6 @@
 package mekanism.client.jei;
 
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
@@ -32,7 +33,7 @@ public class RecipeRegistryHelper {
     }
 
     public static void registerSmelter(IRecipeRegistration registry) {
-        MekanismBlock mekanismBlock = MekanismBlock.ENERGIZED_SMELTER;
+        IBlockProvider mekanismBlock = MekanismBlock.ENERGIZED_SMELTER;
         //TODO: Add all smelting recipes
         //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
         if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
@@ -51,7 +52,7 @@ public class RecipeRegistryHelper {
         }
     }
 
-    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, MekanismBlock mekanismBlock, MekanismRecipeType<RECIPE> type) {
+    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IBlockProvider mekanismBlock, MekanismRecipeType<RECIPE> type) {
         registry.addRecipes(type.getRecipes(getWorld()), mekanismBlock.getRegistryName());
     }
 

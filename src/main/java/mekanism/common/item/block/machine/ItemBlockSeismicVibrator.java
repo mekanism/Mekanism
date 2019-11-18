@@ -11,6 +11,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -37,7 +38,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeismicVibrator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSeismicVibrator(BlockSeismicVibrator block) {
-        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

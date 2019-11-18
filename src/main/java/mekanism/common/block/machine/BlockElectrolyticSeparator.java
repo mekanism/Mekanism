@@ -62,7 +62,6 @@ public class BlockElectrolyticSeparator extends BlockMekanismContainer implement
 
     public BlockElectrolyticSeparator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "electrolytic_separator"));
     }
 
     @Override

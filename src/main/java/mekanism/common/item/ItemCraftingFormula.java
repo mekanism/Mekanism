@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -26,14 +27,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemCraftingFormula extends ItemMekanism {
+public class ItemCraftingFormula extends Item {
 
     public static ModelResourceLocation MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula"), "inventory");
     public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula_invalid"), "inventory");
     public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula_encoded"), "inventory");
 
-    public ItemCraftingFormula() {
-        super("crafting_formula");
+    public ItemCraftingFormula(Properties properties) {
+        super(properties);
     }
 
     @Override

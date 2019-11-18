@@ -63,7 +63,6 @@ public class BlockChemicalInjectionChamber extends BlockMekanismContainer implem
 
     public BlockChemicalInjectionChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "chemical_injection_chamber"));
     }
 
     @Nonnull

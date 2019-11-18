@@ -71,7 +71,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
 
     public BlockLaser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "laser"));
     }
 
     @Nonnull

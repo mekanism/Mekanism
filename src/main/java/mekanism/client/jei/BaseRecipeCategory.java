@@ -9,13 +9,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.MekanismBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -50,7 +50,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     private final IDrawable background;
 
-    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, MekanismBlock mekanismBlock, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
+    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, IBlockProvider mekanismBlock, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         this(helper, guiTexture, mekanismBlock.getRegistryName(), mekanismBlock.getTranslationKey(), progress, xOffset, yOffset, width, height);
     }
 

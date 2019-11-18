@@ -62,7 +62,6 @@ public class BlockChemicalDissolutionChamber extends BlockMekanismContainer impl
 
     public BlockChemicalDissolutionChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "chemical_dissolution_chamber"));
     }
 
     @Override

@@ -13,6 +13,7 @@ import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -39,7 +40,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip<BlockElectricPump> implements IItemEnergized, IItemSustainedInventory, IItemSustainedTank, ISecurityItem {
 
     public ItemBlockElectricPump(BlockElectricPump block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
     @Override

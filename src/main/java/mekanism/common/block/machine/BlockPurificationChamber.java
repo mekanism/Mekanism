@@ -63,7 +63,6 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
 
     public BlockPurificationChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "purification_chamber"));
     }
 
     @Nonnull

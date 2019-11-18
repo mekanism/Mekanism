@@ -13,7 +13,6 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITiere
     private final PipeTier tier;
 
     public BlockMechanicalPipe(PipeTier tier) {
-        super(tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_mechanical_pipe");
         this.tier = tier;
     }
 

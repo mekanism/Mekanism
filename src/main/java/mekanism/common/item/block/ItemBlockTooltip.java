@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
@@ -19,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> {
 
     public ItemBlockTooltip(BLOCK block) {
-        this(block, new Item.Properties());
+        this(block, ItemDeferredRegister.getMekBaseProperties());
     }
 
     public ItemBlockTooltip(BLOCK block, Item.Properties properties) {

@@ -63,7 +63,6 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
 
     public BlockCombiner() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "combiner"));
     }
 
     @Nonnull

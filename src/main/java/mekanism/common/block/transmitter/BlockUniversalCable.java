@@ -1,6 +1,5 @@
 package mekanism.common.block.transmitter;
 
-import java.util.Locale;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.CableTier;
@@ -15,7 +14,6 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
     private final CableTier tier;
 
     public BlockUniversalCable(CableTier tier) {
-        super(tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_universal_cable");
         this.tier = tier;
     }
 

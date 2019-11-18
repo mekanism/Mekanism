@@ -4,18 +4,18 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.client.render.item.block.RenderSecurityDeskItem;
 import mekanism.common.block.basic.BlockSecurityDesk;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> {
 
     public ItemBlockSecurityDesk(BlockSecurityDesk block) {
-        super(block, new Item.Properties().setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

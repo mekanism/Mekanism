@@ -27,8 +27,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -42,14 +42,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
+public class ItemJetpack extends ArmorItem implements IGasItem {
 
     public static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
     public final int TRANSFER_RATE = 16;
 
-    public ItemJetpack() {
-        this(JETPACK_MATERIAL, "jetpack", new Item.Properties().setTEISR(() -> getTEISR()));
+    public ItemJetpack(Properties properties) {
+        this(JETPACK_MATERIAL, properties.setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -58,8 +58,8 @@ public class ItemJetpack extends ItemCustomArmorMekanism implements IGasItem {
         return RenderJetpack::new;
     }
 
-    public ItemJetpack(IArmorMaterial material, String name, Item.Properties properties) {
-        super(material, EquipmentSlotType.CHEST, name, properties);
+    public ItemJetpack(IArmorMaterial material, Properties properties) {
+        super(material, EquipmentSlotType.CHEST, properties.setNoRepair());
     }
 
     @Override

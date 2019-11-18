@@ -3,6 +3,7 @@ package mekanism.client;
 import java.util.Map;
 import java.util.function.Function;
 import mekanism.api.block.IColoredBlock;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
@@ -365,8 +366,8 @@ public class ClientRegistration {
     }
 
     //TODO: Move this to a utils class
-    private static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, MekanismBlock... blocks) {
-        for (MekanismBlock mekanismBlock : blocks) {
+    private static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, IBlockProvider... blocks) {
+        for (IBlockProvider mekanismBlock : blocks) {
             blockColors.register(blockColor, mekanismBlock.getBlock());
             itemColors.register(itemColor, mekanismBlock.getItem());
         }

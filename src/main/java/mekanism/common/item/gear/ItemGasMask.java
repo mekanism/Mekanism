@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
@@ -20,12 +20,12 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemGasMask extends ItemCustomArmorMekanism {
+public class ItemGasMask extends ArmorItem {
 
     public static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
 
-    public ItemGasMask() {
-        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, "gas_mask", new Item.Properties().setTEISR(() -> getTEISR()));
+    public ItemGasMask(Properties properties) {
+        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, properties.setTEISR(() -> getTEISR()).setNoRepair());
     }
 
     @OnlyIn(Dist.CLIENT)

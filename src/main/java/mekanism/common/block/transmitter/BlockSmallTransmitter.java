@@ -31,10 +31,6 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
         center = VoxelShapes.create(smallSides[6]);
     }
 
-    protected BlockSmallTransmitter(String name) {
-        super(name);
-    }
-
     @Override
     protected VoxelShape getCenter() {
         return center;

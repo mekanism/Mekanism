@@ -14,10 +14,6 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class BlockDynamicValve extends BlockBasicMultiblock implements IHasModel, IHasInventory, IHasTileEntity<TileEntityDynamicValve>, ISupportsComparator, IHasGui<TileEntityDynamicValve> {
 
-    public BlockDynamicValve() {
-        super("dynamic_valve");
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityDynamicValve tile) {
         return new ContainerProvider("mekanism.container.dynamic_tank", (i, inv, player) -> new DynamicTankContainer(i, inv, tile));

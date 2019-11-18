@@ -13,10 +13,6 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class BlockBoilerValve extends BlockBasicMultiblock implements IHasInventory, IHasTileEntity<TileEntityBoilerValve>, ISupportsComparator, IHasGui<TileEntityBoilerValve> {
 
-    public BlockBoilerValve() {
-        super("boiler_valve");
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityBoilerValve tile) {
         return new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, tile));

@@ -1,6 +1,5 @@
 package mekanism.common.block.transmitter;
 
-import java.util.Locale;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.TubeTier;
@@ -13,7 +12,6 @@ public class BlockPressurizedTube extends BlockSmallTransmitter implements ITier
     private final TubeTier tier;
 
     public BlockPressurizedTube(TubeTier tier) {
-        super(tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_pressurized_tube");
         this.tier = tier;
     }
 

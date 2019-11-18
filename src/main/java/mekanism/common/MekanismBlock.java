@@ -1,19 +1,16 @@
 package mekanism.common;
 
+import java.util.Locale;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.block.FactoryType;
-import mekanism.api.block.IHasFactoryType;
-import mekanism.api.providers.IBlockProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockSalt;
-import mekanism.common.block.PortalHelper;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockBoilerCasing;
 import mekanism.common.block.basic.BlockBoilerValve;
@@ -82,7 +79,6 @@ import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
-import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.item.block.ItemBlockResource;
 import mekanism.common.item.block.ItemBlockSecurityDesk;
 import mekanism.common.item.block.ItemBlockTooltip;
@@ -129,7 +125,10 @@ import mekanism.common.item.block.transmitter.ItemBlockPressurizedTube;
 import mekanism.common.item.block.transmitter.ItemBlockRestrictiveTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockThermodynamicConductor;
 import mekanism.common.item.block.transmitter.ItemBlockUniversalCable;
+import mekanism.common.registration.impl.BlockDeferredRegister;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.resource.BlockResourceInfo;
+import mekanism.common.resource.INamedResource;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -137,6 +136,7 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ITier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
@@ -144,233 +144,253 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Ensure all IBlockMekanism's set the required information
-public enum MekanismBlock implements IBlockProvider {
-    OSMIUM_BLOCK(new BlockResource(BlockResourceInfo.OSMIUM), ItemBlockResource::new),
-    BRONZE_BLOCK(new BlockResource(BlockResourceInfo.BRONZE), ItemBlockResource::new),
-    REFINED_OBSIDIAN_BLOCK(new BlockResource(BlockResourceInfo.REFINED_OBSIDIAN), ItemBlockResource::new),
-    CHARCOAL_BLOCK(new BlockResource(BlockResourceInfo.CHARCOAL), ItemBlockResource::new),
-    REFINED_GLOWSTONE_BLOCK(new BlockResource(BlockResourceInfo.REFINED_GLOWSTONE), ItemBlockResource::new),
-    STEEL_BLOCK(new BlockResource(BlockResourceInfo.STEEL), ItemBlockResource::new),
+public class MekanismBlock {
 
-    BASIC_BIN(new BlockBin(BinTier.BASIC), ItemBlockBin::new),
-    ADVANCED_BIN(new BlockBin(BinTier.ADVANCED), ItemBlockBin::new),
-    ELITE_BIN(new BlockBin(BinTier.ELITE), ItemBlockBin::new),
-    ULTIMATE_BIN(new BlockBin(BinTier.ULTIMATE), ItemBlockBin::new),
-    CREATIVE_BIN(new BlockBin(BinTier.CREATIVE), ItemBlockBin::new),
+    public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 
-    TELEPORTER_FRAME(new BlockTeleporterFrame(), ItemBlockTooltip::new),
-    STEEL_CASING(new BlockSteelCasing(), ItemBlockTooltip::new),
-    DYNAMIC_TANK(new BlockDynamicTank(), ItemBlockTooltip::new),
-    STRUCTURAL_GLASS(new BlockStructuralGlass(), ItemBlockTooltip::new),
-    DYNAMIC_VALVE(new BlockDynamicValve(), ItemBlockTooltip::new),
-    COPPER_BLOCK(new BlockResource(BlockResourceInfo.COPPER), ItemBlockResource::new),
-    TIN_BLOCK(new BlockResource(BlockResourceInfo.TIN), ItemBlockResource::new),
-    THERMAL_EVAPORATION_CONTROLLER(new BlockThermalEvaporationController(), ItemBlockTooltip::new),
-    THERMAL_EVAPORATION_VALVE(new BlockThermalEvaporationValve(), ItemBlockTooltip::new),
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> OSMIUM_BLOCK = registerResourceBlock(BlockResourceInfo.OSMIUM);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> BRONZE_BLOCK = registerResourceBlock(BlockResourceInfo.BRONZE);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> REFINED_OBSIDIAN_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_OBSIDIAN);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
 
-    THERMAL_EVAPORATION_BLOCK(new BlockThermalEvaporation(), ItemBlockTooltip::new),
-    INDUCTION_CASING(new BlockInductionCasing(), ItemBlockTooltip::new),
-    INDUCTION_PORT(new BlockInductionPort(), ItemBlockTooltip::new),
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(BinTier.BASIC);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(BinTier.ADVANCED);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ELITE_BIN = registerBin(BinTier.ELITE);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ULTIMATE_BIN = registerBin(BinTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> CREATIVE_BIN = registerBin(BinTier.CREATIVE);
 
-    BASIC_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.BASIC), ItemBlockInductionCell::new),
-    ADVANCED_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ADVANCED), ItemBlockInductionCell::new),
-    ELITE_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ELITE), ItemBlockInductionCell::new),
-    ULTIMATE_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ULTIMATE), ItemBlockInductionCell::new),
+    public static final BlockRegistryObject<BlockTeleporterFrame, ItemBlockTooltip> TELEPORTER_FRAME = registerBlock("teleporter_frame", BlockTeleporterFrame::new);
+    public static final BlockRegistryObject<BlockSteelCasing, ItemBlockTooltip> STEEL_CASING = registerBlock("steel_casing", BlockSteelCasing::new);
+    public static final BlockRegistryObject<BlockDynamicTank, ItemBlockTooltip> DYNAMIC_TANK = registerBlock("dynamic_tank", BlockDynamicTank::new);
+    public static final BlockRegistryObject<BlockStructuralGlass, ItemBlockTooltip> STRUCTURAL_GLASS = registerBlock("structural_glass", BlockStructuralGlass::new);
+    public static final BlockRegistryObject<BlockDynamicValve, ItemBlockTooltip> DYNAMIC_VALVE = registerBlock("dynamic_valve", BlockDynamicValve::new);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> COPPER_BLOCK = registerResourceBlock(BlockResourceInfo.COPPER);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> TIN_BLOCK = registerResourceBlock(BlockResourceInfo.TIN);
+    public static final BlockRegistryObject<BlockThermalEvaporationController, ItemBlockTooltip> THERMAL_EVAPORATION_CONTROLLER = registerBlock("thermal_evaporation_controller", BlockThermalEvaporationController::new);
+    public static final BlockRegistryObject<BlockThermalEvaporationValve, ItemBlockTooltip> THERMAL_EVAPORATION_VALVE = registerBlock("thermal_evaporation_valve", BlockThermalEvaporationValve::new);
 
-    BASIC_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.BASIC), ItemBlockInductionProvider::new),
-    ADVANCED_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ADVANCED), ItemBlockInductionProvider::new),
-    ELITE_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ELITE), ItemBlockInductionProvider::new),
-    ULTIMATE_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ULTIMATE), ItemBlockInductionProvider::new),
+    public static final BlockRegistryObject<BlockThermalEvaporation, ItemBlockTooltip> THERMAL_EVAPORATION_BLOCK = registerBlock("thermal_evaporation_block", BlockThermalEvaporation::new);
+    public static final BlockRegistryObject<BlockInductionCasing, ItemBlockTooltip> INDUCTION_CASING = registerBlock("induction_casing", BlockInductionCasing::new);
+    public static final BlockRegistryObject<BlockInductionPort, ItemBlockTooltip> INDUCTION_PORT = registerBlock("induction_port", BlockInductionPort::new);
 
-    SUPERHEATING_ELEMENT(new BlockSuperheatingElement(), ItemBlockTooltip::new),
-    PRESSURE_DISPERSER(new BlockPressureDisperser(), ItemBlockTooltip::new),
-    BOILER_CASING(new BlockBoilerCasing(), ItemBlockTooltip::new),
-    BOILER_VALVE(new BlockBoilerValve(), ItemBlockTooltip::new),
-    SECURITY_DESK(new BlockSecurityDesk(), ItemBlockSecurityDesk::new),
+    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> BASIC_INDUCTION_CELL = registerInductionCell(InductionCellTier.BASIC);
+    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> ADVANCED_INDUCTION_CELL = registerInductionCell(InductionCellTier.ADVANCED);
+    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> ELITE_INDUCTION_CELL = registerInductionCell(InductionCellTier.ELITE);
+    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> ULTIMATE_INDUCTION_CELL = registerInductionCell(InductionCellTier.ULTIMATE);
 
-    ENRICHMENT_CHAMBER(new BlockEnrichmentChamber(), ItemBlockEnrichmentChamber::new),
-    OSMIUM_COMPRESSOR(new BlockOsmiumCompressor(), ItemBlockOsmiumCompressor::new),
-    COMBINER(new BlockCombiner(), ItemBlockCombiner::new),
-    CRUSHER(new BlockCrusher(), ItemBlockCrusher::new),
-    DIGITAL_MINER(new BlockDigitalMiner(), ItemBlockDigitalMiner::new),
+    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> BASIC_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.BASIC);
+    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> ADVANCED_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.ADVANCED);
+    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> ELITE_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.ELITE);
+    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> ULTIMATE_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.ULTIMATE);
 
-    BASIC_SMELTING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.SMELTING), ItemBlockFactory::new),
-    BASIC_ENRICHING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.ENRICHING), ItemBlockFactory::new),
-    BASIC_CRUSHING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.CRUSHING), ItemBlockFactory::new),
-    BASIC_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.COMPRESSING), ItemBlockFactory::new),
-    BASIC_COMBINING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.COMBINING), ItemBlockFactory::new),
-    BASIC_PURIFYING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.PURIFYING), ItemBlockFactory::new),
-    BASIC_INJECTING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.INJECTING), ItemBlockFactory::new),
-    BASIC_INFUSING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.INFUSING), ItemBlockFactory::new),
-    BASIC_SAWING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.SAWING), ItemBlockFactory::new),
+    public static final BlockRegistryObject<BlockSuperheatingElement, ItemBlockTooltip> SUPERHEATING_ELEMENT = registerBlock("superheating_element", BlockSuperheatingElement::new);
+    public static final BlockRegistryObject<BlockPressureDisperser, ItemBlockTooltip> PRESSURE_DISPERSER = registerBlock("pressure_disperser", BlockPressureDisperser::new);
+    public static final BlockRegistryObject<BlockBoilerCasing, ItemBlockTooltip> BOILER_CASING = registerBlock("boiler_casing", BlockBoilerCasing::new);
+    public static final BlockRegistryObject<BlockBoilerValve, ItemBlockTooltip> BOILER_VALVE = registerBlock("boiler_valve", BlockBoilerValve::new);
+    public static final BlockRegistryObject<BlockSecurityDesk, ItemBlockSecurityDesk> SECURITY_DESK = BLOCKS.register("security_desk", BlockSecurityDesk::new, ItemBlockSecurityDesk::new);
 
-    ADVANCED_SMELTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.SMELTING), ItemBlockFactory::new),
-    ADVANCED_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.ENRICHING), ItemBlockFactory::new),
-    ADVANCED_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.CRUSHING), ItemBlockFactory::new),
-    ADVANCED_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.COMPRESSING), ItemBlockFactory::new),
-    ADVANCED_COMBINING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.COMBINING), ItemBlockFactory::new),
-    ADVANCED_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.PURIFYING), ItemBlockFactory::new),
-    ADVANCED_INJECTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.INJECTING), ItemBlockFactory::new),
-    ADVANCED_INFUSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.INFUSING), ItemBlockFactory::new),
-    ADVANCED_SAWING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.SAWING), ItemBlockFactory::new),
+    public static final BlockRegistryObject<BlockEnrichmentChamber, ItemBlockEnrichmentChamber> ENRICHMENT_CHAMBER = BLOCKS.register("enrichment_chamber", BlockEnrichmentChamber::new, ItemBlockEnrichmentChamber::new);
+    public static final BlockRegistryObject<BlockOsmiumCompressor, ItemBlockOsmiumCompressor> OSMIUM_COMPRESSOR = BLOCKS.register("osmium_compressor", BlockOsmiumCompressor::new, ItemBlockOsmiumCompressor::new);
+    public static final BlockRegistryObject<BlockCombiner, ItemBlockCombiner> COMBINER = BLOCKS.register("combiner", BlockCombiner::new, ItemBlockCombiner::new);
+    public static final BlockRegistryObject<BlockCrusher, ItemBlockCrusher> CRUSHER = BLOCKS.register("crusher", BlockCrusher::new, ItemBlockCrusher::new);
+    public static final BlockRegistryObject<BlockDigitalMiner, ItemBlockDigitalMiner> DIGITAL_MINER = BLOCKS.register("digital_miner", BlockDigitalMiner::new, ItemBlockDigitalMiner::new);
 
-    ELITE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.SMELTING), ItemBlockFactory::new),
-    ELITE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.ENRICHING), ItemBlockFactory::new),
-    ELITE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.CRUSHING), ItemBlockFactory::new),
-    ELITE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.COMPRESSING), ItemBlockFactory::new),
-    ELITE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.COMBINING), ItemBlockFactory::new),
-    ELITE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.PURIFYING), ItemBlockFactory::new),
-    ELITE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.INJECTING), ItemBlockFactory::new),
-    ELITE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.INFUSING), ItemBlockFactory::new),
-    ELITE_SAWING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.SAWING), ItemBlockFactory::new),
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_SMELTING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.SMELTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_ENRICHING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.ENRICHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_CRUSHING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.CRUSHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_COMPRESSING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.COMPRESSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_COMBINING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.COMBINING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_PURIFYING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.PURIFYING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_INJECTING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.INJECTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_INFUSING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.INFUSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> BASIC_SAWING_FACTORY = registerFactory(FactoryTier.BASIC, FactoryType.SAWING);
 
-    ULTIMATE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.SMELTING), ItemBlockFactory::new),
-    ULTIMATE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.ENRICHING), ItemBlockFactory::new),
-    ULTIMATE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.CRUSHING), ItemBlockFactory::new),
-    ULTIMATE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.COMPRESSING), ItemBlockFactory::new),
-    ULTIMATE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.COMBINING), ItemBlockFactory::new),
-    ULTIMATE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.PURIFYING), ItemBlockFactory::new),
-    ULTIMATE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.INJECTING), ItemBlockFactory::new),
-    ULTIMATE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.INFUSING), ItemBlockFactory::new),
-    ULTIMATE_SAWING_FACTORY(new BlockFactory(FactoryTier.ULTIMATE, FactoryType.SAWING), ItemBlockFactory::new),
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_SMELTING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.SMELTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_ENRICHING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.ENRICHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_CRUSHING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.CRUSHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_COMPRESSING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.COMPRESSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_COMBINING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.COMBINING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_PURIFYING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.PURIFYING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_INJECTING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.INJECTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_INFUSING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.INFUSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ADVANCED_SAWING_FACTORY = registerFactory(FactoryTier.ADVANCED, FactoryType.SAWING);
 
-    METALLURGIC_INFUSER(new BlockMetallurgicInfuser(), ItemBlockMetallurgicInfuser::new),
-    PURIFICATION_CHAMBER(new BlockPurificationChamber(), ItemBlockPurificationChamber::new),
-    ENERGIZED_SMELTER(new BlockEnergizedSmelter(), ItemBlockEnergizedSmelter::new),
-    TELEPORTER(new BlockTeleporter(), ItemBlockTeleporter::new),
-    ELECTRIC_PUMP(new BlockElectricPump(), ItemBlockElectricPump::new),
-    PERSONAL_CHEST(new BlockPersonalChest(), ItemBlockPersonalChest::new),
-    CHARGEPAD(new BlockChargepad(), ItemBlockChargepad::new),
-    LOGISTICAL_SORTER(new BlockLogisticalSorter(), ItemBlockLogisticalSorter::new),
-    ROTARY_CONDENSENTRATOR(new BlockRotaryCondensentrator(), ItemBlockRotaryCondensentrator::new),
-    CHEMICAL_OXIDIZER(new BlockChemicalOxidizer(), ItemBlockChemicalOxidizer::new),
-    CHEMICAL_INFUSER(new BlockChemicalInfuser(), ItemBlockChemicalInfuser::new),
-    CHEMICAL_INJECTION_CHAMBER(new BlockChemicalInjectionChamber(), ItemBlockChemicalInjectionChamber::new),
-    ELECTROLYTIC_SEPARATOR(new BlockElectrolyticSeparator(), ItemBlockElectrolyticSeparator::new),
-    PRECISION_SAWMILL(new BlockPrecisionSawmill(), ItemBlockPrecisionSawmill::new),
-    CHEMICAL_DISSOLUTION_CHAMBER(new BlockChemicalDissolutionChamber(), ItemBlockChemicalDissolutionChamber::new),
-    CHEMICAL_WASHER(new BlockChemicalWasher(), ItemBlockChemicalWasher::new),
-    CHEMICAL_CRYSTALLIZER(new BlockChemicalCrystallizer(), ItemBlockChemicalCrystallizer::new),
-    SEISMIC_VIBRATOR(new BlockSeismicVibrator(), ItemBlockSeismicVibrator::new),
-    PRESSURIZED_REACTION_CHAMBER(new BlockPressurizedReactionChamber(), ItemBlockPressurizedReactionChamber::new),
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_SMELTING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.SMELTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_ENRICHING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.ENRICHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_CRUSHING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.CRUSHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_COMPRESSING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.COMPRESSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_COMBINING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.COMBINING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_PURIFYING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.PURIFYING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_INJECTING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.INJECTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_INFUSING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.INFUSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ELITE_SAWING_FACTORY = registerFactory(FactoryTier.ELITE, FactoryType.SAWING);
 
-    BASIC_FLUID_TANK(new BlockFluidTank(FluidTankTier.BASIC), ItemBlockFluidTank::new),
-    ADVANCED_FLUID_TANK(new BlockFluidTank(FluidTankTier.ADVANCED), ItemBlockFluidTank::new),
-    ELITE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ELITE), ItemBlockFluidTank::new),
-    ULTIMATE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ULTIMATE), ItemBlockFluidTank::new),
-    CREATIVE_FLUID_TANK(new BlockFluidTank(FluidTankTier.CREATIVE), ItemBlockFluidTank::new),
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_SMELTING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.SMELTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_ENRICHING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.ENRICHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_CRUSHING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.CRUSHING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_COMPRESSING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.COMPRESSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_COMBINING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.COMBINING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_PURIFYING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.PURIFYING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_INJECTING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.INJECTING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_INFUSING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.INFUSING);
+    public static final BlockRegistryObject<BlockFactory, ItemBlockFactory> ULTIMATE_SAWING_FACTORY = registerFactory(FactoryTier.ULTIMATE, FactoryType.SAWING);
 
-    FLUIDIC_PLENISHER(new BlockFluidicPlenisher(), ItemBlockFluidicPlenisher::new),
-    LASER(new BlockLaser(), ItemBlockLaser::new),
-    LASER_AMPLIFIER(new BlockLaserAmplifier(), ItemBlockLaserAmplifier::new),
-    LASER_TRACTOR_BEAM(new BlockLaserTractorBeam(), ItemBlockLaserTractorBeam::new),
-    QUANTUM_ENTANGLOPORTER(new BlockQuantumEntangloporter(), ItemBlockQuantumEntangloporter::new),
-    SOLAR_NEUTRON_ACTIVATOR(new BlockSolarNeutronActivator(), ItemBlockSolarNeutronActivator::new),
-    OREDICTIONIFICATOR(new BlockOredictionificator(), ItemBlockOredictionificator::new),
-    RESISTIVE_HEATER(new BlockResistiveHeater(), ItemBlockResistiveHeater::new),
-    FORMULAIC_ASSEMBLICATOR(new BlockFormulaicAssemblicator(), ItemBlockFormulaicAssemblicator::new),
-    FUELWOOD_HEATER(new BlockFuelwoodHeater(), ItemBlockFuelwoodHeater::new),
+    public static final BlockRegistryObject<BlockMetallurgicInfuser, ItemBlockMetallurgicInfuser> METALLURGIC_INFUSER = BLOCKS.register("metallurgic_infuser", BlockMetallurgicInfuser::new, ItemBlockMetallurgicInfuser::new);
+    public static final BlockRegistryObject<BlockPurificationChamber, ItemBlockPurificationChamber> PURIFICATION_CHAMBER = BLOCKS.register("purification_chamber", BlockPurificationChamber::new, ItemBlockPurificationChamber::new);
+    public static final BlockRegistryObject<BlockEnergizedSmelter, ItemBlockEnergizedSmelter> ENERGIZED_SMELTER = BLOCKS.register("energized_smelter", BlockEnergizedSmelter::new, ItemBlockEnergizedSmelter::new);
+    public static final BlockRegistryObject<BlockTeleporter, ItemBlockTeleporter> TELEPORTER = BLOCKS.register("teleporter", BlockTeleporter::new, ItemBlockTeleporter::new);
+    public static final BlockRegistryObject<BlockElectricPump, ItemBlockElectricPump> ELECTRIC_PUMP = BLOCKS.register("electric_pump", BlockElectricPump::new, ItemBlockElectricPump::new);
+    public static final BlockRegistryObject<BlockPersonalChest, ItemBlockPersonalChest> PERSONAL_CHEST = BLOCKS.register("personal_chest", BlockPersonalChest::new, ItemBlockPersonalChest::new);
+    public static final BlockRegistryObject<BlockChargepad, ItemBlockChargepad> CHARGEPAD = BLOCKS.register("chargepad", BlockChargepad::new, ItemBlockChargepad::new);
+    public static final BlockRegistryObject<BlockLogisticalSorter, ItemBlockLogisticalSorter> LOGISTICAL_SORTER = BLOCKS.register("logistical_sorter", BlockLogisticalSorter::new, ItemBlockLogisticalSorter::new);
+    public static final BlockRegistryObject<BlockRotaryCondensentrator, ItemBlockRotaryCondensentrator> ROTARY_CONDENSENTRATOR = BLOCKS.register("rotary_condensentrator", BlockRotaryCondensentrator::new, ItemBlockRotaryCondensentrator::new);
+    public static final BlockRegistryObject<BlockChemicalOxidizer, ItemBlockChemicalOxidizer> CHEMICAL_OXIDIZER = BLOCKS.register("chemical_oxidizer", BlockChemicalOxidizer::new, ItemBlockChemicalOxidizer::new);
+    public static final BlockRegistryObject<BlockChemicalInfuser, ItemBlockChemicalInfuser> CHEMICAL_INFUSER = BLOCKS.register("chemical_infuser", BlockChemicalInfuser::new, ItemBlockChemicalInfuser::new);
+    public static final BlockRegistryObject<BlockChemicalInjectionChamber, ItemBlockChemicalInjectionChamber> CHEMICAL_INJECTION_CHAMBER = BLOCKS.register("chemical_injection_chamber", BlockChemicalInjectionChamber::new, ItemBlockChemicalInjectionChamber::new);
+    public static final BlockRegistryObject<BlockElectrolyticSeparator, ItemBlockElectrolyticSeparator> ELECTROLYTIC_SEPARATOR = BLOCKS.register("electrolytic_separator", BlockElectrolyticSeparator::new, ItemBlockElectrolyticSeparator::new);
+    public static final BlockRegistryObject<BlockPrecisionSawmill, ItemBlockPrecisionSawmill> PRECISION_SAWMILL = BLOCKS.register("precision_sawmill", BlockPrecisionSawmill::new, ItemBlockPrecisionSawmill::new);
+    public static final BlockRegistryObject<BlockChemicalDissolutionChamber, ItemBlockChemicalDissolutionChamber> CHEMICAL_DISSOLUTION_CHAMBER = BLOCKS.register("chemical_dissolution_chamber", BlockChemicalDissolutionChamber::new, ItemBlockChemicalDissolutionChamber::new);
+    public static final BlockRegistryObject<BlockChemicalWasher, ItemBlockChemicalWasher> CHEMICAL_WASHER = BLOCKS.register("chemical_washer", BlockChemicalWasher::new, ItemBlockChemicalWasher::new);
+    public static final BlockRegistryObject<BlockChemicalCrystallizer, ItemBlockChemicalCrystallizer> CHEMICAL_CRYSTALLIZER = BLOCKS.register("chemical_crystallizer", BlockChemicalCrystallizer::new, ItemBlockChemicalCrystallizer::new);
+    public static final BlockRegistryObject<BlockSeismicVibrator, ItemBlockSeismicVibrator> SEISMIC_VIBRATOR = BLOCKS.register("seismic_vibrator", BlockSeismicVibrator::new, ItemBlockSeismicVibrator::new);
+    public static final BlockRegistryObject<BlockPressurizedReactionChamber, ItemBlockPressurizedReactionChamber> PRESSURIZED_REACTION_CHAMBER = BLOCKS.register("pressurized_reaction_chamber", BlockPressurizedReactionChamber::new, ItemBlockPressurizedReactionChamber::new);
 
-    OSMIUM_ORE(new BlockOre(Resource.OSMIUM), ItemBlockTooltip::new),
-    COPPER_ORE(new BlockOre(Resource.COPPER), ItemBlockTooltip::new),
-    TIN_ORE(new BlockOre(Resource.TIN), ItemBlockTooltip::new),
+    public static final BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> BASIC_FLUID_TANK = registerFluidTank(FluidTankTier.BASIC);
+    public static final BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> ADVANCED_FLUID_TANK = registerFluidTank(FluidTankTier.ADVANCED);
+    public static final BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> ELITE_FLUID_TANK = registerFluidTank(FluidTankTier.ELITE);
+    public static final BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> ULTIMATE_FLUID_TANK = registerFluidTank(FluidTankTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> CREATIVE_FLUID_TANK = registerFluidTank(FluidTankTier.CREATIVE);
 
-    BASIC_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.BASIC), ItemBlockEnergyCube::new),
-    ADVANCED_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ADVANCED), ItemBlockEnergyCube::new),
-    ELITE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ELITE), ItemBlockEnergyCube::new),
-    ULTIMATE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ULTIMATE), ItemBlockEnergyCube::new),
-    CREATIVE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.CREATIVE), ItemBlockEnergyCube::new),
+    public static final BlockRegistryObject<BlockFluidicPlenisher, ItemBlockFluidicPlenisher> FLUIDIC_PLENISHER = BLOCKS.register("fluidic_plenisher", BlockFluidicPlenisher::new, ItemBlockFluidicPlenisher::new);
+    public static final BlockRegistryObject<BlockLaser, ItemBlockLaser> LASER = BLOCKS.register("laser", BlockLaser::new, ItemBlockLaser::new);
+    public static final BlockRegistryObject<BlockLaserAmplifier, ItemBlockLaserAmplifier> LASER_AMPLIFIER = BLOCKS.register("laser_amplifier", BlockLaserAmplifier::new, ItemBlockLaserAmplifier::new);
+    public static final BlockRegistryObject<BlockLaserTractorBeam, ItemBlockLaserTractorBeam> LASER_TRACTOR_BEAM = BLOCKS.register("laser_tractor_beam", BlockLaserTractorBeam::new, ItemBlockLaserTractorBeam::new);
+    public static final BlockRegistryObject<BlockQuantumEntangloporter, ItemBlockQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = BLOCKS.register("quantum_entangloporter", BlockQuantumEntangloporter::new, ItemBlockQuantumEntangloporter::new);
+    public static final BlockRegistryObject<BlockSolarNeutronActivator, ItemBlockSolarNeutronActivator> SOLAR_NEUTRON_ACTIVATOR = BLOCKS.register("solar_neutron_activator", BlockSolarNeutronActivator::new, ItemBlockSolarNeutronActivator::new);
+    public static final BlockRegistryObject<BlockOredictionificator, ItemBlockOredictionificator> OREDICTIONIFICATOR = BLOCKS.register("oredictionificator", BlockOredictionificator::new, ItemBlockOredictionificator::new);
+    public static final BlockRegistryObject<BlockResistiveHeater, ItemBlockResistiveHeater> RESISTIVE_HEATER = BLOCKS.register("resistive_heater", BlockResistiveHeater::new, ItemBlockResistiveHeater::new);
+    public static final BlockRegistryObject<BlockFormulaicAssemblicator, ItemBlockFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = BLOCKS.register("formulaic_assemblicator", BlockFormulaicAssemblicator::new, ItemBlockFormulaicAssemblicator::new);
+    public static final BlockRegistryObject<BlockFuelwoodHeater, ItemBlockFuelwoodHeater> FUELWOOD_HEATER = BLOCKS.register("fuelwood_heater", BlockFuelwoodHeater::new, ItemBlockFuelwoodHeater::new);
 
-    BASIC_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.BASIC), ItemBlockUniversalCable::new),
-    ADVANCED_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.ADVANCED), ItemBlockUniversalCable::new),
-    ELITE_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.ELITE), ItemBlockUniversalCable::new),
-    ULTIMATE_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.ULTIMATE), ItemBlockUniversalCable::new),
+    public static final BlockRegistryObject<BlockOre, ItemBlockTooltip> OSMIUM_ORE = registerOre(Resource.OSMIUM);
+    public static final BlockRegistryObject<BlockOre, ItemBlockTooltip> COPPER_ORE = registerOre(Resource.COPPER);
+    public static final BlockRegistryObject<BlockOre, ItemBlockTooltip> TIN_ORE = registerOre(Resource.TIN);
 
-    BASIC_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.BASIC), ItemBlockMechanicalPipe::new),
-    ADVANCED_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.ADVANCED), ItemBlockMechanicalPipe::new),
-    ELITE_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.ELITE), ItemBlockMechanicalPipe::new),
-    ULTIMATE_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.ULTIMATE), ItemBlockMechanicalPipe::new),
+    public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(EnergyCubeTier.BASIC);
+    public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> ADVANCED_ENERGY_CUBE = registerEnergyCube(EnergyCubeTier.ADVANCED);
+    public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> ELITE_ENERGY_CUBE = registerEnergyCube(EnergyCubeTier.ELITE);
+    public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> ULTIMATE_ENERGY_CUBE = registerEnergyCube(EnergyCubeTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> CREATIVE_ENERGY_CUBE = registerEnergyCube(EnergyCubeTier.CREATIVE);
 
-    BASIC_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.BASIC), ItemBlockPressurizedTube::new),
-    ADVANCED_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.ADVANCED), ItemBlockPressurizedTube::new),
-    ELITE_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.ELITE), ItemBlockPressurizedTube::new),
-    ULTIMATE_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.ULTIMATE), ItemBlockPressurizedTube::new),
+    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> BASIC_UNIVERSAL_CABLE = registerUniversalCable(CableTier.BASIC);
+    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> ADVANCED_UNIVERSAL_CABLE = registerUniversalCable(CableTier.ADVANCED);
+    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> ELITE_UNIVERSAL_CABLE = registerUniversalCable(CableTier.ELITE);
+    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> ULTIMATE_UNIVERSAL_CABLE = registerUniversalCable(CableTier.ULTIMATE);
 
-    BASIC_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.BASIC), ItemBlockLogisticalTransporter::new),
-    ADVANCED_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.ADVANCED), ItemBlockLogisticalTransporter::new),
-    ELITE_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.ELITE), ItemBlockLogisticalTransporter::new),
-    ULTIMATE_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.ULTIMATE), ItemBlockLogisticalTransporter::new),
+    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> BASIC_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.BASIC);
+    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> ADVANCED_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.ADVANCED);
+    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> ELITE_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.ELITE);
+    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> ULTIMATE_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.ULTIMATE);
 
-    RESTRICTIVE_TRANSPORTER(new BlockRestrictiveTransporter(), ItemBlockRestrictiveTransporter::new),
-    DIVERSION_TRANSPORTER(new BlockDiversionTransporter(), ItemBlockDiversionTransporter::new),
+    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> BASIC_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.BASIC);
+    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> ADVANCED_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.ADVANCED);
+    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> ELITE_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.ELITE);
+    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> ULTIMATE_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.ULTIMATE);
 
-    BASIC_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.BASIC), ItemBlockThermodynamicConductor::new),
-    ADVANCED_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ADVANCED), ItemBlockThermodynamicConductor::new),
-    ELITE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ELITE), ItemBlockThermodynamicConductor::new),
-    ULTIMATE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ULTIMATE), ItemBlockThermodynamicConductor::new),
+    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> BASIC_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.BASIC);
+    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> ADVANCED_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.ADVANCED);
+    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> ELITE_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.ELITE);
+    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> ULTIMATE_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.ULTIMATE);
 
-    BOUNDING_BLOCK(new BlockBounding(false)),
-    ADVANCED_BOUNDING_BLOCK(new BlockBounding(true)),
+    public static final BlockRegistryObject<BlockRestrictiveTransporter, ItemBlockRestrictiveTransporter> RESTRICTIVE_TRANSPORTER = BLOCKS.register("restrictive_transporter", BlockRestrictiveTransporter::new, ItemBlockRestrictiveTransporter::new);
+    public static final BlockRegistryObject<BlockDiversionTransporter, ItemBlockDiversionTransporter> DIVERSION_TRANSPORTER = BLOCKS.register("diversion_transporter", BlockDiversionTransporter::new, ItemBlockDiversionTransporter::new);
 
-    BASIC_GAS_TANK(new BlockGasTank(GasTankTier.BASIC), ItemBlockGasTank::new),
-    ADVANCED_GAS_TANK(new BlockGasTank(GasTankTier.ADVANCED), ItemBlockGasTank::new),
-    ELITE_GAS_TANK(new BlockGasTank(GasTankTier.ELITE), ItemBlockGasTank::new),
-    ULTIMATE_GAS_TANK(new BlockGasTank(GasTankTier.ULTIMATE), ItemBlockGasTank::new),
-    CREATIVE_GAS_TANK(new BlockGasTank(GasTankTier.CREATIVE), ItemBlockGasTank::new),
+    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> BASIC_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.BASIC);
+    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ADVANCED_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ADVANCED);
+    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ELITE);
+    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ULTIMATE);
 
-    CARDBOARD_BOX(new BlockCardboardBox(), ItemBlockCardboardBox::new),
+    public static final BlockRegistryObject<BlockBounding, BlockItem> BOUNDING_BLOCK = BLOCKS.register("bounding_block", () -> new BlockBounding(false));
+    public static final BlockRegistryObject<BlockBounding, BlockItem> ADVANCED_BOUNDING_BLOCK = BLOCKS.register("advanced_bounding_block", () -> new BlockBounding(true));
+
+    public static final BlockRegistryObject<BlockGasTank, ItemBlockGasTank> BASIC_GAS_TANK = registerGasTank(GasTankTier.BASIC);
+    public static final BlockRegistryObject<BlockGasTank, ItemBlockGasTank> ADVANCED_GAS_TANK = registerGasTank(GasTankTier.ADVANCED);
+    public static final BlockRegistryObject<BlockGasTank, ItemBlockGasTank> ELITE_GAS_TANK = registerGasTank(GasTankTier.ELITE);
+    public static final BlockRegistryObject<BlockGasTank, ItemBlockGasTank> ULTIMATE_GAS_TANK = registerGasTank(GasTankTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockGasTank, ItemBlockGasTank> CREATIVE_GAS_TANK = registerGasTank(GasTankTier.CREATIVE);
+
+    public static final BlockRegistryObject<BlockCardboardBox, ItemBlockCardboardBox> CARDBOARD_BOX = BLOCKS.register("cardboard_box", BlockCardboardBox::new, ItemBlockCardboardBox::new);
     //TODO: Tag Entry
-    SALT_BLOCK(new BlockSalt());
+    public static final BlockRegistryObject<BlockSalt, BlockItem> SALT_BLOCK = BLOCKS.register("block_salt", BlockSalt::new);
 
-    @Nonnull
-    private final BlockItem item;
-    @Nonnull
-    private final Block block;
-
-    MekanismBlock(@Nonnull Block block) {
-        this(block, ItemBlockMekanism::new);
+    private static BlockRegistryObject<BlockResource, ItemBlockResource> registerResourceBlock(BlockResourceInfo resource) {
+        return BLOCKS.register("block_" + resource.getRegistrySuffix(), () -> new BlockResource(resource), ItemBlockResource::new);
     }
 
-    <BLOCK extends Block> MekanismBlock(@Nonnull BLOCK block, Function<BLOCK, BlockItem> itemCreator) {
-        this.block = block;
-        this.item = itemCreator.apply(block);
+    private static BlockRegistryObject<BlockBin, ItemBlockBin> registerBin(BinTier tier) {
+        return registerTieredBlock(tier, "_bin", () -> new BlockBin(tier), ItemBlockBin::new);
     }
 
-    @Nonnull
-    @Override
-    public Block getBlock() {
-        return block;
+    private static BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> registerInductionCell(InductionCellTier tier) {
+        return registerTieredBlock(tier, "_induction_cell", () -> new BlockInductionCell(tier), ItemBlockInductionCell::new);
     }
 
-    @Nonnull
-    @Override
-    public BlockItem getItem() {
-        return item;
+    private static BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> registerInductionProvider(InductionProviderTier tier) {
+        return registerTieredBlock(tier, "_induction_provider", () -> new BlockInductionProvider(tier), ItemBlockInductionProvider::new);
     }
 
-    @Nullable
-    public FactoryType getFactoryType() {
-        if (block instanceof IHasFactoryType) {
-            return ((IHasFactoryType) block).getFactoryType();
-        }
-        return null;
+    private static BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> registerFluidTank(FluidTankTier tier) {
+        return registerTieredBlock(tier, "_fluid_tank", () -> new BlockFluidTank(tier), ItemBlockFluidTank::new);
     }
 
-    public static void registerBlocks(IForgeRegistry<Block> registry) {
-        for (IBlockProvider blockProvider : values()) {
-            registry.register(blockProvider.getBlock());
-        }
-        registry.register(PortalHelper.BlockPortalOverride.instance);
+    private static BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> registerEnergyCube(EnergyCubeTier tier) {
+        return registerTieredBlock(tier, "_energy_cube", () -> new BlockEnergyCube(tier), ItemBlockEnergyCube::new);
     }
 
-    public static void registerItemBlocks(IForgeRegistry<Item> registry) {
-        for (IItemProvider itemProvider : values()) {
-            registry.register(itemProvider.getItem());
-        }
+    private static BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> registerUniversalCable(CableTier tier) {
+        return registerTieredBlock(tier, "_universal_cable", () -> new BlockUniversalCable(tier), ItemBlockUniversalCable::new);
+    }
+
+    private static BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> registerMechanicalPipe(PipeTier tier) {
+        return registerTieredBlock(tier, "_mechanical_pipe", () -> new BlockMechanicalPipe(tier), ItemBlockMechanicalPipe::new);
+    }
+
+    private static BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> registerPressurizedTube(TubeTier tier) {
+        return registerTieredBlock(tier, "_pressurized_tube", () -> new BlockPressurizedTube(tier), ItemBlockPressurizedTube::new);
+    }
+
+    private static BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> registerLogisticalTransporter(TransporterTier tier) {
+        return registerTieredBlock(tier, "_logistical_transporter", () -> new BlockLogisticalTransporter(tier), ItemBlockLogisticalTransporter::new);
+    }
+
+    private static BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> registerThermodynamicConductor(ConductorTier tier) {
+        return registerTieredBlock(tier, "_thermodynamic_conductor", () -> new BlockThermodynamicConductor(tier), ItemBlockThermodynamicConductor::new);
+    }
+
+    private static BlockRegistryObject<BlockGasTank, ItemBlockGasTank> registerGasTank(GasTankTier tier) {
+        return registerTieredBlock(tier, "_gas_tank", () -> new BlockGasTank(tier), ItemBlockGasTank::new);
+    }
+
+    private static BlockRegistryObject<BlockFactory, ItemBlockFactory> registerFactory(FactoryTier tier, FactoryType type) {
+        return registerTieredBlock(tier, "_" + type.getRegistryNameComponent() + "_factory", () -> new BlockFactory(tier, type), ItemBlockFactory::new);
+    }
+
+    private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(ITier tier, String suffix,
+          Supplier<? extends BLOCK> blockSupplier, Function<BLOCK, ITEM> itemCreator) {
+        //Ensure the name is lower case as with concatenating with values from enums it may not be
+        return BLOCKS.register(tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + suffix, blockSupplier, itemCreator);
+    }
+
+    private static BlockRegistryObject<BlockOre, ItemBlockTooltip> registerOre(INamedResource resource) {
+        return BLOCKS.register(resource.getRegistrySuffix() + "_ore", () -> new BlockOre(resource), ItemBlockTooltip::new);
+    }
+
+    private static <BLOCK extends Block> BlockRegistryObject<BLOCK, ItemBlockTooltip> registerBlock(String name, Supplier<? extends BLOCK> blockSupplier) {
+        return BLOCKS.register(name, blockSupplier, ItemBlockTooltip::new);
     }
 
     /**
@@ -381,7 +401,7 @@ public enum MekanismBlock implements IBlockProvider {
      *
      * @return factory with defined tier and recipe type
      */
-    public static MekanismBlock getFactory(@Nonnull FactoryTier tier, @Nonnull FactoryType type) {
+    public static BlockRegistryObject<BlockFactory, ItemBlockFactory> getFactory(@Nonnull FactoryTier tier, @Nonnull FactoryType type) {
         //TODO: Clean this up and make it more dynamic styled. So that a map gets built at the end of registerBlocks
         switch (tier) {
             case BASIC:

@@ -37,7 +37,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
 
     public ItemPortableTeleporter() {
-        super("portable_teleporter", 1_000_000);
+        super(1_000_000);
     }
 
     public static double calculateEnergyCost(Entity entity, Coord4D coords) {

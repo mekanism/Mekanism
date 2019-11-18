@@ -62,7 +62,6 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
 
     public BlockChemicalCrystallizer() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "chemical_crystallizer"));
     }
 
     @Override

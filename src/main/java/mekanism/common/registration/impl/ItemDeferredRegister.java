@@ -23,10 +23,15 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return new Item.Properties().group(Mekanism.tabMekanism);
     }
 
+    public ItemRegistryObject<Item> register(String name) {
+        return register(name, () -> new Item(getMekBaseProperties()));
+    }
+
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {
         return register(name, () -> sup.apply(getMekBaseProperties()));
     }
 
+    //TODO: Do we want this or do we want to make all of them require the above register method??
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {
         ItemRegistryObject<ITEM> registeredItem = register(name, sup, ItemRegistryObject::new);
         allItems.add(registeredItem);

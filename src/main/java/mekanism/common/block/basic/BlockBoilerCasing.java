@@ -11,10 +11,6 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasTileEntity<TileEntityBoilerCasing>, IHasGui<TileEntityBoilerCasing> {
 
-    public BlockBoilerCasing() {
-        super("boiler_casing");
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityBoilerCasing tile) {
         return new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, tile));

@@ -3,7 +3,6 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
@@ -36,7 +35,6 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
     public BlockCardboardBox() {
         super(Block.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 1F));
         MinecraftForge.EVENT_BUS.register(this);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "cardboard_box"));
     }
 
     //TODO: Test place

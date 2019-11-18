@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
@@ -22,7 +21,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -34,7 +32,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
 
     public BlockStructuralGlass() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "structural_glass"));
     }
 
     @Override

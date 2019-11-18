@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
@@ -9,7 +8,6 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
@@ -39,7 +37,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -61,7 +58,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<T
     public BlockEnergyCube(EnergyCubeTier tier) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(2F, 4F));
         this.tier = tier;
-        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_energy_cube"));
     }
 
     @Override

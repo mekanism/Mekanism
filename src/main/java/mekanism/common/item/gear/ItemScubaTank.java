@@ -26,8 +26,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -41,14 +41,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemScubaTank extends ItemCustomArmorMekanism implements IGasItem {
+public class ItemScubaTank extends ArmorItem implements IGasItem {
 
     public static final ScubaTankMaterial SCUBA_TANK_MATERIAL = new ScubaTankMaterial();
 
     public int TRANSFER_RATE = 16;
 
-    public ItemScubaTank() {
-        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, "scuba_tank", new Item.Properties().setTEISR(() -> getTEISR()));
+    public ItemScubaTank(Properties properties) {
+        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, properties.setTEISR(() -> getTEISR()).setNoRepair());
     }
 
     @OnlyIn(Dist.CLIENT)

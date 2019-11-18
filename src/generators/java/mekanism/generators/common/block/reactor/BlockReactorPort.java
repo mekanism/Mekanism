@@ -7,7 +7,6 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
@@ -16,7 +15,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
@@ -25,7 +23,6 @@ public class BlockReactorPort extends BlockTileDrops implements IStateActive, IB
 
     public BlockReactorPort() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "reactor_port"));
     }
 
     @Override

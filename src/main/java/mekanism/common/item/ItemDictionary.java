@@ -23,10 +23,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemDictionary extends ItemMekanism {
+public class ItemDictionary extends Item {
 
-    public ItemDictionary() {
-        super("dictionary", new Item.Properties().maxStackSize(1));
+    public ItemDictionary(Properties properties) {
+        super(properties.maxStackSize(1));
     }
 
     @Nonnull

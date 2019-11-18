@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
@@ -24,7 +23,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.Explosion;
@@ -37,7 +35,6 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
 
     public BlockThermalEvaporationController() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "thermal_evaporation_controller"));
     }
 
     @Override

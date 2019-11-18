@@ -56,7 +56,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
 
     public BlockResistiveHeater() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "resistive_heater"));
     }
 
     @Override

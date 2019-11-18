@@ -86,7 +86,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     public BlockLogisticalSorter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "logistical_sorter"));
     }
 
     @Nonnull

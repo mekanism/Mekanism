@@ -1,7 +1,6 @@
 package mekanism.common.block.machine.factory;
 
 import java.util.EnumSet;
-import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -60,7 +59,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -82,8 +80,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         this.tier = tier;
         this.type = type;
-        String name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_" + type.getRegistryNameComponent() + "_factory";
-        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
     @Override

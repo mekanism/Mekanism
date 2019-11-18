@@ -2,6 +2,7 @@ package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -11,7 +12,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.common.MekanismBlock;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -20,7 +20,7 @@ import mezz.jei.api.ingredients.IIngredients;
 
 public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
 
-    public SawmillRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
+    public SawmillRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock, ProgressBar progress) {
         super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, progress, 28, 16, 144, 54);
     }
 

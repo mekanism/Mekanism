@@ -2,6 +2,7 @@ package mekanism.common.base;
 
 import java.util.Locale;
 import javax.annotation.Nullable;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.block.Block;
@@ -61,12 +62,12 @@ public interface IFactory {
         SAWING("Sawing", MekanismBlock.PRECISION_SAWMILL, MachineFuelType.CHANCE, false);
 
         private String name;
-        private MekanismBlock type;
+        private IBlockProvider type;
         private MachineFuelType fuelType;
         private boolean fuelSpeed;
         private TileEntityAdvancedElectricMachine cacheTile;
 
-        RecipeType(String s, MekanismBlock t, MachineFuelType ft, boolean speed) {
+        RecipeType(String s, IBlockProvider t, MachineFuelType ft, boolean speed) {
             name = s;
             type = t;
             fuelType = ft;
@@ -129,7 +130,7 @@ public interface IFactory {
             return name().toLowerCase(Locale.ROOT);
         }
 
-        public MekanismBlock getType() {
+        public IBlockProvider getType() {
             //TODO: Make this be part of the block's info
             return type;
         }

@@ -6,6 +6,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -22,19 +23,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemEnergized extends ItemMekanism implements IItemEnergized {
+public class ItemEnergized extends Item implements IItemEnergized {
 
     /**
      * The maximum amount of energy this item can hold.
      */
     public double MAX_ELECTRICITY;
 
-    public ItemEnergized(String name, double maxElectricity) {
-        this(name, maxElectricity, new Item.Properties());
+    public ItemEnergized(double maxElectricity) {
+        this(maxElectricity, ItemDeferredRegister.getMekBaseProperties());
     }
 
-    public ItemEnergized(String name, double maxElectricity, Item.Properties properties) {
-        super(name, properties.maxStackSize(1));
+    public ItemEnergized(double maxElectricity, Properties properties) {
+        super(properties.maxStackSize(1));
         MAX_ELECTRICITY = maxElectricity;
     }
 

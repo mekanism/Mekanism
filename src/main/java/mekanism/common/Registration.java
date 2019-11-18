@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
+import mekanism.common.block.PortalHelper;
 import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -20,7 +21,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
@@ -33,7 +33,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registration {
@@ -46,14 +45,7 @@ public class Registration {
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        MekanismBlock.registerBlocks(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        IForgeRegistry<Item> registry = event.getRegistry();
-        MekanismItem.registerItems(registry);
-        MekanismBlock.registerItemBlocks(registry);
+        event.getRegistry().register(PortalHelper.BlockPortalOverride.instance);
     }
 
     @SubscribeEvent

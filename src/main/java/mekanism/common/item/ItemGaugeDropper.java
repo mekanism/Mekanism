@@ -29,13 +29,13 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
-public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
+public class ItemGaugeDropper extends Item implements IGasItem {
 
     public static final int TRANSFER_RATE = 16;
     public static int CAPACITY = FluidAttributes.BUCKET_VOLUME;
 
-    public ItemGaugeDropper() {
-        super("gauge_dropper", new Item.Properties().maxStackSize(1));
+    public ItemGaugeDropper(Properties properties) {
+        super(properties.maxStackSize(1));
     }
 
     @Override

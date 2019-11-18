@@ -63,7 +63,6 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
 
     public BlockCrusher() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "crusher"));
     }
 
     @Nonnull

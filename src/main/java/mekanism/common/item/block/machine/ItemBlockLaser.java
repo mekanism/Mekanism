@@ -9,6 +9,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
@@ -28,7 +29,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockLaser> implements IItemEnergized, IItemSustainedInventory {
 
     public ItemBlockLaser(BlockLaser block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
     @Override

@@ -50,7 +50,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     public BlockGasTank(GasTankTier tier) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
         this.tier = tier;
-        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_gas_tank"));
     }
 
     @Override

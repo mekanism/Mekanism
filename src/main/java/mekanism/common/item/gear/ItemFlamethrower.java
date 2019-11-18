@@ -13,7 +13,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.ItemMekanism;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -31,12 +30,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemFlamethrower extends ItemMekanism implements IGasItem {
+public class ItemFlamethrower extends Item implements IGasItem {
 
     public int TRANSFER_RATE = 16;
 
-    public ItemFlamethrower() {
-        super("flamethrower", new Item.Properties().maxStackSize(1).setNoRepair().setTEISR(() -> getTEISR()));
+    public ItemFlamethrower(Properties properties) {
+        super(properties.maxStackSize(1).setNoRepair().setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -17,7 +17,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.BioGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -47,7 +46,6 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
 
     public BlockBioGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "bio_generator"));
     }
 
     @Override

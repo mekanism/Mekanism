@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -25,8 +24,8 @@ public class ItemArmoredJetpack extends ItemJetpack {
 
     public static final ArmoredJetpackMaterial ARMORED_JETPACK_MATERIAL = new ArmoredJetpackMaterial();
 
-    public ItemArmoredJetpack() {
-        super(ARMORED_JETPACK_MATERIAL, "jetpack_armored", new Item.Properties().setTEISR(() -> getTEISR()));
+    public ItemArmoredJetpack(Properties properties) {
+        super(ARMORED_JETPACK_MATERIAL, properties.setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

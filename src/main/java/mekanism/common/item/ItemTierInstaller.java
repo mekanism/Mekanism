@@ -13,10 +13,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
-public class ItemTierInstaller extends ItemMekanismTiered {
+public class ItemTierInstaller extends Item {
 
-    public ItemTierInstaller(BaseTier tier) {
-        super(tier, "tier_installer", new Item.Properties().maxStackSize(1));
+    private final BaseTier tier;
+
+    public ItemTierInstaller(BaseTier tier, Properties properties) {
+        super(properties.maxStackSize(1));
+        this.tier = tier;
     }
 
     @Nonnull
@@ -33,7 +36,7 @@ public class ItemTierInstaller extends ItemMekanismTiered {
             if (tile instanceof TileEntityMekanism && ((TileEntityMekanism) tile).playersUsing.size() > 0) {
                 return ActionResultType.FAIL;
             }
-            if (((ITierUpgradeable) tile).upgrade(getTier())) {
+            if (((ITierUpgradeable) tile).upgrade(tier)) {
                 if (!player.isCreative()) {
                     ItemStack stack = player.getHeldItem(context.getHand());
                     stack.shrink(1);

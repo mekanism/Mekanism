@@ -14,7 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
@@ -47,7 +46,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
 
     public BlockSolarGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "solar_generator"));
     }
 
     @Override

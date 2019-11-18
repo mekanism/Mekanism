@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.block.IHasInventory;
@@ -8,7 +7,6 @@ import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateActive;
@@ -34,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +48,6 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     public BlockBin(BinTier tier) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         this.tier = tier;
-        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_bin"));
     }
 
     @Override

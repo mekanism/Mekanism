@@ -32,10 +32,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemConfigurationCard extends ItemMekanism {
+public class ItemConfigurationCard extends Item {
 
-    public ItemConfigurationCard() {
-        super("configuration_card", new Item.Properties().maxStackSize(1));
+    public ItemConfigurationCard(Properties properties) {
+        super(properties.maxStackSize(1));
     }
 
     @Override

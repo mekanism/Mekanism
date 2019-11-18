@@ -1,43 +1,16 @@
 package mekanism.generators.common;
 
-import javax.annotation.Nonnull;
-import mekanism.api.providers.IItemProvider;
-import mekanism.common.item.ItemMekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.generators.common.item.ItemHohlraum;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.entity.player.PlayerEntity;
+import mekanism.generators.common.item.ItemTurbineBlade;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
-import net.minecraftforge.registries.IForgeRegistry;
 
-public enum GeneratorsItem implements IItemProvider {
-    SOLAR_PANEL(new ItemMekanism(MekanismGenerators.MODID, "solar_panel")),
-    HOHLRAUM(new ItemHohlraum()),
-    TURBINE_BLADE(new ItemMekanism(MekanismGenerators.MODID, "turbine_blade") {
-        @Override
-        public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
-            return MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos) != null;
-        }
-    });
+public class GeneratorsItem {
 
-    private final Item item;
+    public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismGenerators.MODID);
 
-    GeneratorsItem(Item item) {
-        this.item = item;
-    }
-
-    @Override
-    @Nonnull
-    public Item getItem() {
-        return item;
-    }
-
-    public static void registerItems(IForgeRegistry<Item> registry) {
-        for (IItemProvider itemProvider : values()) {
-            registry.register(itemProvider.getItem());
-        }
-    }
+    public static final ItemRegistryObject<Item> SOLAR_PANEL = ITEMS.register("solar_panel");
+    public static final ItemRegistryObject<ItemHohlraum> HOHLRAUM = ITEMS.register("hohlraum", ItemHohlraum::new);
+    public static final ItemRegistryObject<ItemTurbineBlade> TURBINE_BLADE = ITEMS.register("turbine_blade", ItemTurbineBlade::new);
 }

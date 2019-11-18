@@ -69,7 +69,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     public BlockFluidTank(FluidTankTier tier) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         this.tier = tier;
-        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_fluid_tank"));
     }
 
     @Override

@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +19,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,7 +34,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     private static boolean isMonitoring;
 
     public ItemBlockCardboardBox(BlockCardboardBox block) {
-        super(block, new Item.Properties().maxStackSize(16));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(16));
         //TODO: Listen to event as needed
         //MinecraftForge.EVENT_BUS.register(this);
     }

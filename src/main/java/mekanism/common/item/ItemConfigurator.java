@@ -59,7 +59,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     public final int ENERGY_PER_ITEM_DUMP = 8;
 
     public ItemConfigurator() {
-        super("configurator", 60000);
+        super(60_000);
     }
 
     @Override

@@ -36,7 +36,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
@@ -64,8 +63,8 @@ import net.minecraftforge.event.ForgeEventFactory;
 // And ShovelItem#field_195955_e for figuring out the grass -> grass path
 public class ItemAtomicDisassembler extends ItemEnergized {
 
-    public ItemAtomicDisassembler() {
-        super("atomic_disassembler", MekanismConfig.general.disassemblerBatteryCapacity.get(), new Item.Properties().setNoRepair().setTEISR(() -> getTEISR()));
+    public ItemAtomicDisassembler(Properties properties) {
+        super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -10,6 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemSustainedInventory;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.ItemDataUtils;
@@ -40,7 +41,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
     public int MAX_GAS = 96000;
 
     public ItemBlockGasTank(BlockGasTank block) {
-        super(block, new Item.Properties().maxStackSize(1));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
     @Override

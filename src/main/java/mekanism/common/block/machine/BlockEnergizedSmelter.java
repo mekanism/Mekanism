@@ -63,7 +63,6 @@ public class BlockEnergizedSmelter extends BlockMekanismContainer implements IBl
 
     public BlockEnergizedSmelter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "energized_smelter"));
     }
 
     @Nonnull

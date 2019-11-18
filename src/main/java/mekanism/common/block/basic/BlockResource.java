@@ -1,9 +1,7 @@
 package mekanism.common.block.basic;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasModel;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
 import mekanism.common.resource.BlockResourceInfo;
@@ -11,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FireBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -26,8 +23,6 @@ public class BlockResource extends BlockTileDrops implements IHasModel {
     public BlockResource(@Nonnull BlockResourceInfo resource) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(resource.getHardness(), resource.getResistance()).lightValue(resource.getLightValue()));
         this.resource = resource;
-        //Ensure the name is lower case as with concatenating with values from enums it may not be
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "block_" + resource.getRegistrySuffix().toLowerCase(Locale.ROOT)));
     }
 
     @Nonnull

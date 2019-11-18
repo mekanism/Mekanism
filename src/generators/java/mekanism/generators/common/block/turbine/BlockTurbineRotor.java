@@ -8,7 +8,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsItem;
-import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.item.ItemTurbineBlade;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
@@ -19,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -36,7 +35,6 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
 
     public BlockTurbineRotor() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "turbine_rotor"));
     }
 
     @Override
@@ -87,7 +85,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         ItemStack stack = player.getHeldItem(hand);
         TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tileEntity;
         if (!player.isSneaking()) {
-            if (!stack.isEmpty() && stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (rod.addBlade()) {
                     if (!player.isCreative()) {
                         stack.shrink(1);
@@ -105,7 +103,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
                     player.inventory.markDirty();
                 }
             }
-        } else if (stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
+        } else if (stack.getItem() instanceof ItemTurbineBlade) {
             if (stack.getCount() < stack.getMaxStackSize()) {
                 if (rod.removeBlade()) {
                     if (!player.isCreative()) {

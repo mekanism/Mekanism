@@ -11,10 +11,6 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class BlockInductionCasing extends BlockBasicMultiblock implements IHasTileEntity<TileEntityInductionCasing>, IHasGui<TileEntityInductionCasing> {
 
-    public BlockInductionCasing() {
-        super("induction_casing");
-    }
-
     @Override
     public INamedContainerProvider getProvider(TileEntityInductionCasing tile) {
         return new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv, tile));

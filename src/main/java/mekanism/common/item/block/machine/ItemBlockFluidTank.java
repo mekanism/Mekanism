@@ -16,6 +16,7 @@ import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
@@ -63,7 +64,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
       IItemNetwork, ITieredItem<FluidTankTier> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

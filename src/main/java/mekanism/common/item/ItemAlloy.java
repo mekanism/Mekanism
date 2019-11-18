@@ -7,6 +7,7 @@ import mekanism.common.tier.AlloyTier;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -14,12 +15,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemAlloy extends ItemMekanism {
+public class ItemAlloy extends Item {
 
     private final AlloyTier tier;
 
-    public ItemAlloy(AlloyTier tier) {
-        super("alloy_" + tier.getName());
+    public ItemAlloy(AlloyTier tier, Properties properties) {
+        super(properties);
         this.tier = tier;
     }
 

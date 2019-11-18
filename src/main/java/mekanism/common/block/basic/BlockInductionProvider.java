@@ -1,10 +1,8 @@
 package mekanism.common.block.basic;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionProviderTier;
@@ -18,7 +16,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -30,7 +27,6 @@ public class BlockInductionProvider extends BlockTileDrops implements ITieredBlo
     public BlockInductionProvider(InductionProviderTier tier) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
         this.tier = tier;
-        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_induction_provider"));
     }
 
     @Override

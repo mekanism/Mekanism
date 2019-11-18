@@ -11,6 +11,7 @@ import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
 import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +26,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -36,7 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip<BlockSolarNeutronActivator> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSolarNeutronActivator(BlockSolarNeutronActivator block) {
-        super(block, new Item.Properties().maxStackSize(1).setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setTEISR(() -> getTEISR()));
     }
 
     @OnlyIn(Dist.CLIENT)

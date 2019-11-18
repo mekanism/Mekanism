@@ -66,7 +66,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
 
     public BlockMetallurgicInfuser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        setRegistryName(new ResourceLocation(Mekanism.MODID, "metallurgic_infuser"));
     }
 
     @Nonnull
