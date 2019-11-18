@@ -371,7 +371,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.LASER, ParticleLaser.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.LASER.getParticleType(), ParticleLaser.Factory::new);
     }
 
     //TODO: Move this to a utils class

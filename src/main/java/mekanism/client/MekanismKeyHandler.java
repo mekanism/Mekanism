@@ -116,12 +116,12 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 }
 
                 Mekanism.packetHandler.sendToServer(PacketJetpackData.MODE_CHANGE(player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             } else if (chestItem instanceof ItemScubaTank) {
                 ItemScubaTank scubaTank = (ItemScubaTank) chestItem;
                 scubaTank.toggleFlowing(chestStack);
                 Mekanism.packetHandler.sendToServer(PacketScubaTankData.MODE_CHANGE(false));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == freeRunnerModeSwitchKey) {
             PlayerEntity player = Minecraft.getInstance().player;
@@ -136,7 +136,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     freeRunners.incrementMode(feetStack);
                 }
                 Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         }
     }

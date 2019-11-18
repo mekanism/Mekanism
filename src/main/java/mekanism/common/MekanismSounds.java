@@ -1,37 +1,21 @@
 package mekanism.common;
 
-import net.minecraft.util.ResourceLocation;
+import mekanism.common.registration.impl.SoundEventDeferredRegister;
+import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.registries.IForgeRegistry;
 
 public final class MekanismSounds {
 
-    public static SoundEvent BEEP;
-    public static SoundEvent CLICK;
-    public static SoundEvent DING;
-    public static SoundEvent ERROR;
-    public static SoundEvent GAS_MASK;
-    public static SoundEvent HYDRAULIC;
-    public static SoundEvent POP;
-    public static SoundEvent SUCCESS;
-    public static SoundEvent CJ_EASTER_EGG;
+    public static final SoundEventDeferredRegister SOUND_EVENTS = new SoundEventDeferredRegister(Mekanism.MODID);
 
-    public static void register(IForgeRegistry<SoundEvent> registry) {
-        BEEP = registerSound(registry, "etc.beep");
-        CLICK = registerSound(registry, "etc.click");
-        DING = registerSound(registry, "etc.ding");
-        ERROR = registerSound(registry, "etc.error");
-        GAS_MASK = registerSound(registry, "etc.gasmask");
-        HYDRAULIC = registerSound(registry, "etc.hydraulic");
-        POP = registerSound(registry, "etc.pop");
-        SUCCESS = registerSound(registry, "etc.success");
-        CJ_EASTER_EGG = registerSound(registry, "etc.cj");
-    }
-
-    public static SoundEvent registerSound(IForgeRegistry<SoundEvent> registry, String soundName) {
-        ResourceLocation soundID = new ResourceLocation(Mekanism.MODID, soundName);
-        SoundEvent event = new SoundEvent(soundID).setRegistryName(soundID);
-        registry.register(event);
-        return event;
-    }
+    public static final SoundEventRegistryObject<SoundEvent> BEEP = SOUND_EVENTS.register("etc.beep");
+    public static final SoundEventRegistryObject<SoundEvent> CLICK = SOUND_EVENTS.register("etc.click");
+    public static final SoundEventRegistryObject<SoundEvent> DING = SOUND_EVENTS.register("etc.ding");
+    public static final SoundEventRegistryObject<SoundEvent> ERROR = SOUND_EVENTS.register("etc.error");
+    public static final SoundEventRegistryObject<SoundEvent> GAS_MASK = SOUND_EVENTS.register("etc.gasmask");
+    public static final SoundEventRegistryObject<SoundEvent> HYDRAULIC = SOUND_EVENTS.register("etc.hydraulic");
+    //TODO: If the pop sound is only used by the balloon in additions, it should be moved out of main and into additions
+    public static final SoundEventRegistryObject<SoundEvent> POP = SOUND_EVENTS.register("etc.pop");
+    public static final SoundEventRegistryObject<SoundEvent> SUCCESS = SOUND_EVENTS.register("etc.success");
+    public static final SoundEventRegistryObject<SoundEvent> CJ_EASTER_EGG = SOUND_EVENTS.register("etc.cj");
 }

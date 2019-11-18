@@ -220,7 +220,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     private void pop() {
-        playSound(MekanismSounds.POP, 1, 1);
+        playSound(MekanismSounds.POP.getSoundEvent(), 1, 1);
         if (world.isRemote) {
             for (int i = 0; i < 10; i++) {
                 try {

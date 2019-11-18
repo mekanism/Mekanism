@@ -38,7 +38,7 @@ public class SparkleAnimation {
 
     public void run() {
         if (MekanismConfig.general.dynamicTankEasterEgg.get()) {
-            tile.getWorld().playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG, SoundCategory.BLOCKS, 1F, 1F);
+            tile.getWorld().playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG.getSoundEvent(), SoundCategory.BLOCKS, 1F, 1F);
         }
 
         // Using the provided radius, get an iterable over all the positions within the radius

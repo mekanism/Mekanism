@@ -42,6 +42,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
+import mekanism.common.particle.MekanismParticleType;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.security.SecurityFrequency;
@@ -191,6 +192,8 @@ public class Mekanism {
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        MekanismSounds.SOUND_EVENTS.register(modEventBus);
+        MekanismParticleType.PARTICLE_TYPES.register(modEventBus);
     }
 
     public void setTagManager(MekanismTagManager manager) {

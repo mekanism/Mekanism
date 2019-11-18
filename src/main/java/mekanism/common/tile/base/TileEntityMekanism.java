@@ -30,7 +30,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -93,6 +92,7 @@ import net.minecraftforge.items.IItemHandler;
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
+//TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
@@ -1066,12 +1066,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     private boolean isFullyMuffled() {
-        if (!hasSound() || !(this instanceof IUpgradeTile)) {
+        if (!hasSound() || !supportsUpgrades()) {
             return false;
         }
-        IUpgradeTile tile = (IUpgradeTile) this;
-        if (tile.getComponent().supports(Upgrade.MUFFLING)) {
-            return tile.getComponent().getUpgrades(Upgrade.MUFFLING) == Upgrade.MUFFLING.getMax();
+        if (getComponent().supports(Upgrade.MUFFLING)) {
+            return getComponent().getUpgrades(Upgrade.MUFFLING) == Upgrade.MUFFLING.getMax();
         }
         return false;
     }

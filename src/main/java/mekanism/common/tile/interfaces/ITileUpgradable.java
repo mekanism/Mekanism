@@ -10,10 +10,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public interface ITileUpgradable extends IUpgradeTile, IUpgradeInfoHandler {
 
-    default boolean supportsUpgrades() {
-        return true;
-    }
-
     Set<Upgrade> getSupportedUpgrade();
 
     @Override

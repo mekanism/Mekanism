@@ -24,7 +24,7 @@ public class LaserParticleData implements IParticleData {
     @Nonnull
     @Override
     public ParticleType<?> getType() {
-        return MekanismParticleType.LASER;
+        return MekanismParticleType.LASER.getParticleType();
     }
 
     @Override

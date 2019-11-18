@@ -14,7 +14,6 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.item.IItemEnergized;
@@ -251,10 +250,8 @@ public abstract class BlockTileDrops extends Block {
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
             tile.getSecurity().setOwnerUUID(ownerUUID == null ? placer.getUniqueID() : ownerUUID);
         }
-        if (tile instanceof IUpgradeTile) {
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                ((IUpgradeTile) tile).getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
+        if (tile.supportsUpgrades() && ItemDataUtils.hasData(stack, "upgrades")) {
+            tile.getComponent().read(ItemDataUtils.getDataMap(stack));
         }
         if (tile instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tile;

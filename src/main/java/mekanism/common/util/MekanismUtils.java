@@ -141,7 +141,10 @@ public final class MekanismUtils {
     }
 
     public static float fractionUpgrades(IUpgradeTile mgmt, Upgrade type) {
-        return (float) mgmt.getComponent().getUpgrades(type) / (float) type.getMax();
+        if (mgmt.supportsUpgrades()) {
+            return (float) mgmt.getComponent().getUpgrades(type) / (float) type.getMax();
+        }
+        return 0;
     }
 
     /**
@@ -153,7 +156,10 @@ public final class MekanismUtils {
      * @return required operating ticks
      */
     public static int getTicks(IUpgradeTile mgmt, int def) {
-        return (int) (def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
+        if (mgmt.supportsUpgrades()) {
+            return (int) (def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
+        }
+        return def;
     }
 
     /**
@@ -165,7 +171,10 @@ public final class MekanismUtils {
      * @return required energy per tick
      */
     public static double getEnergyPerTick(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
+        if (mgmt.supportsUpgrades()) {
+            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
+        }
+        return def;
     }
 
     /**
@@ -177,7 +186,10 @@ public final class MekanismUtils {
      * @return required energy per tick
      */
     public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.ENERGY));
+        if (mgmt.supportsUpgrades()) {
+            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.ENERGY));
+        }
+        return def;
     }
 
     /**
@@ -189,10 +201,13 @@ public final class MekanismUtils {
      * @return max secondary energy per tick
      */
     public static double getSecondaryEnergyPerTickMean(IUpgradeTile mgmt, int def) {
-        if (mgmt.getComponent().supports(Upgrade.GAS)) {
-            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
+        if (mgmt.supportsUpgrades()) {
+            if (mgmt.getComponent().supports(Upgrade.GAS)) {
+                return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
+            }
+            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.SPEED));
         }
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.SPEED));
+        return def;
     }
 
     /**
@@ -204,7 +219,10 @@ public final class MekanismUtils {
      * @return max energy
      */
     public static double getMaxEnergy(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.ENERGY));
+        if (mgmt.supportsUpgrades()) {
+            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.ENERGY));
+        }
+        return def;
     }
 
     /**

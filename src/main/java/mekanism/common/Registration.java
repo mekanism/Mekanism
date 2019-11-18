@@ -7,7 +7,6 @@ import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.gear.ItemGasMask;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.particle.MekanismParticleType;
 import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.RecipeCacheManager;
@@ -18,9 +17,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.particles.ParticleType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -40,12 +37,6 @@ public class Registration {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().register(PortalHelper.BlockPortalOverride.instance);
-    }
-
-    @SubscribeEvent
-    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
-        //TODO: Is this supposed to just be on the client side
-        MekanismSounds.register(event.getRegistry());
     }
 
     @SubscribeEvent
@@ -70,11 +61,6 @@ public class Registration {
         //TODO: Register a custom shaped crafting recipe serializer if needed
 
         Mekanism.instance.setRecipeCacheManager(new RecipeCacheManager());
-    }
-
-    @SubscribeEvent
-    public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
-        MekanismParticleType.registerParticles(event.getRegistry());
     }
 
     @SubscribeEvent

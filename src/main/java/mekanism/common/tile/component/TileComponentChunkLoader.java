@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -87,7 +86,7 @@ public class TileComponentChunkLoader implements ITileComponent {
     }*/
 
     public boolean canOperate() {
-        return MekanismConfig.general.allowChunkloading.get() && ((IUpgradeTile) tileEntity).getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
+        return MekanismConfig.general.allowChunkloading.get() && tileEntity.supportsUpgrades() && tileEntity.getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
     }
 
     @Override
