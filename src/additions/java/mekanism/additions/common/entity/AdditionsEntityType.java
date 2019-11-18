@@ -1,37 +1,16 @@
 package mekanism.additions.common.entity;
 
-import javax.annotation.Nonnull;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.api.providers.IEntityTypeProvider;
-import net.minecraft.entity.Entity;
+import mekanism.common.registration.impl.EntityTypeDeferredRegister;
+import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistry;
 
-public enum AdditionsEntityType implements IEntityTypeProvider {
-    BABY_SKELETON("baby_skeleton", EntityType.Builder.create(EntityBabySkeleton::new, EntityClassification.MONSTER)),
-    BALLOON("balloon", EntityType.Builder.<EntityBalloon>create(EntityBalloon::new, EntityClassification.MISC).size(0.25F, 0.25F)),
-    OBSIDIAN_TNT("obsidian_tnt", EntityType.Builder.<EntityObsidianTNT>create(EntityObsidianTNT::new, EntityClassification.MISC).immuneToFire().size(0.98F, 0.98F));
+public class AdditionsEntityType {
 
-    private final EntityType entityType;
+    public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 
-    <T extends Entity> AdditionsEntityType(String name, EntityType.Builder<T> builder) {
-        builder.setCustomClientFactory((spawnEntity, world) -> (T) getEntityType().create(world));
-        EntityType<T> type = builder.build(name);
-        type.setRegistryName(new ResourceLocation(MekanismAdditions.MODID, name));
-        entityType = type;
-    }
-
-    @Override
-    @Nonnull
-    public EntityType getEntityType() {
-        return entityType;
-    }
-
-    public static void registerEntities(IForgeRegistry<EntityType<?>> registry) {
-        for (IEntityTypeProvider entityTypeProvider : values()) {
-            registry.register(entityTypeProvider.getEntityType());
-        }
-    }
+    public static final EntityTypeRegistryObject<EntityBabySkeleton> BABY_SKELETON = ENTITY_TYPES.register("baby_skeleton", EntityType.Builder.create(EntityBabySkeleton::new, EntityClassification.MONSTER));
+    public static final EntityTypeRegistryObject<EntityBalloon> BALLOON = ENTITY_TYPES.register("balloon", EntityType.Builder.<EntityBalloon>create(EntityBalloon::new, EntityClassification.MISC).size(0.25F, 0.25F));
+    public static final EntityTypeRegistryObject<EntityObsidianTNT> OBSIDIAN_TNT = ENTITY_TYPES.register("obsidian_tnt", EntityType.Builder.<EntityObsidianTNT>create(EntityObsidianTNT::new, EntityClassification.MISC).immuneToFire().size(0.98F, 0.98F));
 }

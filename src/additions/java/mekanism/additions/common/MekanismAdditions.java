@@ -2,6 +2,7 @@ package mekanism.additions.common;
 
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
+import mekanism.additions.common.entity.AdditionsEntityType;
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
@@ -9,6 +10,7 @@ import mekanism.common.base.IModule;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
@@ -39,9 +41,11 @@ public class MekanismAdditions implements IModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::serverStarting);
         modEventBus.addListener(this::serverStopping);
+        modEventBus.addListener(this::onConfigReload);
 
         AdditionsItem.ITEMS.register(modEventBus);
         AdditionsBlock.BLOCKS.register(modEventBus);
+        AdditionsEntityType.ENTITY_TYPES.register(modEventBus);
     }
 
     @Override
@@ -87,5 +91,9 @@ public class MekanismAdditions implements IModule {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             voiceManager.stop();
         }
+    }
+
+    private void onConfigReload(ModConfig.ConfigReloading configEvent) {
+        //TODO: Handle reloading
     }
 }

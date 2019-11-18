@@ -31,6 +31,7 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
@@ -187,6 +188,7 @@ public class Mekanism {
         MekanismItem.ITEMS.register(modEventBus);
         MekanismBlock.BLOCKS.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
     }
 
     public void setTagManager(MekanismTagManager manager) {

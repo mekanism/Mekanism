@@ -3,7 +3,6 @@ package mekanism.common;
 import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.block.PortalHelper;
-import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.gear.ItemGasMask;
@@ -15,7 +14,6 @@ import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -79,11 +77,6 @@ public class Registration {
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         MekanismTileEntityTypes.registerTileEntities(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        MekanismEntityTypes.registerEntities(event.getRegistry());
     }
 
     @SubscribeEvent

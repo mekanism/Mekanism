@@ -14,11 +14,11 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
         super(modid, ForgeRegistries.CONTAINERS);
     }
 
-    public <C extends Container> ContainerTypeRegistryObject<C> register(INamedEntry nameProvider, IContainerFactory<C> factory) {
+    public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, IContainerFactory<CONTAINER> factory) {
         return register(nameProvider.getInternalRegistryName(), factory);
     }
 
-    public <C extends Container> ContainerTypeRegistryObject<C> register(String name, IContainerFactory<C> factory) {
+    public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
         return register(name, () -> IForgeContainerType.create(factory), ContainerTypeRegistryObject::new);
     }
 }

@@ -12,6 +12,9 @@ public class AdditionsItem {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismAdditions.MODID);
 
+    //TODO: FIXME because EntityTypes are now also using deferred registers this ends up passing null
+    // Needs https://github.com/MinecraftForge/MinecraftForge/pull/6299 or similar to be merged to be able ot fix it
+    // for now just don't use the baby skeleton spawn egg
     public static final ItemRegistryObject<SpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.register("baby_skeleton_spawn_egg", () ->
           new SpawnEggItem(AdditionsEntityType.BABY_SKELETON.getEntityType(), 0xFFFFFF, 0x800080, ItemDeferredRegister.getMekBaseProperties()));
     public static final ItemRegistryObject<ItemWalkieTalkie> WALKIE_TALKIE = ITEMS.register("walkie_talkie", ItemWalkieTalkie::new);

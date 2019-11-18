@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismSounds;
+import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -55,8 +56,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         dataManager.register(LATCHED_ID, -1);
     }
 
+    private EntityBalloon(EntityTypeRegistryObject<EntityBalloon> type, World world) {
+        this(type.getEntityType(), world);
+    }
+
     public EntityBalloon(World world, double x, double y, double z, EnumColor c) {
-        this(AdditionsEntityType.BALLOON.getEntityType(), world);
+        this(AdditionsEntityType.BALLOON, world);
         setPosition(x + 0.5F, y + 3F, z + 0.5F);
 
         prevPosX = posX;
@@ -66,7 +71,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(LivingEntity entity, EnumColor c) {
-        this(AdditionsEntityType.BALLOON.getEntityType(), entity.world);
+        this(AdditionsEntityType.BALLOON, entity.world);
         latchedEntity = entity;
         float height = latchedEntity.getSize(latchedEntity.getPose()).height;
         setPosition(latchedEntity.posX, latchedEntity.posY + height + 1.7F, latchedEntity.posZ);
@@ -81,7 +86,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityBalloon(World world, Coord4D obj, EnumColor c) {
-        this(AdditionsEntityType.BALLOON.getEntityType(), world);
+        this(AdditionsEntityType.BALLOON, world);
         latched = obj;
         setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
 
