@@ -82,6 +82,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
 
     @Override
     public TileEntityType<TileEntityStructuralGlass> getTileType() {
-        return MekanismTileEntityTypes.STRUCTURAL_GLASS;
+        return MekanismTileEntityTypes.STRUCTURAL_GLASS.getTileEntityType();
     }
 }

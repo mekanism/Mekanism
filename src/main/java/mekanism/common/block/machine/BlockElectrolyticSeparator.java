@@ -178,7 +178,7 @@ public class BlockElectrolyticSeparator extends BlockMekanismContainer implement
 
     @Override
     public TileEntityType<TileEntityElectrolyticSeparator> getTileType() {
-        return MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR;
+        return MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR.getTileEntityType();
     }
 
     @Nonnull

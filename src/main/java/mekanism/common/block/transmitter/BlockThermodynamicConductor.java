@@ -24,14 +24,14 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter implement
     public TileEntityType<TileEntityThermodynamicConductor> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR;
+                return MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR;
+                return MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR;
+                return MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR;
+                return MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
         }
     }
 }

@@ -167,6 +167,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
 
     @Override
     public TileEntityType<TileEntityResistiveHeater> getTileType() {
-        return MekanismTileEntityTypes.RESISTIVE_HEATER;
+        return MekanismTileEntityTypes.RESISTIVE_HEATER.getTileEntityType();
     }
 }

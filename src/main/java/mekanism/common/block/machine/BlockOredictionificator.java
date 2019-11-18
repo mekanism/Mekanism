@@ -149,6 +149,6 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
 
     @Override
     public TileEntityType<TileEntityOredictionificator> getTileType() {
-        return MekanismTileEntityTypes.OREDICTIONIFICATOR;
+        return MekanismTileEntityTypes.OREDICTIONIFICATOR.getTileEntityType();
     }
 }

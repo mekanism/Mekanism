@@ -1,13 +1,11 @@
 package mekanism.common.block;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
-import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateFacing;
@@ -31,7 +29,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -114,16 +111,16 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     public TileEntityType<TileEntityGasTank> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_GAS_TANK;
+                return MekanismTileEntityTypes.ADVANCED_GAS_TANK.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_GAS_TANK;
+                return MekanismTileEntityTypes.ELITE_GAS_TANK.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_GAS_TANK;
+                return MekanismTileEntityTypes.ULTIMATE_GAS_TANK.getTileEntityType();
             case CREATIVE:
-                return MekanismTileEntityTypes.CREATIVE_GAS_TANK;
+                return MekanismTileEntityTypes.CREATIVE_GAS_TANK.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_GAS_TANK;
+                return MekanismTileEntityTypes.BASIC_GAS_TANK.getTileEntityType();
         }
     }
 }

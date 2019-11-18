@@ -176,16 +176,16 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     public TileEntityType<TileEntityBin> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_BIN;
+                return MekanismTileEntityTypes.ADVANCED_BIN.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_BIN;
+                return MekanismTileEntityTypes.ELITE_BIN.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_BIN;
+                return MekanismTileEntityTypes.ULTIMATE_BIN.getTileEntityType();
             case CREATIVE:
-                return MekanismTileEntityTypes.CREATIVE_BIN;
+                return MekanismTileEntityTypes.CREATIVE_BIN.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_BIN;
+                return MekanismTileEntityTypes.BASIC_BIN.getTileEntityType();
         }
     }
 }

@@ -71,6 +71,6 @@ public class BlockReactorGlass extends BlockTileDrops implements IHasTileEntity<
 
     @Override
     public TileEntityType<TileEntityReactorGlass> getTileType() {
-        return GeneratorsTileEntityTypes.REACTOR_GLASS;
+        return GeneratorsTileEntityTypes.REACTOR_GLASS.getTileEntityType();
     }
 }

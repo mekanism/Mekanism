@@ -55,6 +55,6 @@ public class BlockReactorPort extends BlockTileDrops implements IStateActive, IB
 
     @Override
     public TileEntityType<TileEntityReactorPort> getTileType() {
-        return GeneratorsTileEntityTypes.REACTOR_PORT;
+        return GeneratorsTileEntityTypes.REACTOR_PORT.getTileEntityType();
     }
 }

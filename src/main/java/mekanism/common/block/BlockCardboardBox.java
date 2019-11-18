@@ -104,7 +104,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
     @Override
     public TileEntityType<TileEntityCardboardBox> getTileType() {
-        return MekanismTileEntityTypes.CARDBOARD_BOX;
+        return MekanismTileEntityTypes.CARDBOARD_BOX.getTileEntityType();
     }
 
     public static class BlockData {

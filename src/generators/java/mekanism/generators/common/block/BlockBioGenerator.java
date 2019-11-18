@@ -122,6 +122,6 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
 
     @Override
     public TileEntityType<TileEntityBioGenerator> getTileType() {
-        return GeneratorsTileEntityTypes.BIO_GENERATOR;
+        return GeneratorsTileEntityTypes.BIO_GENERATOR.getTileEntityType();
     }
 }

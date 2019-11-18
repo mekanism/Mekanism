@@ -47,6 +47,7 @@ import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
@@ -189,6 +190,7 @@ public class Mekanism {
         MekanismBlock.BLOCKS.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
+        MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
     }
 
     public void setTagManager(MekanismTagManager manager) {

@@ -185,7 +185,7 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
 
     @Override
     public TileEntityType<TileEntityCombiner> getTileType() {
-        return MekanismTileEntityTypes.COMBINER;
+        return MekanismTileEntityTypes.COMBINER.getTileEntityType();
     }
 
     @Nonnull

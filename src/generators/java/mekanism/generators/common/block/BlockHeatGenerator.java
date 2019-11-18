@@ -131,6 +131,6 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
 
     @Override
     public TileEntityType<TileEntityHeatGenerator> getTileType() {
-        return GeneratorsTileEntityTypes.HEAT_GENERATOR;
+        return GeneratorsTileEntityTypes.HEAT_GENERATOR.getTileEntityType();
     }
 }

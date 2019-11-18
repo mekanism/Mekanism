@@ -22,7 +22,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
 
     public TileEntityAdvancedBoundingBlock() {
-        super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK);
+        super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK.getTileEntityType());
     }
 
     @Override

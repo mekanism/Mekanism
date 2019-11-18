@@ -43,6 +43,6 @@ public class BlockThermalEvaporationValve extends BlockTileDrops implements IHas
 
     @Override
     public TileEntityType<TileEntityThermalEvaporationValve> getTileType() {
-        return MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE;
+        return MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE.getTileEntityType();
     }
 }

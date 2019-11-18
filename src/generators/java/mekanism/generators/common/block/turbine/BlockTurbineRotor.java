@@ -132,6 +132,6 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
 
     @Override
     public TileEntityType<TileEntityTurbineRotor> getTileType() {
-        return GeneratorsTileEntityTypes.TURBINE_ROTOR;
+        return GeneratorsTileEntityTypes.TURBINE_ROTOR.getTileEntityType();
     }
 }

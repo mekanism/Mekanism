@@ -178,7 +178,7 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
 
     @Override
     public TileEntityType<TileEntityChemicalWasher> getTileType() {
-        return MekanismTileEntityTypes.CHEMICAL_WASHER;
+        return MekanismTileEntityTypes.CHEMICAL_WASHER.getTileEntityType();
     }
 
     @Nonnull

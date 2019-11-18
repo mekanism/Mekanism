@@ -38,6 +38,6 @@ public class BlockTurbineVent extends BlockBasicMultiblock implements IHasTileEn
 
     @Override
     public TileEntityType<TileEntityTurbineVent> getTileType() {
-        return GeneratorsTileEntityTypes.TURBINE_VENT;
+        return GeneratorsTileEntityTypes.TURBINE_VENT.getTileEntityType();
     }
 }

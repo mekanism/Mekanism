@@ -148,6 +148,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
 
     @Override
     public TileEntityType<TileEntityFuelwoodHeater> getTileType() {
-        return MekanismTileEntityTypes.FUELWOOD_HEATER;
+        return MekanismTileEntityTypes.FUELWOOD_HEATER.getTileEntityType();
     }
 }

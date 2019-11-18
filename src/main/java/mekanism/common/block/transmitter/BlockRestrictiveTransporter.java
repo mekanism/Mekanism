@@ -9,6 +9,6 @@ public class BlockRestrictiveTransporter extends BlockLargeTransmitter implement
 
     @Override
     public TileEntityType<TileEntityRestrictiveTransporter> getTileType() {
-        return MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER;
+        return MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER.getTileEntityType();
     }
 }

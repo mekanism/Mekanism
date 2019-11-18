@@ -31,14 +31,14 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     public TileEntityType<TileEntityLogisticalTransporter> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER;
+                return MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER;
+                return MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER;
+                return MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER;
+                return MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER.getTileEntityType();
         }
     }
 }

@@ -167,7 +167,7 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
 
     @Override
     public TileEntityType<TileEntityElectricPump> getTileType() {
-        return MekanismTileEntityTypes.ELECTRIC_PUMP;
+        return MekanismTileEntityTypes.ELECTRIC_PUMP.getTileEntityType();
     }
 
     @Nonnull

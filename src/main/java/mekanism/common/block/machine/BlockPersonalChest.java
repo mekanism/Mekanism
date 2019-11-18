@@ -157,6 +157,6 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
 
     @Override
     public TileEntityType<TileEntityPersonalChest> getTileType() {
-        return MekanismTileEntityTypes.PERSONAL_CHEST;
+        return MekanismTileEntityTypes.PERSONAL_CHEST.getTileEntityType();
     }
 }

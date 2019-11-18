@@ -172,6 +172,6 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
 
     @Override
     public TileEntityType<TileEntityChargepad> getTileType() {
-        return MekanismTileEntityTypes.CHARGEPAD;
+        return MekanismTileEntityTypes.CHARGEPAD.getTileEntityType();
     }
 }

@@ -77,6 +77,6 @@ public class BlockReactorLogicAdapter extends BlockTileDrops implements IHasGui<
 
     @Override
     public TileEntityType<TileEntityReactorLogicAdapter> getTileType() {
-        return GeneratorsTileEntityTypes.REACTOR_LOGIC_ADAPTER;
+        return GeneratorsTileEntityTypes.REACTOR_LOGIC_ADAPTER.getTileEntityType();
     }
 }

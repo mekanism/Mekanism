@@ -20,6 +20,6 @@ public class BlockBoilerValve extends BlockBasicMultiblock implements IHasInvent
 
     @Override
     public TileEntityType<TileEntityBoilerValve> getTileType() {
-        return MekanismTileEntityTypes.BOILER_VALVE;
+        return MekanismTileEntityTypes.BOILER_VALVE.getTileEntityType();
     }
 }

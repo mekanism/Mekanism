@@ -102,6 +102,6 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
 
     @Override
     public TileEntityType<TileEntityWindGenerator> getTileType() {
-        return GeneratorsTileEntityTypes.WIND_GENERATOR;
+        return GeneratorsTileEntityTypes.WIND_GENERATOR.getTileEntityType();
     }
 }

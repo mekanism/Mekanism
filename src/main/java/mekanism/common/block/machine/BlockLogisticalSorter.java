@@ -265,7 +265,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     @Override
     public TileEntityType<TileEntityLogisticalSorter> getTileType() {
-        return MekanismTileEntityTypes.LOGISTICAL_SORTER;
+        return MekanismTileEntityTypes.LOGISTICAL_SORTER.getTileEntityType();
     }
 
     @Nonnull

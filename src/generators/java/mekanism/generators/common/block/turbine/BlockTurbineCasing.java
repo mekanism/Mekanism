@@ -38,6 +38,6 @@ public class BlockTurbineCasing extends BlockBasicMultiblock implements IHasTile
 
     @Override
     public TileEntityType<TileEntityTurbineCasing> getTileType() {
-        return GeneratorsTileEntityTypes.TURBINE_CASING;
+        return GeneratorsTileEntityTypes.TURBINE_CASING.getTileEntityType();
     }
 }

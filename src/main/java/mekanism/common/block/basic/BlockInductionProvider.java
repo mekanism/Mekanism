@@ -54,14 +54,14 @@ public class BlockInductionProvider extends BlockTileDrops implements ITieredBlo
     public TileEntityType<TileEntityInductionProvider> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_INDUCTION_PROVIDER;
+                return MekanismTileEntityTypes.ADVANCED_INDUCTION_PROVIDER.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_INDUCTION_PROVIDER;
+                return MekanismTileEntityTypes.ELITE_INDUCTION_PROVIDER.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_INDUCTION_PROVIDER;
+                return MekanismTileEntityTypes.ULTIMATE_INDUCTION_PROVIDER.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_INDUCTION_PROVIDER;
+                return MekanismTileEntityTypes.BASIC_INDUCTION_PROVIDER.getTileEntityType();
         }
     }
 }

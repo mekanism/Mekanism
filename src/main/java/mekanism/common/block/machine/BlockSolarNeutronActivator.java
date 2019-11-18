@@ -155,7 +155,7 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
 
     @Override
     public TileEntityType<TileEntitySolarNeutronActivator> getTileType() {
-        return MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR;
+        return MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR.getTileEntityType();
     }
 
     @Nonnull

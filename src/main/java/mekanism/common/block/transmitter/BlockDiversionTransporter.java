@@ -16,6 +16,6 @@ public class BlockDiversionTransporter extends BlockLargeTransmitter implements 
 
     @Override
     public TileEntityType<TileEntityDiversionTransporter> getTileType() {
-        return MekanismTileEntityTypes.DIVERSION_TRANSPORTER;
+        return MekanismTileEntityTypes.DIVERSION_TRANSPORTER.getTileEntityType();
     }
 }

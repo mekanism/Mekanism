@@ -39,6 +39,6 @@ public class BlockTurbineValve extends BlockBasicMultiblock implements IHasTileE
 
     @Override
     public TileEntityType<TileEntityTurbineValve> getTileType() {
-        return GeneratorsTileEntityTypes.TURBINE_VALVE;
+        return GeneratorsTileEntityTypes.TURBINE_VALVE.getTileEntityType();
     }
 }

@@ -178,7 +178,7 @@ public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlo
 
     @Override
     public TileEntityType<TileEntityChemicalInfuser> getTileType() {
-        return MekanismTileEntityTypes.CHEMICAL_INFUSER;
+        return MekanismTileEntityTypes.CHEMICAL_INFUSER.getTileEntityType();
     }
 
     @Nonnull

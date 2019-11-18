@@ -178,7 +178,7 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
 
     @Override
     public TileEntityType<TileEntityChemicalOxidizer> getTileType() {
-        return MekanismTileEntityTypes.CHEMICAL_OXIDIZER;
+        return MekanismTileEntityTypes.CHEMICAL_OXIDIZER.getTileEntityType();
     }
 
     @Nonnull

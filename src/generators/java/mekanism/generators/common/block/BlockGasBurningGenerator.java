@@ -103,6 +103,6 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
 
     @Override
     public TileEntityType<TileEntityGasGenerator> getTileType() {
-        return GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR;
+        return GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR.getTileEntityType();
     }
 }

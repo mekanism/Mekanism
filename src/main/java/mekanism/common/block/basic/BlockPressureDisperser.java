@@ -32,6 +32,6 @@ public class BlockPressureDisperser extends BlockTileDrops implements IHasTileEn
 
     @Override
     public TileEntityType<TileEntityPressureDisperser> getTileType() {
-        return MekanismTileEntityTypes.PRESSURE_DISPERSER;
+        return MekanismTileEntityTypes.PRESSURE_DISPERSER.getTileEntityType();
     }
 }

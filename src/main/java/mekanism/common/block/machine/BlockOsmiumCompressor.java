@@ -185,7 +185,7 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
 
     @Override
     public TileEntityType<TileEntityOsmiumCompressor> getTileType() {
-        return MekanismTileEntityTypes.OSMIUM_COMPRESSOR;
+        return MekanismTileEntityTypes.OSMIUM_COMPRESSOR.getTileEntityType();
     }
 
     @Nonnull

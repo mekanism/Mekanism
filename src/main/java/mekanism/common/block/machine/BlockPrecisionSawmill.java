@@ -185,7 +185,7 @@ public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBl
 
     @Override
     public TileEntityType<TileEntityPrecisionSawmill> getTileType() {
-        return MekanismTileEntityTypes.PRECISION_SAWMILL;
+        return MekanismTileEntityTypes.PRECISION_SAWMILL.getTileEntityType();
     }
 
     @Nonnull

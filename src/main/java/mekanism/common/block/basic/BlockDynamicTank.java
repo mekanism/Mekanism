@@ -19,6 +19,6 @@ public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel,
 
     @Override
     public TileEntityType<TileEntityDynamicTank> getTileType() {
-        return MekanismTileEntityTypes.DYNAMIC_TANK;
+        return MekanismTileEntityTypes.DYNAMIC_TANK.getTileEntityType();
     }
 }

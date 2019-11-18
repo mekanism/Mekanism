@@ -178,7 +178,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
 
     @Override
     public TileEntityType<TileEntityPressurizedReactionChamber> getTileType() {
-        return MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER;
+        return MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER.getTileEntityType();
     }
 
     @Nonnull

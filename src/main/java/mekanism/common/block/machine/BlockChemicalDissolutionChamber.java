@@ -178,7 +178,7 @@ public class BlockChemicalDissolutionChamber extends BlockMekanismContainer impl
 
     @Override
     public TileEntityType<TileEntityChemicalDissolutionChamber> getTileType() {
-        return MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER;
+        return MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER.getTileEntityType();
     }
 
     @Nonnull

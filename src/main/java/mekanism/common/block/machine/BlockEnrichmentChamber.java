@@ -185,7 +185,7 @@ public class BlockEnrichmentChamber extends BlockMekanismContainer implements IB
 
     @Override
     public TileEntityType<TileEntityEnrichmentChamber> getTileType() {
-        return MekanismTileEntityTypes.ENRICHMENT_CHAMBER;
+        return MekanismTileEntityTypes.ENRICHMENT_CHAMBER.getTileEntityType();
     }
 
     @Nonnull

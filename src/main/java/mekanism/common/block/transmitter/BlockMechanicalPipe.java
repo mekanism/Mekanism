@@ -1,6 +1,5 @@
 package mekanism.common.block.transmitter;
 
-import java.util.Locale;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.PipeTier;
@@ -25,14 +24,14 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITiere
     public TileEntityType<TileEntityMechanicalPipe> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE;
+                return MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE;
+                return MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE;
+                return MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE;
+                return MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE.getTileEntityType();
         }
     }
 }

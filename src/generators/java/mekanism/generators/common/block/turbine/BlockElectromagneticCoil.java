@@ -57,6 +57,6 @@ public class BlockElectromagneticCoil extends BlockMekanismContainer implements 
 
     @Override
     public TileEntityType<TileEntityElectromagneticCoil> getTileType() {
-        return GeneratorsTileEntityTypes.ELECTROMAGNETIC_COIL;
+        return GeneratorsTileEntityTypes.ELECTROMAGNETIC_COIL.getTileEntityType();
     }
 }

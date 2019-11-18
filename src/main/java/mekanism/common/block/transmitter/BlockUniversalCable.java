@@ -31,14 +31,14 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
     public TileEntityType<TileEntityUniversalCable> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE;
+                return MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE;
+                return MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE;
+                return MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE;
+                return MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE.getTileEntityType();
         }
     }
 }

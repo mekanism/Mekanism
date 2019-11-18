@@ -185,7 +185,7 @@ public class BlockChemicalInjectionChamber extends BlockMekanismContainer implem
 
     @Override
     public TileEntityType<TileEntityChemicalInjectionChamber> getTileType() {
-        return MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER;
+        return MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER.getTileEntityType();
     }
 
     @Nonnull

@@ -18,6 +18,6 @@ public class BlockInductionCasing extends BlockBasicMultiblock implements IHasTi
 
     @Override
     public TileEntityType<TileEntityInductionCasing> getTileType() {
-        return MekanismTileEntityTypes.INDUCTION_CASING;
+        return MekanismTileEntityTypes.INDUCTION_CASING.getTileEntityType();
     }
 }

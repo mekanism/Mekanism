@@ -146,16 +146,16 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<T
     public TileEntityType<TileEntityEnergyCube> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE;
+                return MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_ENERGY_CUBE;
+                return MekanismTileEntityTypes.ELITE_ENERGY_CUBE.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE;
+                return MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE.getTileEntityType();
             case CREATIVE:
-                return MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE;
+                return MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_ENERGY_CUBE;
+                return MekanismTileEntityTypes.BASIC_ENERGY_CUBE.getTileEntityType();
         }
     }
 }

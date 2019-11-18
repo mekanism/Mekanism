@@ -166,7 +166,7 @@ public class BlockFluidicPlenisher extends BlockMekanismContainer implements IBl
 
     @Override
     public TileEntityType<TileEntityFluidicPlenisher> getTileType() {
-        return MekanismTileEntityTypes.FLUIDIC_PLENISHER;
+        return MekanismTileEntityTypes.FLUIDIC_PLENISHER.getTileEntityType();
     }
 
     @Nonnull

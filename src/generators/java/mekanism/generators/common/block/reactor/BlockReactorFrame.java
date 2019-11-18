@@ -49,6 +49,6 @@ public class BlockReactorFrame extends BlockTileDrops implements IBlockElectric,
 
     @Override
     public TileEntityType<TileEntityReactorFrame> getTileType() {
-        return GeneratorsTileEntityTypes.REACTOR_FRAME;
+        return GeneratorsTileEntityTypes.REACTOR_FRAME.getTileEntityType();
     }
 }

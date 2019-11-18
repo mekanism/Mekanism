@@ -161,6 +161,6 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
 
     @Override
     public TileEntityType<TileEntitySeismicVibrator> getTileType() {
-        return MekanismTileEntityTypes.SEISMIC_VIBRATOR;
+        return MekanismTileEntityTypes.SEISMIC_VIBRATOR.getTileEntityType();
     }
 }

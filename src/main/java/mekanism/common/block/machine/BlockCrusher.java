@@ -185,7 +185,7 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
 
     @Override
     public TileEntityType<TileEntityCrusher> getTileType() {
-        return MekanismTileEntityTypes.CRUSHER;
+        return MekanismTileEntityTypes.CRUSHER.getTileEntityType();
     }
 
     @Nonnull

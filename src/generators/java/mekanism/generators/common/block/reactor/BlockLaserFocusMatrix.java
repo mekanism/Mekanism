@@ -70,6 +70,6 @@ public class BlockLaserFocusMatrix extends BlockTileDrops implements IHasTileEnt
 
     @Override
     public TileEntityType<TileEntityReactorLaserFocusMatrix> getTileType() {
-        return GeneratorsTileEntityTypes.LASER_FOCUS_MATRIX;
+        return GeneratorsTileEntityTypes.LASER_FOCUS_MATRIX.getTileEntityType();
     }
 }

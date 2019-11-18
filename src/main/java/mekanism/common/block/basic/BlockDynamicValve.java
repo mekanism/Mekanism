@@ -21,6 +21,6 @@ public class BlockDynamicValve extends BlockBasicMultiblock implements IHasModel
 
     @Override
     public TileEntityType<TileEntityDynamicValve> getTileType() {
-        return MekanismTileEntityTypes.DYNAMIC_VALVE;
+        return MekanismTileEntityTypes.DYNAMIC_VALVE.getTileEntityType();
     }
 }

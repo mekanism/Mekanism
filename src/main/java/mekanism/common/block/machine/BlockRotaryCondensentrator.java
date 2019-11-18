@@ -184,7 +184,7 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
 
     @Override
     public TileEntityType<TileEntityRotaryCondensentrator> getTileType() {
-        return MekanismTileEntityTypes.ROTARY_CONDENSENTRATOR;
+        return MekanismTileEntityTypes.ROTARY_CONDENSENTRATOR.getTileEntityType();
     }
 
     @Nonnull

@@ -57,6 +57,6 @@ public class BlockSaturatingCondenser extends BlockMekanismContainer implements 
 
     @Override
     public TileEntityType<TileEntitySaturatingCondenser> getTileType() {
-        return GeneratorsTileEntityTypes.SATURATING_CONDENSER;
+        return GeneratorsTileEntityTypes.SATURATING_CONDENSER.getTileEntityType();
     }
 }

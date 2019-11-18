@@ -142,7 +142,7 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
 
     @Override
     public TileEntityType<TileEntityTeleporter> getTileType() {
-        return MekanismTileEntityTypes.TELEPORTER;
+        return MekanismTileEntityTypes.TELEPORTER.getTileEntityType();
     }
 
     @Nonnull

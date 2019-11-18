@@ -52,6 +52,6 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IStateAc
 
     @Override
     public TileEntityType<TileEntitySuperheatingElement> getTileType() {
-        return MekanismTileEntityTypes.SUPERHEATING_ELEMENT;
+        return MekanismTileEntityTypes.SUPERHEATING_ELEMENT.getTileEntityType();
     }
 }

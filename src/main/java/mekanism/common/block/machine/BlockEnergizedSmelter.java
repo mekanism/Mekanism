@@ -185,7 +185,7 @@ public class BlockEnergizedSmelter extends BlockMekanismContainer implements IBl
 
     @Override
     public TileEntityType<TileEntityEnergizedSmelter> getTileType() {
-        return MekanismTileEntityTypes.ENERGIZED_SMELTER;
+        return MekanismTileEntityTypes.ENERGIZED_SMELTER.getTileEntityType();
     }
 
     @Nonnull

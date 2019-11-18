@@ -24,14 +24,14 @@ public class BlockPressurizedTube extends BlockSmallTransmitter implements ITier
     public TileEntityType<TileEntityPressurizedTube> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE;
+                return MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE;
+                return MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE;
+                return MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE;
+                return MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE.getTileEntityType();
         }
     }
 }

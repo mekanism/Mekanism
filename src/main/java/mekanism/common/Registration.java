@@ -12,7 +12,6 @@ import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.tags.MekanismTagManager;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluid;
@@ -20,7 +19,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -72,11 +70,6 @@ public class Registration {
         //TODO: Register a custom shaped crafting recipe serializer if needed
 
         Mekanism.instance.setRecipeCacheManager(new RecipeCacheManager());
-    }
-
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        MekanismTileEntityTypes.registerTileEntities(event.getRegistry());
     }
 
     @SubscribeEvent

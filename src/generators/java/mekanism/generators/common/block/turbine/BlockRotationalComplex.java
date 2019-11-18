@@ -57,6 +57,6 @@ public class BlockRotationalComplex extends BlockMekanismContainer implements IH
 
     @Override
     public TileEntityType<TileEntityRotationalComplex> getTileType() {
-        return GeneratorsTileEntityTypes.ROTATIONAL_COMPLEX;
+        return GeneratorsTileEntityTypes.ROTATIONAL_COMPLEX.getTileEntityType();
     }
 }

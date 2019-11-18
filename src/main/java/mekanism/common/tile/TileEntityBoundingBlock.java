@@ -36,7 +36,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     public int prevPower;
 
     public TileEntityBoundingBlock() {
-        this(MekanismTileEntityTypes.BOUNDING_BLOCK);
+        this(MekanismTileEntityTypes.BOUNDING_BLOCK.getTileEntityType());
     }
 
     public TileEntityBoundingBlock(TileEntityType<TileEntityBoundingBlock> type) {

@@ -192,6 +192,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
 
     @Override
     public TileEntityType<TileEntityLaser> getTileType() {
-        return MekanismTileEntityTypes.LASER;
+        return MekanismTileEntityTypes.LASER.getTileEntityType();
     }
 }

@@ -18,6 +18,6 @@ public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasTileE
 
     @Override
     public TileEntityType<TileEntityBoilerCasing> getTileType() {
-        return MekanismTileEntityTypes.BOILER_CASING;
+        return MekanismTileEntityTypes.BOILER_CASING.getTileEntityType();
     }
 }

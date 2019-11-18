@@ -88,6 +88,6 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
 
     @Override
     public TileEntityType<TileEntitySecurityDesk> getTileType() {
-        return MekanismTileEntityTypes.SECURITY_DESK;
+        return MekanismTileEntityTypes.SECURITY_DESK.getTileEntityType();
     }
 }

@@ -195,9 +195,9 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     public TileEntityType<TileEntityBoundingBlock> getTileType() {
         if (advanced) {
-            return MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK;
+            return MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK.getTileEntityType();
         }
-        return MekanismTileEntityTypes.BOUNDING_BLOCK;
+        return MekanismTileEntityTypes.BOUNDING_BLOCK.getTileEntityType();
     }
 
     @Nonnull

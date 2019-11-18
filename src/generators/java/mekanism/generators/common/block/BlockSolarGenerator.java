@@ -112,6 +112,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
 
     @Override
     public TileEntityType<TileEntitySolarGenerator> getTileType() {
-        return GeneratorsTileEntityTypes.SOLAR_GENERATOR;
+        return GeneratorsTileEntityTypes.SOLAR_GENERATOR.getTileEntityType();
     }
 }

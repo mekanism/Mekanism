@@ -165,7 +165,7 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
 
     @Override
     public TileEntityType<TileEntityDigitalMiner> getTileType() {
-        return MekanismTileEntityTypes.DIGITAL_MINER;
+        return MekanismTileEntityTypes.DIGITAL_MINER.getTileEntityType();
     }
 
     @Nonnull

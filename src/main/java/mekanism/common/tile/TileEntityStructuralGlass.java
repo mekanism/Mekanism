@@ -19,7 +19,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
     public Coord4D master;
 
     public TileEntityStructuralGlass() {
-        super(MekanismTileEntityTypes.STRUCTURAL_GLASS);
+        super(MekanismTileEntityTypes.STRUCTURAL_GLASS.getTileEntityType());
     }
 
     @Override

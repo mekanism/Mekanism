@@ -191,7 +191,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
 
     @Override
     public TileEntityType<TileEntityQuantumEntangloporter> getTileType() {
-        return MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER;
+        return MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER.getTileEntityType();
     }
 
     @Nonnull

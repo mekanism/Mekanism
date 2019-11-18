@@ -178,7 +178,7 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
 
     @Override
     public TileEntityType<TileEntityChemicalCrystallizer> getTileType() {
-        return MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER;
+        return MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER.getTileEntityType();
     }
 
     @Nonnull

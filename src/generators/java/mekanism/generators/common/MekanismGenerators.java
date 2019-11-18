@@ -12,10 +12,12 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -39,10 +41,12 @@ public class MekanismGenerators implements IModule {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(this::onBlacklistUpdate);
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::onConfigReload);
 
         GeneratorsItem.ITEMS.register(modEventBus);
         GeneratorsBlock.BLOCKS.register(modEventBus);
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
@@ -99,6 +103,10 @@ public class MekanismGenerators implements IModule {
             proxy.loadConfiguration();
         }
     }*/
+
+    private void onConfigReload(ModConfig.ConfigReloading configEvent) {
+        //TODO: Handle reloading
+    }
 
     private void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
         // Mekanism Generators multiblock structures

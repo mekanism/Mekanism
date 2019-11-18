@@ -11,7 +11,7 @@ public class TileEntityCardboardBox extends TileEntity {
     public BlockData storedData;
 
     public TileEntityCardboardBox() {
-        super(MekanismTileEntityTypes.CARDBOARD_BOX);
+        super(MekanismTileEntityTypes.CARDBOARD_BOX.getTileEntityType());
     }
 
     @Override

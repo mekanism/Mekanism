@@ -185,7 +185,7 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
 
     @Override
     public TileEntityType<TileEntityPurificationChamber> getTileType() {
-        return MekanismTileEntityTypes.PURIFICATION_CHAMBER;
+        return MekanismTileEntityTypes.PURIFICATION_CHAMBER.getTileEntityType();
     }
 
     @Nonnull

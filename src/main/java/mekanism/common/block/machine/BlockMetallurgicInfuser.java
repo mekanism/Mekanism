@@ -191,7 +191,7 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
 
     @Override
     public TileEntityType<TileEntityMetallurgicInfuser> getTileType() {
-        return MekanismTileEntityTypes.METALLURGIC_INFUSER;
+        return MekanismTileEntityTypes.METALLURGIC_INFUSER.getTileEntityType();
     }
 
     @Nonnull

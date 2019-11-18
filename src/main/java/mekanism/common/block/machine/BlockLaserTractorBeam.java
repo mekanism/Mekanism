@@ -158,6 +158,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
 
     @Override
     public TileEntityType<TileEntityLaserTractorBeam> getTileType() {
-        return MekanismTileEntityTypes.LASER_TRACTOR_BEAM;
+        return MekanismTileEntityTypes.LASER_TRACTOR_BEAM.getTileEntityType();
     }
 }

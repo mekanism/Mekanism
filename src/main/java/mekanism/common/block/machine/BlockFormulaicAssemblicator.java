@@ -164,7 +164,7 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
 
     @Override
     public TileEntityType<TileEntityFormulaicAssemblicator> getTileType() {
-        return MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR;
+        return MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR.getTileEntityType();
     }
 
     @Nonnull

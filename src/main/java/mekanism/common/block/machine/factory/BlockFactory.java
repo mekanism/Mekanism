@@ -248,111 +248,111 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
             case CRUSHING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_CRUSHING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_CRUSHING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY.getTileEntityType();
                 }
             case COMBINING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_COMBINING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_COMBINING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_COMBINING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_COMBINING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_COMBINING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_COMBINING_FACTORY.getTileEntityType();
                 }
             case COMPRESSING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_COMPRESSING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_COMPRESSING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY.getTileEntityType();
                 }
             case ENRICHING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_ENRICHING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_ENRICHING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY.getTileEntityType();
                 }
             case INFUSING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_INFUSING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_INFUSING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_INFUSING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_INFUSING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_INFUSING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_INFUSING_FACTORY.getTileEntityType();
                 }
             case INJECTING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_INJECTING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_INJECTING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_INJECTING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_INJECTING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_INJECTING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_INJECTING_FACTORY.getTileEntityType();
                 }
             case PURIFYING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_PURIFYING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_PURIFYING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY.getTileEntityType();
                 }
             case SAWING:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_SAWING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_SAWING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_SAWING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_SAWING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_SAWING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_SAWING_FACTORY.getTileEntityType();
                 }
             case SMELTING:
             default:
                 switch (tier) {
                     case ADVANCED:
-                        return MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY;
+                        return MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY.getTileEntityType();
                     case ELITE:
-                        return MekanismTileEntityTypes.ELITE_SMELTING_FACTORY;
+                        return MekanismTileEntityTypes.ELITE_SMELTING_FACTORY.getTileEntityType();
                     case ULTIMATE:
-                        return MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY;
+                        return MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY.getTileEntityType();
                     case BASIC:
                     default:
-                        return MekanismTileEntityTypes.BASIC_SMELTING_FACTORY;
+                        return MekanismTileEntityTypes.BASIC_SMELTING_FACTORY.getTileEntityType();
                 }
         }
     }

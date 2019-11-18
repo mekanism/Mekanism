@@ -68,6 +68,6 @@ public class BlockReactorController extends BlockTileDrops implements IHasGui<Ti
 
     @Override
     public TileEntityType<TileEntityReactorController> getTileType() {
-        return GeneratorsTileEntityTypes.REACTOR_CONTROLLER;
+        return GeneratorsTileEntityTypes.REACTOR_CONTROLLER.getTileEntityType();
     }
 }

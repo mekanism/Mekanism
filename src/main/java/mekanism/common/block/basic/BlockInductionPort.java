@@ -22,6 +22,6 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
 
     @Override
     public TileEntityType<TileEntityInductionPort> getTileType() {
-        return MekanismTileEntityTypes.INDUCTION_PORT;
+        return MekanismTileEntityTypes.INDUCTION_PORT.getTileEntityType();
     }
 }

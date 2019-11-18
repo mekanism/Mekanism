@@ -173,6 +173,6 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
 
     @Override
     public TileEntityType<TileEntityLaserAmplifier> getTileType() {
-        return MekanismTileEntityTypes.LASER_AMPLIFIER;
+        return MekanismTileEntityTypes.LASER_AMPLIFIER.getTileEntityType();
     }
 }

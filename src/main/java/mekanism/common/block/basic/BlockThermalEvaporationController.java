@@ -74,6 +74,6 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
 
     @Override
     public TileEntityType<TileEntityThermalEvaporationController> getTileType() {
-        return MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER;
+        return MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER.getTileEntityType();
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.common.block.machine;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IColoredBlock;
@@ -10,7 +9,6 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.BlockMekanismContainer;
@@ -42,7 +40,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -241,16 +238,16 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     public TileEntityType<TileEntityFluidTank> getTileType() {
         switch (tier) {
             case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_FLUID_TANK;
+                return MekanismTileEntityTypes.ADVANCED_FLUID_TANK.getTileEntityType();
             case ELITE:
-                return MekanismTileEntityTypes.ELITE_FLUID_TANK;
+                return MekanismTileEntityTypes.ELITE_FLUID_TANK.getTileEntityType();
             case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_FLUID_TANK;
+                return MekanismTileEntityTypes.ULTIMATE_FLUID_TANK.getTileEntityType();
             case CREATIVE:
-                return MekanismTileEntityTypes.CREATIVE_FLUID_TANK;
+                return MekanismTileEntityTypes.CREATIVE_FLUID_TANK.getTileEntityType();
             case BASIC:
             default:
-                return MekanismTileEntityTypes.BASIC_FLUID_TANK;
+                return MekanismTileEntityTypes.BASIC_FLUID_TANK.getTileEntityType();
         }
     }
 }
