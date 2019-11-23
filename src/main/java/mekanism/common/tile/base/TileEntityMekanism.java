@@ -195,6 +195,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         setSupportedTypes(this.blockProvider.getBlock());
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
+            //TODO: FIXME, stuff in this may currently be null because they have not been initialized yet
             slotHolder = getInitialInventory();
         }
         if (supportsUpgrades()) {

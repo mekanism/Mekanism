@@ -6,11 +6,16 @@ import mekanism.api.MekanismAPI;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
-//TODO: Override things so people cannot modify the empty infuse type
-public class EmptyInfuseType extends InfuseType {
+public final class EmptyInfuseType extends InfuseType {
 
     public EmptyInfuseType() {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "empty_infuse_type"), -1);
+        super(-1);
+        setRegistryName(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "empty_infuse_type"));
+    }
+
+    @Override
+    public void setTint(int tint) {
+        //NO-OP
     }
 
     @Override

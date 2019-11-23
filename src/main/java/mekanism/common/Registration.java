@@ -1,19 +1,15 @@
 package mekanism.common;
 
-import mekanism.api.gas.Gas;
-import mekanism.api.infuse.InfuseType;
 import mekanism.common.block.PortalHelper;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.gear.ItemGasMask;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.tags.MekanismTagManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -37,16 +33,6 @@ public class Registration {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().register(PortalHelper.BlockPortalOverride.instance);
-    }
-
-    @SubscribeEvent
-    public static void registerGases(RegistryEvent.Register<Gas> event) {
-        MekanismGases.register(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
-        MekanismInfuseTypes.register(event.getRegistry());
     }
 
     @SubscribeEvent

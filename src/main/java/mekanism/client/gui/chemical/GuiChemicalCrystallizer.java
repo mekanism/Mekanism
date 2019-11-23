@@ -27,6 +27,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -34,7 +35,9 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -86,15 +89,14 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         GasStack gasStack = tileEntity.inputTank.getStack();
         if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
-            if (gasStack.getType() instanceof Slurry) {
-                drawString(TextComponentUtil.build("(", Translation.of(((Slurry) gasStack.getType()).getOreTranslationKey()), ")"), 29, 24, 0x00CD00);
+            if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
+                drawString(TextComponentUtil.build("(", renderStack.getDisplayName(), ")"), 29, 24, 0x00CD00);
             } else {
                 CachedRecipe<GasToItemStackRecipe> recipe = tileEntity.getUpdatedCache(0);
                 if (recipe == null) {
                     drawString(TextComponentUtil.build("(", Translation.of("gui.mekanism.noRecipe"), ")"), 29, 24, 0x00CD00);
                 } else {
-                    ITextComponent name = recipe.getRecipe().getOutput(gasStack).getDisplayName();
-                    drawString(TextComponentUtil.build("(", name, ")"), 29, 24, 0x00CD00);
+                    drawString(TextComponentUtil.build("(", recipe.getRecipe().getOutput(gasStack).getDisplayName(), ")"), 29, 24, 0x00CD00);
                 }
             }
         }
@@ -122,76 +124,38 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     @Override
     public void tick() {
         super.tick();
-
         if (prevGas != getInputGas()) {
             prevGas = getInputGas();
-            boolean reset = false;
-            if (prevGas.isEmptyType() || !(prevGas instanceof Slurry) || ((Slurry) prevGas).isDirty()) {
-                reset = true;
+            if (!prevGas.isEmptyType() && prevGas instanceof Slurry && !prevGas.isIn(MekanismTags.DIRTY_SLURRY)) {
+                updateStackList(((Slurry) prevGas).getOreTag());
+            } else {
                 resetStacks();
-            }
-            if (!reset) {
-                Slurry gas = (Slurry) prevGas;
-                String oreDictName = "ore" + gas.getName().substring(5);
-                updateStackList(oreDictName);
             }
         }
 
-        if (stackSwitch > 0) {
-            stackSwitch--;
-        }
-        if (stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0) {
-            stackSwitch = 20;
-            if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
-                stackIndex = 0;
-            } else if (stackIndex < iterStacks.size() - 1) {
-                stackIndex++;
-            }
-            renderStack = iterStacks.get(stackIndex);
-        } else if (iterStacks != null && iterStacks.size() == 0) {
+        if (iterStacks.isEmpty()) {
             renderStack = ItemStack.EMPTY;
+        } else {
+            if (stackSwitch > 0) {
+                stackSwitch--;
+            }
+            if (stackSwitch == 0) {
+                stackSwitch = 20;
+                if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
+                    stackIndex = 0;
+                } else if (stackIndex < iterStacks.size() - 1) {
+                    stackIndex++;
+                }
+                renderStack = iterStacks.get(stackIndex);
+            }
         }
     }
 
-    private void updateStackList(String oreName) {
-        if (iterStacks == null) {
-            iterStacks = new ArrayList<>();
-        } else {
-            iterStacks.clear();
+    private void updateStackList(Tag<Item> oreTag) {
+        iterStacks.clear();
+        for (Item ore : oreTag.getAllElements()) {
+            iterStacks.add(new ItemStack(ore));
         }
-
-        //TODO: Implement with tags, I believe what the purpose of this was to let it use any ore with the same name
-        /*List<String> keys = new ArrayList<>();
-        for (String s : OreDictionary.getOreNames()) {
-            if (oreName.equals(s) || oreName.equals("*")) {
-                keys.add(s);
-            } else {
-                boolean endsWith = oreName.endsWith("*");
-                boolean startsWith = oreName.startsWith("*");
-                if (endsWith && !startsWith) {
-                    if (s.startsWith(oreName.substring(0, oreName.length() - 1))) {
-                        keys.add(s);
-                    }
-                } else if (startsWith && !endsWith) {
-                    if (s.endsWith(oreName.substring(1))) {
-                        keys.add(s);
-                    }
-                } else if (startsWith) {
-                    if (s.contains(oreName.substring(1, oreName.length() - 1))) {
-                        keys.add(s);
-                    }
-                }
-            }
-        }
-
-        for (String key : keys) {
-            for (ItemStack stack : OreDictionary.getOres(key, false)) {
-                ItemStack toAdd = stack.copy();
-                if (!iterStacks.contains(stack) && toAdd.getItem() instanceof BlockItem) {
-                    iterStacks.add(stack.copy());
-                }
-            }
-        }*/
         stackSwitch = 0;
         stackIndex = -1;
     }

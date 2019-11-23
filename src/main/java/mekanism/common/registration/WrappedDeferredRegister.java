@@ -11,7 +11,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 //TODO: Make it so we can have "custom" WrapperRegistryObject's easier that add QoL stuff that the enums currently add in the subclasses of this
 public class WrappedDeferredRegister<T extends IForgeRegistryEntry<T>> {
 
-    private final DeferredRegister<T> internal;
+    protected final DeferredRegister<T> internal;
 
     public WrappedDeferredRegister(String modid, IForgeRegistry<T> registry) {
         internal = new DeferredRegister<>(registry, modid);

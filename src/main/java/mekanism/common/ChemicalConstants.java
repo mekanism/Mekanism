@@ -6,8 +6,7 @@ package mekanism.common;
  * @implNote This is used os that we can then have them get rounded for purposes of use in things like FluidAttributes, but so that we have accurate data if at some point
  * they start supporting more accurate data, without us having to look any of the data back up.
  */
-//TODO: Rename this class given we may make a ChemicalAttributes thing in API as param to Chemicals
-public enum ChemicalAttributes {
+public enum ChemicalConstants {
     HYDROGEN("hydrogen", 0xFFFFFFFF, 20.28F, 70.85F),
     OXYGEN("oxygen", 0xFF6CE2FF, 90.19F, 1141),
     CHLORINE("chlorine", 0xFFCFE800, 207.15F, 1422.92F),
@@ -23,8 +22,7 @@ public enum ChemicalAttributes {
     SODIUM("sodium", 0xFFE9FEF4, 370.944F, 927),
     DEUTERIUM("deuterium", 0xFFFF3232, 23.7F, 162.4F),
     //Note: it is a solid at room temperature
-    LITHIUM("lithium", 0xFFEBA400, 453.65F, 512)
-    ;
+    LITHIUM("lithium", 0xFFEBA400, 453.65F, 512);
 
     private final String name;
     private final int color;
@@ -37,7 +35,7 @@ public enum ChemicalAttributes {
      * @param temperature Temperature in Kelvin that the chemical exists as a liquid
      * @param density     Density as a liquid in kg/m^3
      */
-    ChemicalAttributes(String name, int color, float temperature, float density) {
+    ChemicalConstants(String name, int color, float temperature, float density) {
         this.name = name;
         this.color = color;
         this.temperature = temperature;

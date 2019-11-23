@@ -14,7 +14,7 @@ public class GasTags {
 
     public static void setCollection(TagCollection<Gas> collectionIn) {
         collection = collectionIn;
-        ++generation;
+        generation++;
     }
 
     public static TagCollection<Gas> getCollection() {

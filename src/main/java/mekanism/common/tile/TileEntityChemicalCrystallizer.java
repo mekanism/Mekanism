@@ -167,14 +167,14 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        inputTank.read(nbtTags.getCompound("rightTank"));
+        inputTank.read(nbtTags.getCompound("inputTank"));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put("rightTank", inputTank.write(new CompoundNBT()));
+        nbtTags.put("inputTank", inputTank.write(new CompoundNBT()));
         nbtTags.putBoolean("sideDataStored", true);
         return nbtTags;
     }
@@ -229,8 +229,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         if (configComponent.isCapabilityDisabled(capability, side)) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            //TODO: Double check this shouldn't be getLeftSide()
-            return side != null && side != getRightSide();
+            return side != null && side != getLeftSide();
         }
         return super.isCapabilityDisabled(capability, side);
     }

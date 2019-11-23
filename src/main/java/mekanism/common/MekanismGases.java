@@ -1,82 +1,40 @@
 package mekanism.common;
 
-import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.Slurry;
-import mekanism.api.providers.IGasProvider;
+import mekanism.common.registration.impl.GasDeferredRegister;
+import mekanism.common.registration.impl.GasRegistryObject;
+import mekanism.common.registration.impl.SlurryRegistryObject;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistry;
 
-public enum MekanismGases implements IGasProvider {
-    HYDROGEN(ChemicalAttributes.HYDROGEN),
-    OXYGEN(ChemicalAttributes.OXYGEN),
-    STEAM("steam", new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_steam")),
-    CHLORINE(ChemicalAttributes.CHLORINE),
-    SULFUR_DIOXIDE(ChemicalAttributes.SULFUR_DIOXIDE),
-    SULFUR_TRIOXIDE(ChemicalAttributes.SULFUR_TRIOXIDE),
-    SULFURIC_ACID(ChemicalAttributes.SULFURIC_ACID),
-    HYDROGEN_CHLORIDE(ChemicalAttributes.HYDROGEN_CHLORIDE),
+//TODO: Move things that are only used by mekanism generators to that module
+public class MekanismGases {
+
+    //TODO: Pass something like FluidAttributes
+    public static final GasDeferredRegister GASES = new GasDeferredRegister(Mekanism.MODID);
+
+    public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN);
+    public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);
+    public static final GasRegistryObject<Gas> STEAM = GASES.register("steam", () -> new Gas(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_steam")));
+    public static final GasRegistryObject<Gas> CHLORINE = GASES.register(ChemicalConstants.CHLORINE);
+    public static final GasRegistryObject<Gas> SULFUR_DIOXIDE = GASES.register(ChemicalConstants.SULFUR_DIOXIDE);
+    public static final GasRegistryObject<Gas> SULFUR_TRIOXIDE = GASES.register(ChemicalConstants.SULFUR_TRIOXIDE);
+    public static final GasRegistryObject<Gas> SULFURIC_ACID = GASES.register(ChemicalConstants.SULFURIC_ACID);
+    public static final GasRegistryObject<Gas> HYDROGEN_CHLORIDE = GASES.register(ChemicalConstants.HYDROGEN_CHLORIDE);
     //Internal gases
-    ETHENE(ChemicalAttributes.ETHENE),
-    SODIUM(ChemicalAttributes.SODIUM),
-    BRINE("brine", 0xFEEF9C),
-    DEUTERIUM(ChemicalAttributes.DEUTERIUM),
-    TRITIUM("tritium", 0x64FF70),
-    FUSION_FUEL("fusion_fuel", 0x7E007D),
-    LITHIUM(ChemicalAttributes.LITHIUM),
+    public static final GasRegistryObject<Gas> ETHENE = GASES.register(ChemicalConstants.ETHENE);
+    public static final GasRegistryObject<Gas> SODIUM = GASES.register(ChemicalConstants.SODIUM);
+    public static final GasRegistryObject<Gas> BRINE = GASES.register("brine", () -> new Gas(0xFEEF9C));
+    public static final GasRegistryObject<Gas> DEUTERIUM = GASES.register(ChemicalConstants.DEUTERIUM);
+    public static final GasRegistryObject<Gas> TRITIUM = GASES.register("tritium", () -> new Gas(0x64FF70));
+    public static final GasRegistryObject<Gas> FUSION_FUEL = GASES.register("fusion_fuel", () -> new Gas(0x7E007D));
+    public static final GasRegistryObject<Gas> LITHIUM = GASES.register(ChemicalConstants.LITHIUM);
     //TODO: Rename liquid osmium? Also make it not visible again in JEI and the like?
-    LIQUID_OSMIUM("liquid_osmium", 0x52BDCA, false),
+    public static final GasRegistryObject<Gas> LIQUID_OSMIUM = GASES.register("liquid_osmium", () -> new Gas(0x52BDCA));
 
-    //Clean Slurry
-    CLEAN_IRON_SLURRY(Resource.IRON),
-    CLEAN_GOLD_SLURRY(Resource.GOLD),
-    CLEAN_OSMIUM_SLURRY(Resource.OSMIUM),
-    CLEAN_COPPER_SLURRY(Resource.COPPER),
-    CLEAN_TIN_SLURRY(Resource.TIN),
-    //Dirty Slurry
-    DIRTY_IRON_SLURRY(Resource.IRON, CLEAN_IRON_SLURRY),
-    DIRTY_GOLD_SLURRY(Resource.GOLD, CLEAN_GOLD_SLURRY),
-    DIRTY_OSMIUM_SLURRY(Resource.OSMIUM, CLEAN_OSMIUM_SLURRY),
-    DIRTY_COPPER_SLURRY(Resource.COPPER, CLEAN_COPPER_SLURRY),
-    DIRTY_TIN_SLURRY(Resource.TIN, CLEAN_TIN_SLURRY);
-
-    private final Gas gas;
-
-    MekanismGases(ChemicalAttributes attributes) {
-        gas = new Gas(new ResourceLocation(Mekanism.MODID, attributes.getName()), attributes.getColor());
-    }
-
-    MekanismGases(String name, int color) {
-        this(name, color, true);
-    }
-
-    MekanismGases(String name, int color, boolean visible) {
-        gas = new Gas(new ResourceLocation(Mekanism.MODID, name), color);
-        gas.setVisible(visible);
-    }
-
-    MekanismGases(String name, ResourceLocation texture) {
-        gas = new Gas(new ResourceLocation(Mekanism.MODID, name), texture);
-    }
-
-    MekanismGases(Resource resource) {
-        this.gas = new Slurry(new ResourceLocation(Mekanism.MODID, "clean_" + resource.getRegistrySuffix() + "_slurry"), resource.tint);
-    }
-
-    MekanismGases(Resource resource, MekanismGases clean) {
-        //TODO: Do this better
-        this.gas = new Slurry(new ResourceLocation(Mekanism.MODID, "dirty_" + resource.getRegistrySuffix() + "_slurry"), resource.tint, (Slurry) clean.getGas());
-    }
-
-    @Nonnull
-    @Override
-    public Gas getGas() {
-        return gas;
-    }
-
-    public static void register(IForgeRegistry<Gas> registry) {
-        for (IGasProvider gasProvider : values()) {
-            registry.register(gasProvider.getGas());
-        }
-    }
+    public static final SlurryRegistryObject<Slurry, Slurry> IRON_SLURRY = GASES.registerSlurry(Resource.IRON);
+    public static final SlurryRegistryObject<Slurry, Slurry> GOLD_SLURRY = GASES.registerSlurry(Resource.GOLD);
+    public static final SlurryRegistryObject<Slurry, Slurry> OSMIUM_SLURRY = GASES.registerSlurry(Resource.OSMIUM);
+    public static final SlurryRegistryObject<Slurry, Slurry> COPPER_SLURRY = GASES.registerSlurry(Resource.COPPER);
+    public static final SlurryRegistryObject<Slurry, Slurry> TIN_SLURRY = GASES.registerSlurry(Resource.TIN);
 }

@@ -62,6 +62,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Fills the tank from this item OR converts the given item to a gas
      */
     public static GasInventorySlot fillOrConvert(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, IMekanismInventory inventory, int x, int y) {
+        //TODO: Add validation that none of the inputs are null
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();

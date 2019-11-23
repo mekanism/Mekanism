@@ -55,7 +55,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         if (stackSwitch > 0) {
             stackSwitch--;
         }
-        if (stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0) {
+        if (stackSwitch == 0 && iterStacks != null && !iterStacks.isEmpty()) {
             stackSwitch = 20;
             if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
                 stackIndex = 0;
@@ -63,7 +63,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
                 stackIndex++;
             }
             renderStack = iterStacks.get(stackIndex);
-        } else if (iterStacks != null && iterStacks.size() == 0) {
+        } else if (iterStacks != null && iterStacks.isEmpty()) {
             renderStack = ItemStack.EMPTY;
         }
     }

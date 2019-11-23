@@ -98,7 +98,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                 }
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
-                if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getStack()) &&
+                //TODO: FIXME
+                /*if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getStack()) &&
                     (fluidTank.getFluid().isEmpty() || (fluidTank.getFluid().getAmount() < MAX_FLUID && gasEquals(gasTank.getStack(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
@@ -110,7 +111,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                     clientEnergyUsed = prev - getEnergy();
                 } else {
                     setActive(false);
-                }
+                }*/
             } else if (mode == 1) {
                 TileUtils.drawGas(gasInputSlot.getStack(), gasTank);
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
@@ -161,12 +162,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     }
 
     public boolean isValidGas(@Nonnull GasStack g) {
-        return !g.isEmpty() && g.getType().hasFluid();
+        //TODO: FIXME
+        return false;//!g.isEmpty() && g.getType().hasFluid();
 
     }
 
     public boolean gasEquals(@Nonnull GasStack gas, @Nonnull FluidStack fluid) {
-        return !fluid.isEmpty() && !gas.isEmpty() && gas.getType().hasFluid() && gas.getType().getFluid() == fluid.getFluid();
+        //TODO: FIXME
+        return false;//!fluid.isEmpty() && !gas.isEmpty() && gas.getType().hasFluid() && gas.getType().getFluid() == fluid.getFluid();
     }
 
     public boolean isValidFluid(@Nonnull Fluid f) {

@@ -9,7 +9,8 @@ import net.minecraft.util.ResourceLocation;
 public final class EmptyGas extends Gas {
 
     public EmptyGas() {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "empty_gas"), -1);
+        super(-1);
+        setRegistryName(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "empty_gas"));
         super.setVisible(false);
     }
 

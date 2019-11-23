@@ -78,7 +78,8 @@ public class TileComponentConfig implements ITileComponent {
         }
         if (type != null) {
             ISlotInfo slotInfo = getSlotInfo(type, side);
-            return slotInfo == null || !slotInfo.isEnabled();
+            //Disable the capability if we have information about that slot and it is not enabled
+            return slotInfo != null && !slotInfo.isEnabled();
         }
         return false;
     }

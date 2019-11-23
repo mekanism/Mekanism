@@ -14,7 +14,7 @@ public class InfuseTypeTags {
 
     public static void setCollection(TagCollection<InfuseType> collectionIn) {
         collection = collectionIn;
-        ++generation;
+        generation++;
     }
 
     public static TagCollection<InfuseType> getCollection() {

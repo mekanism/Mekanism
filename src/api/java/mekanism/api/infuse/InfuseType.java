@@ -22,13 +22,13 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
 
     private final ReverseTagWrapper<InfuseType> reverseTags = new ReverseTagWrapper<>(this, InfuseTypeTags::getGeneration, InfuseTypeTags::getCollection);
 
-    public InfuseType(ResourceLocation registryName, int tint) {
-        this(registryName, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
+    public InfuseType(int tint) {
+        this(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
         setTint(tint);
     }
 
-    public InfuseType(ResourceLocation registryName, ResourceLocation iconLocation) {
-        super(registryName, iconLocation);
+    public InfuseType(ResourceLocation iconLocation) {
+        super(iconLocation);
     }
 
     @Nonnull
@@ -64,8 +64,8 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     }
 
     @Override
-    public boolean isIn(Tag<InfuseType> tags) {
-        return tags.contains(this);
+    public boolean isIn(Tag<InfuseType> tag) {
+        return tag.contains(this);
     }
 
     @Override

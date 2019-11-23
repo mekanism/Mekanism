@@ -1,39 +1,19 @@
 package mekanism.common;
 
-import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseType;
-import mekanism.api.providers.IInfuseTypeProvider;
+import mekanism.common.registration.impl.InfuseTypeDeferredRegister;
+import mekanism.common.registration.impl.InfuseTypeRegistryObject;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistry;
 
-public enum MekanismInfuseTypes implements IInfuseTypeProvider {
-    CARBON("carbon", 0x404040),
-    REDSTONE("redstone", 0xB30505),
-    DIAMOND("diamond", 0x6CEDD8),
-    REFINED_OBSIDIAN("refined_obsidian", 0x7C00ED),
-    TIN("tin", 0xCCCCD9),
-    FUNGI("fungi", new ResourceLocation(Mekanism.MODID, "infuse_type/fungi")),
-    BIO("bio", new ResourceLocation(Mekanism.MODID, "infuse_type/bio"));
+public class MekanismInfuseTypes {
 
-    private final InfuseType infuseType;
+    public static final InfuseTypeDeferredRegister INFUSE_TYPES = new InfuseTypeDeferredRegister(Mekanism.MODID);
 
-    MekanismInfuseTypes(String name, int tint) {
-        infuseType = new InfuseType(new ResourceLocation(Mekanism.MODID, name), tint);
-    }
-
-    MekanismInfuseTypes(String name, ResourceLocation texture) {
-        infuseType = new InfuseType(new ResourceLocation(Mekanism.MODID, name), texture);
-    }
-
-    @Nonnull
-    @Override
-    public InfuseType getInfuseType() {
-        return infuseType;
-    }
-
-    public static void register(IForgeRegistry<InfuseType> registry) {
-        for (IInfuseTypeProvider gasProvider : values()) {
-            registry.register(gasProvider.getInfuseType());
-        }
-    }
+    public static final InfuseTypeRegistryObject<InfuseType> CARBON = INFUSE_TYPES.register("carbon", 0x404040);
+    public static final InfuseTypeRegistryObject<InfuseType> REDSTONE = INFUSE_TYPES.register("redstone", 0xB30505);
+    public static final InfuseTypeRegistryObject<InfuseType> DIAMOND = INFUSE_TYPES.register("diamond", 0x6CEDD8);
+    public static final InfuseTypeRegistryObject<InfuseType> REFINED_OBSIDIAN = INFUSE_TYPES.register("refined_obsidian", 0x7C00ED);
+    public static final InfuseTypeRegistryObject<InfuseType> TIN = INFUSE_TYPES.register("tin", 0xCCCCD9);
+    public static final InfuseTypeRegistryObject<InfuseType> FUNGI = INFUSE_TYPES.register("fungi", new ResourceLocation(Mekanism.MODID, "infuse_type/fungi"));
+    public static final InfuseTypeRegistryObject<InfuseType> BIO = INFUSE_TYPES.register("bio", new ResourceLocation(Mekanism.MODID, "infuse_type/bio"));
 }

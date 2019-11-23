@@ -16,21 +16,21 @@ public class MekanismFluids {
 
     public static final FluidDeferredRegister FLUIDS = new FluidDeferredRegister(Mekanism.MODID);
 
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROGEN = registerLiquidChemical(ChemicalAttributes.HYDROGEN);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> OXYGEN = registerLiquidChemical(ChemicalAttributes.OXYGEN);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> CHLORINE = registerLiquidChemical(ChemicalAttributes.CHLORINE);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFUR_DIOXIDE = registerLiquidChemical(ChemicalAttributes.SULFUR_DIOXIDE);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFUR_TRIOXIDE = registerLiquidChemical(ChemicalAttributes.SULFUR_TRIOXIDE);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFURIC_ACID = registerLiquidChemical(ChemicalAttributes.SULFURIC_ACID);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROGEN_CHLORIDE = registerLiquidChemical(ChemicalAttributes.HYDROGEN_CHLORIDE);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROGEN = registerLiquidChemical(ChemicalConstants.HYDROGEN);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> OXYGEN = registerLiquidChemical(ChemicalConstants.OXYGEN);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> CHLORINE = registerLiquidChemical(ChemicalConstants.CHLORINE);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFUR_DIOXIDE = registerLiquidChemical(ChemicalConstants.SULFUR_DIOXIDE);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFUR_TRIOXIDE = registerLiquidChemical(ChemicalConstants.SULFUR_TRIOXIDE);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFURIC_ACID = registerLiquidChemical(ChemicalConstants.SULFURIC_ACID);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROGEN_CHLORIDE = registerLiquidChemical(ChemicalConstants.HYDROGEN_CHLORIDE);
     //Internal gases
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> ETHENE = registerLiquidChemical(ChemicalAttributes.ETHENE);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SODIUM = registerLiquidChemical(ChemicalAttributes.SODIUM);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> ETHENE = registerLiquidChemical(ChemicalConstants.ETHENE);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SODIUM = registerLiquidChemical(ChemicalConstants.SODIUM);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BRINE = registerLiquidGas("brine", 0xFFFEEF9C);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> DEUTERIUM = registerLiquidChemical(ChemicalAttributes.DEUTERIUM);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> DEUTERIUM = registerLiquidChemical(ChemicalConstants.DEUTERIUM);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> TRITIUM = registerLiquidGas("tritium", 0xFF64FF70);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> FUSION_FUEL = registerLiquidGas("fusion_fuel", 0xFF7E007D);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> LITHIUM = registerLiquidChemical(ChemicalAttributes.LITHIUM);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> LITHIUM = registerLiquidChemical(ChemicalConstants.LITHIUM);
 
     //TODO: Why do we have a liquid steam anyways really
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> STEAM = FLUIDS.register("steam",
@@ -43,12 +43,12 @@ public class MekanismFluids {
         return registerLiquidChemical(name, fluidAttributes -> fluidAttributes.gaseous().color(tint));
     }
 
-    private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(ChemicalAttributes attributes) {
-        int color = attributes.getColor();
-        int temperature = Math.round(attributes.getTemperature());
-        int density = Math.round(attributes.getDensity());
+    private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(ChemicalConstants constants) {
+        int color = constants.getColor();
+        int temperature = Math.round(constants.getTemperature());
+        int density = Math.round(constants.getDensity());
         //TODO: Support for luminosity?
-        return registerLiquidChemical(attributes.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density));
+        return registerLiquidChemical(constants.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density));
     }
 
     private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(String name,

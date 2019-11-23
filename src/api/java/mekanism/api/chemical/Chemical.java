@@ -23,8 +23,7 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
 
     private int tint = 0xFFFFFF;
 
-    protected Chemical(ResourceLocation registryName, ResourceLocation iconLocation) {
-        setRegistryName(registryName);
+    protected Chemical(ResourceLocation iconLocation) {
         this.iconLocation = iconLocation;
     }
 
@@ -94,7 +93,7 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
         this.tint = tint;
     }
 
-    public abstract boolean isIn(Tag<TYPE> tags);
+    public abstract boolean isIn(Tag<TYPE> tag);
 
     public abstract Set<ResourceLocation> getTags();
 

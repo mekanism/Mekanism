@@ -65,8 +65,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -197,6 +199,14 @@ public class Mekanism {
         MekanismSounds.SOUND_EVENTS.register(modEventBus);
         MekanismParticleType.PARTICLE_TYPES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
+        //Delay adding the deferred registers for infuse types and gases until after their registries are actually assigned
+        modEventBus.addListener(EventPriority.LOW, this::addCustomRegistryDeferredRegisters);
+    }
+
+    private void addCustomRegistryDeferredRegisters(RegistryEvent.NewRegistry event) {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        MekanismInfuseTypes.INFUSE_TYPES.register(modEventBus);
+        MekanismGases.GASES.register(modEventBus);
     }
 
     public void setTagManager(MekanismTagManager manager) {
@@ -251,6 +261,7 @@ public class Mekanism {
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
         IReloadableResourceManager resourceManager = event.getServer().getResourceManager();
         resourceManager.addReloadListener(getTagManager());
+        //TODO: Move this reload listener to LOWEST so that it happens after CrT?
         resourceManager.addReloadListener(getRecipeCacheManager());
     }
 

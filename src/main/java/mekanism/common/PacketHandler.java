@@ -137,8 +137,8 @@ public class PacketHandler {
         return Mekanism.proxy.getPlayer(context);
     }
 
+    //TODO: Make sure to not set packets as handled if we are receiving it from the wrong side
     public void initialize() {
-
         registerMessage(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
         registerMessage(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
         registerMessage(PacketItemStack.class, PacketItemStack::encode, PacketItemStack::decode, PacketItemStack::handle);
