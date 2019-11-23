@@ -45,9 +45,9 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
     @Override
     public TextureAtlasSprite getIcon() {
         if (dummy) {
-            return dummyType.getSprite();
+            return MekanismRenderer.getChemicalTexture(dummyType);
         }
-        return (infoHandler.getTank() != null && !infoHandler.getTank().isEmpty()) ? infoHandler.getTank().getType().getSprite() : null;
+        return (infoHandler.getTank() != null && !infoHandler.getTank().isEmpty()) ? MekanismRenderer.getChemicalTexture(infoHandler.getTank().getType()) : null;
     }
 
     @Override

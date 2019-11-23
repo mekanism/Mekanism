@@ -82,7 +82,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             // The other option which may make more sense is to make it be a GuiGauge
             //TODO: Figure out why it is going from right to left
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
-            TextureAtlasSprite icon = tileEntity.gasTank.getType().getSprite();
+            TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tileEntity.gasTank.getType());
             drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);
             if (scale > 0 && icon != null) {
                 minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);

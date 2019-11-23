@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
@@ -33,6 +34,6 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
         Gas gas = tube.getTransmitter().getTransmitterNetwork().buffer.getType();
         ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
         c.setRGBFromInt(gas.getTint());
-        renderTransparency(renderer, gas.getSprite(), getModelForSide(tube, side), c, tube.getBlockState(), tube.getModelData());
+        renderTransparency(renderer, MekanismRenderer.getChemicalTexture(gas), getModelForSide(tube, side), c, tube.getBlockState(), tube.getModelData());
     }
 }

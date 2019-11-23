@@ -1,8 +1,9 @@
 package mekanism.api.infuse;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IInfuseTypeProvider;
@@ -17,29 +18,23 @@ import net.minecraftforge.common.util.ReverseTagWrapper;
  *
  * @author AidanBrady
  */
-//TODO: Allow for tints rather than just different textures
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvider {
 
     private final ReverseTagWrapper<InfuseType> reverseTags = new ReverseTagWrapper<>(this, InfuseTypeTags::getGeneration, InfuseTypeTags::getCollection);
 
-    public InfuseType(int tint) {
-        this(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
-        setTint(tint);
+    public InfuseType(InfuseTypeAttributes attributes) {
+        super(attributes);
     }
 
-    public InfuseType(ResourceLocation iconLocation) {
-        super(iconLocation);
-    }
-
-    @Nonnull
-    public static InfuseType readFromNBT(CompoundNBT nbtTags) {
+    public static InfuseType readFromNBT(@Nullable CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return MekanismAPI.EMPTY_INFUSE_TYPE;
         }
         return getFromRegistry(new ResourceLocation(nbtTags.getString("infuseTypeName")));
     }
 
-    @Nonnull
     public static InfuseType getFromRegistry(@Nullable ResourceLocation resourceLocation) {
         if (resourceLocation == null) {
             return MekanismAPI.EMPTY_INFUSE_TYPE;
@@ -51,7 +46,6 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
         return infuseType;
     }
 
-    @Nonnull
     @Override
     public InfuseType getInfuseType() {
         return this;
@@ -78,7 +72,6 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
         return this == MekanismAPI.EMPTY_INFUSE_TYPE;
     }
 
-    @Nonnull
     @Override
     protected String getDefaultTranslationKey() {
         return Util.makeTranslationKey("infuse_type", getRegistryName());

@@ -113,7 +113,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockGasTank> implements 
         BlockGasTank gasTank = getBlock();
         if (gasTank.getTier() == GasTankTier.CREATIVE && MekanismConfig.general.prefilledGasTanks.get()) {
             for (Gas type : MekanismAPI.GAS_REGISTRY.getValues()) {
-                if (type.isVisible()) {
+                if (!type.isHidden()) {
                     ItemStack filled = new ItemStack(this);
                     setGas(filled, new GasStack(type, ((IGasItem) filled.getItem()).getMaxGas(filled)));
                     items.add(filled);

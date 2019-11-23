@@ -28,7 +28,7 @@ public class GuiHorizontalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> exten
         if (!type.isEmptyType()) {
             int displayInt = (int) (getHandler().getLevel() * texWidth);
             MekanismRenderer.color(type);
-            guiObj.drawTexturedRectFromIcon(x + 1, y + 1, type.getSprite(), displayInt, texHeight);
+            guiObj.drawTexturedRectFromIcon(x + 1, y + 1, MekanismRenderer.getChemicalTexture(type), displayInt, texHeight);
             MekanismRenderer.resetColor();
         }
     }

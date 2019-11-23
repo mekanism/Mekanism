@@ -3,6 +3,8 @@ package mekanism.api.gas;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IGasProvider;
@@ -13,29 +15,21 @@ import net.minecraft.util.Util;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 
 /**
- * Gas - a class used to set specific properties of gasses when used or seen in-game.
+ * Gas - a class used to set specific properties of gases when used or seen in-game.
  *
  * @author aidancbrady
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class Gas extends Chemical<Gas> implements IGasProvider {
 
     private final ReverseTagWrapper<Gas> reverseTags = new ReverseTagWrapper<>(this, GasTags::getGeneration, GasTags::getCollection);
 
-    private boolean visible = true;
+    private boolean hidden;
 
-    public Gas(ResourceLocation icon) {
-        super(icon);
-    }
-
-    /**
-     * Creates a new Gas object with a specified color tint.
-     *
-     * @param tint         - tint of this Gas
-     */
-    public Gas(int tint) {
-        //TODO: Rename the texture this points at
-        this(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "block/liquid/liquid"));
-        setTint(tint);
+    public Gas(GasAttributes attributes) {
+        super(attributes);
+        hidden = attributes.isHidden();
     }
 
     /**
@@ -45,15 +39,13 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
      *
      * @return Gas stored in the tag compound
      */
-    @Nonnull
-    public static Gas readFromNBT(CompoundNBT nbtTags) {
+    public static Gas readFromNBT(@Nullable CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return MekanismAPI.EMPTY_GAS;
         }
         return getFromRegistry(new ResourceLocation(nbtTags.getString("gasName")));
     }
 
-    @Nonnull
     public static Gas getFromRegistry(@Nullable ResourceLocation resourceLocation) {
         if (resourceLocation == null) {
             return MekanismAPI.EMPTY_GAS;
@@ -66,22 +58,12 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     /**
-     * Whether or not this is a visible gas.
+     * Whether or not this gas is hidden.
      *
-     * @return if this gas is visible
+     * @return if this gas is hidden
      */
-    public boolean isVisible() {
-        return visible;
-    }
-
-    /**
-     * Sets this gas's "visible" state to a new value. Setting it to 'false' will treat this gas as an internal gas, and it will not be displayed or accessed by other
-     * mods.
-     *
-     * @param v - new visible state
-     */
-    public void setVisible(boolean v) {
-        visible = v;
+    public boolean isHidden() {
+        return hidden;
     }
 
     /**
@@ -97,7 +79,6 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
         return nbtTags;
     }
 
-    @Nonnull
     @Override
     public Gas getGas() {
         return this;
@@ -110,7 +91,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     @Override
-    public boolean isIn(Tag<Gas> tag) {
+    public boolean isIn(@Nonnull Tag<Gas> tag) {
         return tag.contains(this);
     }
 
@@ -124,7 +105,6 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
         return this == MekanismAPI.EMPTY_GAS;
     }
 
-    @Nonnull
     @Override
     protected String getDefaultTranslationKey() {
         return Util.makeTranslationKey("gas", getRegistryName());

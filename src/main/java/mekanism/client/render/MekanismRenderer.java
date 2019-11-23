@@ -110,6 +110,10 @@ public class MekanismRenderer {
         return getTextureAtlasSprite(spriteLocation);
     }
 
+    public static <CHEMICAL extends Chemical<CHEMICAL>> TextureAtlasSprite getChemicalTexture(@Nonnull CHEMICAL chemical) {
+        return getTextureAtlasSprite(chemical.getIcon());
+    }
+
     public static TextureAtlasSprite getTextureAtlasSprite(ResourceLocation spriteLocation) {
         return texMap.getSprite(spriteLocation);
     }
@@ -353,11 +357,11 @@ public class MekanismRenderer {
         TransmitterModel.addIcons(event);
 
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
-            gas.registerIcon(event);
+            event.addSprite(gas.getIcon());
         }
 
         for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
-            type.registerIcon(event);
+            event.addSprite(type.getIcon());
         }
 
         FluidRenderer.resetDisplayInts();
@@ -384,14 +388,6 @@ public class MekanismRenderer {
 
         RenderLogisticalTransporter.onStitch(map);
         RenderMechanicalPipe.onStitch();
-
-        for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
-            gas.updateIcon(map);
-        }
-
-        for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
-            type.updateIcon(map);
-        }
     }
 
     public enum FluidType {

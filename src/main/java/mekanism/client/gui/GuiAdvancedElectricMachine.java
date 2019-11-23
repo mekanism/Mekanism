@@ -103,7 +103,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         if (!gas.isEmpty()) {
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             MekanismRenderer.color(gas);
-            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, gas.getType().getSprite(), sizeX, sizeY);
+            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, MekanismRenderer.getChemicalTexture(gas.getType()), sizeX, sizeY);
             MekanismRenderer.resetColor();
         }
     }
