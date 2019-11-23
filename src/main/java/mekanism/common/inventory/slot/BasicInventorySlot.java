@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-//TODO: Add validation that none of the inputs to things are null, at least during creation
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -37,10 +37,13 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public static BasicInventorySlot at(Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(validator, "Item validity check cannot be null");
         return new BasicInventorySlot(alwaysTrueBi, alwaysTrueBi, validator, inventory, x, y);
     }
 
     public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
     }
 

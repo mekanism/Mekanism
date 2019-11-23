@@ -38,7 +38,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -109,8 +108,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
             energyConfig.setCanEject(false);
         }
 
-        gasTank = new GasTank(MAX_GAS);
-
         BASE_SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
         secondaryEnergyPerTick = secondaryPerTick;
 
@@ -123,6 +120,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
+    }
+
+    @Override
+    protected void presetVariables() {
+        gasTank = new GasTank(MAX_GAS);
     }
 
     @Nonnull

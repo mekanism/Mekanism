@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -34,6 +35,8 @@ public class FluidInventorySlot extends BasicInventorySlot {
      * Fills/Drains the tank depending on if this item has any contents in it
      */
     public static FluidInventorySlot input(IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(fluidHandler, "Fluid handler cannot be null");
+        Objects.requireNonNull(validInput, "Input validity check cannot be null");
         return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
             FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             if (fluidContained.isEmpty()) {
@@ -50,6 +53,9 @@ public class FluidInventorySlot extends BasicInventorySlot {
      */
     public static FluidInventorySlot rotary(IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, BooleanSupplier modeSupplier,
           @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(fluidHandler, "Fluid handler cannot be null");
+        Objects.requireNonNull(validInput, "Input validity check cannot be null");
+        Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
             FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             boolean mode = modeSupplier.getAsBoolean();
@@ -79,6 +85,8 @@ public class FluidInventorySlot extends BasicInventorySlot {
      * Fills the tank from this item
      */
     public static FluidInventorySlot fill(IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validFluid, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(fluidHandler, "Fluid handler cannot be null");
+        Objects.requireNonNull(validFluid, "Fluid validity check cannot be null");
         return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
             FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             //True if we can fill the tank with any of our contents, ignored if the item has no fluid, as it won't pass isValid
@@ -99,6 +107,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
      */
     public static FluidInventorySlot drain(FluidTank fluidTank, @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Accept a fluid handler in general?
+        Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> new LazyOptionalHelper<>(FluidUtil.getFluidHandler(stack))
               .matches(itemFluidHandler -> fluidTank.isEmpty() || itemFluidHandler.fill(fluidTank.getFluid(), FluidAction.SIMULATE) > 0),
               stack -> isNonFullFluidContainer(new LazyOptionalHelper<>(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY))), inventory, x, y);

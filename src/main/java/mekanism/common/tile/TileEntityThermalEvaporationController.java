@@ -56,8 +56,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public static final int MAX_SOLARS = 4;
     public static final int MAX_HEIGHT = 18;
 
-    public FluidTank inputTank = new FluidTank(0);
-    public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
+    public FluidTank inputTank;
+    public FluidTank outputTank;
 
     public Set<Coord4D> tankParts = new HashSet<>();
     public IEvaporationSolar[] solars = new IEvaporationSolar[4];
@@ -107,6 +107,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER);
         inputHandler = InputHelper.getInputHandler(inputTank, 0);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+    }
+
+    @Override
+    protected void presetVariables() {
+        inputTank = new FluidTank(0);
+        outputTank = new FluidTank(MAX_OUTPUT);
     }
 
     @Nonnull

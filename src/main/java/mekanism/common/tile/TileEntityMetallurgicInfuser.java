@@ -55,7 +55,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                                                          "getInfuseNeeded"};
 
     public static final int MAX_INFUSE = 1000;
-    public InfusionTank infusionTank = new InfusionTank(MAX_INFUSE);
+    public InfusionTank infusionTank;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
@@ -91,6 +91,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
+    }
+
+    @Override
+    protected void presetVariables() {
+        infusionTank = new InfusionTank(MAX_INFUSE);
     }
 
     @Nonnull

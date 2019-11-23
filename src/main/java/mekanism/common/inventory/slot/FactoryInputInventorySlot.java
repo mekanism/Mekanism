@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -19,6 +20,8 @@ public class FactoryInputInventorySlot<RECIPE extends MekanismRecipe> extends In
 
     public static <RECIPE extends MekanismRecipe> FactoryInputInventorySlot create(TileEntityFactory<RECIPE> factory, int process, IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(factory, "Factory cannot be null");
+        Objects.requireNonNull(outputSlot, "Primary output slot cannot be null");
         return new FactoryInputInventorySlot<>(factory, process, outputSlot, secondaryOutputSlot, inventory, x, y);
     }
 

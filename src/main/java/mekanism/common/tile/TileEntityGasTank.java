@@ -41,7 +41,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -103,10 +102,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     @Override
-    protected void setSupportedTypes(Block block) {
-        super.setSupportedTypes(block);
-        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
-        this.tier = ((BlockGasTank) block).getTier();
+    protected void presetVariables() {
+        tier = ((BlockGasTank) getBlockType()).getTier();
         gasTank = new GasTank(tier.getStorage());
     }
 

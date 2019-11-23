@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,6 +23,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     private static final Predicate<@NonNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
 
     public static BinInventorySlot create(@Nullable IMekanismInventory inventory, BinTier tier) {
+        Objects.requireNonNull(tier, "Bin tier cannot be null");
         return new BinInventorySlot(inventory, tier);
     }
 

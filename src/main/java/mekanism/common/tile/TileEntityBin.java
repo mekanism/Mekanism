@@ -24,7 +24,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -55,10 +54,8 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     }
 
     @Override
-    protected void setSupportedTypes(Block block) {
-        super.setSupportedTypes(block);
-        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
-        this.tier = ((BlockBin) block).getTier();
+    protected void presetVariables() {
+        tier = ((BlockBin) getBlockType()).getTier();
     }
 
     @Nonnull

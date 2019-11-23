@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -19,6 +20,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
     private static final Predicate<@NonNull ItemStack> validator = stack -> stack.getItem() instanceof IOwnerItem;
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
         return new SecurityInventorySlot(stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) == null, stack -> {
             UUID ownerUUID = ((IOwnerItem) stack.getItem()).getOwnerUUID(stack);
             return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());

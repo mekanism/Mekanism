@@ -60,8 +60,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
     public Set<Coord4D> activeNodes = new LinkedHashSet<>();
     public Set<Coord4D> usedNodes = new HashSet<>();
-    public boolean finishedCalc = false;
-    public FluidTank fluidTank = new FluidTank(10000);
+    public boolean finishedCalc;
+    public FluidTank fluidTank;
     /**
      * How many ticks it takes to run an operation.
      */
@@ -83,6 +83,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         //TODO: Upgrade slot index: 3
     }
 
+    @Override
+    protected void presetVariables() {
+        fluidTank = new FluidTank(10_000);
+    }
+
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
@@ -91,7 +96,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, fluidStack ->
               fluidStack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluidStack), this, 28, 20), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 28, 51), RelativeSide.BOTTOM);
-        builder.addSlot(EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
         return builder.build();
     }
 

@@ -72,6 +72,7 @@ public class TileUtils {
         return false;
     }
 
+    //TODO: look at other places that call these methods and see if saving is needed, see TileEntityElectrolyticSeparator for example
     /**
      * @return True if gas was removed
      */

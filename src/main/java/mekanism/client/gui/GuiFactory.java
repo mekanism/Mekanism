@@ -81,9 +81,9 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         if (tileEntity.hasSecondaryResourceBar()) {
             ChemicalInfoProvider<? extends Chemical> provider = null;
             if (tileEntity instanceof TileEntityMetallurgicInfuserFactory) {
-                provider = GuiVerticalChemicalBar.getProvider(((TileEntityMetallurgicInfuserFactory) tileEntity).infusionTank);
+                provider = GuiVerticalChemicalBar.getProvider(((TileEntityMetallurgicInfuserFactory) tileEntity).getInfusionTank());
             } else if (tileEntity instanceof TileEntityItemStackGasToItemStackFactory) {
-                provider = GuiVerticalChemicalBar.getProvider(((TileEntityItemStackGasToItemStackFactory) tileEntity).gasTank);
+                provider = GuiVerticalChemicalBar.getProvider(((TileEntityItemStackGasToItemStackFactory) tileEntity).getGasTank());
             }
             if (provider != null) {
                 addButton(new GuiHorizontalChemicalBar<>(this, provider, resource, tileEntity.tier == FactoryTier.ULTIMATE ? 25 : 7, 76));

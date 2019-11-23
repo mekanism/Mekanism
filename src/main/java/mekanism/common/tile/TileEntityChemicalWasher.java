@@ -62,9 +62,9 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
 
     public static final int MAX_GAS = 10000;
     public static final int MAX_FLUID = 10000;
-    public FluidTank fluidTank = new FluidTank(MAX_FLUID);
-    public GasTank inputTank = new GasTank(MAX_GAS);
-    public GasTank outputTank = new GasTank(MAX_GAS);
+    public FluidTank fluidTank;
+    public GasTank inputTank;
+    public GasTank outputTank;
     public int gasOutput = 256;
 
     public CachedRecipe<FluidGasToGasRecipe> cachedRecipe;
@@ -85,6 +85,13 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+    }
+
+    @Override
+    protected void presetVariables() {
+        fluidTank = new FluidTank(MAX_FLUID);
+        inputTank = new GasTank(MAX_GAS);
+        outputTank = new GasTank(MAX_GAS);
     }
 
     @Nonnull

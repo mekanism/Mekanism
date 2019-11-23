@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,6 +22,8 @@ public class InfusionInventorySlot extends BasicInventorySlot {
 
     //TODO: Rewrite this some once we make infusion tanks work as items
     public static InfusionInventorySlot input(InfusionTank infusionTank, Predicate<InfuseType> isValidInfusion, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
+        Objects.requireNonNull(isValidInfusion, "Infusion validity check cannot be null");
         return new InfusionInventorySlot(infusionTank, stack -> {
             InfusionStack infusionStack = InfuseRegistry.getObject(stack);
             //Allow extraction IFF after a reload an item no longer has an infusion type

@@ -7,6 +7,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
+import mekanism.api.infuse.InfusionTank;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -36,6 +37,10 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
         builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this, 7, 57));
+    }
+
+    public InfusionTank getInfusionTank() {
+        return infusionTank;
     }
 
     @Nullable

@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
@@ -18,11 +19,14 @@ import net.minecraftforge.fluids.FluidUtil;
 public class FuelInventorySlot extends BasicInventorySlot {
 
     public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
         return new FuelInventorySlot(stack -> fuelValue.applyAsInt(stack) == 0, stack -> fuelValue.applyAsInt(stack) > 0, inventory, x, y);
     }
 
     public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, Predicate<@NonNull FluidStack> validFuel, @Nullable IMekanismInventory inventory,
           int x, int y) {
+        Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
+        Objects.requireNonNull(validFuel, "Fuel validity check cannot be null");
         //TODO: Eventually maybe add a check for inserting to check against the tank of the inventory
         return new FuelInventorySlot(stack -> {
             FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);

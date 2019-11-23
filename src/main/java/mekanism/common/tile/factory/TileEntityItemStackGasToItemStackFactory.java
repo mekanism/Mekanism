@@ -6,6 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
@@ -65,6 +66,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
         builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this, 7, 57));
+    }
+
+    public GasTank getGasTank() {
+        return gasTank;
     }
 
     @Nullable

@@ -53,7 +53,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     public static final int MAX_GAS = 10000;
 
-    public GasTank inputTank = new GasTank(MAX_GAS);
+    public GasTank inputTank;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -92,6 +92,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
+    }
+
+    @Override
+    protected void presetVariables() {
+        inputTank = new GasTank(MAX_GAS);
     }
 
     @Nonnull

@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,6 +17,7 @@ import net.minecraft.item.Item;
 public class UpgradeInventorySlot extends BasicInventorySlot {
 
     public static UpgradeInventorySlot of(@Nullable IMekanismInventory inventory, Set<Upgrade> supportedTypes) {
+        Objects.requireNonNull(supportedTypes, "Supported types cannot be null");
         return new UpgradeInventorySlot(inventory, supportedTypes);
     }
 

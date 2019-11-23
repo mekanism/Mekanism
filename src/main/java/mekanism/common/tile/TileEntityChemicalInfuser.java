@@ -31,7 +31,6 @@ import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -45,9 +44,9 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ISustainedData, ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10000;
-    public GasTank leftTank = new GasTank(MAX_GAS);
-    public GasTank rightTank = new GasTank(MAX_GAS);
-    public GasTank centerTank = new GasTank(MAX_GAS);
+    public GasTank leftTank;
+    public GasTank rightTank;
+    public GasTank centerTank;
     public int gasOutput = 256;
 
     public CachedRecipe<ChemicalInfuserRecipe> cachedRecipe;
@@ -69,6 +68,13 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         rightInputHandler = InputHelper.getInputHandler(rightTank);
         outputHandler = OutputHelper.getOutputHandler(centerTank);
         //TODO: Upgrade slot index: 4
+    }
+
+    @Override
+    protected void presetVariables() {
+        leftTank = new GasTank(MAX_GAS);
+        centerTank = new GasTank(MAX_GAS);
+        rightTank = new GasTank(MAX_GAS);
     }
 
     @Nonnull

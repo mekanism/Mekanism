@@ -22,7 +22,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -58,6 +57,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
     public TileEntityGasGenerator() {
         super(GeneratorsBlock.GAS_BURNING_GENERATOR, MekanismConfig.general.FROM_H2.get() * 2);
+    }
+
+    @Override
+    protected void presetVariables() {
         fuelTank = new GasTank(MAX_GAS);
     }
 

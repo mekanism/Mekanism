@@ -57,8 +57,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public static final int MAX_GAS = 10000;
 
-    public GasTank inputTank = new GasTank(MAX_GAS);
-    public GasTank outputTank = new GasTank(MAX_GAS);
+    public GasTank inputTank;
+    public GasTank outputTank;
 
     public int gasOutput = 256;
 
@@ -78,6 +78,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         super(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+    }
+
+    @Override
+    protected void presetVariables() {
+        inputTank = new GasTank(MAX_GAS);
+        outputTank = new GasTank(MAX_GAS);
     }
 
     @Nonnull

@@ -44,7 +44,6 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -52,7 +51,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -101,9 +99,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * The amount of infuse this machine has stored.
      */
-    public final InfusionTank infusionTank;
-
-    public final GasTank gasTank;
+    //TODO: Move these two to their corresponding subclass type
+    protected InfusionTank infusionTank;
+    protected GasTank gasTank;
 
     public boolean sorting;
 
@@ -179,16 +177,14 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         //TODO: Theoretically this should work as it initializes them all as null, but is there a better/proper way to do this
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
-        gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
-        infusionTank = new InfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
         setRecipeType(recipeType);
     }
 
     @Override
-    protected void setSupportedTypes(Block block) {
-        super.setSupportedTypes(block);
-        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
-        this.tier = ((BlockFactory) block).getTier();
+    protected void presetVariables() {
+        tier = ((BlockFactory) getBlockType()).getTier();
+        gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
+        infusionTank = new InfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
     }
 
     @Nonnull

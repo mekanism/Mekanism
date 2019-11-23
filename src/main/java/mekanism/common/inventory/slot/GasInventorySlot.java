@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -28,6 +29,9 @@ public class GasInventorySlot extends BasicInventorySlot {
      */
     public static GasInventorySlot rotary(GasTank gasTank, Predicate<@NonNull Gas> validInput, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory,
           int x, int y) {
+        Objects.requireNonNull(gasTank, "Gas tank cannot be null");
+        Objects.requireNonNull(validInput, "Input validity check cannot be null");
+        Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         //Mode == true if gas to fluid
         return new GasInventorySlot(gasTank, alwaysFalse, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
@@ -68,6 +72,8 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Fills the tank from this item OR converts the given item to a gas
      */
     public static GasInventorySlot fillOrConvert(GasTank gasTank, Predicate<Gas> isValidGas, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(gasTank, "Gas tank cannot be null");
+        Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -112,6 +118,8 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Fills the tank from this item
      */
     public static GasInventorySlot fill(GasTank gasTank, Predicate<Gas> isValidGas, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(gasTank, "Gas tank cannot be null");
+        Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -151,6 +159,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Drains the tank into this item.
      */
     public static GasInventorySlot drain(GasTank gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();

@@ -30,7 +30,6 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -45,7 +44,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ISustainedData, ITankManager, IGasHandler {
 
     public static final int MAX_GAS = 10000;
-    public GasTank gasTank = new GasTank(MAX_GAS);
+    public GasTank gasTank;
     public int gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
@@ -59,6 +58,11 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
         super(MekanismBlock.CHEMICAL_OXIDIZER, 100);
         inputHandler = InputHelper.getInputHandler(inputSlot);
         outputHandler = OutputHelper.getOutputHandler(gasTank);
+    }
+
+    @Override
+    protected void presetVariables() {
+        gasTank = new GasTank(MAX_GAS);
     }
 
     @Nonnull

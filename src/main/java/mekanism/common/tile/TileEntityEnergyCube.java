@@ -30,7 +30,6 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -89,10 +88,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    protected void setSupportedTypes(Block block) {
-        super.setSupportedTypes(block);
-        //TODO: Do this in a better way, but currently we need to hijack this to set our tier earlier
-        this.tier = ((BlockEnergyCube) block).getTier();
+    protected void presetVariables() {
+        tier = ((BlockEnergyCube) getBlockType()).getTier();
     }
 
     @Nonnull

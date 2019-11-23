@@ -67,7 +67,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     /**
      * This separator's water slot.
      */
-    public FluidTank fluidTank = new FluidTank(24000);
+    public FluidTank fluidTank;
     /**
      * The maximum amount of gas this block can store.
      */
@@ -75,11 +75,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     /**
      * The amount of oxygen this block is storing.
      */
-    public GasTank leftTank = new GasTank(MAX_GAS);
+    public GasTank leftTank;
     /**
      * The amount of hydrogen this block is storing.
      */
-    public GasTank rightTank = new GasTank(MAX_GAS);
+    public GasTank rightTank;
     /**
      * How fast this block can output gas.
      */
@@ -116,6 +116,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
     }
 
+    @Override
+    protected void presetVariables() {
+        fluidTank = new FluidTank(24_000);
+        leftTank = new GasTank(MAX_GAS);
+        rightTank = new GasTank(MAX_GAS);
+    }
+
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
@@ -144,7 +151,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
                 fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, fluidSlot), FluidAction.EXECUTE);
             }
 
-            //TODO: look at other places that call drawGas and the likes and see if they need saving
             boolean needsSaving = TileUtils.drawGas(leftOutputSlot.getStack(), leftTank);
             needsSaving |= TileUtils.drawGas(rightOutputSlot.getStack(), rightTank);
             if (needsSaving) {

@@ -51,8 +51,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
-    public GasTank injectTank = new GasTank(MAX_GAS);
-    public GasTank outputTank = new GasTank(MAX_GAS);
+    public GasTank injectTank;
+    public GasTank outputTank;
     public double injectUsage = BASE_INJECT_USAGE;
     public int injectUsageThisTick;
     public int gasOutput = 256;
@@ -73,6 +73,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(injectTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+    }
+
+    @Override
+    protected void presetVariables() {
+        injectTank = new GasTank(MAX_GAS);
+        outputTank = new GasTank(MAX_GAS);
     }
 
     @Nonnull

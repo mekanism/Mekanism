@@ -51,8 +51,8 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ISustainedData, IFluidHandlerWrapper, IGasHandler, ITankManager, IComparatorSupport {
 
     public static final int MAX_FLUID = 10000;
-    public GasTank gasTank = new GasTank(MAX_FLUID);
-    public FluidTank fluidTank = new FluidTank(MAX_FLUID);
+    public GasTank gasTank;
+    public FluidTank fluidTank;
     /**
      * 0: gas -> fluid; 1: fluid -> gas
      */
@@ -71,6 +71,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
     public TileEntityRotaryCondensentrator() {
         super(MekanismBlock.ROTARY_CONDENSENTRATOR);
+    }
+
+    @Override
+    protected void presetVariables() {
+        gasTank = new GasTank(MAX_FLUID);
+        fluidTank = new FluidTank(MAX_FLUID);
     }
 
     @Nonnull

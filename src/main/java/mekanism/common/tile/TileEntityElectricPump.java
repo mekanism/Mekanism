@@ -67,7 +67,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     /**
      * This pump's tank
      */
-    public FluidTank fluidTank = new FluidTank(10000);
+    public FluidTank fluidTank;
     /**
      * The type of fluid this pump is pumping
      */
@@ -96,6 +96,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     public TileEntityElectricPump() {
         super(MekanismBlock.ELECTRIC_PUMP);
+    }
+
+    @Override
+    protected void presetVariables() {
+        fluidTank = new FluidTank(10_000);
     }
 
     @Nonnull

@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,6 +24,8 @@ public class InputInventorySlot extends BasicInventorySlot {
 
     public static InputInventorySlot at(Predicate<@NonNull ItemStack> insertPredicate, Predicate<@NonNull ItemStack> isItemValid, @Nullable IMekanismInventory inventory,
           int x, int y) {
+        Objects.requireNonNull(insertPredicate, "Insertion check cannot be null");
+        Objects.requireNonNull(isItemValid, "Item validity check cannot be null");
         return new InputInventorySlot(insertPredicate, isItemValid, inventory, x, y);
     }
 

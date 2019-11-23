@@ -193,9 +193,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         super(((IHasTileEntity<? extends TileEntity>) blockProvider.getBlock()).getTileType());
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
+        presetVariables();
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
-            //TODO: FIXME, stuff in this may currently be null because they have not been initialized yet
             slotHolder = getInitialInventory();
         }
         if (supportsUpgrades()) {
@@ -215,7 +215,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
     }
 
-    protected void setSupportedTypes(Block block) {
+    private void setSupportedTypes(Block block) {
         //Used to get any data we may need
         isElectric = block instanceof IBlockElectric;
         supportsUpgrades = block instanceof ISupportsUpgrades;
@@ -227,6 +227,15 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         hasSecurity = block instanceof IHasSecurity;
         //TODO: Is this the proper way of doing it
         isActivatable = hasSound || block instanceof IStateActive;
+    }
+
+    /**
+     * Sets variables up, called immediately after {@link #setSupportedTypes(Block)} but before any things start being created.
+     *
+     * @implNote This method should be used for setting any variables that would normally be set directly, except that gets run to late to set things up properly in our
+     * constructor.
+     */
+    protected void presetVariables() {
     }
 
     public boolean isRemote() {
