@@ -2,8 +2,11 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -15,12 +18,15 @@ import mekanism.common.recipe.GasConversionHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class GasInventorySlot extends BasicInventorySlot {
 
     /**
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static GasInventorySlot rotary(@Nonnull GasTank gasTank, Predicate<@NonNull Gas> validInput, BooleanSupplier modeSupplier, IMekanismInventory inventory,
+    public static GasInventorySlot rotary(GasTank gasTank, Predicate<@NonNull Gas> validInput, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory,
           int x, int y) {
         //Mode == true if gas to fluid
         return new GasInventorySlot(gasTank, alwaysFalse, stack -> {
@@ -61,8 +67,7 @@ public class GasInventorySlot extends BasicInventorySlot {
     /**
      * Fills the tank from this item OR converts the given item to a gas
      */
-    public static GasInventorySlot fillOrConvert(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, IMekanismInventory inventory, int x, int y) {
-        //TODO: Add validation that none of the inputs are null
+    public static GasInventorySlot fillOrConvert(GasTank gasTank, Predicate<Gas> isValidGas, @Nullable IMekanismInventory inventory, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -106,7 +111,7 @@ public class GasInventorySlot extends BasicInventorySlot {
     /**
      * Fills the tank from this item
      */
-    public static GasInventorySlot fill(@Nonnull GasTank gasTank, @Nonnull Predicate<Gas> isValidGas, IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot fill(GasTank gasTank, Predicate<Gas> isValidGas, @Nullable IMekanismInventory inventory, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -145,7 +150,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      *
      * Drains the tank into this item.
      */
-    public static GasInventorySlot drain(@Nonnull GasTank gasTank, IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot drain(GasTank gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
         return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -185,8 +190,8 @@ public class GasInventorySlot extends BasicInventorySlot {
     //TODO: Replace GasTank with an IGasHandler??
     private final GasTank gasTank;
 
-    private GasInventorySlot(@Nonnull GasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+    private GasInventorySlot(GasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
+          @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         this.gasTank = gasTank;
     }

@@ -2,6 +2,10 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -18,6 +22,9 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 //TODO: IC2 add back in support to the different predicates
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
 
     //Cache the predicates as we only really need one instance of them
@@ -53,7 +60,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         }
         return stack.getItem() == Items.REDSTONE;
     };
-    private static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> chargeExtractPredicate = (stack, automationType) ->{
+    private static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> chargeExtractPredicate = (stack, automationType) -> {
         if (automationType == AutomationType.MANUAL) {
             //Always allow extracting manually
             return true;
@@ -105,19 +112,19 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Takes energy from the item
      */
-    public static EnergyInventorySlot discharge(IMekanismInventory inventory, int x, int y) {
+    public static EnergyInventorySlot discharge(@Nullable IMekanismInventory inventory, int x, int y) {
         return new EnergyInventorySlot(dischargeExtractPredicate, dischargeInsertPredicate, inventory, x, y);
     }
 
     /**
      * Gives energy to the item
      */
-    public static EnergyInventorySlot charge(IMekanismInventory inventory, int x, int y) {
+    public static EnergyInventorySlot charge(@Nullable IMekanismInventory inventory, int x, int y) {
         return new EnergyInventorySlot(chargeExtractPredicate, chargeInsertPredicate, inventory, x, y);
     }
 
     private EnergyInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
-          IMekanismInventory inventory, int x, int y) {
+          @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validPredicate, inventory, x, y);
     }
 

@@ -1,7 +1,10 @@
 package mekanism.common.inventory.slot;
 
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -11,10 +14,13 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.item.ItemStack;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class InfusionInventorySlot extends BasicInventorySlot {
 
     //TODO: Rewrite this some once we make infusion tanks work as items
-    public static InfusionInventorySlot input(InfusionTank infusionTank, Predicate<InfuseType> isValidInfusion, IMekanismInventory inventory, int x, int y) {
+    public static InfusionInventorySlot input(InfusionTank infusionTank, Predicate<InfuseType> isValidInfusion, @Nullable IMekanismInventory inventory, int x, int y) {
         return new InfusionInventorySlot(infusionTank, stack -> {
             InfusionStack infusionStack = InfuseRegistry.getObject(stack);
             //Allow extraction IFF after a reload an item no longer has an infusion type
@@ -32,7 +38,7 @@ public class InfusionInventorySlot extends BasicInventorySlot {
     private final InfusionTank infusionTank;
 
     private InfusionInventorySlot(InfusionTank infusionTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         this.infusionTank = infusionTank;
     }

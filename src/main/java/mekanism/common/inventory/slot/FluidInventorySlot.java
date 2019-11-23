@@ -2,7 +2,10 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.base.LazyOptionalHelper;
@@ -17,6 +20,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class FluidInventorySlot extends BasicInventorySlot {
 
     private static final Predicate<@NonNull ItemStack> isFluidContainer = FluidContainerUtils::isFluidContainer;
@@ -27,7 +33,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
     /**
      * Fills/Drains the tank depending on if this item has any contents in it
      */
-    public static FluidInventorySlot input(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot input(IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, @Nullable IMekanismInventory inventory, int x, int y) {
         return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
             FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             if (fluidContained.isEmpty()) {
@@ -42,8 +48,8 @@ public class FluidInventorySlot extends BasicInventorySlot {
     /**
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static FluidInventorySlot rotary(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, BooleanSupplier modeSupplier,
-          IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot rotary(IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validInput, BooleanSupplier modeSupplier,
+          @Nullable IMekanismInventory inventory, int x, int y) {
         return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
             FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             boolean mode = modeSupplier.getAsBoolean();
@@ -72,7 +78,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
     /**
      * Fills the tank from this item
      */
-    public static FluidInventorySlot fill(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validFluid, IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot fill(IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> validFluid, @Nullable IMekanismInventory inventory, int x, int y) {
         return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
             FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
             //True if we can fill the tank with any of our contents, ignored if the item has no fluid, as it won't pass isValid
@@ -91,7 +97,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
      *
      * Drains the tank into this item.
      */
-    public static FluidInventorySlot drain(@Nonnull FluidTank fluidTank, IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot drain(FluidTank fluidTank, @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Accept a fluid handler in general?
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> new LazyOptionalHelper<>(FluidUtil.getFluidHandler(stack))
               .matches(itemFluidHandler -> fluidTank.isEmpty() || itemFluidHandler.fill(fluidTank.getFluid(), FluidAction.SIMULATE) > 0),
@@ -110,11 +116,10 @@ public class FluidInventorySlot extends BasicInventorySlot {
         }, false);
     }
 
-    @Nonnull
     private final IFluidHandler fluidHandler;
 
-    private FluidInventorySlot(@Nonnull IFluidHandler fluidHandler, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+    private FluidInventorySlot(IFluidHandler fluidHandler, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         this.fluidHandler = fluidHandler;
     }

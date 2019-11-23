@@ -1,9 +1,9 @@
 package mekanism.api.inventory.slot;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
@@ -16,6 +16,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 
 //TODO: Should we add a way to read contents to/from network so that things like the bin does not have issues due to it being too large
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
 
     /**
@@ -37,7 +39,6 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      *
      * @apiNote <strong>IMPORTANT:</strong> Do not modify this {@link ItemStack}.
      */
-    @Nonnull
     ItemStack getStack();
 
     /**
@@ -48,7 +49,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * @throws RuntimeException if this slot is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStack(@Nonnull ItemStack stack);
+    void setStack(ItemStack stack);
 
     /**
      * <p>
@@ -66,8 +67,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * @implNote The {@link ItemStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call {@link
      * #onContentsChanged()}
      */
-    @Nonnull
-    ItemStack insertItem(@Nonnull ItemStack stack, Action action, AutomationType automationType);
+    ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType);
 
     /**
      * Extracts an {@link ItemStack} from this {@link IInventorySlot}.
@@ -86,7 +86,6 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * @implNote The returned {@link ItemStack} can be safely modified after, so a new or copied stack should be returned. If the internal stack does get updated make
      * sure to call {@link #onContentsChanged()}
      */
-    @Nonnull
     ItemStack extractItem(int amount, Action action, AutomationType automationType);
 
     /**
@@ -100,7 +99,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      *
      * @implNote The implementation of this CAN take into account the max size of this stack but is not required to.
      */
-    int getLimit(@NonNull ItemStack stack);
+    int getLimit(ItemStack stack);
 
     /**
      * <p>
@@ -119,7 +118,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * @return true if this {@link IInventorySlot} can accept the {@link ItemStack}, not considering the current state of the inventory. false if this {@link
      * IInventorySlot} can never insert the {@link ItemStack} in any situation.
      */
-    boolean isItemValid(@Nonnull ItemStack stack);
+    boolean isItemValid(ItemStack stack);
 
     /**
      * Called when the contents of this slot changes.

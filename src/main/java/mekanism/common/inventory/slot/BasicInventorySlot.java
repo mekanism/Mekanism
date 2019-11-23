@@ -4,7 +4,10 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
@@ -17,6 +20,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+//TODO: Add validation that none of the inputs to things are null, at least during creation
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BasicInventorySlot implements IInventorySlot {
 
     protected static final Predicate<@NonNull ItemStack> alwaysTrue = stack -> true;
@@ -25,44 +32,43 @@ public class BasicInventorySlot implements IInventorySlot {
     protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
     private static final int DEFAULT_LIMIT = 64;
 
-    public static BasicInventorySlot at(IMekanismInventory inventory, int x, int y) {
+    public static BasicInventorySlot at(@Nullable IMekanismInventory inventory, int x, int y) {
         return at(alwaysTrue, inventory, x, y);
     }
 
-    public static BasicInventorySlot at(@Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         return new BasicInventorySlot(alwaysTrueBi, alwaysTrueBi, validator, inventory, x, y);
     }
 
-    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, IMekanismInventory inventory, int x, int y) {
+    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IMekanismInventory inventory, int x, int y) {
         return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
     }
 
-    @Nonnull
     private final Predicate<@NonNull ItemStack> validator;
-    @Nonnull
     protected ItemStack current = ItemStack.EMPTY;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert;
     private final int limit;
+    @Nullable
     private final IMekanismInventory inventory;
     private final int x;
     private final int y;
     protected boolean obeyStackLimit = true;
 
     protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
-          IMekanismInventory inventory, int x, int y) {
+          @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Re-evaluate this
         this((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
               validator, inventory, x, y);
     }
 
     protected BasicInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
-          @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         this(DEFAULT_LIMIT, canExtract, canInsert, validator, inventory, x, y);
     }
 
     protected BasicInventorySlot(int limit, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
-          @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         this.limit = limit;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -77,7 +83,6 @@ public class BasicInventorySlot implements IInventorySlot {
      *
      * @apiNote We return a cached value from this that if modified won't actually end up having any information about the slot get changed.
      */
-    @Nonnull
     @Override
     public ItemStack getStack() {
         //TODO: Should we return a copy to ensure that our stack is not modified, we could cache our copy and only update it at given times
@@ -88,7 +93,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public void setStack(@Nonnull ItemStack stack) {
+    public void setStack(ItemStack stack) {
         //TODO: Decide if we want to limit this to the slots limit and maybe make a method for reading from file that lets it go past the limit??
         if (stack.isEmpty()) {
             current = ItemStack.EMPTY;
@@ -105,9 +110,8 @@ public class BasicInventorySlot implements IInventorySlot {
         onContentsChanged();
     }
 
-    @Nonnull
     @Override
-    public ItemStack insertItem(@Nonnull ItemStack stack, Action action, AutomationType automationType) {
+    public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack, automationType)) {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
@@ -137,7 +141,6 @@ public class BasicInventorySlot implements IInventorySlot {
         return stack;
     }
 
-    @Nonnull
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
         if (current.isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
@@ -165,13 +168,13 @@ public class BasicInventorySlot implements IInventorySlot {
     //TODO: Evaluate usages of this maybe some should be capped by the max size of the stack
     // In fact most uses of this probably can instead use the insertItem method instead
     @Override
-    public int getLimit(@NonNull ItemStack stack) {
+    public int getLimit(ItemStack stack) {
         //TODO: is this a decent way to do this or do we want to set obeyStack limit some other way
         return obeyStackLimit && !stack.isEmpty() ? Math.min(limit, stack.getMaxStackSize()) : limit;
     }
 
     @Override
-    public boolean isItemValid(@Nonnull ItemStack stack) {
+    public boolean isItemValid(ItemStack stack) {
         return validator.test(stack);
     }
 

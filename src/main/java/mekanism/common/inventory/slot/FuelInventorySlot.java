@@ -3,6 +3,9 @@ package mekanism.common.inventory.slot;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
@@ -10,13 +13,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class FuelInventorySlot extends BasicInventorySlot {
 
-    public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, IMekanismInventory inventory, int x, int y) {
+    public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, @Nullable IMekanismInventory inventory, int x, int y) {
         return new FuelInventorySlot(stack -> fuelValue.applyAsInt(stack) == 0, stack -> fuelValue.applyAsInt(stack) > 0, inventory, x, y);
     }
 
-    public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, Predicate<@NonNull FluidStack> validFuel, IMekanismInventory inventory,
+    public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, Predicate<@NonNull FluidStack> validFuel, @Nullable IMekanismInventory inventory,
           int x, int y) {
         //TODO: Eventually maybe add a check for inserting to check against the tank of the inventory
         return new FuelInventorySlot(stack -> {
@@ -33,7 +38,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
         }, inventory, x, y);
     }
 
-    private FuelInventorySlot(Predicate<@NonNull ItemStack> canExtract, @Nonnull Predicate<@NonNull ItemStack> validator, IMekanismInventory inventory, int x, int y) {
+    private FuelInventorySlot(Predicate<@NonNull ItemStack> canExtract, @Nonnull Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Re-evaluate this can extract
         super((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), alwaysTrueBi, validator, inventory, x, y);
     }
